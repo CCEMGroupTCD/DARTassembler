@@ -89,9 +89,8 @@ class ASE_Ligand(ASE_Molecule):
             only to get the attributes required for the assembly with cians script a little faster
             :return: {index: list, type: list, xyz_str: str}
             """
-            dict_ = {}
+            dict_ = {"index": [i for i, el in enumerate(self.ligand_to_metal) if el == 1]}
 
-            dict_["index"] = [i for i, el in enumerate(self.ligand_to_metal) if el == 1]
             dict_["type"] = [self.xyz.coordinates[i][0] for i in dict_["index"]]
             dict_["str"] = self.xyz.get_xyz_file_format_string()
 

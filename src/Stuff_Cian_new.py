@@ -155,7 +155,10 @@ def rotate_tridentate_ligand(tridentate_building_block, x, y, z, index_list) -> 
 def post_process_tridentate(_metal_bb, _tridentate_bb, index_list, optimize_=False):
 
     # Here we rotate our tridentate ligand to ensure it sits in the xy plane
-    compl_tri = stk.ConstructedMolecule(topology_graph=tridentate(metals=_metal_bb, ligands=_tridentate_bb))
+
+    print("test")
+
+    compl_tri = stk.ConstructedMolecule(topology_graph=tridentate(metals=_metal_bb, ligands=_tridentate_bb,),)
 
     compl_tri = compl_tri.with_rotation_to_minimize_angle(
         start=compl_tri.get_plane_normal(atom_ids=[index_list[0], index_list[1], index_list[2]]),

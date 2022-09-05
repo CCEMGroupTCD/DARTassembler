@@ -74,6 +74,8 @@ def add_monodentate_ligand(ligand_dict):
                                       name="Hydroxi"
                                       )
 
+    ligand_dict[1].append(Hydroxi)
+
     return ligand_dict
 
 

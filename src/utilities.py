@@ -26,11 +26,3 @@ def complex_visualisation(input_complex):
         ase_mol.view_3d()
 
 
-def build_ligand(type_list, index_list, path_):
-    func_dict = {type_: globals()[f"{type_}"] for type_ in type_list}
-    atoms_ = [func_dict[type_](index_list[i]) for i, type_ in enumerate(type_list)]
-
-    functional_groups_ = [stk.GenericFunctionalGroup(atoms=(a,), bonders=(a,), deleters=()) for a in atoms_]
-    return stk.BuildingBlock.init_from_file(path_, functional_groups=functional_groups_)
-
-
