@@ -1,12 +1,12 @@
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-from ase import io, Atoms, neighborlist
+from ase import io, neighborlist
 from scipy.sparse.csgraph import connected_components
 from mendeleev import element
 
 from get_csd_xyz_dict import xyz_file
-from constants import metals_in_pse
+from utilities import metals_in_pse
 from ASE_Molecule import ASE_Molecule, ASE_Ligand
 
 
@@ -80,6 +80,9 @@ class CSD_Molecule:
         return new_mol
 
     def modify_coordinates(self):
+        """
+        rotation and translation to origin
+        """
         #
         # get shift vector
         shift_vec = None
@@ -141,9 +144,6 @@ class CSD_Molecule:
         graph = neighborList.get_connectivity_matrix(sparse=False)
 
         connected_comps = connected_components(graph + np.eye(graph.shape[0]))
-        # conntected_comps[0] : Anzahl Zusammenhangskomponenten
-        # connected_comps[1] : gibt die tatsächlichen komponenten, wobei jedem Knoten ein wert von 0 bis #Zshkomp-1
-        #   zugeordnet wird je nach dem zu welcher zshkomp er gehört
 
         #
         # to which componenent the neighbors of the metal belong to
@@ -152,9 +152,8 @@ class CSD_Molecule:
         denticity_dict = {item: neighbor_conn_comp_list.count(item) for item in
                           neighbor_conn_comp_list}  # component:denticity
 
+        # todo: Kann eigentlich weg
         if sum(denticity_dict.values()) > 6:
-            # die methode klappt erstmal nur für ligands die genau aus octahedral TMCs extrahiert wurden
-            # todo: Eigentlich können wir auch größere Denticities verwandeln
             self.status.append("Too much bindings evaluated")
 
         #
@@ -167,19 +166,7 @@ class CSD_Molecule:
             # iterieren über alle möglichen liganden
             for conn_comp_number, conn_comp_denticity in denticity_dict.items():
                 if conn_comp_denticity in denticity_numbers:
-                    #
-                    # building the new ligand
-                    properties = dict()
-                    #
-                    # naming
-                    properties['name'] = f'CSD-{self.csd_code}-0{conn_comp_denticity}-0{j}'
-                    j += 1
-                    #
-                    # denticity
-                    properties['denticity'] = conn_comp_denticity
-                    #
-                    # original metal
-                    properties['original_metal'] = self.original_metal
+
                     #
                     # ligand index list: the indices of the ligands in the xyz_file class
                     ligand_index_list = [index for index, atomic_number in
@@ -189,14 +176,18 @@ class CSD_Molecule:
                     # connections to metal
                     ligand_to_metal = [1 if index in self.metal_neighbor_indices_wo_m else 0
                                        for i, index in enumerate(ligand_index_list)]
-                    properties['ligand_to_metal'] = ligand_to_metal
                     #
                     #
                     ligand_xyz = xyz_file(atom_number=len(ligand_index_list),
                                           csd_code=self.csd_code,
                                           coordinates={i: self.modified_coordinates[index] for i, index in enumerate(ligand_index_list)}
-                                         )
+                                          )
 
-                    ligand = ASE_Ligand(xyz=ligand_xyz, property_dict=properties)
+                    ligand = ASE_Ligand(xyz=ligand_xyz,
+                                        ligand_to_metal=ligand_to_metal,
+                                        original_metal=self.original_metal,
+                                        denticity=conn_comp_denticity,
+                                        name=f'CSD-{self.csd_code}-0{conn_comp_denticity}-0{j}'
+                                        )
 
                     self.ligands.append(ligand)

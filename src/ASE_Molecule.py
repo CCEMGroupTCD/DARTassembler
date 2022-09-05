@@ -9,6 +9,7 @@ from sympy import Point3D, Plane
 class ASE_Molecule:
     '''
     just a ase molecule, but extended by some custom functions
+    that's the name origin
     '''
 
     def __init__(self, mol):
@@ -61,16 +62,24 @@ class ASE_Ligand(ASE_Molecule):
         inherits its methods from ASE Molecule, while needs some extra information
         '''
 
-        def __init__(self, xyz: xyz_file, property_dict: dict):
+        def __init__(self, xyz: xyz_file, **kwargs):
             super().__init__(Atoms([coord[0] for coord in xyz.coordinates.values()],
                                    positions=[coord[1] for coord in xyz.coordinates.values()]))
 
-            self.denticity = property_dict['denticity']
-            self.ligand_to_metal = property_dict['ligand_to_metal']
-            self.csd_code = xyz.csd_code
-            self.original_metal = property_dict['original_metal']
             self.xyz = xyz
-            self.name = property_dict['name']
+            self.csd_code = xyz.csd_code
+
+            if "denticity" in kwargs.keys():
+                self.denticity = kwargs['denticity']
+
+            if "ligand_to_metal" in kwargs.keys():
+                self.ligand_to_metal= kwargs["ligand_to_metal"]
+
+            if "name" in kwargs.keys():
+                self.name = kwargs["name"]
+
+            if 'original_metal' in kwargs.keys():
+                self.original_metal = kwargs['original_metal']
 
             # todo: Braucht noch ein bisschen testing
             self.type = self.get_type()
@@ -127,35 +136,4 @@ class ASE_Ligand(ASE_Molecule):
                     return True
 
             return False
-
-
-#
-# das ist zu einfach und es fehlt irgendwie auch coordination. Ist irgendwie mist
-def merge(ligA: ASE_Ligand, ligB: ASE_Ligand):
-
-    properties = dict()
-
-    properties['denticity'] = ligA.denticity + ligB.denticity
-    properties['ligand_to_metal'] = ligA.ligand_to_metal + ligB.ligand_to_metal
-    if ligA.original_metal == ligB.original_metal:
-        properties['original_metal'] = ligA.original_metal
-    else:
-        properties['original_metal'] = "None"
-
-    properties["name"] = ligA.name + ligB.name
-
-    #
-    new_atom_number = ligA.xyz.total_atom_number + ligB.xyz.total_atom_number
-    new_coordinates = ligA.xyz.coordinates.copy()
-    n = len(ligA.xyz.coordinates)
-
-    for number, coord_list in ligB.xyz.coordinates.items():
-        new_coordinates[number+n] = coord_list
-
-    new_xyz = xyz_file(atom_number=new_atom_number,
-                       csd_code="None",
-                       coordinates=new_coordinates
-                       )
-
-    return ASE_Ligand(property_dict=properties, xyz=new_xyz)
 

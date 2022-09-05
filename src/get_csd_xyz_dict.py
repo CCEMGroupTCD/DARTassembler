@@ -1,10 +1,8 @@
 ## former known as 'write_to_file'
 import pickle
-import numpy as np
 import os
 from tqdm import tqdm
-from ASE_Molecule import ASE_Molecule, xyz_file
-from ase import io
+from ASE_Molecule import xyz_file
 
 
 def get_all_xyzs():

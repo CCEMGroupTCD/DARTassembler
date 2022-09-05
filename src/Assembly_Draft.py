@@ -1,25 +1,6 @@
 # todo: später durch richtiges modul ersetzen
 from Stuff_Cian_new import *
-
-
-# todo: vis ist in cian module 2 new schon drin
-def visualize(input_complex):
-    stk.XyzWriter().write(input_complex, '../tmp/input_complex.xyz')
-    with open('../tmp/input_complex.xyz', "r+") as file:
-        lines = file.readlines()
-        counter = 0
-        for i, line in enumerate(lines):
-            if len(line.split()) > 0:
-                if line.split()[0] == 'Hg':
-                    del lines[i]
-                    counter += 1
-        lines[0] = f"{int(lines[0]) - counter}\n"
-
-        with open('../tmp/input_complex.xyz', "w+") as file:
-            file.write(''.join(lines))
-        mol_ = io.read('../tmp/input_complex.xyz')
-        ase_mol = ASE_Molecule(mol=mol_)
-        ase_mol.view_3d()
+from utilities import complex_visualisation as visualize
 
 
 def three_two_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize):

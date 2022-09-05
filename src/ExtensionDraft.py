@@ -1,6 +1,6 @@
 # todo: später durch richtiges modul ersetzen
 from Stuff_Cian_new import *
-from ASE_Molecule import merge
+
 
 def visualize(input_complex):
     stk.XyzWriter().write(input_complex, '../tmp/input_complex.xyz')

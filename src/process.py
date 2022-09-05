@@ -3,9 +3,9 @@ import os
 import pickle
 import CSD_Molecule as csd
 from tqdm import tqdm
-from constants import PSE
 import ASE_Molecule
 from ase import io
+from mendeleev import element
 
 
 def extract_from_db():
@@ -43,7 +43,7 @@ def extract_ligands(xyz_dict, denticity_numbers, metals_of_interest=None):
         try:
             test_mol = csd.CSD_Molecule(xyz=xyz_file)
 
-            if metals_of_interest is None or PSE[test_mol.original_metal].symbol in metals_of_interest:
+            if metals_of_interest is None or element(int(test_mol.original_metal)).symbol in metals_of_interest:
                 test_mol.extract_ligands(denticity_numbers=denticity_numbers)
 
                 for lig in test_mol.ligands:
@@ -60,18 +60,19 @@ def extract_ligands(xyz_dict, denticity_numbers, metals_of_interest=None):
 def add_monodentate_ligand(ligand_dict):
     # Problem: No monodentate ligands
     #
-    # add monodentate ligand:
-    property_dict_ = {
-        'denticity':1,
-        'ligand_to_metal': [1, 0],
-        'original_metal': 80,
-        'name': "Hydroxy"
-    }
+    ligand_dict[1] = []
+
+    #
+    # add monodentate ligands
     coordinates_ = {0: ["O", [0, 0, 1.4361]], 1: ["H", [0.2096, -0.5615, 2.1227]]}
 
-    xyz_file_ = ASE_Molecule.xyz_file(atom_number=2, csd_code="Hydroxi", coordinates=coordinates_)
-
-    ligand_dict[1] = [ASE_Molecule.ASE_Ligand(xyz=xyz_file_, property_dict=property_dict_)]
+    Hydroxi = ASE_Molecule.ASE_Ligand(xyz=ASE_Molecule.xyz_file(atom_number=2,
+                                                                csd_code="Hydroxi",
+                                                                coordinates=coordinates_),
+                                      denticity=1,
+                                      ligand_to_metal = [1, 0],
+                                      name="Hydroxi"
+                                      )
 
     return ligand_dict
 
@@ -116,8 +117,7 @@ def run(metals_of_interest: list, denticity_numbers: list, Testing=False, get_cs
     #
     # todo: From here on we need to work
     #
-    # 4. remove duplicates
-    # todo: muss glaub auch nochmal überarbeitet werden
+    # 4. remove duplicates+
     # clus.cluster_ligands(dent_number=4, depth=5, target_path="data")
 
     #
