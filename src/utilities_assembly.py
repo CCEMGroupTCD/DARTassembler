@@ -1,15 +1,13 @@
-## Module-Cian.2
+# Module-Cian.2
 
 import stk
 from stk import *
 import numpy as np
 from openbabel import pybel
-from Stk_Extension import *
+from stk_extension import *
 import os
 from ase import io
 from ASE_Molecule import ASE_Molecule
-import pickle
-import random
 
 
 def build_ligand(type_list, index_list, path_):
@@ -20,7 +18,7 @@ def build_ligand(type_list, index_list, path_):
     return stk.BuildingBlock.init_from_file(path_, functional_groups=functional_groups_)
 
 
-def post_process_complex(input_complex, name, visualize_=True, print_to_xyz=True, return_ase=False, path="data/Assembled_Molecules"):
+def post_process_complex(input_complex, name, visualize_=True, print_to_xyz=True, return_ase=False, path="../data/Assembled_Molecules"):
 
     ## müssen aus dem complex noch alle Hg Atome entfernen
     stk.XyzWriter().write(input_complex, '../tmp/input_complex.xyz')
@@ -213,7 +211,7 @@ def post_process_monodentate(metal_bb_, monodentate_bb_, optimize_=False):
     return complex_monodentate
 
 
-def post_process_two_tetradentate(metal_bb, tetradentate_bb, ligand_, **kwargs):
+def post_process_tetradentate(metal_bb, tetradentate_bb, ligand_, **kwargs):
     index_list = ligand_.get_assembly_dict()["index"]
 
     topo_graph = stk.metal_complex.Porphyrin(metals=metal_bb, ligands=tetradentate_bb)
@@ -238,7 +236,7 @@ def post_process_two_tetradentate(metal_bb, tetradentate_bb, ligand_, **kwargs):
 
 def post_process_two_monodentates(metal_bb, ligand_bb_dict, optimize_=False):
 
-    bb_top = ligand_bb_dict[list(ligand_bb_dict.keys())[0]]
+    (_, bb_top) = ligand_bb_dict[list(ligand_bb_dict.keys())[0]]
     top_ = stk.ConstructedMolecule(
         topology_graph=monodentate(metals=metal_bb, ligands=bb_top))
 
@@ -248,8 +246,9 @@ def post_process_two_monodentates(metal_bb, ligand_bb_dict, optimize_=False):
     if optimize_ is True:
         top_ = optimize(top_, "stk_to_stk")
 
-
-    bb_bottom = bb_top = ligand_bb_dict[list(ligand_bb_dict.keys())[1]]
+    #
+    #
+    (_, bb_bottom) = ligand_bb_dict[list(ligand_bb_dict.keys())[1]]
     bottom_ = stk.ConstructedMolecule(
         topology_graph=monodentate_flipped(metals=metal_bb, ligands=bb_bottom))
     bottom_ = stk.BuildingBlock.init_from_molecule(bottom_, functional_groups=[
@@ -259,74 +258,5 @@ def post_process_two_monodentates(metal_bb, ligand_bb_dict, optimize_=False):
         bottom_ = optimize(bottom_, "stk_to_stk")
 
     return top_, bottom_
-
-
-### old
-def run_fixed_example():
-
-    # Tridentate
-    # compakte darstellung der functional atoms
-    tri_i = [0, 10, 16]
-    tri_t = ["N", "N", "N"]
-    bi_i = [1, 7]
-    bi_t = ["N", "N"]
-    mono_i = [0]
-    mono_t = ["O"]
-    # pfade, können später durch tmp ersetzt werden
-    tri_path = "data_cian/tridentate.mol"
-    bi_path = "data_cian//bi_pyridine.mol"
-    mono_path = "data_cian/hydroxide.mol"
-
-    # Metal Centre
-    metal = "Fe"
-    charge = "+2"
-
-    # build the center atom with 6 connections
-    metal_bb = stk.BuildingBlock(smiles='[Hg+2]',
-                                 functional_groups=(stk.SingleAtom(stk.Hg(0, charge=2)) for i in range(6)),
-                                 position_matrix=np.ndarray([0, 0, 0])
-                                 )
-
-    # build the metal block with the new metal atom
-    smiles_str = f"[{metal}{charge}]"
-    stk_metal_func = globals()[f"{metal}"]
-    # stk_metal_func = getattr(__import__("stk"), metal)
-    functional_groups = (stk.SingleAtom(stk_metal_func(0, charge=charge)) for i in range(6))
-    final_metal_bb = stk.BuildingBlock(smiles=smiles_str,
-                                       functional_groups=functional_groups,
-                                       position_matrix=np.ndarray([0, 0, 0])
-                                       )
-
-    # build the ligands
-    tridentate_bb = build_ligand(tri_t, tri_i, tri_path)
-    bidentate_bb = build_ligand(bi_t, bi_i, bi_path)
-    monodentate_bb = build_ligand(mono_t, mono_i, mono_path)
-
-    #
-    #
-    #
-    opt = True
-
-    complex_tridentate_bb = post_process_tridentate(_metal_bb=metal_bb, _tridentate_bb=tridentate_bb, index_list=tri_i,
-                                                    optimize_=opt)
-    complex_bidentate_bb = post_process_bidentate(metal_bb, bidentate_bb, optimize_=opt)
-    complex_monodentate_bb = post_process_monodentate(metal_bb, monodentate_bb, optimize_=opt)
-
-    complex_top = complex_topology(metals=final_metal_bb,
-                                   ligands={complex_bidentate_bb: (0,),
-                                            complex_monodentate_bb: (1,),
-                                            complex_tridentate_bb: (2,), }
-                                   )
-
-    complex_ = stk.ConstructedMolecule(topology_graph=complex_top)
-
-    # macht irgendwie nichts...
-    complex_ = optimize(complex_, "stk_to_stk")
-
-    post_process_complex(complex_, name="dummy", visualize_=True, print_to_xyz=True)
-
-
-if __name__ == '__main__':
-    run_fixed_example()
 
 

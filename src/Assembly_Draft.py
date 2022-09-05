@@ -1,12 +1,12 @@
-# todo: später durch richtiges modul ersetzen
-from Stuff_Cian_new import *
-from utilities import complex_visualisation as visualize
+from utilities_assembly import *
+import pickle
+import random
 
 
 def three_two_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize):
     mono_bb_for_comp, bi_bb_for_comp, tri_bb_for_comp = None, None, None
 
-    for lig, lig_bb in ligand_bb_dict.items():
+    for (lig, lig_bb) in ligand_bb_dict.values():
         if lig.denticity == 3:
             tri_bb_for_comp = post_process_tridentate(_metal_bb=metal_bb, _tridentate_bb=lig_bb,
                                                       index_list=lig.get_assembly_dict()["index"],
@@ -30,28 +30,28 @@ def three_two_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize):
 def four_one_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize):
     mono_a_bb_for_comp, mono_b_bb_for_comp, tetra_bb_for_comp = None, None, None
 
-    for lig, lig_bb in ligand_bb_dict.items():
+    for key, (lig, lig_bb) in ligand_bb_dict.items():
         if lig.denticity == 4:
-            tetra_bb_for_comp = post_process_two_tetradentate(
+            tetra_bb_for_comp = post_process_tetradentate(
                                 metal_bb=metal_bb,
                                 tetradentate_bb=lig_bb,
                                 ligand_=lig
             )
 
-            del ligand_bb_dict[lig]
+            del ligand_bb_dict[key]
             break
 
     mono_a_bb_for_comp, mono_b_bb_for_comp = post_process_two_monodentates(
                                 metal_bb=metal_bb,
                                 ligand_bb_dict=ligand_bb_dict,
                                 optimize_=False
-            )
+                                )
 
     complex_top = complex_topology(metals=final_metal_bb,
-                                  ligands={tetra_bb_for_comp: (0,),
-                                           mono_a_bb_for_comp: (1,),
-                                           mono_b_bb_for_comp: (2,)}
-                                  )
+                                   ligands={tetra_bb_for_comp: (0,),
+                                            mono_a_bb_for_comp: (1,),
+                                            mono_b_bb_for_comp: (2,)}
+                                   )
 
     complex_ = stk.ConstructedMolecule(topology_graph=complex_top)
 
@@ -59,8 +59,7 @@ def four_one_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize):
 
 
 def assembly(metal_bb, final_metal_bb, ligand_bb_dict, comp, _optimize=True):
-    # todo: das müsste man noch umbauen, weil hier spiel glaube ich tatsächlich dann die Topologie mit rein
-    # todo: später in das Stuff_Cian_new modul verschieben oder das hier und das Stuff_Cian_new modul mergen
+
     if set(comp) == {3, 2, 1}:
         complex_ = three_two_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize)
 
@@ -81,7 +80,7 @@ def random_assembly(num, ligand_dict: dict, comps: list, safe_path: str, metals,
 
     # for all ligands we want to create
     for i in range(num):
-
+        # todo: try / except adden
         # choose random metal center
         (metal, charge) = random.choice(metals)
 
@@ -109,21 +108,22 @@ def random_assembly(num, ligand_dict: dict, comps: list, safe_path: str, metals,
         ligands = {i: random.choice(ligand_dict[index]) for i, index in enumerate(comp)}
 
         # dict: ligand: ligand_bb
+        # nr : (ligand, ligand_bb)
         ligand_bb_dict = {}
 
-        for lig in ligands.values():
+        for k, lig in enumerate(ligands.values()):
             lig_assembly_dict = lig.get_assembly_dict()
 
             xyz_str = lig_assembly_dict["str"]
             with open("../tmp/lig_xyz.xyz", "w+") as f:
                 f.write(xyz_str)
 
-            os.remove("../tmp/lig_mol.mol")
             os.system('obabel .xyz ../tmp/lig_xyz.xyz .mol -O  ../tmp/lig_mol.mol')
 
-            ligand_bb_dict[lig] = build_ligand(type_list=lig_assembly_dict["type"],
-                                               index_list=lig_assembly_dict["index"],
-                                               path_="../tmp/lig_mol.mol")
+            ligand_bb_dict[k] = (lig, build_ligand(type_list=lig_assembly_dict["type"],
+                                                   index_list=lig_assembly_dict["index"],
+                                                   path_="../tmp/lig_mol.mol"))
+            os.remove("../tmp/lig_mol.mol")
 
         complex_ = assembly(metal_bb, final_metal_bb, ligand_bb_dict, comp, _optimize=_optimize)
 
@@ -132,8 +132,6 @@ def random_assembly(num, ligand_dict: dict, comps: list, safe_path: str, metals,
 
         generated_complexes.append(complex_)
 
-
-
     return generated_complexes
 
 
@@ -141,7 +139,7 @@ if __name__ == '__main__':
     # Input setting for generating ligands
     #
     # number of ligands to generate
-    number_of_ligands = 1
+    number_of_ligands = 50
 
     #
     # the ligand dict
@@ -150,8 +148,8 @@ if __name__ == '__main__':
 
     #
     # all denticity combinations
-    possible_compositions = [#(4, 1, 1),
-                             (3, 2, 1)
+    possible_compositions = [(4, 1, 1)#,
+                             #(3, 2, 1)
                              # (3, 3)
                              # ...
                              ]
@@ -169,7 +167,7 @@ if __name__ == '__main__':
 
     #
     # visualize the constructed molecules during the process
-    visualize_ = True
+    visualize_ = False
 
     #
     # decide wether optimization is necessary

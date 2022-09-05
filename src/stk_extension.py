@@ -1,4 +1,4 @@
-## Module-Cian.1
+# Module-Cian.1
 
 from stk.molecular.topology_graphs.topology_graph import Edge
 from stk.molecular.topology_graphs.metal_complex.metal_complex import MetalComplex
@@ -8,7 +8,6 @@ from scipy.spatial.distance import euclidean
 from stk.utilities import get_projection
 
 
-# define tridentate ligands?
 class tridentateVertex(Vertex):
 
     def place_building_block(self, building_block, edges):
