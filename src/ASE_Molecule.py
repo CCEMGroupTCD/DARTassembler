@@ -18,16 +18,35 @@ class ASE_Molecule:
         '''
         self.mol = mol
 
+    # todo: UC
+    def get_graph(self):
+        """
+        returns (hopefully) labeled nx graph
+        """
+        cutOff = neighborlist.natural_cutoffs(self.mol)
+        neighborList = neighborlist.NeighborList(cutOff, self_interaction=False, bothways=True)
+        neighborList.update(self.mol)
+
+        adjacency_matrix = neighborList.get_connectivity_matrix(sparse=False)
+        labels = {i: el for i, el in enumerate(self.mol.get_chemical_symbols())}
+
+        gr = nx.Graph(adjacency_matrix)
+
+        for node in gr.nodes():
+            gr.nodes[node]["label"] = labels[node]
+
+        return gr
+
     def view_graph(self):
         cutOff = neighborlist.natural_cutoffs(self.mol)
         neighborList = neighborlist.NeighborList(cutOff, self_interaction=False, bothways=True)
         neighborList.update(self.mol)
         graph = neighborList.get_connectivity_matrix(sparse=False)
-        labels = {i: el for i, el in enumerate(self.mol.get_chemical_symbols())}
         rows, cols = np.where(graph == 1)
         edges = zip(rows.tolist(), cols.tolist())
         gr = nx.Graph()
         gr.add_edges_from(edges)
+        labels = {i: el for i, el in enumerate(self.mol.get_chemical_symbols())}
         nx.draw_networkx(gr, node_size=500, with_labels=True, labels=labels)
         plt.show()
 

@@ -1,4 +1,4 @@
-from utilities_assembly import *
+from src02_assembly.utilities_assembly import *
 import pickle
 import random
 random.seed(15)

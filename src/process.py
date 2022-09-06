@@ -70,7 +70,7 @@ def add_monodentate_ligand(ligand_dict):
                                                                 csd_code="Hydroxi",
                                                                 coordinates=coordinates_),
                                       denticity=1,
-                                      ligand_to_metal = [1, 0],
+                                      ligand_to_metal=[1, 0],
                                       name="Hydroxi"
                                       )
 
@@ -79,7 +79,7 @@ def add_monodentate_ligand(ligand_dict):
     return ligand_dict
 
 
-def run(metals_of_interest: list, denticity_numbers: list, Testing=False, get_csd_Ase_dict=False):
+def run(metals_of_interest: list, denticity_numbers: list, TestSize=False, get_csd_Ase_dict=False):
     """
     Runs the full script for the ligand extraction
     Parameters to set:
@@ -90,7 +90,7 @@ def run(metals_of_interest: list, denticity_numbers: list, Testing=False, get_cs
     # 1. DB extraction
     all_relevant_xyzs = extract_from_db()
 
-    if Testing is True:
+    if TestSize is True:
         small_relevant_xyzs = dict()
         for i, (key, value) in enumerate(all_relevant_xyzs.items()):
             if i % 100 == 1:
@@ -118,20 +118,14 @@ def run(metals_of_interest: list, denticity_numbers: list, Testing=False, get_cs
     #
     #
     # todo: From here on we need to work
-    #
-    # 4. remove duplicates+
-    # clus.cluster_ligands(dent_number=4, depth=5, target_path="data")
-
-    #
-    # 5. assemble ligands
+    #  -remove duplicants
+    #  -filter bad guys (Cian Box filter
 
 
 if __name__ == '__main__':
-    run(Testing=True,
+
+    run(TestSize=True,
         get_csd_Ase_dict=False,
         metals_of_interest=["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"],
         denticity_numbers=[2, 3, 4, 5]
         )
-
-
-
