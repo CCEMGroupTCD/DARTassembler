@@ -1,6 +1,7 @@
 from utilities_assembly import *
 import pickle
 import random
+random.seed(15)
 
 
 def three_two_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize):
@@ -164,7 +165,7 @@ if __name__ == '__main__':
     # Input setting for generating ligands
     #
     # number of ligands to generate
-    number_of_ligands = 100
+    number_of_ligands = 1
 
     #
     # the ligand dict
@@ -193,7 +194,7 @@ if __name__ == '__main__':
 
     #
     # visualize the constructed molecules during the process
-    visualize_ = False
+    visualize_ = True
 
     #
     # decide wether optimization is necessary

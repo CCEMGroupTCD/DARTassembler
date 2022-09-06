@@ -97,7 +97,7 @@ class ASE_Ligand(ASE_Molecule):
             return dict_
 
         def get_type(self):
-            if self.denticity == 2:
+            if self.denticity == 2 or self.denticity == 1:
                 return 'p'
             elif self.denticity == 5:
                 return 'np'

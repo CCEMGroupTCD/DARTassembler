@@ -211,11 +211,8 @@ def post_process_monodentate(metal_bb_, monodentate_bb_, optimize_=False):
 def post_process_tetradentate(metal_bb, tetradentate_bb, ligand_, **kwargs):
     index_list = ligand_.get_assembly_dict()["index"]
 
-    topo_graph = stk.metal_complex.Porphyrin(metals=metal_bb, ligands=tetradentate_bb)
-    complex_tetradentate = stk.ConstructedMolecule(topology_graph=topo_graph)
-
-    complex_tetradentate = complex_tetradentate.with_rotation_to_minimize_angle(
-        start=complex_tetradentate.get_plane_normal(
+    complex_tetradentate = tetradentate_bb.with_rotation_to_minimize_angle(
+        start=tetradentate_bb.get_plane_normal(
             atom_ids=[index_list[0], index_list[1], index_list[2], index_list[3]]),
             target=np.array((0, 0, 1)), axis=np.array((0, 1, 0)), origin=np.array((0, 0, 0))
             )
@@ -224,6 +221,9 @@ def post_process_tetradentate(metal_bb, tetradentate_bb, ligand_, **kwargs):
             atom_ids=[index_list[0], index_list[1], index_list[2], index_list[3]]),
             target=np.array((0, 0, 1)), axis=np.array((1, 0, 0)), origin=np.array((0, 0, 0))
                 )
+
+    topo_graph = stk.metal_complex.Porphyrin(metals=metal_bb, ligands=complex_tetradentate)
+    complex_tetradentate = stk.ConstructedMolecule(topology_graph=topo_graph)
 
     complex_tetradentate_bb = stk.BuildingBlock.init_from_molecule(complex_tetradentate, functional_groups=[
         stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), )])
