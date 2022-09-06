@@ -7,7 +7,7 @@ from openbabel import pybel
 from stk_extension import *
 import os
 from ase import io
-from ASE_Molecule import ASE_Molecule
+from ASE_Molecule import ASE_Molecule, ASE_Ligand
 
 
 def build_ligand(type_list, index_list, path_):
@@ -153,9 +153,6 @@ def rotate_tridentate_ligand(tridentate_building_block, x, y, z, index_list) -> 
 def post_process_tridentate(_metal_bb, _tridentate_bb, index_list, optimize_=False):
 
     # Here we rotate our tridentate ligand to ensure it sits in the xy plane
-
-    print("test")
-
     compl_tri = stk.ConstructedMolecule(topology_graph=tridentate(metals=_metal_bb, ligands=_tridentate_bb,),)
 
     compl_tri = compl_tri.with_rotation_to_minimize_angle(
@@ -258,5 +255,121 @@ def post_process_two_monodentates(metal_bb, ligand_bb_dict, optimize_=False):
         bottom_ = optimize(bottom_, "stk_to_stk")
 
     return top_, bottom_
+
+
+def pentadentate_Solver(ligand: ASE_Ligand):
+
+    dict_ = ligand.get_assembly_dict()
+    atom_func = dict_["index"]
+    atom_type = dict_["type"]
+
+    tmp_path = "../tmp/lig_mol.mol"
+
+    xyz_str = ligand.get_assembly_dict()["str"]
+    with open("../tmp/lig_xyz.xyz", "w+") as f:
+        f.write(xyz_str)
+
+    os.system('obabel .xyz ../tmp/lig_xyz.xyz .mol -O  ../tmp/lig_mol.mol')
+
+    stk_ = __import__("stk")
+
+    _functional_groups = [stk.GenericFunctionalGroup(atoms=(getattr(stk_, atype_)(afunc_), ),
+                                                     bonders=(getattr(stk_, atype_)(afunc_), ),
+                                                     deleters=()
+                                                    ) for (atype_, afunc_) in zip(atom_type, atom_func)]
+
+    penta_bb_temp_1 = stk.BuildingBlock.init_from_file(tmp_path, functional_groups=_functional_groups)
+
+    # translate it so centroid is placed at 0,0,0
+    penta_bb_temp_2 = penta_bb_temp_1.with_centroid(np.array((0, 0, 0)), atom_ids=atom_func)
+
+    variance_list = []
+    for i, _ in enumerate(atom_func):
+        list_indices = atom_func.copy()
+        del list_indices[i]
+        penta_bb_temp_2 = penta_bb_temp_2.with_rotation_to_minimize_angle(start=penta_bb_temp_2.get_plane_normal(
+            atom_ids=[int(list_indices[0]), int(list_indices[1]), int(list_indices[2]), int(list_indices[3]), ]),
+                                                                          target=np.array((0, 0, 1)),
+                                                                          axis=np.array((0, 1, 0)),
+                                                                          origin=np.array((0, 0, 0)), )
+
+        penta_bb_temp_2 = penta_bb_temp_2.with_rotation_to_minimize_angle(start=penta_bb_temp_2.get_plane_normal(
+            atom_ids=[int(list_indices[0]), int(list_indices[1]), int(list_indices[2]), int(list_indices[3]), ]),
+                                                                          target=np.array((0, 0, 1)),
+                                                                          axis=np.array((1, 0, 0)),
+                                                                          origin=np.array((0, 0, 0)), )
+
+        position_xyz = list(penta_bb_temp_2.get_atomic_positions(
+            atom_ids=[int(list_indices[0]), int(list_indices[1]), int(list_indices[2]), int(list_indices[3]), ]))
+        # print(position_xyz)
+        z1 = position_xyz[0][2]
+        z2 = position_xyz[1][2]
+        z3 = position_xyz[2][2]
+        z_list = [z1, z2, z3]
+        variance = np.var(z_list)
+        variance_list.append(variance)
+        i = i + 1
+
+    index_ = variance_list.index(min(variance_list))
+
+    #
+    # depending on index
+    position_index = atom_func[index_]
+    atom_ids_ = [afunc_ for i, afunc_ in enumerate(atom_func) if i != index_]
+
+    _mod_functional_groups = [stk.GenericFunctionalGroup(atoms=(getattr(stk_, atype_)(afunc_), ),
+                                                         bonders=(getattr(stk_, atype_)(afunc_), ),
+                                                         deleters=()
+                                                        ) for k, (atype_, afunc_) in enumerate(zip(atom_type, atom_func))
+                                                        if k != index_]
+
+    penta_bb_temp = stk.BuildingBlock.init_from_file(tmp_path, functional_groups=_mod_functional_groups)
+
+    penta_bb_temp = penta_bb_temp.with_centroid(np.array((0, 0, 0)), atom_ids=atom_ids_)
+
+    penta_bb_temp = penta_bb_temp.with_rotation_to_minimize_angle(start=penta_bb_temp.get_plane_normal(atom_ids=atom_ids_),
+                                                                  target=np.array((0, 0, 1)),
+                                                                  axis=np.array((0, 1, 0)),
+                                                                  origin=np.array((0, 0, 0))
+                                                                  )
+
+    penta_bb_temp = penta_bb_temp.with_rotation_to_minimize_angle(start=penta_bb_temp.get_plane_normal(atom_ids=atom_ids_),
+                                                                  target=np.array((0, 0, 1)),
+                                                                  axis=np.array((1, 0, 0)),
+                                                                  origin=np.array((0, 0, 0))
+                                                                  )
+    #
+    #
+    #
+    tip_position = list(penta_bb_temp.get_atomic_positions(atom_ids=[int(position_index), ]))
+    if float(tip_position[0][2]) > 0:
+        penta_bb_temp = penta_bb_temp.with_rotation_about_axis(angle=np.radians(180),
+                                                               axis=np.array((1, 0, 0)),
+                                                               origin=np.array((0, 0, 0))
+                                                               )
+
+    elif float(tip_position[0][2]) == 0:
+        print("SOmething went wrong")
+        return 0
+
+    os.remove("../tmp/lig_mol.mol")
+
+    return penta_bb_temp
+
+
+def post_process_pentadentate(ligand, _metal_bb):
+
+    pentadentate_bb = pentadentate_Solver(ligand)
+
+    complex_pentadentate = stk.ConstructedMolecule(topology_graph=stk.metal_complex.Porphyrin(metals=_metal_bb,
+                                                                                              ligands=pentadentate_bb,
+                                                                                              ),
+                                                   )
+
+    functional_grps = [stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), ), ]
+
+    penta = stk.BuildingBlock.init_from_molecule(complex_pentadentate, functional_groups=functional_grps)
+
+    return penta
 
 

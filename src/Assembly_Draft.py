@@ -33,19 +33,19 @@ def four_one_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize):
     for key, (lig, lig_bb) in ligand_bb_dict.items():
         if lig.denticity == 4:
             tetra_bb_for_comp = post_process_tetradentate(
-                                metal_bb=metal_bb,
-                                tetradentate_bb=lig_bb,
-                                ligand_=lig
+                metal_bb=metal_bb,
+                tetradentate_bb=lig_bb,
+                ligand_=lig
             )
 
             del ligand_bb_dict[key]
             break
 
     mono_a_bb_for_comp, mono_b_bb_for_comp = post_process_two_monodentates(
-                                metal_bb=metal_bb,
-                                ligand_bb_dict=ligand_bb_dict,
-                                optimize_=False
-                                )
+        metal_bb=metal_bb,
+        ligand_bb_dict=ligand_bb_dict,
+        optimize_=False
+    )
 
     complex_top = complex_topology(metals=final_metal_bb,
                                    ligands={tetra_bb_for_comp: (0,),
@@ -58,8 +58,27 @@ def four_one_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize):
     return complex_
 
 
-def assembly(metal_bb, final_metal_bb, ligand_bb_dict, comp, _optimize=True):
+def five_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize):
+    mono_bb_for_comp, penta_bb_for_comp = None, None
 
+    for (lig, lig_bb) in ligand_bb_dict.values():
+        if lig.denticity == 5:
+            penta_bb_for_comp = post_process_pentadentate(ligand=lig, _metal_bb=metal_bb)
+        else:
+            mono_bb_for_comp = post_process_monodentate(metal_bb, lig_bb, optimize_=_optimize)
+
+    complex_top = complex_topology(metals=final_metal_bb,
+                                   ligands={penta_bb_for_comp: (0,),
+                                            mono_bb_for_comp: (1,),
+                                            }
+                                   )
+
+    complex_ = stk.ConstructedMolecule(topology_graph=complex_top)
+
+    return complex_
+
+
+def assembly(metal_bb, final_metal_bb, ligand_bb_dict, comp, _optimize=True):
     if set(comp) == {3, 2, 1}:
         complex_ = three_two_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize)
 
@@ -67,6 +86,8 @@ def assembly(metal_bb, final_metal_bb, ligand_bb_dict, comp, _optimize=True):
         # we assume always planar
         complex_ = four_one_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize)
 
+    elif set(comp) == {5, 1}:
+        complex_ = five_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, _optimize)
     else:
         print("No valid composition choosen!")
         complex_ = None
@@ -75,12 +96,11 @@ def assembly(metal_bb, final_metal_bb, ligand_bb_dict, comp, _optimize=True):
 
 
 def random_assembly(num, ligand_dict: dict, comps: list, safe_path: str, metals, visualize_, _optimize=False):
-
     generated_complexes = list()
 
     # for all ligands we want to create
     for i in range(num):
-        # todo: try / except adden
+       # try:
         # choose random metal center
         (metal, charge) = random.choice(metals)
 
@@ -132,6 +152,11 @@ def random_assembly(num, ligand_dict: dict, comps: list, safe_path: str, metals,
 
         generated_complexes.append(complex_)
 
+        #except Exception as ex:
+            #print(f"An Error has occured: {ex}")
+            #logging.info(f"An Error has occured: {ex}")
+            #pass
+
     return generated_complexes
 
 
@@ -139,7 +164,7 @@ if __name__ == '__main__':
     # Input setting for generating ligands
     #
     # number of ligands to generate
-    number_of_ligands = 50
+    number_of_ligands = 1
 
     #
     # the ligand dict
@@ -148,8 +173,9 @@ if __name__ == '__main__':
 
     #
     # all denticity combinations
-    possible_compositions = [(4, 1, 1)#,
-                             #(3, 2, 1)
+    possible_compositions = [#(4, 1, 1)  # ,
+                             # (3, 2, 1)
+                             (5, 1)
                              # (3, 3)
                              # ...
                              ]
@@ -161,13 +187,13 @@ if __name__ == '__main__':
     #
     # list of possible metal centers with respective charge
     list_of_metals = [("Fe", "+2")
-                      #("Fe", 3)
+                      # ("Fe", 3)
                       # ...
                       ]
 
     #
     # visualize the constructed molecules during the process
-    visualize_ = False
+    visualize_ = True
 
     #
     # decide wether optimization is necessary
@@ -181,6 +207,3 @@ if __name__ == '__main__':
                                 visualize_=visualize_,
                                 _optimize=optimize_
                                 )
-
-
-
