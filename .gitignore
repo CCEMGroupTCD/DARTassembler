@@ -5,6 +5,6 @@
 /Debugging_and_Improvements/
 /__init__.py
 /src/test.py
-/src/test12.py
+/src02_assembly/test12.py
 /data/Assembled_Molecules/
 ../src/__pycache__/utilities_assembly.cpython-39.pyc

@@ -6,6 +6,7 @@ from tqdm import tqdm
 import ASE_Molecule
 from ase import io
 from mendeleev import element
+import ligand_filter01_duplicates as remove_dups
 
 
 def extract_from_db():
@@ -116,9 +117,12 @@ def run(metals_of_interest: list, denticity_numbers: list, TestSize=False, get_c
         pickle.dump(ligand_dict, handle)
 
     #
+    # 4. Postprocess: Ligandfiltering
+    for denticity, ligand_list in ligand_dict.items():
+        ligand_dict[denticity] = remove_dups.remove_duplicants(ligand_list=ligand_list)
+    #
     #
     # todo: From here on we need to work
-    #  -remove duplicants
     #  -filter bad guys (Cian Box filter
 
 

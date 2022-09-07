@@ -18,7 +18,6 @@ class ASE_Molecule:
         '''
         self.mol = mol
 
-    # todo: UC
     def get_graph(self):
         """
         returns (hopefully) labeled nx graph
