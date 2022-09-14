@@ -33,7 +33,7 @@ def create_csd_ASEMol_dict(all_relevant_xyzs):
 
 def extract_ligands(xyz_dict, denticity_numbers, metals_of_interest=None):
     """
-    :param xyz_dict: dictionary with the .xyz information for the molecules
+    param xyz_dict: dictionary with the .xyz information for the molecules
     :param denticity_numbers: denticity numbers of ligands, we wish to extract
     :param metals_of_interest: center metals of interest for the extraction
     :return: dict: {dent_number : list_of_ligands_w_that_denticity}
@@ -128,7 +128,7 @@ def run(metals_of_interest: list, denticity_numbers: list, TestSize=False, get_c
 
 if __name__ == '__main__':
 
-    run(TestSize=True,
+    run(TestSize=False,
         get_csd_Ase_dict=False,
         metals_of_interest=["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"],
         denticity_numbers=[2, 3, 4, 5]

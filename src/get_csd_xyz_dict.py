@@ -13,7 +13,7 @@ def get_all_xyzs():
     xyzs = list()
 
     for i in [1, 2, 3, 4]:
-        with open(f"database/tmQM_X{i}.xyz", "r") as f:
+        with open(f"../database/tmQM_X{i}.xyz", "r") as f:
             lines = f.readlines()
 
         enum_counter = 0
@@ -34,7 +34,7 @@ def get_all_xyzs():
 
 def safe_and_reset(k, relevant_xyzs):
 
-    with open(f"tmp/relevant_xyzs_{k}.pickle", "wb") as handle:
+    with open(f"../tmp/relevant_xyzs_{k}.pickle", "wb") as handle:
         pickle.dump(relevant_xyzs, handle)
 
     return k+1, dict()
@@ -45,10 +45,10 @@ def merge_dicts(k):
     full_dict = dict()
 
     for i in range(k):
-        with open(f"tmp/relevant_xyzs_{i}.pickle", "rb") as handle:
+        with open(f"../tmp/relevant_xyzs_{i}.pickle", "rb") as handle:
             new = pickle.load(handle)
             full_dict.update(new)
-            os.remove(f"tmp/relevant_xyzs_{i}.pickle")
+            os.remove(f"../tmp/relevant_xyzs_{i}.pickle")
 
     return full_dict
 
