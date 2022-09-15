@@ -1,6 +1,7 @@
 from src02_assembly.utilities_assembly import *
 import pickle
 import random
+from src.ASE_Molecule import *
 random.seed(15)
 
 
@@ -165,7 +166,7 @@ if __name__ == '__main__':
     # Input setting for generating ligands
     #
     # number of ligands to generate
-    number_of_ligands = 1
+    number_of_tmcs = 1
 
     #
     # the ligand dict
@@ -200,7 +201,7 @@ if __name__ == '__main__':
     # decide wether optimization is necessary
     optimize_ = False
 
-    complexes = random_assembly(num=number_of_ligands,
+    complexes = random_assembly(num=number_of_tmcs,
                                 ligand_dict=ligand_dict,
                                 comps=possible_compositions,
                                 safe_path=store_path,

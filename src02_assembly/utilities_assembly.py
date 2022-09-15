@@ -7,7 +7,7 @@ from openbabel import pybel
 from stk_extension import *
 import os
 from ase import io
-from ..src.ASE_Molecule import ASE_Molecule, ASE_Ligand
+from src.ASE_Molecule import ASE_Molecule, ASE_Ligand
 
 
 def build_ligand(type_list, index_list, path_):

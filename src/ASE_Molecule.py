@@ -91,7 +91,7 @@ class ASE_Ligand(ASE_Molecule):
                 self.denticity = kwargs['denticity']
 
             if "ligand_to_metal" in kwargs.keys():
-                self.ligand_to_metal= kwargs["ligand_to_metal"]
+                self.ligand_to_metal = kwargs["ligand_to_metal"]
 
             if "name" in kwargs.keys():
                 self.name = kwargs["name"]
