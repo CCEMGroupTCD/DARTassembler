@@ -5,15 +5,16 @@ from ase import io, neighborlist
 from scipy.sparse.csgraph import connected_components
 from mendeleev import element
 
-from get_csd_xyz_dict import xyz_file
+from read_database import xyz_file
 from utilities import metals_in_pse
 from ASE_Molecule import ASE_Molecule, ASE_Ligand
 
 
-class CSD_Molecule:
-    '''
+class Extracted_Molecule:
+    """
     allows us to extract and store information on a molecule from a .xyz from the cambridge database
-    '''
+    in an object of the class "Extracted Molecule"
+    """
 
     def __init__(self, xyz: xyz_file):
 
@@ -64,9 +65,9 @@ class CSD_Molecule:
 
         # In-between properties
         cutOff = neighborlist.natural_cutoffs(self.complete.mol)
-        # todo:
-        #  Default skin is 0.3
-        #  have to modify it a little; justification for 0.2?
+        #  todo:
+        #   Default skin is 0.3
+        #   have to modify it a little; justification for 0.2?
         self.neighborList = neighborlist.NeighborList(cutOff, skin=0.2, self_interaction=False, bothways=True)
 
         self.neighborList.update(self.complete.mol)
@@ -152,7 +153,7 @@ class CSD_Molecule:
         denticity_dict = {item: neighbor_conn_comp_list.count(item) for item in
                           neighbor_conn_comp_list}  # component:denticity
 
-        # todo: Kann eigentlich weg
+        #  todo: Kann eigentlich weg
         if sum(denticity_dict.values()) > 6:
             self.status.append("Too much bindings evaluated")
 

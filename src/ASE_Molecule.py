@@ -6,6 +6,7 @@ import networkx as nx
 from sympy import Point3D, Plane
 
 
+# todo: give that a project based name
 class ASE_Molecule:
     '''
     just a ase molecule, but extended by some custom functions
@@ -127,7 +128,6 @@ class ASE_Ligand(ASE_Molecule):
 
         def check_if_planar(self, eps=1):
             """
-            :param lig:
             :param eps: durch try'n'error obtained
             eps für (d=4) -> 1
             :return:

@@ -2,6 +2,8 @@
 from ASE_Molecule import *
 import collections
 import networkx as nx
+import pickle
+from tqdm import tqdm
 
 
 def same_sum_formula(lig1: ASE_Ligand, lig2: ASE_Ligand):
@@ -20,18 +22,45 @@ def same_structure(lig1: ASE_Ligand, lig2: ASE_Ligand):
     return nx.is_isomorphic(g1, g2, node_match=node_check)
 
 
-def remove_duplicants(ligand_list: list):
+def remove_duplicants(ligand_list: list, denticity: int):
     new_ligand_list = ligand_list.copy()
 
     while len(ligand_list) > 1:
+        print(f"remaining (denticity {denticity}) : {len(ligand_list)}")
         lig = ligand_list.pop()
 
         for lig2 in ligand_list:
             if same_sum_formula(lig, lig2) is True:
                 if same_structure(lig, lig2) is True and lig2 in new_ligand_list:
-                    lig.view_3d()
-                    lig2.view_3d()
-                    input("Press Enter to continue")
                     new_ligand_list.remove(lig2)
 
     return new_ligand_list
+
+
+def duplicant_filter(ligand_dict: dict):
+    for denticity, ligand_list in ligand_dict.items():
+
+        num_batches = int(len(ligand_list) / 1000)
+
+        batch_list = [ligand_list[n*1000:(n+1)*1000] for n in range(num_batches)]
+        batch_list.append(ligand_list[num_batches*100:])
+
+        reduced_list = list()
+
+        for _list in batch_list:
+            reduced_list += remove_duplicants(ligand_list=_list, denticity=denticity)
+
+        ligand_dict[denticity] = remove_duplicants(ligand_list=reduced_list, denticity=denticity)
+
+    return ligand_dict
+
+
+if __name__ == "__main__":
+    with open("../data/ligand_dict.pickle", "rb") as handle:
+        ligand_dict = pickle.load(handle)
+
+    ligand_dict_new = duplicant_filter(ligand_dict)
+
+    with open("../data/ligand_dict_filtered.pickle", "wb") as handle:
+        pickle.dump(ligand_dict_new, handle)
+    print("done")
