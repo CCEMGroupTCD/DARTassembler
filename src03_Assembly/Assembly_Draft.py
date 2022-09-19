@@ -1,4 +1,4 @@
-from src02_assembly.utilities_assembly import *
+from src03_Assembly.utilities_assembly import *
 import pickle
 import random
 from src.ASE_Molecule import *

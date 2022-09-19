@@ -118,7 +118,7 @@ def run(metals_of_interest: list, denticity_numbers: list, TestSize=False, **kwa
     #
     #
     #
-    # Filtering
+    # Filtering (all of these are pre-assembly filters)
     if "Duplicate_filter" in kwargs:
         if "Duplicate_filter":
             _ligand_dict = duplicant_filter(_ligand_dict)

@@ -1,7 +1,7 @@
 import stk
 from ase import io
-from ASE_Molecule import ASE_Molecule
-
+from ASE_Molecule import ASE_Molecule, ASE_Ligand
+import os
 
 # some global coordinates
 metals_in_pse = [el for a in [[21, 31], [39, 49], [57, 81], [89, 113]] for el in range(a[0], a[1])]
@@ -26,5 +26,13 @@ def complex_visualisation(input_complex):
         ase_mol.view_3d()
 
 
+def ligand_to_mol(ligand: ASE_Ligand, target_path="../tmp/tmp.mol", xyz_path="../tmp/tmp.xyz"):
+    xyz_str = ligand.xyz.get_xyz_file_format_string()
+    with open(xyz_path, "w+") as f:
+        f.write(xyz_str)
+    os.system(f'obabel .xyz {xyz_path} .mol -O  {target_path}')
 
 
+def tmp_clean_up(*args):
+    for path in args:
+        os.system(f"rm -f {path}")

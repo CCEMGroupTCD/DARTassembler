@@ -4,7 +4,7 @@
 /Old/
 /Debugging_and_Improvements/
 /__init__.py
-/src02_assembly/test.py
-/src02_assembly/test12.py
+/src03_Assembly/test.py
+/src03_Assembly/test12.py
 /data/Assembled_Molecules/
 ../src/__pycache__/utilities_assembly.cpython-39.pyc

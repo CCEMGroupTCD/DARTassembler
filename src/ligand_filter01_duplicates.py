@@ -39,18 +39,18 @@ def remove_duplicants(ligand_list: list, denticity: int):
 
 def duplicant_filter(ligand_dict: dict):
     for denticity, ligand_list in ligand_dict.items():
+        if denticity == 2:
+            num_batches = int(len(ligand_list) / 1000)
 
-        num_batches = int(len(ligand_list) / 1000)
+            batch_list = [ligand_list[n*1000:(n+1)*1000] for n in range(num_batches)]
+            batch_list.append(ligand_list[num_batches*100:])
 
-        batch_list = [ligand_list[n*1000:(n+1)*1000] for n in range(num_batches)]
-        batch_list.append(ligand_list[num_batches*100:])
+            reduced_list = list()
 
-        reduced_list = list()
+            for _list in batch_list:
+                reduced_list += remove_duplicants(ligand_list=_list, denticity=denticity)
 
-        for _list in batch_list:
-            reduced_list += remove_duplicants(ligand_list=_list, denticity=denticity)
-
-        ligand_dict[denticity] = remove_duplicants(ligand_list=reduced_list, denticity=denticity)
+            ligand_dict[denticity] = remove_duplicants(ligand_list=reduced_list, denticity=denticity)
 
     return ligand_dict
 
