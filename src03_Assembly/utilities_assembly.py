@@ -7,7 +7,7 @@ from openbabel import pybel
 from src03_Assembly.stk_extension import *
 import os
 from ase import io
-from src.ASE_Molecule import ASE_Molecule, ASE_Ligand
+from src.RCA_Molecule import RCA_Molecule, RCA_Ligand
 
 
 def build_ligand(type_list, index_list, path_):
@@ -40,7 +40,7 @@ def post_process_complex(input_complex, name, visualize_=True, print_to_xyz=True
         with open('../tmp/input_complex.xyz', "w+") as file:
             file.write(''.join(lines))
         mol_ = io.read('../tmp/input_complex.xyz')
-        ase_mol = ASE_Molecule(mol=mol_)
+        ase_mol = RCA_Molecule(mol=mol_)
         ase_mol.view_3d()
 
         if return_ase is True:
@@ -257,7 +257,7 @@ def post_process_two_monodentates(metal_bb, ligand_bb_dict, optimize_=False):
     return top_, bottom_
 
 
-def pentadentate_Solver(ligand: ASE_Ligand):
+def pentadentate_Solver(ligand: RCA_Ligand):
 
     dict_ = ligand.get_assembly_dict()
     atom_func = dict_["index"]

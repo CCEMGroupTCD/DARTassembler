@@ -1,7 +1,7 @@
 import read_database as preprocessing
 import os
 import Extracted_Molecule as csd
-import ASE_Molecule
+import RCA_Molecule
 from mendeleev import element
 from ligand_filter01_duplicates import *
 
@@ -22,7 +22,7 @@ def create_csd_ASEMol_dict(all_relevant_xyzs):
     for csd_key, xyz in tqdm(all_relevant_xyzs.items()):
         with open("../tmp/tmp.xyz", "w+") as text_file:
             text_file.write(xyz.get_xyz_file_format_string())
-        dict_[csd_key] = ASE_Molecule.ASE_Molecule(io.read("../tmp/tmp.xyz"))
+        dict_[csd_key] = RCA_Molecule.RCA_Molecule(io.read("../tmp/tmp.xyz"))
 
     with open("../data/csd_ase_dict.pickle", "wb") as h:
         pickle.dump(dict_, h)
@@ -65,7 +65,7 @@ def add_monodentate_ligand(ligand_dict_):
     # add monodentate ligands
     coordinates_ = {0: ["O", [0, 0, 1.4361]], 1: ["H", [0.2096, -0.5615, 2.1227]]}
 
-    Hydroxi = ASE_Molecule.ASE_Ligand(xyz=ASE_Molecule.xyz_file(atom_number=2,
+    Hydroxi = RCA_Molecule.RCA_Ligand(xyz=RCA_Molecule.xyz_file(atom_number=2,
                                                                 csd_code="Hydroxi",
                                                                 coordinates=coordinates_),
                                       denticity=1,

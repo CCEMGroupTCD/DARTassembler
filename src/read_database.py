@@ -2,7 +2,7 @@
 import pickle
 import os
 from tqdm import tqdm
-from ASE_Molecule import xyz_file
+from RCA_Molecule import xyz_file
 
 
 def get_all_xyzs():

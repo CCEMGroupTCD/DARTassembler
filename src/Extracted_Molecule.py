@@ -7,7 +7,7 @@ from mendeleev import element
 
 from read_database import xyz_file
 from utilities import metals_in_pse
-from ASE_Molecule import ASE_Molecule, ASE_Ligand
+from RCA_Molecule import RCA_Molecule, RCA_Ligand
 
 
 class Extracted_Molecule:
@@ -23,7 +23,7 @@ class Extracted_Molecule:
         with open("../tmp/tmp.xyz", "w+") as text_file:
             text_file.write(xyz.get_xyz_file_format_string())
 
-        self.complete = ASE_Molecule(io.read("../tmp/tmp.xyz"))
+        self.complete = RCA_Molecule(io.read("../tmp/tmp.xyz"))
         self.csd_code = xyz.csd_code
         self.atomic_numbers = self.complete.mol.get_atomic_numbers()
         self.full_coordinates = xyz.coordinates
@@ -48,7 +48,7 @@ class Extracted_Molecule:
         self.neighborList = None
 
         # removing metal
-        self.w_o_metal = ASE_Molecule(self.get_mol_wo_metal())
+        self.w_o_metal = RCA_Molecule(self.get_mol_wo_metal())
 
     def get_metal_atomic_number(self):
         # löst den Prozess des metal ding findens etwas eleganter als Michael bisher
@@ -184,7 +184,7 @@ class Extracted_Molecule:
                                           coordinates={i: self.modified_coordinates[index] for i, index in enumerate(ligand_index_list)}
                                           )
 
-                    ligand = ASE_Ligand(xyz=ligand_xyz,
+                    ligand = RCA_Ligand(xyz=ligand_xyz,
                                         ligand_to_metal=ligand_to_metal,
                                         original_metal=self.original_metal,
                                         denticity=conn_comp_denticity,
