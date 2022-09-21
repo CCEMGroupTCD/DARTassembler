@@ -1,7 +1,7 @@
 from src03_Assembly.utilities_assembly import *
 import pickle
 import random
-from src.RCA_Molecule import *
+from src.Molecule import *
 random.seed(15)
 
 

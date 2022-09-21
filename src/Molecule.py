@@ -1,4 +1,3 @@
-import numpy as np
 from ase import io, Atoms, neighborlist
 from ase.visualize import view
 import matplotlib.pyplot as plt
@@ -8,7 +7,7 @@ import collections
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
 
 
-# todo: give that a project based name: RandomComplexAssembler
+# Package name: RandomComplexAssembler (RCA)
 class RCA_Molecule:
     """
     The basis for the molecule objects we handle throughout the process.
@@ -21,15 +20,19 @@ class RCA_Molecule:
         """
         self.mol = mol
 
-    def get_graph(self):
-        """
-        get the graph representing the molecule as a networkx graph
-        """
+    def get_adjacency_matrix(self):
         cutOff = neighborlist.natural_cutoffs(self.mol)
         neighborList = neighborlist.NeighborList(cutOff, self_interaction=False, bothways=True)
         neighborList.update(self.mol)
 
-        adjacency_matrix = neighborList.get_connectivity_matrix(sparse=False)
+        return neighborList.get_connectivity_matrix(sparse=False)
+
+    def get_graph(self):
+        """
+        get the graph representing the molecule as a networkx graph
+        returns a labeled, undirected graph
+        """
+        adjacency_matrix = self.get_adjacency_matrix()
         labels = {i: el for i, el in enumerate(self.mol.get_chemical_symbols())}
 
         gr = nx.Graph(adjacency_matrix)
@@ -40,82 +43,50 @@ class RCA_Molecule:
         return gr
 
     def view_graph(self):
-        cutOff = neighborlist.natural_cutoffs(self.mol)
-        neighborList = neighborlist.NeighborList(cutOff, self_interaction=False, bothways=True)
-        neighborList.update(self.mol)
-        graph = neighborList.get_connectivity_matrix(sparse=False)
-        rows, cols = np.where(graph == 1)
-        edges = zip(rows.tolist(), cols.tolist())
-        gr = nx.Graph()
-        gr.add_edges_from(edges)
+        """
+        simple plot of the molecule as a graph, only connectivity, no distances
+        """
+        gr = self.get_graph()
         labels = {i: el for i, el in enumerate(self.mol.get_chemical_symbols())}
         nx.draw_networkx(gr, node_size=500, with_labels=True, labels=labels)
         plt.show()
 
     def view_3d(self):
+        """
+        easy employment of the ase functionality
+        """
         view(self.mol)
 
 
-class xyz_file:
-
-    def __init__(self, atom_number: int, coordinates: dict, csd_code: str):
-        self.total_atom_number = atom_number
-        self.coordinates = coordinates
-        # {number in xyz_file:[Name von Atom, Coordinaten als np.array]
-        self.csd_code = csd_code
-
-    def get_xyz_file_format_string(self):
-        str_ = f"{self.total_atom_number}\n \n"
-        for coord in self.coordinates.values():
-            str_ += f"{coord[0]} \t {coord[1][0]} \t {coord[1][1]} \t {coord[1][2]} \n"
-
-        return str_
-
-    def xyz_to_ASE(self):
-        with open("../tmp/tmp.xyz", "w+") as text_file:
-            text_file.write(self.get_xyz_file_format_string())
-
-        return RCA_Molecule(io.read("../tmp/tmp.xyz"))
-
-
 class RCA_Ligand(RCA_Molecule):
-    '''
-        inherits its methods from ASE Molecule, while needs some extra information
-        '''
+    """
+    Ligands need a little more information, hence we need to expand the RCA_Molecule class
+    """
 
-    def __init__(self, xyz: xyz_file, **kwargs):
-        super().__init__(Atoms([coord[0] for coord in xyz.coordinates.values()],
-                               positions=[coord[1] for coord in xyz.coordinates.values()]))
+    def __init__(self, coordinates: dict, denticity: int, ligand_to_metal: list, **kwargs):
+        super().__init__(Atoms([coord[0] for coord in coordinates.values()],
+                               positions=[coord[1] for coord in coordinates.values()]))
 
-        self.xyz = xyz
-        self.csd_code = xyz.csd_code
+        self.coordinates = coordinates
+        self.denticity = denticity
+        self.ligand_to_metal = ligand_to_metal
 
-        if "denticity" in kwargs.keys():
-            self.denticity = kwargs['denticity']
+        try:
+            self.type = self.get_type()  # todo: Braucht noch ein bisschen testing
+        except AttributeError as e:
+            print(f"{e}")
+            self.type = "undefined"
+        except Exception as e:
+            raise e
 
-        if "ligand_to_metal" in kwargs.keys():
-            self.ligand_to_metal = kwargs["ligand_to_metal"]
+        if "csd_code" in kwargs.keys():
+            self.csd_code = kwargs['csd_code']
 
         if "name" in kwargs.keys():
             self.name = kwargs["name"]
 
         if 'original_metal' in kwargs.keys():
             self.original_metal = kwargs['original_metal']
-
-        # todo: Braucht noch ein bisschen testing
-        self.type = self.get_type()
-
-    def get_assembly_dict(self):
-        """
-            only to get the attributes required for the assembly with cians script a little faster
-            :return: {index: list, type: list, xyz_str: str}
-            """
-        dict_ = {"index": [i for i, el in enumerate(self.ligand_to_metal) if el == 1]}
-
-        dict_["type"] = [self.xyz.coordinates[i][0] for i in dict_["index"]]
-        dict_["str"] = self.xyz.get_xyz_file_format_string()
-
-        return dict_
 
     def get_type(self):
         if self.denticity == 2 or self.denticity == 1:
@@ -136,7 +107,7 @@ class RCA_Ligand(RCA_Molecule):
             """
         fc = list()
 
-        for index, information in self.xyz.coordinates.items():
+        for index, information in self.coordinates.items():
             if self.ligand_to_metal[index] == 1:
                 fc.append(information[1])
 
@@ -156,9 +127,41 @@ class RCA_Ligand(RCA_Molecule):
 
         return False
 
+    def get_total_atom_number(self):
+        return len(list(self.coordinates.keys()))
+
+    def get_xyz_file_format_string(self):
+        """
+        returns a string that can be written into an .xyz file
+        """
+        str_ = f"{self.get_total_atom_number()}\n \n"
+        for coord in self.coordinates.values():
+            str_ += f"{coord[0]} \t {coord[1][0]} \t {coord[1][1]} \t {coord[1][2]} \n"
+
+        return str_
+
+    def print_to_xyz(self, path: str):
+        if not path.endswith(".xyz"):
+            print("No valid filename")
+            raise NameError
+        with open(path, "w+") as file:
+            file.write(self.get_xyz_file_format_string())
+
+    def get_assembly_dict(self):
+        """
+        only to get the attributes required for the assembly with cians script a little faster
+        :return: {index: list, type: list, xyz_str: str}
+        """
+        dict_ = {"index": [i for i, el in enumerate(self.ligand_to_metal) if el == 1]}
+
+        dict_["type"] = [self.coordinates[i][0] for i in dict_["index"]]
+        dict_["str"] = self.get_xyz_file_format_string()
+
+        return dict_
+
     def same_sum_formula(self, other):
-        sum_formula_1 = [a[0] for a in self.xyz.coordinates.values()]
-        sum_formula_2 = [a[0] for a in other.xyz.coordinates.values()]
+        sum_formula_1 = [a[0] for a in self.coordinates.values()]
+        sum_formula_2 = [a[0] for a in other.coordinates.values()]
 
         return collections.Counter(sum_formula_1) == collections.Counter(sum_formula_2)
 
@@ -181,16 +184,19 @@ class RCA_Ligand(RCA_Molecule):
     def __hash__(self):
         return hash(graph_hash(self.get_graph()))
 
+    def mol_to_asemol(self):
+        self.print_to_xyz(path="../tmp/tmp.xyz")
+        return io.read("../tmp/tmp.xyz")
+
     def add_atom(self, symbol: str, coordinates: list[float]):
         if len(coordinates) != 3:
             print("Wrong number of coordinates specified")
             raise ValueError
 
-        self.xyz.coordinates[len(self.xyz.coordinates)] = [symbol, coordinates]
-
-        self.mol = self.xyz.xyz_to_ASE()
+        self.coordinates[len(self.coordinates)] = [symbol, coordinates]
+        self.mol = self.mol_to_asemol()
 
     def remove_last_element_in_xyz(self):
-        del self.xyz.coordinates[max(self.xyz.coordinates, key=self.xyz.coordinates.get)]
-        self.mol = self.xyz.xyz_to_ASE()
+        del self.coordinates[max(list(self.coordinates.keys()))]
+        self.mol = self.mol_to_asemol()
 

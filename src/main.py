@@ -1,4 +1,4 @@
-from process import run
+from process import *
 
 if __name__ == '__main__':
     """
@@ -8,10 +8,19 @@ if __name__ == '__main__':
     denticity_numbers: Denticities we are interested in
     
     """
+    Testing = False
 
-    run(TestSize=False,
-        metals_of_interest=["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"],
-        denticity_numbers=[2, 3, 4, 5],
-        get_csd_Ase_dict=False,
-        Duplicate_Filter=True
-        )
+    ligand_db = LigandDatabase(TestSize=Testing)
+
+    ligand_db.extract_ligands(denticity_numbers_of_interest=[2, 3, 4, 5],
+                              metals_of_interest=["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
+                              )
+
+    ligand_db.add_monodentate_ligands()
+
+    ligand_db.filter_duplicates()
+
+    if Testing is True:
+        pickle.dump(ligand_db, open("../data/ligand_db_test.pickle", "wb"))
+    else:
+        pickle.dump(ligand_db, open("../data/ligand_db.pickle", "wb"))

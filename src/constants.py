@@ -1,43 +1,28 @@
-intensity = 20
-sharpness = 0.5
+from Molecule import RCA_Ligand
+# some global coordinates
+
+#
+#
+# list of metal numbers in pse
+metals_in_pse = [el for a in [[21, 31], [39, 49], [57, 81], [89, 113]] for el in range(a[0], a[1])]
+
+#
+mini_alphabet = ["a", "b", "c", "d", "e", "f"]
 
 
-class Box:
-    def __init__(self, x1, x2, y1, y2, z1, z2):
-        self.x1 = x1
-        self.x2 = x2
-        self.y1 = y1
-        self.y2 = y2
-        self.z1 = z1
-        self.z2 = z2
+def get_monodentate_list():
 
-        self.intensity = intensity
-        self.sharpness = sharpness
+    monodentate_ligands = []
 
-    def point_in_box(self, point: list):
-        if len(point) != 3:
-            print("No valid point")
-            return False
-        return (self.x1 <= point[0] <= self.x2) and (self.y1 <= point[1] <= self.y2) and (self.z1 <= point[2] <= self.z2)
+    #
+    #
+    # 1.
+    coordinates_ = {0: ["O", [0, 0, 1.4361]], 1: ["H", [0.2096, -0.5615, 2.1227]]}
+    Hydroxi = RCA_Ligand(coordinates=coordinates_,
+                         denticity=1,
+                         ligand_to_metal=[1, 0],
+                         name="Hydroxi"
+                         )
+    monodentate_ligands.append(Hydroxi)
 
-
-# this is a method decoding the boxes for any of the ligand size
-def get_boxes(denticity):
-
-    box_list = list()
-
-    if denticity == 1:
-        pass
-    elif denticity == 2:
-        pass
-    elif denticity == 3:
-        box_list.append(Box(0.0, 1.0, -1.0, 1.0, 0.0001, 10.0))
-        box_list.append(Box(-1.0, 1.0, -1.0, 1.0, -10.0, -0.2))
-        box_list.append(Box(-2.0, 2.0, -2.0, 2.0, 0.8, 10.))
-        box_list.append(Box(-6.0, -2.0, -2.0, -1.0, -10.0, 10.0))
-        box_list.append(Box(-6.0, -2.0, 1.0, 2.0, -10.0, 10.0))
-        box_list.append(Box(-2.0, 2.0, -2.0, 2.0, -10.0, -0.8))
-    else:
-        pass
-
-    return box_list
+    return monodentate_ligands

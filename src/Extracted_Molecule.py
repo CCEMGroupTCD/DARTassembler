@@ -5,9 +5,9 @@ from ase import io, neighborlist
 from scipy.sparse.csgraph import connected_components
 from mendeleev import element
 
-from read_database import xyz_file
-from utilities import metals_in_pse
-from RCA_Molecule import RCA_Molecule, RCA_Ligand
+from utilities import coordinates_to_xyz_str
+from constants import metals_in_pse, mini_alphabet
+from Molecule import RCA_Molecule, RCA_Ligand
 
 
 class Extracted_Molecule:
@@ -16,17 +16,17 @@ class Extracted_Molecule:
     in an object of the class "Extracted Molecule"
     """
 
-    def __init__(self, xyz: xyz_file):
+    def __init__(self, coordinates: dict, csd_code: str):
 
         # read basic properties from xyz_file type class
         #
         with open("../tmp/tmp.xyz", "w+") as text_file:
-            text_file.write(xyz.get_xyz_file_format_string())
+            text_file.write(coordinates_to_xyz_str(coordinates=coordinates))
 
         self.complete = RCA_Molecule(io.read("../tmp/tmp.xyz"))
-        self.csd_code = xyz.csd_code
+        self.csd_code = csd_code
         self.atomic_numbers = self.complete.mol.get_atomic_numbers()
-        self.full_coordinates = xyz.coordinates
+        self.full_coordinates = coordinates
 
         #
         # keeps track of errors
@@ -160,7 +160,7 @@ class Extracted_Molecule:
         #
         # if status: then there are errors
         if not self.status:
-            j = 1               # for name
+            j = 0               # for name
 
             self.modified_coordinates = self.modify_coordinates()
 
@@ -179,16 +179,15 @@ class Extracted_Molecule:
                                        for i, index in enumerate(ligand_index_list)]
                     #
                     #
-                    ligand_xyz = xyz_file(atom_number=len(ligand_index_list),
-                                          csd_code=self.csd_code,
-                                          coordinates={i: self.modified_coordinates[index] for i, index in enumerate(ligand_index_list)}
-                                          )
-
-                    ligand = RCA_Ligand(xyz=ligand_xyz,
+                    ligand_coordinates = {i: self.modified_coordinates[index] for i, index in enumerate(ligand_index_list)}
+                    ligand = RCA_Ligand(coordinates=ligand_coordinates,
                                         ligand_to_metal=ligand_to_metal,
                                         original_metal=self.original_metal,
                                         denticity=conn_comp_denticity,
-                                        name=f'CSD-{self.csd_code}-0{conn_comp_denticity}-0{j}'
+                                        name=f'CSD-{self.csd_code}-0{conn_comp_denticity}-{mini_alphabet[j]}',
+                                        csd_code=self.csd_code
                                         )
+
+                    j += 1
 
                     self.ligands.append(ligand)

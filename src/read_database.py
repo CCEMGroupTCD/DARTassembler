@@ -1,8 +1,6 @@
-## former known as 'write_to_file'
 import pickle
 import os
 from tqdm import tqdm
-from RCA_Molecule import xyz_file
 
 
 def get_all_xyzs():
@@ -55,7 +53,7 @@ def merge_dicts(k):
 
 def read_tmqm_db():
     """
-    :return: dict_ {csd_code:xyz_class}
+    :return: dict_ {csd_code:coordinates}
     """
     xyzs = get_all_xyzs()
 
@@ -67,7 +65,6 @@ def read_tmqm_db():
         # fill relevant_xyzs
         if "CSD_code" in xyz[1]:
             csd_code = xyz[1].split("CSD_code")[1][3:9]
-            atom_num = int(xyz[0])
 
             coordinates = dict()
 
@@ -77,14 +74,16 @@ def read_tmqm_db():
                 coords = [float(el) for el in a[1:]]
                 coordinates[i] = [atom_name, coords]
 
-            relevant_xyzs[csd_code] = xyz_file(csd_code=csd_code, atom_number=atom_num, coordinates=coordinates)
+            relevant_xyzs[csd_code] = coordinates
 
         if j % 100 == 98:
             k, relevant_xyzs = safe_and_reset(k, relevant_xyzs)
 
     full_dict = merge_dicts(k)
 
-    with open("../data/new_xyzs.pickle", "wb") as handle:
-        pickle.dump(full_dict, handle)
+    return full_dict
+
+    #with open("../tmp/new_xyzs.pickle", "wb") as handle:
+        #pickle.dump(full_dict, handle)
 
 
