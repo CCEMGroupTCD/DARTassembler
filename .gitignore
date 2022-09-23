@@ -8,7 +8,7 @@
 /src03_Assembly/test12.py
 /data/Assembled_Molecules/
 ../src/__pycache__/utilities_assembly.cpython-39.pyc
-/src/test.py
+/src/Assembly_Test.py
 /data/ligand_db_test.pickle
 /data/ligand_dict_filtered.pickle
 /data/ligand_dict_test.pickle
@@ -17,3 +17,4 @@
 /tmp/new_xyzs.pickle
 /tmp/tmp.xyz
 /data/ligand_db.pickle
+/src/Assembly_Test.py

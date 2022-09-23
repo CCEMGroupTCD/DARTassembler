@@ -8,7 +8,11 @@ from scipy.spatial.distance import euclidean
 from stk.utilities import get_projection
 
 
-class tridentateVertex(Vertex):
+class TridentateLigandVertex(Vertex):
+    """
+    Some modifications of Vertex elements of stk as a preparation for Tridentate ligands
+    No build-in functionality for that in stk
+    """
 
     def place_building_block(self, building_block, edges):
         return building_block.with_centroid(
@@ -22,34 +26,11 @@ class tridentateVertex(Vertex):
         }
 
 
-class tridentate(MetalComplex):
-    _metal_vertex_prototypes = (MetalVertex(0, (0, 0, 0)),)
-    _ligand_vertex_prototypes = (tridentateVertex(1, (0, 0, 0)),)
-
-    _edge_prototypes = (
-        Edge(
-            id=0,
-            vertex1=_metal_vertex_prototypes[0],
-            vertex2=_ligand_vertex_prototypes[0],
-            position=(0.1, 0, 0),
-        ),
-        Edge(
-            id=1,
-            vertex1=_metal_vertex_prototypes[0],
-            vertex2=_ligand_vertex_prototypes[0],
-            position=(0, 0.1, 0),
-        ),
-        Edge(
-            id=2,
-            vertex1=_metal_vertex_prototypes[0],
-            vertex2=_ligand_vertex_prototypes[0],
-            position=(-0.1, 0, 0)
-        ),
-    )
-
-
-class BiDentateLigandVertex(Vertex):
-
+class BidentateLigandVertex(Vertex):
+    """
+    Some modifications of Vertex elements of stk as a preparation for Bidentate ligands
+    No build-in functionality for that in stk
+    """
     def place_building_block(self, building_block, edges):
         building_block = building_block.with_centroid(
             position=self._position,
@@ -122,39 +103,9 @@ class BiDentateLigandVertex(Vertex):
         }
 
 
-class bidentate(MetalComplex):
-    _metal_vertex_prototypes = (
-        MetalVertex(0, (0, 0, 0)),
-    )
-    _ligand_vertex_prototypes = (
-        BiDentateLigandVertex(1, (-2.0, 0, - 2.0)),
-    )
-
-    # The ordering here matters for the stereochemistry.
-    # The first edge to appear between two vertices determines the
-    # directionality of the binding ligand.
-    # This paticular arrangement has the ligand
-    # cordination on the Left and Bottom sites
-    _edge_prototypes = (
-        Edge(
-            id=0,
-            vertex1=_metal_vertex_prototypes[0],
-            vertex2=_ligand_vertex_prototypes[0],
-            position=(-2.0, 0, 0),
-        ),
-        Edge(
-            id=1,
-            vertex1=_metal_vertex_prototypes[0],
-            vertex2=_ligand_vertex_prototypes[0],
-            position=(0, 0, -2.0),
-        ),
-    )
-
-
-class MonoDentateLigandVertex(Vertex):
+class MonodentateLigandVertex(Vertex):
     """
     Places monodentate ligand in a :class:`.MetalComplex`.
-
     """
 
     def place_building_block(self, building_block, edges):
@@ -189,13 +140,70 @@ class MonoDentateLigandVertex(Vertex):
         return {0: edges[0].get_id()}
 
 
-class monodentate(MetalComplex):
+class Tridentate(MetalComplex):
+    """
+    Extension of some basic stk class to model Tridentate Ligands
+    """
+    _metal_vertex_prototypes = (MetalVertex(0, (0, 0, 0)),)
+    _ligand_vertex_prototypes = (TridentateLigandVertex(1, (0, 0, 0)),)
+
+    _edge_prototypes = (
+        Edge(
+            id=0,
+            vertex1=_metal_vertex_prototypes[0],
+            vertex2=_ligand_vertex_prototypes[0],
+            position=(0.1, 0, 0),
+        ),
+        Edge(
+            id=1,
+            vertex1=_metal_vertex_prototypes[0],
+            vertex2=_ligand_vertex_prototypes[0],
+            position=(0, 0.1, 0),
+        ),
+        Edge(
+            id=2,
+            vertex1=_metal_vertex_prototypes[0],
+            vertex2=_ligand_vertex_prototypes[0],
+            position=(-0.1, 0, 0)
+        ),
+    )
+
+
+class Bidentate(MetalComplex):
+    """
+    Extension of some basic stk class to model Tridentate Ligands
+    """
+    _metal_vertex_prototypes = (MetalVertex(0, (0, 0, 0)),)
+    _ligand_vertex_prototypes = (BidentateLigandVertex(1, (-2.0, 0, - 2.0)),)
+
+    # The ordering here matters for the stereochemistry.
+    # The first edge to appear between two vertices determines the
+    # directionality of the binding ligand.
+    # This paticular arrangement has the ligand
+    # cordination on the Left and Bottom sites
+    _edge_prototypes = (
+        Edge(
+            id=0,
+            vertex1=_metal_vertex_prototypes[0],
+            vertex2=_ligand_vertex_prototypes[0],
+            position=(-2.0, 0, 0),
+        ),
+        Edge(
+            id=1,
+            vertex1=_metal_vertex_prototypes[0],
+            vertex2=_ligand_vertex_prototypes[0],
+            position=(0, 0, -2.0),
+        ),
+    )
+
+
+class Monodentate(MetalComplex):
     _metal_vertex_prototypes = (
         MetalVertex(0, (0, 0, 0)),
     )
 
     _ligand_vertex_prototypes = (
-        MonoDentateLigandVertex(1, (0, 0, 2.5)),
+        MonodentateLigandVertex(1, (0, 0, 1.9)),
 
     )
     _edge_prototypes = (
@@ -206,14 +214,46 @@ class monodentate(MetalComplex):
         ),
     )
 
+class monodentate_negxposy(MetalComplex):
+    _metal_vertex_prototypes = (
+        MetalVertex(0, (0, 0, 0)),
+    )
 
+    _ligand_vertex_prototypes = (
+        MonodentateLigandVertex(1, (-1.2, 1.2, 0)),
+
+    )
+    _edge_prototypes = (
+        Edge(
+            id=0,
+            vertex1=_metal_vertex_prototypes[0],
+            vertex2=_ligand_vertex_prototypes[0],
+        ),
+    )
+
+class monodentate_negxnegy(MetalComplex):
+    _metal_vertex_prototypes = (
+        MetalVertex(0, (0, 0, 0)),
+    )
+
+    _ligand_vertex_prototypes = (
+        MonodentateLigandVertex(1, (-1.2, -1.2, 0)),
+
+    )
+    _edge_prototypes = (
+        Edge(
+            id=0,
+            vertex1=_metal_vertex_prototypes[0],
+            vertex2=_ligand_vertex_prototypes[0],
+        ),
+    )
 class monodentate_flipped(MetalComplex):
     _metal_vertex_prototypes = (
         MetalVertex(0, (0, 0, 0)),
     )
 
     _ligand_vertex_prototypes = (
-        MonoDentateLigandVertex(1, (0, 0, -2.5)),
+        MonodentateLigandVertex(1, (0, 0, -1.9)),
 
     )
     _edge_prototypes = (
@@ -225,7 +265,7 @@ class monodentate_flipped(MetalComplex):
     )
 
 
-class complex_topology(MetalComplex):
+class complex_topology_three(MetalComplex):
     _metal_vertex_prototypes = (MetalVertex(0, (0, 0, 0)),)
     _ligand_vertex_prototypes = (
         UnaligningVertex(1, (0, 0, 0)),
@@ -250,6 +290,31 @@ class complex_topology(MetalComplex):
             id=2,
             vertex1=_metal_vertex_prototypes[0],
             vertex2=_ligand_vertex_prototypes[2],
+            position=(0, 0, 0),
+        ),
+
+    )
+
+
+class complex_topology_two(MetalComplex):
+    _metal_vertex_prototypes = (MetalVertex(0, (0, 0, 0)),)
+    _ligand_vertex_prototypes = (
+        UnaligningVertex(1, (0, 0, 0)),
+        UnaligningVertex(2, (0, 0, 0)),
+        UnaligningVertex(3, (0, 0, 0)),
+    )
+
+    _edge_prototypes = (
+        Edge(
+            id=0,
+            vertex1=_metal_vertex_prototypes[0],
+            vertex2=_ligand_vertex_prototypes[0],
+            position=(0, 0, 0),
+        ),
+        Edge(
+            id=1,
+            vertex1=_metal_vertex_prototypes[0],
+            vertex2=_ligand_vertex_prototypes[1],
             position=(0, 0, 0),
         ),
 

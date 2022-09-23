@@ -167,7 +167,7 @@ def post_process_tridentate(_metal_bb, _tridentate_bb, index_list, optimize_=Fal
         origin=np.array((0, 0, 0))
     )
 
-    compl_tri = stk.ConstructedMolecule(topology_graph=tridentate(metals=_metal_bb, ligands=compl_tri, ), )
+    compl_tri = stk.ConstructedMolecule(topology_graph=Tridentate(metals=_metal_bb, ligands=compl_tri, ), )
 
     compl_tri = compl_tri.with_rotation_about_axis(axis=np.array((0, 0, 1)),
                                                    angle=float(np.radians(rotate_tridentate_ligand(compl_tri, 10.0, 0.0,0.0, index_list))),
@@ -186,7 +186,7 @@ def post_process_tridentate(_metal_bb, _tridentate_bb, index_list, optimize_=Fal
 
 def post_process_bidentate(metal_bb_, bidentate_bb_, optimize_=False):
 
-    complex_bidentate = stk.ConstructedMolecule(topology_graph=bidentate(metals=metal_bb_, ligands=bidentate_bb_))
+    complex_bidentate = stk.ConstructedMolecule(topology_graph=Bidentate(metals=metal_bb_, ligands=bidentate_bb_))
     complex_bidentate_bb_ = stk.BuildingBlock.init_from_molecule(complex_bidentate, functional_groups=[
         stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())])
 
@@ -198,7 +198,8 @@ def post_process_bidentate(metal_bb_, bidentate_bb_, optimize_=False):
 
 def post_process_monodentate(metal_bb_, monodentate_bb_, optimize_=False):
 
-    complex_monodentate = stk.ConstructedMolecule(topology_graph=monodentate(metals=metal_bb_, ligands=monodentate_bb_))
+    Mono = Monodentate(metals=metal_bb_, ligands=monodentate_bb_)
+    complex_monodentate = stk.ConstructedMolecule(topology_graph=Mono)
     complex_monodentate = stk.BuildingBlock.init_from_molecule(complex_monodentate, functional_groups=[
         stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())])
 
@@ -235,7 +236,7 @@ def post_process_two_monodentates(metal_bb, ligand_bb_dict, optimize_=False):
 
     (_, bb_top) = ligand_bb_dict[list(ligand_bb_dict.keys())[0]]
     top_ = stk.ConstructedMolecule(
-        topology_graph=monodentate(metals=metal_bb, ligands=bb_top))
+        topology_graph=Monodentate(metals=metal_bb, ligands=bb_top))
 
     top_ = stk.BuildingBlock.init_from_molecule(top_, functional_groups=[
         stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())])
