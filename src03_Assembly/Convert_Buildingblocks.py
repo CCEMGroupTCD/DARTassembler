@@ -1,6 +1,7 @@
 from src03_Assembly.utilities_assembly import *
 import stk
 
+
 def convert_raw_monodentate_bb(metal_bb_, monodentate_bb_, optimize_=False, coordinates=None):
     """
     here we convert a raw monodentate building block into the actual format we need
@@ -91,13 +92,41 @@ def convert_raw_planaer_tetradentate_bb(metal_bb, tetradentate_bb, ligand_, optm
     return complex_tetradentate_bb
 
 
-def post_process_pentadentate(ligand, _metal_bb):
+def convert_raw_pentadentate_bb(metal_bb, penta_bb, penta_ligand, optimize=False):
+    """
+    The whole trick is to identify a pentadentate as a planar tetradentate ligand and place it correctly.
+    """
+    # We first aim to treat a penta dentate as a planar tetradentate and then follow the process above
+    penta_bb_temp, position_index, atom_ids_ = penta_as_tetra(ligand=penta_ligand, ligand_bb=penta_bb)
 
-    pentadentate_bb = pentadentate_Solver(ligand)
+    penta_bb_temp = penta_bb_temp.with_centroid(np.array((0, 0, 0)), atom_ids=atom_ids_)
 
-    penta_topology_graph = stk.metal_complex.Porphyrin(metals=_metal_bb, ligands=pentadentate_bb, )
+    # again a two-fold rotation
+    for axis_ in [np.array((0, 1, 0)), np.array((1, 0, 0))]:
+        penta_bb_temp = penta_bb_temp.with_rotation_to_minimize_angle(
+            start=penta_bb_temp.get_plane_normal(atom_ids=atom_ids_),
+            target=np.array((0, 0, 1)),
+            axis=axis_,
+            origin=np.array((0, 0, 0))
+            )
 
-    complex_pentadentate = stk.ConstructedMolecule(topology_graph = penta_topology_graph, )
+    #
+    tip_position = list(penta_bb_temp.get_atomic_positions(atom_ids=[int(position_index), ]))
+
+    if float(tip_position[0][2]) == 0:
+        print("Something went wrong")
+        return None
+    elif float(tip_position[0][2]) > 0:
+        penta_bb_temp = penta_bb_temp.with_rotation_about_axis(angle=np.radians(180),
+                                                               axis=np.array((1, 0, 0)),
+                                                               origin=np.array((0, 0, 0))
+                                                               )
+    else:
+        pass
+
+    penta_topology_graph = stk.metal_complex.Porphyrin(metals=metal_bb, ligands=penta_bb_temp, )
+
+    complex_pentadentate = stk.ConstructedMolecule(topology_graph=penta_topology_graph, )
 
     penta_for_complex = stk.BuildingBlock.init_from_molecule(complex_pentadentate,
                                                  functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), ), ])

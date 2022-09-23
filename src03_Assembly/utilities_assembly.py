@@ -1,5 +1,4 @@
 import stk
-from stk import *
 from openbabel import pybel
 from src03_Assembly.stk_extension import *
 import os
@@ -8,8 +7,20 @@ from src.Molecule import RCA_Molecule, RCA_Ligand
 import rdkit
 
 
+stk_ = __import__("stk")
+names_dict = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+
+
+def get_top_string(top):
+    str_ = ""
+    for el in top:
+        str_ += f"{names_dict[el]}_"
+
+    return f"{str_}assembly"
+
+
 def build_ligand(type_list, index_list, path_):
-    func_dict = {type_: globals()[f"{type_}"] for type_ in type_list}
+    func_dict = {type_: getattr(stk_, type_)for type_ in type_list}
     atoms_ = [func_dict[type_](index_list[i]) for i, type_ in enumerate(type_list)]
 
     functional_groups_ = [stk.GenericFunctionalGroup(atoms=(a,), bonders=(a,), deleters=()) for a in atoms_]
@@ -56,11 +67,10 @@ def optimize(input_file, option: str):  # option will be stk_to_xyz or stk_to_st
 
 def planar_ceck(ligand_bb_dict):
     for key, (lig, lig_bb) in ligand_bb_dict.items():
-        if lig.denticity == 4:
-            if lig.check_if_planar() is True:
-                return True
-            else:
-                return False
+        if lig.denticity == 4 or lig.denticity == 3:
+            return lig.check_if_planar()
+
+    return False
 
 
 def complex_visualisation(input_complex):
@@ -159,38 +169,14 @@ def rotate_tridentate_ligand(tridentate_building_block, x, y, z, index_list) -> 
         print("somethings gone  wrong with the xy plane rotation :(")
 
 
-
-
-
-
-
-def pentadentate_Solver(ligand: RCA_Ligand):
+def penta_as_tetra(ligand_bb, ligand):
 
     dict_ = ligand.get_assembly_dict()
     atom_func = dict_["index"]
     atom_type = dict_["type"]
 
-    tmp_path = "../tmp/lig_mol.mol"
-
-    xyz_str = ligand.get_assembly_dict()["str"]
-    with open("../tmp/lig_xyz.xyz", "w+") as f:
-        f.write(xyz_str)
-
-    os.system('obabel .xyz ../tmp/lig_xyz.xyz .mol -O  ../tmp/lig_mol.mol')
-
-    stk_ = __import__("stk")
-
-    _functional_groups = [stk.GenericFunctionalGroup(atoms=(getattr(stk_, atype_)(afunc_), ),
-                                                     bonders=(getattr(stk_, atype_)(afunc_), ),
-                                                     deleters=()
-                                                    ) for (atype_, afunc_) in zip(atom_type, atom_func)]
-
-    penta_bb_temp = stk.BuildingBlock.init_from_file(tmp_path, functional_groups=_functional_groups)
-
-    ## --> Ich glaube das ist einfach nur der penta_bb den wir sowieso geneireren
-
     # translate it so centroid is placed at 0,0,0
-    penta_bb_temp = penta_bb_temp.with_centroid(np.array((0, 0, 0)), atom_ids=atom_func)
+    penta_bb_temp = ligand_bb.with_centroid(np.array((0, 0, 0)), atom_ids=atom_func)
 
     variance_list = []
     for i, _ in enumerate(atom_func):
@@ -208,7 +194,7 @@ def pentadentate_Solver(ligand: RCA_Ligand):
                                                                           axis=np.array((1, 0, 0)),
                                                                           origin=np.array((0, 0, 0)), )
 
-        position_xyz = list(penta_bb_temp.get_atomic_positions(
+        position_xyz = list(penta_bb_temp_2.get_atomic_positions(
             atom_ids=[int(list_indices[0]), int(list_indices[1]), int(list_indices[2]), int(list_indices[3]), ]))
 
         z_list = [position_xyz[0][2], position_xyz[1][2], position_xyz[2][2]]
@@ -228,39 +214,40 @@ def pentadentate_Solver(ligand: RCA_Ligand):
                                                         ) for k, (atype_, afunc_) in enumerate(zip(atom_type, atom_func))
                                                         if k != index_]
 
+    tmp_path = "../tmp/lig_mol.mol"
+
+    ligand_to_mol(ligand=ligand, target_path=tmp_path)
     penta_bb_temp = stk.BuildingBlock.init_from_file(tmp_path, functional_groups=_mod_functional_groups)
-
-    penta_bb_temp = penta_bb_temp.with_centroid(np.array((0, 0, 0)), atom_ids=atom_ids_)
-
-    penta_bb_temp = penta_bb_temp.with_rotation_to_minimize_angle(start=penta_bb_temp.get_plane_normal(atom_ids=atom_ids_),
-                                                                  target=np.array((0, 0, 1)),
-                                                                  axis=np.array((0, 1, 0)),
-                                                                  origin=np.array((0, 0, 0))
-                                                                  )
-
-    penta_bb_temp = penta_bb_temp.with_rotation_to_minimize_angle(start=penta_bb_temp.get_plane_normal(atom_ids=atom_ids_),
-                                                                  target=np.array((0, 0, 1)),
-                                                                  axis=np.array((1, 0, 0)),
-                                                                  origin=np.array((0, 0, 0))
-                                                                  )
-    #
-    #
-    #
-    tip_position = list(penta_bb_temp.get_atomic_positions(atom_ids=[int(position_index), ]))
-    if float(tip_position[0][2]) > 0:
-        penta_bb_temp = penta_bb_temp.with_rotation_about_axis(angle=np.radians(180),
-                                                               axis=np.array((1, 0, 0)),
-                                                               origin=np.array((0, 0, 0))
-                                                               )
-
-    elif float(tip_position[0][2]) == 0:
-        print("SOmething went wrong")
-        return 0
 
     os.remove("../tmp/lig_mol.mol")
 
-    return penta_bb_temp
+    return penta_bb_temp, position_index, atom_ids_
 
 
+def remove_Hg(input_complex, name: str, path: str, visualize_: bool = True, print_to_xyz=True, return_ase=False):
 
+    stk.XyzWriter().write(input_complex, '../tmp/input_complex.xyz')
+    with open('../tmp/input_complex.xyz', "r+") as file:
+        lines = file.readlines()
+        counter = 0
+        for i, line in enumerate(lines):
+            if len(line.split()) > 0:
+                if line.split()[0] == 'Hg':
+                    del lines[i]
+                    counter += 1
+        lines[0] = f"{int(lines[0]) - counter}\n"
+
+    if print_to_xyz is True:
+        with open(f'{path}/{name}.xyz', "w+") as file:
+            file.write(''.join(lines))
+
+    if visualize_ is True or return_ase is True:
+        with open('../tmp/input_complex.xyz', "w+") as file:
+            file.write(''.join(lines))
+        mol_ = io.read('../tmp/input_complex.xyz')
+        ase_mol = RCA_Molecule(mol=mol_)
+        if visualize_ is True:
+            ase_mol.view_3d()
+        if return_ase is True:
+            return ase_mol
 

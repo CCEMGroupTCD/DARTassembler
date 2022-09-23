@@ -1,12 +1,11 @@
-# Module-Cian.1
+import numpy as np
+
 from stk.molecular.topology_graphs.topology_graph import Edge
 from stk.molecular.topology_graphs.metal_complex.metal_complex import MetalComplex
 from stk.molecular.topology_graphs.metal_complex.vertices import MetalVertex, UnaligningVertex
 from stk.molecular.topology_graphs.topology_graph.vertex import Vertex
 from scipy.spatial.distance import euclidean
 from stk.utilities import get_projection
-
-import numpy as np
 
 
 class TridentateLigandVertex(Vertex):
