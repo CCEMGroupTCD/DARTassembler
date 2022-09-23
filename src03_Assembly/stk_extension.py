@@ -1,11 +1,12 @@
 # Module-Cian.1
-
 from stk.molecular.topology_graphs.topology_graph import Edge
 from stk.molecular.topology_graphs.metal_complex.metal_complex import MetalComplex
 from stk.molecular.topology_graphs.metal_complex.vertices import MetalVertex, UnaligningVertex
 from stk.molecular.topology_graphs.topology_graph.vertex import Vertex
 from scipy.spatial.distance import euclidean
 from stk.utilities import get_projection
+
+import numpy as np
 
 
 class TridentateLigandVertex(Vertex):
@@ -198,6 +199,7 @@ class Bidentate(MetalComplex):
 
 
 class Monodentate(MetalComplex):
+
     _metal_vertex_prototypes = (
         MetalVertex(0, (0, 0, 0)),
     )
@@ -214,55 +216,12 @@ class Monodentate(MetalComplex):
         ),
     )
 
-class monodentate_negxposy(MetalComplex):
-    _metal_vertex_prototypes = (
-        MetalVertex(0, (0, 0, 0)),
-    )
-
-    _ligand_vertex_prototypes = (
-        MonodentateLigandVertex(1, (-1.2, 1.2, 0)),
-
-    )
-    _edge_prototypes = (
-        Edge(
-            id=0,
-            vertex1=_metal_vertex_prototypes[0],
-            vertex2=_ligand_vertex_prototypes[0],
-        ),
-    )
-
-class monodentate_negxnegy(MetalComplex):
-    _metal_vertex_prototypes = (
-        MetalVertex(0, (0, 0, 0)),
-    )
-
-    _ligand_vertex_prototypes = (
-        MonodentateLigandVertex(1, (-1.2, -1.2, 0)),
-
-    )
-    _edge_prototypes = (
-        Edge(
-            id=0,
-            vertex1=_metal_vertex_prototypes[0],
-            vertex2=_ligand_vertex_prototypes[0],
-        ),
-    )
-class monodentate_flipped(MetalComplex):
-    _metal_vertex_prototypes = (
-        MetalVertex(0, (0, 0, 0)),
-    )
-
-    _ligand_vertex_prototypes = (
-        MonodentateLigandVertex(1, (0, 0, -1.9)),
-
-    )
-    _edge_prototypes = (
-        Edge(
-            id=0,
-            vertex1=_metal_vertex_prototypes[0],
-            vertex2=_ligand_vertex_prototypes[0],
-        ),
-    )
+    def set_ligand_coordinates(self, coordinates: np.array):
+        try:
+            self._building_block_vertices[list(self._building_block_vertices.keys())[-1]][0]._position = coordinates
+        except Exception as e:
+            print(f"Some Errorhandling to be done {e}")
+            pass
 
 
 class complex_topology_three(MetalComplex):

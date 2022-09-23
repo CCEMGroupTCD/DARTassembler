@@ -1,9 +1,8 @@
 # Box Excluder coming in here
 
 import pickle
-from src.utilities import *
 from src03_Assembly.utilities_assembly import *
-from src03_Assembly.constants import get_boxes
+from src02_Pre_Ass_Filtering.constants import get_boxes
 from ase import io
 
 
