@@ -29,7 +29,11 @@ def get_boxes(denticity):
     if denticity == 1:
         pass
     elif denticity == 2:
-        pass
+        box_list.append(Box(-5.0, 5.0, -5.0, 5.0, 4.0, 10.0))
+        box_list.append(Box(2.5, 100.0, -5.0, 5.0, -2.5, 5.0))
+        box_list.append(Box(0.4, 100.0, -10.0, 10.0, 0.001, 1000.))
+        box_list.append(Box(100.0, 101.0, 100.0, 101., 100., 101.))
+        box_list.append(Box(-1.0, 1.0, -1.0, 1.0, 0.001, 100.))
     elif denticity == 3:
         box_list.append(Box(0.0, 1.0, -1.0, 1.0, 0.0001, 10.0))
         box_list.append(Box(-1.0, 1.0, -1.0, 1.0, -10.0, -0.2))
@@ -41,3 +45,4 @@ def get_boxes(denticity):
         pass
 
     return box_list
+
