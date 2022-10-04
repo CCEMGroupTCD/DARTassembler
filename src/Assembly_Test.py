@@ -1,7 +1,8 @@
 # Todo: Move this file to src03; is here just for the moment due to pickle reasons
+# is going to become the main in src03
 
 import pickle
-from src03_Assembly.Assembly_Draft import *
+from src03_Assembly.Topology_Assembly_Methods import *
 from process import LigandDatabase
 import random
 from src03_Assembly.assembly_setup import list_of_metals, implemented_topologies

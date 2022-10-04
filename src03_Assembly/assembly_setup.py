@@ -1,7 +1,7 @@
 # This is just a setup file
 
-implemented_topologies = [#[4, 1, 1],  # ,
-                          [3, 2, 1]#,
+implemented_topologies = [[4, 1, 1],  # ,
+                          #[3, 2, 1]#,
                           #[5, 1]
                           ]
 

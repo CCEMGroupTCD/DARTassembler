@@ -6,6 +6,8 @@ from ase import io
 from src.Molecule import RCA_Molecule, RCA_Ligand
 import rdkit
 from src02_Pre_Ass_Filtering.constants import get_boxes, intensity, sharpness
+from openbabel import openbabel as ob
+import itertools
 
 
 stk_ = __import__("stk")
@@ -98,6 +100,7 @@ def ligand_to_mol(ligand: RCA_Ligand, target_path="../tmp/tmp.mol", xyz_path="..
     with open(xyz_path, "w+") as f:
         f.write(xyz_str)
     os.system(f'obabel .xyz {xyz_path} .mol -O  {target_path}')
+    return target_path
 
 
 def tmp_clean_up(*args):
@@ -333,3 +336,123 @@ def Bidentate_Rotator(ligand_bb, ligand):
     os.system("sed 's/Hg[[:space:]][[:space:]]0[[:space:]][[:space:]]0/Hg  0  2/g' ../tmp/temp_mol.mol > ../tmp/temp_mol_2.mol")
 
     return "../tmp/temp_mol_2.mol"
+
+
+def get_energy(molecule):
+
+    path = ligand_to_mol(molecule)  # Here there is a dependency on the above ligand_to_mol function.
+    print(path)
+    mol = next(pybel.readfile("mol", str(path)))
+    obmol = mol.OBMol
+    ff = ob.OBForceField_FindType("uff")
+    assert (ff.Setup(obmol))
+    kj_to_kcal = 1.0 / 4.184
+    ff.SetCoordinates(mol.OBMol)
+    # false = don't calculate gradients
+    uffE = ff.Energy(False) * kj_to_kcal
+    return uffE
+
+
+def nonplanar_tetra_solver(bb, lig):
+    all_Energies, all_midpoints = [], []
+
+    combo_list = list(itertools.combinations([0, 1, 2, 3], 2))
+
+    assembly_dictionary = lig.get_assembly_dict()
+    location_list = assembly_dictionary["index"]  # location of every coord atom in file
+    type_list = assembly_dictionary["type"]
+
+    for combo in combo_list:  # this loop iterates through every combination of functional Groups
+        func_1_location = location_list[combo[0]]  # first atom loction
+        func_2_location = location_list[combo[1]]  # first atom type
+
+        # we needed to initialise the building block solely to get the positons of the functional groups
+        positions = list(
+            bb.get_atomic_positions(atom_ids=[int(func_1_location), int(func_2_location), ], ))
+        x1 = positions[0][0]
+        y1 = positions[0][1]
+        z1 = positions[0][2]
+        x2 = positions[1][0]
+        y2 = positions[1][1]
+        z2 = positions[1][2]
+        x_mid = (x1 + x2) / 2  # Here we get the components of the mid points between coord groups
+        y_mid = (y1 + y2) / 2
+        z_mid = (z1 + z2) / 2
+        mid_points = [x_mid, y_mid, z_mid]
+        lig.add_atom(symbol="Hg", coordinates=[x_mid, y_mid, z_mid])  # add dummy metal
+        Energy = get_energy(lig)  # get energy
+        lig.remove_last_element_in_xyz()  # get rid of dummy metal
+        all_Energies.append(Energy)  # list of all the energies of pacing dummy metal at each midpoint
+        all_midpoints.append(mid_points)
+
+    minimum_energy = min(all_Energies)
+    minimum_energy_index = all_Energies.index(minimum_energy)
+    lig.add_atom(symbol="Hg",
+                     coordinates=[all_midpoints[minimum_energy_index][0], all_midpoints[minimum_energy_index][1],
+                                  all_midpoints[minimum_energy_index][
+                                      2]])  # paces Hg at midpoint with smallest energy
+
+    file_path_2 = ligand_to_mol(lig)
+
+    tetra_bb_2 = stk.BuildingBlock.init_from_file(str(file_path_2), functional_groups=[
+        stk.SmartsFunctionalGroupFactory(smarts="[Hg]", bonders=(0,), deleters=(), ), ], )
+
+    tetra_bb_2 = tetra_bb_2.with_displacement(np.array(((-1) * all_midpoints[minimum_energy_index][0],
+                                                        (-1) * all_midpoints[minimum_energy_index][1],
+                                                        (-1) * all_midpoints[minimum_energy_index][2])))
+    # visualize(tetra_bb_2)
+
+    # This block of code allows me to remove all the coordinating groups that were previously used to coord the
+    # temporary atom
+    # Note location refers to the location within the file
+    location_list = list(location_list)
+    index1 = combo_list[minimum_energy_index][0]
+    index2 = combo_list[minimum_energy_index][1]
+    value1 = location_list[index1]
+    value2 = location_list[index2]
+    location_list.remove(value1)
+    location_list.remove(value2)
+
+    # this block removes the coord atoms used to coordinate to the temporary metal
+    value1 = type_list[index1]
+    value2 = type_list[index2]
+    type_list.remove(value1)
+    type_list.remove(value2)
+
+    position_of_Hg_in_mol = [key for key, item in lig.coordinates.items() if item[0] == "Hg"][0]
+
+    # The following Block of code ensures that the remaning coordinating groups exist in the xy plane
+    complex_tetradentate = tetra_bb_2.with_rotation_to_minimize_angle(start=tetra_bb_2.get_plane_normal(
+        atom_ids=[int(location_list[0]), int(location_list[1]),
+                  int(position_of_Hg_in_mol), ]), target=np.array((0, 0, 1)), axis=np.array((0, 1, 0)),
+        origin=np.array((0, 0, 0)), )
+
+    complex_tetradentate = complex_tetradentate.with_rotation_to_minimize_angle(
+        start=complex_tetradentate.get_plane_normal(
+            atom_ids=[int(location_list[0]), int(location_list[0]),
+                      int(position_of_Hg_in_mol), ]), target=np.array((0, 0, 1)), axis=np.array((1, 0, 0)),
+        origin=np.array((0, 0, 0)), )
+
+    for degree in np.arange(0, 361, 0.5):
+        complex_tetradentate = complex_tetradentate.with_rotation_about_axis(angle=0.5 * (np.pi / 180.0),
+                                                                             axis=np.array((0, 0, 1)),
+                                                                             origin=np.array((0, 0, 0)),
+                                                                             )
+
+        position_of_coord_atom_1 = complex_tetradentate.get_atomic_positions(atom_ids=[int(location_list[0]), ])
+        position_of_coord_atom_2 = complex_tetradentate.get_atomic_positions(atom_ids=[int(location_list[1]), ])
+
+        distance1 = np.linalg.norm(list(position_of_coord_atom_1) - np.array((-10.0, 0, 0)))
+        distance2 = np.linalg.norm(list(position_of_coord_atom_2) - np.array((-10.0, 0, 0)))
+
+        mean = (distance1 + distance2) / 2.0
+        deviation1 = (distance1 - mean) ** 2
+        deviation2 = (distance2 - mean) ** 2
+        variance = (deviation1 + deviation2) / 2.0
+
+        if (variance < 0.0001) and (distance1 > 10.0) and (distance2 > 10.0):
+            complex_tetradentate.write("../tmp/tmp.mol")
+        else:
+            pass
+
+    return "../tmp/tmp.mol"

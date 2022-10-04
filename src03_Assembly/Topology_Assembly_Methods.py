@@ -11,10 +11,10 @@ def four_one_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, optimize_, t
     if planar_ is True:
         for key, (lig, lig_bb) in ligand_bb_dict.items():
             if lig.denticity == 4:
-                tetra_bb_for_comp = convert_raw_planaer_tetradentate_bb(metal_bb=metal_bb,
-                                                                        tetradentate_bb=lig_bb,
-                                                                        ligand_=lig
-                                                                        )
+                tetra_bb_for_comp = convert_raw_planar_tetradentate_bb(metal_bb=metal_bb,
+                                                                       tetradentate_bb=lig_bb,
+                                                                       ligand_=lig
+                                                                       )
             elif lig.denticity == 1 and top_done is True:
                 mono_one_bb_for_comp = convert_raw_monodentate_bb(metal_bb_=metal_bb,
                                                                   monodentate_bb_=lig_bb,
@@ -39,8 +39,35 @@ def four_one_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, optimize_, t
         return complex_
 
     elif planar_ is False:
-        print("Non-Planar Tetradentate Ligand")
-        return None
+        for key, (lig, lig_bb) in ligand_bb_dict.items():
+            if lig.denticity == 4:
+                tetra_bb_for_comp = convert_raw_nonplanar_tetradentate_bb(metal_bb=metal_bb,
+                                                                          tetradentate_bb=lig_bb,
+                                                                          ligand_=lig
+                                                                          )
+            elif lig.denticity == 1 and top_done is True:
+                mono_one_bb_for_comp = convert_raw_monodentate_bb(metal_bb_=metal_bb,
+                                                                  monodentate_bb_=lig_bb,
+                                                                  optimize_=optimize_,
+                                                                  coordinates=np.array([-1.2, -1.2, 0])
+                                                                  )
+            elif lig.denticity == 1 and top_done is False:
+                top_done = True
+                mono_two_bb_for_comp = convert_raw_monodentate_bb(metal_bb_=metal_bb,
+                                                                  monodentate_bb_=lig_bb,
+                                                                  optimize_=optimize_,
+                                                                  coordinates=np.array([-1.2, 1.2, 0])
+                                                                  )
+
+        complex_top = complex_topology_three(metals=final_metal_bb,
+                                             ligands={tetra_bb_for_comp: (0,),
+                                                      mono_one_bb_for_comp: (1,),
+                                                      mono_two_bb_for_comp: (2,)}
+                                             )
+
+        complex_ = stk.ConstructedMolecule(topology_graph=complex_top)
+
+        return complex_
 
 
 def three_two_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, optimize_, planar_):

@@ -73,7 +73,7 @@ def convert_raw_planar_tridentate_bb(metal_bb_, tridentate_bb_, index_list, opti
     return complex_tridentate_bb_
 
 
-def convert_raw_planaer_tetradentate_bb(metal_bb, tetradentate_bb, ligand_, optmize=False,  **kwargs):
+def convert_raw_planar_tetradentate_bb(metal_bb, tetradentate_bb, ligand_, optmize=False, **kwargs):
 
     # again we need a twofold rotation for the building block
     for axis_ in [np.array((0, 1, 0)), np.array((1, 0, 0))]:
@@ -91,6 +91,18 @@ def convert_raw_planaer_tetradentate_bb(metal_bb, tetradentate_bb, ligand_, optm
 
     complex_tetradentate_bb = stk.BuildingBlock.init_from_molecule(complex_tetradentate, functional_groups=[
         stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), )])
+
+    return complex_tetradentate_bb
+
+
+def convert_raw_nonplanar_tetradentate_bb(metal_bb, tetradentate_bb, ligand_, optmize=False, **kwargs):
+
+    new_bb_path = nonplanar_tetra_solver(bb=tetradentate_bb, lig=ligand_)
+
+    complex_tetradentate_bb = stk.BuildingBlock.init_from_file(new_bb_path, functional_groups=[
+                                                                      stk.SmartsFunctionalGroupFactory(
+                                                                          smarts='[Hg]', bonders=(0,),
+                                                                          deleters=(), ), ], )
 
     return complex_tetradentate_bb
 
