@@ -174,7 +174,7 @@ class Bidentate(MetalComplex):
     Extension of some basic stk class to model Tridentate Ligands
     """
     _metal_vertex_prototypes = (MetalVertex(0, (0, 0, 0)),)
-    _ligand_vertex_prototypes = (BidentateLigandVertex(1, (-2.0, 0, - 2.0)),)
+    _ligand_vertex_prototypes = (BidentateLigandVertex(1, (-1.0, 0, - 1.0)),)
 
     # The ordering here matters for the stereochemistry.
     # The first edge to appear between two vertices determines the
@@ -186,13 +186,13 @@ class Bidentate(MetalComplex):
             id=0,
             vertex1=_metal_vertex_prototypes[0],
             vertex2=_ligand_vertex_prototypes[0],
-            position=(-2.0, 0, 0),
+            position=(-1.0, 0, 0),
         ),
         Edge(
             id=1,
             vertex1=_metal_vertex_prototypes[0],
             vertex2=_ligand_vertex_prototypes[0],
-            position=(0, 0, -2.0),
+            position=(0, 0, -1.0),
         ),
     )
 

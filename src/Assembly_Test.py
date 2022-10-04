@@ -112,6 +112,9 @@ if __name__ == "__main__":
 
     for i in range(10):
         random_complex = RCA.create_random_TMC(visualize_=True, optimize_=False)
+
+        if random_complex is None:
+            print("None")
         input("press Enter to continue")
 
     print("done")

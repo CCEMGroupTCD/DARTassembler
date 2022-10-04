@@ -26,14 +26,16 @@ def convert_raw_monodentate_bb(metal_bb_, monodentate_bb_, optimize_=False, coor
     return mono_for_complex
 
 
-def convert_raw_bidendate_bb(metal_bb_, bidentate_bb_, optimize_=False):
+def convert_raw_bidendate_bb(metal_bb_, bidentate_bb_, ligand_, optimize_=False):
 
     bi_topology_graph = Bidentate(metals=metal_bb_, ligands=bidentate_bb_)
 
     complex_bidentate = stk.ConstructedMolecule(topology_graph=bi_topology_graph)
 
-    complex_bidentate_bb_ = stk.BuildingBlock.init_from_molecule(complex_bidentate, functional_groups=[
-        stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())])
+    new_mol_path = Bidentate_Rotator(ligand_bb=complex_bidentate, ligand=ligand_)
+
+    complex_bidentate_bb_ = stk.BuildingBlock.init_from_file(new_mol_path, functional_groups=[
+        stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), ), ], )
 
     if optimize_ is True:
         complex_bidentate_bb_ = optimize(complex_bidentate_bb_, "stk_to_stk")

@@ -39,6 +39,7 @@ def four_one_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, optimize_, t
         return complex_
 
     elif planar_ is False:
+        print("Non-Planar Tetradentate Ligand")
         return None
 
 
@@ -61,7 +62,8 @@ def three_two_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, optimize_, 
             elif lig.denticity == 2:
                 bi_bb_for_comp = convert_raw_bidendate_bb(metal_bb_=metal_bb,
                                                           bidentate_bb_=lig_bb,
-                                                          optimize_=optimize_
+                                                          optimize_=optimize_,
+                                                          ligand_=lig
                                                           )
             elif lig.denticity == 1:
                 mono_bb_for_comp = convert_raw_monodentate_bb(metal_bb_=metal_bb,
@@ -79,6 +81,7 @@ def three_two_one_assembly(metal_bb, final_metal_bb, ligand_bb_dict, optimize_, 
         return complex_
 
     else:
+        print("Non-Planar Tridentate Ligand")
         return None
 
 

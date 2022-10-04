@@ -5,6 +5,7 @@ import os
 from ase import io
 from src.Molecule import RCA_Molecule, RCA_Ligand
 import rdkit
+from src02_Pre_Ass_Filtering.constants import get_boxes, intensity, sharpness
 
 
 stk_ = __import__("stk")
@@ -230,20 +231,22 @@ def remove_Hg(input_complex, name: str, path: str, visualize_: bool = True, prin
     with open('../tmp/input_complex.xyz', "r+") as file:
         lines = file.readlines()
         counter = 0
+        new_lines = ["0", ""]
         for i, line in enumerate(lines):
             if len(line.split()) > 0:
                 if line.split()[0] == 'Hg':
-                    del lines[i]
                     counter += 1
-        lines[0] = f"{int(lines[0]) - counter}\n"
+                else:
+                    new_lines.append(line)
+        new_lines[0] = f"{int(lines[0]) - counter}\n"
 
     if print_to_xyz is True:
         with open(f'{path}/{name}.xyz', "w+") as file:
-            file.write(''.join(lines))
+            file.write(''.join(new_lines))
 
     if visualize_ is True or return_ase is True:
         with open('../tmp/input_complex.xyz', "w+") as file:
-            file.write(''.join(lines))
+            file.write(''.join(new_lines))
         mol_ = io.read('../tmp/input_complex.xyz')
         ase_mol = RCA_Molecule(mol=mol_)
         if visualize_ is True:
@@ -251,3 +254,82 @@ def remove_Hg(input_complex, name: str, path: str, visualize_: bool = True, prin
         if return_ase is True:
             return ase_mol
 
+
+def mercury_remover(stk_Building_block):
+    print("Removing Temporary Mercury")
+    stk.MolWriter().write(stk_Building_block, '../tmp/stk_Building_block.mol')
+    os.system('obabel .mol ../tmp/stk_Building_block.mol .xyz -O  ../tmp/stk_Building_block.xyz')
+    os.system("rm -f ../tmp/stk_Building_block.mol")
+    path = "../tmp/stk_Building_block.xyz"
+    with open(path, "r") as f:
+        new_str = list()
+        counter = 0
+        for line in f.readlines():
+            if len(line.split()) > 0:
+                if line.split()[0] != "Hg":
+                    new_str.append(line)
+                else:
+                    counter += 1
+            else:
+                new_str.append("\n\n")
+        new_str[0] = str(int(new_str[0]) - counter)
+    with open(path, "w+") as f:
+        f.write(''.join([elem for elem in new_str]))
+    os.system('obabel .xyz ../tmp/stk_Building_block.xyz .mol -O  ../tmp/stk_Building_block.mol')
+    os.system("rm -f stk_Building_block.xyz")
+    stk_Building_block1 = stk.BuildingBlock.init_from_file('../tmp/stk_Building_block.mol')
+    os.system("rm -f ../tmp/stk_Building_block.mol")
+    return stk_Building_block1
+
+
+def Bidentate_Rotator(ligand_bb, ligand):
+
+    stk_Building_Block = mercury_remover(ligand_bb)
+
+    index_list = ligand.get_assembly_dict()["index"]
+
+    functional_group_2 = list(stk_Building_Block.get_atomic_positions(atom_ids=index_list[1]))
+
+    vector = list(stk_Building_Block.get_direction(atom_ids=[int(index_list[0]), int(index_list[1]), ]))
+
+    x2, y2, z2 = functional_group_2[0][0], functional_group_2[0][1], functional_group_2[0][2]
+    x1, y1, z1 = vector[0], vector[1], vector[2]
+
+    Boxes = get_boxes(denticity=ligand.denticity)
+
+    rotation_increment = 1.0
+
+    dict_ = {value: 0 for value in np.arange(0, 361, rotation_increment)}
+    for angle in dict_:
+        stk_Building_Block = stk_Building_Block.with_rotation_about_axis(angle=rotation_increment * (np.pi / 180.0),
+                                                                         axis=np.array((x1, y1, z1)),
+                                                                         origin=np.array((x2, y2, z2)), )
+        # movie(stk_Building_Block)
+        total_atoms_in_box = 0
+        for counter, atom in enumerate(list(stk_Building_Block.get_atomic_positions())):
+            point_ = [atom[i] for i in range(3)]
+            for Box in Boxes:
+                if Box.point_in_box(point=point_):
+                    score_x = intensity / (1.0 + (sharpness * ((point_[0]) - ((Box.x2 - Box.x1) / 2.0) + Box.x1) ** 2))
+                    score_y = intensity / (1.0 + (sharpness * ((point_[1]) - ((Box.y2 - Box.y1) / 2.0) + Box.y1) ** 2))
+                    score_z = intensity / (1.0 + (sharpness * ((point_[2]) - ((Box.z2 - Box.z1) / 2.0) + Box.z1) ** 2))
+                    total_atoms_in_box = total_atoms_in_box + score_x + score_y + score_z
+
+        dict_[angle] = float(total_atoms_in_box)
+
+    minimum_angle = min(dict_, key=dict_.get)
+
+    #
+    #
+    stk_Building_Block = stk_Building_Block.with_rotation_about_axis(angle=minimum_angle * (np.pi / 180.0),
+                                                                     axis=np.array((x1, y1, z1)),
+                                                                     origin=np.array((x2, y2, z2)), )
+    # visualize(stk_Building_Block)
+    num_atoms = stk_Building_Block.get_num_atoms()
+    stk_Building_Block.write("../tmp/temp_xyz.xyz")
+    os.system("echo 'Hg 0.0       0.0        0.0' >> ../tmp/temp_xyz.xyz")
+    exec(str(os.system("sed '1 s/.*/" + str(num_atoms + 1) + "/' ../tmp/temp_xyz.xyz >  ../tmp/temp_xyz_2.xyz")))
+    os.system('obabel .xyz ../tmp/temp_xyz_2.xyz .mol -O  ../tmp/temp_mol.mol')
+    os.system("sed 's/Hg[[:space:]][[:space:]]0[[:space:]][[:space:]]0/Hg  0  2/g' ../tmp/temp_mol.mol > ../tmp/temp_mol_2.mol")
+
+    return "../tmp/temp_mol_2.mol"
