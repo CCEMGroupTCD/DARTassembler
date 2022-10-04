@@ -199,4 +199,3 @@ class RCA_Ligand(RCA_Molecule):
     def remove_last_element_in_xyz(self):
         del self.coordinates[max(list(self.coordinates.keys()))]
         self.mol = self.mol_to_asemol()
-

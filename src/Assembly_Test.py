@@ -4,6 +4,7 @@ import pickle
 from src03_Assembly.Assembly_Draft import *
 from process import LigandDatabase
 import random
+from src03_Assembly.assembly_setup import list_of_metals, implemented_topologies
 
 
 class RandomComplexAssembler:
@@ -16,11 +17,7 @@ class RandomComplexAssembler:
 
         self.ligand_dict = self.dataload(database_path=database_path)
 
-        # todo:vielleicht variable uebergeben die das restrikten kann
-        self.possible_topologies = [[4, 1, 1],  # ,
-                                    [3, 2, 1],
-                                    [5, 1]
-                                    ]
+        self.possible_topologies = implemented_topologies
 
         try:
             self.assembly_functions = {f"{top}": globals()[get_top_string(top)] for top in self.possible_topologies}
@@ -28,11 +25,7 @@ class RandomComplexAssembler:
             print("More topologies requested than implemented")
             raise e
 
-        # todo: manuelle Auswahl erlauben
-        self.list_of_metals = [("Fe", "+2"),
-                               ("Cr", "+3"),
-                               ("Mg", "+2")
-                               ]
+        self.list_of_metals = list_of_metals
 
         self.store_path = store_path
 

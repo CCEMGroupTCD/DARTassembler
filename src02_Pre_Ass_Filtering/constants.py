@@ -22,7 +22,7 @@ class Box:
 
 
 # this is a method decoding the boxes for any of the ligand size
-def get_boxes(denticity):
+def get_boxes(denticity, planar=True):
 
     box_list = list()
 

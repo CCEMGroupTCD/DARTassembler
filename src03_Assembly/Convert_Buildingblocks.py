@@ -31,6 +31,7 @@ def convert_raw_bidendate_bb(metal_bb_, bidentate_bb_, optimize_=False):
     bi_topology_graph = Bidentate(metals=metal_bb_, ligands=bidentate_bb_)
 
     complex_bidentate = stk.ConstructedMolecule(topology_graph=bi_topology_graph)
+
     complex_bidentate_bb_ = stk.BuildingBlock.init_from_molecule(complex_bidentate, functional_groups=[
         stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())])
 

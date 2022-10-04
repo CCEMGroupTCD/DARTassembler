@@ -33,36 +33,36 @@ def optimize(input_file, option: str):  # option will be stk_to_xyz or stk_to_st
         file_extension = input_file[input_file.find(".") + 1:].split()[0]
         mol = next(pybel.readfile(format=str(file_extension), filename=str(input_file)))
         mol.localopt(forcefield='uff', steps=10_000)
-        mol.write("xyz", str(input_file) + "_optimization_output_if.xyz")
+        mol.write("xyz", f"../tmp/{input_file}_optimization_output_if.xyz")
 
     elif option == "stk_to_xyz":
         print("optimizing stk_to_xyz")
-        stk.MolWriter().write(input_file, 'input_complex.mol')
-        mol = next(pybel.readfile("mol", "input_complex.mol"))
+        stk.MolWriter().write(input_file, '../tmp/input_complex.mol')
+        mol = next(pybel.readfile("mol", "../tmp/input_complex.mol"))
         mol.localopt(forcefield='uff', steps=10_000)
-        mol.write("xyz", "Optimizer_output_stk_to_xyz.xyz", overwrite="True")
-        os.system("rm -f input_complex.mol")
+        mol.write("xyz", "../tmp/Optimizer_output_stk_to_xyz.xyz", overwrite="True")
+        os.system("rm -f ../tmp/input_complex.mol")
 
     elif option == "stk_to_mol":
         print("optimizing stk_to_mol")
-        stk.MolWriter().write(input_file, 'input_complex.mol')
-        mol = next(pybel.readfile("mol", "input_complex.mol"))
+        stk.MolWriter().write(input_file, '../tmp/input_complex.mol')
+        mol = next(pybel.readfile("mol", "../tmp/input_complex.mol"))
         mol.localopt(forcefield='uff', steps=10_000)
-        mol.write("mol", "Optimizer_output_stk_to_mol.mol", overwrite="True")
-        os.system("rm -f input_complex.mol")
+        mol.write("mol", "../tmp/Optimizer_output_stk_to_mol.mol", overwrite="True")
+        os.system("rm -f ../tmp/input_complex.mol")
 
     elif option == "stk_to_stk":
         print("optimizing stk_to_stk")
-        stk.MolWriter().write(input_file, 'input_complex.mol')
-        mol = next(pybel.readfile("mol", "input_complex.mol"))
+        stk.MolWriter().write(input_file, '../tmp/input_complex.mol')
+        mol = next(pybel.readfile("mol", "../tmp/input_complex.mol"))
         mol.localopt(forcefield='uff', steps=3)
-        mol.write("mol", "Optimizer_output_else.mol", overwrite="True")
-        os.system("rm -f input_complex.mol")
-        return stk.BuildingBlock.init_from_file("Optimizer_output_else.mol", functional_groups=[
+        mol.write("mol", "../tmp/Optimizer_output_else.mol", overwrite="True")
+        os.system("rm -f ../tmp/input_complex.mol")
+        return stk.BuildingBlock.init_from_file("../tmp/Optimizer_output_else.mol", functional_groups=[
             stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), ), ], )
     else:
         print("you messed up the option bit of the optimise function")
-    os.system("rm -f Optimizer_output_else.mol")
+    os.system("rm -f ../tmp/Optimizer_output_else.mol")
 
 
 def planar_ceck(ligand_bb_dict):

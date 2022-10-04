@@ -2,6 +2,8 @@
 
 import pickle
 from src03_Assembly.utilities_assembly import *
+from src03_Assembly.stk_extension import complex_topology_two
+from src03_Assembly.Convert_Buildingblocks import *
 from src02_Pre_Ass_Filtering.constants import get_boxes
 from ase import io
 
@@ -13,7 +15,7 @@ def delete_Hg(complex_):
 
     path = "../tmp/complex.xyz"
     with open(path, "r") as f:
-        new_str = list()
+        new_str = []
         counter = 0
         for line in f.readlines():
             if len(line.split()) > 0:
@@ -41,9 +43,9 @@ def visualize_complex():
     os.system("rm -f ../tmp/complex.xyz")
 
 
-def box_excluder(stk_Building_Block, denticity, threshhold=0.):
+def box_excluder_descision(stk_Building_Block, denticity_, threshhold=0.):
 
-    boxes = get_boxes(denticity=denticity)
+    boxes = get_boxes(denticity=denticity_)
     atom_positions = list(stk_Building_Block.get_atomic_positions())
 
     score = 0
@@ -53,9 +55,12 @@ def box_excluder(stk_Building_Block, denticity, threshhold=0.):
 
         for Box in boxes:
             if Box.point_in_box(point):
-                score += (Box.intensity) / (1.0 + ((Box.sharpness) * ((point[0]) - ((Box.x2 - Box.x1) / 2.0) + Box.x1) ** 2))
-                score += (Box.intensity) / (1.0 + ((Box.sharpness) * ((point[1]) - ((Box.y2 - Box.y1) / 2.0) + Box.y1) ** 2))
-                score += (Box.intensity) / (1.0 + ((Box.sharpness) * ((point[2]) - ((Box.z2 - Box.z1) / 2.0) + Box.z1) ** 2))
+                score += Box.intensity / (1.0 + (
+                            Box.sharpness * ((point[0]) - ((Box.x2 - Box.x1) / 2.0) + Box.x1) ** 2))
+                score += Box.intensity / (1.0 + (
+                            Box.sharpness * ((point[1]) - ((Box.y2 - Box.y1) / 2.0) + Box.y1) ** 2))
+                score += Box.intensity / (1.0 + (
+                            Box.sharpness * ((point[2]) - ((Box.z2 - Box.z1) / 2.0) + Box.z1) ** 2))
                 break
 
     if score > threshhold:
@@ -65,7 +70,111 @@ def box_excluder(stk_Building_Block, denticity, threshhold=0.):
         return True
 
 
+def box_filter(ligand: RCA_Ligand):
+    (metal, charge) = ("Fe", "+2")
+
+    metal_bb = stk.BuildingBlock(smiles='[Hg+2]',
+                                 functional_groups=(stk.SingleAtom(stk.Hg(0, charge=2)) for i in range(6)),
+                                 position_matrix=np.ndarray([0, 0, 0])
+                                 )
+
+    # build the metal block with the new metal atom
+    smiles_str = f"[{metal}{charge}]"
+    stk_metal_func = globals()[f"{metal}"]
+    # stk_metal_func = getattr(__import__("stk"), metal)
+    functional_groups = (stk.SingleAtom(stk_metal_func(0, charge=charge)) for i in range(6))
+    final_metal_bb = stk.BuildingBlock(smiles=smiles_str,
+                                       functional_groups=functional_groups,
+                                       position_matrix=np.ndarray([0, 0, 0])
+                                       )
+
+    lig_assembly_dict = ligand.get_assembly_dict()
+
+    xyz_str = lig_assembly_dict["str"]
+    with open("../tmp/lig_xyz.xyz", "w+") as f:
+        f.write(xyz_str)
+
+    os.system('obabel .xyz ../tmp/lig_xyz.xyz .mol -O  ../tmp/lig_mol.mol')
+
+    ligand_bb = build_ligand(type_list=lig_assembly_dict["type"],
+                             index_list=lig_assembly_dict["index"],
+                             path_="../tmp/lig_mol.mol"
+                             )
+    os.remove("../tmp/lig_mol.mol")
+
+    tri_bb_for_comp = convert_raw_planar_tridentate_bb(metal_bb_=metal_bb, tridentate_bb_=ligand_bb,
+                                                          index_list=ligand.get_assembly_dict()["index"],
+                                                          optimize_=True)
+
+    complex = stk.ConstructedMolecule(topology_graph=complex_topology(metals=final_metal_bb,
+                                                                      ligands=tri_bb_for_comp
+                                                                      )
+                                      )
+
+    complex_ = delete_Hg(complex)
+
+    decision = box_excluder(complex_, denticity_=denticity)
+
+
 if __name__ == "__main__":
+    with open("../data/ligand_dict_test.pickle", "rb") as handle:  # this command initialises the Dictionary of all ligands
+        ligand_dict = pickle.load(handle)
+
+    #
+    #
+    ligand_db = pickle.load(open("../data/ligand_db.pickle", "rb"))
+    # Test-setup
+    # todo: hier spaeter einen for loop einbauen
+    denticity = 3
+    ligand_list = ligand_dict[denticity][:10]
+
+    evaluation = {"pt": 0, "pf": 0, "ft": 0, "ff": 0}
+    #
+    #
+    tmp_clean_up("../tmp/tmp.xyz", "../tmp/tmp.mol")
+
+    ligand = ligand_list[0]
+
+    (metal, charge) = ("Fe", "+2")
+
+    metal_bb = stk.BuildingBlock(smiles='[Hg+2]',
+                                 functional_groups=(stk.SingleAtom(stk.Hg(0, charge=2)) for i in range(6)),
+                                 position_matrix=np.ndarray([0, 0, 0])
+                                 )
+
+    # build the metal block with the new metal atom
+    smiles_str = f"[{metal}{charge}]"
+    stk_metal_func = globals()[f"{metal}"]
+    # stk_metal_func = getattr(__import__("stk"), metal)
+    functional_groups = (stk.SingleAtom(stk_metal_func(0, charge=charge)) for i in range(6))
+    final_metal_bb = stk.BuildingBlock(smiles=smiles_str,
+                                       functional_groups=functional_groups,
+                                       position_matrix=np.ndarray([0, 0, 0])
+                                       )
+
+    lig_assembly_dict = ligand.get_assembly_dict()
+
+    xyz_str = lig_assembly_dict["str"]
+    with open("../tmp/lig_xyz.xyz", "w+") as f:
+        f.write(xyz_str)
+
+    os.system('obabel .xyz ../tmp/lig_xyz.xyz .mol -O  ../tmp/lig_mol.mol')
+
+    ligand_bb = build_ligand(type_list=lig_assembly_dict["type"],
+                             index_list=lig_assembly_dict["index"],
+                             path_="../tmp/lig_mol.mol"
+                             )
+    os.remove("../tmp/lig_mol.mol")
+
+    tri_bb_for_comp = convert_raw_planar_tridentate_bb(metal_bb_=metal_bb, tridentate_bb_=ligand_bb,
+                                                       index_list=ligand.get_assembly_dict()["index"],
+                                                       optimize_=True)
+
+    complex = stk.ConstructedMolecule(topology_graph=complex_topology(metals=final_metal_bb,
+                                                                      ligands=tri_bb_for_comp
+                                                                      )
+                                      )
+    """
 
     with open("../data/ligand_dict.pickle", "rb") as handle:  # this command initialises the Dictionary of all ligands
         ligand_dict = pickle.load(handle)
@@ -126,7 +235,7 @@ if __name__ == "__main__":
 
         complex_ = delete_Hg(complex)
 
-        decision = box_excluder(complex_, denticity=denticity)
+        decision = box_excluder_descision(complex_, denticity_=denticity)
 
         visualize_complex()
 
@@ -144,3 +253,4 @@ if __name__ == "__main__":
 
     for key, item in evaluation.items():
         print(f"number of {key} is {item}\n")
+    """
