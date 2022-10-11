@@ -1,4 +1,4 @@
-from Molecule import RCA_Ligand
+from src.Molecule import RCA_Ligand
 # some global coordinates
 
 #

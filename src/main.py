@@ -1,4 +1,4 @@
-from process import *
+from src.process import LigandDatabase
 
 if __name__ == '__main__':
     """

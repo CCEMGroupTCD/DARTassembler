@@ -5,9 +5,9 @@ from ase import io, neighborlist
 from scipy.sparse.csgraph import connected_components
 from mendeleev import element
 
-from utilities import coordinates_to_xyz_str
-from constants import metals_in_pse, mini_alphabet
-from Molecule import RCA_Molecule, RCA_Ligand
+from src.utilities import coordinates_to_xyz_str
+from src.constants import metals_in_pse, mini_alphabet
+from src.Molecule import RCA_Molecule, RCA_Ligand
 
 
 class Extracted_Molecule:

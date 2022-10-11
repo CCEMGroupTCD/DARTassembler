@@ -1,4 +1,4 @@
-# This is just a setup file
+# todo: convert to yaml
 
 implemented_topologies = [[4, 1, 1],  # ,
                           #[3, 2, 1]#,
