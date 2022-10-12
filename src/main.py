@@ -1,4 +1,6 @@
 from src.process import LigandDatabase
+import pickle
+
 
 if __name__ == '__main__':
     """

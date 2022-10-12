@@ -47,6 +47,7 @@ class Extracted_Molecule:
         self.metal_neighbor_indices = None
         self.neighborList = None
 
+        #
         # removing metal
         self.w_o_metal = RCA_Molecule(self.get_mol_wo_metal())
 
