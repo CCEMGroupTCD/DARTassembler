@@ -30,6 +30,7 @@ def get_all_xyzs():
     return xyzs
 
 
+# todo: removen
 def safe_and_reset(k, relevant_xyzs):
 
     with open(f"../tmp/relevant_xyzs_{k}.pickle", "wb") as handle:
@@ -38,6 +39,7 @@ def safe_and_reset(k, relevant_xyzs):
     return k+1, dict()
 
 
+# todo: removen
 def merge_dicts(k):
 
     full_dict = dict()
@@ -51,14 +53,13 @@ def merge_dicts(k):
     return full_dict
 
 
-def read_tmqm_db():
+def read_local_tmqm_db():
     """
     :return: dict_ {csd_code:coordinates}
     """
     xyzs = get_all_xyzs()
 
     relevant_xyzs = dict()
-    k = 0
 
     for j, xyz in tqdm(enumerate(xyzs)):
 
@@ -76,15 +77,7 @@ def read_tmqm_db():
 
             relevant_xyzs[csd_code] = coordinates
 
-        if j % 100 == 98:
-            k, relevant_xyzs = safe_and_reset(k, relevant_xyzs)
-
-    full_dict = merge_dicts(k)
-
-    return full_dict
-
-    #with open("../tmp/new_xyzs.pickle", "wb") as handle:
-        #pickle.dump(full_dict, handle)
+    return relevant_xyzs
 
 
 def read_tmqm_db_with_partial_charge():

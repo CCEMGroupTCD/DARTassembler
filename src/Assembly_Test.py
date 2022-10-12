@@ -108,7 +108,7 @@ class RandomComplexAssembler:
 
 if __name__ == "__main__":
 
-    RCA = RandomComplexAssembler(database_path="../data/ligand_db.pickle",
+    RCA = RandomComplexAssembler(database_path="../Old/ligand_db.pickle",
                                  store_path="../data/Assembled_Molecules")
 
     for i in range(10):

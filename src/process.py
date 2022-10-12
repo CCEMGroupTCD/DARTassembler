@@ -1,4 +1,4 @@
-from src.read_database import read_tmqm_db
+from src.read_database import read_local_tmqm_db
 from src.Extracted_Molecule import Extracted_Molecule
 from src.Molecule import RCA_Molecule, RCA_Ligand
 from src.utilities import coordinates_to_xyz_str
@@ -13,7 +13,7 @@ class LigandDatabase:
 
     def __init__(self, TestSize=False):
 
-        self.extracted_information = read_tmqm_db()
+        self.extracted_information = read_local_tmqm_db()
 
         if TestSize is True:
             small_relevant_xyzs = dict()
@@ -57,7 +57,7 @@ class LigandDatabase:
         # todo: this should be generalized to a more customizable input system
         return: dict of the type {csd_code: coordinates}
         """
-        return read_tmqm_db()
+        return read_local_tmqm_db()
 
     def get_molecule_lookup_dict(self, path: str = "../data"):
         """

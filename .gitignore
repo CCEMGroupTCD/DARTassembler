@@ -19,3 +19,4 @@
 /data/ligand_db.pickle
 /src/A_Ligand_Filter_Test.py
 /database/tmQM_Extended/
+/data/Charge/charge_dict.pickle
