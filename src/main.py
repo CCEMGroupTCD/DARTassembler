@@ -24,8 +24,8 @@ if __name__ == '__main__':
     ligand_db.filter_duplicates()
 
     if Testing is True:
-        pickle.dump(ligand_db, open("../Old/ligand_db_test.pickle", "wb"))
+        pickle.dump(ligand_db, open("../data/ligand_db_test.pickle", "wb"))
     else:
-        pickle.dump(ligand_db, open("../Old/ligand_db.pickle", "wb"))
+        pickle.dump(ligand_db, open("../data/ligand_db.pickle", "wb"))
 
     print("Ligand DB fully established")
