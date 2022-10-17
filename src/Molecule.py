@@ -5,6 +5,7 @@ import networkx as nx
 from sympy import Point3D, Plane
 import collections
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
+import numpy as np
 
 
 # Package name: RandomComplexAssembler (RCA)
@@ -169,6 +170,8 @@ class RCA_Ligand(RCA_Molecule):
     def node_check(dict1, dict2):
         return dict1["label"] == dict2["label"]
 
+    # todo: is somewhat redundant and not used due to the hashing method, but maybe we could use it for the more accurate
+    #  comparison of graphs
     def __eq__(self, other):
         if not self.same_sum_formula(other):
             return False
@@ -199,3 +202,29 @@ class RCA_Ligand(RCA_Molecule):
     def remove_last_element_in_xyz(self):
         del self.coordinates[max(list(self.coordinates.keys()))]
         self.mol = self.mol_to_asemol()
+
+    # todo: unittests!!
+    def NO_check(self):
+
+        return set(self.get_assembly_dict()["type"]).issubset({"N", "O"})
+
+    def betaH_check(self):
+        """
+        returns True if beta Hydrogen are contained, false if not
+        """
+        A = self.get_adjacency_matrix()
+
+        B = np.matmul(A, A)
+        # The second power of the adjacency matrix, i.e. A^2[i,j] represents the number of paths of length two
+        # from i to j. Hence, as we are only interested in hydrogens that have distance two to our functional atoms
+        # we can make quick use of that
+
+        for functional_index in self.get_assembly_dict()["index"]:
+            for index in self.coordinates.keys():
+
+                if B[functional_index, index] > 0 and self.coordinates[index][0] == "H":
+                    # print("Beta Hydrogen detected")
+                    # self.view_3d()
+                    return True
+
+        return False

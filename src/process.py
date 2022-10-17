@@ -112,6 +112,7 @@ class LigandDatabase:
         """
         self.ligand_dict[1] = get_monodentate_list()
 
+    # todo: Old, is now contained in the filtering stage
     def filter_duplicates(self):
         for denticity, ligand_list in self.full_ligand_dict.items():
             self.ligand_dict[denticity] = list(set(ligand_list))

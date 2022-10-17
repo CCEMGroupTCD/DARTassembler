@@ -20,3 +20,12 @@
 /src/A_Ligand_Filter_Test.py
 /database/tmQM_Extended/
 /data/Charge/charge_dict.pickle
+/tmp/stk_Building_block.xyz
+/tmp/temp_mol.mol
+/tmp/temp_mol_2.mol
+/tmp/temp_xyz.xyz
+/tmp/temp_xyz_2.xyz
+/tmp/tmp.mol
+/data/ligand_db_NO_filtered.pickle
+/data/ligand_dict_NO_and_dup_filtered.pickle
+/src04_Charge/Combinatorical_Approach.py

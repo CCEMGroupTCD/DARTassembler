@@ -3,11 +3,11 @@ import os
 from tqdm import tqdm
 
 
-def get_all_xyzs():
-    '''
+def get_all_xyzs() -> list[list]:
+    """
     reads the two Cambridge database files
-    :return: a list of strings, which essentially splits the database files into seperate molecules
-    '''
+    :return: a list of lists, each list consisting of a list for each line
+    """
     xyzs = list()
 
     for i in [1, 2, 3, 4]:
@@ -28,29 +28,6 @@ def get_all_xyzs():
             enum_counter += n_at + 3
 
     return xyzs
-
-
-# todo: removen
-def safe_and_reset(k, relevant_xyzs):
-
-    with open(f"../tmp/relevant_xyzs_{k}.pickle", "wb") as handle:
-        pickle.dump(relevant_xyzs, handle)
-
-    return k+1, dict()
-
-
-# todo: removen
-def merge_dicts(k):
-
-    full_dict = dict()
-
-    for i in range(k):
-        with open(f"../tmp/relevant_xyzs_{i}.pickle", "rb") as handle:
-            new = pickle.load(handle)
-            full_dict.update(new)
-            os.remove(f"../tmp/relevant_xyzs_{i}.pickle")
-
-    return full_dict
 
 
 def read_local_tmqm_db():
@@ -80,6 +57,27 @@ def read_local_tmqm_db():
     return relevant_xyzs
 
 
+# todo: removen
+def safe_and_reset(k, relevant_xyzs):
+
+    with open(f"../tmp/relevant_xyzs_{k}.pickle", "wb") as handle:
+        pickle.dump(relevant_xyzs, handle)
+
+    return k+1, dict()
+
+
+# todo: removen
+def merge_dicts(k):
+
+    full_dict = dict()
+
+    for i in range(k):
+        with open(f"../tmp/relevant_xyzs_{i}.pickle", "rb") as handle:
+            new = pickle.load(handle)
+            full_dict.update(new)
+            os.remove(f"../tmp/relevant_xyzs_{i}.pickle")
+
+    return full_dict
 def read_tmqm_db_with_partial_charge():
     """
     :return: dict_ {csd_code:coordinates}
