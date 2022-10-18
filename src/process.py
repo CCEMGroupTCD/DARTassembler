@@ -7,6 +7,8 @@ from mendeleev import element
 import pickle
 from tqdm import tqdm
 from ase import io
+import numpy as np
+import pandas as pd
 
 
 class LigandDatabase:
@@ -115,7 +117,22 @@ class LigandDatabase:
     def filter_duplicates(self):
         for denticity, ligand_list in self.full_ligand_dict.items():
             self.ligand_dict[denticity] = list(set(ligand_list))
-
+    
+    def get_df_of_all_ligands(self):
+        """
+        Returns a dataframe with name, denticity, CSD code and type of every ligand in the database.
+        """
+        ligand_props = []
+        for ligand_list in self.ligand_dict.values():
+            for l in ligand_list:
+                ligand_props.append({
+                    'name': l.name,
+                    'denticity': l.denticity,
+                    'csd_code': l.csd_code if hasattr(l, 'csd_code') else np.nan,
+                    'type': l.type
+                })
+        df = pd.DataFrame(ligand_props)
+        return df
 
 
 
