@@ -71,7 +71,7 @@ def optimize(input_file, option: str):  # option will be stk_to_xyz or stk_to_st
 def planar_ceck(ligand_bb_dict):
     for key, (lig, lig_bb) in ligand_bb_dict.items():
         if lig.denticity == 4 or lig.denticity == 3:
-            return lig.check_if_planar()
+            return lig.planar_check()
 
     return False
 
@@ -99,7 +99,7 @@ def ligand_to_mol(ligand: RCA_Ligand, target_path="../tmp/tmp.mol", xyz_path="..
     xyz_str = ligand.get_xyz_file_format_string()
     with open(xyz_path, "w+") as f:
         f.write(xyz_str)
-    os.system(f'obabel .xyz {xyz_path} .mol -O  {target_path}')
+    os.system(f'obabel .xyz {xyz_path} .mol -O  {target_path} ---errorlevel 1')
     return target_path
 
 
@@ -261,7 +261,7 @@ def remove_Hg(input_complex, name: str, path: str, visualize_: bool = True, prin
 def mercury_remover(stk_Building_block):
     print("Removing Temporary Mercury")
     stk.MolWriter().write(stk_Building_block, '../tmp/stk_Building_block.mol')
-    os.system('obabel .mol ../tmp/stk_Building_block.mol .xyz -O  ../tmp/stk_Building_block.xyz')
+    os.system('obabel .mol ../tmp/stk_Building_block.mol .xyz -O  ../tmp/stk_Building_block.xyz ---errorlevel 1')
     os.system("rm -f ../tmp/stk_Building_block.mol")
     path = "../tmp/stk_Building_block.xyz"
     with open(path, "r") as f:
@@ -278,7 +278,7 @@ def mercury_remover(stk_Building_block):
         new_str[0] = str(int(new_str[0]) - counter)
     with open(path, "w+") as f:
         f.write(''.join([elem for elem in new_str]))
-    os.system('obabel .xyz ../tmp/stk_Building_block.xyz .mol -O  ../tmp/stk_Building_block.mol')
+    os.system('obabel .xyz ../tmp/stk_Building_block.xyz .mol -O  ../tmp/stk_Building_block.mol ---errorlevel 1')
     os.system("rm -f stk_Building_block.xyz")
     stk_Building_block1 = stk.BuildingBlock.init_from_file('../tmp/stk_Building_block.mol')
     os.system("rm -f ../tmp/stk_Building_block.mol")
@@ -332,7 +332,7 @@ def Bidentate_Rotator(ligand_bb, ligand):
     stk_Building_Block.write("../tmp/temp_xyz.xyz")
     os.system("echo 'Hg 0.0       0.0        0.0' >> ../tmp/temp_xyz.xyz")
     exec(str(os.system("sed '1 s/.*/" + str(num_atoms + 1) + "/' ../tmp/temp_xyz.xyz >  ../tmp/temp_xyz_2.xyz")))
-    os.system('obabel .xyz ../tmp/temp_xyz_2.xyz .mol -O  ../tmp/temp_mol.mol')
+    os.system('obabel .xyz ../tmp/temp_xyz_2.xyz .mol -O  ../tmp/temp_mol.mol ---errorlevel 1')
     os.system("sed 's/Hg[[:space:]][[:space:]]0[[:space:]][[:space:]]0/Hg  0  2/g' ../tmp/temp_mol.mol > ../tmp/temp_mol_2.mol")
 
     return "../tmp/temp_mol_2.mol"

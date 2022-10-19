@@ -2,9 +2,10 @@
 # is going to become the main in src03
 
 import pickle
-from src03_Assembly.Topology_Assembly_Methods import *
-from process import LigandDatabase
 import random
+
+from src03_Assembly.Topology_Assembly_Methods import *
+from src.LigandDatabase import LigandDatabase
 from src03_Assembly.assembly_setup import list_of_metals, implemented_topologies
 
 

@@ -81,7 +81,7 @@ class RCA_Ligand(RCA_Molecule):
         if 'original_metal' in kwargs.keys():
             self.original_metal = kwargs['original_metal']
 
-    def check_if_planar(self, eps=1):
+    def planar_check(self, eps3=2, eps4=1):
         """
             :param eps: durch try'n'error obtained
             eps für (d=4) -> 1
@@ -97,14 +97,14 @@ class RCA_Ligand(RCA_Molecule):
 
         if self.denticity == 3:
             c1, c2, c3 = Point3D(fc[0]), Point3D(fc[1]), Point3D(fc[2])
-            E = Plane(c1, c2, 0)
-            if E.distance(c3) < eps:
+            E = Plane(c1, c2, Point3D([0, 0, 0]))
+            if round(E.distance(c3)) < eps3:
                 return True
 
         if self.denticity == 4:
             c1, c2, c3, c4 = Point3D(fc[0]), Point3D(fc[1]), Point3D(fc[2]), Point3D(fc[3])
             E = Plane(c1, c2, c3)
-            if E.distance(c4) < eps:
+            if round(E.distance(c4)) < eps4:
                 return True
 
         return False

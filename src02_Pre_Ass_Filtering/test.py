@@ -1,13 +1,13 @@
 # only a testfile to crunch some numbers for the group
 # todo: To be removed
-from src.process import LigandDatabase
+from src.LigandDatabase import LigandDatabase
 from src02_Pre_Ass_Filtering.FilteringStage import FilterHandler
 import pickle
 import numpy as np
 
 
-if __name__ == "__main__":
-    with open("../data/ligand_db_NO_filtered.pickle", "rb") as handle:
+def old_one():
+    with open("../Old/ligand_db_NO_filtered.pickle", "rb") as handle:
         ligand_db = pickle.load(handle)
 
     new_ligand_dict = {}
@@ -24,5 +24,15 @@ if __name__ == "__main__":
     with open("../data/ligand_dict_NO_and_dup_and_betaH_filtered.pickle", "wb") as handle:
         pickle.dump(new_ligand_dict, handle)
 
+
+def old_two():
+    # checking the filtered db
+    pass
+
+
+if __name__ == "__main__":
+    #old_one()
+
+    old_two()
     print("done")
 

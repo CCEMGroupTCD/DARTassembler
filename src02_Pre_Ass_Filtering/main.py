@@ -1,11 +1,11 @@
-from src.process import LigandDatabase
+from src.LigandDatabase import LigandDatabase
 from src02_Pre_Ass_Filtering.FilteringStage import FilterHandler
 import pickle
 
 
 if __name__ == "__main__":
 
-    # Load DB
+    # Load DB, output of src.main
     with open("../data/LigandDatabases/ligand_db.pickle", "rb") as handle:
         ligand_db = pickle.load(handle)
     print("Database loaded")
@@ -20,6 +20,7 @@ if __name__ == "__main__":
     Filter.filter_N_and_O_functional_groups()
     Filter.filter_betaHs()
     Filter.filter_duplicates()
+    Filter.box_excluder_filter()
     print("All filters applied")
 
     #

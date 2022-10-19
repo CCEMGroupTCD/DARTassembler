@@ -9,11 +9,10 @@ import logging
 
 
 def delete_Hg(complex_):
-    stk.MolWriter().write(complex_, '../tmp/complex.xyz')
-    os.system('obabel ../tmp/complex.xyz .xyz -O  ../tmp/complex.xyz')
-    os.system("rm -f complex.mol")
-
+    stk.MolWriter().write(complex_, '../tmp/complex.mol')
+    os.system('obabel .mol ../tmp/complex.mol .xyz -O  ../tmp/complex.xyz ---errorlevel 1')
     path = "../tmp/complex.xyz"
+    os.system("rm -f ../tmp/complex.mol")
     with open(path, "r") as f:
         new_str = []
         counter = 0
@@ -31,7 +30,7 @@ def delete_Hg(complex_):
     with open(path, "w+") as f:
         f.write(''.join([elem for elem in new_str]))
 
-    os.system('obabel .xyz ../tmp/complex.xyz .mol -O  ../tmp/complex.mol')
+    os.system('obabel .xyz ../tmp/complex.xyz .mol -O  ../tmp/complex.mol ---errorlevel 1')
 
     return stk.BuildingBlock.init_from_file('../tmp/complex.mol')
 
@@ -71,6 +70,10 @@ def box_excluder_descision(stk_Building_Block, denticity_, planar=True, threshho
 
 
 def box_filter(ligand: RCA_Ligand, optimize_=True) -> bool:
+    """
+    Returns True if a ligand looks good and can pass
+    and false if not
+    """
     metal, charge = "Fe", "+2"
 
     metal_bb = stk.BuildingBlock(smiles='[Hg+2]',
@@ -94,7 +97,7 @@ def box_filter(ligand: RCA_Ligand, optimize_=True) -> bool:
     with open("../tmp/lig_xyz.xyz", "w+") as f:
         f.write(xyz_str)
 
-    os.system('obabel .xyz ../tmp/lig_xyz.xyz .mol -O  ../tmp/lig_mol.mol')
+    os.system('obabel .xyz ../tmp/lig_xyz.xyz .mol -O  ../tmp/lig_mol.mol ---errorlevel 1')
 
     ligand_bb = build_ligand(type_list=lig_assembly_dict["type"],
                              index_list=lig_assembly_dict["index"],
@@ -103,24 +106,24 @@ def box_filter(ligand: RCA_Ligand, optimize_=True) -> bool:
     os.remove("../tmp/lig_mol.mol")
 
     # build the building blocks
-    if ligand.denticity == 3 and ligand.type == "p":
+    if ligand.denticity == 3 and ligand.planar_check() is True:
         bb_for_comp = convert_raw_planar_tridentate_bb(metal_bb_=metal_bb,
                                                        tridentate_bb_=ligand_bb,
                                                        index_list=ligand.get_assembly_dict()["index"],
                                                        optimize_=True
                                                        )
 
-    elif ligand.denticity == 3 and ligand.type == "np":
+    elif ligand.denticity == 3 and ligand.planar_check() is False:
         logging.info("Not implemented yet")
         print("Not implemented yet")
         return True                     # will always let it through
-    elif ligand.denticity == 4 and ligand.type == "p":
+    elif ligand.denticity == 4 and ligand.planar_check() is True:
         bb_for_comp = convert_raw_planar_tetradentate_bb(metal_bb=metal_bb,
                                                          tetradentate_bb=ligand_bb,
                                                          ligand_=ligand,
                                                          optmize=optimize_
                                                          )
-    elif ligand.denticity == 4 and ligand.type == "np":
+    elif ligand.denticity == 4 and ligand.planar_check() is False:
         print("Not implemented yet")
         return True                     # will always let it through
     elif ligand.denticity == 5:
@@ -144,25 +147,22 @@ def box_filter(ligand: RCA_Ligand, optimize_=True) -> bool:
     #
     # convert the building blocks to topologies
     if ligand.denticity == 5:
-        complex = stk.ConstructedMolecule(topology_graph=complex_topology_two(metals=final_metal_bb,
-                                                                              ligands=bb_for_comp
-                                                                              )
-                                          )
+        complex_ = stk.ConstructedMolecule(topology_graph=complex_topology_two(metals=final_metal_bb,
+                                                                               ligands=bb_for_comp
+                                                                               )
+                                           )
 
-        complex_ = delete_Hg(complex)
+        complex_ = delete_Hg(complex_)
 
         return box_excluder_descision(complex_, denticity_=ligand.denticity)
     else:
-        complex = stk.ConstructedMolecule(topology_graph=complex_topology_three(metals=final_metal_bb,
-                                                                                ligands=bb_for_comp
-                                                                                )
-                                          )
+        complex_ = stk.ConstructedMolecule(topology_graph=complex_topology_three(metals=final_metal_bb,
+                                                                                 ligands=bb_for_comp
+                                                                                 )
+                                           )
 
-        complex_ = delete_Hg(complex)
+        complex_ = delete_Hg(complex_)
 
-        if ligand.type == "np":
-            planar = False
-        else:
-            planar = True
+        return box_excluder_descision(complex_, denticity_=ligand.denticity, planar=ligand.planar_check())
 
-        return box_excluder_descision(complex_, denticity_=ligand.denticity, planar=planar)
+
