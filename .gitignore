@@ -16,7 +16,7 @@
 /tmp/lig_xyz.xyz
 /tmp/new_xyzs.pickle
 /tmp/tmp.xyz
-/data/ligand_db.pickle
+/data/LigandDatabases/ligand_db.pickle
 /src/A_Ligand_Filter_Test.py
 /database/tmQM_Extended/
 /data/Charge/charge_dict.pickle

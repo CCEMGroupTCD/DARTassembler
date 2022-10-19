@@ -72,14 +72,6 @@ class RCA_Ligand(RCA_Molecule):
         self.denticity = denticity
         self.ligand_to_metal = ligand_to_metal
 
-        try:
-            self.type = self.get_type()  # todo: Braucht noch ein bisschen testing
-        except AttributeError as e:
-            print(f"{e}")
-            self.type = "undefined"
-        except Exception as e:
-            raise e
-
         if "csd_code" in kwargs.keys():
             self.csd_code = kwargs['csd_code']
 
@@ -88,17 +80,6 @@ class RCA_Ligand(RCA_Molecule):
 
         if 'original_metal' in kwargs.keys():
             self.original_metal = kwargs['original_metal']
-
-    def get_type(self):
-        if self.denticity == 2 or self.denticity == 1:
-            return 'p'
-        elif self.denticity == 5:
-            return 'np'
-        else:
-            if self.check_if_planar() is True:
-                return 'p'
-            else:
-                return 'np'
 
     def check_if_planar(self, eps=1):
         """

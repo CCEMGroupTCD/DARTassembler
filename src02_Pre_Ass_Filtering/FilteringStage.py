@@ -1,67 +1,86 @@
 from src.process import LigandDatabase
 import pickle
+from copy import deepcopy
 
 
 class FilterHandler:
 
     def __init__(self, database: LigandDatabase):
-        self.full_db = database
+        """
+        We modify the filtered database dict and the filtered database object we initialized in the ligand databse earlier
+        the dict will keep track of all intermediate ligand_dicts
+        and the filtered database will be the quick accesss to the ligand_dict after all filters applied
+        """
+        self.database = database
 
         # add track of applied filters to db object
-        self.full_db.filters_applied = {}           # In order: {1:First filter,...}
+        # by adding an attribute to the ligand DB
+        self.database.filtered_database_dict = {}        # {1 : [Name of the applied filter, database after the step],
+                                                        # 2 : [Name of the applied filter, db after step 2 AND 1, ...}
 
-    def filter_duplicates(self, safe_path=None, i=1):
+        # keeps track of the current filtered db, so that we can apply all filter consecutively
+        # add this as an attribute of the DB as the filterhandler is exclusively working on that object
+        self.database.filtered_database = deepcopy(self.database.full_ligand_dict)
+
+    def filter_duplicates(self):
         """
-        :param safe_path: Storepath for the new LigandDB object, if safe is desired
-        :param i: The position of this filter in the filtering process.
-        """
-
-        # generate a new attribute for the database, i.e. expand it
-        self.full_db.duplicant_filtered_ligand_dict = {}
-
-        for denticity, ligand_list in self.full_db.full_ligand_dict.items():
-            self.full_db.duplicant_filtered_ligand_dict[denticity] = list(set(ligand_list))
-
-        self.full_db.filters_applied[i] = "Duplicant Filter Applied"
-
-        if safe_path is not None:
-            with open(safe_path, "wb") as handle:
-                pickle.dump(self.full_db, handle)
-
-    def filter_N_and_O_functional_groups(self, safe_path=None, i=1):
-        """
-        :param safe_path: Storepath for the new LigandDB object, if safe is desired
-        :param i: The position of this filter in the filtering process.
+        In this step we filter duplicates out of the DB
         """
 
         # generate a new attribute for the database, i.e. expand it
-        self.full_db.NO_filtered_ligand_dict = {}
+        duplicant_filtered_ligand_dict = {}
 
-        for denticity, ligand_list in self.full_db.full_ligand_dict.items():
+        for denticity, ligand_list in self.database.filtered_database.items():
+            duplicant_filtered_ligand_dict[denticity] = list(set(ligand_list))
 
-            self.full_db.NO_filtered_ligand_dict[denticity] = [lig for lig in ligand_list if lig.NO_check() is True]
+        key_ = len(self.database.filtered_database_dict.keys())
+        self.database.filtered_database_dict[key_] = ["Duplicant Filter", duplicant_filtered_ligand_dict]
 
-        self.full_db.filters_applied[i] = "NO Filter Applied"
+        # update the filtered ligand db
+        self.database.filtered_database = duplicant_filtered_ligand_dict
 
-        if safe_path is not None:
-            with open(safe_path, "wb") as handle:
-                pickle.dump(self.full_db, handle)
-
-    def filter_betaHs(self, safe_path=None, i=1):
+    def filter_N_and_O_functional_groups(self):
         """
-        :param safe_path: Storepath for the new LigandDB object, if safe is desired
-        :param i: The position of this filter in the filtering process.
+        Only leave in ligands where we have functional atoms equal to N and/or O
         """
 
         # generate a new attribute for the database, i.e. expand it
-        self.full_db.NO_filtered_ligand_dict = {}
+        no_filtered_ligand_dict = {}
 
-        for denticity, ligand_list in self.full_db.full_ligand_dict.items():
+        for denticity, ligand_list in self.database.filtered_database.items():
+            no_filtered_ligand_dict[denticity] = [lig for lig in ligand_list if lig.NO_check() is True]
 
-            self.full_db.NO_filtered_ligand_dict[denticity] = [lig for lig in ligand_list if lig.betaH_check() is False]
+        key_ = len(self.database.filtered_database_dict.keys())
+        self.database.filtered_database_dict[key_] = ["NO Filter", no_filtered_ligand_dict]
 
-        self.full_db.filters_applied[i] = "NO Filter Applied"
+        # update the filtered ligand db
+        self.database.filtered_database = no_filtered_ligand_dict
 
-        if safe_path is not None:
-            with open(safe_path, "wb") as handle:
-                pickle.dump(self.full_db, handle)
+    def filter_betaHs(self):
+        """
+        Filter out all ligands with beta Hydrogen in it
+        """
+
+        # generate a new attribute for the database, i.e. expand it
+        betaH_filtered_ligand_dict = {}
+
+        for denticity, ligand_list in self.database.filtered_database.items():
+            betaH_filtered_ligand_dict[denticity] = [lig for lig in ligand_list if lig.betaH_check() is False]
+
+        key_ = len(self.database.filtered_database_dict.keys())
+        self.database.filtered_database_dict[key_] = ["beta H Filter", betaH_filtered_ligand_dict]
+
+        # update the filtered ligand db
+        self.database.filtered_database = betaH_filtered_ligand_dict
+
+    def safe(self, safe_path: str):
+        """
+        print results and safe them to local pickle files
+        """
+
+        for key, item in self.database.filtered_database_dict.items():
+            print(f"In the {key} step, filter {item[0]} was applied")
+
+        with open(safe_path, "wb") as file:
+            pickle.dump(self.database, file)
+

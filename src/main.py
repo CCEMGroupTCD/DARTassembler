@@ -26,6 +26,6 @@ if __name__ == '__main__':
     if Testing is True:
         pickle.dump(ligand_db, open("../data/ligand_db_test.pickle", "wb"))
     else:
-        pickle.dump(ligand_db, open("../data/ligand_db.pickle", "wb"))
+        pickle.dump(ligand_db, open("../data/LigandDatabases/ligand_db.pickle", "wb"))
 
     print("Ligand DB fully established")

@@ -27,17 +27,21 @@ class LigandDatabase:
 
         self.extraction_error_count = 0
 
+        # exclusively for later filter stages
+        self.filtered_database_dict = None
+        self.filtered_database = None
+
     def __len__(self):
-        """
-        returns total length of the ligand_dict
-        """
-        if self.ligand_dict == {}:
-            return 0
-        else:
-            len_ = 0
-            for key, _list in self.ligand_dict.items():
-                len_ += len(_list)
-            return len_
+            """
+            returns total length of the ligand_dict
+            """
+            if self.ligand_dict == {}:
+                return 0
+            else:
+                len_ = 0
+                for key, _list in self.ligand_dict.items():
+                    len_ += len(_list)
+                return len_
 
     def __str__(self):
         if self.ligand_dict == {}:

@@ -5,15 +5,24 @@ import pickle
 
 if __name__ == "__main__":
 
-    with open("../data/ligand_db.pickle", "rb") as handle:
+    # Load DB
+    with open("../data/LigandDatabases/ligand_db.pickle", "rb") as handle:
         ligand_db = pickle.load(handle)
+    print("Database loaded")
 
+    #
+    # Init FilterStage
     Filter = FilterHandler(ligand_db)
-
     print("Filter initialized")
 
-    Filter.filter_N_and_O_functional_groups(safe_path="../data/ligand_db_NO_filtered.pickle",
-                                            i=1
-                                            )
+    #
+    # Run the filtering
+    Filter.filter_N_and_O_functional_groups()
+    Filter.filter_betaHs()
+    Filter.filter_duplicates()
+    print("All filters applied")
 
-    print("Done and Not Safed")
+    #
+    # Safe the progress
+    Filter.safe(safe_path="../data/LigandDatabases/ligand_db_w_filters.pickle")
+    print("Filtered and safed")
