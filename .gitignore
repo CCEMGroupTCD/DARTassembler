@@ -29,3 +29,7 @@
 /data/ligand_db_NO_filtered.pickle
 /data/ligand_dict_NO_and_dup_filtered.pickle
 /src04_Charge/Combinatorical_Approach.py
+/tmp/complex.mol
+/tmp/complex.xyz
+/tmp/Optimizer_output_else.mol
+/data/LigandDatabases/ligand_db_w_filters.pickle
