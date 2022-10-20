@@ -1,12 +1,10 @@
-# Todo: Move this file to src03; is here just for the moment due to pickle reasons
-# is going to become the main in src03
-
 import pickle
 import random
 
 from src03_Assembly.Topology_Assembly_Methods import *
 from src.LigandDatabase import LigandDatabase
 from src03_Assembly.assembly_setup import list_of_metals, implemented_topologies
+from src03_Assembly.TransitionMetalComplex import TransitionMetalComplex as TMC
 
 
 class RandomComplexAssembler:
@@ -41,7 +39,7 @@ class RandomComplexAssembler:
             return {}
 
         else:
-            return ligand_db.ligand_dict
+            return ligand_db.filtered_database
 
     def create_random_TMC(self, visualize_: bool, optimize_: bool = False):
         try:
@@ -89,12 +87,8 @@ class RandomComplexAssembler:
                                                           )
 
             if complex_ is not None:
-                remove_Hg(complex_,
-                          name=f"{ligands[0].csd_code}",
-                          visualize_=visualize_,
-                          print_to_xyz=True,
-                          path=self.store_path
-                          )
+                ase_complex, xyz_str = remove_Hg(complex_, visualize_=visualize_)
+                return TMC(mol=ase_complex, metal_symbol=metal, ligands=ligands, xyz_str=xyz_str)
 
             return complex_
 
@@ -106,17 +100,3 @@ class RandomComplexAssembler:
             print(f"Oh. A new error: {e}!!")
             return None
 
-
-if __name__ == "__main__":
-
-    RCA = RandomComplexAssembler(database_path="../Old/ligand_db.pickle",
-                                 store_path="../data/Assembled_Molecules")
-
-    for i in range(10):
-        random_complex = RCA.create_random_TMC(visualize_=True, optimize_=False)
-
-        if random_complex is None:
-            print("None")
-        input("press Enter to continue")
-
-    print("done")

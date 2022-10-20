@@ -6,6 +6,8 @@ from sympy import Point3D, Plane
 import collections
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
 from mendeleev import element
+import numpy as np
+
 
 # Package name: RandomComplexAssembler (RCA)
 class RCA_Molecule:
@@ -20,6 +22,7 @@ class RCA_Molecule:
         """
         self.mol = mol
 
+        self.otheratt = None
     def get_adjacency_matrix(self):
         cutOff = neighborlist.natural_cutoffs(self.mol)
         neighborList = neighborlist.NeighborList(cutOff, self_interaction=False, bothways=True)
@@ -71,14 +74,6 @@ class RCA_Ligand(RCA_Molecule):
         self.denticity = denticity
         self.ligand_to_metal = ligand_to_metal
 
-        try:
-            self.type = self.get_type()  # todo: Braucht noch ein bisschen testing
-        except AttributeError as e:
-            print(f"{e}")
-            self.type = "undefined"
-        except Exception as e:
-            raise e
-
         if "csd_code" in kwargs.keys():
             self.csd_code = kwargs['csd_code']
 
@@ -89,18 +84,7 @@ class RCA_Ligand(RCA_Molecule):
             self.original_metal = kwargs['original_metal']
             self.original_metal_symbol = element(int(self.original_metal)).symbol
 
-    def get_type(self):
-        if self.denticity == 2 or self.denticity == 1:
-            return 'p'
-        elif self.denticity == 5:
-            return 'np'
-        else:
-            if self.check_if_planar() is True:
-                return 'p'
-            else:
-                return 'np'
-
-    def check_if_planar(self, eps=1):
+    def planar_check(self, eps3=2, eps4=1):
         """
             :param eps: durch try'n'error obtained
             eps für (d=4) -> 1
@@ -116,14 +100,14 @@ class RCA_Ligand(RCA_Molecule):
 
         if self.denticity == 3:
             c1, c2, c3 = Point3D(fc[0]), Point3D(fc[1]), Point3D(fc[2])
-            E = Plane(c1, c2, 0)
-            if E.distance(c3) < eps:
+            E = Plane(c1, c2, Point3D([0, 0, 0]))
+            if round(E.distance(c3)) < eps3:
                 return True
 
         if self.denticity == 4:
             c1, c2, c3, c4 = Point3D(fc[0]), Point3D(fc[1]), Point3D(fc[2]), Point3D(fc[3])
             E = Plane(c1, c2, c3)
-            if E.distance(c4) < eps:
+            if round(E.distance(c4)) < eps4:
                 return True
 
         return False
@@ -170,6 +154,8 @@ class RCA_Ligand(RCA_Molecule):
     def node_check(dict1, dict2):
         return dict1["label"] == dict2["label"]
 
+    # todo: is somewhat redundant and not used due to the hashing method, but maybe we could use it for the more accurate
+    #  comparison of graphs
     def __eq__(self, other):
         if not self.same_sum_formula(other):
             return False
@@ -204,3 +190,29 @@ class RCA_Ligand(RCA_Molecule):
     def remove_last_element_in_xyz(self):
         del self.coordinates[max(list(self.coordinates.keys()))]
         self.mol = self.mol_to_asemol()
+
+    # todo: unittests!!
+    def NO_check(self):
+
+        return set(self.get_assembly_dict()["type"]).issubset({"N", "O"})
+
+    def betaH_check(self):
+        """
+        returns True if beta Hydrogen are contained, false if not
+        """
+        A = self.get_adjacency_matrix()
+
+        B = np.matmul(A, A)
+        # The second power of the adjacency matrix, i.e. A^2[i,j] represents the number of paths of length two
+        # from i to j. Hence, as we are only interested in hydrogens that have distance two to our functional atoms
+        # we can make quick use of that
+
+        for functional_index in self.get_assembly_dict()["index"]:
+            for index in self.coordinates.keys():
+
+                if B[functional_index, index] > 0 and self.coordinates[index][0] == "H":
+                    # print("Beta Hydrogen detected")
+                    # self.view_3d()
+                    return True
+
+        return False
