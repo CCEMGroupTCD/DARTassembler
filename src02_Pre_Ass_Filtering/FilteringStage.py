@@ -2,6 +2,7 @@ from src.LigandDatabase import LigandDatabase
 import pickle
 from copy import deepcopy
 from src02_Pre_Ass_Filtering.Box_Excluder_Filter import box_filter
+from src.constants import get_monodentate_list
 from tqdm import tqdm
 
 
@@ -122,6 +123,9 @@ class FilterHandler:
 
         # update the filtered ligand db
         self.database.filtered_database = box_filtered_ligand_dict
+
+    def readd_monodentates(self):
+        self.database.filtered_database[1] = get_monodentate_list()
 
     def safe(self, safe_path: str):
         """

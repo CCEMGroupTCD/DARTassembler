@@ -1,4 +1,7 @@
+# todo: tbd
+
 from src.Molecule import RCA_Molecule
+from datetime import datetime
 
 
 class TransitionMetalComplex:
@@ -8,6 +11,17 @@ class TransitionMetalComplex:
     """
 
     def __init__(self):
-        #todo: Yet to be implemented
         self.molecule: RCA_Molecule
         self.functional_groups: dict
+
+        self.name: str
+        self.xyz_str: str
+
+        self.date_of_creation: datetime
+    def print_to_xyz(self, path):
+        """
+        create an xyz file for the complex at the given path
+        """
+        pass
+
+

@@ -21,6 +21,7 @@ class RCA_Molecule:
         """
         self.mol = mol
 
+        self.otheratt = None
     def get_adjacency_matrix(self):
         cutOff = neighborlist.natural_cutoffs(self.mol)
         neighborList = neighborlist.NeighborList(cutOff, self_interaction=False, bothways=True)

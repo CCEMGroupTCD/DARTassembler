@@ -21,6 +21,7 @@ if __name__ == "__main__":
     Filter.filter_betaHs()
     Filter.filter_duplicates()
     Filter.box_excluder_filter()
+    Filter.readd_monodentates()             # in case they got filtered out
     print("All filters applied")
 
     #
