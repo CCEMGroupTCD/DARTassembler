@@ -37,4 +37,5 @@ if __name__ == '__main__':
     df.to_csv('../data/ligand_db_test.csv', index=False)
     
     old_df = pd.read_csv('../data/Felix_original_ligand_db_test.csv').sort_values('name').reset_index(drop=True)
-    pd.testing.assert_frame_equal(df, old_df, check_like=True)
+    pd.testing.assert_frame_equal(df[old_df.columns], old_df, check_like=True)
+    print('Ligand database same as old database.')

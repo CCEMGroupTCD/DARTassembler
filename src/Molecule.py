@@ -5,7 +5,7 @@ import networkx as nx
 from sympy import Point3D, Plane
 import collections
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
-
+from mendeleev import element
 
 # Package name: RandomComplexAssembler (RCA)
 class RCA_Molecule:
@@ -87,6 +87,7 @@ class RCA_Ligand(RCA_Molecule):
 
         if 'original_metal' in kwargs.keys():
             self.original_metal = kwargs['original_metal']
+            self.original_metal_symbol = element(int(self.original_metal)).symbol
 
     def get_type(self):
         if self.denticity == 2 or self.denticity == 1:

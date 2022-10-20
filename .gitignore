@@ -1,3 +1,4 @@
+*.idea
 *.pyc 
 /data/csd_ase_dict.pickle
 /data/ligand_dict.pickle

@@ -127,8 +127,9 @@ class LigandDatabase:
             for l in ligand_list:
                 ligand_props.append({
                     'name': l.name,
-                    'denticity': l.denticity,
                     'csd_code': l.csd_code if hasattr(l, 'csd_code') else np.nan,
+                    'original_metal_symbol': l.original_metal_symbol if hasattr(l, 'original_metal_symbol') else np.nan,
+                    'denticity': l.denticity,
                     'type': l.type
                 })
         df = pd.DataFrame(ligand_props)
