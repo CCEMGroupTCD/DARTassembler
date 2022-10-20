@@ -4,6 +4,7 @@ import random
 from src03_Assembly.Topology_Assembly_Methods import *
 from src.LigandDatabase import LigandDatabase
 from src03_Assembly.assembly_setup import list_of_metals, implemented_topologies
+from src03_Assembly.TransitionMetalComplex import TransitionMetalComplex as TMC
 
 
 class RandomComplexAssembler:
@@ -86,12 +87,8 @@ class RandomComplexAssembler:
                                                           )
 
             if complex_ is not None:
-                remove_Hg(complex_,
-                          name=f"{ligands[0].csd_code}",
-                          visualize_=visualize_,
-                          print_to_xyz=True,
-                          path=self.store_path
-                          )
+                ase_complex, xyz_str = remove_Hg(complex_, visualize_=visualize_)
+                return TMC(mol=ase_complex, metal_symbol=metal, ligands=ligands, xyz_str=xyz_str)
 
             return complex_
 

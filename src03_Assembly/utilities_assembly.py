@@ -228,7 +228,7 @@ def penta_as_tetra(ligand_bb, ligand):
     return penta_bb_temp, position_index, atom_ids_
 
 
-def remove_Hg(input_complex, name: str, path: str, visualize_: bool = True, print_to_xyz=True, return_ase=False):
+def remove_Hg(input_complex, visualize_: bool = True):
 
     stk.XyzWriter().write(input_complex, '../tmp/input_complex.xyz')
     with open('../tmp/input_complex.xyz', "r+") as file:
@@ -243,19 +243,14 @@ def remove_Hg(input_complex, name: str, path: str, visualize_: bool = True, prin
                     new_lines.append(line)
         new_lines[0] = f"{int(lines[0]) - counter}\n"
 
-    if print_to_xyz is True:
-        with open(f'{path}/{name}.xyz', "w+") as file:
-            file.write(''.join(new_lines))
+    with open('../tmp/input_complex.xyz', "w+") as file:
+        file.write(''.join(new_lines))
+    mol_ = io.read('../tmp/input_complex.xyz')
+    rca_mol = RCA_Molecule(mol=mol_)
+    if visualize_ is True:
+        rca_mol.view_3d()
 
-    if visualize_ is True or return_ase is True:
-        with open('../tmp/input_complex.xyz', "w+") as file:
-            file.write(''.join(new_lines))
-        mol_ = io.read('../tmp/input_complex.xyz')
-        ase_mol = RCA_Molecule(mol=mol_)
-        if visualize_ is True:
-            ase_mol.view_3d()
-        if return_ase is True:
-            return ase_mol
+    return rca_mol, ''.join(new_lines)
 
 
 def mercury_remover(stk_Building_block):
