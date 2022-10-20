@@ -183,7 +183,11 @@ class RCA_Ligand(RCA_Molecule):
         return not self.__eq__(other)
 
     def __hash__(self):
-        return hash(graph_hash(self.get_graph()))
+        assert not (hasattr(self, 'graph') or hasattr(self, 'graph_hash') or hasattr(self, 'hash'))
+        self.graph = self.get_graph()
+        self.graph_hash = graph_hash(self.graph)
+        self.hash = hash(self.graph_hash)
+        return self.hash
 
     def mol_to_asemol(self):
         self.print_to_xyz(path="../tmp/tmp.xyz")

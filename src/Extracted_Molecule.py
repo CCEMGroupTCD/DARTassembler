@@ -16,7 +16,7 @@ class Extracted_Molecule:
     in an object of the class "Extracted Molecule"
     """
 
-    def __init__(self, coordinates: dict, csd_code: str):
+    def __init__(self, coordinates: dict, csd_code: str, atomic_properties: dict={}, global_properties: dict={}):
 
         # read basic properties from xyz_file type class
         #
@@ -27,6 +27,9 @@ class Extracted_Molecule:
         self.csd_code = csd_code
         self.atomic_numbers = self.complete.mol.get_atomic_numbers()
         self.full_coordinates = coordinates
+        
+        self.atomic_properties = atomic_properties
+        self.global_properties = global_properties
 
         #
         # keeps track of errors
