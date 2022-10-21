@@ -9,7 +9,7 @@ import numpy as np
 import io
 from tqdm import tqdm
 
-def get_molecule_info_from_xyz_file(xyz_file_str):
+def get_molecule_info_from_tmQM_xyz_file(xyz_file_str: str):
     """Parses the first two lines of the xyz file to return multiple global molecular properties.
     """
     lines = xyz_file_str.split('\n')
@@ -56,7 +56,7 @@ def break_file_into_chunks(single_file_path: str, save_dir_path: str, n_chunks: 
     :param n_chunks:
     :param out_filename:
     :param break_on:
-    :return:
+    :return: None
     """
     single_file_path = Path(single_file_path)
     filename = single_file_path.name
@@ -86,9 +86,21 @@ def break_file_into_chunks(single_file_path: str, save_dir_path: str, n_chunks: 
 
 def array2tabularstr(array):
     return '\n'.join(['\t'.join(col) for col in array])
-def combine_atomic_property_files(in_file1: str, in_file2: str, out_file_path: str, sep1='\n\n', sep2='\n\n', skip_header1=0, skip_header2=0, skip_footer1=0, skip_footer2=0, in_column_sep=None, out_column_sep='\t'):
+
+def get_atomic_properties_filestr(num_atoms, mol_id, column_names, values, sep='  ===  '):
+    comment = ''
+    column_names = [mol_id] + column_names + [comment]
+    column_names_str = sep.join(column_names)
+    header = f'{num_atoms}' + '\n' + column_names_str
+    
+    assert num_atoms == len(values)
+    new_file_str = array2tabularstr(values)
+    new_file_str = header + '\n' + new_file_str
+    return new_file_str
+
+def combine_atomic_property_files(in_file1: str, in_file2: str, out_file_path: str, column_names: list, num_atoms_and_mol_id_func, sep1='\n\n', sep2='\n\n', skip_header1=0, skip_header2=0, skip_footer1=0, skip_footer2=0, in_column_sep=None):
     """
-    Combines several files with atomic properties into one file. Assumes that they all atoms and all molecules are sorted in exactly the same way.
+    Combines several files with atomic properties into one file. Assumes that they all atoms and all molecules are sorted in exactly the same way. Currently still tmQM hardcoded (see comment).
     """
     atomlabel_col = 0
     with open(in_file1, 'r') as file1:
@@ -120,20 +132,20 @@ def combine_atomic_property_files(in_file1: str, in_file2: str, out_file_path: s
                 columns2 = columns2[:,atomlabel_col+1:]
                 all_columns = np.concatenate([columns1, columns2], axis=1)
                 
-                new_file_str = array2tabularstr(all_columns)
-                new_file_str = header1 + '\n' +  new_file_str
-                all_combined_files.append(new_file_str)
+                num_atoms, mol_id = num_atoms_and_mol_id_func(f1, f2)
+                new_filestr = get_atomic_properties_filestr(
+                                                            num_atoms=num_atoms,
+                                                            mol_id=mol_id,
+                                                            column_names=column_names,
+                                                            values=all_columns
+                                                            )
+                all_combined_files.append(new_filestr)
                 
     total_file = sep1.join(all_combined_files)
     with open(out_file_path, 'w') as outfile:
         outfile.write(total_file)
         
     return
-            
-            
-            
-            
-        
     
 class tmQM():
     
@@ -161,7 +173,7 @@ class tmQM():
     
         all_molecule_infos = []
         for xyz_file_str in all_xyz_files:
-            results = get_molecule_info_from_xyz_file(xyz_file_str)
+            results = get_molecule_info_from_tmQM_xyz_file(xyz_file_str)
             all_molecule_infos.append(results)
         
         df_all_molecules_from_xyz = pd.DataFrame(all_molecule_infos)
@@ -177,7 +189,7 @@ class tmQM():
         
         all_molecule_infos = []
         for xyz_file_str in all_xyz_files:
-            results = get_molecule_info_from_xyz_file(xyz_file_str)
+            results = get_molecule_info_from_tmQM_xyz_file(xyz_file_str)
             all_molecule_infos.append(results)
         
             CSD_code = results['CSD_code']
@@ -195,7 +207,10 @@ class tmQM():
         assert len(metal) == 1
         metal = metal[0]
         return metal
-    
+
+    def tmQM_num_atoms_and_mol_id_func(self, xyz_file_str: str, q_file_str: str):
+        infos = get_molecule_info_from_tmQM_xyz_file(xyz_file_str)
+        return infos['num_atoms'], infos['CSD_code']
     def make_data_better_available(self):
         print('Extract global molecular information from xyz files.')
         df_all_molecules_from_xyz = self.extract_molecule_infos_from_xyz_files()
@@ -217,6 +232,7 @@ class tmQM():
         xyz_skip_footer = 0
         q_n_comment_rows = 1
         q_skip_footer = 1
+        column_names = ['atom', 'x', 'y', 'z', 'partial_charge']
         self.atomic_properties_dir_path.mkdir(parents=True, exist_ok=True)
         combine_atomic_property_files(
                                         in_file1=self.all_xyz_path,
@@ -225,7 +241,9 @@ class tmQM():
                                         skip_header1=xyz_n_comment_rows,
                                         skip_header2=q_n_comment_rows,
                                         skip_footer1=xyz_skip_footer,
-                                        skip_footer2=q_skip_footer
+                                        skip_footer2=q_skip_footer,
+                                        column_names=column_names,
+                                        num_atoms_and_mol_id_func=self.tmQM_num_atoms_and_mol_id_func
                                         )
         
         n_chunks = 5
