@@ -3,6 +3,7 @@
 /data/csd_ase_dict.pickle
 /data/ligand_dict.pickle
 /data/new_xyzs.pickle
+/database/tmQM/raw_data
 /Old/
 /Debugging_and_Improvements/
 /__init__.py

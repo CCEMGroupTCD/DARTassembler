@@ -16,20 +16,19 @@ class Extracted_Molecule:
     in an object of the class "Extracted Molecule"
     """
 
-    def __init__(self, coordinates: dict, csd_code: str, atomic_properties: dict={}, global_properties: dict={}):
+    def __init__(self, coordinates: dict, csd_code: str, atomic_props: dict={}, global_props: dict={}):
 
         # read basic properties from xyz_file type class
         #
         with open("../tmp/tmp.xyz", "w+") as text_file:
             text_file.write(coordinates_to_xyz_str(coordinates=coordinates))
 
-        self.complete = RCA_Molecule(io.read("../tmp/tmp.xyz"))
+        self.complete = RCA_Molecule(mol=io.read("../tmp/tmp.xyz"), atomic_props=atomic_props, global_props=global_props)
         self.csd_code = csd_code
         self.atomic_numbers = self.complete.mol.get_atomic_numbers()
         self.full_coordinates = coordinates
         
-        self.atomic_properties = atomic_properties
-        self.global_properties = global_properties
+
 
         #
         # keeps track of errors

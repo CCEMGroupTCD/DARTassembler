@@ -16,13 +16,14 @@ class RCA_Molecule:
     Added by some basic functionality
     """
 
-    def __init__(self, mol: Atoms):
+    def __init__(self, mol: Atoms, atomic_props: dict, global_props: dict):
         """
         an ase version of the molecules we have
         """
         self.mol = mol
-
-        self.otheratt = None
+        self.atomic_props = atomic_props
+        self.global_props = global_props
+        
     def get_adjacency_matrix(self):
         cutOff = neighborlist.natural_cutoffs(self.mol)
         neighborList = neighborlist.NeighborList(cutOff, self_interaction=False, bothways=True)
