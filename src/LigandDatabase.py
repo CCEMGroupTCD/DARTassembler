@@ -123,15 +123,14 @@ class LigandDatabase:
         Returns a dataframe with name, denticity, CSD code and type of every ligand in the database.
         """
         ligand_props = []
-        for ligand_list in self.ligand_dict.values():
+        for ligand_list in self.full_ligand_dict.values():
             for l in ligand_list:
                 ligand_props.append({
                     'name': l.name,
                     'csd_code': l.csd_code if hasattr(l, 'csd_code') else np.nan,
                     'original_metal_symbol': l.original_metal_symbol if hasattr(l, 'original_metal_symbol') else np.nan,
-                    'denticity': l.denticity,
-                    'type': l.type
-                })
+                    'denticity': l.denticity
+                    })
         df = pd.DataFrame(ligand_props)
         return df
 

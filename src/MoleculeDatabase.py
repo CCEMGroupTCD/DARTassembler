@@ -8,19 +8,22 @@ from copy import deepcopy
 import io
 import numpy as np
 from tqdm import tqdm
-from pymatgen.core import Composition
+from Molecule import RCA_Molecule, RCA_Ligand
+from Extracted_Molecule import Extracted_Molecule
+import json
 
 ATOMIC_PROPERTIES_COLUMN_SEPARATOR = '  ===  '
 
 class MoleculeDatabase:
     
-    def __init__(self, data_path, id_col):
+    def __init__(self, data_path: str, id_col: str, TestSize=False):
         self.data_path = data_path
         
         self.global_props_path = Path(self.data_path, 'global_mol_properties.csv')
         self.atomic_props_dir = Path(self.data_path, 'atomic_properties')
         
         self.id_col = id_col
+        self.test_size = TestSize
         
         self.has_df = False
         self.has_atomic_props = False
@@ -60,11 +63,15 @@ class MoleculeDatabase:
         
     def read_single_atomic_properties_filestring(self, filestr: str,):
         num_atoms, mol_id, col_names, comment = self.read_atomic_properties_file_header(filestr)
+        
         file = io.StringIO(filestr)
         txt_array = np.genfromtxt(file, skip_header=2, dtype=str)
         atoms, value_array = txt_array[:,0], txt_array[:,1:].astype(float)
+        
         col_names.pop(0)
-        values = {name: column for name, column in zip(col_names, value_array.T)}
+        values = {name: column.tolist() for name, column in zip(col_names, value_array.T)}
+        atoms = [str(a) for a in atoms]     # numpy to regular python list of strings for json compatibility
+        
         assert num_atoms == len(value_array) and num_atoms == len(atoms), 'Number of atoms specified in atomic properties file is not equal to the real number of atoms included.'
         return mol_id, atoms, values, comment
         
@@ -89,9 +96,11 @@ class MoleculeDatabase:
         :return: atomic properties (dict)
         """
         all_atomic_props = {}
+        
         pattern = Path(self.atomic_props_dir, '*.xyz')
         self.all_atomic_props_paths = sorted(glob.glob(str(pattern)))
         print(f'Found {len(self.all_atomic_props_paths)} atomic property files. Start reading in.')
+        
         for atm_path in self.all_atomic_props_paths:
             atomic_props = self.read_full_atomic_properties_file(path=atm_path)
             
@@ -102,6 +111,31 @@ class MoleculeDatabase:
         self.has_atomic_props = True
         return all_atomic_props
     
+    def save_atomic_properties(self, outpath=None):
+        if not self.has_atomic_props:
+            self.get_atomic_properties()
+        
+        self.atomic_properties_json = outpath or Path(self.atomic_props_dir, 'atomic_properties.json')
+        with open(self.atomic_properties_json, 'w') as file:
+            json.dump(deepcopy(self.atomic_props), file)
+            
+        print(f'Saved {self.atomic_properties_json}.')
+        return
+    
+    def load_atomic_properties(self, json_path):
+        with open(json_path, 'r') as file:
+            self.atomic_props = json.load(file)
+        
+        return self.atomic_props
+    
+    # def get_Extracted_Molecule(self, mol_id) -> Extracted_Molecule:
+    #     if not self.has_atomic_props:
+    #         self.get_atomic_properties()
+    #     atm = self.atomic_props[mol_id]
+    #
+    #
+    #     return Extracted_Molecule()
+    
     
         
             
@@ -110,11 +144,13 @@ class MoleculeDatabase:
 if __name__ == '__main__':
     
     id_col = 'CSD_code'
+    
     tmqm = MoleculeDatabase(data_path='../database/tmQM/data', id_col=id_col)
-    df = tmqm.get_global_properties()
-    #atm = tmqm.get_atomic_properties()
-    ids = tmqm.get_all_molecular_ids()
-
+    # df = tmqm.get_global_properties()
+    # atm = tmqm.get_atomic_properties()
+    # ids = tmqm.get_all_molecular_ids()
+    # mol = tmqm.get_Extracted_Molecule('WIXKOE')
+    #tmqm.save_atomic_properties()
     print('Done!')
 
         

@@ -16,7 +16,7 @@ class RCA_Molecule:
     Added by some basic functionality
     """
 
-    def __init__(self, mol: Atoms, atomic_props: dict, global_props: dict):
+    def __init__(self, mol: Atoms, atomic_props: dict={}, global_props: dict={}):
         """
         an ase version of the molecules we have
         """

@@ -12,7 +12,7 @@ if __name__ == '__main__':
     denticity_numbers: Denticities we are interested in
     
     """
-    Testing = True
+    Testing = False
 
     ligand_db = LigandDatabase(TestSize=Testing)
 
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     ligand_db.add_monodentate_ligands()
 
     if Testing is True:
-        pickle.dump(ligand_db, open("../Old/ligand_db_test.pickle", "wb"))
+        pickle.dump(ligand_db, open("../data/LigandDatabases/ligand_db_test.pickle", "wb"))
     else:
         pickle.dump(ligand_db, open("../data/LigandDatabases/ligand_db.pickle", "wb"))
 
@@ -31,8 +31,8 @@ if __name__ == '__main__':
     
     
     df = ligand_db.get_df_of_all_ligands().sort_values('name').reset_index(drop=True)
-    df.to_csv('../data/ligand_db_test.csv', index=False)
-    
-    old_df = pd.read_csv('../data/Felix_original_ligand_db_test.csv').sort_values('name').reset_index(drop=True)
-    pd.testing.assert_frame_equal(df[old_df.columns], old_df, check_like=True)
-    print('Ligand database same as old database.')
+    df.to_csv('../data/ligand_db.csv', index=False)
+    #
+    # old_df = pd.read_csv('../data/221021_Felix_original_ligand_db_test.csv').sort_values('name').reset_index(drop=True)
+    # pd.testing.assert_frame_equal(df[old_df.columns], old_df, check_like=True)
+    # print('Ligand database same as old database.')
