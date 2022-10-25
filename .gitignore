@@ -37,3 +37,5 @@
 /tmp/Optimizer_output_else.mol
 /data/LigandDatabases/ligand_db_w_filters.pickle
 data/*Felix_original*
+database/tmQM/data/atomic_properties/atomic_properties.json
+/data/*
