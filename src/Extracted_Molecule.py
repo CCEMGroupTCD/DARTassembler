@@ -153,11 +153,11 @@ class Extracted_Molecule:
         # to which componenent the neighbors of the metal belong to
         neighbor_conn_comp_list = [connected_comps[1][i] for i in self.metal_neighbor_indices_wo_m]
 
-        denticity_dict = {item: neighbor_conn_comp_list.count(item) for item in
+        self.denticity_dict = {item: neighbor_conn_comp_list.count(item) for item in
                           neighbor_conn_comp_list}  # component:denticity
 
         #  todo: Kann eigentlich weg
-        if sum(denticity_dict.values()) > 6:
+        if sum(self.denticity_dict.values()) > 6:
             self.status.append("Too much bindings evaluated")
 
         #
@@ -168,7 +168,7 @@ class Extracted_Molecule:
             self.modified_coordinates = self.modify_coordinates()
 
             # iterieren über alle möglichen liganden
-            for conn_comp_number, conn_comp_denticity in denticity_dict.items():
+            for conn_comp_number, conn_comp_denticity in self.denticity_dict.items():
                 if conn_comp_denticity in denticity_numbers:
 
                     #
@@ -183,12 +183,19 @@ class Extracted_Molecule:
                     #
                     #
                     ligand_coordinates = {i: self.modified_coordinates[index] for i, index in enumerate(ligand_index_list)}
+                    
+                    # Get partial charges of ligand
+                    ligand_atomic_props = {}
+                    for name, props in self.complete.atomic_props.items():
+                        ligand_atomic_props[name] = {i: props[i] for i in ligand_index_list}
+                    
                     ligand = RCA_Ligand(coordinates=ligand_coordinates,
                                         ligand_to_metal=ligand_to_metal,
                                         original_metal=self.original_metal,
                                         denticity=conn_comp_denticity,
                                         name=f'CSD-{self.csd_code}-0{conn_comp_denticity}-{mini_alphabet[j]}',
-                                        csd_code=self.csd_code
+                                        csd_code=self.csd_code,
+                                        atomic_props=ligand_atomic_props
                                         )
 
                     j += 1

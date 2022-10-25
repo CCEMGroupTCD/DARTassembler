@@ -24,27 +24,65 @@ class RCA_Molecule:
         self.atomic_props = atomic_props
         self.global_props = global_props
         
+    def __eq__(self, other):
+        if not self.same_sum_formula(other):
+            return False
+
+        if nx.is_isomorphic(self.get_graph(), other.get_graph(), node_match=self.node_check):
+            return True
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        assert not (hasattr(self, 'graph') or hasattr(self, 'graph_hash') or hasattr(self, 'hash'))
+        self.get_graph()
+        self.graph_hash = graph_hash(self.graph, iterations=3, digest_size=16)
+        self.hash = hash(self.graph_hash)
+        return self.hash
+    
+    def same_sum_formula(self, other):
+        sum_formula_1 = [a[0] for a in self.coordinates.values()]
+        sum_formula_2 = [a[0] for a in other.coordinates.values()]
+
+        return collections.Counter(sum_formula_1) == collections.Counter(sum_formula_2)
+    
+    @staticmethod
+    def node_check(dict1, dict2):
+        return dict1["label"] == dict2["label"]
+    
     def get_adjacency_matrix(self):
         cutOff = neighborlist.natural_cutoffs(self.mol)
         neighborList = neighborlist.NeighborList(cutOff, self_interaction=False, bothways=True)
         neighborList.update(self.mol)
 
         return neighborList.get_connectivity_matrix(sparse=False)
-
+    
+    def has_graph(self):
+        return hasattr(self, 'graph')
+    
+    def has_graph_hash(self):
+        return hasattr(self, 'graph_hash')
     def get_graph(self):
         """
         get the graph representing the molecule as a networkx graph
         returns a labeled, undirected graph
         """
+        if self.has_graph():
+            return self.graph
+        
         adjacency_matrix = self.get_adjacency_matrix()
         labels = {i: el for i, el in enumerate(self.mol.get_chemical_symbols())}
 
-        gr = nx.Graph(adjacency_matrix)
+        self.graph = nx.Graph(adjacency_matrix)
 
-        for node in gr.nodes():
-            gr.nodes[node]["label"] = labels[node]
-
-        return gr
+        for node in self.graph.nodes():
+            self.graph.nodes[node]["label"] = labels[node]
+        
+        return self.graph
+    
 
     def view_graph(self):
         """
@@ -67,9 +105,11 @@ class RCA_Ligand(RCA_Molecule):
     Ligands need a little more information, hence we need to expand the RCA_Molecule class
     """
 
-    def __init__(self, coordinates: dict, denticity: int, ligand_to_metal: list, **kwargs):
+    def __init__(self, coordinates: dict, denticity: int, ligand_to_metal: list, atomic_props: dict={}, global_props: dict={}, **kwargs):
         super().__init__(Atoms([coord[0] for coord in coordinates.values()],
-                               positions=[coord[1] for coord in coordinates.values()]))
+                               positions=[coord[1] for coord in coordinates.values()]),
+                         atomic_props=atomic_props,
+                         global_props=global_props)
 
         self.coordinates = coordinates
         self.denticity = denticity
@@ -144,37 +184,6 @@ class RCA_Ligand(RCA_Molecule):
         dict_["str"] = self.get_xyz_file_format_string()
 
         return dict_
-
-    def same_sum_formula(self, other):
-        sum_formula_1 = [a[0] for a in self.coordinates.values()]
-        sum_formula_2 = [a[0] for a in other.coordinates.values()]
-
-        return collections.Counter(sum_formula_1) == collections.Counter(sum_formula_2)
-
-    @staticmethod
-    def node_check(dict1, dict2):
-        return dict1["label"] == dict2["label"]
-
-    # todo: is somewhat redundant and not used due to the hashing method, but maybe we could use it for the more accurate
-    #  comparison of graphs
-    def __eq__(self, other):
-        if not self.same_sum_formula(other):
-            return False
-
-        if nx.is_isomorphic(self.get_graph(), other.get_graph(), node_match=self.node_check):
-            return True
-        else:
-            return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
-    def __hash__(self):
-        assert not (hasattr(self, 'graph') or hasattr(self, 'graph_hash') or hasattr(self, 'hash'))
-        self.graph = self.get_graph()
-        self.graph_hash = graph_hash(self.graph)
-        self.hash = hash(self.graph_hash)
-        return self.hash
 
     def mol_to_asemol(self):
         self.print_to_xyz(path="../tmp/tmp.xyz")
