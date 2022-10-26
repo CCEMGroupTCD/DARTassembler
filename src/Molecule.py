@@ -37,7 +37,6 @@ class RCA_Molecule:
         return not self.__eq__(other)
 
     def __hash__(self):
-        assert not (hasattr(self, 'graph') or hasattr(self, 'graph_hash') or hasattr(self, 'hash'))
         self.get_graph()
         self.graph_hash = graph_hash(self.graph, iterations=3, digest_size=16)
         self.hash = hash(self.graph_hash)

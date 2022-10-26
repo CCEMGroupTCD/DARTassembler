@@ -4,10 +4,64 @@ from scipy.spatial.transform import Rotation as R
 from ase import io, neighborlist
 from scipy.sparse.csgraph import connected_components
 from mendeleev import element
+from pymatgen.core.periodic_table import Element as Pymatgen_Element
 
 from src.utilities import coordinates_to_xyz_str
 from src.constants import metals_in_pse, mini_alphabet
 from src.Molecule import RCA_Molecule, RCA_Ligand
+
+
+def original_xyz_indices_to_indices_wo_metal(orig_coordinates: dict) -> list:
+    """
+    Converts the indices of atoms of the original xyz files to the new indices when the metal atom is deleted from the xyz. That means all atoms after the metal shift one index up.
+    :param orig_coordinates: Coordinates of original xyz file
+    :return: Dictionary mapping original xyz indices to new wo_metal indices
+    """
+    orig_indices = [(idx, l[0]) for idx, l in orig_coordinates.items()]
+    
+    orig_to_wo_metal_indices = {}
+    counter = 0
+    for orig_idx, el in orig_indices:
+        
+        is_metal = Pymatgen_Element(el).is_metal
+        if is_metal:
+            metal_idx = orig_idx
+            continue
+        
+        orig_to_wo_metal_indices[orig_idx] = counter
+        counter += 1
+    
+    # Double checking.
+    assert len(orig_to_wo_metal_indices) == len(orig_indices) - 1
+    for orig_idx, new_idx in orig_to_wo_metal_indices.items():
+        if orig_idx < metal_idx:
+            assert orig_idx == new_idx
+        elif orig_idx == metal_idx:
+            assert not metal_idx in orig_to_wo_metal_indices
+        else:
+            assert orig_idx == new_idx + 1
+    
+    return orig_to_wo_metal_indices
+
+
+def convert_atomic_props_from_original_xyz_indices_to_indices_wo_metal(atomic_props, orig_coords):
+    """
+    Changes the indices of an atomic property dictionary in order to match the new indices when the metal is deleted in the xyz.
+    :param atomic_props:
+    :param orig_coords:
+    :return:
+    """
+    orig_to_wo_metal_indices = original_xyz_indices_to_indices_wo_metal(orig_coords)
+    
+    atomic_props_new_idc = {}
+    for orig_idx, prop in atomic_props.items():
+        if orig_idx in orig_to_wo_metal_indices:
+            new_idx = orig_to_wo_metal_indices[orig_idx]
+            atomic_props_new_idc[new_idx] = prop
+    
+    all_new_elements = [props[0] for props in atomic_props_new_idc.values()]
+    assert not any([Pymatgen_Element(el).is_metal for el in all_new_elements]), 'Found metal in ligand? Or Index Error.'
+    return atomic_props_new_idc
 
 
 class Extracted_Molecule:
@@ -156,9 +210,11 @@ class Extracted_Molecule:
         self.denticity_dict = {item: neighbor_conn_comp_list.count(item) for item in
                           neighbor_conn_comp_list}  # component:denticity
 
-        #  todo: Kann eigentlich weg
-        if sum(self.denticity_dict.values()) > 6:
+
+        cutoff_denticity = 6
+        if sum(self.denticity_dict.values()) > cutoff_denticity:
             self.status.append("Too much bindings evaluated")
+        assert cutoff_denticity == max(denticity_numbers) or cutoff_denticity == max(denticity_numbers) + 1, 'Cutoff value should be equal to max(denticity_numbers) or max(denticity_numbers)+1, otherwise it is possible that some ligands of a single complex are saved and some are not, which is harmful for charge calculation.'
 
         #
         # if status: then there are errors
@@ -187,7 +243,16 @@ class Extracted_Molecule:
                     # Get partial charges of ligand
                     ligand_atomic_props = {}
                     for name, props in self.complete.atomic_props.items():
-                        ligand_atomic_props[name] = {i: props[i] for i in ligand_index_list}
+                        # Correct indices to match indices of ´ligand_coordinates´
+                        new_idc_props = convert_atomic_props_from_original_xyz_indices_to_indices_wo_metal(props, self.full_coordinates)
+                        new_idx_props = {i: new_idc_props[i] for i in ligand_index_list}
+                        ligand_atomic_props[name] = {i: new_idc_props[index] for i, index in enumerate(ligand_index_list)}
+                        
+                        # Double check if all indices and elements are the same.
+                        coord_atoms = {idx: l[0] for idx, l in ligand_coordinates.items()}
+                        props_atoms = {idx: l[0] for idx, l in ligand_atomic_props[name].items()}
+                        assert coord_atoms == props_atoms, f'Atoms for the atomic property {name} not the same as for the coordinates for molecule {self.csd_code}.'
+                    
                     
                     ligand = RCA_Ligand(coordinates=ligand_coordinates,
                                         ligand_to_metal=ligand_to_metal,
@@ -201,3 +266,29 @@ class Extracted_Molecule:
                     j += 1
 
                     self.ligands.append(ligand)
+                
+                else:
+                    raise Warning(f'One of the ligands with denticity {conn_comp_denticity} of complex {self.csd_code} is not saved due to denticity. This is dangerous (especially for charge calculation) because it can lead to the situation that a complex appears in the database but not all of it\'s ligands are there.')
+
+
+
+
+
+# if __name__ == '__main__':
+#     orig_coordinates_list = [
+#                                 {0: ['I', [-0.9, 4.9, 8.4]], 1: ['Cu', [0.8, 5.1, 10.1]], 2: ['S', [1.1, 6.8, 11.6]]},
+#                                 {0: ['Cu', [0.8, 5.1, 10.1]], 1: ['I', [-0.9, 4.9, 8.4]], 2: ['S', [1.1, 6.8, 11.6]]},
+#                                 {0: ['S', [1.1, 6.8, 11.6]], 1: ['I', [-0.9, 4.9, 8.4]], 2: ['Cu', [0.8, 5.1, 10.1]]}
+#                             ]
+#
+#     atomic_props_list = [
+#         {0: ['I', [-0.9]], 1: ['Cu', [0.8]], 2: ['S', [1.1]]},
+#         {0: ['Cu', [0.8]], 1: ['I', [-0.9]], 2: ['S', [1.1]]},
+#         {0: ['S', [1.1]], 1: ['I', [-0.9]], 2: ['Cu', [0.8]]}
+#     ]
+#
+#     for atomic_props, orig_coords in zip(atomic_props_list, orig_coordinates_list):
+#         new_atomic_props = convert_atomic_props_from_original_xyz_indices_to_indices_wo_metal(atomic_props, orig_coords)
+    
+    
+    

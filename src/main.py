@@ -2,6 +2,7 @@ from src.LigandDatabase import LigandDatabase
 import pickle
 import pandas as pd
 import numpy as np
+from pathlib import Path
 
 if __name__ == '__main__':
     """
@@ -15,14 +16,21 @@ if __name__ == '__main__':
     Testing = True
     database_path = '../database/tmQM/data'
     id_col = 'CSD_code'
-    atomic_properties_json = '../database/tmQM/data/atomic_properties/atomic_properties.json'
+    atomic_properties_json = Path('../database/tmQM/data/atomic_properties/atomic_properties.json')
 
     ligand_db = LigandDatabase(data_path=database_path, id_col=id_col, TestSize=Testing)
-    ligand_db.load_atomic_properties(atomic_properties_json)
+    
+    if atomic_properties_json.exists():
+        ligand_db.load_atomic_properties(atomic_properties_json)
+    else:
+        print('No json file of atomic properties found, so they will be read in from the .xyz files. You might want to save the atomic properties to json for faster future runs using `ligand_db.save_atomic_properties()`.')
 
-    ligand_db.extract_ligands(denticity_numbers_of_interest=[1, 2, 3, 4, 5],
+    ligand_db.extract_ligands(denticity_numbers_of_interest=[1, 2, 3, 4, 5, 6],
                               metals_of_interest=["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
                               )
+    ligand_db.filter_duplicates()
+    
+    ligand_db.save_Extracted_Molecules_to_json()
 
     # ligand_db.add_monodentate_ligands()
 
@@ -40,7 +48,7 @@ if __name__ == '__main__':
     df.to_csv(outpath, index=False)
     
     if Testing:
-        old_outpath = '../data/221025_original_ligand_db_test_with_monodentates.csv'
+        old_outpath = '../data/221026_ligand_db_test_with_6-dentates.csv'
         old_df = pd.read_csv(old_outpath).sort_values('name').reset_index(drop=True)
         pd.testing.assert_frame_equal(df[old_df.columns], old_df, check_like=True)
         print('Ligand database same as old database.')

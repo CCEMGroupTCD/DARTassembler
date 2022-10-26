@@ -1,3 +1,5 @@
+import json
+
 from src.read_database import read_local_tmqm_db
 from src.Extracted_Molecule import Extracted_Molecule
 from src.Molecule import RCA_Molecule, RCA_Ligand
@@ -12,15 +14,92 @@ import pandas as pd
 from src.MoleculeDatabase import MoleculeDatabase
 import itertools
 from copy import deepcopy
+from pathlib import Path
 
-def iter_over_ligand_dict(ligand_dict: dict, return_denticity: bool=False):
+
+def group_list_without_hashing(ligand_list: list) -> list:
+    """
+    Returns a list of list with unique elements grouped together. Works without hashing, just using equity.
+    :param ligand_list: list of elements
+    :return: list of lists of grouped elements
+    """
+    groupings = {}
+    counter = 0
+    for lig1 in ligand_list:
+        
+        tmp_groupings = {}
+        equal = False
+        
+        for i, lig_list in groupings.items():
+            lig_representative = lig_list[0]
+            equal = lig_representative == lig1
+            
+            if equal:
+                
+                if i in tmp_groupings:
+                    tmp_groupings[i].append(lig1)
+                else:
+                    tmp_groupings[i] = lig1
+                    
+                break
+                
+        if not equal:
+            tmp_groupings[counter] = [lig1]
+            counter += 1
+        
+        for i in tmp_groupings.keys():
+            
+            if i in groupings:
+                groupings[i].append(tmp_groupings[i])
+            else:
+                groupings[i] = tmp_groupings[i]
+    
+    groupings = [group for group in groupings.values()]
+    return groupings
+def get_unique_elements_of_list_without_hashing(ligand_list: list) -> list:
+    """
+    Returns unique elements in the input list without hashing, just using equity.
+    :param ligand_list: list of elements
+    :return: list of unique elements
+    """
+    unique_hash_ligand_list = []
+    for lig1 in ligand_list:
+        
+        if unique_hash_ligand_list == []:
+            unique_hash_ligand_list.append(lig1)
+        
+        else:
+            new = []
+            for lig2 in unique_hash_ligand_list:
+                different = lig2 != lig1
+                new.append(different)
+            
+            if all(new):
+                unique_hash_ligand_list.append(lig1)
+        
+    return unique_hash_ligand_list
+def get_all_ligands_by_hashes(unique_hashed_ligands: list, all_ligands: list) -> dict:
+    """
+    Get dictionary of hashes with list of ligands with this hash
+    :param unique_hashed_ligands: list of ligands with unique hashes.
+    :param all_ligands: list of all ligands with hashes
+    :return: dictionary of hash: list_of_ligands
+    """
+    all_hashes = [ligand.graph_hash for ligand in unique_hashed_ligands]
+    all_ligands_by_hashes = {h: [] for h in all_hashes}
+    for ligand in all_ligands:
+        all_ligands_by_hashes[ligand.graph_hash].append(ligand)
+    
+    return all_ligands_by_hashes
+
+def iter_over_ligand_dict(ligand_dict: dict, return_denticity: bool=False) -> RCA_Ligand:
     for denticity, ligand_list in ligand_dict.items():
         for ligand in ligand_list:
             if return_denticity:
                 yield ligand, denticity
             else:
                 yield ligand
-def total_number_of_ligands(ligand_dict: dict):
+def total_number_of_ligands(ligand_dict: dict) -> int:
     num = 0
     for denticity, ligand_list in ligand_dict.items():
         num += len(ligand_list)
@@ -29,14 +108,6 @@ class LigandDatabase(MoleculeDatabase):
 
     def __init__(self, data_path, id_col, TestSize=False):
         MoleculeDatabase.__init__(self, data_path=data_path, id_col=id_col, TestSize=TestSize)
-        # self.extracted_information = read_local_tmqm_db()
-        #
-        # if TestSize is True:
-        #     small_relevant_xyzs = dict()
-        #     for i, (key, value) in enumerate(self.extracted_information.items()):
-        #         if i % 100 == 1:
-        #             small_relevant_xyzs[key] = value
-        #     self.extracted_information = small_relevant_xyzs
 
         self.full_ligand_dict = {}
         self.ligand_dict = {}
@@ -46,6 +117,9 @@ class LigandDatabase(MoleculeDatabase):
         # exclusively for later filter stages
         self.filtered_database_dict = None
         self.filtered_database = None
+        
+        self.ligand_db_output_data_path = Path(self.output_data_path, 'LigandDatabases')
+        self.default_all_Extracted_Molecules_json_path = Path(self.ligand_db_output_data_path, 'all_Extracted_Molecules.json')
 
     def __len__(self):
             """
@@ -139,33 +213,37 @@ class LigandDatabase(MoleculeDatabase):
         print('Start filtering duplicates.')
         all_ligands = list(iter_over_ligand_dict(self.full_ligand_dict))
         
+        # Get internally saved graph_hashes for all ligands.
         unique_hashed_ligands = list(set(all_ligands))
         print(f'Number of unique hashed ligands: {len(unique_hashed_ligands)}.')
         
-        all_hashes = [ligand.graph_hash for ligand in unique_hashed_ligands]
-        all_ligands_by_hashes = {h: [] for h in all_hashes}
-        for ligand in all_ligands:
-            all_ligands_by_hashes[ligand.graph_hash].append(ligand)
+        # TODO: Check why all_ligands_by_hashes has not the same length as unique_hashed_ligands.
+        # For all ligands with same graph hash, find unique ligands by equity comparison.
+        all_ligands_by_hashes = get_all_ligands_by_hashes(unique_hashed_ligands, all_ligands)
+        grouped_unique_ligands = []
+        for graph_hash, ligand_list in all_ligands_by_hashes.items():
+            unique_hash_ligand_list = group_list_without_hashing(ligand_list)
+            grouped_unique_ligands.extend(unique_hash_ligand_list)
         
-        unique_ligands = deepcopy(unique_hashed_ligands)
-        counter = 1
-        for i, ligand1 in enumerate(unique_hashed_ligands):
-            same_hashed_ligands = all_ligands_by_hashes[ligand1.graph_hash]
+        unique_ligands = []
+        for same_ligands in grouped_unique_ligands:
             
-            for ligand2 in same_hashed_ligands:
-                exactly_same_ligand = ligand1.name == ligand2.name
-                if exactly_same_ligand:
-                    continue
-    
-                counter += 1
-                if ligand1 != ligand2:
-                    print('Found different ligands with same hashes.')
-                    unique_ligands.append(ligand2)
-            print(f'{i}: {counter}')
+            unique_ligand = same_ligands[0]
+            unique_ligand_name = 'unq_' + unique_ligand.name
+            unique_ligands.append(unique_ligand)
+            
+            for ligand in same_ligands:
+                ligand.unique_name = unique_ligand_name
+                
+                check_props = ['denticity', 'graph_hash', 'hash']
+                for prop in check_props:
+                    if getattr(unique_ligand, prop) != getattr(ligand, prop):
+                        print(f'WARNING: Different {prop} for unique ligand {unique_ligand.name} ({getattr(unique_ligand, prop)}) and ligand {ligand.name} ({getattr(ligand, prop)}).')
+                
         
+        # Get unique ligand dictionary with denticity as output format.
         self.unique_ligand_dict = {denticity: [] for denticity in self.get_all_denticities(self.full_ligand_dict)}
         for unique_ligand in unique_ligands:
-            unique_ligand.unique_name = 'unq_' + unique_ligand.name
             self.unique_ligand_dict[unique_ligand.denticity].append(unique_ligand)
             
         print(f'Number of unique ligands: {len(unique_ligands)}.')
@@ -186,22 +264,64 @@ class LigandDatabase(MoleculeDatabase):
                     })
         df = pd.DataFrame(ligand_props)
         return df
+    
+    def get_dict_of_all_Extracted_Molecules(self):
+        d = {}
+        for mol_id, mol in self.all_Extracted_Molecules.items():
+            d[mol_id] = mol.complete.global_props
+            d[mol_id]['ligands'] = []
+            for lig in mol.ligands:
+                lig_dict = {}
+                lig_dict['atomic_props'] = lig.atomic_props
+                lig_dict['coordinates'] = lig.coordinates
+                lig_dict['denticity'] = lig.denticity
+                lig_dict['name'] = lig.name
+                lig_dict['unique_name'] = lig.unique_name
+                d[mol_id]['ligands'].append(lig_dict)
+        
+        self.Extracted_Molecules_dict = d
+        return self.Extracted_Molecules_dict
+
+        
+        
+    def save_Extracted_Molecules_to_json(self, outpath: str=None):
+        print('Start saving all_Extracted_Molecules to json.')
+        
+        extracted_molecules_dict = self.get_dict_of_all_Extracted_Molecules()
+        
+        outpath = outpath or self.default_all_Extracted_Molecules_json_path
+        with open(outpath, 'w') as file:
+            json.dump(extracted_molecules_dict, file)
+        
+        print(f'Saved all_Extracted_Molecules to {outpath}')
+        
+        return
 
 if __name__ == '__main__':
-
+    
+    # test_lists = [
+    #     [1, 2, 3, 3, 2],
+    #     [5, 5, 5],
+    #     [1, 2, 3, 4],
+    #     [[1], [2], [2], [4], [1]]
+    # ]
+    # for test_list in test_lists:
+    #     grouping = group_list_without_hashing(test_list)
+    #     pass
+    
     ligand_db_file = "../data/LigandDatabases/ligand_db_test.pickle"
     
     with open(ligand_db_file, 'rb') as file:
         ligand_db = pickle.load(file)
         print('Loaded ligand db from pickle.')
     
-    ligand_db.filter_duplicates()
+    # ligand_db.save_Extracted_Molecules_to_json()
     
-    n_unique_ligands = total_number_of_ligands(ligand_db.unique_ligand_dict)
-    n_total_ligands = total_number_of_ligands(ligand_db.full_ligand_dict)
-    print(f'There are {n_unique_ligands} unique ligands out of a total of {n_total_ligands} ligands.')
+    # ligand_db.filter_duplicates()
+    #
+    # n_unique_ligands = total_number_of_ligands(ligand_db.unique_ligand_dict)
+    # n_total_ligands = total_number_of_ligands(ligand_db.full_ligand_dict)
+    # print(f'There are {n_unique_ligands} unique ligands out of a total of {n_total_ligands} ligands.')
     
-    
-
 
 

@@ -26,6 +26,9 @@ class MoleculeDatabase:
         self.global_props_path = Path(self.data_path, 'global_mol_properties.csv')
         self.atomic_props_dir = Path(self.data_path, 'atomic_properties')
         
+        self.output_data_path = Path('..', 'data')
+        self.default_atomic_properties_json_path = Path(self.atomic_props_dir, 'atomic_properties.json')
+        
         self.id_col = id_col
         self.testing = TestSize
         
@@ -54,8 +57,7 @@ class MoleculeDatabase:
         Returns all molecular ids. The id is a unique string for each molecule, for example the CSD code.
         :return: molecular ids (np.array)
         """
-        if not self.has_df:
-            self.get_global_properties()
+        self.ensure_global_properties_present()
             
         ids = self.df[self.id_col]
         assert ids.is_unique, 'Molecular IDs are not unique.'
@@ -93,19 +95,12 @@ class MoleculeDatabase:
         assert num_atoms == len(value_array) and num_atoms == len(atoms), 'Number of atoms specified in atomic properties file is not equal to the real number of atoms included.'
         return mol_id, atoms, values, comment
     
-    # {'WIXKOE':
-    # {0: ['La', [-2.39950735896413, 3.58311532126229, 14.41190095777172]],
-    #  1: ['O', [-2.69352382145544, 6.09815732807886, 15.61958068923846]],
-    #  2: ['N', [0.12849434120838, 3.66258487142033, 14.66223462097625]]}
-    #  }
-    #
     def atomic_props_long_to_wide_format(self, atomic_props_long: dict, prop_names: list):
         if isinstance(prop_names, str):
             prop_names = [prop_names]
         assert all([name in atomic_props_long for name in prop_names]), f'At least one name of {prop_names} not in atomic property dict.'
         
         all_atoms = atomic_props_long['atoms']
-        n_atoms = len(all_atoms)
         
         atomic_props_wide = {}
         for i, atom in enumerate(all_atoms):
@@ -151,32 +146,49 @@ class MoleculeDatabase:
         return all_atomic_props
     
     def save_atomic_properties(self, outpath=None):
-        if not self.has_atomic_props:
-            self.get_atomic_properties()
+        print('Start saving atomic properties to json.')
         
-        self.atomic_properties_json = outpath or Path(self.atomic_props_dir, 'atomic_properties.json')
+        self.ensure_atomic_properties_present()
+        
+        self.atomic_properties_json = outpath or self.default_atomic_properties_json_path
         with open(self.atomic_properties_json, 'w') as file:
             json.dump(deepcopy(self.atomic_props), file)
             
-        print(f'Saved {self.atomic_properties_json}.')
+        print(f'Saved atomic properties to {self.atomic_properties_json}.')
         return
     
-    def load_atomic_properties(self, json_path):
+    def load_atomic_properties(self, json_path=None):
         print('Start loading atomic properties from json file.')
         
+        json_path = json_path or self.default_atomic_properties_json_path
         with open(json_path, 'r') as file:
             self.atomic_props = json.load(file)
         self.has_atomic_props = True
         
         print('Loaded atomic properties from json file.')
         return self.atomic_props
-
+    
+    def ensure_global_properties_present(self):
+        if not self.has_df:
+            self.get_global_properties()
+    
+    def ensure_atomic_properties_present(self):
+        if not self.has_atomic_props:
+            self.get_atomic_properties()
+            
     def get_Extracted_Molecule(self, mol_id: str, atomic_props_long: dict, add_atomic_props: list) -> Extracted_Molecule:
+        self.ensure_global_properties_present()
+        
         mol_atomic_props = {name: atomic_props_long[name] for name in add_atomic_props}
         
         coordinates = self.atomic_props_long_to_wide_format(atomic_props_long=atomic_props_long, prop_names=['x', 'y', 'z'])
         
-        extr_mol = Extracted_Molecule(coordinates=coordinates, csd_code=mol_id, atomic_props=mol_atomic_props)
+        extr_mol = Extracted_Molecule(
+                                        coordinates=coordinates,
+                                        csd_code=mol_id,
+                                        atomic_props=mol_atomic_props,
+                                        # global_props=mol_global_props
+                                        )
 
         return extr_mol
     
@@ -199,8 +211,7 @@ class MoleculeDatabase:
         return all_atomic_props
         
     def get_all_atomic_props_in_wide_format(self, names: list):
-        if not self.has_atomic_props:
-            self.get_atomic_properties()
+        self.ensure_atomic_properties_present()
         
         atomic_props = {
                         mol_id: self.atomic_props_long_to_wide_format(
@@ -212,7 +223,16 @@ class MoleculeDatabase:
         return atomic_props
         
         
-
+    def get_global_properties_of_mol(self, mol_id: str):
+        self.ensure_global_properties_present()
+        
+        row = self.df[self.df[self.id_col] == mol_id].squeeze(axis=0)
+        row = row.drop(self.id_col)
+        row = row.rename(mol_id)
+        
+        return row
+        
+        
     def get_all_Extracted_Molecules(self):
         all_coords = self.get_all_atomic_props_in_wide_format(names=self.xyz_props)
         other_atomic_props = self.get_atomic_props_individual_in_wide_format(names=self.other_atomic_props)
@@ -221,7 +241,13 @@ class MoleculeDatabase:
         for mol_id, coordinates in tqdm(all_coords.items(), desc='Extracting molecules'):
             try:
                 other_atomic_props_of_mol = {name: other_atomic_props[name][mol_id] for name in other_atomic_props}
-                molecule = Extracted_Molecule(coordinates=coordinates, csd_code=mol_id, atomic_props=other_atomic_props_of_mol)
+                global_props = self.get_global_properties_of_mol(mol_id).to_dict()
+                molecule = Extracted_Molecule(
+                                                coordinates=coordinates,
+                                                csd_code=mol_id,
+                                                atomic_props=other_atomic_props_of_mol,
+                                                global_props=global_props
+                                                )
 
             except Exception as ex:
                 print(f"An Error occured: {ex}")
@@ -269,9 +295,11 @@ if __name__ == '__main__':
 
     tmqm = MoleculeDatabase(data_path='../database/tmQM/data', id_col=id_col)
     df = tmqm.get_global_properties()
-    atm = tmqm.get_atomic_properties()
-    tmqm.save_atomic_properties()
-    ids = tmqm.get_all_molecule_ids()
+    row = tmqm.get_global_properties_of_mol(mol_id='WIXKOE')
+    tmqm.load_atomic_properties_from_json()
+    # atm = tmqm.get_atomic_properties()
+    # tmqm.save_atomic_properties()
+    # ids = tmqm.get_all_molecule_ids()
     mol = tmqm.get_Extracted_Molecule('WIXKOE')
     print('Done!')
 

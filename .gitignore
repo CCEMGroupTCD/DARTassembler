@@ -4,6 +4,7 @@
 /data/ligand_dict.pickle
 /data/new_xyzs.pickle
 /database/tmQM/raw_data
+/database/tmQM/221026_data_before_metal_oxi_states
 /Old/
 /Debugging_and_Improvements/
 /__init__.py

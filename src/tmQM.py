@@ -161,6 +161,7 @@ class tmQM():
         self.all_properties_path = Path(self.tmqm_raw_data_path, 'tmQM_y.csv')
         self.all_bonds_path = Path(self.tmqm_raw_data_path, 'tmQM_X.BO')
         self.all_charges_path = Path(self.tmqm_raw_data_path, 'tmQM_X.q')
+        self.CSD_global_properties_path = Path(self.tmqm_raw_data_path, 'CSD.csv')
         
         self.atomic_properties_dir_path = Path(self.data_path, 'atomic_properties')
         self.atomic_properties_path = Path(self.atomic_properties_dir_path, 'atomic_properties.xyz')
@@ -218,6 +219,12 @@ class tmQM():
         print('Merge with calculated global electronic information in a big dataframe.')
         df_all_properties = pd.read_csv(self.all_properties_path, delimiter=';')
         df = pd.merge(df_all_molecules_from_xyz, df_all_properties, on='CSD_code')
+        
+        print('Merge global molecular information from CSD into big dataframe.')
+        df_CSD = pd.read_csv(self.CSD_global_properties_path)
+        df_CSD = df_CSD.drop(columns=['Unnamed: 0'])
+        df_CSD = df_CSD.rename(columns={'metal_nr_if_exists': 'metal_oxi_state', 'date': 'CSD_date'})
+        df = pd.merge(df, df_CSD, on='CSD_code')
         
         # Sanitizing
         df['stoichiometry'] = df['stoichiometry'].str.replace('\(.*\)$', '', regex=True) # remove charge string
