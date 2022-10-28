@@ -17,6 +17,11 @@ if __name__ == '__main__':
     database_path = '../database/tmQM/data'
     id_col = 'CSD_code'
     atomic_properties_json = Path('../database/tmQM/data/atomic_properties/atomic_properties.json')
+    
+    denticity_numbers_of_interest = [1, 2, 3, 4, 5, 6]
+    # Previously: metals_of_interest =  ["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
+    metals_of_interest = ['La', 'Sc', 'Y', 'Zr', 'Ti', 'Hf', 'Ta', 'Nb', 'V', 'W', 'Mo', 'Cr', 'Tc', 'Mn', 'Re', 'Fe',
+                          'Ru', 'Os', 'Ir', 'Rh', 'Co', 'Pd', 'Pt', 'Ni', 'Au', 'Cu', 'Ag', 'Zn', 'Hg', 'Cd']  # everything in the tmQM
 
     ligand_db = LigandDatabase(data_path=database_path, id_col=id_col, TestSize=Testing)
     
@@ -25,8 +30,8 @@ if __name__ == '__main__':
     else:
         print('No json file of atomic properties found, so they will be read in from the .xyz files. You might want to save the atomic properties to json for faster future runs using `ligand_db.save_atomic_properties()`.')
 
-    ligand_db.extract_ligands(denticity_numbers_of_interest=[1, 2, 3, 4, 5, 6],
-                              metals_of_interest=["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
+    ligand_db.extract_ligands(denticity_numbers_of_interest=denticity_numbers_of_interest,
+                              metals_of_interest=['La', 'Sc', 'Y', 'Zr', 'Ti', 'Hf', 'Ta', 'Nb', 'V', 'W', 'Mo', 'Cr', 'Tc', 'Mn', 'Re', 'Fe', 'Ru', 'Os', 'Ir', 'Rh', 'Co', 'Pd', 'Pt', 'Ni', 'Au', 'Cu', 'Ag', 'Zn', 'Hg', 'Cd']#["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
                               )
     ligand_db.filter_duplicates()
     

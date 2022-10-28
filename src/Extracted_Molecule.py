@@ -297,16 +297,16 @@ class Extracted_Molecule:
         
         assert len(atoms) == self.complete.global_props['num_atoms'], f'{mol_id}: Number of atoms not consistent.'
         
-        assert all(self.complete.mol.numbers == self.atomic_numbers)
-        assert (self.complete.mol.positions == coords).all()
-        assert all(self.complete.mol.pbc == False)
-        assert Composition(self.complete.mol.symbols.formula._formula) == Composition(self.complete.global_props['stoichiometry'])
+        assert all(self.complete.mol.numbers == self.atomic_numbers), f'{mol_id}: Atomic numbers not consistent with RCA_mol atomic numbers.'
+        assert (self.complete.mol.positions == coords).all(), f'{mol_id}: Atomic coordinates not consistent with RCA_mol atomic coordinates.'
+        assert all(self.complete.mol.pbc == False), f'{mol_id}: Found a molecule with periodic boundary conditions turned on.'
+        assert Composition(self.complete.mol.symbols.formula._formula) == Composition(self.complete.global_props['stoichiometry']), f'{mol_id}: Chemical compositions not consistent.'
         
-        assert all_same_number_of_elements(self.denticity_dict, self.ligands)
+        assert all_same_number_of_elements(self.denticity_dict, self.ligands), f'{mol_id}: Denticities not consistent.'
         
         
         mod_idc, mod_atoms, mod_coords = atomic_props_dict_to_lists(self.modified_coordinates)
-        assert all_same_number_of_elements(mod_idc, mod_atoms, mod_coords)
+        assert all_same_number_of_elements(mod_idc, mod_atoms, mod_coords), f'{mol_id}: Inconsistent number of modified coordinates and their atoms and indices.'
         assert len(mod_atoms) == len(atoms) - 1
         assert len(set(mod_atoms)) == len(set(atoms)) - 1
         
@@ -385,13 +385,15 @@ class Extracted_Molecule:
 if __name__ == '__main__':
     
     ligand_db_file = "../data/LigandDatabases/ligand_db_test.pickle"
-    mol_id = 'ADAQUU'
+    mol_ids = ['TUQRIG', 'TUTCEQ', 'TUXGEY']
 
     with open(ligand_db_file, 'rb') as file:
         ligand_db = pickle.load(file)
         print('Loaded ligand db from pickle.')
     
-    mol = ligand_db.all_Extracted_Molecules[mol_id]
-    mol.run_sanity_checks(mol_id)
+    for mol_id in mol_ids:
+        mol = ligand_db.all_Extracted_Molecules[mol_id]
+        mol.extract_ligands([1, 2, 3, 4, 5, 6])
+        # mol.run_sanity_checks(mol_id)
     
     print('Done!')
