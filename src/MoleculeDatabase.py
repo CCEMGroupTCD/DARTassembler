@@ -21,6 +21,9 @@ benchmark_complexes = ['ACASOO', 'AFATAE', 'AGUZAD', 'AROMAW', 'AVIBIR', 'AXOTAK
 
 specified_test_molecules = benchmark_complexes + original_test_complexes
 
+print('Use only the first 20 test molecules.')
+specified_test_molecules = specified_test_molecules[0:20]   # TODO
+
 class MoleculeDatabase:
     
     def __init__(self, data_path: str, id_col: str, TestSize=False):

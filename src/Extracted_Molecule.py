@@ -263,6 +263,9 @@ class Extracted_Molecule:
         return
     def run_sanity_checks(self, mol_id) -> bool:
         
+        if self.ligands == []:
+            return
+        
         assert mol_id == self.csd_code, f'{mol_id}: Molecular IDs don\'t match: {mol_id} vs {self.csd_code}.'
 
         # Important big check
@@ -310,10 +313,10 @@ class Extracted_Molecule:
         assert len(mod_atoms) == len(atoms) - 1
         assert len(set(mod_atoms)) == len(set(atoms)) - 1
         
-        # Check if indices and elements of atoms neighboring the metal are correct.
-        for idx, atomic_num in zip(self.metal_neighbor_indices_wo_m, self.orig_atomic_num_nns):
-            el = element(int(atomic_num)).symbol
-            assert self.modified_coordinates[idx][0] == el, f'{mol_id}: The elements of the new coordinates and the elements of atomic neighbors of the metal don\'t match.'
+        # Check if elements of atoms neighboring the metal are consistent.
+        orig_atomic_num_nns_elements = [element(int(num)).symbol for num in self.orig_atomic_num_nns]
+        metal_neighbor_atoms_wo_m = [self.modified_coordinates[idx][0] for idx in self.metal_neighbor_indices_wo_m]
+        assert sorted(orig_atomic_num_nns_elements) == sorted(metal_neighbor_atoms_wo_m), f'{mol_id}: The elements of the new coordinates and the elements of atomic neighbors of the metal don\'t match.'
         
         all_lig_atoms = []
         all_lig_p_charges = []
@@ -385,7 +388,7 @@ class Extracted_Molecule:
 if __name__ == '__main__':
     
     ligand_db_file = "../data/LigandDatabases/ligand_db_test.pickle"
-    mol_ids = ['TUQRIG', 'TUTCEQ', 'TUXGEY']
+    mol_ids = ['TUTCEQ', 'TUXGEY']
 
     with open(ligand_db_file, 'rb') as file:
         ligand_db = pickle.load(file)
