@@ -30,7 +30,8 @@ if __name__ == '__main__':
                               )
     ligand_db.filter_duplicates()
     
-    ligand_db.save_Extracted_Molecules_to_json()
+    Extracted_Molecules_path = '../data/LigandDatabases/all_Extracted_Molecules_test.json' if Testing else None
+    ligand_db.save_Extracted_Molecules_to_json(Extracted_Molecules_path)
 
     # ligand_db.add_monodentate_ligands()
 

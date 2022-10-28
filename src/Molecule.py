@@ -8,6 +8,8 @@ from networkx import weisfeiler_lehman_graph_hash as graph_hash
 from mendeleev import element
 import numpy as np
 
+from src.utilities import atomic_props_dict_to_lists
+
 
 # Package name: RandomComplexAssembler (RCA)
 class RCA_Molecule:
@@ -97,6 +99,14 @@ class RCA_Molecule:
         easy employment of the ase functionality
         """
         view(self.mol)
+    
+    def run_sanity_tests(self, mol_id):
+        # Check partial charge summed up is charge
+        
+        
+        # Check if metal and metal_str_if_exists in global properties are consistent
+
+        pass
 
 
 class RCA_Ligand(RCA_Molecule):

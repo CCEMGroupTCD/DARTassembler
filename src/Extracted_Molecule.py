@@ -1,3 +1,6 @@
+import pickle
+from copy import deepcopy
+
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
@@ -5,63 +8,18 @@ from ase import io, neighborlist
 from scipy.sparse.csgraph import connected_components
 from mendeleev import element
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
+from pymatgen.core.composition import Composition
 
-from src.utilities import coordinates_to_xyz_str
+from src.testing import all_same, all_same_number_of_elements, check_partial_charges_add_up, \
+    check_if_metal_entries_consistent
+from src.utilities import coordinates_to_xyz_str, convert_atomic_props_from_original_xyz_indices_to_indices_wo_metal, \
+    get_all_atomic_properties_in_long_array, get_all_atomic_properties_with_modified_coordinates_wo_metal_in_long_array
 from src.constants import metals_in_pse, mini_alphabet
 from src.Molecule import RCA_Molecule, RCA_Ligand
+from warnings import warn
+from src.utilities import atomic_props_dict_to_lists
 
 
-def original_xyz_indices_to_indices_wo_metal(orig_coordinates: dict) -> list:
-    """
-    Converts the indices of atoms of the original xyz files to the new indices when the metal atom is deleted from the xyz. That means all atoms after the metal shift one index up.
-    :param orig_coordinates: Coordinates of original xyz file
-    :return: Dictionary mapping original xyz indices to new wo_metal indices
-    """
-    orig_indices = [(idx, l[0]) for idx, l in orig_coordinates.items()]
-    
-    orig_to_wo_metal_indices = {}
-    counter = 0
-    for orig_idx, el in orig_indices:
-        
-        is_metal = Pymatgen_Element(el).is_metal
-        if is_metal:
-            metal_idx = orig_idx
-            continue
-        
-        orig_to_wo_metal_indices[orig_idx] = counter
-        counter += 1
-    
-    # Double checking.
-    assert len(orig_to_wo_metal_indices) == len(orig_indices) - 1
-    for orig_idx, new_idx in orig_to_wo_metal_indices.items():
-        if orig_idx < metal_idx:
-            assert orig_idx == new_idx
-        elif orig_idx == metal_idx:
-            assert not metal_idx in orig_to_wo_metal_indices
-        else:
-            assert orig_idx == new_idx + 1
-    
-    return orig_to_wo_metal_indices
-
-
-def convert_atomic_props_from_original_xyz_indices_to_indices_wo_metal(atomic_props, orig_coords):
-    """
-    Changes the indices of an atomic property dictionary in order to match the new indices when the metal is deleted in the xyz.
-    :param atomic_props:
-    :param orig_coords:
-    :return:
-    """
-    orig_to_wo_metal_indices = original_xyz_indices_to_indices_wo_metal(orig_coords)
-    
-    atomic_props_new_idc = {}
-    for orig_idx, prop in atomic_props.items():
-        if orig_idx in orig_to_wo_metal_indices:
-            new_idx = orig_to_wo_metal_indices[orig_idx]
-            atomic_props_new_idc[new_idx] = prop
-    
-    all_new_elements = [props[0] for props in atomic_props_new_idc.values()]
-    assert not any([Pymatgen_Element(el).is_metal for el in all_new_elements]), 'Found metal in ligand? Or Index Error.'
-    return atomic_props_new_idc
 
 
 class Extracted_Molecule:
@@ -91,6 +49,7 @@ class Extracted_Molecule:
         #
         # get atomic number of metal atom
         self.original_metal = self.get_metal_atomic_number()
+        self.original_metal_symbol = element(int(self.original_metal)).symbol
 
         #
         # init other properties
@@ -269,8 +228,140 @@ class Extracted_Molecule:
                 
                 else:
                     raise Warning(f'One of the ligands with denticity {conn_comp_denticity} of complex {self.csd_code} is not saved due to denticity. This is dangerous (especially for charge calculation) because it can lead to the situation that a complex appears in the database but not all of it\'s ligands are there.')
+            
+            self.n_ligands = len(self.ligands)
+            self.complete.global_props['n_ligands'] = len(self.ligands)
+            if 'metal_node_degree' in self.complete.global_props:
+                self.same_n_ligands_and_metal_node_degree = len(self.ligands) == self.complete.global_props['metal_node_degree']
+                self.complete.global_props['same_n_ligands_and_metal_node_degree'] = self.same_n_ligands_and_metal_node_degree
 
+    def assert_that_atomic_property_tuples_of_ligands_are_the_same_as_in_the_complex_wo_metal_with_modified_coordinates(self):
+        """
+        Checks that the tuple of (element, atomic properties, coordinates) of ligands for one atom is exactly the same as in the original complex, apart from the modification of the coordinates which happened in ´self.extract_ligands´.
+        :return: None
+        """
+        idc, atoms, coords = atomic_props_dict_to_lists(self.full_coordinates)
+        all_atomic_props_wo_metal = get_all_atomic_properties_with_modified_coordinates_wo_metal_in_long_array(atoms,
+                                                                                                               coords,
+                                                                                                               self.complete.atomic_props,
+                                                                                                               self.modified_coordinates)
+        all_atomic_props_wo_metal = list(map(tuple, all_atomic_props_wo_metal))
+        
+        all_lig_atomic_props = []
+        for lig in self.ligands:
+            lig_coord_idc, lig_coord_atoms, lig_coord_values = atomic_props_dict_to_lists(lig.coordinates)
+            
+            lig_atomic_props = get_all_atomic_properties_in_long_array(lig_coord_atoms,
+                                                                           lig_coord_values,
+                                                                           lig.atomic_props)
+            lig_atomic_props = list(map(tuple, lig_atomic_props))
+            all_lig_atomic_props.extend(lig_atomic_props)
+            
+        # Check for each atom that all xyz and atomic properties are exactly the same as in complex.
+        assert sorted(all_atomic_props_wo_metal) == sorted(all_lig_atomic_props), 'Some atomic property tuples of ligands seem to not exist in the complex.'
+        
+        return
+    def run_sanity_checks(self, mol_id) -> bool:
+        
+        assert mol_id == self.csd_code, f'{mol_id}: Molecular IDs don\'t match: {mol_id} vs {self.csd_code}.'
 
+        # Important big check
+        self.assert_that_atomic_property_tuples_of_ligands_are_the_same_as_in_the_complex_wo_metal_with_modified_coordinates()
+
+        if 'partial_charge' in self.complete.atomic_props:
+            check_partial_charges_add_up(
+                                            mol_id=mol_id,
+                                            partial_charges=self.complete.atomic_props['partial_charge'],
+                                            total_charge=self.complete.global_props['total_charge']
+                                            )
+        
+        check_if_metal_entries_consistent(
+                                            global_props=self.complete.global_props,
+                                            mol_id=mol_id,
+                                            other_metal_entries=[self.original_metal_symbol, self.original_metal]
+                                            )
+        
+        # all_atoms same
+        idc, atoms, coords = atomic_props_dict_to_lists(self.full_coordinates)
+        assert all_same_number_of_elements(idc, atoms, coords), f'{mol_id}: Different number of element of indices, atoms or coordinate.'
+        
+        atomic_numbers_correct = [element(int(num)).symbol for num in self.atomic_numbers] == atoms
+        assert atomic_numbers_correct, f'{mol_id}: Atomic numbers not consistent.'
+        
+        for name, prop in self.complete.atomic_props.items():
+            prop_idc, prop_atoms, prop_values = atomic_props_dict_to_lists(prop, flatten=True)
+            
+            assert prop_atoms == atoms, f'{mol_id}: Inconsistent atoms of property {name}.'
+            assert prop_idc == idc, f'{mol_id}: Inconsistent indices of property {name}.'
+            assert all_same_number_of_elements(prop_idc, prop_atoms, prop_values), f'{mol_id}: Inconsistent number of element of indices, atoms and values of property {name}.'
+        
+        assert len(atoms) == self.complete.global_props['num_atoms'], f'{mol_id}: Number of atoms not consistent.'
+        
+        assert all(self.complete.mol.numbers == self.atomic_numbers)
+        assert (self.complete.mol.positions == coords).all()
+        assert all(self.complete.mol.pbc == False)
+        assert Composition(self.complete.mol.symbols.formula._formula) == Composition(self.complete.global_props['stoichiometry'])
+        
+        assert all_same_number_of_elements(self.denticity_dict, self.ligands)
+        
+        
+        mod_idc, mod_atoms, mod_coords = atomic_props_dict_to_lists(self.modified_coordinates)
+        assert all_same_number_of_elements(mod_idc, mod_atoms, mod_coords)
+        assert len(mod_atoms) == len(atoms) - 1
+        assert len(set(mod_atoms)) == len(set(atoms)) - 1
+        
+        # Check if indices and elements of atoms neighboring the metal are correct.
+        for idx, atomic_num in zip(self.metal_neighbor_indices_wo_m, self.orig_atomic_num_nns):
+            el = element(int(atomic_num)).symbol
+            assert self.modified_coordinates[idx][0] == el, f'{mol_id}: The elements of the new coordinates and the elements of atomic neighbors of the metal don\'t match.'
+        
+        all_lig_atoms = []
+        all_lig_p_charges = []
+        for lig in self.ligands:
+            
+            all_prop_idc = []
+            all_prop_atoms = []
+            for name, prop in lig.atomic_props.items():
+                
+                lig_idc, lig_atoms, lig_values = atomic_props_dict_to_lists(prop)
+                all_prop_idc.append(lig_idc)
+                all_prop_atoms.append(lig_atoms)
+                if name == 'partial_charge':
+                    all_lig_p_charges.extend(lig_values)
+            assert all_same(*all_prop_idc)
+            assert all_same(*all_prop_atoms)
+            
+            lig_coord_idc, lig_coord_atoms, lig_coord_values = atomic_props_dict_to_lists(lig.coordinates)
+            assert all_same(lig_idc, lig_coord_idc)
+            assert all_same(lig_atoms, lig_coord_atoms)
+            
+            coordinated_elements = [el for el, coordinated in zip(lig_atoms, lig.ligand_to_metal) if coordinated]
+            assert len(coordinated_elements) == lig.denticity
+            
+            
+            assert all_same_number_of_elements(lig_atoms, lig.ligand_to_metal, lig.graph.nodes, lig.mol.positions)
+            assert all_same(lig_atoms, [element(int(num)).symbol for num in lig.mol.numbers])
+            
+            correct_ligand_name = lig.name == f'CSD-{self.csd_code}-0{lig.denticity}-{lig.name[-1]}'
+            assert correct_ligand_name
+
+            all_lig_atoms.extend(lig_atoms)
+        assert sorted(mod_atoms) == sorted(all_lig_atoms), f'{mol_id}: Differing atoms between mod_atoms and all_lig_atoms.'
+
+        atoms_without_metal = deepcopy(atoms)
+        atoms_without_metal.remove(lig.original_metal_symbol)
+        assert sorted(atoms_without_metal) == sorted(all_lig_atoms), f'{mol_id}: Number or element of atoms in ligands and whole complex without metal don\'t match.'
+        
+        atoms_not_in_ligands = set(atoms).symmetric_difference(set(all_lig_atoms))
+        assert len(atoms_not_in_ligands) == 1, f'{mol_id}: More than one atom difference between whole molecule and all ligands.'
+        assert Pymatgen_Element(list(atoms_not_in_ligands)[0]).is_metal, f'{mol_id}: Deleted atom is not metal.'
+        assert all_same(lig.original_metal_symbol, element(int(lig.original_metal)).symbol, self.complete.global_props['metal'])
+        
+        if self.status:
+            warn(f'Error status of {self.csd_code}: {self.status}')
+            
+        return
+        
 
 
 
@@ -289,6 +380,18 @@ class Extracted_Molecule:
 #
 #     for atomic_props, orig_coords in zip(atomic_props_list, orig_coordinates_list):
 #         new_atomic_props = convert_atomic_props_from_original_xyz_indices_to_indices_wo_metal(atomic_props, orig_coords)
+
+
+if __name__ == '__main__':
     
+    ligand_db_file = "../data/LigandDatabases/ligand_db_test.pickle"
+    mol_id = 'ADAQUU'
+
+    with open(ligand_db_file, 'rb') as file:
+        ligand_db = pickle.load(file)
+        print('Loaded ligand db from pickle.')
     
+    mol = ligand_db.all_Extracted_Molecules[mol_id]
+    mol.run_sanity_checks(mol_id)
     
+    print('Done!')

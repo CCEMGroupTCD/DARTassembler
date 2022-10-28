@@ -17,6 +17,7 @@ from copy import deepcopy
 from pathlib import Path
 
 
+
 def group_list_without_hashing(ligand_list: list) -> list:
     """
     Returns a list of list with unique elements grouped together. Works without hashing, just using equity.
@@ -104,6 +105,7 @@ def total_number_of_ligands(ligand_dict: dict) -> int:
     for denticity, ligand_list in ligand_dict.items():
         num += len(ligand_list)
     return num
+
 class LigandDatabase(MoleculeDatabase):
 
     def __init__(self, data_path, id_col, TestSize=False):
@@ -281,9 +283,21 @@ class LigandDatabase(MoleculeDatabase):
         
         self.Extracted_Molecules_dict = d
         return self.Extracted_Molecules_dict
-
         
+    def run_sanity_checks_for_all_Extracted_Molecules(self) -> bool:
+        """
+        Run a lot of sanity checks.
+        :return: True if all sanity checks were correct else False.
+        """
+        all_mol_ids = []
+        for mol_id, mol in tqdm(self.all_Extracted_Molecules.items(), desc='Checking molecules'):
+            assert not mol_id in all_mol_ids, '{mol_id}: Mol ID is not unique.'
+            all_mol_ids.append(mol_id)
+            
+            mol.run_sanity_checks(mol_id)
         
+        return
+    
     def save_Extracted_Molecules_to_json(self, outpath: str=None):
         print('Start saving all_Extracted_Molecules to json.')
         
@@ -314,6 +328,8 @@ if __name__ == '__main__':
     with open(ligand_db_file, 'rb') as file:
         ligand_db = pickle.load(file)
         print('Loaded ligand db from pickle.')
+
+    ligand_db.run_sanity_checks_for_all_Extracted_Molecules()
     
     # ligand_db.save_Extracted_Molecules_to_json()
     
