@@ -186,13 +186,13 @@ class LigandDatabase(MoleculeDatabase):
                                             'error': None
                         })
                         # self.full_ligand_dict[lig.denticity].append(lig)
-                else:
-                    ligands.append({
-                                            'csd_code': csd_code,
-                                            'ligand': None,
-                                            'denticity': None,
-                                            'error': None
-                    })
+                    else:
+                        ligands.append({
+                                                'csd_code': csd_code,
+                                                'ligand': None,
+                                                'denticity': None,
+                                                'error': None
+                        })
 
         except Exception as ex:
             print(f"An Error occured: {ex}")
@@ -208,7 +208,7 @@ class LigandDatabase(MoleculeDatabase):
         
         return ligands
     
-    def extract_ligands(self, denticity_numbers_of_interest, metals_of_interest=None):
+    def extract_ligands_new(self, denticity_numbers_of_interest, metals_of_interest=None):
         
         if isinstance(metals_of_interest, str):
             metals_of_interest = [metals_of_interest]
@@ -220,16 +220,56 @@ class LigandDatabase(MoleculeDatabase):
         # init empty dict
         self.full_ligand_dict = {dent: [] for dent in denticity_numbers_of_interest}
         self.get_all_Extracted_Molecules()
-
+        
+        ligands_list = []
         for csd_code, molecule in tqdm(self.all_Extracted_Molecules.items(), desc='Extracting ligands'):
-                ligands_list = self.extract_ligands_of_one_complex(csd_code, molecule, metals_of_interest, denticity_numbers_of_interest)
+                ligands_list.extend(self.extract_ligands_of_one_complex(csd_code, molecule, metals_of_interest, denticity_numbers_of_interest))
         
         for d in ligands_list:
-            
-
+            denticity = d['denticity']
+            ligand = d['ligand']
+            csd_code = d['csd_code']
+            error = d['error']
+            if not ligand is None:
+                assert not denticity is None
+                self.full_ligand_dict[denticity].append(ligand)
+            if not error is None:
+                self.extraction_error_count += 1
+                self.extraction_errors[csd_code] = error
 
         print(f"Extraction complete -- number of errors {self.extraction_error_count}")
 
+    def extract_ligands(self, denticity_numbers_of_interest, metals_of_interest=None):
+    
+        if isinstance(metals_of_interest, str):
+            metals_of_interest = [metals_of_interest]
+    
+        if isinstance(denticity_numbers_of_interest, int):
+            denticity_numbers_of_interest = [denticity_numbers_of_interest]
+    
+        #
+        # init empty dict
+        self.full_ligand_dict = {dent: [] for dent in denticity_numbers_of_interest}
+        self.get_all_Extracted_Molecules()
+    
+        for csd_code, molecule in tqdm(self.all_Extracted_Molecules.items(), desc='Extracting ligands'):
+            try:
+                if metals_of_interest is None or element(int(molecule.original_metal)).symbol in metals_of_interest:
+                    # now we extract the ligands of the desired molecule
+                    molecule.extract_ligands(denticity_numbers=denticity_numbers_of_interest)
+                
+                    # and add the ligands to our dict, if there are any
+                    for lig in molecule.ligands:
+                        if lig.denticity in self.full_ligand_dict.keys():
+                            self.full_ligand_dict[lig.denticity].append(lig)
+        
+            except Exception as ex:
+                print(f"An Error occured: {ex}")
+                self.extraction_error_count += 1
+                self.extraction_errors[csd_code] = str(ex)
+                pass
+    
+        print(f"Extraction complete -- number of errors {self.extraction_error_count}")
     def add_monodentate_ligands(self):
         """
         problem is that we don't extract monodentates; so we just insert them customly from pre-defined constants
