@@ -48,8 +48,8 @@ if __name__ == '__main__':
     outpath = '../data/ligand_db_test.csv' if Testing else '../data/ligand_db.csv'
     df.to_csv(outpath, index=False)
     
-    if Testing:
-        old_outpath = '../data/221026_ligand_db_test_with_6-dentates.csv'
-        old_df = pd.read_csv(old_outpath).sort_values('name').reset_index(drop=True)
-        pd.testing.assert_frame_equal(df[old_df.columns], old_df, check_like=True)
-        print('Ligand database same as old database.')
+    # if Testing:
+    #     old_outpath = '../data/221026_ligand_db_test_with_6-dentates.csv'
+    #     old_df = pd.read_csv(old_outpath).sort_values('name').reset_index(drop=True)
+    #     pd.testing.assert_frame_equal(df[old_df.columns], old_df, check_like=True)
+    #     print('Ligand database same as old database.')
