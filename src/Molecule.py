@@ -39,10 +39,19 @@ class RCA_Molecule:
         return not self.__eq__(other)
 
     def __hash__(self):
+        self.get_graph_hash()
+        self.hash = hash(self.graph_hash)
+        
+        return self.hash
+    
+    def get_graph_hash(self):
+        if self.has_graph_hash():
+            return self.graph_hash
+        
         self.get_graph()
         self.graph_hash = graph_hash(self.graph, iterations=3, digest_size=16)
-        self.hash = hash(self.graph_hash)
-        return self.hash
+        
+        return self.graph_hash
     
     def same_sum_formula(self, other):
         sum_formula_1 = [a[0] for a in self.coordinates.values()]

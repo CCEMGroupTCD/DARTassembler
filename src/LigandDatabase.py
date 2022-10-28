@@ -1,5 +1,5 @@
 import json
-
+from joblib import Parallel, delayed
 from src.read_database import read_local_tmqm_db
 from src.Extracted_Molecule import Extracted_Molecule
 from src.Molecule import RCA_Molecule, RCA_Ligand
@@ -169,7 +169,45 @@ class LigandDatabase(MoleculeDatabase):
     #
     #     with open(f"{path}/csd_molecule_lookup_file.pickle", "wb") as h:
     #         pickle.dump(dict_, h)
+    def extract_ligands_of_one_complex(self, csd_code, molecule, metals_of_interest, denticity_numbers_of_interest):
+        ligands = []
+        try:
+            if metals_of_interest is None or element(int(molecule.original_metal)).symbol in metals_of_interest:
+                # now we extract the ligands of the desired molecule
+                molecule.extract_ligands(denticity_numbers=denticity_numbers_of_interest)
 
+                # and add the ligands to our dict, if there are any
+                for lig in molecule.ligands:
+                    if lig.denticity in self.full_ligand_dict.keys():
+                        ligands.append({
+                                            'csd_code': csd_code,
+                                            'ligand': lig,
+                                            'denticity': lig.denticity,
+                                            'error': None
+                        })
+                        # self.full_ligand_dict[lig.denticity].append(lig)
+                else:
+                    ligands.append({
+                                            'csd_code': csd_code,
+                                            'ligand': None,
+                                            'denticity': None,
+                                            'error': None
+                    })
+
+        except Exception as ex:
+            print(f"An Error occured: {ex}")
+            ligands.append({
+                                'csd_code': csd_code,
+                                'ligand': None,
+                                'denticity': None,
+                                'error': str(ex)
+            })
+            # self.extraction_error_count += 1
+            # self.extraction_errors[csd_code] = str(ex)
+            # pass
+        
+        return ligands
+    
     def extract_ligands(self, denticity_numbers_of_interest, metals_of_interest=None):
         
         if isinstance(metals_of_interest, str):
@@ -184,21 +222,11 @@ class LigandDatabase(MoleculeDatabase):
         self.get_all_Extracted_Molecules()
 
         for csd_code, molecule in tqdm(self.all_Extracted_Molecules.items(), desc='Extracting ligands'):
-            try:
-                if metals_of_interest is None or element(int(molecule.original_metal)).symbol in metals_of_interest:
-                    # now we extract the ligands of the desired molecule
-                    molecule.extract_ligands(denticity_numbers=denticity_numbers_of_interest)
+                ligands_list = self.extract_ligands_of_one_complex(csd_code, molecule, metals_of_interest, denticity_numbers_of_interest)
+        
+        for d in ligands_list:
+            
 
-                    # and add the ligands to our dict, if there are any
-                    for lig in molecule.ligands:
-                        if lig.denticity in self.full_ligand_dict.keys():
-                            self.full_ligand_dict[lig.denticity].append(lig)
-
-            except Exception as ex:
-                print(f"An Error occured: {ex}")
-                self.extraction_error_count += 1
-                self.extraction_errors[csd_code] = str(ex)
-                pass
 
         print(f"Extraction complete -- number of errors {self.extraction_error_count}")
 
@@ -216,6 +244,9 @@ class LigandDatabase(MoleculeDatabase):
         all_ligands = list(iter_over_ligand_dict(self.full_ligand_dict))
         
         # Get internally saved graph_hashes for all ligands.
+        for lig in tqdm(all_ligands, desc='Get graph hashs'):
+            lig.get_graph_hash()
+            
         unique_hashed_ligands = list(set(all_ligands))
         print(f'Number of unique hashed ligands: {len(unique_hashed_ligands)}.')
         
