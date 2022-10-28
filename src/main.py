@@ -17,6 +17,7 @@ if __name__ == '__main__':
     database_path = '../database/tmQM/data'
     id_col = 'CSD_code'
     atomic_properties_json = Path('../database/tmQM/data/atomic_properties/atomic_properties.json')
+    n_jobs = 1
     
     denticity_numbers_of_interest = [1, 2, 3, 4, 5, 6]
     # Previously: metals_of_interest =  ["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
@@ -31,7 +32,8 @@ if __name__ == '__main__':
         print('No json file of atomic properties found, so they will be read in from the .xyz files. You might want to save the atomic properties to json for faster future runs using `ligand_db.save_atomic_properties()`.')
 
     ligand_db.extract_ligands(denticity_numbers_of_interest=denticity_numbers_of_interest,
-                              metals_of_interest=['La', 'Sc', 'Y', 'Zr', 'Ti', 'Hf', 'Ta', 'Nb', 'V', 'W', 'Mo', 'Cr', 'Tc', 'Mn', 'Re', 'Fe', 'Ru', 'Os', 'Ir', 'Rh', 'Co', 'Pd', 'Pt', 'Ni', 'Au', 'Cu', 'Ag', 'Zn', 'Hg', 'Cd']#["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
+                              metals_of_interest=['La', 'Sc', 'Y', 'Zr', 'Ti', 'Hf', 'Ta', 'Nb', 'V', 'W', 'Mo', 'Cr', 'Tc', 'Mn', 'Re', 'Fe', 'Ru', 'Os', 'Ir', 'Rh', 'Co', 'Pd', 'Pt', 'Ni', 'Au', 'Cu', 'Ag', 'Zn', 'Hg', 'Cd'],#["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
+                              n_jobs=n_jobs
                               )
     ligand_db.filter_duplicates()
     
@@ -54,7 +56,7 @@ if __name__ == '__main__':
     df.to_csv(outpath, index=False)
     
     if Testing:
-        old_outpath = '../data/221028_ligand_db_test_small.csv'
+        old_outpath = '../data/221028_ligand_db_test_small_all_info.csv'
         old_df = pd.read_csv(old_outpath).sort_values('name').reset_index(drop=True)
         pd.testing.assert_frame_equal(df[old_df.columns], old_df, check_like=True)
         print('Ligand database same as old database.')

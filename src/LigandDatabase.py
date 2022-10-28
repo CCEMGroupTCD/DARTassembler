@@ -3,7 +3,7 @@ from joblib import Parallel, delayed
 from src.read_database import read_local_tmqm_db
 from src.Extracted_Molecule import Extracted_Molecule
 from src.Molecule import RCA_Molecule, RCA_Ligand
-from src.utilities import coordinates_to_xyz_str
+from src.utilities import coordinates_to_xyz_str, flatten_list
 from src.constants import get_monodentate_list
 from mendeleev import element
 import pickle
@@ -208,7 +208,7 @@ class LigandDatabase(MoleculeDatabase):
         
         return ligands
     
-    def extract_ligands_new(self, denticity_numbers_of_interest, metals_of_interest=None):
+    def extract_ligands(self, denticity_numbers_of_interest, metals_of_interest=None, n_jobs=1):
         
         if isinstance(metals_of_interest, str):
             metals_of_interest = [metals_of_interest]
@@ -221,25 +221,30 @@ class LigandDatabase(MoleculeDatabase):
         self.full_ligand_dict = {dent: [] for dent in denticity_numbers_of_interest}
         self.get_all_Extracted_Molecules()
         
-        ligands_list = []
-        for csd_code, molecule in tqdm(self.all_Extracted_Molecules.items(), desc='Extracting ligands'):
-                ligands_list.extend(self.extract_ligands_of_one_complex(csd_code, molecule, metals_of_interest, denticity_numbers_of_interest))
-        
+        ligands_list = Parallel(n_jobs=n_jobs)(delayed(
+                                                            self.extract_ligands_of_one_complex)
+                                                            (csd_code, molecule, metals_of_interest, denticity_numbers_of_interest)
+                                                            for csd_code, molecule in tqdm(self.all_Extracted_Molecules.items(), desc='Extracting ligands')
+                                                    )
+
+        ligands_list = flatten_list(ligands_list)
         for d in ligands_list:
             denticity = d['denticity']
             ligand = d['ligand']
             csd_code = d['csd_code']
             error = d['error']
+            
             if not ligand is None:
                 assert not denticity is None
                 self.full_ligand_dict[denticity].append(ligand)
+                
             if not error is None:
                 self.extraction_error_count += 1
                 self.extraction_errors[csd_code] = error
 
         print(f"Extraction complete -- number of errors {self.extraction_error_count}")
 
-    def extract_ligands(self, denticity_numbers_of_interest, metals_of_interest=None):
+    def extract_ligands_old(self, denticity_numbers_of_interest, metals_of_interest=None):
     
         if isinstance(metals_of_interest, str):
             metals_of_interest = [metals_of_interest]
@@ -331,9 +336,13 @@ class LigandDatabase(MoleculeDatabase):
             for l in ligand_list:
                 ligand_props.append({
                     'name': l.name,
+                    'unique_name': l.unique_name,
                     'csd_code': l.csd_code if hasattr(l, 'csd_code') else np.nan,
                     'original_metal_symbol': l.original_metal_symbol if hasattr(l, 'original_metal_symbol') else np.nan,
-                    'denticity': l.denticity
+                    'denticity': l.denticity,
+                    'graph_hash': l.graph_hash,
+                    'coordinates': str(l.coordinates),
+                    'atomic_props': str(l.atomic_props),
                     })
         df = pd.DataFrame(ligand_props)
         return df

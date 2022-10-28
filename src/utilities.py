@@ -106,3 +106,6 @@ def get_all_atomic_properties_with_modified_coordinates_wo_metal_in_long_array(a
     
     assert wo_metal_atoms == all_atomic_props_wo_metal[:, 4].tolist()
     return all_atomic_props_wo_metal
+
+def flatten_list(l: list) -> list:
+    return [item for sublist in l for item in sublist]
