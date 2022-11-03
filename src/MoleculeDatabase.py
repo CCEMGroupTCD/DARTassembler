@@ -11,7 +11,6 @@ from tqdm import tqdm
 from Molecule import RCA_Molecule, RCA_Ligand
 from Extracted_Molecule import Extracted_Molecule
 import json
-from src.read_database import read_local_tmqm_db
 
 
 ATOMIC_PROPERTIES_COLUMN_SEPARATOR = '  ===  '
@@ -21,8 +20,9 @@ benchmark_complexes = ['ACASOO', 'AFATAE', 'AGUZAD', 'AROMAW', 'AVIBIR', 'AXOTAK
 
 specified_test_molecules = benchmark_complexes + original_test_complexes
 
-print('Use only the first 20 test molecules.')
-specified_test_molecules = specified_test_molecules[0:20]   # TODO
+n = 20
+print(f'Use only the first {n} test molecules.')
+specified_test_molecules = specified_test_molecules[0:n]   # TODO
 
 class MoleculeDatabase:
     

@@ -1,4 +1,6 @@
 import json
+import time
+
 from joblib import Parallel, delayed
 from src.read_database import read_local_tmqm_db
 from src.Extracted_Molecule import Extracted_Molecule
@@ -16,7 +18,10 @@ import itertools
 from copy import deepcopy
 from pathlib import Path
 
-
+def call_method_on_object(obj, method: str):
+    x = getattr(obj, method)
+    result = x()
+    return x
 
 def group_list_without_hashing(ligand_list: list) -> list:
     """
@@ -79,6 +84,7 @@ def get_unique_elements_of_list_without_hashing(ligand_list: list) -> list:
                 unique_hash_ligand_list.append(lig1)
         
     return unique_hash_ligand_list
+
 def get_all_ligands_by_hashes(unique_hashed_ligands: list, all_ligands: list) -> dict:
     """
     Get dictionary of hashes with list of ligands with this hash
@@ -122,6 +128,7 @@ class LigandDatabase(MoleculeDatabase):
         
         self.ligand_db_output_data_path = Path(self.output_data_path, 'LigandDatabases')
         self.default_all_Extracted_Molecules_json_path = Path(self.ligand_db_output_data_path, 'all_Extracted_Molecules.json')
+        self.save_tmp_pickles_path = Path(self.ligand_db_output_data_path)
 
     def __len__(self):
             """
@@ -284,24 +291,47 @@ class LigandDatabase(MoleculeDatabase):
     def get_all_denticities(self, ligand_dict):
         denticities = [denticity for denticity in ligand_dict.keys()]
         return denticities
-    def filter_duplicates(self):
+    
+    def save_self_as_pickle(self, outpath):
+        with open(outpath, 'wb') as f:
+            pickle.dump(self, f)
+        return
+    
+    def filter_duplicates(self, n_jobs: int):
         print('Start filtering duplicates.')
         all_ligands = list(iter_over_ligand_dict(self.full_ligand_dict))
         
-        # Get internally saved graph_hashes for all ligands.
-        for lig in tqdm(all_ligands, desc='Get graph hashs'):
-            lig.get_graph_hash()
-            
+        self.save_self_as_pickle(Path(self.save_tmp_pickles_path, 'lg_before_graph_hashes.pkl'))
+        # Calculate graphs and graph_hashes for all ligands and save as attribute.
+        all_graph_hashes = Parallel(n_jobs=n_jobs)(delayed(
+                                                    call_method_on_object)(lig, 'get_graph_hash')   # same as: lambda lig: lig.get_graph_hash())(lig)
+                                                    for lig in tqdm(all_ligands, desc='Get graph hashs')
+                                                   )
+        self.save_self_as_pickle(Path(self.save_tmp_pickles_path, 'lg_after_graph_hashes.pkl'))
+        
+        
+        
+        
+        
         unique_hashed_ligands = list(set(all_ligands))
         print(f'Number of unique hashed ligands: {len(unique_hashed_ligands)}.')
+        self.save_self_as_pickle(Path(self.save_tmp_pickles_path, 'lg_after_unique_hashed_ligands.pkl'))
         
-        # TODO: Check why all_ligands_by_hashes has not the same length as unique_hashed_ligands.
+        all_hashes = [lig.hash for lig in unique_hashed_ligands]
+        all_graph_hashes = [lig.graph_hash for lig in unique_hashed_ligands]
+        all_names = [lig.name for lig in unique_hashed_ligands]
+        df = pd.DataFrame(np.array([all_names, all_hashes, all_graph_hashes]).T, columns=['name', 'hash', 'graph_hash'])
+        df['gh_unique'] = df['graph_hash'].duplicated()
+        df['h_unique'] = df['hash'].duplicated()
+        print(f'Percentage of duplicates: {100*sum(df["gh_unique"])/len(df)}')
+        
         # For all ligands with same graph hash, find unique ligands by equity comparison.
         all_ligands_by_hashes = get_all_ligands_by_hashes(unique_hashed_ligands, all_ligands)
         grouped_unique_ligands = []
-        for graph_hash, ligand_list in all_ligands_by_hashes.items():
+        for graph_hash, ligand_list in tqdm(all_ligands_by_hashes.items(), desc='Compare graphs exact'):
             unique_hash_ligand_list = group_list_without_hashing(ligand_list)
             grouped_unique_ligands.extend(unique_hash_ligand_list)
+        self.save_self_as_pickle(Path(self.save_tmp_pickles_path, 'lg_after_equality_comparison.pkl'))
         
         unique_ligands = []
         for same_ligands in grouped_unique_ligands:
@@ -343,6 +373,7 @@ class LigandDatabase(MoleculeDatabase):
                     'graph_hash': l.graph_hash,
                     'coordinates': str(l.coordinates),
                     'atomic_props': str(l.atomic_props),
+                    #'hash': l.hash # makes issues in pd.testing.assert_frame_equal, probably because of overflow
                     })
         df = pd.DataFrame(ligand_props)
         return df
