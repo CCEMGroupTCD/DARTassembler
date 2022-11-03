@@ -85,14 +85,13 @@ def get_unique_elements_of_list_without_hashing(ligand_list: list) -> list:
         
     return unique_hash_ligand_list
 
-def get_all_ligands_by_hashes(unique_hashed_ligands: list, all_ligands: list) -> dict:
+def get_all_ligands_by_graph_hashes(all_ligands: list) -> dict:
     """
-    Get dictionary of hashes with list of ligands with this hash
-    :param unique_hashed_ligands: list of ligands with unique hashes.
-    :param all_ligands: list of all ligands with hashes
-    :return: dictionary of hash: list_of_ligands
+    Get dictionary of graph hashes with list of ligands with this graph hash
+    :param all_ligands: list of all ligands with graph hashes
+    :return: dictionary of graph hash: list_of_ligands
     """
-    all_hashes = [ligand.graph_hash for ligand in unique_hashed_ligands]
+    all_hashes = list(set([lig.graph_hash for lig in all_ligands]))
     all_ligands_by_hashes = {h: [] for h in all_hashes}
     for ligand in all_ligands:
         all_ligands_by_hashes[ligand.graph_hash].append(ligand)
@@ -297,7 +296,48 @@ class LigandDatabase(MoleculeDatabase):
             pickle.dump(self, f)
         return
     
-    def filter_duplicates(self, n_jobs: int):
+    @staticmethod
+    def get_grouped_unique_ligands(all_ligands, exact_graph_comparison=False):
+        all_ligands_by_hashes = get_all_ligands_by_graph_hashes(all_ligands)
+        
+        if exact_graph_comparison:
+            grouped_unique_ligands = []
+            for graph_hash, ligand_list in tqdm(all_ligands_by_hashes.items(), desc='Compare graphs exact'):
+                unique_hash_ligand_list = group_list_without_hashing(ligand_list)
+                grouped_unique_ligands.extend(unique_hash_ligand_list)
+                
+        else:
+            grouped_unique_ligands = [ligand_list for ligand_list in all_ligands_by_hashes.values()]
+    
+        return grouped_unique_ligands
+    
+    @staticmethod
+    def check_property_and_print_if_not_same_for_all_same_ligands(check_props, unique_ligand, ligand):
+        for prop in check_props:
+            if getattr(unique_ligand, prop) != getattr(ligand, prop):
+                print(
+                    f'WARNING: Different {prop} for unique ligand {unique_ligand.name} ({getattr(unique_ligand, prop)}) and ligand {ligand.name} ({getattr(ligand, prop)}).')
+        
+        return
+
+    def get_unique_ligands_and_set_unique_ligand_name(self, grouped_unique_ligands):
+        unique_ligands = []
+        for same_ligands in grouped_unique_ligands:
+        
+            unique_ligand = same_ligands[0]
+            unique_ligand_name = 'unq_' + unique_ligand.name
+            unique_ligands.append(unique_ligand)
+        
+            for ligand in same_ligands:
+                ligand.unique_name = unique_ligand_name
+                ligand.n_total_unique_ligands = len(same_ligands)
+                
+                check_props = ['denticity', 'graph_hash', 'hash']
+                self.check_property_and_print_if_not_same_for_all_same_ligands(check_props, unique_ligand, ligand)
+                
+        return unique_ligands
+
+    def filter_duplicates(self, exact_graph_comparison: bool=False, n_jobs: int=1):
         print('Start filtering duplicates.')
         all_ligands = list(iter_over_ligand_dict(self.full_ligand_dict))
         
@@ -309,52 +349,17 @@ class LigandDatabase(MoleculeDatabase):
                                                    )
         self.save_self_as_pickle(Path(self.save_tmp_pickles_path, 'lg_after_graph_hashes.pkl'))
         
-        
-        
-        
-        
-        unique_hashed_ligands = list(set(all_ligands))
-        print(f'Number of unique hashed ligands: {len(unique_hashed_ligands)}.')
-        self.save_self_as_pickle(Path(self.save_tmp_pickles_path, 'lg_after_unique_hashed_ligands.pkl'))
-        
-        all_hashes = [lig.hash for lig in unique_hashed_ligands]
-        all_graph_hashes = [lig.graph_hash for lig in unique_hashed_ligands]
-        all_names = [lig.name for lig in unique_hashed_ligands]
-        df = pd.DataFrame(np.array([all_names, all_hashes, all_graph_hashes]).T, columns=['name', 'hash', 'graph_hash'])
-        df['gh_unique'] = df['graph_hash'].duplicated()
-        df['h_unique'] = df['hash'].duplicated()
-        print(f'Percentage of duplicates: {100*sum(df["gh_unique"])/len(df)}')
-        
-        # For all ligands with same graph hash, find unique ligands by equity comparison.
-        all_ligands_by_hashes = get_all_ligands_by_hashes(unique_hashed_ligands, all_ligands)
-        grouped_unique_ligands = []
-        for graph_hash, ligand_list in tqdm(all_ligands_by_hashes.items(), desc='Compare graphs exact'):
-            unique_hash_ligand_list = group_list_without_hashing(ligand_list)
-            grouped_unique_ligands.extend(unique_hash_ligand_list)
+        self.grouped_unique_ligands = self.get_grouped_unique_ligands(all_ligands, exact_graph_comparison=exact_graph_comparison)
         self.save_self_as_pickle(Path(self.save_tmp_pickles_path, 'lg_after_equality_comparison.pkl'))
         
-        unique_ligands = []
-        for same_ligands in grouped_unique_ligands:
-            
-            unique_ligand = same_ligands[0]
-            unique_ligand_name = 'unq_' + unique_ligand.name
-            unique_ligands.append(unique_ligand)
-            
-            for ligand in same_ligands:
-                ligand.unique_name = unique_ligand_name
-                
-                check_props = ['denticity', 'graph_hash', 'hash']
-                for prop in check_props:
-                    if getattr(unique_ligand, prop) != getattr(ligand, prop):
-                        print(f'WARNING: Different {prop} for unique ligand {unique_ligand.name} ({getattr(unique_ligand, prop)}) and ligand {ligand.name} ({getattr(ligand, prop)}).')
-                
+        self.unique_ligands = self.get_unique_ligands_and_set_unique_ligand_name(self.grouped_unique_ligands)
         
         # Get unique ligand dictionary with denticity as output format.
         self.unique_ligand_dict = {denticity: [] for denticity in self.get_all_denticities(self.full_ligand_dict)}
-        for unique_ligand in unique_ligands:
+        for unique_ligand in self.unique_ligands:
             self.unique_ligand_dict[unique_ligand.denticity].append(unique_ligand)
             
-        print(f'Number of unique ligands: {len(unique_ligands)}.')
+        print(f'Number of unique ligands: {len(self.unique_ligands)}.')
         return self.unique_ligand_dict
     
     def get_df_of_all_ligands(self):

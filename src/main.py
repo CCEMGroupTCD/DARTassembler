@@ -19,6 +19,7 @@ if __name__ == '__main__':
     id_col = 'CSD_code'
     atomic_properties_json = Path('../database/tmQM/data/atomic_properties/atomic_properties.json')
     n_jobs = 1
+    exact_graph_comparison = False
     
     denticity_numbers_of_interest = [1, 2, 3, 4, 5, 6]
     # Previously: metals_of_interest =  ["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
@@ -40,7 +41,7 @@ if __name__ == '__main__':
                               metals_of_interest=['La', 'Sc', 'Y', 'Zr', 'Ti', 'Hf', 'Ta', 'Nb', 'V', 'W', 'Mo', 'Cr', 'Tc', 'Mn', 'Re', 'Fe', 'Ru', 'Os', 'Ir', 'Rh', 'Co', 'Pd', 'Pt', 'Ni', 'Au', 'Cu', 'Ag', 'Zn', 'Hg', 'Cd'],#["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
                               n_jobs=n_jobs
                               )
-    ligand_db.filter_duplicates(n_jobs=n_jobs)
+    ligand_db.filter_duplicates(exact_graph_comparison=exact_graph_comparison, n_jobs=n_jobs)
     
     Extracted_Molecules_path = '../data/LigandDatabases/all_Extracted_Molecules_test.json' if Testing else None
     ligand_db.save_Extracted_Molecules_to_json(Extracted_Molecules_path)

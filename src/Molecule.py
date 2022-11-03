@@ -29,17 +29,17 @@ class RCA_Molecule:
         self.global_props = global_props
     
     # Uncommented this section so that we can be certain that it is not used. Unnecessary because hashes basically never collide.
-    # def __eq__(self, other):
-    #     if not self.same_sum_formula(other):
-    #         return False
-    #
-    #     if nx.is_isomorphic(self.get_graph(), other.get_graph(), node_match=self.node_check):
-    #         return True
-    #     else:
-    #         return False
-    #
-    # def __ne__(self, other):
-    #     return not self.__eq__(other)
+    def __eq__(self, other):
+        if not self.same_sum_formula(other):
+            return False
+
+        if nx.is_isomorphic(self.get_graph(), other.get_graph(), node_match=self.node_check):
+            return True
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __hash__(self):
         if not self.has_hash():
