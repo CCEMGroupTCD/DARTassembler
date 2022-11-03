@@ -1,3 +1,5 @@
+import hashlib
+
 from ase import io, Atoms, neighborlist
 from ase.visualize import view
 import matplotlib.pyplot as plt
@@ -25,23 +27,23 @@ class RCA_Molecule:
         self.mol = mol
         self.atomic_props = atomic_props
         self.global_props = global_props
-        
-    def __eq__(self, other):
-        if not self.same_sum_formula(other):
-            return False
-
-        if nx.is_isomorphic(self.get_graph(), other.get_graph(), node_match=self.node_check):
-            return True
-        else:
-            return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
+    
+    # Uncommented this section so that we can be certain that it is not used. Unnecessary because hashes basically never collide.
+    # def __eq__(self, other):
+    #     if not self.same_sum_formula(other):
+    #         return False
+    #
+    #     if nx.is_isomorphic(self.get_graph(), other.get_graph(), node_match=self.node_check):
+    #         return True
+    #     else:
+    #         return False
+    #
+    # def __ne__(self, other):
+    #     return not self.__eq__(other)
 
     def __hash__(self):
-        self.get_graph_hash()
-        self.hash = hash(self.graph_hash)
-        
+        if not self.has_hash():
+            self.get_hash()
         return self.hash
     
     def get_graph_hash(self):
@@ -49,9 +51,19 @@ class RCA_Molecule:
             return self.graph_hash
         
         self.get_graph()
-        self.graph_hash = graph_hash(self.graph, iterations=3, digest_size=16)
+        self.graph_hash = graph_hash(self.graph, node_attr='label', iterations=3, digest_size=16)
+
+        self.get_hash()
         
         return self.graph_hash
+    
+    def get_hash(self):
+        if not self.has_graph_hash():
+            self.get_graph_hash()
+            
+        # this hash is not randomized, unlike pythons inbuilt hash()
+        self.hash = int(hashlib.md5(self.graph_hash.encode(encoding='UTF-8', errors='strict')).hexdigest(), 16)
+        return self.hash
     
     def same_sum_formula(self, other):
         sum_formula_1 = [a[0] for a in self.coordinates.values()]
@@ -75,6 +87,10 @@ class RCA_Molecule:
     
     def has_graph_hash(self):
         return hasattr(self, 'graph_hash')
+    
+    def has_hash(self):
+        return hasattr(self, 'hash')
+    
     def get_graph(self):
         """
         get the graph representing the molecule as a networkx graph
