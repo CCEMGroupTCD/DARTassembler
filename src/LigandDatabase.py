@@ -208,9 +208,6 @@ class LigandDatabase(MoleculeDatabase):
                                 'denticity': None,
                                 'error': str(ex)
             })
-            # self.extraction_error_count += 1
-            # self.extraction_errors[csd_code] = str(ex)
-            # pass
         
         return ligands
     
@@ -249,6 +246,8 @@ class LigandDatabase(MoleculeDatabase):
                 self.extraction_errors[csd_code] = error
 
         print(f"Extraction complete -- number of errors {self.extraction_error_count}")
+        
+        return
 
     def extract_ligands_old(self, denticity_numbers_of_interest, metals_of_interest=None):
     
@@ -281,6 +280,7 @@ class LigandDatabase(MoleculeDatabase):
                 pass
     
         print(f"Extraction complete -- number of errors {self.extraction_error_count}")
+        
     def add_monodentate_ligands(self):
         """
         problem is that we don't extract monodentates; so we just insert them customly from pre-defined constants
@@ -301,12 +301,15 @@ class LigandDatabase(MoleculeDatabase):
         all_ligands_by_hashes = get_all_ligands_by_graph_hashes(all_ligands)
         
         if exact_graph_comparison:
+            print('Comparing ligands by isomorphism.')
+
             grouped_unique_ligands = []
             for graph_hash, ligand_list in tqdm(all_ligands_by_hashes.items(), desc='Compare graphs exact'):
                 unique_hash_ligand_list = group_list_without_hashing(ligand_list)
                 grouped_unique_ligands.extend(unique_hash_ligand_list)
                 
         else:
+            print('Comparing ligands only by graph hash, not by isomorphism.')
             grouped_unique_ligands = [ligand_list for ligand_list in all_ligands_by_hashes.values()]
     
         return grouped_unique_ligands
@@ -326,14 +329,15 @@ class LigandDatabase(MoleculeDatabase):
         
             unique_ligand = same_ligands[0]
             unique_ligand_name = 'unq_' + unique_ligand.name
-            unique_ligands.append(unique_ligand)
         
             for ligand in same_ligands:
                 ligand.unique_name = unique_ligand_name
                 ligand.n_total_unique_ligands = len(same_ligands)
                 
-                check_props = ['denticity', 'graph_hash', 'hash']
+                check_props = ['denticity', 'graph_hash', 'hash', 'unique_name']
                 self.check_property_and_print_if_not_same_for_all_same_ligands(check_props, unique_ligand, ligand)
+            
+            unique_ligands.append(deepcopy(unique_ligand))
                 
         return unique_ligands
 
@@ -347,6 +351,7 @@ class LigandDatabase(MoleculeDatabase):
                                                     call_method_on_object)(lig, 'get_graph_hash')   # same as: lambda lig: lig.get_graph_hash())(lig)
                                                     for lig in tqdm(all_ligands, desc='Get graph hashs')
                                                    )
+        
         self.save_self_as_pickle(Path(self.save_tmp_pickles_path, 'lg_after_graph_hashes.pkl'))
         
         self.grouped_unique_ligands = self.get_grouped_unique_ligands(all_ligands, exact_graph_comparison=exact_graph_comparison)
@@ -378,6 +383,7 @@ class LigandDatabase(MoleculeDatabase):
                     'graph_hash': l.graph_hash,
                     'coordinates': str(l.coordinates),
                     'atomic_props': str(l.atomic_props),
+                    'n_total_unique_ligands': l.n_total_unique_ligands,
                     #'hash': l.hash # makes issues in pd.testing.assert_frame_equal, probably because of overflow
                     })
         df = pd.DataFrame(ligand_props)
@@ -387,6 +393,7 @@ class LigandDatabase(MoleculeDatabase):
         d = {}
         for mol_id, mol in self.all_Extracted_Molecules.items():
             d[mol_id] = mol.complete.global_props
+            d[mol_id]['error'] = ' & '.join(mol.status)
             d[mol_id]['ligands'] = []
             for lig in mol.ligands:
                 lig_dict = {}
@@ -395,6 +402,8 @@ class LigandDatabase(MoleculeDatabase):
                 lig_dict['denticity'] = lig.denticity
                 lig_dict['name'] = lig.name
                 lig_dict['unique_name'] = lig.unique_name
+                lig_dict['n_total_unique_ligands'] = lig.n_total_unique_ligands
+                lig_dict['graph_hash'] = lig.graph_hash
                 d[mol_id]['ligands'].append(lig_dict)
         
         self.Extracted_Molecules_dict = d

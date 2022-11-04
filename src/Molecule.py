@@ -28,7 +28,6 @@ class RCA_Molecule:
         self.atomic_props = atomic_props
         self.global_props = global_props
     
-    # Uncommented this section so that we can be certain that it is not used. Unnecessary because hashes basically never collide.
     def __eq__(self, other):
         if not self.same_sum_formula(other):
             return False
@@ -109,7 +108,6 @@ class RCA_Molecule:
         
         return self.graph
     
-
     def view_graph(self):
         """
         simple plot of the molecule as a graph, only connectivity, no distances
