@@ -438,6 +438,16 @@ class LigandDatabase(MoleculeDatabase):
 
 if __name__ == '__main__':
     
+    Testing = False
+    database_path = '../database/tmQM/data'
+    id_col = 'CSD_code'
+    atomic_properties_json = Path('../database/tmQM/data/atomic_properties/atomic_properties.json')
+    
+    ligand_db = LigandDatabase(data_path=database_path, id_col=id_col, TestSize=Testing)
+    ligand_db.get_atomic_properties()
+    ligand_db.save_atomic_properties()
+    
+    
     # test_lists = [
     #     [1, 2, 3, 3, 2],
     #     [5, 5, 5],
@@ -448,13 +458,13 @@ if __name__ == '__main__':
     #     grouping = group_list_without_hashing(test_list)
     #     pass
     
-    ligand_db_file = "../data/LigandDatabases/ligand_db_test.pickle"
-    
-    with open(ligand_db_file, 'rb') as file:
-        ligand_db = pickle.load(file)
-        print('Loaded ligand db from pickle.')
-
-    ligand_db.run_sanity_checks_for_all_Extracted_Molecules()
+    # ligand_db_file = "../data/LigandDatabases/ligand_db_test.pickle"
+    #
+    # with open(ligand_db_file, 'rb') as file:
+    #     ligand_db = pickle.load(file)
+    #     print('Loaded ligand db from pickle.')
+    #
+    # ligand_db.run_sanity_checks_for_all_Extracted_Molecules()
     
     # ligand_db.save_Extracted_Molecules_to_json()
     
