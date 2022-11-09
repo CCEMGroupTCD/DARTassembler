@@ -14,7 +14,10 @@ if __name__ == '__main__':
     denticity_numbers: Denticities we are interested in
     
     """
-    Testing = True
+    # Testing: Either an int or a bool. If int, must be smaller than 1247, which is the size of the whole testing dataset which you also get by setting Testing=True. If Testing=False, the whole tmQM is used as input.
+    # Recommended: Use Testing=20 for simple debugging and Testing=True for a bigger check in the end. These two values will also be doublechecked by using assert_frame_equal() using the value of a saved df with correct values.
+    Testing = 20
+    
     database_path = '../database/tmQM/data'
     id_col = 'CSD_code'
     atomic_properties_json = Path('../database/tmQM/data/atomic_properties/atomic_properties.json')
@@ -61,8 +64,8 @@ if __name__ == '__main__':
     outpath = '../data/ligand_db_test.csv' if Testing else '../data/ligand_db.csv'
     df.to_csv(outpath, index=False)
     
-    if Testing:
-        old_outpath = '../data/221103_ligand_db_test_small_better_hashes.csv'
+    if Testing == 20 or Testing == True:
+        old_outpath = f'../data/221107_ligand_db_test_Testing={Testing}.csv'
         old_df = pd.read_csv(old_outpath).sort_values('name').reset_index(drop=True)
         pd.testing.assert_frame_equal(df[old_df.columns], old_df, check_like=True)
         print('Ligand database same as old database.')

@@ -20,9 +20,7 @@ benchmark_complexes = ['ACASOO', 'AFATAE', 'AGUZAD', 'AROMAW', 'AVIBIR', 'AXOTAK
 
 specified_test_molecules = benchmark_complexes + original_test_complexes
 
-n = 20
-print(f'Use only the first {n} test molecules.')
-specified_test_molecules = specified_test_molecules[0:n]   # TODO
+
 
 class MoleculeDatabase:
     
@@ -36,7 +34,15 @@ class MoleculeDatabase:
         self.default_atomic_properties_json_path = Path(self.atomic_props_dir, 'atomic_properties.json')
         
         self.id_col = id_col
-        self.testing = TestSize
+        
+        if isinstance(TestSize, bool):
+            self.testing = TestSize
+            self.n_test_mols = len(specified_test_molecules) if TestSize else None
+        elif isinstance(TestSize, int) or isinstance(TestSize, float):
+            self.testing = True
+            self.n_test_mols = int(TestSize)
+        else:
+            raise ValueError(f'TestSize has unexpected type.')
         
         self.has_df = False
         self.has_atomic_props = False
@@ -199,7 +205,13 @@ class MoleculeDatabase:
         return extr_mol
     
     def get_test_molecule_ids(self, mol_ids):
-        test_molecule_ids = specified_test_molecules
+        """
+        Returns test molecule IDs from the above specified collection of CSD codes. Ignores mol_ids.
+        :param mol_ids: Ignored.
+        :return: list of mol_ids for testing purposes of length self.n_test_mols.
+        """
+        print(f'Use only {self.n_test_mols} molecules for testing.')
+        test_molecule_ids = specified_test_molecules[0:self.n_test_mols]
         
         return test_molecule_ids
 
