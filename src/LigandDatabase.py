@@ -292,7 +292,7 @@ class LigandDatabase(MoleculeDatabase):
         return denticities
     
     def save_self_as_pickle(self, outpath):
-        outpath.mkdir(parents=True, exist_ok=True)
+        outpath.parent.mkdir(parents=True, exist_ok=True)
         with open(outpath, 'wb') as f:
             pickle.dump(self, f)
         return
@@ -429,8 +429,8 @@ class LigandDatabase(MoleculeDatabase):
         
         extracted_molecules_dict = self.get_dict_of_all_Extracted_Molecules()
         
-        outpath = outpath or self.default_all_Extracted_Molecules_json_path
-        outpath.mkdir(parents=True, exist_ok=True)
+        outpath = Path(outpath) or self.default_all_Extracted_Molecules_json_path
+        outpath.parent.mkdir(parents=True, exist_ok=True)
         with open(outpath, 'w') as file:
             json.dump(extracted_molecules_dict, file)
         
