@@ -22,7 +22,7 @@ class Box:
 
 
 # this is a method decoding the boxes for any of the ligand size
-def get_boxes(denticity, planar=True):
+def get_boxes(denticity, planar):
 
     box_list = list()
 
@@ -32,7 +32,6 @@ def get_boxes(denticity, planar=True):
         box_list.append(Box(-5.0, 5.0, -5.0, 5.0, 4.0, 10.0))
         box_list.append(Box(2.5, 100.0, -5.0, 5.0, -2.5, 5.0))
         box_list.append(Box(0.4, 100.0, -10.0, 10.0, 0.001, 1000.))
-        box_list.append(Box(100.0, 101.0, 100.0, 101., 100., 101.))
         box_list.append(Box(-1.0, 1.0, -1.0, 1.0, 0.001, 100.))
     elif denticity == 3:
         box_list.append(Box(0.0, 1.0, -1.0, 1.0, 0.0001, 10.0))
@@ -43,11 +42,8 @@ def get_boxes(denticity, planar=True):
         box_list.append(Box(-2.0, 2.0, -2.0, 2.0, -10.0, -0.8))
     elif denticity == 5:
         box_list.append(Box(-1.0, 1.0, -1.0, 1.0, 0.3, 2.001))
-        box_list.append(Box(100.0, 101.0, 100.0, 101., 100., 101.))
         box_list.append(Box(-1.8, 1.8, -1.8, 1.8, 2.001, 6.001))
-        box_list.append(Box(100.0, 101.0, 100.0, 101., 100., 101.))
         box_list.append(Box(-4.0, 4.0, -4.0, 4.0, 6.001, 14.001))
-        box_list.append(Box(100.0, 101.0, 100.0, 101., 100., 101.))
     elif denticity == 4 and planar is True:
         box_list.append(Box(-1.0, 1.0, -1.0, 1.0, 0.001, 2.001))
         box_list.append(Box(-1.0, 1.0, -1.0, 1.0, -2.001, -0.001))
@@ -59,9 +55,6 @@ def get_boxes(denticity, planar=True):
         box_list.append(Box(-10.0, -0.9, -1.8, 1.8, -1.3, 1.3))
         box_list.append(Box(-10.0, -1.8, -5.0, 5.0, -2.0, 2.0))
         box_list.append(Box(-10.0, -3.5, -10.0, 10.0, -10.0, 10.0))
-        box_list.append(Box(100.0, 101.0, 100.0, 101., 100., 101.))
-        box_list.append(Box(100.0, 101.0, 100.0, 101., 100., 101.))
-        box_list.append(Box(100.0, 101.0, 100.0, 101., 100., 101.))
     else:
         pass
 

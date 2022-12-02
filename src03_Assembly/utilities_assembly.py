@@ -3,7 +3,7 @@ from openbabel import pybel
 from src03_Assembly.stk_extension import *
 import os
 from ase import io
-from src.Molecule import RCA_Molecule, RCA_Ligand
+from src01.Molecule import RCA_Molecule, RCA_Ligand
 import rdkit
 from src02_Pre_Ass_Filtering.constants import get_boxes, intensity, sharpness
 from openbabel import openbabel as ob

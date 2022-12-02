@@ -1,140 +1,119 @@
-from src.LigandDatabase import LigandDatabase
-import pickle
-from copy import deepcopy
+from pathlib import Path
+
+from src01.DataBase import MoleculeDB, LigandDB
+from src01.utilities_Molecule import original_metal_ligand
+
 from src02_Pre_Ass_Filtering.Box_Excluder_Filter import box_filter
-from src.constants import get_monodentate_list
-from tqdm import tqdm
+from src02_Pre_Ass_Filtering.constant_Ligands import get_monodentate_list, get_reactant
 
 
-class FilterHandler:
+class FilterStage:
 
-    def __init__(self, database: LigandDatabase):
+    def __init__(self,
+                 database: [MoleculeDB, LigandDB],
+                 safe_path: [str, Path] = None):
         """
-        We modify the filtered database dict and the filtered database object we initialized in the ligand databse earlier
-        the dict will keep track of all intermediate ligand_dicts
-        and the filtered database will be the quick accesss to the ligand_dict after all filters applied
+        :param database:
+        :param safe_path:   The path we want to safe the filtered databases to. If None, no saving at all
         """
-        self.database = database
+        # The object we are working on. Is hopefully saved, because the filter stage doesnt make copy itself of it
+        self.db = database.db
 
-        # add track of applied filters to db object
-        # by adding an attribute to the ligand DB
-        self.database.filtered_database_dict = {}        # {1 : [Name of the applied filter, database after the step],
-                                                        # 2 : [Name of the applied filter, db after step 2 AND 1, ...}
+        self.safe_path = safe_path
+        self.safe = True if self.safe_path is not None else False
+        self.filter_tracking = {}
 
-        # keeps track of the current filtered db, so that we can apply all filter consecutively
-        # add this as an attribute of the DB as the filterhandler is exclusively working on that object
-        self.database.filtered_database = deepcopy(self.database.full_ligand_dict)
+    def safe_and_document_after_filterstep(self, filtering_step_name: str):
 
-    def filter_duplicates(self):
+        print(f"Filtering step {filtering_step_name} succesfull applied")
+
+        # Create a new attr for database for backtracking
+        self.db.filters_applied = self.filter_tracking
+
+        # safe to desired folder
+        self.db.to_json(path=f"{self.safe_path}/DB_after_{filtering_step_name}.json")
+
+    def metals_of_interest_filter(self, metals_of_interest: [str, list[str]] = None):
         """
-        In this step we filter duplicates out of the DB
+
+        """
+        print("Metal of Interest Filter running")
+
+        if metals_of_interest is None:
+            print("No metals of interest selected, no filtering at all")
+        elif isinstance(metals_of_interest, str):
+            metals_of_interest = [metals_of_interest]
+
+        self.db = {identifier: ligand for identifier, ligand in self.db.items()
+                   if original_metal_ligand(ligand) in metals_of_interest or original_metal_ligand(ligand) is None}
+
+        self.filter_tracking[len(self.filter_tracking)] = f"Metals of interest filter with {metals_of_interest}"
+
+        self.safe_and_document_after_filterstep(filtering_step_name="Metal_of_Interest")
+
+    def denticity_of_interest_filter(self, denticity_of_interest: [int, list[int]] = None):
         """
 
-        print("Duplicate Filter running")
+        """
+        print("Denticity Filter running")
 
-        # generate a new attribute for the database, i.e. expand it
-        duplicant_filtered_ligand_dict = {}
+        if denticity_of_interest is None:
+            print("No denticities of interest selected, no filtering at all")
+        elif isinstance(denticity_of_interest, int):
+            denticity_of_interest = [denticity_of_interest]
 
-        for denticity, ligand_list in tqdm(self.database.filtered_database.items()):
-            duplicant_filtered_ligand_dict[denticity] = list(set(ligand_list))
+        self.db = {identifier: ligand for identifier, ligand in self.db.items() if ligand.denticity in denticity_of_interest}
 
-        key_ = len(self.database.filtered_database_dict.keys())
-        self.database.filtered_database_dict[key_] = ["Duplicant Filter", duplicant_filtered_ligand_dict]
+        self.filter_tracking[len(self.filter_tracking)] = f"Metals of interest filter with {denticity_of_interest}"
 
-        # update the filtered ligand db
-        self.database.filtered_database = duplicant_filtered_ligand_dict
+        self.safe_and_document_after_filterstep(filtering_step_name="Denticity_of_Interest")
 
-    def filter_N_and_O_functional_groups(self):
+    def filter_functional_group_atoms(self, atoms_of_interest: [str, list[str]] = None):
         """
         Only leave in ligands where we have functional atoms equal to N and/or O
         """
+        print("FunctionalGroup Filter running")
 
-        print("NO Filter running")
+        self.db = {identifier: ligand for identifier, ligand in self.db.items()
+                   if ligand.functional_atom_check(atoms_of_interest) is True}
 
-        # generate a new attribute for the database, i.e. expand it
-        no_filtered_ligand_dict = {}
+        self.filter_tracking[len(self.filter_tracking)] = f"Functional Atom filter with {atoms_of_interest}"
 
-        for denticity, ligand_list in tqdm(self.database.filtered_database.items()):
-            no_filtered_ligand_dict[denticity] = [lig for lig in ligand_list if lig.NO_check() is True]
-
-        key_ = len(self.database.filtered_database_dict.keys())
-        self.database.filtered_database_dict[key_] = ["NO Filter", no_filtered_ligand_dict]
-
-        # update the filtered ligand db
-        self.database.filtered_database = no_filtered_ligand_dict
+        self.safe_and_document_after_filterstep(filtering_step_name="FunctionalAtoms_of_Interest")
 
     def filter_betaHs(self):
         """
         Filter out all ligands with beta Hydrogen in it
         """
-
         print("betaH Filter running")
 
-        # generate a new attribute for the database, i.e. expand it
-        betaH_filtered_ligand_dict = {}
+        self.db = {identifier: ligand for identifier, ligand in self.db.items()
+                   if ligand.betaH_check() is False}
 
-        for denticity, ligand_list in tqdm(self.database.filtered_database.items()):
-            betaH_filtered_ligand_dict[denticity] = [lig for lig in ligand_list if lig.betaH_check() is False]
+        self.filter_tracking[len(self.filter_tracking)] = f"betaH Filter"
 
-        key_ = len(self.database.filtered_database_dict.keys())
-        self.database.filtered_database_dict[key_] = ["beta H Filter", betaH_filtered_ligand_dict]
-
-        # update the filtered ligand db
-        self.database.filtered_database = betaH_filtered_ligand_dict
+        self.safe_and_document_after_filterstep(filtering_step_name="betaH Filter")
 
     def box_excluder_filter(self):
         """
         Filter out all ligands that violate the box Filter
         """
-
         print("Box Excluder Filter running")
 
-        # generate a new attribute for the database, i.e. expand it
-        box_filtered_ligand_dict = {}
-        '''
-                for denticity, ligand_list in self.database.filtered_database.items():
-                    box_filtered_ligand_dict[denticity] = [lig for lig in ligand_list if box_filter(lig) is True]
-        '''
+        self.db = {identifier: ligand for identifier, ligand in self.db.items()
+                   if box_filter(ligand) is True}
 
-        counter = 0
+        self.filter_tracking[len(self.filter_tracking)] = f"Box Filter"
 
-        for denticity, ligand_list in self.database.filtered_database.items():
-            new_list = []
-            for lig in tqdm(ligand_list):
-                try:
-                    filter_res = box_filter(lig)
-                    if filter_res is True:
-                        new_list.append(lig)
-                except Exception as e:
-                    print(f"An error has occured {e}")
-                    counter += 1
-                    # if we want to let through all ligands, where the filter didnt work:
-                    # new_list.append(lig)
-                    #
-                    # and if we want to rule them out
-                    pass
+        self.safe_and_document_after_filterstep(filtering_step_name="Box Filter")
 
-            # print(f"number of errors for denticity {denticity}: {counter} out of {len(ligand_list)}")
-            # input("Press enter to continue")
-            box_filtered_ligand_dict[denticity] = new_list
-
-        key_ = len(self.database.filtered_database_dict.keys())
-        self.database.filtered_database_dict[key_] = ["Box Filter", box_filtered_ligand_dict]
-
-        # update the filtered ligand db
-        self.database.filtered_database = box_filtered_ligand_dict
-
-    def readd_monodentates(self):
-        self.database.filtered_database[1] = get_monodentate_list()
-
-    def safe(self, safe_path: str):
+    def add_constant_ligands(self):
         """
-        print results and safe them to local pickle files
+        Now we add the constant Ligands we defined in constant_Ligands
         """
+        print("Adding constant Ligands")
 
-        for key, item in self.database.filtered_database_dict.items():
-            print(f"In the {key} step, filter {item[0]} was applied")
+        for lig in get_monodentate_list() + get_reactant():
+            self.db[lig.name] = lig
 
-        with open(safe_path, "wb") as file:
-            pickle.dump(self.database, file)
-
+        self.db.to_json(path=f"{self.safe_path}/DB_after_Adding_Const_Ligands.json")
