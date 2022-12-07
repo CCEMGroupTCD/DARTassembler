@@ -1,9 +1,6 @@
 # only a testfile to crunch some numbers for the group
 # todo: To be removed
-from src.LigandDatabase import LigandDatabase
-from src02_Pre_Ass_Filtering.FilteringStage import FilterHandler
 import pickle
-import numpy as np
 
 
 def old_one():
