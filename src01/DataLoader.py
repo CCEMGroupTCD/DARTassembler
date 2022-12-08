@@ -70,7 +70,7 @@ class DataLoader:
             self.has_graphs = False
 
     def get_global_prop_dict(self):
-        # Q@F: Is this not way easier using df.to_dict()?
+        # Q@F: Is this not easier using df.to_dict()?
         df = pd.read_csv(self.global_path)
         json_dict = json.loads(df.set_index(self.identifier).to_json(orient='split'))
 

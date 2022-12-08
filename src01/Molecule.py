@@ -5,6 +5,7 @@ from sympy import Point3D, Plane
 import collections
 from mendeleev import element
 import numpy as np
+import random
 from scipy.spatial.transform import Rotation as R
 from copy import deepcopy
 
@@ -304,19 +305,17 @@ class RCA_Molecule:
         # potenzielle Fehlerquelle
         # ansonsten ist die Loesung auch recht einfach, man muss nur ein entsprechende Abbildung angeben
 
-        conn_components = list(
-            nx.connected_components(ripped_graph))  # gives set of indices of the connected components
+        conn_components = [sorted(comp) for comp in
+            nx.connected_components(ripped_graph)]  # gives set of indices of the connected components
+        conn_components = [comp for comp in sorted(conn_components, key=str)]   # important: sort by string of list, is def. unique
 
         for component in conn_components:
-            functional_atom_indices = list(component.intersection(set(metal_neighbors)))
+            functional_atom_indices = sorted(list(set(component).intersection(set(metal_neighbors))))
             # falls diese Menge leer ist, ist das kein Ligand, weil er keine Verbindung zum Metall hat
 
             ligand_graph = self.graph.subgraph(component)
             # dont have to compute the ligand graph new, removes computation time and
             # was a source for errors before
-
-            component = list(
-                component)  # need to convert it to list as from here on the order is more or less important
 
             denticity = len(functional_atom_indices)
             if denticity == 0:
