@@ -1,4 +1,5 @@
 from pathlib import Path
+from copy import deepcopy
 
 from src01.DataBase import MoleculeDB, LigandDB
 from src01.utilities_Molecule import original_metal_ligand
@@ -17,7 +18,7 @@ class FilterStage:
         :param safe_path:   The path we want to safe the filtered databases to. If None, no saving at all
         """
         # The object we are working on. Is hopefully saved, because the filter stage doesnt make copy itself of it
-        self.db = database.db
+        self.database = database
 
         self.safe_path = safe_path
         self.safe = True if self.safe_path is not None else False
@@ -28,10 +29,10 @@ class FilterStage:
         print(f"Filtering step {filtering_step_name} succesfull applied")
 
         # Create a new attr for database for backtracking
-        self.db.filters_applied = self.filter_tracking
+        self.database.filters_applied = self.filter_tracking
 
         # safe to desired folder
-        self.db.to_json(path=f"{self.safe_path}/DB_after_{filtering_step_name}.json")
+        self.database.to_json(path=f"{self.safe_path}/DB_after_{filtering_step_name}.json")
 
     def metals_of_interest_filter(self, metals_of_interest: [str, list[str]] = None):
         """
@@ -44,12 +45,20 @@ class FilterStage:
         elif isinstance(metals_of_interest, str):
             metals_of_interest = [metals_of_interest]
 
-        self.db = {identifier: ligand for identifier, ligand in self.db.items()
-                   if original_metal_ligand(ligand) in metals_of_interest or original_metal_ligand(ligand) is None}
+        new_db = deepcopy(self.database.db)
+
+        for identifier, ligand in self.database.db.items():
+            om = original_metal_ligand(ligand)
+            if not (om in metals_of_interest or om is None):
+                del new_db[identifier]
+
+        self.database.db = new_db
+
+        #self.db = {identifier: ligand for identifier, ligand in self.db.items() if om in metals_of_interest or om is None}
 
         self.filter_tracking[len(self.filter_tracking)] = f"Metals of interest filter with {metals_of_interest}"
 
-        self.safe_and_document_after_filterstep(filtering_step_name="Metal_of_Interest")
+        #self.safe_and_document_after_filterstep(filtering_step_name="Metal_of_Interest")
 
     def denticity_of_interest_filter(self, denticity_of_interest: [int, list[int]] = None):
         """
@@ -62,11 +71,19 @@ class FilterStage:
         elif isinstance(denticity_of_interest, int):
             denticity_of_interest = [denticity_of_interest]
 
-        self.db = {identifier: ligand for identifier, ligand in self.db.items() if ligand.denticity in denticity_of_interest}
+        new_db = deepcopy(self.database.db)
+
+        for identifier, ligand in self.database.db.items():
+            if not ligand.denticity in denticity_of_interest:
+                del new_db[identifier]
+
+        self.database.db = new_db
+
+        # old: self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items() if ligand.denticity in denticity_of_interest}
 
         self.filter_tracking[len(self.filter_tracking)] = f"Metals of interest filter with {denticity_of_interest}"
 
-        self.safe_and_document_after_filterstep(filtering_step_name="Denticity_of_Interest")
+        #self.safe_and_document_after_filterstep(filtering_step_name="Denticity_of_Interest")
 
     def filter_functional_group_atoms(self, atoms_of_interest: [str, list[str]] = None):
         """
@@ -74,12 +91,12 @@ class FilterStage:
         """
         print("FunctionalGroup Filter running")
 
-        self.db = {identifier: ligand for identifier, ligand in self.db.items()
+        self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items()
                    if ligand.functional_atom_check(atoms_of_interest) is True}
 
         self.filter_tracking[len(self.filter_tracking)] = f"Functional Atom filter with {atoms_of_interest}"
 
-        self.safe_and_document_after_filterstep(filtering_step_name="FunctionalAtoms_of_Interest")
+        #self.safe_and_document_after_filterstep(filtering_step_name="FunctionalAtoms_of_Interest")
 
     def filter_betaHs(self):
         """
@@ -87,12 +104,12 @@ class FilterStage:
         """
         print("betaH Filter running")
 
-        self.db = {identifier: ligand for identifier, ligand in self.db.items()
+        self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items()
                    if ligand.betaH_check() is False}
 
         self.filter_tracking[len(self.filter_tracking)] = f"betaH Filter"
 
-        self.safe_and_document_after_filterstep(filtering_step_name="betaH Filter")
+        #self.safe_and_document_after_filterstep(filtering_step_name="betaH Filter")
 
     def box_excluder_filter(self):
         """
@@ -100,12 +117,12 @@ class FilterStage:
         """
         print("Box Excluder Filter running")
 
-        self.db = {identifier: ligand for identifier, ligand in self.db.items()
+        self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items()
                    if box_filter(ligand) is True}
 
         self.filter_tracking[len(self.filter_tracking)] = f"Box Filter"
 
-        self.safe_and_document_after_filterstep(filtering_step_name="Box Filter")
+        #self.safe_and_document_after_filterstep(filtering_step_name="Box Filter")
 
     def add_constant_ligands(self):
         """
@@ -114,6 +131,6 @@ class FilterStage:
         print("Adding constant Ligands")
 
         for lig in get_monodentate_list() + get_reactant():
-            self.db[lig.name] = lig
+            self.database.db[lig.name] = lig
 
-        self.db.to_json(path=f"{self.safe_path}/DB_after_Adding_Const_Ligands.json")
+        #self.db.to_json(path=f"{self.safe_path}/DB_after_Adding_Const_Ligands.json")

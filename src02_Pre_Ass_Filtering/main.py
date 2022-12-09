@@ -1,6 +1,9 @@
 from src01.DataBase import LigandDB
 from src02_Pre_Ass_Filtering.FilteringStage import FilterStage
 
+# only for testing
+from src02_Pre_Ass_Filtering.test import id_list
+
 
 if __name__ == "__main__":
     """
@@ -8,7 +11,11 @@ if __name__ == "__main__":
     filtered_db = {unique_lig_name: RCA_Ligand} dict-type, which can then be employed for the ligandAssembl
     """
 
-    tmQM_unique_Ligands = LigandDB.from_json(json_='../data/tmQMG_Jsons/tmQMG_Ligands_unique.json', type_="Ligand")
+    tmQM_unique_Ligands = LigandDB.from_json(json_='../data/tmQMG_Jsons/tmQMG_Ligands_unique.json',
+                                             type_="Ligand",
+                                             # only for testing
+                                             # identifier_list=id_list
+                                             )
 
     Filter = FilterStage(tmQM_unique_Ligands)
 
@@ -22,5 +29,8 @@ if __name__ == "__main__":
 
     Filter.add_constant_ligands()
 
+    Filter.database.to_json(path="../data/Filtered_Jsons/filteredLigDB.json")
+
+    #F = LigandDB.from_json(json_="../src02_Pre_Ass_Filtering/filteredLigDB.json", type_="Ligand")
 
     print("Filtering Done")

@@ -445,8 +445,10 @@ class RCA_Ligand(RCA_Molecule):
             self.unique_name = kwargs["unique_name"]
 
         if 'original_metal' in kwargs.keys():
-            self.original_metal = kwargs['original_metal']
-            self.original_metal_symbol = element(int(self.original_metal)).symbol
+
+            if kwargs['original_metal'] is not None:
+                self.original_metal = kwargs['original_metal']
+                self.original_metal_symbol = element(int(self.original_metal)).symbol
 
     def get_assembly_dict(self):
         """
@@ -556,12 +558,23 @@ class RCA_Ligand(RCA_Molecule):
                        original_metal=dict_["original_metal"]
                        )
         else:
-            return cls(atomic_props=dict_["atomic_props"],
-                       global_props=dict_["global_props"],
-                       graph=graph_from_graph_dict(dict_["graph_dict"]),
-                       denticity=dict_["denticity"],
-                       name=dict_["name"],
-                       ligand_to_metal=dict_["ligand_to_metal"],
-                       csd_code=dict_["CSD_code"],
-                       original_metal=dict_["original_metal"]
-                       )
+            try:
+                return cls(atomic_props=dict_["atomic_props"],
+                           global_props=dict_["global_props"],
+                           graph=graph_from_graph_dict(dict_["graph_dict"]),
+                           denticity=dict_["denticity"],
+                           name=dict_["name"],
+                           ligand_to_metal=dict_["ligand_to_metal"],
+                           csd_code=dict_["CSD_code"],
+                           original_metal=dict_["original_metal"]
+                           )
+            except TypeError:
+                return cls(atomic_props=dict_["atomic_props"],
+                           global_props=dict_["global_props"],
+                           graph=graph_from_graph_dict(dict_["graph_dict"]),
+                           denticity=dict_["denticity"],
+                           name=dict_["name"],
+                           ligand_to_metal=dict_["ligand_to_metal"],
+                           csd_code=dict_["CSD_code"],
+                           original_metal=None
+                           )
