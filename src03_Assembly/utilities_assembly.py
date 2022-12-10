@@ -10,24 +10,16 @@ from openbabel import openbabel as ob
 import itertools
 
 
-stk_ = __import__("stk")
 names_dict = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
 
 
-def get_top_string(top):
+def get_topology_string(top):
     str_ = ""
     for el in top:
         str_ += f"{names_dict[el]}_"
 
     return f"{str_}assembly"
 
-
-def build_ligand(type_list, index_list, path_):
-    func_dict = {type_: getattr(stk_, type_)for type_ in type_list}
-    atoms_ = [func_dict[type_](index_list[i]) for i, type_ in enumerate(type_list)]
-
-    functional_groups_ = [stk.GenericFunctionalGroup(atoms=(a,), bonders=(a,), deleters=()) for a in atoms_]
-    return stk.BuildingBlock.init_from_file(path_, functional_groups=functional_groups_)
 
 
 def optimize(input_file, option: str):  # option will be stk_to_xyz or stk_to_stk or file_to_file
@@ -68,12 +60,7 @@ def optimize(input_file, option: str):  # option will be stk_to_xyz or stk_to_st
     os.system("rm -f ../tmp/Optimizer_output_else.mol")
 
 
-def planar_ceck(ligand_bb_dict):
-    for key, (lig, lig_bb) in ligand_bb_dict.items():
-        if lig.denticity == 4 or lig.denticity == 3:
-            return lig.planar_check()
 
-    return False
 
 
 def complex_visualisation(input_complex):
@@ -174,7 +161,6 @@ def rotate_tridentate_ligand(tridentate_building_block, x, y, z, index_list) -> 
 
 
 def penta_as_tetra(ligand_bb, ligand):
-
     dict_ = ligand.get_assembly_dict()
     atom_func = dict_["index"]
     atom_type = dict_["type"]
@@ -188,15 +174,15 @@ def penta_as_tetra(ligand_bb, ligand):
         del list_indices[i]
         penta_bb_temp = penta_bb_temp.with_rotation_to_minimize_angle(start=penta_bb_temp.get_plane_normal(
             atom_ids=[int(list_indices[0]), int(list_indices[1]), int(list_indices[2]), int(list_indices[3]), ]),
-                                                                          target=np.array((0, 0, 1)),
-                                                                          axis=np.array((0, 1, 0)),
-                                                                          origin=np.array((0, 0, 0)), )
+            target=np.array((0, 0, 1)),
+            axis=np.array((0, 1, 0)),
+            origin=np.array((0, 0, 0)), )
 
         penta_bb_temp_2 = penta_bb_temp.with_rotation_to_minimize_angle(start=penta_bb_temp.get_plane_normal(
             atom_ids=[int(list_indices[0]), int(list_indices[1]), int(list_indices[2]), int(list_indices[3]), ]),
-                                                                          target=np.array((0, 0, 1)),
-                                                                          axis=np.array((1, 0, 0)),
-                                                                          origin=np.array((0, 0, 0)), )
+            target=np.array((0, 0, 1)),
+            axis=np.array((1, 0, 0)),
+            origin=np.array((0, 0, 0)), )
 
         position_xyz = list(penta_bb_temp_2.get_atomic_positions(
             atom_ids=[int(list_indices[0]), int(list_indices[1]), int(list_indices[2]), int(list_indices[3]), ]))
@@ -212,11 +198,12 @@ def penta_as_tetra(ligand_bb, ligand):
     position_index = atom_func[index_]
     atom_ids_ = [afunc_ for i, afunc_ in enumerate(atom_func) if i != index_]
 
-    _mod_functional_groups = [stk.GenericFunctionalGroup(atoms=(getattr(stk_, atype_)(afunc_), ),
-                                                         bonders=(getattr(stk_, atype_)(afunc_), ),
+    _mod_functional_groups = [stk.GenericFunctionalGroup(atoms=(getattr(stk_, atype_)(afunc_),),
+                                                         bonders=(getattr(stk_, atype_)(afunc_),),
                                                          deleters=()
-                                                        ) for k, (atype_, afunc_) in enumerate(zip(atom_type, atom_func))
-                                                        if k != index_]
+                                                         ) for k, (atype_, afunc_) in
+                              enumerate(zip(atom_type, atom_func))
+                              if k != index_]
 
     tmp_path = "../tmp/lig_mol.mol"
 
@@ -228,29 +215,7 @@ def penta_as_tetra(ligand_bb, ligand):
     return penta_bb_temp, position_index, atom_ids_
 
 
-def remove_Hg(input_complex, visualize_: bool = True):
 
-    stk.XyzWriter().write(input_complex, '../tmp/input_complex.xyz')
-    with open('../tmp/input_complex.xyz', "r+") as file:
-        lines = file.readlines()
-        counter = 0
-        new_lines = ["0", ""]
-        for i, line in enumerate(lines):
-            if len(line.split()) > 0:
-                if line.split()[0] == 'Hg':
-                    counter += 1
-                else:
-                    new_lines.append(line)
-        new_lines[0] = f"{int(lines[0]) - counter}\n"
-
-    with open('../tmp/input_complex.xyz', "w+") as file:
-        file.write(''.join(new_lines))
-    mol_ = io.read('../tmp/input_complex.xyz')
-    rca_mol = RCA_Molecule(mol=mol_)
-    if visualize_ is True:
-        rca_mol.view_3d()
-
-    return rca_mol, ''.join(new_lines)
 
 
 def mercury_remover(stk_Building_block):
@@ -281,7 +246,6 @@ def mercury_remover(stk_Building_block):
 
 
 def Bidentate_Rotator(ligand_bb, ligand):
-
     stk_Building_Block = mercury_remover(ligand_bb)
 
     index_list = ligand.get_assembly_dict()["index"]
@@ -328,13 +292,13 @@ def Bidentate_Rotator(ligand_bb, ligand):
     os.system("echo 'Hg 0.0       0.0        0.0' >> ../tmp/temp_xyz.xyz")
     exec(str(os.system("sed '1 s/.*/" + str(num_atoms + 1) + "/' ../tmp/temp_xyz.xyz >  ../tmp/temp_xyz_2.xyz")))
     os.system('obabel .xyz ../tmp/temp_xyz_2.xyz .mol -O  ../tmp/temp_mol.mol ---errorlevel 1')
-    os.system("sed 's/Hg[[:space:]][[:space:]]0[[:space:]][[:space:]]0/Hg  0  2/g' ../tmp/temp_mol.mol > ../tmp/temp_mol_2.mol")
+    os.system(
+        "sed 's/Hg[[:space:]][[:space:]]0[[:space:]][[:space:]]0/Hg  0  2/g' ../tmp/temp_mol.mol > ../tmp/temp_mol_2.mol")
 
     return "../tmp/temp_mol_2.mol"
 
 
 def get_energy(molecule):
-
     path = ligand_to_mol(molecule)  # Here there is a dependency on the above ligand_to_mol function.
     print(path)
     mol = next(pybel.readfile("mol", str(path)))
@@ -383,9 +347,9 @@ def nonplanar_tetra_solver(bb, lig):
     minimum_energy = min(all_Energies)
     minimum_energy_index = all_Energies.index(minimum_energy)
     lig.add_atom(symbol="Hg",
-                     coordinates=[all_midpoints[minimum_energy_index][0], all_midpoints[minimum_energy_index][1],
-                                  all_midpoints[minimum_energy_index][
-                                      2]])  # paces Hg at midpoint with smallest energy
+                 coordinates=[all_midpoints[minimum_energy_index][0], all_midpoints[minimum_energy_index][1],
+                              all_midpoints[minimum_energy_index][
+                                  2]])  # paces Hg at midpoint with smallest energy
 
     file_path_2 = ligand_to_mol(lig)
 

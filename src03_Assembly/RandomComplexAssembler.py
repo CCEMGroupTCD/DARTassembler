@@ -1,3 +1,8 @@
+"""
+Ist alles schon in AssemblyTest drin, also diese datei loeschen und assembly test umbenennen
+"""
+
+
 import pickle
 import random
 
