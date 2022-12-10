@@ -494,7 +494,7 @@ class RCA_Ligand(RCA_Molecule):
         # we can make quick use of that
 
         # todo: Der functional_index ist nicht der Index im Graph!!!
-        #   glaube das waere geloest wenn wir den Graph ordern
+        #   glaube das waere geloest wenn wir den Graph ordern und zwar kanonisch nach label des nodes
 
         for functional_index in self.ligand_to_metal:
             for index, atom_symbol in enumerate(self.atomic_props['atoms']):

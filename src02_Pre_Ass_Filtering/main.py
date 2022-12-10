@@ -39,8 +39,6 @@ if __name__ == "__main__":
 
     Filter.add_constant_ligands()
 
-    # Filter.database.to_json(path="../data/Filtered_Jsons/filteredLigDB.json")
-
-    #F = LigandDB.from_json(json_="../src02_Pre_Ass_Filtering/filteredLigDB.json", type_="Ligand")
+    Filter.database.to_json(path="../data/Filtered_Jsons/filteredLigDB.json")
 
     print("Filtering Done")
