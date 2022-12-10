@@ -19,17 +19,27 @@ if __name__ == "__main__":
 
     Filter = FilterStage(tmQM_unique_Ligands)
 
+    print(f"Before Filtering: {len(Filter.database.db)}")
+
     Filter.metals_of_interest_filter(metals_of_interest=["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"])
+
+    print(f"After metal of interest filter: {len(Filter.database.db)}")
 
     Filter.denticity_of_interest_filter(denticity_of_interest=[2, 3, 4, 5])
 
+    print(f"After denticity filter: {len(Filter.database.db)}")
+
     Filter.filter_functional_group_atoms(atoms_of_interest=["N", "O"])
+
+    print(f"After NO filter: {len(Filter.database.db)}")
 
     Filter.filter_betaHs()
 
+    print(f"After beta H filter: {len(Filter.database.db)}")
+
     Filter.add_constant_ligands()
 
-    Filter.database.to_json(path="../data/Filtered_Jsons/filteredLigDB.json")
+    # Filter.database.to_json(path="../data/Filtered_Jsons/filteredLigDB.json")
 
     #F = LigandDB.from_json(json_="../src02_Pre_Ass_Filtering/filteredLigDB.json", type_="Ligand")
 

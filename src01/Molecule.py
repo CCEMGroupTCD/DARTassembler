@@ -1,5 +1,4 @@
 import hashlib
-import matplotlib.pyplot as plt
 import networkx as nx
 from sympy import Point3D, Plane
 import collections
@@ -493,6 +492,10 @@ class RCA_Ligand(RCA_Molecule):
         # The second power of the adjacency matrix, i.e. A^2[i,j] represents the number of paths of length two
         # from i to j. Hence, as we are only interested in hydrogens that have distance two to our functional atoms
         # we can make quick use of that
+
+        # todo: Der functional_index ist nicht der Index im Graph!!!
+        #   glaube das waere geloest wenn wir den Graph ordern
+
         for functional_index in self.ligand_to_metal:
             for index, atom_symbol in enumerate(self.atomic_props['atoms']):
 

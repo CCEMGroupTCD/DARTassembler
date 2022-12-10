@@ -49,6 +49,7 @@ class FilterStage:
 
         for identifier, ligand in self.database.db.items():
             om = original_metal_ligand(ligand)
+            # if original metal is None we leave it through
             if not (om in metals_of_interest or om is None):
                 del new_db[identifier]
 

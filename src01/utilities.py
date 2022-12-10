@@ -3,7 +3,6 @@ from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from src01.constants import metals_in_pse
 from ase import Atoms
 from mendeleev import element
-import networkx as nx
 
 
 def find_node_in_graph_by_label(G, label_to_find, expected_hits=None):
