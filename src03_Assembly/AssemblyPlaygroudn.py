@@ -11,6 +11,8 @@ if __name__ == "__main__":
 
     F = LigandDB.from_json(json_="../data/Filtered_Jsons/filteredLigDB.json", type_="Ligand")
 
+    ligand = list(F.db.values())[0]
+
     RCA = RandomComplexAssembler(database=F)
     successfull_generated_complexes = {}
 

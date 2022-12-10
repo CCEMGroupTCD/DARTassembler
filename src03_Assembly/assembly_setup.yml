@@ -5,9 +5,9 @@ implemented_topologies:
   - [3,2,1]
   - [5,1]
 list_of_metals:
-  - ("Fe", "+2")
-  - ("Cr", "+3")
-  - ("Mg", "+2")
+  - ["Fe", "+2"]
+  - ["Cr", "+3"]
+  - ["Mg", "+2"]
 ...
 
 

@@ -1,11 +1,11 @@
 import random
-
+import yaml
+from yaml import SafeLoader
 import stk
 
 stk_ = __import__("stk")
 
 from src03_Assembly.Topology_Assembly_Methods import *
-from src03_Assembly.assembly_setup import list_of_metals, implemented_topologies
 from src03_Assembly.utilities_stk import create_placeholder_Hg_bb, build_ligand, remove_Hg
 from src03_Assembly.utilities_assembly import get_topology_string
 from src03_Assembly.TransitionMetalComplex import TransitionMetalComplex as TMC
@@ -23,7 +23,11 @@ class RandomComplexAssembler:
 
         self.ligand_dict = database.get_lig_db_in_old_format()
 
-        self.possible_topologies = implemented_topologies
+        with open("assembly_setup.yml", "r") as handle:
+            setup = yaml.load(handle, SafeLoader)
+
+        self.possible_topologies = setup["implemented_topologies"]
+        self.list_of_metals = setup["list_of_metals"]
 
         try:
             self.assembly_functions = {f"{top}": globals()[get_topology_string(top)] for top in
@@ -32,9 +36,9 @@ class RandomComplexAssembler:
             print("More topologies requested than implemented")
             raise e
 
-        self.list_of_metals = list_of_metals
-
         self.store_path = store_path
+
+        print("RCA init complete")
 
     def choose_random_parts(self, rs):
         if rs is not None:

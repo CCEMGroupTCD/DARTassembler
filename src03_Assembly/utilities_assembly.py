@@ -8,6 +8,8 @@ import rdkit
 from src02_Pre_Ass_Filtering.constants import get_boxes, intensity, sharpness
 from openbabel import openbabel as ob
 import itertools
+import stk
+stk_ = __import__("stk")
 
 
 names_dict = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
