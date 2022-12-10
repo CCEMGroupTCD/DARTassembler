@@ -10,8 +10,8 @@ import stk
 stk_ = __import__("stk")
 
 from src03_Assembly.Topology_Assembly_Methods import *
-from src03_Assembly.utilities_stk import create_placeholder_Hg_bb, build_ligand, remove_Hg
-from src03_Assembly.utilities_assembly import get_topology_string
+from src03_Assembly.stk_utils import create_placeholder_Hg_bb, build_ligand, remove_Hg
+from src03_Assembly.Z_utilities_assembly import get_topology_string
 from src03_Assembly.TransitionMetalComplex import TransitionMetalComplex as TMC
 
 from src01.DataBase import LigandDB

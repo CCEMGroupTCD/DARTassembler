@@ -19,6 +19,8 @@ from pymatgen.analysis.local_env import JmolNN
 
 from src01.utilities import identify_metal_in_ase_mol, find_node_in_graph_by_label
 
+from src03_Assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
+
 
 # Package name: RandomComplexAssembler (RCA)
 class RCA_Molecule:
@@ -581,3 +583,10 @@ class RCA_Ligand(RCA_Molecule):
                            csd_code=dict_["CSD_code"],
                            original_metal=None
                            )
+
+    # some stk functionality
+    def to_stk_mol(self):
+        return convert_RCA_to_stk_Molecule(self)
+
+    def to_stk_bb(self):
+        return RCA_Mol_to_stkBB(self)
