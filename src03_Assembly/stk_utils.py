@@ -45,9 +45,9 @@ def RCA_Mol_to_stkBB(mol):
     stk_mol = convert_RCA_to_stk_Molecule(mol)
 
     func_dict = {type_: getattr(stk, type_) for type_ in mol.get_assembly_dict()["type"]}
-    atoms_ = [func_dict[type_](mol.get_assembly_dict()["index"]) for i, type_ in enumerate(mol.get_assembly_dict()["type"])]
+    atoms_ = [func_dict[type_](mol.get_assembly_dict()["index"][i]) for i, type_ in enumerate(mol.get_assembly_dict()["type"])]
 
-    functional_groups_ = [stk.GenericFunctionalGroup(atoms=(a,), bonders=(a,), deleters=()) for a in atoms_]
+    functional_groups_ = [stk.GenericFunctionalGroup(atoms=(a,), bonders=(a,), deleters=(),) for a in atoms_]
 
     return stk.BuildingBlock.init_from_molecule(molecule=stk_mol,
                                                 functional_groups=functional_groups_
@@ -58,26 +58,3 @@ def RCA_Mol_to_stkBB(mol):
 
 
 
-# todo: Da muss ich nochmal ran
-def remove_Hg(input_complex, visualize_: bool = True):
-    stk.XyzWriter().write(input_complex, '../tmp/input_complex.xyz')
-    with open('../tmp/input_complex.xyz', "r+") as file:
-        lines = file.readlines()
-        counter = 0
-        new_lines = ["0", ""]
-        for i, line in enumerate(lines):
-            if len(line.split()) > 0:
-                if line.split()[0] == 'Hg':
-                    counter += 1
-                else:
-                    new_lines.append(line)
-        new_lines[0] = f"{int(lines[0]) - counter}\n"
-
-    with open('../tmp/input_complex.xyz', "w+") as file:
-        file.write(''.join(new_lines))
-    mol_ = io.read('../tmp/input_complex.xyz')
-    rca_mol = RCA_Molecule(mol=mol_)
-    if visualize_ is True:
-        rca_mol.view_3d()
-
-    return rca_mol, ''.join(new_lines)

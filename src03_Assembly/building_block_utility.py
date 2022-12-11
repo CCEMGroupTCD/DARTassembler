@@ -99,7 +99,7 @@ def get_optimal_rotation_angle_tridentate(tridentate_building_block,
             angle=(-1.0) * float(minimum_angle[key]) * (np.pi / 180.0), axis=np.array((0, 0, 1)),
             origin=np.array((0, 0, 0)), )
 
-    min_distance_with_origin = {key: min(value) for key, value in distance_with_origin}
+    min_distance_with_origin = {key: min(value) for key, value in distance_with_origin.items()}
 
     #
     # now we would like to return the angle with the maximal minimum corresponding distance
@@ -150,9 +150,7 @@ def penta_as_tetra(ligand: RCA_Ligand):
                                                          functional_groups=_mod_functional_groups
                                                          )
 
-    return penta_bb_temp.with_centroid(np.array((0, 0, 0)), atom_ids=modified_atom_ids), \
-           ligand.get_assembly_dict()["index"][index_with_min_variance]
-
+    return penta_bb_temp.with_centroid(np.array((0, 0, 0)), atom_ids=modified_atom_ids), ligand.get_assembly_dict()["index"][index_with_min_variance]
 
 
 # todo: From here on
@@ -303,7 +301,7 @@ def nonplanar_tetra_solver(bb, lig):
                       int(position_of_Hg_in_mol), ]), target=np.array((0, 0, 1)), axis=np.array((1, 0, 0)),
         origin=np.array((0, 0, 0)), )
 
-    for degree in np.arange(0, 361, 0.5):
+    for _ in np.arange(0, 361, 0.5):
         complex_tetradentate = complex_tetradentate.with_rotation_about_axis(angle=0.5 * (np.pi / 180.0),
                                                                              axis=np.array((0, 0, 1)),
                                                                              origin=np.array((0, 0, 0)),
@@ -326,3 +324,43 @@ def nonplanar_tetra_solver(bb, lig):
             pass
 
     return "../tmp/tmp.mol"
+
+
+def ligand_to_mol(ligand: RCA_Ligand, target_path="../tmp/tmp.mol", xyz_path="../tmp/tmp.xyz"):
+    xyz_str = ligand.get_xyz_file_format_string()
+    with open(xyz_path, "w+") as f:
+        f.write(xyz_str)
+    os.system(f'obabel .xyz {xyz_path} .mol -O  {target_path} ---errorlevel 1')
+    return target_path
+
+
+def tmp_clean_up(*args):
+    for path in args:
+        os.system(f"rm -f {path}")
+
+
+def mercury_remover(stk_Building_block):
+    print("Removing Temporary Mercury")
+    stk.MolWriter().write(stk_Building_block, '../tmp/stk_Building_block.mol')
+    os.system('obabel .mol ../tmp/stk_Building_block.mol .xyz -O  ../tmp/stk_Building_block.xyz ---errorlevel 1')
+    os.system("rm -f ../tmp/stk_Building_block.mol")
+    path = "../tmp/stk_Building_block.xyz"
+    with open(path, "r") as f:
+        new_str = list()
+        counter = 0
+        for line in f.readlines():
+            if len(line.split()) > 0:
+                if line.split()[0] != "Hg":
+                    new_str.append(line)
+                else:
+                    counter += 1
+            else:
+                new_str.append("\n\n")
+        new_str[0] = str(int(new_str[0]) - counter)
+    with open(path, "w+") as f:
+        f.write(''.join([elem for elem in new_str]))
+    os.system('obabel .xyz ../tmp/stk_Building_block.xyz .mol -O  ../tmp/stk_Building_block.mol ---errorlevel 1')
+    os.system("rm -f stk_Building_block.xyz")
+    stk_Building_block1 = stk.BuildingBlock.init_from_file('../tmp/stk_Building_block.mol')
+    os.system("rm -f ../tmp/stk_Building_block.mol")
+    return stk_Building_block1

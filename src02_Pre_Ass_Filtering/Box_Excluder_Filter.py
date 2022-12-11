@@ -1,5 +1,5 @@
 
-from src03_Assembly.cnvert_building_block_utility import *
+from src03_Assembly.building_block_utility import *
 from src02_Pre_Ass_Filtering.constants import get_boxes
 from ase import io
 from stk import *

@@ -535,6 +535,8 @@ class RCA_Ligand(RCA_Molecule):
         return False
 
     # Ligands have more information and we thus have to expand the safe and read methods a little bit
+    # todo: unqiue name geht bei dem process irgendwie verloren, da muss ich irgendwie nochmal ran
+    #   vielleicht als Dummy immer nen None unique name setzen
     def write_to_mol_dict(self):
         return {"atomic_props": self.atomic_props,
                 "global_props": self.global_props,

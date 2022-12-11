@@ -5,9 +5,9 @@ import logging
 import stk
 import numpy as np
 
-from src03_Assembly.cnvert_building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
+from src03_Assembly.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
     get_optimal_rotation_angle_tridentate, Bidentate_Rotator, nonplanar_tetra_solver
-from src03_Assembly.stk_utils import create_placeholder_Hg_bb, remove_Hg
+from src03_Assembly.stk_utils import create_placeholder_Hg_bb
 from src03_Assembly.TransitionMetalComplex import TransitionMetalComplex as TMC
 import src03_Assembly.stk_extension as stk_e
 
@@ -250,7 +250,7 @@ class RandomComplexAssembler:
 
         return complex_
 
-    def create_random_TMC(self, visualize_: bool, random_seed: int = None):
+    def create_random_TMC(self, random_seed: int = None):
         """
         Assembles a transition metal complex at random
         What this method does in brief:
@@ -269,16 +269,9 @@ class RandomComplexAssembler:
         if topology == [3, 2, 0] and planar is False:
             complex_ = None
             logging.info("Not implemented yet")
+            return complex_
         else:
             # and thus we got everything to assemble the complex
             complex_ = self.building_block_assembly(ligands, metal, charge)
 
-        if complex_ is not None:
-            # todo: Also hier muss ich auf jeden Fall auch nochmal ran, wie wir hier die Infos behalten
-            #   das ist noch ein suboptimaler Datenflow
-            # if we were able to create a complex it still remains to remove the placeholder Hg atoms
-            # We return an RCA molecule
-            ase_complex, xyz_str = remove_Hg(complex_, visualize_=visualize_)
-            return TMC(mol=ase_complex, metal_symbol=metal, ligands=ligands, xyz_str=xyz_str)
-        else:
-            return complex_  # which will be None
+            return TMC(compl=complex_, ligands=ligands, metal=metal, metal_charge=int(charge))
