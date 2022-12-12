@@ -142,7 +142,7 @@ def penta_as_tetra(ligand: RCA_Ligand):
                            i != index_with_min_variance]
 
     _mod_functional_groups = [
-        stk.GenericFunctionalGroup(atoms=(getattr(stk, a)(i)), bonders=(getattr(stk, a)(i)), deleters=())
+        stk.GenericFunctionalGroup(atoms=[getattr(stk, a)(i)], bonders=[getattr(stk, a)(i)], deleters=())
         for (a, i) in zip(modified_atom_types, modified_atom_ids)
     ]
 
@@ -249,7 +249,7 @@ def nonplanar_tetra_solver(bb, lig):
         mid_points = [x_mid, y_mid, z_mid]
         lig.add_atom(symbol="Hg", coordinates=[x_mid, y_mid, z_mid])  # add dummy metal
         Energy = get_energy(lig)  # get energy
-        lig.remove_last_element_in_xyz()  # get rid of dummy metal
+        #lig.remove_last_element_in_xyz()  # get rid of dummy metal
         all_Energies.append(Energy)  # list of all the energies of pacing dummy metal at each midpoint
         all_midpoints.append(mid_points)
 

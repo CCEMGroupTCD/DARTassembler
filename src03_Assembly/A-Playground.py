@@ -20,10 +20,11 @@ if __name__ == "__main__":
     # c = RCA.create_random_TMC(random_seed=4)
     # for testing, works fine
 
+    #random_complex = RCA.create_random_TMC(random_seed=6)
+
     for i in range(10):
         try:
             random_complex = RCA.create_random_TMC(random_seed=i)
-
 
         except rdkit.Chem.rdchem.AtomValenceException as ex:
             print(f"The standard Error: {ex} has occured. Solveable by turning sanitize in stk off")
