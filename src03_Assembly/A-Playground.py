@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     for i in range(10):
         try:
-            random_complex = RCA.create_random_TMC()
+            random_complex = RCA.create_random_TMC(random_seed=i)
 
 
         except rdkit.Chem.rdchem.AtomValenceException as ex:
