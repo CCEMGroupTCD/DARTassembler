@@ -305,19 +305,20 @@ class RCA_Molecule:
         # potenzielle Fehlerquelle
         # ansonsten ist die Loesung auch recht einfach, man muss nur ein entsprechende Abbildung angeben
 
-        conn_components = list(
-            nx.connected_components(ripped_graph))  # gives set of indices of the connected components
+        # so that the naming is always the same
+        conn_components = sorted(list(
+            nx.connected_components(ripped_graph)))  # gives set of indices of the connected components
 
         for component in conn_components:
             functional_atom_indices = list(component.intersection(set(metal_neighbors)))
+            # these are the node (integer values) in either the ripped or the full graph
             # falls diese Menge leer ist, ist das kein Ligand, weil er keine Verbindung zum Metall hat
 
             ligand_graph = self.graph.subgraph(component)
             # dont have to compute the ligand graph new, removes computation time and
             # was a source for errors before
 
-            component = list(
-                component)  # need to convert it to list as from here on the order is more or less important
+            component = sorted(list(component))  # need to convert it to list as from here on the order is more or less important
 
             denticity = len(functional_atom_indices)
             if denticity == 0:

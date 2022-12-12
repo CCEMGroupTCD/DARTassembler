@@ -38,10 +38,13 @@ if __name__ == "__main__":
     #plt.show()
 
     #
-    #tmQM_DB = MoleculeDB.from_json(json_=f'{data_path}/tmQMG.json', type_="Molecule")
+    tmQM_DB = MoleculeDB.from_json(json_=f'{data_path}/tmQMG.json', type_="Molecule", identifier_list=["NIBTAT"])
 
     # Create the LigandDB from the tmQM
-    #tmQM_Ligands = LigandDB.from_json(json_=f'{data_path}/tmQMG_Ligands_full.json', type_="Ligand")
+    tmQM_Ligands = LigandDB.from_json(json_=f'{data_path}/tmQMG_Ligands_full.json', type_="Ligand", identifier_list=["CSD-NIBTAT-03-a"])
+
+    lig = list(tmQM_Ligands.db.values())[0]
+    mol = list(tmQM_DB.db.values())[0]
 
     tmQM_unique_Ligands = LigandDB.from_json(json_='../data/New_DB_jsons/tmQM_ligands_unique.json', type_="Ligand")
 
