@@ -89,7 +89,7 @@ class RandomComplexAssembler:
                 monodentate_topology = stk_e.Monodentate(metals=create_placeholder_Hg_bb(),
                                                          ligands=ligand.to_stk_bb())
                 if topology_determining_ligand_planar is False:
-                    monodentate_topology.set_ligand_coordinates(coordinates=[-1.2, 1.2, 0])
+                    monodentate_topology.set_ligand_coordinates(coordinates=np.array([-1.2, 1.2, 0]))
 
                 bb_for_complex = stk.BuildingBlock.init_from_molecule(stk.ConstructedMolecule(
                     topology_graph=monodentate_topology),
@@ -101,9 +101,9 @@ class RandomComplexAssembler:
                 monodentate_topology = stk_e.Monodentate(metals=create_placeholder_Hg_bb(),
                                                          ligands=ligand.to_stk_bb())
                 if topology_determining_ligand_planar is False:
-                    monodentate_topology.set_ligand_coordinates(coordinates=[-1.2, -1.2, 0])
+                    monodentate_topology.set_ligand_coordinates(coordinates=np.array([-1.2, -1.2, 0]))
                 else:
-                    monodentate_topology.set_ligand_coordinates(coordinates=[0, 0, -1.9])
+                    monodentate_topology.set_ligand_coordinates(coordinates=np.array([0, 0, -1.9]))
 
                 bb_for_complex = stk.BuildingBlock.init_from_molecule(stk.ConstructedMolecule(
                     topology_graph=monodentate_topology),
@@ -128,7 +128,7 @@ class RandomComplexAssembler:
                     )
 
                 else:
-                    # todo: Das muss noch gemacht werden
+                    # todo: This throws still errors
                     new_bb_path = nonplanar_tetra_solver(bb=building_block,
                                                          lig=ligand)
 
@@ -203,7 +203,7 @@ class RandomComplexAssembler:
                     # no rotation required
                     pass
                 else:
-                    print("Something went wrong")
+                    print("Tip position for penta = 0, unexpected")
                     raise ValueError
 
                 penta_topology = stk.metal_complex.Porphyrin(metals=create_placeholder_Hg_bb(),

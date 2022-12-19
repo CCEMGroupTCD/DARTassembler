@@ -579,9 +579,9 @@ class RCA_Ligand(RCA_Molecule):
         eps für (d=4) -> 1
         :return:
         """
-        functional_coords = [[self.atomic_props[key][i] for i in self.ligand_to_metal] for key in ["x", "y", "z"]]
+        functional_coords = [[self.atomic_props[key][i] for key in ["x", "y", "z"]] for i in self.ligand_to_metal]
 
-        assert len(functional_coords) == self.denticity, "Something went wrong"
+        assert len(functional_coords) == self.denticity, f"Error in Planar Check for ligand {self.name}"
 
         if self.denticity == 3:
             c1, c2, c3 = Point3D(functional_coords[0]), Point3D(functional_coords[1]), Point3D(functional_coords[2])
