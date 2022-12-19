@@ -160,7 +160,9 @@ if __name__ == '__main__':
     # specify the database path
     database_path = '../database/tmQMg'
     data_store_path = "../data/tmQMG_Jsons"  # Folder where we want to store the jsons
-    number_of_batches = 10
+    number_of_batches = 1
+
+    # todo This is obviously not finished yet. Everything is now setup to work perfectly, given the input json tmQMG.json. The part of getting this json from the input is skipped. I wanted to push it already to share the latest code. I will continue on this after christmas and make all of this into one class.
 
     # # Establish and safe the Database (in our case tmQM) as object
     # db_dict = DataLoader(database_path_=database_path).data_for_molDB
@@ -197,6 +199,7 @@ if __name__ == '__main__':
                                           identifier_list=key_list)
 
         # Normalize graphs
+        tmQM_batch.filter_not_fully_connected_molecules()   # important, will be made automatic
         tmQM_batch.remove_node_features_from_molecular_graphs(keep=['node_label'])
         tmQM_batch.remove_edge_features_from_molecular_graphs()
         tmQM_batch.normalize_multigraphs_into_simple_graphs()

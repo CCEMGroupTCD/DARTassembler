@@ -1,4 +1,6 @@
 import networkx as nx
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import pandas as pd
 from copy import deepcopy
@@ -141,7 +143,13 @@ def graph_from_graph_dict(d):
 
     G_new = make_graph_labels_integers(G_new)
 
-    return G_new
+    #
+    # Bring nodes in canonical order
+    H = nx.Graph()
+    H.add_nodes_from(sorted(G_new.nodes(data=True)))
+    H.add_edges_from(G_new.edges(data=True))
+
+    return H
 
 def get_reindexed_graph(graph):
     return nx.relabel.convert_node_labels_to_integers(graph, first_label=0, ordering='sorted')

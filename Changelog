@@ -15,10 +15,13 @@ OUTPUT:
             global_props: everything apart from `CSD_code`. The rest was information inherited from the complex of origin, like electronic properties of the complex.
         - added properties
             - stoichiometry (str)
-            - local_elements (list) --> elements coordinated to metal, same order as `ligand_to_metal`
+            - local_elements (list) --> elements coordinated to metal, in the same order as `ligand_to_metal`
             - original_metal_symbol (str)
-            - unique_ligand_information (dict) -->
-        -
+            - unique_ligand_information (dict) --> properties from the unique ligand that might be interesting, mainly for debugging
+                - occurrences (int) --> how often this unique ligand occurs in the complex_db
+                - n_denticities (dict) --> the distribution of how often this unique ligand has which denticity in the format {denticity: count}
+                - has_multiple_denticities (bool) --> a flag which indicates if this unique ligand has been found with more than one denticity
+                - n_metals (dict) --> the distribution of how often this unique ligand was detected with which metal in the format {metal: count}
 
     tmQM_Ligands_unique.json:
         - added properties:
@@ -53,4 +56,5 @@ CODE:
         - refactored `self.read_from_mol_dict()` using **kwargs instead of if... else.
 
 main_tmQMG_test:
+    - not yet finished - everything is done only from the point on where tmQMG.json exists. This will be improved after christmas.
     - todo filters

@@ -12,43 +12,46 @@ import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
 
-    data_store_path = "../data/tmQMG_Jsons"
+    data_path = "../data/tmQMG_Jsons"
 
     # Playground for tmQMG
 
     # First unique ligands
-    with open(f"{data_store_path}/tmQMG_Ligands_unique.json") as file:
-        unique_ligands_dict = json.load(file)
+    #with open(f"{data_store_path}/tmQMG_Ligands_unique.json") as file:
+    #    unique_ligands_dict = json.load(file)
 
-    lig_dict_old_format = {}
-    for k, v in tqdm(unique_ligands_dict.items()):
-        lig_dict_old_format.setdefault(v['denticity'], []).append(k)
+    #lig_dict_old_format = {}
+    #for k, v in tqdm(unique_ligands_dict.items()):
+    #    lig_dict_old_format.setdefault(v['denticity'], []).append(k)
 
 
     #
     #
-    plt_dict = {k: len(v) for k, v in lig_dict_old_format.items()}
-    plt.bar(plt_dict.keys(), plt_dict.values(), color="r")
-    plt.ylabel("Number of Ligands")
-    plt.xlabel("Denticity")
-    plt.title("Denticity distribution")
-    plt.xticks(range(1, 11))
-    plt.yticks(range(0, 12000, 1000))
-    plt.grid()
-    plt.show()
+    #plt_dict = {k: len(v) for k, v in lig_dict_old_format.items()}
+    #plt.bar(plt_dict.keys(), plt_dict.values(), color="r")
+    #plt.ylabel("Number of Ligands")
+    #plt.xlabel("Denticity")
+    #plt.title("Denticity distribution")
+    #plt.xticks(range(1, 11))
+    #plt.yticks(range(0, 12000, 1000))
+    #plt.grid()
+    #plt.show()
 
-
-    #tmQM_DB = MoleculeDB.from_json(json_='../data/New_DB_jsons/tmQM.json', type_="Molecule")
+    #
+    tmQM_DB = MoleculeDB.from_json(json_=f'{data_path}/tmQMG.json', type_="Molecule", identifier_list=["NIBTAT"])
 
     # Create the LigandDB from the tmQM
-    #tmQM_Ligands = LigandDB.from_json(json_='../data/New_DB_jsons/tmQM_ligands_full.json', type_="Ligand")
+    tmQM_Ligands = LigandDB.from_json(json_=f'{data_path}/tmQMG_Ligands_full.json', type_="Ligand", identifier_list=["CSD-NIBTAT-03-a"])
 
-    #tmQM_unique_Ligands = LigandDB.from_json(json_='../data/New_DB_jsons/tmQM_ligands_unique.json', type_="Ligand")
+    lig = list(tmQM_Ligands.db.values())[0]
+    mol = list(tmQM_DB.db.values())[0]
+
+    tmQM_unique_Ligands = LigandDB.from_json(json_='../data/New_DB_jsons/tmQM_ligands_unique.json', type_="Ligand")
 
 
 
-    with open(f"{data_store_path}/tmQMG_Ligands_full.json") as file:
-        full_ligands_dict = json.load(file)
+    #with open(f"{data_store_path}/tmQMG_Ligands_full.json") as file:
+    #    full_ligands_dict = json.load(file)
 
     print("Playground established")
 

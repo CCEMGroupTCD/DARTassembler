@@ -1,7 +1,5 @@
 import hashlib
 import warnings
-
-import matplotlib.pyplot as plt
 import networkx as nx
 from sympy import Point3D, Plane
 import collections
@@ -24,6 +22,8 @@ from pymatgen.analysis.local_env import JmolNN
 
 from src01.utilities import identify_metal_in_ase_mol, find_node_in_graph_by_label
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
+
+from src03_Assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
 
 # Package name: RandomComplexAssembler (RCA)
@@ -558,6 +558,10 @@ class RCA_Ligand(RCA_Molecule):
         # The second power of the adjacency matrix, i.e. A^2[i,j] represents the number of paths of length two
         # from i to j. Hence, as we are only interested in hydrogens that have distance two to our functional atoms
         # we can make quick use of that
+
+        # todo: Der functional_index ist nicht der Index im Graph!!!
+        #   glaube das waere geloest wenn wir den Graph ordern und zwar kanonisch nach label des nodes
+
         for functional_index in self.ligand_to_metal:
             for index, atom_symbol in enumerate(self.atomic_props['atoms']):
 
@@ -595,6 +599,8 @@ class RCA_Ligand(RCA_Molecule):
         return False
 
     # Ligands have more information and we thus have to expand the safe and read methods a little bit
+    # todo: unqiue name geht bei dem process irgendwie verloren, da muss ich irgendwie nochmal ran
+    #   vielleicht als Dummy immer nen None unique name setzen
     def write_to_mol_dict(self):
         return {
                 "stoichiometry": self.stoichiometry,
@@ -630,3 +636,10 @@ class RCA_Ligand(RCA_Molecule):
                     original_metal=dict_["original_metal"],
                     **kwargs
                    )
+
+    # some stk functionality
+    def to_stk_mol(self):
+        return convert_RCA_to_stk_Molecule(self)
+
+    def to_stk_bb(self):
+        return RCA_Mol_to_stkBB(self)

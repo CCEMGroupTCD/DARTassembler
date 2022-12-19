@@ -10,19 +10,17 @@ from pathlib import Path
 from src01.main_tmQMG import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands
 
 
-
-
 # TODO list
 #   - check data pipeline from initial tmQMg up until input json
 #       - write function to check that MultiGraphs have only one edge and can be made into simple graphs
-#   -
 
 
 if __name__ == '__main__':
     # specify the database path
     database_path = '../database/tmQMg'
-    data_store_path = "../data/tmQMG_Jsons_test_full"  # Folder where we want to store the jsons
+    data_store_path = "../data/tmQMG_Jsons_test"  # Folder where we want to store the jsons
     number_of_batches = 10
+
 
 
     # # Establish and safe the Database (in our case tmQM) as object
@@ -58,9 +56,9 @@ if __name__ == '__main__':
         print(f"Batch {i + 1} of {number_of_batches} running:")
         tmQM_batch = MoleculeDB.from_json(json_=f'{data_store_path}/tmQMG.json', type_="Molecule",
                                           identifier_list=key_list)
-        tmQM_batch.filter_not_fully_connected_molecules()
 
         # Normalize graphs
+        tmQM_batch.filter_not_fully_connected_molecules()   # important, will be made automatic
         tmQM_batch.remove_node_features_from_molecular_graphs(keep=['node_label'])
         tmQM_batch.remove_edge_features_from_molecular_graphs()
         tmQM_batch.normalize_multigraphs_into_simple_graphs()

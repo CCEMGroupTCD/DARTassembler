@@ -22,7 +22,10 @@ class Box:
 
 
 # this is a method decoding the boxes for any of the ligand size
-def get_boxes(denticity, planar):
+def get_boxes(denticity, planar: bool = True):
+    """
+    planar only important for tetradentates
+    """
 
     box_list = list()
 
