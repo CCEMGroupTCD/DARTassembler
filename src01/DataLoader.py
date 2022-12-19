@@ -88,7 +88,7 @@ class DataLoader:
         graph_dir_list = os.listdir(self.graph_path)
         graph_dict = {}
 
-        for path in loading_bar(graph_dir_list, desc="Loading Graphs fromn .gml files"):
+        for path in loading_bar(graph_dir_list, desc="Loading Graphs from .gml files"):
             if path.endswith("gml") is True:
                 identifier = path.removesuffix(".gml")
                 graph_dict[identifier] = nx.read_gml(Path(self.graph_path, path))

@@ -2,8 +2,10 @@ import numpy as np
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from src01.constants import metals_in_pse
 from ase import Atoms
-from mendeleev import element
 import networkx as nx
+
+
+
 
 
 def find_node_in_graph_by_label(G, label_to_find, expected_hits=None):
@@ -31,7 +33,7 @@ def identify_metal_in_ase_mol(mol: Atoms):
     metals = set(mol.get_atomic_numbers()).intersection(set(metals_in_pse))
     assert len(metals) == 1, "Molecule seems to be not a single metal complex, metal identification failed"
 
-    return element(int(metals.pop())).symbol
+    return Pymatgen_Element.from_Z(metals.pop()).symbol
 
 
 def coordinates_to_xyz_str(coordinates: dict):

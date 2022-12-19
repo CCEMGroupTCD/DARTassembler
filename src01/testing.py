@@ -6,6 +6,7 @@ import numpy as np
 from mendeleev import element
 
 
+
 def all_same(*inputs: tuple) -> bool:
     inp0 = inputs[0]
     all_inputs_same = True

@@ -9,8 +9,11 @@ import numpy as np
 
 from src01.Molecule import RCA_Molecule
 from src01.Molecule import RCA_Ligand as RCA_Ligand
+from src01.graph_utility import remove_node_features_from_graph, make_multigraph_to_graph, \
+    remove_edge_features_from_graph
 from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
+import networkx as nx
 
 
 class BaselineDB:
@@ -91,6 +94,62 @@ class BaselineDB:
             new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict)
         return cls(new_dict_)
 
+    def filter_not_fully_connected_molecules(self):
+        deleted_identifiers = []
+        for identifier, mol in self.db.items():
+            fully_connected = nx.is_connected(mol.graph)
+            if not fully_connected:
+                deleted_identifiers.append(identifier)
+
+        for identifier in deleted_identifiers:
+            del self.db[identifier]
+
+        print(f'Deleted {len(deleted_identifiers)} molecules from input because they were not fully connected.')
+        return
+
+    def remove_node_features_from_molecular_graphs(self, keep: list=['node_label']):
+        """
+        Removes all node features from all molecular graphs in the db except the node features specified in keep.
+        :param keep: list of node features which will not be removed
+        :return: None
+        """
+        for identifier, mol in self.db.items():
+            remove_node_features_from_graph(
+                                                graph=mol.graph,
+                                                keep=keep,
+                                                inplace=True
+                                            )
+
+        print(f'Removed all node features from all graphs except: {", ".join(keep)}')
+        return
+
+    def remove_edge_features_from_molecular_graphs(self, keep: list=[]):
+        """
+        Removes all edge features from all molecular graphs in the db except the edge features specified in keep.
+        :param keep: list of edge features which will not be removed
+        :return: None
+        """
+        for identifier, mol in self.db.items():
+            remove_edge_features_from_graph(
+                                                graph=mol.graph,
+                                                keep=keep,
+                                                inplace=True
+                                            )
+
+        print(f'Removed all edge features from all graphs except: {", ".join(keep)}')
+        return
+
+    def normalize_multigraphs_into_simple_graphs(self):
+        """
+        Makes all molecular multigraphs to graphs.
+        :return: None
+        """
+        for identifier, mol in self.db.items():
+            mol.graph = make_multigraph_to_graph(mol.graph)
+
+        print(f'Made all graphs to simple networkx.Graph objects.')
+        return
+
 
 class MoleculeDB(BaselineDB):
     def __init__(self, dict_):
@@ -157,10 +216,10 @@ class LigandDB(BaselineDB):
     # from here on we provide the necessary tools for the duplicant identification
     def hash_check(self):
         """
-        returns True, if there exists two ligands with same graph hash, but different stocheometry
+        returns True, if there exists two ligands with same graph hash, but different stoichiometry
         this means, that the graph hash is not unique on the ligand set,
         and an exact graph comparison is required
-        Otherwise, as we assume that for ligands with the same stocheometrie the graph hashes will
+        Otherwise, as we assume that for ligands with the same stoichiometric the graph hashes will
         be different (because they are too close for the hashes to be equal)
         and thus graph_hash equal if and only if molecules equal
         """
@@ -171,7 +230,7 @@ class LigandDB(BaselineDB):
         while len(all_ligands_copy) > 1:
             lig = all_ligands_copy.pop()
             for lig2 in all_ligands_copy:
-                if lig.graph_hash == lig2.graph_hash and lig.get_stocheometry() != lig2.get_stocheometry():
+                if lig.graph_hash == lig2.graph_hash and lig.stoichiometry != lig2.stoichiometry:
                     return True
 
         return False

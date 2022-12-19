@@ -1,6 +1,9 @@
-from mendeleev import element
+import collections
 
-from src01.Molecule import RCA_Ligand
+from pymatgen.core.composition import Composition
+
+# Removed this due to circular import error, and this was only used for type hinting.
+# from src01.Molecule import RCA_Ligand
 
 
 def get_all_ligands_by_graph_hashes(all_ligands: list) -> dict:
@@ -17,7 +20,7 @@ def get_all_ligands_by_graph_hashes(all_ligands: list) -> dict:
     return all_ligands_by_hashes
 
 
-def group_list_without_hashing(ligand_list: list[RCA_Ligand]) -> list:
+def group_list_without_hashing(ligand_list: list) -> list:
     """
     Returns a list of list with unique elements grouped together. Works without hashing, just using equity.
     :param ligand_list: list of elements
@@ -58,13 +61,13 @@ def group_list_without_hashing(ligand_list: list[RCA_Ligand]) -> list:
     return groupings
 
 
-def original_metal_ligand(ligand: RCA_Ligand):
+def original_metal_ligand(ligand):
     """
     We try to find the original metal of a ligand and return None if we couldnt find any
     """
 
     if hasattr(ligand, "original_metal"):
-        return element(int(ligand.original_metal)).symbol
+        return ligand.original_metal_symbol
     elif ligand.global_props is not None:
         try:
             return ligand.global_props['metal_name']
@@ -72,3 +75,18 @@ def original_metal_ligand(ligand: RCA_Ligand):
             pass
     else:
         return None
+
+def get_standardized_stoichiometry_from_atoms_list(atoms: list) -> str:
+    c = collections.Counter(atoms)
+    elements = sorted(el for el in c.keys())
+    if "C" in elements:
+        if 'H' in elements:
+            elements = ["C", 'H'] + [el for el in elements if el not in ["C", 'H']]
+        else:
+            elements = ["C"] + [el for el in elements if el != "C"]
+    else:
+        if 'H' in elements:
+            elements = ["H"] + [el for el in elements if el != "H"]
+
+    formula = [f"{el}{(c[el]) if c[el] != 1 else ''}" for el in elements]
+    return "".join(formula)
