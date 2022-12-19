@@ -1,0 +1,56 @@
+# Changelog
+
+## Timo refactoring before christmas
+
+
+OUTPUT:
+
+    complex_db.json:
+        - added properties
+            - stoichiometry (str)
+            - mol_id (str)
+
+    tmQM_Ligands_full.json:
+        - removed properties
+            global_props: everything apart from `CSD_code`. The rest was information inherited from the complex of origin, like electronic properties of the complex.
+        - added properties
+            - stoichiometry (str)
+            - local_elements (list) --> elements coordinated to metal, same order as `ligand_to_metal`
+            - original_metal_symbol (str)
+            - unique_ligand_information (dict) -->
+        -
+
+    tmQM_Ligands_unique.json:
+        - added properties:
+            - stoichiometry (str)
+            - local_elements (list)
+            - occurrences (int)
+            - n_denticities (dict)
+            - has_multiple_denticities (bool)
+            - n_metals (dict)
+            - all_ligand_names (list) --> all `name` attributes of this ligand in the complex_db
+
+
+CODE:
+
+    RCA_Molecule:
+        - added attribute `stoichiometry` which is a string of the stoichiometry in Hill notation (the default in ase).
+        - added method get_standardized_stoichiometry() which outputs the stoichiometry as a string based on the attribute `mol`.
+        - removed (i.e. block-commented) method get_stoichiometry()
+        - added optional init input `reindex_graph=False` which re-indexes `self.graph` so that the ordering of the indices stays the same but now they go from 0 to n-1 instead of keeping the original index of the complex.
+        - made ligand order deterministic, it was random before
+        - hopefully fixed one-off error with `ligand_to_metal` that Cian discovered
+
+
+    RCA_Ligand:
+        - added attribute `local_elements` (elements in the first coordination sphere).
+            - added function `self.get_local_elements()`
+        - added output properties to write_to_mol_dict():
+            - stoichiometry
+            - local_elements
+            - original_metal_symbol
+        - removed all properties except CSD_code from global_properties (which previously were inherited from the complex, which doesn't make sense for most of them)
+        - refactored `self.read_from_mol_dict()` using **kwargs instead of if... else.
+
+main_tmQMG_test:
+    - todo filters
