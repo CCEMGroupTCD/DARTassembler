@@ -18,7 +18,7 @@ from src01.main_tmQMG import unique_ligands_from_Ligand_batch_json_files, update
 if __name__ == '__main__':
     # specify the database path
     database_path = '../database/tmQMg'
-    data_store_path = "../data/tmQMG_Jsons_test_full"  # Folder where we want to store the jsons
+    data_store_path = "../data/tmQMG_Jsons_test"  # Folder where we want to store the jsons
     number_of_batches = 10
 
 

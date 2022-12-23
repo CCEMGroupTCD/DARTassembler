@@ -50,20 +50,23 @@ def unique_ligands_from_Ligand_batch_json_files(n=10, data_store_path: str="../d
         metals = [ligand_dict[ligand_name]['original_metal_symbol'] for ligand_name in same_ligands]
 
         # Add useful statistical information of all ligands for this unique ligand
-        n_denticities = pd.Series(denticities).value_counts().to_dict()
-        n_metals = pd.Series(metals).value_counts().to_dict()
+        count_denticities = pd.Series(denticities).value_counts().sort_values(ascending=False).to_dict()
+        count_metals = pd.Series(metals).value_counts().sort_values(ascending=False).to_dict()
         unique_ligand_infos = {
                                 'occurrences': len(same_ligands),
-                                'n_denticities': n_denticities,
-                                'has_multiple_denticities': len(n_denticities) > 1,
-                                'n_metals': n_metals
+                                'count_denticities': count_denticities,
+                                'count_metals': count_metals,
+                                'n_denticities': len(count_denticities),
+                                'n_metals': len(count_metals),
         }
         unique_ligand.update(unique_ligand_infos)
         unique_ligand['all_ligand_names'] = same_ligands
 
-        # update ligands with unique_ligand information for easier debugging
         for ligand_name in same_ligands:
+            # update ligands with unique_ligand information for easier debugging
             ligand_dict[ligand_name]['unique_ligand_information'] = unique_ligand_infos
+            # update ligands with bool flag if this ligand is the ligand chosen as unique ligand
+            ligand_dict[ligand_name]['is_chosen_unique_ligand'] = ligand_name == name
 
         # Delete attribute original metal from unique_ligand since it is confusing and no real attribute of a unique ligand
         del unique_ligand['original_metal']

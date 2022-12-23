@@ -1,60 +1,114 @@
 # Changelog
 
-## Timo refactoring before christmas
+## Timo refactoring before Christmas
+
+### OUTPUT:
+
+#### possibly breaking changes:
+    - molecule['atomic_props']:
+        --> Possibly breaks only the charge assignment scripts. The assembly should not be affected. I checked and the input dictionary of the assembly had the `atomic_props` already in the new list format.
+        - The format of this property changed. Instead of using the old format as 
+            - {'atomic_props': {
+                                'x': {1: ('H', 1.234), 2: ('C', 0.345), ...},
+                                ...
+                                }
+               }
+        we switched to a new format, based on simple lists:
+            - {'atomic_props': {
+                                'x': [1.234, 0.345, ...],       --> length = number of atoms
+                                'y': ...,
+                                'z': ...,
+                                'partial_charge': [0.234, -0.2342, ...],
+                                'atoms': ['H', 'C', ...]
+                                }
+               }
+          The reason is that this is already used in the assembly. Since we had to decide between one, we should just go for the simpler one now. Besides, Cian's charge assignment has an input controller so this is very simple to fix, and in the linear charge solver, I don't think it is even used.
+    - the properties `original_metal` and `original_metal_symbol` were deleted from each ligand in the database of unique ligands. The metal of origin is not a property that makes sense for unique ligands, since they will usually come from many different metals. Instead, the property `count_metals` was added to backtrack which unique ligand occurs in which metals, see below. The ligands in the database of all (not only unique) ligands of course still have these properties. This should break only the assembly.
+    - for ligands and unique ligands, most `global_props` information except `CSD_code` was deleted
+	    - so far, global_props were inherited from the complex when generating the ligand. Mostly this information is stuff like electronic properties of the complex from the tmQMg, which don't make sense for the ligand. Therefore this information is not inherited anymore. As far as I am aware, this should not break anything since this information would not be useful in the first place.
 
 
-OUTPUT:
+#### All changes
+complex_db.json:
+    - not fully connected complexes are filtered out now since these are most likely erroneous (n~2k)
+    - added properties
+        - `stoichiometry` (str)     	--> stoichiometry in the Hill standard, i.e. first C, then H, then everything else sorted alphabetically
+        - `mol_id` (str)	    	    --> CSD code
+        - ligands:
+            - `is_chosen_unique_ligand` (bool)      --> if this ligand is the representative of same ligands in the unique ligand db. Is a property of ligands in the ligand db as well, but not in the unique ligand db.
 
-    complex_db.json:
-        - added properties
-            - stoichiometry (str)
-            - mol_id (str)
+tmQM_Ligands_unique.json:
+    - added properties:
+        - `stoichiometry` (str)
+        - `local_elements` (list) 	    --> elements coordinated to metal, in the same order as `ligand_to_metal`
+        - `occurrences` (int) 		    --> how often this unique ligand occurs in the complex_db
+        - `count_denticities` (dict) 	--> the distribution of how often this unique ligand has which denticity in the format {denticity: count}
+        - `count_metals` (dict) 	    --> the distribution of how often this unique ligand was detected with which metal in the format {metal: count}
+        - `n_denticities` (int) 	    --> how many different denticities this unique ligand has (equals len(count_denticities))
+        - `n_metals` (int) 		        --> how many different metals this unique ligand has (equals len(count_metals))
+        - `all_ligand_names` (list) 	--> all `name` attributes of this ligand in the complex_db
+        - atomic_props:
+            - original_complex_indices (list of int) 	--> the original indices of the atoms in the complex where this ligand came from
 
-    tmQM_Ligands_full.json:
-        - removed properties
-            global_props: everything apart from `CSD_code`. The rest was information inherited from the complex of origin, like electronic properties of the complex.
-        - added properties
-            - stoichiometry (str)
-            - local_elements (list) --> elements coordinated to metal, in the same order as `ligand_to_metal`
-            - original_metal_symbol (str)
-            - unique_ligand_information (dict) --> properties from the unique ligand that might be interesting, mainly for debugging
-                - occurrences (int) --> how often this unique ligand occurs in the complex_db
-                - n_denticities (dict) --> the distribution of how often this unique ligand has which denticity in the format {denticity: count}
-                - has_multiple_denticities (bool) --> a flag which indicates if this unique ligand has been found with more than one denticity
-                - n_metals (dict) --> the distribution of how often this unique ligand was detected with which metal in the format {metal: count}
+tmQM_Ligands_full.json:
+    - removed properties
+        - `global_props`: everything apart from `CSD_code`. The rest was information inherited from the complex of origin, like electronic properties of the complex.
+	- `original_metal`
+    - added properties
+        - `stoichiometry` (str)
+        - `local_elements` (list)
+        - `original_metal_symbol` (str)
+        - `is_chosen_unique_ligand` (bool)
+        - `unique_ligand_information` (dict) 	    --> properties from the unique ligand that might be interesting for debugging
+            - `occurrences` (int)
+            - `count_denticities` (dict)
+            - `count_metals` (dict)
+            - `n_denticities` (int)
+            - `n_metals` (int)
 
-    tmQM_Ligands_unique.json:
-        - added properties:
-            - stoichiometry (str)
-            - local_elements (list)
-            - occurrences (int)
-            - n_denticities (dict)
-            - has_multiple_denticities (bool)
-            - n_metals (dict)
-            - all_ligand_names (list) --> all `name` attributes of this ligand in the complex_db
+### CODE:
 
+RCA_Molecule:
+    - added attribute `stoichiometry` in init which is a string of the stoichiometry in Hill notation (the default in ase).
+        - added method `get_standardized_stoichiometry()` which outputs the stoichiometry as a string in Hill notation.
+        - removed (i.e. block-commented) method `get_stoichiometry()`
+    - added optional init input `reindex_graph=False` which re-indexes `self.graph` so that the ordering of the indices stays the same but now they go from 0 to n-1 instead of keeping the original index of the complex.
+    - made ligand order deterministic, it was random before
+    - fixed one-off error with `ligand_to_metal` that Cian discovered (actually Felix already pushed this before, just mentioning it for completeness)
+    - graph
+        - removed all information except `node_label` from nodes and all information from edges
+            - can be easily turned off but was main reason for very overblown memory
+        - added node attributes which are not necessary but may be useful for debugging and cross-checking
+            - `orig_idx` (int) --> original index of atom in complex (is always the same as the index in the not re-indexed graph)
+            - `metal_neighbor` (bool) --> a flag indicating if this atom was connected to the metal
 
-CODE:
-
-    RCA_Molecule:
-        - added attribute `stoichiometry` which is a string of the stoichiometry in Hill notation (the default in ase).
-        - added method get_standardized_stoichiometry() which outputs the stoichiometry as a string based on the attribute `mol`.
-        - removed (i.e. block-commented) method get_stoichiometry()
-        - added optional init input `reindex_graph=False` which re-indexes `self.graph` so that the ordering of the indices stays the same but now they go from 0 to n-1 instead of keeping the original index of the complex.
-        - made ligand order deterministic, it was random before
-        - hopefully fixed one-off error with `ligand_to_metal` that Cian discovered
-
-
-    RCA_Ligand:
-        - added attribute `local_elements` (elements in the first coordination sphere).
-            - added function `self.get_local_elements()`
-        - added output properties to write_to_mol_dict():
-            - stoichiometry
-            - local_elements
-            - original_metal_symbol
-        - removed all properties except CSD_code from global_properties (which previously were inherited from the complex, which doesn't make sense for most of them)
-        - refactored `self.read_from_mol_dict()` using **kwargs instead of if... else.
+RCA_Ligand:
+    - added attribute `local_elements` (elements in the first coordination sphere).
+        - added function `self.get_local_elements()`
+    - added output properties to write_to_mol_dict():
+        - `stoichiometry`
+        - `local_elements`
+        - `original_metal_symbol`
+    - removed all properties except CSD_code from `global_properties` (which previously were inherited from the complex, which doesn't make sense for most of them)
+    - refactored `self.read_from_mol_dict()` using `**kwargs` instead of `if... else`.
 
 main_tmQMG_test:
     - not yet finished - everything is done only from the point on where tmQMG.json exists. This will be improved after christmas.
-    - todo filters
+    - added filters of complexes before ligand extraction
+        - filter out all not fully connected complexes (n~2k)
+        - remove node and edge features from graph except `node_label`
+        - turning all graphs from `nx.Multigraph` into `nx.Graph` because multigraphs don't make sense for molecules
+
+performance:
+    - replaced usage of `mendeleev.element()` with `pymatgen.Element()` because this is much faster
+    - deleted unnecessary information from graph because this was a main issue for memory
+
+### Notes
+    - most changes are just adding information which might be useful to have for debugging, statistics, analysis etc.
+    - only 3 breaking changes:
+        - new format of atomic_props    --> breaking only for charge assignment, not assembly
+        - `original_metal` and `original_metal_symbol` deleted for unique ligands   --> breaking only in assembly because current metals_of_interest filter did not take into account multiple metals for one unique ligand
+        - most global_props deleted from ligands, but only the unnecessary ones
+    - the `unique_ligand_name` of ligands will change again
+        - since the order of ligands is deterministic now, the only way the `unique_ligand_name` will change in the future is if we add/ remove complexes from the input
+
