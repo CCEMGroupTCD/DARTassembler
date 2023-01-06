@@ -11,8 +11,78 @@ from tqdm import tqdm
 import numpy as np
 from pathlib import Path
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
+from charge_assignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
+from src01.io import load_complex_db, load_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_ligand_db
 
+def get_charges_of_unique_ligands(all_complexes_path: str) -> pd.DataFrame:
+    """
+    So far uses only the linear charge solver.
+    :param all_complexes_path: path to a json of all complexes with ligands with unique ligand names
+    :return: dataframe with the charge of each unique ligand
+    """
+    # all_complexes_path = '../../data/linear_charge_fitting/all_complexes_tmQMg.json'
+    save_dir = '../../data/linear_charge_solver/output/'
 
+    solver = LinearChargeSolver(
+                                all_complexes_path=all_complexes_path,
+                                save_dir=save_dir
+                                )
+    df_ligands = solver.calculate_unique_ligand_charges(output_uncertain_charges_as_nan=False)
+
+    return df_ligands
+
+def update_ligand_with_charge_inplace(lig: dict, charges: dict):
+    new_keys = ['pred_charge', 'pred_charge_confidence', 'pred_charge_is_confident']
+    assert not any([key in lig for key in new_keys])
+
+    uname = lig['unique_name']
+    if uname in charges:
+        charge = charges[uname]['pred_charge']
+        confidence = charges[uname]['confidence']
+        is_confident = charges[uname]['is_confident']
+    else:
+        # This means that this unique ligand was not part of the output of the charge assignment because its complexes were filtered out in the charge assignment due to lack of oxidation state or similar issues.
+        charge = np.nan
+        confidence = np.nan
+        is_confident = False
+
+    lig['pred_charge'] = charge
+    lig['pred_charge_is_confident'] = is_confident
+    lig['global_props'].update({
+                                'LCS_pred_charge': charge,
+                                'LCS_pred_charge_confidence': confidence,
+                                'LCS_pred_charge_is_confident': is_confident
+                                })
+
+    return
+
+def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_path: str):
+    complex_db_path = Path(data_store_path, 'complex_db.json')
+    ligands_db_path = Path(data_store_path, 'tmQM_Ligands_full.json')
+    unique_ligands_db_path = Path(data_store_path, 'tmQM_Ligands_unique.json')
+
+    df_ligand_charges = df_ligand_charges.set_index('unique_name')
+    charges = df_ligand_charges.to_dict(orient='index')
+
+    unique_ligands = load_unique_ligand_db(path=unique_ligands_db_path)
+    not_intersecting_ligands = set(unique_ligands.keys()).symmetric_difference(set(charges.keys()))
+    print(f'Number of unique ligands not outputted by the charge assignment: {len(not_intersecting_ligands)}')
+    for ulig in unique_ligands.values():
+        update_ligand_with_charge_inplace(ulig, charges)
+    save_unique_ligand_db(db=unique_ligands, path=unique_ligands_db_path)
+
+    ligands = load_ligand_db(ligands_db_path)
+    for lig in ligands.values():
+        update_ligand_with_charge_inplace(lig, charges)
+    save_ligand_db(db=ligands, path=ligands_db_path)
+
+    complexes = load_complex_db(path=complex_db_path)
+    for c in complexes.values():
+        for lig in c['ligands']:
+            update_ligand_with_charge_inplace(lig, charges)
+    save_complex_db(db=complexes, path=complex_db_path)
+
+    return
 
 def unique_ligands_from_Ligand_batch_json_files(n=10, data_store_path: str="../data/tmQMG_Jsons_test"):
     gc.collect()
@@ -42,7 +112,7 @@ def unique_ligands_from_Ligand_batch_json_files(n=10, data_store_path: str="../d
         name = same_ligands[0]
         uname = 'unq_' + name
         for ligand_name in same_ligands:
-            ligand_dict[ligand_name]["unique_ligand_name"] = uname
+            ligand_dict[ligand_name]["unique_name"] = uname
 
         unique_ligand = deepcopy(ligand_dict[name])
 
@@ -226,5 +296,9 @@ if __name__ == '__main__':
                                     ligand_json=f'{data_store_path}/tmQM_Ligands_full.json',
                                     save_complex_db_path = save_complex_db_path
                                     )
+
+    # Charge assignment using only the linear charge solver (LCS)
+    df_ligand_charges = get_charges_of_unique_ligands(all_complexes_path=save_complex_db_path)
+    update_databases_with_charges(df_ligand_charges=df_ligand_charges, data_store_path=data_store_path)
 
     print("All data established, move to playground")

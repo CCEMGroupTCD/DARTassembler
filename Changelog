@@ -1,6 +1,6 @@
 # Changelog
 
-## Timo refactoring before Christmas
+## 22.12.22 Timo refactoring before Christmas
 
 ### OUTPUT:
 
@@ -112,3 +112,30 @@ performance:
     - the `unique_ligand_name` of ligands will change again
         - since the order of ligands is deterministic now, the only way the `unique_ligand_name` will change in the future is if we add/ remove complexes from the input
 
+## 06.01.23 Fix breaking changes and add ligand charges (version 1.1 by Timo)
+
+### Possibly breaking changes:
+    - renamed property `unique_ligand_name` to `unique_name` in all ligands, unique ligands and ligands of complexes.
+        - this actually is a fix, the property was called `unique_name` in the `test.json` that Felix gave us. So this should actually fix a breaking change from the last update, not break anything.
+    - There was another breaking change I didn't notice in the last update: The stoichiometry string is calculated slightly different now, i.e. if an element occurs only once in the stoichiometry, the number 1 is now dropped, previously it was written as well. I decided for now to leave it as it is now since this is the most frequently used standard of writing the stoichiometry.
+        - This will not break any on-the-fly comparisons of the stoichiometries of molecules since both of them will have changed in the same way.
+        - I have not found any mention of the stoichiometry in the assembly scripts so I think this should not be broken either.
+        - The only way this can break things is when comparing the stoichiometry of a molecule with the stoichiometry in some other database, csv file etc where the old stoichiometry is recorded. I think the only thing this will break is that the csv file of benchmarked charges will have slightly different looking stoichiometry strings now. I will have to update this soon anyway, because e.g. the unique_name property changed as well, so I will also update the stoichiometry strings.
+        - If you think this change is an issue please tell me and I'm happy to roll it back!
+
+### Other changes
+    - Added ligand charge properties to ligands and unique ligands (currently calculated using only the linear charge solver (LCS) but Cian's method is easy to add):
+        - `pred_charge` (int)                    --> charge of the ligand calculated using the LCS
+        - `pred_charge_is_confident` (bool)      --> whether the charge is predicted with confidence. If this is False, the ligand should be excluded from the assembly process.
+        - `global_props`:
+            - `LCS_pred_charge` (int)            --> charge of the ligand calculated using the LCS
+            - `LCS_pred_charge_confidence` (float in range [0, 1])    --> the confidence of the LCS in the charge prediction, higher is more confident
+            - `LCS_pred_charge_is_confident` (bool)                   --> whether the charge is predicted confidently by the LCS
+        - Note: Because the charge is currently calculated using only the LCS, the properties `pred_charge` and `pred_charge_is_confident` are the same in the ligand and in the `global_props` of the ligand (prepended by `LCS_`). If we add Cian's charge calculation and e.g. take only the subset where they agree, this will start to differ. I tried to make it the most general and flexible here.
+
+### Note
+    - For the assembly process:
+        - In the `global_props` of the original unique_ligands file which Felix generated ages ago and which was used for the assembly there was a `charge` property. However, this was not the charge of the ligand. It was the charge inherited from the complex of origin of the ligand which has been deleted in the last update from the 22.12.22, because we considered this inheritance of global properties from the complex to the ligand to not convey useful information. Please do not confuse this with the now added information of the ligand charges.
+        - Before using the unique_ligands in the assembly it is important to filter them by 'pred_charge_is_confident' and exclude all unique ligands where this is False. For the sake of completeness I decided to not already exclude the ligands without confident charges but to keep all unique ligands in the database and insert this information as property for later filtering.
+    - General:
+        - I decided to add a version number to each update of the databases, so that there is no confusion with which file is the most recent one. This will be added to the filenames of the files which I send you as '_v1.1' for this update. For now this is not coded, only added when I send you the files. As soon as I refactor it I will implement this more properly.

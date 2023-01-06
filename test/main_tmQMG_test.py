@@ -7,12 +7,17 @@ from src01.DataBase import MoleculeDB, LigandDB
 import gc
 import numpy as np
 from pathlib import Path
-from src01.main_tmQMG import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands
+from src01.main_tmQMG import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, get_charges_of_unique_ligands, update_databases_with_charges
+
 
 
 # TODO list
+#   - 'unique_ligand_name' --> 'unique_name'
 #   - check data pipeline from initial tmQMg up until input json
 #       - write function to check that MultiGraphs have only one edge and can be made into simple graphs
+
+
+
 
 
 if __name__ == '__main__':
@@ -84,6 +89,10 @@ if __name__ == '__main__':
                                     save_complex_db_path = save_complex_db_path
                                     )
 
+    # Charge assignment using only the linear charge solver (LCS)
+    df_ligand_charges = get_charges_of_unique_ligands(all_complexes_path=save_complex_db_path)
+    update_databases_with_charges(df_ligand_charges=df_ligand_charges, data_store_path=data_store_path)
+
     print("All data established, move to playground")
 
     print('Read in output to look at it.')
@@ -92,6 +101,7 @@ if __name__ == '__main__':
     df_complexes = pd.read_json(save_complex_db_path, orient='index')
     c = df_complexes.iloc[0].to_dict()
     ulig = df_unique_ligands.iloc[0].to_dict()
+    lig = df_full_ligands.iloc[0].to_dict()
 
 
     print('Double checking if all data is still the same after refactoring:')
