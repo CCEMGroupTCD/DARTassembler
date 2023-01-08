@@ -154,7 +154,7 @@ class LinearChargeSolver:
 
                     if uname in add_ligand_data.keys():
                         new_info = add_ligand_data[uname]
-                        assert all([new_info[key] == value for key, value in self.unique_ligands[uname].items()]), 'Values of dict-items with same key in both dictionaries do not match.'
+                        assert all([new_info[key] == value for key, value in self.unique_ligands[uname].items()]), f'Values of dict-items with same key in both dictionaries do not match for unique ligand {uname}.'
                         self.unique_ligands[uname].update(new_info)
                         all_ligand_keys.update(self.unique_ligands[uname].keys())
 
@@ -522,9 +522,9 @@ class LinearChargeSolver:
 
 if __name__ == '__main__':
     
-    n_test = 2000
-    all_complexes_path = '../../data/tmQMG_Jsons/complex_db.json'
-    all_unique_ligands_path = ['../../../LigandCharges/data/charge_benchmark/all_ligand_charges_with_high_confidence.csv']
+    n_test = False
+    all_complexes_path = '../../data/tmQMG_Jsons/complex_db_v1.2.json'
+    all_unique_ligands_path = ['../../database/ligand_charges/charge_benchmark/all_ligand_charges_with_high_confidence_v1.2.csv']
     save_dir = '../../data/linear_charge_solver/output/'
     plot_dir = Path(save_dir, 'plots')
     
@@ -556,7 +556,8 @@ if __name__ == '__main__':
         print('Check output.')
         df_old = pd.read_csv(Path(save_dir, f'221129_df_n_test={n_test}.csv'), index_col=0)
         df_ligands_old = pd.read_csv(Path(save_dir, f'221129_df_ligands_n_test={n_test}.csv'), index_col=0)
-        df_ligands_old = df_ligands_old.drop(columns=['true_charge', 'error', 'abs_error', 'int_error', 'abs_int_error', 'pred_charge_exact', 'singular_value'])
+        df_ligands_old = df_ligands_old.drop(columns=['true_charge', 'error', 'abs_error', 'int_error', 'abs_int_error', 'pred_charge_exact', 'singular_value', 'uncertainty'])
+
 
         pd.testing.assert_frame_equal(solver.df_ligands[df_ligands_old.columns], df_ligands_old, check_like=True)
         pd.testing.assert_frame_equal(solver.df[df_old.columns], df_old, check_like=True)

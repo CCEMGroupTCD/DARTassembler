@@ -14,7 +14,18 @@
 
 /src02_LigandCharge/test.json
 
+!/data/tmQMG_Jsons_test/
 !/data/tmQMG_Jsons_test/complex_db_original.json
 !/data/tmQMG_Jsons_test/tmQM_Ligands_unique_original.json
 !/data/tmQMG_Jsons_test/tmQM_Ligands_full_original.json
+
+!/database/ligand_charges/
+!/database/ligand_charges/charge_benchmark/
+!/database/ligand_charges/charge_benchmark/all_ligand_charges_with_high_confidence_v*.csv
+!/database/ligand_charges/charge_benchmark/all_ligand_charges_v*.csv
+!/database/ligand_charges/charge_benchmark/Marconi_ligand_charges.csv
+!/database/ligand_charges/charge_benchmark/Cian_already_assigned_ligand_charges.csv
+!/database/ligand_charges/charge_benchmark/Cian_BenchMark.csv
+!/database/ligand_charges/charge_benchmark/Manting_ligand_charges.csv
+
 

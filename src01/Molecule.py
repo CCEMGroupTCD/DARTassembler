@@ -198,9 +198,9 @@ class RCA_Molecule:
         Returns a string with the stoichiometry in a standardized way, the so-called Hill notation.
         :return: stoichiometry (str)
         """
-        formula = self.mol.get_chemical_formula()
-        formula2 = get_standardized_stoichiometry_from_atoms_list(self.atomic_props['atoms'])
-        assert formula == formula2, f'Stoichiometries not consistent: {formula} vs {formula2}.'
+        formula = get_standardized_stoichiometry_from_atoms_list(self.atomic_props['atoms'])
+        # formula2 = self.mol.get_chemical_formula()
+        # assert formula == formula2, f'Stoichiometries not consistent: {formula} vs {formula2}.'
         return formula
 
     def __eq__(self, other):

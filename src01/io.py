@@ -18,7 +18,7 @@ def save_json(db: dict, path: str):
 def load_complex_db(path: str) -> dict:
     return load_json(path)
 
-def load_ligand_db(path: str) -> dict:
+def load_full_ligand_db(path: str) -> dict:
     return load_json(path)
 
 def load_unique_ligand_db(path: str) -> dict:

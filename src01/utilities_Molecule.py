@@ -88,5 +88,6 @@ def get_standardized_stoichiometry_from_atoms_list(atoms: list) -> str:
         if 'H' in elements:
             elements = ["H"] + [el for el in elements if el != "H"]
 
-    formula = [f"{el}{(c[el]) if c[el] != 1 else ''}" for el in elements]
+    # formula = [f"{el}{(c[el]) if c[el] != 1 else ''}" for el in elements] # drop the 1 if an element occurs only once
+    formula = [f"{el}{(c[el])}" for el in elements]
     return "".join(formula)

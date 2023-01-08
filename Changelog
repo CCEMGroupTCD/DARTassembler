@@ -5,6 +5,7 @@
 ### OUTPUT:
 
 #### possibly breaking changes:
+
     - molecule['atomic_props']:
         --> Possibly breaks only the charge assignment scripts. The assembly should not be affected. I checked and the input dictionary of the assembly had the `atomic_props` already in the new list format.
         - The format of this property changed. Instead of using the old format as 
@@ -29,6 +30,7 @@
 
 
 #### All changes
+
 complex_db.json:
     - not fully connected complexes are filtered out now since these are most likely erroneous (n~2k)
     - added properties
@@ -104,6 +106,7 @@ performance:
     - deleted unnecessary information from graph because this was a main issue for memory
 
 ### Notes
+
     - most changes are just adding information which might be useful to have for debugging, statistics, analysis etc.
     - only 3 breaking changes:
         - new format of atomic_props    --> breaking only for charge assignment, not assembly
@@ -112,9 +115,11 @@ performance:
     - the `unique_ligand_name` of ligands will change again
         - since the order of ligands is deterministic now, the only way the `unique_ligand_name` will change in the future is if we add/ remove complexes from the input
 
+
 ## 06.01.23 Fix breaking changes and add ligand charges (version 1.1 by Timo)
 
 ### Possibly breaking changes:
+
     - renamed property `unique_ligand_name` to `unique_name` in all ligands, unique ligands and ligands of complexes.
         - this actually is a fix, the property was called `unique_name` in the `test.json` that Felix gave us. So this should actually fix a breaking change from the last update, not break anything.
     - There was another breaking change I didn't notice in the last update: The stoichiometry string is calculated slightly different now, i.e. if an element occurs only once in the stoichiometry, the number 1 is now dropped, previously it was written as well. I decided for now to leave it as it is now since this is the most frequently used standard of writing the stoichiometry.
@@ -124,6 +129,7 @@ performance:
         - If you think this change is an issue please tell me and I'm happy to roll it back!
 
 ### Other changes
+
     - Added ligand charge properties to ligands and unique ligands (currently calculated using only the linear charge solver (LCS) but Cian's method is easy to add):
         - `pred_charge` (int)                    --> charge of the ligand calculated using the LCS
         - `pred_charge_is_confident` (bool)      --> whether the charge is predicted with confidence. If this is False, the ligand should be excluded from the assembly process.
@@ -134,8 +140,28 @@ performance:
         - Note: Because the charge is currently calculated using only the LCS, the properties `pred_charge` and `pred_charge_is_confident` are the same in the ligand and in the `global_props` of the ligand (prepended by `LCS_`). If we add Cian's charge calculation and e.g. take only the subset where they agree, this will start to differ. I tried to make it the most general and flexible here.
 
 ### Note
+
     - For the assembly process:
         - In the `global_props` of the original unique_ligands file which Felix generated ages ago and which was used for the assembly there was a `charge` property. However, this was not the charge of the ligand. It was the charge inherited from the complex of origin of the ligand which has been deleted in the last update from the 22.12.22, because we considered this inheritance of global properties from the complex to the ligand to not convey useful information. Please do not confuse this with the now added information of the ligand charges.
         - Before using the unique_ligands in the assembly it is important to filter them by 'pred_charge_is_confident' and exclude all unique ligands where this is False. For the sake of completeness I decided to not already exclude the ligands without confident charges but to keep all unique ligands in the database and insert this information as property for later filtering.
     - General:
         - I decided to add a version number to each update of the databases, so that there is no confusion with which file is the most recent one. This will be added to the filenames of the files which I send you as '_v1.1' for this update. For now this is not coded, only added when I send you the files. As soon as I refactor it I will implement this more properly.
+
+
+## 08.01.23 Revert stoichiometry string and update charge benchmark csv (version 1.2 by Timo)
+
+### Possibly breaking changes
+
+    - The property `stoichiometry` of each ligand is now back to as it was before the last update. This means, if an element occurs once, the number 1 is written in the stoichiometry string instead of being dropped. This is for backwards compatibility.
+        - Note: Due to this change, the stoichiometry string is now slightly different than the usual standard. E.g. if one uses the ASE molecule to get the stoichiometry, it will be different because the 1 is dropped there. Therefore, please always use the property stoichiometry instead of re-calculating the stoichiometry!
+
+### Updated ligand charge benchmark files
+
+    - Since the `unique_name`, `name` and `graph_hash` property of the ligands changed with the latest updates, the corresponding columns in the charge benchmark csv (`all_ligand_charges_with_high_confidence_v1.2.csv`) were updated.
+        - The updated files now have the same version number as the rest of the database (here v1.2) since they depend on the database and possibly need to be updated together.
+        - Comment: I checked that the `graph_hash` actually didn't change in this update, which is expected because we didn't change the graph creation method. Around 16% of the `unique_name` and the `name` properties changed, which has its reason in the non-deterministic order of the ligands in the database creation before.
+    - I also added the property `local_elements` to the csv, which is a list of the elements which are coordinated to the metal.
+    - The number of confidently benchmarked ligands decreased from I think 274 before to 235 now.
+        - This is because in the ligand extraction process, we added a filter to exclude all complexes with not fully connected graphs, since these are likely to be faulty. Some of the ligands which were benchmarked came from these complexes which are not part of the database anymore. However, this will change again once we improve the graph creation method and hopefully need to exclude less complexes.
+    - I doublechecked that the accuracy of the linear charge solver on the charge benchmark dataset is still similar as before (0.92, but we know that there are some faulty entries in there which have not yet been corrected, then it should be close to 100%).
+    - The charge benchmark files are uploaded to github under `CreateTMC/database/ligand_charges/charge_benchmark/`
