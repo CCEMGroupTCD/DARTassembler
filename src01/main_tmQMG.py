@@ -11,7 +11,7 @@ from tqdm import tqdm
 import numpy as np
 from pathlib import Path
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
-from charge_assignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
+from src02_ChargeAssignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
 from src01.io import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_ligand_db
 
 def get_charges_of_unique_ligands(all_complexes_path: str) -> pd.DataFrame:

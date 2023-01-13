@@ -5,14 +5,16 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from copy import deepcopy
 
+
 def view_graph(G, node_label='node_label', node_size=150):
     nx.draw_networkx(
-                        G,
-                        node_size=node_size,#500,
-                        with_labels=True,
-                        labels={node: G.nodes[node][node_label] for node in G.nodes}
-                    )
+        G,
+        node_size=node_size,  # 500,
+        with_labels=True,
+        labels={node: G.nodes[node][node_label] for node in G.nodes}
+    )
     plt.show()
+
 
 def get_sorted_atoms_and_indices_from_graph(graph):
     nodes = pd.Series({i: el for i, el in graph.nodes.data('node_label')})
@@ -22,12 +24,14 @@ def get_sorted_atoms_and_indices_from_graph(graph):
 
     return atoms, idc
 
+
 def node_check(dict1, dict2):
     return dict1["node_label"] == dict2["node_label"]
 
 
 def graphs_are_equal(G1, G2):
     return nx.is_isomorphic(G1, G2, node_match=node_check)
+
 
 def sorted_dict_of_dicts(d: dict) -> dict:
     """
@@ -42,11 +46,12 @@ def sorted_dict_of_dicts(d: dict) -> dict:
         value = d[key]
 
         if (isinstance(value, dict) and (len(value) > 1)):
-           value = sorted_dict_of_dicts(value)
+            value = sorted_dict_of_dicts(value)
 
         sorted_d[key] = value
 
-    assert (len(d) == len(sorted_d) and all([val == d[key] for key, val in sorted_d.items()])), 'Sorted dictionary is different than original one, there must be a bug.'
+    assert (len(d) == len(sorted_d) and all([val == d[key] for key, val in
+                                             sorted_d.items()])), 'Sorted dictionary is different than original one, there must be a bug.'
     return sorted_d
 
 
@@ -67,7 +72,7 @@ def graph_to_dict_with_node_labels(G, sort_dicts=True):
     return final_graph_dict
 
 
-def remove_node_features_from_graph(graph, keep: list=['node_label'], inplace=True):
+def remove_node_features_from_graph(graph, keep: list = ['node_label'], inplace=True):
     """
     Removes all node features from the given graph except for the ones specified in `keep`.
     :param graph: networkx multigraph with node features
@@ -86,7 +91,8 @@ def remove_node_features_from_graph(graph, keep: list=['node_label'], inplace=Tr
 
     return graph
 
-def remove_edge_features_from_graph(graph, keep: list=[], inplace=True):
+
+def remove_edge_features_from_graph(graph, keep: list = [], inplace=True):
     """
     Removes all edge features from the given graph except for the ones specified in `keep`.
     :param graph: networkx multigraph with node features
@@ -108,9 +114,11 @@ def remove_edge_features_from_graph(graph, keep: list=[], inplace=True):
 
     return graph
 
+
 def make_multigraph_to_graph(graph) -> nx.Graph:
     graph = nx.Graph(graph)
     return graph
+
 
 def make_graph_labels_integers(G: [nx.Graph, nx.MultiGraph]):
     """
@@ -151,8 +159,10 @@ def graph_from_graph_dict(d):
 
     return H
 
+
 def get_reindexed_graph(graph):
     return nx.relabel.convert_node_labels_to_integers(graph, first_label=0, ordering='sorted')
+
 
 def unify_graph(G):
     """
@@ -170,4 +180,3 @@ def unify_graph(G):
     G = nx.Graph(G)
 
     return G
-

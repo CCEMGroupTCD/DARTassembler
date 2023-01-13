@@ -5,7 +5,7 @@ This is currently not needed anywhere.
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 
 
-class RCA_Element():
+class RCA_Element:
 
     def __init__(self, el):
         if isinstance(el, str):

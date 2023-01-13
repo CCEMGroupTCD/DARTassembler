@@ -1,5 +1,6 @@
 """
 todo: Write this into a clean class
+        should write the main_tmQMG in a way so that this could also be handled by that class
 """
 
 from src01.DataBase import MoleculeDB, LigandDB
