@@ -14,6 +14,7 @@ from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_l
 from src02_ChargeAssignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
 from src01.io import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_ligand_db
 
+
 def get_charges_of_unique_ligands(all_complexes_path: str) -> pd.DataFrame:
     """
     So far uses only the linear charge solver.
@@ -30,6 +31,7 @@ def get_charges_of_unique_ligands(all_complexes_path: str) -> pd.DataFrame:
     df_ligands = solver.calculate_unique_ligand_charges(output_uncertain_charges_as_nan=False)
 
     return df_ligands
+
 
 def update_ligand_with_charge_inplace(lig: dict, charges: dict):
     new_keys = ['pred_charge', 'pred_charge_confidence', 'pred_charge_is_confident']
@@ -55,6 +57,7 @@ def update_ligand_with_charge_inplace(lig: dict, charges: dict):
                                 })
 
     return
+
 
 def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_path: str):
     complex_db_path = Path(data_store_path, 'complex_db.json')
@@ -83,6 +86,7 @@ def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_pa
     save_complex_db(db=complexes, path=complex_db_path)
 
     return
+
 
 def unique_ligands_from_Ligand_batch_json_files(n=10, data_store_path: str="../data/tmQMG_Jsons_test"):
     gc.collect()
@@ -155,6 +159,7 @@ def unique_ligands_from_Ligand_batch_json_files(n=10, data_store_path: str="../d
         print(f"Unique ligand database saved to {f'{data_store_path}/tmQM_Ligands_unique.json'}")
 
     return
+
 
 def update_complex_db_with_ligands(complex_json: str, ligand_json: str, save_complex_db_path: str):
     """
