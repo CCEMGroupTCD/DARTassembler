@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 import numpy as np
-from src01.io import load_full_ligand_db
+from src01.io_custom import load_full_ligand_db
 
 def set_dict_keys_to_csd_code_and_stoichiometry(d: dict) -> dict:
     """

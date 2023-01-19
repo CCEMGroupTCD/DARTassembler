@@ -12,7 +12,7 @@ import numpy as np
 from pathlib import Path
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
 from src02_ChargeAssignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
-from src01.io import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_ligand_db
+from src01.io_custom import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_ligand_db
 
 
 def get_charges_of_unique_ligands(all_complexes_path: str) -> pd.DataFrame:
@@ -172,7 +172,7 @@ def update_complex_db_with_ligands(complex_json: str, ligand_json: str, save_com
     """
     print('Start updating complex db with ligands.')
 
-    CSD_global_props = pd.read_csv('../database/tmQM/raw_data/CSD.csv', index_col=0).set_index('CSD_code').to_dict(orient='index')
+    CSD_global_props = pd.read_csv('../Bin_(Old)/databases(raw)/tmQM_raw/raw_data/CSD.csv', index_col=0).set_index('CSD_code').to_dict(orient='index')
 
     with open(complex_json, 'r') as file:
         all_complexes = json.load(file)

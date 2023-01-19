@@ -10,6 +10,8 @@ from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
 
+from src01.Molecule import RCA_Ligand, RCA_Molecule
+
 
 class BaselineDB:
     def __init__(self, dict_: dict):
@@ -42,7 +44,22 @@ class BaselineDB:
         print(f"Successfully saved DB to {path}")
 
     @classmethod
-    def from_json(cls, json_, type_: str = "Molecule", max_number=None, identifier_list: list = None):
+    def from_json(cls,
+                  json_,
+                  type_: str = "Molecule",
+                  graph_strategy: str = "default",
+                  max_number=None,
+                  identifier_list: list = None,
+                  **kwargs
+                  ):
+        """
+
+        :param json_: Either the dict itself or the path to a json file
+        :param type_: If we want either a molecule or a Ligand DB
+        :param graph_strategy: How we want the graphs to be created (this is only important for molecules,
+            because ligand graphs are created by the molecule graphs. For Ligands this will just be dumped as a kwarg)
+        :param kwargs: additional arguments for the graph creation
+        """
 
         if isinstance(json_, str):
             if not json_.endswith(".json"):
@@ -70,7 +87,7 @@ class BaselineDB:
         # todo: max_number just for debugging and testing reasons
         if max_number is not None:
             for i, (identifier, mol_dict) in tqdm(enumerate(json_dict.items()), desc="Build MoleculeDatabase"):
-                new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict)
+                new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict, graph_strategy, **kwargs)
                 if i > max_number:
                     break
 
@@ -80,14 +97,14 @@ class BaselineDB:
         if identifier_list is not None:
             for identifier, mol_dict in tqdm(json_dict.items(), desc="Build MoleculeDatabase"):
                 if identifier in identifier_list:
-                    new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict)
+                    new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict, graph_strategy, **kwargs)
 
             return cls(new_dict_)
 
         #
         #
         for identifier, mol_dict in tqdm(json_dict.items(), desc=f"Build {type_}Database"):
-            new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict)
+            new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict, graph_strategy, **kwargs)
         return cls(new_dict_)
 
     def filter_not_fully_connected_molecules(self):

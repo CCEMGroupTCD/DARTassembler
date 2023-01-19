@@ -282,7 +282,7 @@ class tmQMG(tmQM):
 if __name__ == '__main__':
     
     # tmqm_dir_path = '/home/timo/PhD/projects/RCA/projects/CreateTMC/database/tmQM'
-    tmqm_dir_path = "../database/tmQMg_raw"
+    tmqm_dir_path = "../Bin_(Old)/databases(raw)/tmQMg_raw"
     
     tmqm = tmQMG(tmqm_dir_path)
     df = tmqm.make_data_better_available()
