@@ -1,32 +1,29 @@
+# standard Pyhton packages
 import hashlib
 import warnings
 import networkx as nx
-from sympy import Point3D, Plane
-import collections
-from pymatgen.core.periodic_table import Element as Pymatgen_Element
-import pandas as pd
-import numpy as np
 import random
-from scipy.spatial.transform import Rotation as R
+import numpy as np
 from copy import deepcopy
 
-from ase import io, Atoms, neighborlist
+# some special functions which are required
+from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from ase.visualize import view
-
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
-from src01.graph_utility import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
-    unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph
+from scipy.spatial.transform import Rotation as R
+from sympy import Point3D, Plane
 
-from pymatgen.analysis.graphs import MoleculeGraph
+# collection of molecule objects of other packages
+from ase import io, Atoms, neighborlist
 from pymatgen.core.structure import Molecule as PyMatMol
-from pymatgen.analysis.local_env import JmolNN
+from molSimplify.Classes.mol3D import mol3D
 
+# importing own scripts
+from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
+    unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph
 from src01.utilities import identify_metal_in_ase_mol, find_node_in_graph_by_label
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
-
 from src03_Assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
-
-from molSimplify.Classes.mol3D import mol3D
 
 
 # Package name: RandomComplexAssembler (RCA)
@@ -125,7 +122,7 @@ class RCA_Molecule:
         self.graph = self.make_graph(...)
         which will set self.graph to the newly created graph
         """
-        from src01.AA_Graph_Creating_Methods import GraphCreation
+        from src01.GraphCreation import GraphCreation
 
         return GraphCreation(
             graph_creating_strategy=graph_creating_strategy,
@@ -233,7 +230,7 @@ class RCA_Molecule:
 
         return ligand_name, csd
 
-    def pre_rotate_and_shift_molecule(self):
+    def shift_metal_to_origin(self):
         """
         Actually, this method is outdated not required.
         However, the idea was to shift the molecule to the origin, so that the metal is right in the origin
@@ -311,7 +308,7 @@ class RCA_Molecule:
         inherit_global_properties = self.check_input_inherit_global_properties(inherit_global_properties)
 
         # wie gesagt, etwas outdated eigentlich
-        self.pre_rotate_and_shift_molecule()
+        self.shift_metal_to_origin()
 
         atoms, idc = get_sorted_atoms_and_indices_from_graph(self.graph)
         if 'atoms' in self.atomic_props:
@@ -497,7 +494,6 @@ class RCA_Ligand(RCA_Molecule):
         super().__init__(mol=Atoms(atom_list, positions=coord_list_3D),
                          atomic_props=atomic_props,
                          global_props=global_props,
-                         pymat_mol=None,
                          graph=graph,
                          has_ligands=False,
                          **kwargs

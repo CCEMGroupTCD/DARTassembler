@@ -7,7 +7,7 @@ import networkx as nx
 from tqdm import tqdm
 import gc
 
-from src01.graph_utility import make_graph_labels_integers, graphs_are_equal
+from src01.utilities_graph import make_graph_labels_integers, graphs_are_equal
 from src01.DataBase import MoleculeDB
 
 from networkx import weisfeiler_lehman_graph_hash as graph_hash

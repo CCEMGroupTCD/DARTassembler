@@ -1,4 +1,4 @@
-from src01.graph_utility import view_graph
+from src01.utilities_graph import view_graph
 import networkx as nx
 import pandas as pd
 import json

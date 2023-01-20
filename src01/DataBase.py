@@ -4,7 +4,7 @@ from tqdm import tqdm
 import pandas as pd
 import numpy as np
 
-from src01.graph_utility import remove_node_features_from_graph, make_multigraph_to_graph, \
+from src01.utilities_graph import remove_node_features_from_graph, make_multigraph_to_graph, \
     remove_edge_features_from_graph
 from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
