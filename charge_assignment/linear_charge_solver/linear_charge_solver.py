@@ -522,7 +522,7 @@ class LinearChargeSolver:
 
 if __name__ == '__main__':
     
-    n_test = False
+    n_test = 2000
     all_complexes_path = '../../data/tmQMG_Jsons/complex_db_v1.2.json'
     all_unique_ligands_path = ['../../database/ligand_charges/charge_benchmark/all_ligand_charges_with_high_confidence_v1.2.csv']
     save_dir = '../../data/linear_charge_solver/output/'

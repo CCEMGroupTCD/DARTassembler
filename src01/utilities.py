@@ -7,6 +7,16 @@ import networkx as nx
 
 
 
+def sort_dict_recursively_inplace(d: dict) -> None:
+    """
+    Sorts all dictionaries in a dictionary of dictionaries recursively by the key.
+    """
+    d = {key: d[key] for key in sorted(d.keys())}
+    for value in d.values():
+        if isinstance(value, dict):
+            sort_dict_recursively_inplace(value)
+
+    return
 
 
 def find_node_in_graph_by_label(G, label_to_find, expected_hits=None):
