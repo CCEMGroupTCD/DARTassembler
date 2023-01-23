@@ -1,5 +1,7 @@
 """
 Takes as input the tmqm downloaded data and makes them easier accessible.
+
+Technically not needed anymore
 """
 import os
 import pandas as pd

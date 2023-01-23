@@ -84,27 +84,27 @@ class BaselineDB:
 
         print("Start Establishing DB from .json")
 
-        # todo: max_number just for debugging and testing reasons
-        if max_number is not None:
-            for i, (identifier, mol_dict) in tqdm(enumerate(json_dict.items()), desc="Build MoleculeDatabase"):
-                new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict, graph_strategy, **kwargs)
+        #
+        #
+        #
+        for i, (identifier, mol_dict) in tqdm(enumerate(json_dict.items()), desc=f"Build {type_}Database"):
+
+            # For testing by identifier list
+            if identifier_list is not None:
+                if identifier not in identifier_list:
+                    continue
+
+            # For testing by Max number
+            if max_number is not None:
                 if i > max_number:
                     break
 
-            return cls(new_dict_)
+            new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict,
+                                                                                 graph_strategy,
+                                                                                 csd_code=identifier,
+                                                                                 **kwargs
+                                                                                 )
 
-        # todo: same with identifier_list
-        if identifier_list is not None:
-            for identifier, mol_dict in tqdm(json_dict.items(), desc="Build MoleculeDatabase"):
-                if identifier in identifier_list:
-                    new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict, graph_strategy, **kwargs)
-
-            return cls(new_dict_)
-
-        #
-        #
-        for identifier, mol_dict in tqdm(json_dict.items(), desc=f"Build {type_}Database"):
-            new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict, graph_strategy, **kwargs)
         return cls(new_dict_)
 
     def filter_not_fully_connected_molecules(self):

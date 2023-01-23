@@ -1,9 +1,11 @@
 import networkx as nx
+import pandas as pd
+from copy import deepcopy
+from networkx import weisfeiler_lehman_graph_hash as graph_hash
+
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-import pandas as pd
-from copy import deepcopy
 
 
 def view_graph(G, node_label='node_label', node_size=150):
@@ -30,8 +32,17 @@ def node_check(dict1, dict2):
 
 
 def graphs_are_equal(G1, G2):
+    """
+    Exact comparison of graphs
+    """
     return nx.is_isomorphic(G1, G2, node_match=node_check)
 
+
+def graphs_are_equal_hash_version(G1, G2):
+    """
+    In theory lower accuracy than "graphs_are_equal", but way lower computational costs as well
+    """
+    return graph_hash(G1, node_attr='node_label', iterations=3, digest_size=16) == graph_hash(G2, node_attr='node_label', iterations=3, digest_size=16)
 
 def sorted_dict_of_dicts(d: dict) -> dict:
     """

@@ -1,5 +1,5 @@
 """
-We want to see if the graphs of the tmQMG based RCA Molecules look as they should look like
+Check if the graph read'in for .gml files works as inteded
 """
 import json
 import random

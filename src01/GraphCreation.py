@@ -4,6 +4,7 @@ Still Under Construction, but already implemented in the workflow of the extract
 Should work fine with the default graph creation
 """
 import networkx as nx
+import pandas as pd
 
 from ase import Atoms, neighborlist
 from pymatgen.analysis.graphs import MoleculeGraph
@@ -14,8 +15,11 @@ from ase.data import covalent_radii  # THE basic covalent radii data
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 
 from molSimplify.Classes.mol3D import mol3D
+from pysmiles import read_smiles
 
 import warnings
+
+smiles_df = pd.DataFrame()
 
 
 class GraphCreation:
@@ -45,11 +49,24 @@ class GraphCreation:
             else:
                 self.molsimiply_Graph(mol=molecule, atomic_props=atomic_props)
 
+        elif graph_creating_strategy == "smiles":
+            if "csd_code" not in kwargs:
+                warnings.warn("Missing Information, no graph could be created")
+            else:
+                self.smiles_graph(identifier=kwargs["csd_code"])
+
         elif graph_creating_strategy in ["default", "ase_cutoff"]:
             self.ase_cutoff_graph(mol=molecule, **kwargs)
 
         else:
             raise NotImplementedError
+
+        if self.G is None:
+            # then all graph strategies have failed so far, we use the default creation
+            # without any additional parameters
+            # Note that this here defines the default, so if we want to change that we have to change the function
+            # here as well
+            self.ase_cutoff_graph(mol=molecule)
 
     #
     #
@@ -178,15 +195,15 @@ class GraphCreation:
     #
     #
     # 4. SmartString based methods
-    def smart_string_based_graphs(self, smart_str):
+    def smiles_graph(self, identifier):
         """
-        Crate graph based on smart string.
-        Smart via CSD API
+        simple graph creating method using pysmiles to convert the extracted smiles (from the CSD)
+        to graphs
         """
-        raise NotImplementedError
+        try:
+            smiles = smiles_df.set_index("CSD_code").loc[identifier, "smiles"]
+            self.G = nx.Graph(read_smiles(smiles, explicit_hydrogen=True))
 
-    #
-    #
-    # Others
-    def metal_node_degree_and_ase_cutoffs(self):
-        raise NotImplementedError
+        except Exception as e:
+            print(f"Smiles based Graph creation not possible, {e}")
+            return
