@@ -121,12 +121,18 @@ if __name__ == "__main__":
             "kwargs": {}
         },
         1: {
-            "name": "Pymatgen NN",
-            "strat": "pymatgen_NN",
+            "name": "smiles",
+            "strat": "smiles",
             "kwargs": {}
         }
+        #2: {
+        #    "name": "Pymatgen NN",
+        #    "strat": "pymatgen_NN",
+        #    "kwargs": {}
+        #}
     }
 
+    """
     for corr in np.linspace(-0.1, -1, 10):
         run_list.update(
             {len(run_list): {
@@ -152,6 +158,7 @@ if __name__ == "__main__":
             }
             }
         )
+    """
 
     run_list.update(
         {len(run_list): {

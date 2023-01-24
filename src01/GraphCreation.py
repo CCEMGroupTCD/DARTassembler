@@ -19,7 +19,11 @@ from pysmiles import read_smiles
 
 import warnings
 
-smiles_df = pd.read_csv("../constants/CSD/CSD_Smiles_full.csv")
+try:
+    smiles_df = pd.read_csv("../constants/CSD/CSD_Smiles_full.csv")
+except FileNotFoundError:
+    # then we are testing
+    smiles_df = pd.read_csv("../../constants/CSD/CSD_Smiles_full.csv")
 
 
 class GraphCreation:

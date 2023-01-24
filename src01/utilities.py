@@ -2,27 +2,28 @@ import numpy as np
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from src01.constants import metals_in_pse
 from ase import Atoms
-import networkx as nx
 
 
+def sorted_dict_of_dicts(d: dict) -> dict:
+    """
+    Sorts dictionaries and recursively sorts dictionaries of dictionaries to infinite order.
+    :param d: dictionary to sort
+    :return: sorted dictionary
+    """
+    sorted_d = {}
+    keys = sorted(d.keys())
 
+    for key in keys:
+        value = d[key]
 
+        if (isinstance(value, dict) and (len(value) > 1)):
+            value = sorted_dict_of_dicts(value)
 
+        sorted_d[key] = value
 
-def find_node_in_graph_by_label(G, label_to_find, expected_hits=None):
-
-    dict_ = dict(G.nodes(data="node_label"))
-    nodes = [key for key, value in dict_.items() if value == label_to_find]
-
-    if expected_hits is None:
-        return nodes
-    else:
-        assert len(nodes) == expected_hits, "Too many hits in graph search"
-
-        if expected_hits == 1:
-            return nodes.pop()
-
-        return nodes
+    assert (len(d) == len(sorted_d) and all([val == d[key] for key, val in
+                                             sorted_d.items()])), 'Sorted dictionary is different than original one, there must be a bug.'
+    return sorted_d
 
 
 def call_method_on_object(obj, method: str):
