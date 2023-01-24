@@ -19,7 +19,7 @@ from pysmiles import read_smiles
 
 import warnings
 
-smiles_df = pd.DataFrame()
+smiles_df = pd.read_csv("../constants/CSD/CSD_Smiles_full.csv")
 
 
 class GraphCreation:
@@ -203,6 +203,10 @@ class GraphCreation:
         try:
             smiles = smiles_df.set_index("CSD_code").loc[identifier, "smiles"]
             self.G = nx.Graph(read_smiles(smiles, explicit_hydrogen=True))
+
+            # the nodes need to be renamed, as the default is "element" rather than "node_label"
+            for node in self.G.nodes:
+                self.G.nodes[node]["node_label"] = self.G.nodes[node]["element"]
 
         except Exception as e:
             print(f"Smiles based Graph creation not possible, {e}")

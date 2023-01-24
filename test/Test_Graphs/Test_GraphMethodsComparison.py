@@ -24,7 +24,7 @@ class GraphTesting:
         self.tmQM_DB = None
         if database_path is None:
             # defaultpath
-            self.database_path = '../../database/tmQM/data'
+            self.database_path = '../../database/tmQM'
         else:
             self.database_path = database_path
 
