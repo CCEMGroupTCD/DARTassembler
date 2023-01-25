@@ -30,3 +30,4 @@
 !/database/ligand_charges/charge_benchmark/README
 
 /data_output/
+/constants/CSD/CSD_Smiles_full.csv
