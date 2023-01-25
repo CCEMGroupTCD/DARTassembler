@@ -204,6 +204,9 @@ class GraphCreation:
         simple graph creating method using pysmiles to convert the extracted smiles (from the CSD)
         to graphs
         """
+        warnings.warn("Method not feasible as the order in the graph creation is crucial and smiles string "
+                      "dont preserve that order")
+        """
         try:
             smiles = smiles_df.set_index("CSD_code").loc[identifier, "smiles"]
             self.G = nx.Graph(read_smiles(smiles, explicit_hydrogen=True))
@@ -215,3 +218,5 @@ class GraphCreation:
         except Exception as e:
             print(f"Smiles based Graph creation not possible, {e}")
             return
+        """
+        return
