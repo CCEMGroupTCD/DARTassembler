@@ -1,11 +1,10 @@
-"""
-todo: I would like to get a list of monometallic complexes before creating the graph to skip unessential data
-"""
 import os
 from src01.utilities_graph import mol2_to_graph, mol2_str_to_graph, view_graph, graph_to_dict_with_node_labels
 from tqdm import tqdm
 import json
 
+import warnings
+warnings.filterwarnings("ignore")
 
 class GraphsFromMol2:
     """
@@ -13,7 +12,11 @@ class GraphsFromMol2:
     and not to be considered a general class
     """
 
+
     def __init__(self, dir_path):
+
+        with open("monometallic_csd_entries.json", "r") as file:
+            self.monometallic_csd_entries = json.load(file)
 
         self.dir_path = dir_path
         self.graph_dict = {}
@@ -39,18 +42,21 @@ class GraphsFromMol2:
 
                 for file_str in tqdm(file_strs, desc=f"Reading file {j} of {len(os.listdir('mol2s'))}"):
 
-                    #
-                    # view_graph(G)
-                    try:
-                        # put the graph in desired dict format into the graph dict
-                        G = mol2_str_to_graph(str_=file_str)
-                        self.graph_dict.update({
-                            self.get_idenifier_from_mol2_str(file_str): graph_to_dict_with_node_labels(G)
-                        })
-                    except Exception as e:
-                        # error_count += 1
-                        # print(f"An error has occured: {e}\nerror count: {error_count}")
-                        pass
+                    identifier = self.get_idenifier_from_mol2_str(file_str)
+
+                    if identifier in self.monometallic_csd_entries:
+                        #
+                        # view_graph(G)
+                        try:
+                            # put the graph in desired dict format into the graph dict
+                            G = mol2_str_to_graph(str_=file_str)
+                            self.graph_dict.update({
+                                identifier : graph_to_dict_with_node_labels(G)
+                            })
+                        except Exception as e:
+                            # error_count += 1
+                            # print(f"An error has occured: {e}\nerror count: {error_count}")
+                            pass
 
     def safe_graph_dict(self, safe_path: str = None):
 
