@@ -120,16 +120,11 @@ if __name__ == "__main__":
             "strat": "default",
             "kwargs": {}
         },
-        1: {
-            "name": "smiles",
-            "strat": "smiles",
+        2: {
+            "name": "Pymatgen NN",
+            "strat": "pymatgen_NN",
             "kwargs": {}
         }
-        #2: {
-        #    "name": "Pymatgen NN",
-        #    "strat": "pymatgen_NN",
-        #    "kwargs": {}
-        #}
     }
 
     """
