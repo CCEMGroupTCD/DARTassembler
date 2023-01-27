@@ -40,6 +40,8 @@ def csd_graphs_not_usable_yet():
             breakpoint()
 
 
+
+
 if __name__ == "__main__":
 
     """
@@ -75,12 +77,14 @@ if __name__ == "__main__":
                                    graph_strategy="CSD"
                                    )
 
-    """
+
+
     tmQM_DB2 = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
                                    type_="Molecule",
                                    max_number=100,
                                     graph_strategy="CSD"
                                    )
+
     """
 
     a = list(tmQM_DB.db.values())[0]
@@ -89,5 +93,5 @@ if __name__ == "__main__":
                                                  denticity_numbers_of_interest=[-1, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                                                                                 10]
                                                  )
-
+    """
     print("done")
