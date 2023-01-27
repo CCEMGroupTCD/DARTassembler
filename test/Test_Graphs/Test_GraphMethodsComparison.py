@@ -11,6 +11,8 @@ import numpy as np
 
 import gc
 
+warnings.filterwarnings("ignore")
+
 
 class GraphTesting:
 
@@ -64,7 +66,8 @@ class GraphTesting:
             # Note: It is crucial to set the correct numbers of denticities, because otherwise -1 denticitated
             #       ligands are getting filtered out by default
             self.tmQM_Ligands = LigandDB.from_MoleculeDB(molDB=self.tmQM_DB,
-                                                         denticity_numbers_of_interest=[-1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                                                         denticity_numbers_of_interest=[-1, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                                                                                        10]
                                                          )
 
             # 3. Extract unique Ligands
@@ -111,7 +114,6 @@ class GraphTesting:
 
 
 if __name__ == "__main__":
-
     # Setting up the run list
     #
     run_list = {
@@ -120,11 +122,6 @@ if __name__ == "__main__":
             "strat": "default",
             "kwargs": {}
         },
-        2: {
-            "name": "Pymatgen NN",
-            "strat": "pymatgen_NN",
-            "kwargs": {}
-        }
     }
 
     """
@@ -164,7 +161,27 @@ if __name__ == "__main__":
         }
     )
 
+    '''
+    run_list.update(
+        {len(run_list): {
+            "name": "Pymatgen NN",
+            "strat": "pymatgen_NN",
+            "kwargs": {}
+        }
+        }
+    )
+    '''
 
+    run_list.update(
+        {len(run_list): {
+            "name": "CSD Graphs",
+            "strat": "CSD",
+            "kwargs": {}
+        }
+        }
+    )
+
+    #
     #
     # Actually running the comparison
     GT = GraphTesting(run_list=run_list)
@@ -173,7 +190,9 @@ if __name__ == "__main__":
         "number unqiue ligands",
         "number of not fully connected graphs",
         "number of isolated ligands"
-    ])
+    ],
+        Testing=True
+    )
 
     GT.show_plots()
 

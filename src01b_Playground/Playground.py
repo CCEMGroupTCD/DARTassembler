@@ -8,6 +8,38 @@ from src01.DataBase import MoleculeDB
 from src01.DataLoader import DataLoader
 
 
+def csd_graphs_not_usable_yet():
+    """
+    The problem is, that we atm use the tmQM 3D coordinates as an input
+    but use the graphs of the uncurated CSD entries to compare them against
+    but this means, that the total graphs of the CSD will be bigger,
+    as the unconnected counter ions or solution molecules are still flowing around
+    and hence, as the graph has more nodes than the list of 3D coordinates, this will reaise
+    an error, as this script shows.
+    """
+    tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
+                                   type_="Molecule",
+                                   max_number=100,
+                                   )
+
+    tmQM_DB2 = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
+                                    type_="Molecule",
+                                    max_number=100,
+                                    graph_strategy="CSD"
+                                    )
+
+    b_mol = list(tmQM_DB2.db.values())[1]
+
+    for i, (a, b) in enumerate(zip(tmQM_DB.db.values(), tmQM_DB2.db.values())):
+
+        a_els = [a.graph.nodes[node]['node_label'] for node in a.graph.nodes]
+        b_els = [b.graph.nodes[node]['node_label'] for node in b.graph.nodes]
+
+        if a_els != b_els:
+            breakpoint()
+
+
+
 if __name__ == "__main__":
 
     """
@@ -40,7 +72,14 @@ if __name__ == "__main__":
     tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
                                    type_="Molecule",
                                    max_number=100,
-                                   graph_strategy="smiles"
                                    )
+
+    tmQM_DB2 = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
+                                   type_="Molecule",
+                                   max_number=100,
+                                    graph_strategy="CSD"
+                                   )
+
+
 
     print("done")
