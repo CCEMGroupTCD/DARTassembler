@@ -1,0 +1,10 @@
+Just a list of csd_codes for entries in the csd of a different kind
+
+easy to read in by
+
+import json
+with open(<filename>, "r") as file:
+    identifier_list = json.load(file)
+
+Easy to use, if one wants to reduce the number of csd entries to just the entries
+of a certain type.

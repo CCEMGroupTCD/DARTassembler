@@ -1,3 +1,8 @@
+"""
+this script should in theory never be shared, because I read in our customized .mol2 files and convert the 339k of them,
+which are of interest for us, into a graph and dump that into a graphs.json
+The graphs.json shall then lateron serve as a constant quantity and represent the graphs of the CSD
+"""
 import os
 from src01.utilities_graph import mol2_to_graph, mol2_str_to_graph, view_graph, graph_to_dict_with_node_labels
 from tqdm import tqdm
@@ -6,16 +11,15 @@ import json
 import warnings
 warnings.filterwarnings("ignore")
 
+
 class GraphsFromMol2:
     """
     This is highly customized for the input of the CSD database mol2 files
     and not to be considered a general class
     """
-
-
     def __init__(self, dir_path):
 
-        with open("monometallic_csd_entries.json", "r") as file:
+        with open("../identifierLists/monometallic_identifier_list.json", "r") as file:
             self.monometallic_csd_entries = json.load(file)
 
         self.dir_path = dir_path
@@ -40,7 +44,7 @@ class GraphsFromMol2:
 
                 file_strs = [str_.strip("\n\n\n").strip("\n") for str_ in content.split("\n\n\n\n")]
 
-                for file_str in tqdm(file_strs, desc=f"Reading file {j} of {len(os.listdir('mol2s'))}"):
+                for file_str in tqdm(file_strs, desc=f"Reading file {j} of {len(os.listdir('../mol2s'))}"):
 
                     identifier = self.get_idenifier_from_mol2_str(file_str)
 
@@ -68,10 +72,24 @@ class GraphsFromMol2:
             json.dump(self.graph_dict, file)
             # dump graphs to json
 
+    def filter_graphs(self, id_list, safe_path: str):
+        """
+        e.g. to get the graphs for the csd
+        """
+
+        new_dict_of_graphs = {}
+
+        for id_, d in self.graph_dict.items():
+            if id_ in id_list:
+                new_dict_of_graphs[id_] = d
+
+        with open(safe_path, "w+") as file:
+            json.dump(new_dict_of_graphs, file)
+
 
 if __name__ == "__main__":
 
-    Graphs = GraphsFromMol2(dir_path="mol2s")
+    Graphs = GraphsFromMol2(dir_path="../mol2s")
 
     Graphs.extract_graphs()
 
