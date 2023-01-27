@@ -41,3 +41,4 @@
 /constants/CSD/CSD_Smiles_full.csv
 /constants/CSD/mol2s/
 /.conda_config
+/constants/CSD/graphs/tmqm_graphs_from_csd.json

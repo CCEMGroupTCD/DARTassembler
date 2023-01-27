@@ -4,8 +4,9 @@ mode to get quick acess to the tmQM and its ligands
 in the RCA_Molecule and RCA_Ligand format respecitvely
 and here it is
 """
-from src01.DataBase import MoleculeDB
+from src01.DataBase import MoleculeDB, LigandDB
 from src01.DataLoader import DataLoader
+from src01.utilities_graph import view_graph
 
 
 def csd_graphs_not_usable_yet():
@@ -37,7 +38,6 @@ def csd_graphs_not_usable_yet():
 
         if a_els != b_els:
             breakpoint()
-
 
 
 if __name__ == "__main__":
@@ -72,14 +72,22 @@ if __name__ == "__main__":
     tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
                                    type_="Molecule",
                                    max_number=100,
+                                   graph_strategy="CSD"
                                    )
 
+    """
     tmQM_DB2 = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
                                    type_="Molecule",
                                    max_number=100,
                                     graph_strategy="CSD"
                                    )
+    """
 
+    a = list(tmQM_DB.db.values())[0]
 
+    tmQM_Ligands = LigandDB.from_MoleculeDB(molDB=tmQM_DB,
+                                                 denticity_numbers_of_interest=[-1, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                                                                                10]
+                                                 )
 
     print("done")

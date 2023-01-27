@@ -51,7 +51,7 @@ class GraphTesting:
             if Testing is True:
                 self.tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=self.database_path).data_for_molDB,
                                                     type_="Molecule",
-                                                    max_number=1000,
+                                                    max_number=500,
                                                     graph_strategy=d["strat"],
                                                     **d["kwargs"]
                                                     )
@@ -152,6 +152,7 @@ if __name__ == "__main__":
         )
     """
 
+    """
     run_list.update(
         {len(run_list): {
             "name": f"MolSimplify",
@@ -160,6 +161,7 @@ if __name__ == "__main__":
         }
         }
     )
+    """
 
     '''
     run_list.update(

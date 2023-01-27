@@ -340,7 +340,11 @@ class RCA_Molecule:
 
         atoms, idc = get_sorted_atoms_and_indices_from_graph(self.graph)
         if 'atoms' in self.atomic_props:
-            assert atoms == self.atomic_props['atoms'], 'Order of atoms in graph and in atomic_props doesn\'t match.'
+
+            if not atoms == self.atomic_props['atoms']:
+                breakpoint()
+
+            # assert atoms == self.atomic_props['atoms'], 'Order of atoms in graph and in atomic_props doesn\'t match.'
 
         # first we gather some information around the metal in the initial graph
         graph = deepcopy(self.graph)
