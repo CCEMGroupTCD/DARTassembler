@@ -7,7 +7,7 @@ import seaborn as sns
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from src01.io import load_unique_ligand_db
+from src01.io_custom import load_unique_ligand_db
 from pathlib import Path
 sns.set_theme()
 

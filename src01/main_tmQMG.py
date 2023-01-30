@@ -12,7 +12,7 @@ import numpy as np
 from pathlib import Path
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
 from charge_assignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
-from src01.io import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_ligand_db
+from src01.io_custom import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_full_ligand_db
 
 def get_charges_of_unique_ligands(all_complexes_path: str) -> pd.DataFrame:
     """
@@ -74,7 +74,7 @@ def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_pa
     ligands = load_full_ligand_db(ligands_db_path)
     for lig in ligands.values():
         update_ligand_with_charge_inplace(lig, charges)
-    save_ligand_db(db=ligands, path=ligands_db_path)
+    save_full_ligand_db(db=ligands, path=ligands_db_path)
 
     complexes = load_complex_db(path=complex_db_path)
     for c in complexes.values():

@@ -3,9 +3,22 @@ from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from src01.constants import metals_in_pse
 from ase import Atoms
 import networkx as nx
+import warnings
+from copy import deepcopy
 
+def make_None_to_NaN(val):
+    if val is None:
+        return np.nan
+    else:
+        return val
 
+def update_dict_with_warning_inplace(dict_to_update, dict_with_information, update_properties: list):
+    for prop in update_properties:
+        if prop in dict_to_update:
+            warnings.warn('Overwriting ligand with unique ligand property which already existed.')
+        dict_to_update[prop] = dict_with_information[prop]
 
+    return
 
 def sort_dict_recursively_inplace(d: dict) -> None:
     """

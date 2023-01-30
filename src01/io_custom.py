@@ -44,7 +44,7 @@ def load_unique_ligand_db(path: str) -> dict:
 def save_complex_db(db: dict, path: str):
     save_json(db, path)
 
-def save_ligand_db(db: dict, path: str):
+def save_full_ligand_db(db: dict, path: str):
     save_json(db, path)
 
 def save_unique_ligand_db(db: dict, path: str):

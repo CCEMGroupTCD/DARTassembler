@@ -4,7 +4,7 @@ Note: The functionality of this script has been integrated in the script `merge_
 This script updates the charge benchmark datasets with the ligand properties of the latest complex_db version.
 """
 import pandas as pd
-from src01.io import load_full_ligand_db
+from src01.io_custom import load_full_ligand_db
 from pathlib import Path
 from copy import deepcopy
 from collections import MutableMapping

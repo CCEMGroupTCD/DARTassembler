@@ -4,9 +4,12 @@ This script just takes a json path and a number as input and outputs a smaller j
 import json
 
 if __name__ == '__main__':
-    input_json = '../data/tmQMG_Jsons_original/tmQMG.json'
+
+    input_json = '../data/tmQMG_Jsons_test_full_fixed_gbl_props/tmQMG.json'
     num_output_items = 100
-    output_json = '../data/tmQMG_Jsons_test/tmQMG.json'
+    output_json = '../data/tmQMG_Jsons_test_fixed_gbl_props/tmQMG.json'
+
+
 
     # Read in json.
     with open(input_json, 'r') as file:

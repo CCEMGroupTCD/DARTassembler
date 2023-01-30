@@ -262,7 +262,7 @@ class tmQM:
                                         num_atoms_and_mol_id_func=self.tmQM_num_atoms_and_mol_id_func
                                         )
         
-        n_chunks = 4
+        n_chunks = 4    # 4
         print(f'Break large atomic properties file into {n_chunks} smaller chunks for github compatibility.')
         break_file_into_chunks(
                                 single_file_path=self.atomic_properties_path,
@@ -281,10 +281,11 @@ class tmQMG(tmQM):
 
 if __name__ == '__main__':
     
-    # tmqm_dir_path = '/home/timo/PhD/projects/RCA/projects/CreateTMC/database/tmQM'
+    # tmqm_dir_path = '../database/tmQM'
     tmqm_dir_path = "../database/tmQMg_raw"
     
-    tmqm = tmQMG(tmqm_dir_path)
+    # tmqm = tmQMG(tmqm_dir_path)
+    tmqm = tmQM(tmqm_dir_path)
     df = tmqm.make_data_better_available()
     
     print('Done!')

@@ -20,7 +20,7 @@ from pymatgen.analysis.graphs import MoleculeGraph
 from pymatgen.core.structure import Molecule as PyMatMol
 from pymatgen.analysis.local_env import JmolNN
 
-from src01.utilities import identify_metal_in_ase_mol, find_node_in_graph_by_label
+from src01.utilities import identify_metal_in_ase_mol, find_node_in_graph_by_label, make_None_to_NaN
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
 
 from src03_Assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
@@ -643,3 +643,50 @@ class RCA_Ligand(RCA_Molecule):
 
     def to_stk_bb(self):
         return RCA_Mol_to_stkBB(self)
+
+class RCA_Complex(RCA_Molecule):
+
+    def __init__(self,
+                 mol: Atoms,
+                 atomic_props: dict = None,
+                 global_props: dict = None,
+                 pymat_mol=None,
+                 graph=None,
+                 graph_creating_strategy="default",
+                 has_ligands=True,
+                 reindex_graph: bool = False,
+                 **kwargs):
+
+            super().__init__(
+                            mol=mol,
+                            atomic_props=atomic_props,
+                            global_props=global_props,
+                            pymat_mol=pymat_mol,
+                            graph=graph,
+                            graph_creating_strategy=graph_creating_strategy,
+                            has_ligands=has_ligands,
+                            reindex_graph=reindex_graph,
+                            **kwargs
+                             )
+            self.metal =  identify_metal_in_ase_mol(self.mol)
+            self.metal_oxi_state = make_None_to_NaN(self.global_props['metal_oxi_state'])
+            self.charge = make_None_to_NaN(self.global_props['charge'])
+
+    def write_to_mol_dict(self):
+        """
+        Outputs complex as dictionary.
+        """
+        metal_q = self.atomic_props['partial_charge'][self.atomic_props['atoms'].index(self.metal)]  # TODO remove
+        return {
+            "atomic_props": self.atomic_props,
+            "global_props": self.global_props,
+            "graph_dict": graph_to_dict_with_node_labels(self.graph),
+            'mol_id': self.global_props['CSD_code'],
+            'stoichiometry': self.stoichiometry,
+            'metal': self.metal,
+            'metal_oxi_state': self.metal_oxi_state,
+            'total_q': self.charge,
+            'Metal_q': metal_q,
+            'ligands': [lig.write_to_mol_dict() for lig in self.ligands]
+            # "graph_hash": self.graph_hash
+        }

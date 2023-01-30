@@ -7,8 +7,7 @@ from tqdm import tqdm
 import pandas as pd
 import numpy as np
 
-from src01.Molecule import RCA_Molecule
-from src01.Molecule import RCA_Ligand as RCA_Ligand
+from src01.Molecule import RCA_Molecule, RCA_Complex, RCA_Ligand    # important, don't delete, read in by string that's why they appear grey
 from src01.graph_utility import remove_node_features_from_graph, make_multigraph_to_graph, \
     remove_edge_features_from_graph
 from src01.utilities import identify_metal_in_ase_mol
@@ -66,7 +65,7 @@ class BaselineDB:
 
         new_dict_ = {}
 
-        if type_ not in ["Ligand", "Molecule"]:
+        if type_ not in ["Ligand", "Molecule", "Complex"]:
             print("Wrong type chosen, will be set to Molecule")
             type_ = "Molecule"
 
@@ -193,6 +192,7 @@ class LigandDB(BaselineDB):
                     if lig.denticity in denticity_numbers_of_interest:
                         ligand_list.append(lig)
                     else:
+                        print('Denticity over 10!')         # TODO remove
                         pass
 
         return cls(dict_={lig.name: lig for lig in ligand_list})
