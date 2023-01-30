@@ -1,5 +1,7 @@
 """
 Takes as input the tmqm downloaded data and makes them easier accessible.
+
+Technically not needed anymore
 """
 import os
 import pandas as pd
@@ -280,10 +282,10 @@ class tmQMG(tmQM):
 
 
 if __name__ == '__main__':
-    
+
     # tmqm_dir_path = '../database/tmQM'
     tmqm_dir_path = "../database/tmQMg_raw"
-    
+
     # tmqm = tmQMG(tmqm_dir_path)
     tmqm = tmQM(tmqm_dir_path)
     df = tmqm.make_data_better_available()

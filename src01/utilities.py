@@ -6,6 +6,7 @@ import networkx as nx
 import warnings
 from copy import deepcopy
 
+
 def make_None_to_NaN(val):
     if val is None:
         return np.nan
@@ -31,21 +32,26 @@ def sort_dict_recursively_inplace(d: dict) -> None:
 
     return
 
+def sorted_dict_of_dicts(d: dict) -> dict:
+    """
+    Sorts dictionaries and recursively sorts dictionaries of dictionaries to infinite order.
+    :param d: dictionary to sort
+    :return: sorted dictionary
+    """
+    sorted_d = {}
+    keys = sorted(d.keys())
 
-def find_node_in_graph_by_label(G, label_to_find, expected_hits=None):
+    for key in keys:
+        value = d[key]
 
-    dict_ = dict(G.nodes(data="node_label"))
-    nodes = [key for key, value in dict_.items() if value == label_to_find]
+        if (isinstance(value, dict) and (len(value) > 1)):
+            value = sorted_dict_of_dicts(value)
 
-    if expected_hits is None:
-        return nodes
-    else:
-        assert len(nodes) == expected_hits, "Too many hits in graph search"
+        sorted_d[key] = value
 
-        if expected_hits == 1:
-            return nodes.pop()
-
-        return nodes
+    assert (len(d) == len(sorted_d) and all([val == d[key] for key, val in
+                                             sorted_d.items()])), 'Sorted dictionary is different than original one, there must be a bug.'
+    return sorted_d
 
 
 def call_method_on_object(obj, method: str):

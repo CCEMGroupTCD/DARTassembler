@@ -163,7 +163,7 @@ class TransitionMetalComplex:
         surname_row = int(str(name_hash)[20:30]) % 1000
 
         # pick the name
-        df = pd.read_csv("../database/names/names.csv")
+        df = pd.read_csv("../constants/names/names.csv")
 
         return f"{df.loc[name_row, gender]} {df.loc[surname_row, 'Surname']}"
 

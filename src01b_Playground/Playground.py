@@ -4,38 +4,16 @@ mode to get quick acess to the tmQM and its ligands
 in the RCA_Molecule and RCA_Ligand format respecitvely
 and here it is
 """
-from src01.DataBase import MoleculeDB, LigandDB
-import json
-from tqdm import tqdm
-import matplotlib.pyplot as plt
+from src01.DataBase import MoleculeDB
+from src01.DataLoader import DataLoader
 
 
 if __name__ == "__main__":
 
-    data_path = "../data/tmQMG_Jsons"
+    """
+    data_path = "../data_output/tmQMG_Jsons"
 
-    # Playground for tmQMG
-
-    # First unique ligands
-    #with open(f"{data_store_path}/tmQMG_Ligands_unique.json") as file:
-    #    unique_ligands_dict = json.load(file)
-
-    #lig_dict_old_format = {}
-    #for k, v in tqdm(unique_ligands_dict.items()):
-    #    lig_dict_old_format.setdefault(v['denticity'], []).append(k)
-
-
-    #
-    #
-    #plt_dict = {k: len(v) for k, v in lig_dict_old_format.items()}
-    #plt.bar(plt_dict.keys(), plt_dict.values(), color="r")
-    #plt.ylabel("Number of Ligands")
-    #plt.xlabel("Denticity")
-    #plt.title("Denticity distribution")
-    #plt.xticks(range(1, 11))
-    #plt.yticks(range(0, 12000, 1000))
-    #plt.grid()
-    #plt.show()
+   
 
     #
     tmQM_DB = MoleculeDB.from_json(json_=f'{data_path}/tmQMG.json', type_="Molecule", identifier_list=["NIBTAT"])
@@ -54,5 +32,15 @@ if __name__ == "__main__":
     #    full_ligands_dict = json.load(file)
 
     print("Playground established")
+
+    print("done")
+    """
+    database_path = '../database/tmQM'
+
+    tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
+                                   type_="Molecule",
+                                   max_number=100,
+                                   graph_strategy="smiles"
+                                   )
 
     print("done")

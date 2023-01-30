@@ -29,3 +29,5 @@
 !/database/ligand_charges/charge_benchmark/Manting_ligand_charges.csv
 !/database/ligand_charges/charge_benchmark/README
 
+/data_output/
+/constants/CSD/CSD_Smiles_full.csv

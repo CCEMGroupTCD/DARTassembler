@@ -338,8 +338,8 @@ class LigandExtraction():
 
 if __name__ == '__main__':
     # specify the database path
-    database_path = '../database/tmQMg'         #'../database/tmQMg'
-    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_test"  # Folder where we want to store the jsons
+    database_path = '../database/tmQMg_fixed_gbl_props'         #'../database/tmQMg'
+    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_test_full"  # Folder where we want to store the jsons
     calculate_charges = True        # if you want to run charge assignment after ligand extraction
     overwrite_atomic_properties = False
 

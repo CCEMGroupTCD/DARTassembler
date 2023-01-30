@@ -11,8 +11,8 @@ from tqdm import tqdm
 import numpy as np
 from pathlib import Path
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
-from charge_assignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
 from src01.io_custom import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_full_ligand_db
+from src02_ChargeAssignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
 
 def get_charges_of_unique_ligands(all_complexes_path: str) -> pd.DataFrame:
     """
@@ -30,6 +30,7 @@ def get_charges_of_unique_ligands(all_complexes_path: str) -> pd.DataFrame:
     df_ligands = solver.calculate_unique_ligand_charges(output_uncertain_charges_as_nan=False)
 
     return df_ligands
+
 
 def update_ligand_with_charge_inplace(lig: dict, charges: dict):
     new_keys = ['pred_charge', 'pred_charge_confidence', 'pred_charge_is_confident']
@@ -55,6 +56,7 @@ def update_ligand_with_charge_inplace(lig: dict, charges: dict):
                                 })
 
     return
+
 
 def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_path: str):
     complex_db_path = Path(data_store_path, 'complex_db.json')
@@ -83,6 +85,7 @@ def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_pa
     save_complex_db(db=complexes, path=complex_db_path)
 
     return
+
 
 def unique_ligands_from_Ligand_batch_json_files(n=10, data_store_path: str="../data/tmQMG_Jsons_test"):
     gc.collect()
@@ -156,6 +159,7 @@ def unique_ligands_from_Ligand_batch_json_files(n=10, data_store_path: str="../d
 
     return
 
+
 def update_complex_db_with_ligands(complex_json: str, ligand_json: str, save_complex_db_path: str):
     """
     This function reads in the initial json file that was input of the ligand extraction process and also reads in the json with all extracted ligands. The dictionary for each complex is then updated with dictionaries of the ligands and again saved.
@@ -167,7 +171,9 @@ def update_complex_db_with_ligands(complex_json: str, ligand_json: str, save_com
     """
     print('Start updating complex db with ligands.')
 
-    CSD_global_props = pd.read_csv('../database/tmQM/raw_data/CSD.csv', index_col=0).set_index('CSD_code').to_dict(orient='index')
+    # CSD_global_props_path = '../Bin_(Old)/databases(raw)/tmQM_raw/raw_data/CSD.csv'     # Path for Felix
+    CSD_global_props_path = '../database/tmQM/raw_data/CSD.csv'                         # Path for Timo
+    CSD_global_props = pd.read_csv(CSD_global_props_path, index_col=0).set_index('CSD_code').to_dict(orient='index')
 
     with open(complex_json, 'r') as file:
         all_complexes = json.load(file)

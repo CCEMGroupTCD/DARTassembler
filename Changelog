@@ -24,7 +24,10 @@
                                 }
                }
           The reason is that this is already used in the assembly. Since we had to decide between one, we should just go for the simpler one now. Besides, Cian's charge assignment has an input controller so this is very simple to fix, and in the linear charge solver, I don't think it is even used.
-    - the properties `original_metal` and `original_metal_symbol` were deleted from each ligand in the database of unique ligands. The metal of origin is not a property that makes sense for unique ligands, since they will usually come from many different metals. Instead, the property `count_metals` was added to backtrack which unique ligand occurs in which metals, see below. The ligands in the database of all (not only unique) ligands of course still have these properties. This should break only the assembly.
+    - the properties `original_metal` and `original_metal_symbol` were deleted from each ligand in the database of unique ligands.
+        The metal of origin is not a property that makes sense for unique ligands, since they will usually come from many different metals.
+        Instead, the property `count_metals` was added to backtrack which unique ligand occurs in which metals, see below.
+        The ligands in the database of all (not only unique) ligands of course still have these properties. This should break only the assembly.
     - for ligands and unique ligands, most `global_props` information except `CSD_code` was deleted
 	    - so far, global_props were inherited from the complex when generating the ligand. Mostly this information is stuff like electronic properties of the complex from the tmQMg, which don't make sense for the ligand. Therefore this information is not inherited anymore. As far as I am aware, this should not break anything since this information would not be useful in the first place.
 

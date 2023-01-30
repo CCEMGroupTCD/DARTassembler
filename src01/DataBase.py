@@ -1,15 +1,10 @@
-"""
-We now refine the general DAtabases
-"""
 import json
 from copy import deepcopy
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
-
 from src01.Molecule import RCA_Molecule, RCA_Complex, RCA_Ligand    # important, don't delete, read in by string that's why they appear grey
-from src01.graph_utility import remove_node_features_from_graph, make_multigraph_to_graph, \
-    remove_edge_features_from_graph
+from src01.utilities_graph import remove_node_features_from_graph, make_multigraph_to_graph, remove_edge_features_from_graph
 from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
@@ -46,7 +41,22 @@ class BaselineDB:
         print(f"Successfully saved DB to {path}")
 
     @classmethod
-    def from_json(cls, json_, type_: str = "Molecule", max_number=None, identifier_list: list = None):
+    def from_json(cls,
+                  json_,
+                  type_: str = "Molecule",
+                  graph_strategy: str = "default",
+                  max_number=None,
+                  identifier_list: list = None,
+                  **kwargs
+                  ):
+        """
+
+        :param json_: Either the dict itself or the path to a json file
+        :param type_: If we want either a molecule or a Ligand DB
+        :param graph_strategy: How we want the graphs to be created (this is only important for molecules,
+            because ligand graphs are created by the molecule graphs. For Ligands this will just be dumped as a kwarg)
+        :param kwargs: additional arguments for the graph creation
+        """
 
         if isinstance(json_, str):
             if not json_.endswith(".json"):
@@ -71,26 +81,27 @@ class BaselineDB:
 
         print("Start Establishing DB from .json")
 
-        # todo: max_number just for debugging reasons
-        if max_number is not None:
-            for i, (identifier, mol_dict) in tqdm(enumerate(json_dict.items()), desc="Build MoleculeDatabase"):
-                new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict)
+        #
+        #
+        #
+        for i, (identifier, mol_dict) in tqdm(enumerate(json_dict.items()), desc=f"Build {type_}Database"):
+
+            # For testing by identifier list
+            if identifier_list is not None:
+                if identifier not in identifier_list:
+                    continue
+
+            # For testing by Max number
+            if max_number is not None:
                 if i > max_number:
                     break
 
-            return cls(new_dict_)
+            new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict,
+                                                                                 graph_strategy,
+                                                                                 csd_code=identifier,
+                                                                                 **kwargs
+                                                                                 )
 
-        if identifier_list is not None:
-            for identifier, mol_dict in tqdm(json_dict.items(), desc="Build MoleculeDatabase"):
-                if identifier in identifier_list:
-                    new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict)
-
-            return cls(new_dict_)
-
-        #
-        #
-        for identifier, mol_dict in tqdm(json_dict.items(), desc=f"Build {type_}Database"):
-            new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict)
         return cls(new_dict_)
 
     def filter_not_fully_connected_molecules(self):
@@ -106,23 +117,26 @@ class BaselineDB:
         print(f'Deleted {len(deleted_identifiers)} molecules from input because they were not fully connected.')
         return
 
-    def remove_node_features_from_molecular_graphs(self, keep: list=['node_label']):
+    def remove_node_features_from_molecular_graphs(self, keep: list = None):
         """
         Removes all node features from all molecular graphs in the db except the node features specified in keep.
         :param keep: list of node features which will not be removed
         :return: None
         """
+        if keep is None:
+            keep = ['node_label']
+
         for identifier, mol in self.db.items():
             remove_node_features_from_graph(
-                                                graph=mol.graph,
-                                                keep=keep,
-                                                inplace=True
-                                            )
+                graph=mol.graph,
+                keep=keep,
+                inplace=True
+            )
 
         print(f'Removed all node features from all graphs except: {", ".join(keep)}')
         return
 
-    def remove_edge_features_from_molecular_graphs(self, keep: list=[]):
+    def remove_edge_features_from_molecular_graphs(self, keep: list = []):
         """
         Removes all edge features from all molecular graphs in the db except the edge features specified in keep.
         :param keep: list of edge features which will not be removed
@@ -130,10 +144,10 @@ class BaselineDB:
         """
         for identifier, mol in self.db.items():
             remove_edge_features_from_graph(
-                                                graph=mol.graph,
-                                                keep=keep,
-                                                inplace=True
-                                            )
+                graph=mol.graph,
+                keep=keep,
+                inplace=True
+            )
 
         print(f'Removed all edge features from all graphs except: {", ".join(keep)}')
         return

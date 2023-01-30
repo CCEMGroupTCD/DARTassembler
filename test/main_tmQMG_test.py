@@ -20,7 +20,7 @@ from src01.utilities import sort_dict_recursively_inplace
 if __name__ == '__main__':
     # specify the database path
     database_path = '../database/tmQMg_fixed_gbl_props'         #'../database/tmQMg'
-    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_test"  # Folder where we want to store the jsons
+    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_test_full"  # Folder where we want to store the jsons
     # number_of_batches = 10
 
     # overwrite_atomic_properties = False
@@ -144,7 +144,7 @@ if __name__ == '__main__':
             print('Successful refactoring. All data is still the same.')
 
         except AssertionError:
-            drop_cols = ['global_props']
+            drop_cols = ['graph_dict', 'ligands', 'atomic_props']
             print(f'Failed testing whole df. Check again without {drop_cols}.')
             pd.testing.assert_frame_equal(df_new.drop(columns=drop_cols, errors='ignore'), df_old.drop(columns=drop_cols, errors='ignore'), check_like=True)
             print(f'Mostly successful refactoring. All data is still the same when excluding {drop_cols}.')
