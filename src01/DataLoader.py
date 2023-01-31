@@ -5,7 +5,7 @@ import os
 import glob
 from tqdm import tqdm as loading_bar
 import numpy as np
-import src01.io_custom
+import io
 import networkx as nx
 
 

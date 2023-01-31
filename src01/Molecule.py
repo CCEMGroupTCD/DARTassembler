@@ -683,7 +683,7 @@ class RCA_Complex(RCA_Molecule):
                             reindex_graph=reindex_graph,
                             **kwargs
                              )
-            self.metal =  identify_metal_in_ase_mol(self.mol)
+            self.metal = identify_metal_in_ase_mol(self.mol)
             self.metal_oxi_state = make_None_to_NaN(self.global_props['metal_oxi_state'])
             self.charge = make_None_to_NaN(self.global_props['charge'])
 

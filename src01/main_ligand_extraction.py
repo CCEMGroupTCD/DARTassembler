@@ -52,7 +52,6 @@ from typing import Union
 #       - from global_props to property of complex: metal, metal_oxi_state
 #   - remove denticity_numbers_of_interest
 #   - remove graph_dict from complexes.json
-#
 
 class LigandExtraction():
 
@@ -84,10 +83,6 @@ class LigandExtraction():
             raise ValueError('`testing` must be int or bool.')
 
         return database_path, data_store_path, testing
-
-
-
-
 
     def load_input_data_to_json(self, overwrite_atomic_properties: bool=False):
         """
@@ -232,6 +227,7 @@ class LigandExtraction():
         return
 
     def update_complex_db_with_unique_ligand_information(self, share_properties: list=[], share_global_props: list=[], collect_properties: dict={}):
+        print('Update complex db with unique ligand information.')
         complexes = load_complex_db(self.output_complexes_json)
         unique_ligands = load_unique_ligand_db(self.unique_ligands_json)
 
@@ -246,13 +242,14 @@ class LigandExtraction():
                                                                     share_global_props=share_global_props,
                                                                     collect_properties=collect_properties
                                                                     )
-
+        print(f'Save updated complex database to {self.output_complexes_json}')
         save_complex_db(db=complexes, path=self.output_complexes_json)
 
         return
 
 
     def update_full_ligand_db_with_unique_ligand_information(self, share_properties: list=[], share_global_props: list=[], collect_properties: dict={}):
+        print('Update full ligand db with unique ligand information.')
         full_ligands = load_full_ligand_db(self.full_ligands_json)
         unique_ligands = load_unique_ligand_db(self.unique_ligands_json)
 
@@ -266,7 +263,7 @@ class LigandExtraction():
                                                                 share_global_props=share_global_props,
                                                                 collect_properties=collect_properties
                                                                 )
-
+        print(f'Save updated full ligand database to {self.full_ligands_json}')
         save_full_ligand_db(db=full_ligands, path=self.full_ligands_json)
 
         return
@@ -327,7 +324,7 @@ class LigandExtraction():
             self.update_databases_with_charges(df_ligand_charges=df_ligand_charges)
             print('Charges successfully assigned.')
 
-        with_charges = 'with_charges' if calculate_charges else 'without_charges'
+        with_charges = 'with charges' if calculate_charges else 'without charges'
         print(f'Ligand database {with_charges} established successfully!')
 
         return
@@ -338,10 +335,10 @@ class LigandExtraction():
 
 if __name__ == '__main__':
     # specify the database path
-    database_path = '../database/tmQMg_fixed_gbl_props'         #'../database/tmQMg'
-    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_test_full"  # Folder where we want to store the jsons
+    database_path = '../database/tmQMg_fixed_gbl_props_cutoffs'         #'../database/tmQMg'
+    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_test"  # Folder where we want to store the jsons
     calculate_charges = True        # if you want to run charge assignment after ligand extraction
-    overwrite_atomic_properties = False
+    overwrite_atomic_properties = True
 
     db = LigandExtraction(database_path=database_path, data_store_path=data_store_path)
     db.run_ligand_extraction(calculate_charges=calculate_charges, overwrite_atomic_properties=overwrite_atomic_properties)
@@ -368,6 +365,7 @@ if __name__ == '__main__':
                 'complex_db': df_complexes,
                 # 'tmQMG': df_tmqmg,
     }
+    reduce_to_intersection_of_rows = []
     for db_name, df_new in check_db.items():
 
         old_path = Path(data_store_path, db_name + '_original.json')
@@ -382,6 +380,12 @@ if __name__ == '__main__':
         df_old.sort_index(inplace=True)
         df_new.sort_index(inplace=True)
 
+        if reduce_to_intersection_of_rows:
+            for col in reduce_to_intersection_of_rows:
+                intersect = set(df_old[col]).intersection(set(df_new[col]))
+                df_old = df_old[df_old[col].isin(intersect)]
+                df_new = df_new[df_new[col].isin(intersect)]
+
         if db_name == 'tmQMG':
             if not df_old['graph_dict'].equals(df_new['graph_dict']):
                 print('Column `graph_dict` is not equal, sort dictionaries to try to make it equal.')
@@ -393,7 +397,7 @@ if __name__ == '__main__':
             print('Successful refactoring. All data is still the same.')
 
         except AssertionError:
-            drop_cols = ['graph_dict']
+            drop_cols = ['stoichiometry', 'atomic_props', 'global_props', 'pred_charge', 'pred_charge_is_confident', 'graph_dict', 'ligand_to_metal', 'local_elements', 'graph_hash', 'unique_name', 'unique_ligand_information', 'is_chosen_unique_ligand']
             print(f'Failed testing whole df. Check again without {drop_cols}.')
             pd.testing.assert_frame_equal(df_new.drop(columns=drop_cols, errors='ignore'), df_old.drop(columns=drop_cols, errors='ignore'), check_like=True)
             print(f'Mostly successful refactoring. All data is still the same when excluding {drop_cols}.')

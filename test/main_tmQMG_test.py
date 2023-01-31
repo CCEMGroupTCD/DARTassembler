@@ -20,7 +20,7 @@ from src01.utilities import sort_dict_recursively_inplace
 if __name__ == '__main__':
     # specify the database path
     database_path = '../database/tmQMg_fixed_gbl_props'         #'../database/tmQMg'
-    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_test_full"  # Folder where we want to store the jsons
+    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_test"  # Folder where we want to store the jsons
     # number_of_batches = 10
 
     # overwrite_atomic_properties = False

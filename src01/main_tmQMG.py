@@ -171,8 +171,13 @@ def update_complex_db_with_ligands(complex_json: str, ligand_json: str, save_com
     """
     print('Start updating complex db with ligands.')
 
-    # CSD_global_props_path = '../Bin_(Old)/databases(raw)/tmQM_raw/raw_data/CSD.csv'     # Path for Felix
-    CSD_global_props_path = '../database/tmQM/raw_data/CSD.csv'                         # Path for Timo
+    CSD_global_props_paths = ['../Bin_(Old)/databases(raw)/tmQM_raw/raw_data/CSD.csv', '../database/tmQM/raw_data/CSD.csv']
+    CSD_global_props_path = None
+    for path in CSD_global_props_paths:
+        if Path(path).exists():
+            CSD_global_props_path = path
+    if CSD_global_props_path is None:
+        raise ValueError(f'CSD.csv could not be found at any of the given paths {CSD_global_props_paths}.')
     CSD_global_props = pd.read_csv(CSD_global_props_path, index_col=0).set_index('CSD_code').to_dict(orient='index')
 
     with open(complex_json, 'r') as file:
