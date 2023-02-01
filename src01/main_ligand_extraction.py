@@ -18,7 +18,7 @@ from io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_d
 from src01.main_tmQMG import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, get_charges_of_unique_ligands, update_databases_with_charges, update_ligand_with_charge_inplace
 from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warning_inplace, unroll_dict_into_columns
 from typing import Union
-
+from datetime import datetime
 
 # TODO in preprocessing CSD:
 #   - filters:
@@ -42,12 +42,11 @@ from typing import Union
 
 class LigandExtraction():
 
-    def __init__(self, database_path: str, data_store_path: str, graph_creating_strategy: str='default', testing: Union[bool, int]=False):
+    def __init__(self, database_path: str, data_store_path: str, testing: Union[bool, int]=False):
 
         self.check_and_set_init_input(
                                         database_path=database_path,
                                         data_store_path=data_store_path,
-                                        graph_creating_strategy=graph_creating_strategy,
                                         testing=testing,
                                         )
 
@@ -56,7 +55,7 @@ class LigandExtraction():
         self.unique_ligands_json = Path(data_store_path, 'tmQM_Ligands_unique.json')
         self.full_ligands_json = Path(data_store_path, 'tmQM_Ligands_full.json')
 
-    def check_and_set_init_input(self, database_path: str, data_store_path: str, graph_creating_strategy: str, testing: Union[bool, int]):
+    def check_and_set_init_input(self, database_path: str, data_store_path: str, testing: Union[bool, int]):
         database_path = Path(str(database_path))
         data_store_path = Path(str(data_store_path))
 
@@ -73,7 +72,6 @@ class LigandExtraction():
         self.database_path = database_path
         self.data_store_path = data_store_path
         self.testing = testing
-        self.graph_creating_strategy = graph_creating_strategy
 
         return
 
@@ -128,7 +126,6 @@ class LigandExtraction():
         full_ligand_db.to_json(self.full_ligands_json)
 
         return
-
 
     def group_ligands_by_hash(self):
         grouped_ligands_by_hash = {}
@@ -319,6 +316,8 @@ class LigandExtraction():
         """
         Runs the entire ligand extraction process from reading in the .xzy files to optionally assigning charges.
         """
+        start = datetime.now()
+
         self.ensure_input_complex_db_exists(overwrite_atomic_properties=overwrite_atomic_properties, use_existing_input_json=use_existing_input_json)
 
         self.extract_ligands()
@@ -340,6 +339,9 @@ class LigandExtraction():
         with_charges = 'with charges' if calculate_charges else 'without charges'
         print(f'Ligand database {with_charges} established successfully!')
 
+        end = datetime.now()
+        print(f'Duration of extraction: {end - start}')
+
         return
 
 
@@ -351,11 +353,10 @@ if __name__ == '__main__':
     database_path = '../database/tmQMg_fixed_gbl_props_cutoffs'         #'../database/tmQMg'
     data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_cutoffs_full"  # Folder where we want to store the jsons
     calculate_charges = False        # if you want to run charge assignment after ligand extraction
-    graph_creating_strategy = 'default'     # currently noy yet implemented
     overwrite_atomic_properties = True
-    use_existing_input_json = False
+    use_existing_input_json = True
 
-    db = LigandExtraction(database_path=database_path, data_store_path=data_store_path, graph_creating_strategy=graph_creating_strategy)
+    db = LigandExtraction(database_path=database_path, data_store_path=data_store_path)
     db.run_ligand_extraction(
                                 calculate_charges=calculate_charges,
                                 overwrite_atomic_properties=overwrite_atomic_properties,
