@@ -72,7 +72,7 @@ if __name__ == '__main__':
     # Ligands are identified by 'CSD_code' and 'stoichiometry' (hard coded).
     latest_full_ligand_db_path = '../../data/tmQMG_Jsons/tmQM_Ligands_full_v1.2.json'
     db_version = '1.2'
-    update_properties = ['unique_name', 'name', 'graph_hash', 'local_elements']
+    update_properties = ['unique_name', 'name', 'graph_hash', 'local_elements', 'pred_charge', 'pred_charge_is_confident']
 
     df_all = pd.DataFrame()
     for name, filename in benchmark_charge_filenames.items():
@@ -94,10 +94,13 @@ if __name__ == '__main__':
                                                             latest_full_ligand_db_path=latest_full_ligand_db_path,
                                                             update_properties=update_properties
                                                         )
+    if 'pred_charge' in df:
+        df['prediction_error'] = df['charge'] - df['pred_charge']
 
     df['high_confidence'] = (df['confidence'] == 3) & df['comment'].isna() & df['unique_name'].notna()
     df_confident = df[df['high_confidence']]
     df_confident = df_confident.drop(columns='high_confidence')
+
 
     n_duplicates = df.loc[df['graph_hash'].notna(), 'graph_hash'].duplicated().sum()
     if n_duplicates > 0:

@@ -168,3 +168,43 @@ performance:
         - This is because in the ligand extraction process, we added a filter to exclude all complexes with not fully connected graphs, since these are likely to be faulty. Some of the ligands which were benchmarked came from these complexes which are not part of the database anymore. However, this will change again once we improve the graph creation method and hopefully need to exclude less complexes.
     - I doublechecked that the accuracy of the linear charge solver on the charge benchmark dataset is still similar as before (0.92, but we know that there are some faulty entries in there which have not yet been corrected, then it should be close to 100%).
     - The charge benchmark files are uploaded to github under `CreateTMC/database/ligand_charges/charge_benchmark/`
+
+
+## 31.01.23 Use ASE cutoff graphs, improve the denticities and add some interesting properties (version 1.3 by Timo)
+
+Please update your input file of the assembly to the latest unique ligand db: `full_ligand_db_v1.3.json`.
+Additionally to upping the version number from 1.2 to 1.3, this time I also renamed the ligand database file slightly to make them more general (see logs below) for the soonish upgrade from the tmQMg to the CSD. Since you need to change the paths anyway due to the version update, I thought this would be no issue. If you think this is an issue, please tell me and feel free to rename the files.
+
+### Possibly breaking changes
+
+    - property `Metal_q` of a complex was shifted to global_props and renamed to `metal_partial_charge`. It is now optional and will be ignored if no partial charges are present.
+        - should not break anything since we don't use the partial charges anymore
+    - renamed the full ligand db and the unique ligand db to make the names more general since we will soon upgrade from the tmQMg to the CSD
+        - tmQM_Ligands_full_v1.3.json --> full_ligand_db_v1.3.json
+        - tmQM_Ligands_unique_v1.3.json --> unique_ligand_db_v1.3.json
+
+
+### Improved properties
+    - all molecules:
+        - graph_dict    --> The graphs are no longer the tmQMg graphs, but are now calculated using the ASE cutoffs
+    - unique_ligands:
+        - The unique ligand representative out of all ligands with the same graph hash is now chosen such that it is one of the ligands with the most common denticity. Previously we just chose the first ligand, which of course would have a high likelihood to have the most common denticity, but it was not guaranteed.
+    - absolutely all ligands are extracted
+        - There is no longer a maximum denticity of extracted ligands, all ligands will be extracted. This was the case for a few complexes before but it's not useful anymore.
+
+### Added properties:
+
+    - complexes:
+        - global_props:
+            - molecular_weight      --> there already is a property called molecular_mass calculated from the tmQM which is basically the same
+            - metal_partial_charge  --> see above
+            - n_ligands
+            - n_ligands_occurring_once  --> number of ligands of this complex which occur only once in the entire dataset, potentially interesting for debugging the LCS
+            - frac_ligands_occurring_once  --> n_ligands_occurring_once / n_ligands
+    - all ligands (i.e. ligands in the full_ligands db, the unique ligand db and the ligands attached to each complex in the complex db)
+        - global_props:
+            - n_atoms
+            - molecular_weight
+    - unique ligands
+        - chosen_denticity_fraction     --> The fraction of how often the chosen denticity for this unique ligand appears in the list of denticities of all same ligands of this unique ligand. Maybe useful as a prefilter to exclude unique ligands with unsafe denticity.
+            - this property was also added to the `unique_ligand_information` of the ligands in the full_ligand db and the complexes db.

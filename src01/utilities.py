@@ -5,7 +5,15 @@ from ase import Atoms
 import networkx as nx
 import warnings
 from copy import deepcopy
+import pandas as pd
 
+def unroll_dict_into_columns(df, dict_col: str, prefix: str):
+    dict_data = [d for d in df[dict_col]]
+    df_dict_data = pd.DataFrame(dict_data, index=df.index)
+    df_dict_data = df_dict_data.rename(columns={col: prefix + col for col in df_dict_data})
+    df = df.join(df_dict_data, validate='1:1')
+
+    return df
 
 def make_None_to_NaN(val):
     if val is None:
@@ -13,10 +21,15 @@ def make_None_to_NaN(val):
     else:
         return val
 
-def update_dict_with_warning_inplace(dict_to_update, dict_with_information, update_properties: list):
+def update_dict_with_warning_inplace(dict_to_update, dict_with_information, update_properties: list=None):
+    if update_properties is None:
+        update_properties = list(dict_with_information.keys())
+
     for prop in update_properties:
-        if prop in dict_to_update:
-            warnings.warn('Overwriting ligand with unique ligand property which already existed.')
+        different_values =  prop in dict_to_update and \
+                            dict_with_information[prop] != dict_to_update[prop]
+        if different_values:
+            warnings.warn(f'Overwriting dictionary with property {prop} which already existed.')
         dict_to_update[prop] = dict_with_information[prop]
 
     return

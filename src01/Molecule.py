@@ -20,7 +20,7 @@ from molSimplify.Classes.mol3D import mol3D
 
 # importing own scripts
 from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label
-from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN
+from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
 from src03_Assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
@@ -61,6 +61,8 @@ class RCA_Molecule:
         self.atomic_props = atomic_props
         self.global_props = global_props
 
+        self.add_additional_molecule_information_to_global_props()
+
         if has_ligands is True:
             # if we expect ligands, we can set up an empty ligand list
             self.ligands = []
@@ -81,6 +83,21 @@ class RCA_Molecule:
         self.hash = self.get_hash()
 
         self.stoichiometry = self.get_standardized_stoichiometry()
+
+    def add_additional_molecule_information_to_global_props(self):
+        n_atoms = len(self.atomic_props['atoms'])
+        mol_weight = self.mol.get_masses().sum()
+        info = {
+                    'n_atoms': n_atoms,
+                    'molecular_weight': mol_weight
+                    }
+
+        update_dict_with_warning_inplace(
+                                            dict_to_update=self.global_props,
+                                            dict_with_information=info
+                                        )
+
+        return info
 
     @classmethod
     def make_from_atomic_properties(cls,
@@ -687,11 +704,28 @@ class RCA_Complex(RCA_Molecule):
             self.metal_oxi_state = make_None_to_NaN(self.global_props['metal_oxi_state'])
             self.charge = make_None_to_NaN(self.global_props['charge'])
 
+            self.add_additional_complex_information_to_global_props()
+
+            return
+
+    def add_additional_complex_information_to_global_props(self):
+        info = {}
+        if 'partial_charge' in self.atomic_props:
+            metal_q = self.atomic_props['partial_charge'][self.atomic_props['atoms'].index(self.metal)]
+            info['metal_partial_charge'] = metal_q
+
+        update_dict_with_warning_inplace(
+                                            dict_to_update=self.global_props,
+                                            dict_with_information=info
+                                        )
+
+        return info
+
+
     def write_to_mol_dict(self):
         """
         Outputs complex as dictionary.
         """
-        metal_q = self.atomic_props['partial_charge'][self.atomic_props['atoms'].index(self.metal)]  # TODO remove
         return {
             "atomic_props": self.atomic_props,
             "global_props": self.global_props,
@@ -701,7 +735,6 @@ class RCA_Complex(RCA_Molecule):
             'metal': self.metal,
             'metal_oxi_state': self.metal_oxi_state,
             'total_q': self.charge,
-            'Metal_q': metal_q,
-            'ligands': [lig.write_to_mol_dict() for lig in self.ligands]
-            # "graph_hash": self.graph_hash
+            'ligands': [lig.write_to_mol_dict() for lig in self.ligands],
+            'graph_hash': self.graph_hash
         }

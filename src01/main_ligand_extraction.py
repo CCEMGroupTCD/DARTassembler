@@ -1,5 +1,5 @@
 """
-ONGOOING WORK: This will be the main ligand extraction script, nicely refactored into a class.
+This is the main script for
 """
 import warnings
 
@@ -16,7 +16,7 @@ import networkx as nx
 from src01.DataLoader import DataLoader
 from io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, save_full_ligand_db, save_complex_db
 from src01.main_tmQMG import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, get_charges_of_unique_ligands, update_databases_with_charges, update_ligand_with_charge_inplace
-from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warning_inplace
+from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warning_inplace, unroll_dict_into_columns
 from typing import Union
 
 
@@ -28,18 +28,9 @@ from typing import Union
 #   - check data pipeline from initial tmQMg up until input json
 #       - write function to check that MultiGraphs have only one edge and can be made into simple graphs
 #   - add properties
-#       - molecules:
-#           - n_atoms
-#           - molecular_weight
-#           - n_electrons
-#       - complexes:
-#           - graph_hash
-#           - n_unique_ligands_occurring_once (number of unique ligands which occur only once)
 #       - unique_ligand:
-#           - chosen_denticity_fraction (the fraction of the occurrences of the chosen denticity over all denticities)
-#   - change_properties:
-#       - denticity should become most frequent denticity from count_denticities
-#       - from property to global_props: Metal_q
+#           - global_props
+#               - graph_origin = graph_creation_method  ???
 #   - pre-assembly filters:
 #       - chosen_denticity_fraction too small
 #   - pre-ligand extraction filters:
@@ -48,27 +39,24 @@ from typing import Union
 # TODO when refactoring pipeline
 #   - BUGFIX:
 #       - in the folder `tmQMG_Jsons_fixed_gbl_props_test_full` the newly generated `complex_db.json` has 58429 entries, but the saved `complex_db_original.json` has only 58408 entries (21 less)
-#   - comparison with original:
-#       - from global_props to property of complex: metal, metal_oxi_state
-#   - remove denticity_numbers_of_interest
-#   - remove graph_dict from complexes.json
 
 class LigandExtraction():
 
-    def __init__(self, database_path: str, data_store_path: str, testing: Union[bool, int]=False):
+    def __init__(self, database_path: str, data_store_path: str, graph_creating_strategy: str='default', testing: Union[bool, int]=False):
 
-        database_path, data_store_path, testing = self.check_and_standardize_init_input(database_path, data_store_path, testing)
-
-        self.database_path = database_path
-        self.data_store_path = data_store_path
-        self.testing = testing
+        self.check_and_set_init_input(
+                                        database_path=database_path,
+                                        data_store_path=data_store_path,
+                                        graph_creating_strategy=graph_creating_strategy,
+                                        testing=testing,
+                                        )
 
         self.input_complexes_json = Path(self.data_store_path, 'tmQMG.json')
         self.output_complexes_json = Path(self.data_store_path, 'complex_db.json')
         self.unique_ligands_json = Path(data_store_path, 'tmQM_Ligands_unique.json')
         self.full_ligands_json = Path(data_store_path, 'tmQM_Ligands_full.json')
 
-    def check_and_standardize_init_input(self, database_path: str, data_store_path: str, testing: Union[bool, int]):
+    def check_and_set_init_input(self, database_path: str, data_store_path: str, graph_creating_strategy: str, testing: Union[bool, int]):
         database_path = Path(str(database_path))
         data_store_path = Path(str(data_store_path))
 
@@ -80,9 +68,14 @@ class LigandExtraction():
             data_store_path.mkdir(parents=True, exist_ok=True)
 
         if not (isinstance(testing, int) or isinstance(testing, bool)):
-            raise ValueError('`testing` must be int or bool.')
+            raise ValueError(f'Input variable `testing` must be int or bool but is {type(testing)}.')
 
-        return database_path, data_store_path, testing
+        self.database_path = database_path
+        self.data_store_path = data_store_path
+        self.testing = testing
+        self.graph_creating_strategy = graph_creating_strategy
+
+        return
 
     def load_input_data_to_json(self, overwrite_atomic_properties: bool=False):
         """
@@ -111,17 +104,7 @@ class LigandExtraction():
         self.all_hashes = {}
         unwanted_counter = 0
         for csd_code, complex in tqdm(self.complex_db.db.items(), desc="Extracting ligands from complexes"):
-
             complex.de_assemble(Testing=self.testing)
-
-
-            # TODO remove the denticity numbers of interest, but keep for now for comparison with db version 1.2.
-            denticity_numbers_of_interest = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-            unwanted_denticity = any([lig.denticity not in denticity_numbers_of_interest for lig in complex.ligands])
-            if unwanted_denticity:
-                complex.ligands = [lig for lig in complex.ligands if lig.denticity in denticity_numbers_of_interest]
-                unwanted_counter += 1
-
 
             graph_hashes = {lig.name: lig.graph_hash for lig in complex.ligands}
             self.all_hashes.update(graph_hashes)
@@ -165,34 +148,53 @@ class LigandExtraction():
 
         return ligand_dict
 
+    def choose_unique_ligand_representative_from_all_same_ligands(self, same_ligands, strategy='most_common_denticity'):
+        if strategy == 'most_common_denticity':
+            denticities = [lig['denticity'] for lig in same_ligands.values()]
+            count_denticities = pd.Series(denticities).value_counts().sort_values(ascending=False)
+            most_common_denticity = count_denticities.index[0]
+            for name, lig in same_ligands.items():
+                if lig['denticity'] == most_common_denticity:
+                    break
+        elif strategy == 'first':
+            name = list(same_ligands.keys())[0]
+        else:
+            raise ValueError(
+                f'Unknown strategy `{strategy}` to choose the unique ligand representative from all same ligands.')
+
+        return name
+
     def build_unique_ligand_db(self):
         ligand_dict = self.get_full_ligands_dict()
 
         self.grouped_ligands = self.group_ligands_by_hash()
 
         unique_ligand_dict = {}
-        for same_ligands in tqdm(self.grouped_ligands.values(), desc="filling unique ligand dict"):
-            name = same_ligands[0]
+        for same_ligands_names in tqdm(self.grouped_ligands.values(), desc="filling unique ligand dict"):
+            same_ligands = {name: ligand_dict[name] for name in same_ligands_names}
+            name = self.choose_unique_ligand_representative_from_all_same_ligands(same_ligands=same_ligands)
             uname = 'unq_' + name
             unique_ligand = deepcopy(ligand_dict[name])
 
             unique_ligand['unique_name'] = uname
 
-            denticities = [ligand_dict[ligand_name]['denticity'] for ligand_name in same_ligands]
-            metals = [ligand_dict[ligand_name]['original_metal_symbol'] for ligand_name in same_ligands]
+            denticities = [ligand_dict[ligand_name]['denticity'] for ligand_name in same_ligands_names]
+            metals = [ligand_dict[ligand_name]['original_metal_symbol'] for ligand_name in same_ligands_names]
 
             # Add useful statistical information of all ligands for this unique ligand
             count_denticities = pd.Series(denticities).value_counts().sort_values(ascending=False).to_dict()
             count_metals = pd.Series(metals).value_counts().sort_values(ascending=False).to_dict()
+            chosen_denticity_fraction = sum([dent == unique_ligand['denticity'] for dent in denticities]) / len(denticities)
             unique_ligand_infos = {
-                'occurrences': len(same_ligands),
+                'occurrences': len(same_ligands_names),
                 'count_denticities': count_denticities,
                 'count_metals': count_metals,
                 'n_denticities': len(count_denticities),
                 'n_metals': len(count_metals),
+                'chosen_denticity_fraction': chosen_denticity_fraction
             }
             unique_ligand.update(unique_ligand_infos)
-            unique_ligand['all_ligand_names'] = same_ligands
+            unique_ligand['all_ligand_names'] = same_ligands_names
 
             # Delete attribute original metal from unique_ligand since it is confusing and no real attribute of a unique ligand
             del unique_ligand['original_metal']
@@ -226,11 +228,14 @@ class LigandExtraction():
 
         return
 
-    def update_complex_db_with_unique_ligand_information(self, share_properties: list=[], share_global_props: list=[], collect_properties: dict={}):
+
+
+    def update_complex_db_with_information(self, share_properties: list=[], share_global_props: list=[], collect_properties: dict={}):
         print('Update complex db with unique ligand information.')
         complexes = load_complex_db(self.output_complexes_json)
         unique_ligands = load_unique_ligand_db(self.unique_ligands_json)
 
+        # Update ligands with unique ligand information
         for c in complexes.values():
             for lig in c['ligands']:
                 uname = self.ligand_to_unique_ligand[lig['name']]
@@ -242,13 +247,21 @@ class LigandExtraction():
                                                                     share_global_props=share_global_props,
                                                                     collect_properties=collect_properties
                                                                     )
+
+            # Update global props with some useful information
+            c['global_props']['n_ligands'] = len(c['ligands'])
+            n_ligands_occurring_once = sum([lig['unique_ligand_information']['occurrences'] == 1 for lig in c['ligands']])
+            c['global_props']['n_ligands_occurring_once'] = n_ligands_occurring_once
+            c['global_props']['frac_ligands_occurring_once'] = n_ligands_occurring_once / len(c['ligands'])
+
+
         print(f'Save updated complex database to {self.output_complexes_json}')
         save_complex_db(db=complexes, path=self.output_complexes_json)
 
         return
 
 
-    def update_full_ligand_db_with_unique_ligand_information(self, share_properties: list=[], share_global_props: list=[], collect_properties: dict={}):
+    def update_full_ligand_db_with_information(self, share_properties: list=[], share_global_props: list=[], collect_properties: dict={}):
         print('Update full ligand db with unique ligand information.')
         full_ligands = load_full_ligand_db(self.full_ligands_json)
         unique_ligands = load_unique_ligand_db(self.unique_ligands_json)
@@ -313,9 +326,9 @@ class LigandExtraction():
         self.build_unique_ligand_db()
 
         share_properties = ['unique_name']
-        collect_properties = {'unique_ligand_information': ['occurrences', 'count_denticities', 'count_metals', 'n_denticities', 'n_metals']}
-        self.update_complex_db_with_unique_ligand_information(share_properties=share_properties, collect_properties=collect_properties)
-        self.update_full_ligand_db_with_unique_ligand_information(share_properties=share_properties, collect_properties=collect_properties)
+        collect_properties = {'unique_ligand_information': ['occurrences', 'count_denticities', 'count_metals', 'n_denticities', 'n_metals', 'chosen_denticity_fraction']}
+        self.update_complex_db_with_information(share_properties=share_properties, collect_properties=collect_properties)
+        self.update_full_ligand_db_with_information(share_properties=share_properties, collect_properties=collect_properties)
 
         # Charge assignment using only the linear charge solver (LCS) right now
         if calculate_charges:
@@ -336,12 +349,18 @@ class LigandExtraction():
 if __name__ == '__main__':
     # specify the database path
     database_path = '../database/tmQMg_fixed_gbl_props_cutoffs'         #'../database/tmQMg'
-    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_test"  # Folder where we want to store the jsons
-    calculate_charges = True        # if you want to run charge assignment after ligand extraction
+    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_cutoffs_full"  # Folder where we want to store the jsons
+    calculate_charges = False        # if you want to run charge assignment after ligand extraction
+    graph_creating_strategy = 'default'     # currently noy yet implemented
     overwrite_atomic_properties = True
+    use_existing_input_json = False
 
-    db = LigandExtraction(database_path=database_path, data_store_path=data_store_path)
-    db.run_ligand_extraction(calculate_charges=calculate_charges, overwrite_atomic_properties=overwrite_atomic_properties)
+    db = LigandExtraction(database_path=database_path, data_store_path=data_store_path, graph_creating_strategy=graph_creating_strategy)
+    db.run_ligand_extraction(
+                                calculate_charges=calculate_charges,
+                                overwrite_atomic_properties=overwrite_atomic_properties,
+                                use_existing_input_json=use_existing_input_json
+                            )
 
 
     ###########################################################
@@ -380,6 +399,9 @@ if __name__ == '__main__':
         df_old.sort_index(inplace=True)
         df_new.sort_index(inplace=True)
 
+        # df_old = unroll_dict_into_columns(df_old, dict_col='global_props', prefix='gbl_')
+        # df_new = unroll_dict_into_columns(df_new, dict_col='global_props', prefix='gbl_')
+
         if reduce_to_intersection_of_rows:
             for col in reduce_to_intersection_of_rows:
                 intersect = set(df_old[col]).intersection(set(df_new[col]))
@@ -397,7 +419,7 @@ if __name__ == '__main__':
             print('Successful refactoring. All data is still the same.')
 
         except AssertionError:
-            drop_cols = ['stoichiometry', 'atomic_props', 'global_props', 'pred_charge', 'pred_charge_is_confident', 'graph_dict', 'ligand_to_metal', 'local_elements', 'graph_hash', 'unique_name', 'unique_ligand_information', 'is_chosen_unique_ligand']
+            drop_cols = []
             print(f'Failed testing whole df. Check again without {drop_cols}.')
             pd.testing.assert_frame_equal(df_new.drop(columns=drop_cols, errors='ignore'), df_old.drop(columns=drop_cols, errors='ignore'), check_like=True)
             print(f'Mostly successful refactoring. All data is still the same when excluding {drop_cols}.')

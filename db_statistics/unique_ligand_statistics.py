@@ -13,9 +13,9 @@ sns.set_theme()
 
 if __name__ == '__main__':
 
-    db_version = '1.2'
+    db_version = '1.3'
     save_plots_dir = f'../data/db_statistics/unique_ligand_statistics/v{db_version}'
-    db_path = f'../data/tmQMG_Jsons/tmQM_Ligands_unique_v{db_version}.json'
+    db_path = f'../data/final_db_versions/unique_ligand_db_v{db_version}.json'
 
 
 
