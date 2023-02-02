@@ -165,15 +165,22 @@ class LigandExtraction():
             count_denticities = pd.Series(denticities).value_counts().sort_values(ascending=False).to_dict()
             count_metals = pd.Series(metals).value_counts().sort_values(ascending=False).to_dict()
             chosen_denticity_fraction = sum([dent == unique_ligand['denticity'] for dent in denticities]) / len(denticities)
+
+            assert not 0 in count_denticities, 'The denticity for unconnected ligands is assumed to be -1 but here there appears a 0.'
+            has_unconnected_ligands = -1 in count_denticities.keys()
+
             unique_ligand_infos = {
                 'occurrences': len(same_ligands_names),
                 'count_denticities': count_denticities,
                 'count_metals': count_metals,
                 'n_denticities': len(count_denticities),
                 'n_metals': len(count_metals),
-                'chosen_denticity_fraction': chosen_denticity_fraction
+                'chosen_denticity_fraction': chosen_denticity_fraction,
+                'has_unconnected_ligands': has_unconnected_ligands
             }
             unique_ligand.update(unique_ligand_infos)
+            self.unique_ligand_info_props = list(unique_ligand_infos.keys()) # for updating the ligands from complex and full ligands db later
+
             unique_ligand['all_ligand_names'] = same_ligands_names
 
             # Delete attribute original metal from unique_ligand since it is confusing and no real attribute of a unique ligand
@@ -309,7 +316,7 @@ class LigandExtraction():
 
             # Update complex db to include information about the unique ligands for the LCS.
             share_properties = ['unique_name']
-            collect_properties = {'unique_ligand_information': ['occurrences', 'count_denticities', 'count_metals', 'n_denticities', 'n_metals', 'chosen_denticity_fraction']}
+            collect_properties = {'unique_ligand_information': self.unique_ligand_info_props}
             self.update_complex_db_with_information(share_properties=share_properties, collect_properties=collect_properties)
             self.update_full_ligand_db_with_information(share_properties=share_properties, collect_properties=collect_properties)
 
@@ -319,10 +326,12 @@ class LigandExtraction():
                 df_ligand_charges = get_charges_of_unique_ligands(all_complexes_path=self.output_complexes_json)
                 self.update_databases_with_charges(df_ligand_charges=df_ligand_charges)
                 print('Charges successfully assigned.')
+        else:
+            calculate_charges = False
 
         with_charges = 'with charges' if calculate_charges else 'without charges'
         updates = ' Complex db and full ligand db were not updated with unique ligand information' if get_only_unique_ligand_db_without_charges else ''
-        print(f'Ligand database {with_charges} established successfully!{updates}')
+        print(f'\nLigand database {with_charges} established successfully!{updates}')
 
         end = datetime.now()
         print(f'Duration of extraction: {end - start}')

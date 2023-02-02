@@ -76,9 +76,10 @@ if __name__ == '__main__':
     }
     reduce_to_intersection_of_rows = []
     unroll_global_props = False
+    original_suffix = '_original_unconnected.json'
     for db_name, df_new in check_db.items():
 
-        old_path = Path(data_store_path, db_name + '_original.json')
+        old_path = Path(data_store_path, db_name + original_suffix)
         if old_path.exists():
             print(f'Check {db_name}:')
         else:
@@ -111,7 +112,7 @@ if __name__ == '__main__':
             print('Successful refactoring. All data is still the same.')
 
         except AssertionError:
-            drop_cols = []
+            drop_cols = ['has_unconnected_ligands', 'unique_ligand_information', 'ligands']
             print(f'Failed testing whole df. Check again without {drop_cols}.')
             pd.testing.assert_frame_equal(df_new.drop(columns=drop_cols, errors='ignore'),
                                           df_old.drop(columns=drop_cols, errors='ignore'), check_like=True)
