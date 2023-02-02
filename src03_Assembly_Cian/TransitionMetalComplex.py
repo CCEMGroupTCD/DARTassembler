@@ -21,6 +21,7 @@ class TransitionMetalComplex:
     Here we define how we want the final object to look like
     to bring us in a good position for the post assembly filtering
     """
+    mol: RCA_Molecule
 
     def __init__(self,
                  compl: stk.ConstructedMolecule,
@@ -48,7 +49,7 @@ class TransitionMetalComplex:
                 "original metal": original_metal_ligand(ligand),
                 "charge": ligand.global_props["charge"] if "charge" in ligand.global_props else None,
                 "size": len(ligand.atomic_props["x"]),
-                "stocheometry": ligand.get_stocheometry()
+                "stocheometry": ligand.stoichiometry
             }
             for key, ligand in ligands.items()
         }

@@ -16,13 +16,13 @@ from sympy import Point3D, Plane
 # collection of molecule objects of other packages
 from ase import io, Atoms, neighborlist
 from pymatgen.core.structure import Molecule as PyMatMol
-from molSimplify.Classes.mol3D import mol3D
+
 
 # importing own scripts
 from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label
 from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
-from src03_Assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
+from src03_Assembly_Cian.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
 
 # Package name: RandomComplexAssembler (RCA)
@@ -488,15 +488,6 @@ class RCA_Molecule:
     #
     #
     # converting into other classes of mol objects
-    def to_molsimplify_mol(self):
-        """
-        Here we convert the RCA Molecule into a molsimplify mol3D object
-        """
-
-        new_mol = mol3D()
-        new_mol.readfromstring(xyzstring=self.get_xyz_file_format_string())
-
-        return new_mol
 
     def to_stk_mol(self):
         return convert_RCA_to_stk_Molecule(self)
@@ -548,6 +539,7 @@ class RCA_Ligand(RCA_Molecule):
 
         if 'original_metal' in kwargs.keys():
             self.original_metal = kwargs['original_metal']
+            # don't pass none to this thing
             self.original_metal_symbol = Pymatgen_Element.from_Z(self.original_metal).symbol
 
     def get_local_elements(self) -> list:
