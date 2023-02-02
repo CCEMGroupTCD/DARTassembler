@@ -41,6 +41,7 @@ class RCA_Molecule:
                  graph_creating_strategy="default",
                  has_ligands=True,
                  reindex_graph: bool = False,
+                 other_props: dict={},
                  **kwargs
                  ):
         """
@@ -86,7 +87,7 @@ class RCA_Molecule:
         self.stoichiometry = self.get_standardized_stoichiometry()
 
         # Set kwargs so that they become properties of the molecule
-        self.set_init_kwargs_as_properties(kwargs=kwargs)
+        self.set_other_props_as_properties(other_props=other_props)
 
     def get_mol_from_input(self, mol):
         if mol is None:
@@ -97,8 +98,8 @@ class RCA_Molecule:
 
         return mol
 
-    def set_init_kwargs_as_properties(self, kwargs):
-        for prop, value in kwargs.items():
+    def set_other_props_as_properties(self, other_props):
+        for prop, value in other_props.items():
             differing_prop_already_exists = hasattr(self, prop) and self.__getattribute__(prop) != value
             if differing_prop_already_exists:
                 raise Warning(f'Property {prop} is tried to be set but already exists.')
@@ -368,15 +369,10 @@ class RCA_Molecule:
         ripped_graph = deepcopy(graph)
         ripped_graph.remove_node(metal_node)
 
-        # todo: Anmerkung
-        # correspondieren die Node values zu den indizes in den atomic properties? Ich glaube ja. Ist auf jeden Fall
-        # potenzielle Fehlerquelle
-        # ansonsten ist die Loesung auch recht einfach, man muss nur ein entsprechende Abbildung angeben
-
         conn_components = [sorted(comp) for comp in
                            nx.connected_components(ripped_graph)]  # sorting of components very important
         conn_components = [comp for comp in
-                           sorted(conn_components, key=str)]  # important: sort by string of list, is unique
+                           sorted(conn_components, key=str)]  # important: sort by string of list, makes order of ligands unique
 
         for component in conn_components:
             # if this set is empty, the ligand has no connection to the metal
@@ -385,13 +381,10 @@ class RCA_Molecule:
                 ripped_graph), 'Indices dont make sense. Most likely this is an implementation error where due to the deletion of the metal atom the indices of original and ripped graph dont match.'
 
             denticity = len(functional_atom_indices)
-            if denticity == 0:  # TODO: Remove this after making sure that every input complex is filtered for non-connected atoms.
-                denticity = -1
-                # because 0 is the placeholder for the reactant, whereas -1 means this is just a remainder in the .xyz, not
+            if denticity == 0:
+                # because in the assembly 0 is the placeholder for the reactant, whereas -1 means this is just a remainder in the .xyz, not
                 # connected to the metal at all
-
-            if denticity < 1:
-                warnings.warn(f'Denticity of {denticity} detected, these cases should be filtered out beforehand.')
+                denticity = -1
 
             # with that it is insanely easy to determine the atomic properties of the ligand
             assert component == sorted(
@@ -412,11 +405,12 @@ class RCA_Molecule:
             local_elements = [ligand_atomic_props['atoms'][i] for i in local_indices]
 
             # Doublechecking
-            # assert max(local_indices) < len(ligand_graph), 'local_indices make no sense, an index is greater than the number of elements.'
-            # assert all(el in metal_neighbor_elements for el in local_elements), 'Inconsistent elements of the metal neighbors.'
-            # assert local_indices == sorted(local_indices), 'local_indices is not sorted but should be.'
-            # assert atoms_lig == ligand_atomic_props['atoms'], 'elements of graph and atomic_props not consistent'
-            # assert [atoms[i] for i in component] == ligand_atomic_props['atoms'], 'ligand atoms not consistent with original complex atoms.'
+            if local_indices != []:   # otherwise error for unconnected ligands
+                assert max(local_indices) < len(ligand_graph), 'local_indices make no sense, an index is greater than the number of elements.'
+            assert all(el in metal_neighbor_elements for el in local_elements), 'Inconsistent elements of the metal neighbors.'
+            assert local_indices == sorted(local_indices), 'local_indices is not sorted but should be.'
+            assert atoms_lig == ligand_atomic_props['atoms'], 'elements of graph and atomic_props not consistent'
+            assert [atoms[i] for i in component] == ligand_atomic_props['atoms'], 'ligand atoms not consistent with original complex atoms.'
 
             ligand_name, csd = self.ligand_naming(denticity, self.ligands)
 
@@ -519,6 +513,7 @@ class RCA_Ligand(RCA_Molecule):
                  name: str,
                  graph=None,
                  global_props: dict = None,
+                 other_props={},
                  **kwargs
                  ):
         """
@@ -534,6 +529,7 @@ class RCA_Ligand(RCA_Molecule):
                          global_props=global_props,
                          graph=graph,
                          has_ligands=False,
+                         other_props=other_props,
                          **kwargs
                          )
 
@@ -664,12 +660,7 @@ class RCA_Ligand(RCA_Molecule):
         necessary_props = ["atomic_props", "global_props", "graph_dict", "denticity", "name", 'ligand_to_metal']
         assert set(necessary_props).issubset(set(dict_.keys())), f'Any of the necessary keys {necessary_props} is not present.'
 
-        not_wanted = ['graph_creating_strategy', 'csd_code']
-        for arg in not_wanted:
-            if arg in kwargs:
-                del kwargs[arg]
-
-        kwargs.update({key: val for key, val in dict_.items() if not key in necessary_props})
+        other_props = {key: val for key, val in dict_.items() if not key in necessary_props}
 
         # Optionally add graph if it is present in the dictionary
         if 'graph_dict' in dict_ and not (dict_['graph_dict'] is None):
@@ -684,6 +675,7 @@ class RCA_Ligand(RCA_Molecule):
             name=dict_["name"],
             graph=graph,
             ligand_to_metal=dict_['ligand_to_metal'],
+            other_props=other_props,
             **kwargs
         )
 
@@ -705,6 +697,7 @@ class RCA_Complex(RCA_Molecule):
                  graph_creating_strategy="default",
                  has_ligands=True,
                  reindex_graph: bool = False,
+                 other_props={},
                  **kwargs):
 
             super().__init__(
@@ -716,6 +709,7 @@ class RCA_Complex(RCA_Molecule):
                             graph_creating_strategy=graph_creating_strategy,
                             has_ligands=has_ligands,
                             reindex_graph=reindex_graph,
+                            other_props=other_props,
                             **kwargs
                              )
             self.metal = identify_metal_in_ase_mol(self.mol)
@@ -776,7 +770,7 @@ class RCA_Complex(RCA_Molecule):
             dict_['charge'] = dict_['total_q']
             del dict_['total_q']
 
-        kwargs.update({key: val for key, val in dict_.items() if not key in necessary_props})
+        other_props = {key: val for key, val in dict_.items() if not key in necessary_props}
 
         # Optionally add graph if it is present in the dictionary
         if 'graph_dict' in dict_ and not (dict_['graph_dict'] is None):
@@ -789,5 +783,6 @@ class RCA_Complex(RCA_Molecule):
             global_props=dict_["global_props"],
             graph=graph,
             has_ligands=has_ligands,
+            other_props=other_props,
             **kwargs
         )
