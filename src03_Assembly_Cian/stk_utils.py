@@ -1,5 +1,4 @@
 import numpy as np
-from ase import io
 import stk
 from mendeleev import element
 

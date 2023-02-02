@@ -6,8 +6,8 @@ import itertools
 
 import os
 
-from src02_Pre_Ass_Filtering.constants import get_boxes, intensity, sharpness
-from src03_Assembly.stk_extension import *
+from src02_Pre_Ass_Filtering_Cian.constants import get_boxes, intensity, sharpness
+from src03_Assembly_Cian.stk_extension import *
 from src01.Molecule import RCA_Ligand
 
 
@@ -154,7 +154,7 @@ def penta_as_tetra(ligand: RCA_Ligand):
 
 
 # todo: From here on
-def Bidentate_Rotator(ligand_bb, ligand):
+def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, box_entered=None):
     stk_Building_Block = mercury_remover(ligand_bb)
 
     index_list = ligand.get_assembly_dict()["index"]
@@ -166,10 +166,10 @@ def Bidentate_Rotator(ligand_bb, ligand):
     x2, y2, z2 = functional_group_2[0][0], functional_group_2[0][1], functional_group_2[0][2]
     x1, y1, z1 = vector[0], vector[1], vector[2]
 
-    Boxes = get_boxes(denticity=ligand.denticity)
+    Boxes = get_boxes(denticity=ligand.denticity, input_topology=top_list, bool_placed_boxes=bool_placed)
 
     rotation_increment = 1.0
-
+    dict_box = {}
     dict_ = {value: 0 for value in np.arange(0, 361, rotation_increment)}
     for angle in dict_:
         stk_Building_Block = stk_Building_Block.with_rotation_about_axis(angle=rotation_increment * (np.pi / 180.0),
@@ -177,18 +177,24 @@ def Bidentate_Rotator(ligand_bb, ligand):
                                                                          origin=np.array((x2, y2, z2)), )
         # movie(stk_Building_Block)
         total_atoms_in_box = 0
+        box_entered = []
         for counter, atom in enumerate(list(stk_Building_Block.get_atomic_positions())):
             point_ = [atom[i] for i in range(3)]
+            k = 1
             for Box in Boxes:
                 if Box.point_in_box(point=point_):
                     score_x = intensity / (1.0 + (sharpness * ((point_[0]) - ((Box.x2 - Box.x1) / 2.0) + Box.x1) ** 2))
                     score_y = intensity / (1.0 + (sharpness * ((point_[1]) - ((Box.y2 - Box.y1) / 2.0) + Box.y1) ** 2))
                     score_z = intensity / (1.0 + (sharpness * ((point_[2]) - ((Box.z2 - Box.z1) / 2.0) + Box.z1) ** 2))
                     total_atoms_in_box = total_atoms_in_box + score_x + score_y + score_z
-
+                    box_entered.append(k)
+                k = k + 1
+        dict_box.update({str(angle): box_entered})
         dict_[angle] = float(total_atoms_in_box)
 
     minimum_angle = min(dict_, key=dict_.get)
+    print("minimum angle = "+str(minimum_angle)+"boxes entered " + str(dict_box[str(minimum_angle)]))
+    print(dict_box)
 
     #
     #
@@ -247,9 +253,10 @@ def nonplanar_tetra_solver(bb, lig):
         y_mid = (y1 + y2) / 2
         z_mid = (z1 + z2) / 2
         mid_points = [x_mid, y_mid, z_mid]
+        #The add_atom functionality does not update the coordinates attribute correctly in the molecule class
         lig.add_atom(symbol="Hg", coordinates=[x_mid, y_mid, z_mid])  # add dummy metal
         Energy = get_energy(lig)  # get energy
-        #lig.remove_last_element_in_xyz()  # get rid of dummy metal
+        # lig.remove_last_element_in_xyz()  # get rid of dummy metal
         all_Energies.append(Energy)  # list of all the energies of pacing dummy metal at each midpoint
         all_midpoints.append(mid_points)
 
@@ -258,7 +265,7 @@ def nonplanar_tetra_solver(bb, lig):
     lig.add_atom(symbol="Hg",
                  coordinates=[all_midpoints[minimum_energy_index][0], all_midpoints[minimum_energy_index][1],
                               all_midpoints[minimum_energy_index][
-                                  2]])  # paces Hg at midpoint with smallest energy
+                                  2]])  # paces Hg at midpoint with the smallest energy
 
     file_path_2 = ligand_to_mol(lig)
 
@@ -287,9 +294,19 @@ def nonplanar_tetra_solver(bb, lig):
     type_list.remove(value1)
     type_list.remove(value2)
 
-    position_of_Hg_in_mol = [key for key, item in lig.coordinates.items() if item[0] == "Hg"][0]
 
-    # The following Block of code ensures that the remaning coordinating groups exist in the xy plane
+    # Currently the issue with tetradentate non-planar ligands is with the assembly.
+    # The molecule class prevents the self.coordinates attribute being updated with the relevant
+    # information from the add_atom method. The molecule class will need to be updated in the future to
+    # allow for the number of atoms to be updated
+    ###########################################################################################
+    position_of_Hg_in_mol = [key for key, item in lig.coordinates.items() if item[0] == "Hg"][0]
+    ###########################################################################################
+
+
+
+
+    # The following Block of code ensures that the remaining coordinating groups exist in the xy plane
     complex_tetradentate = tetra_bb_2.with_rotation_to_minimize_angle(start=tetra_bb_2.get_plane_normal(
         atom_ids=[int(location_list[0]), int(location_list[1]),
                   int(position_of_Hg_in_mol), ]), target=np.array((0, 0, 1)), axis=np.array((0, 1, 0)),
@@ -340,7 +357,7 @@ def tmp_clean_up(*args):
 
 
 def mercury_remover(stk_Building_block):
-    print("Removing Temporary Mercury")
+    print(stk_Building_block.get_num_atoms())
     stk.MolWriter().write(stk_Building_block, '../tmp/stk_Building_block.mol')
     os.system('obabel .mol ../tmp/stk_Building_block.mol .xyz -O  ../tmp/stk_Building_block.xyz ---errorlevel 1')
     os.system("rm -f ../tmp/stk_Building_block.mol")
@@ -364,3 +381,19 @@ def mercury_remover(stk_Building_block):
     stk_Building_block1 = stk.BuildingBlock.init_from_file('../tmp/stk_Building_block.mol')
     os.system("rm -f ../tmp/stk_Building_block.mol")
     return stk_Building_block1
+
+def building_block_to_mol(bb):
+    stk.MolWriter().write(bb, '../tmp/tmp_bb_energy.mol')
+    return '../tmp/tmp_bb_energy.mol'
+
+def get_energy_stk(building_block):
+    path = building_block_to_mol(building_block)  # Here there is a dependency on the above ligand_to_mol function.
+    mol = next(pybel.readfile("mol", str(path)))
+    obmol = mol.OBMol
+    ff = ob.OBForceField_FindType("uff")
+    assert (ff.Setup(obmol))
+    kj_to_kcal = 1.0 / 4.184
+    ff.SetCoordinates(mol.OBMol)
+    uffE = ff.Energy(False) * kj_to_kcal
+    #print("The energy is "+str(uffE))
+    return uffE

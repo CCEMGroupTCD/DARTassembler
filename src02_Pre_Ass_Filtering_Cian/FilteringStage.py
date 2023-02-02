@@ -4,8 +4,8 @@ from copy import deepcopy
 from src01.DataBase import MoleculeDB, LigandDB
 from src01.utilities_Molecule import original_metal_ligand
 
-from src02_Pre_Ass_Filtering.Box_Excluder_Filter import box_filter
-from src02_Pre_Ass_Filtering.constant_Ligands import get_monodentate_list, get_reactant
+from src02_Pre_Ass_Filtering_Cian.Box_Excluder_Filter import box_filter
+from src02_Pre_Ass_Filtering_Cian.constant_Ligands import get_monodentate_list, get_reactant
 
 
 class FilterStage:
@@ -42,6 +42,7 @@ class FilterStage:
 
         if metals_of_interest is None:
             print("No metals of interest selected, no filtering at all")
+            return
         elif isinstance(metals_of_interest, str):
             metals_of_interest = [metals_of_interest]
 
@@ -117,10 +118,7 @@ class FilterStage:
         Filter out all ligands that violate the box Filter
         """
         print("Box Excluder Filter running")
-
-        self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items()
-                   if box_filter(ligand) is True}
-
+        self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items() if box_filter(ligand) is True}
         self.filter_tracking[len(self.filter_tracking)] = f"Box Filter"
 
         #self.safe_and_document_after_filterstep(filtering_step_name="Box Filter")
