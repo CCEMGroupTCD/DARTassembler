@@ -70,9 +70,9 @@ if __name__ == '__main__':
 
     # Update the resulting merged dfs with ligand information from the latest full ligand db.
     # Ligands are identified by 'CSD_code' and 'stoichiometry' (hard coded).
-    latest_full_ligand_db_path = '../../data/tmQMG_Jsons/tmQM_Ligands_full_v1.2.json'
-    db_version = '1.2'
-    update_properties = ['unique_name', 'name', 'graph_hash', 'local_elements', 'pred_charge', 'pred_charge_is_confident']
+    db_version = '1.3'
+    latest_full_ligand_db_path = f'../../data/final_db_versions/full_ligand_db_v{db_version}.json'
+    update_properties = ['unique_name', 'name', 'graph_hash', 'local_elements']
 
     df_all = pd.DataFrame()
     for name, filename in benchmark_charge_filenames.items():

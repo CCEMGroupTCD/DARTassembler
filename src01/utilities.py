@@ -78,6 +78,11 @@ def identify_metal_in_ase_mol(mol: Atoms):
 
     return Pymatgen_Element.from_Z(metals.pop()).symbol
 
+def identify_metal_in_atoms_list(atoms: list):
+    metals = [el for el in atoms if Pymatgen_Element(el).is_metal]
+    assert len(metals) == 1, "Molecule seems to be not a single metal complex, metal identification failed"
+
+    return metals[0]
 
 def coordinates_to_xyz_str(coordinates: dict):
     """

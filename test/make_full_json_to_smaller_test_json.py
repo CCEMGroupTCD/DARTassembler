@@ -6,7 +6,7 @@ import json
 if __name__ == '__main__':
 
     input_json = '../data/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/tmQMG.json'
-    num_output_items = 100
+    num_output_items = 1000
     output_json = '../data/tmQMG_Jsons_fixed_gbl_props_cutoffs_test/tmQMG.json'
 
 

@@ -29,5 +29,13 @@
 !/database/ligand_charges/charge_benchmark/Manting_ligand_charges.csv
 !/database/ligand_charges/charge_benchmark/README
 
+!database/tmQMg_fixed_gbl_props_cutoffs/
+!database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/
+!database/tmQMg_fixed_gbl_props_cutoffs/global_mol_properties.csv
+!database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/0_atomic_properties.xyz
+!database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/1_atomic_properties.xyz
+!database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/2_atomic_properties.xyz
+!database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/3_atomic_properties.xyz
+
 /data_output/
 /constants/CSD/CSD_Smiles_full.csv

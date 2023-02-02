@@ -34,7 +34,7 @@ class RCA_Molecule:
     and all the global information we have at hand when creating a database
     """
 
-    def __init__(self, mol: Atoms,
+    def __init__(self, mol: Atoms = None,
                  atomic_props: dict = None,
                  global_props: dict = None,
                  graph=None,
@@ -57,9 +57,10 @@ class RCA_Molecule:
         if global_props is None:
             global_props = {}
 
-        self.mol = mol
         self.atomic_props = atomic_props
         self.global_props = global_props
+        # Generate mol from atomic_props if possible and no mol given yet
+        self.mol = self.get_mol_from_input(mol)
 
         self.add_additional_molecule_information_to_global_props()
 
@@ -83,6 +84,27 @@ class RCA_Molecule:
         self.hash = self.get_hash()
 
         self.stoichiometry = self.get_standardized_stoichiometry()
+
+        # Set kwargs so that they become properties of the molecule
+        self.set_init_kwargs_as_properties(kwargs=kwargs)
+
+    def get_mol_from_input(self, mol):
+        if mol is None:
+            coord_list_3D = [[self.atomic_props[key_][i] for key_ in ["x", "y", "z"]] for i, _ in
+                             enumerate(self.atomic_props["x"])]
+            atom_list = self.atomic_props["atoms"]
+            mol = Atoms(atom_list, positions=coord_list_3D)
+
+        return mol
+
+    def set_init_kwargs_as_properties(self, kwargs):
+        for prop, value in kwargs.items():
+            differing_prop_already_exists = hasattr(self, prop) and self.__getattribute__(prop) != value
+            if differing_prop_already_exists:
+                raise Warning(f'Property {prop} is tried to be set but already exists.')
+            self.__setattr__(prop, value)
+
+        return
 
     def add_additional_molecule_information_to_global_props(self):
         n_atoms = len(self.atomic_props['atoms'])
@@ -515,23 +537,14 @@ class RCA_Ligand(RCA_Molecule):
                          **kwargs
                          )
 
-        # todo: Das kann weg sobald gebenchmarkt wurde, das ist ein absolutes Relikt
         self.coordinates = {i: [at, coord_list_3D[i]] for i, at in enumerate(atom_list)}
 
         self.denticity = denticity
-
-        # tho local indices in atomic_props[key] where the ligands was bound to the metal
-        # before that was a list of ones and zeros which was unnecessary complicated
-        self.ligand_to_metal = ligand_to_metal
-        self.local_elements = self.get_local_elements()
-
         self.name = name
 
-        if "csd_code" in kwargs.keys():
-            self.csd_code = kwargs['csd_code']
-
-        if "unique_name" in kwargs:
-            self.unique_name = kwargs["unique_name"]
+        # the indices and elements where the ligands was bound to the metal
+        self.ligand_to_metal = ligand_to_metal
+        self.local_elements = self.get_local_elements()
 
         if 'original_metal' in kwargs.keys():
             self.original_metal = kwargs['original_metal']
@@ -627,9 +640,6 @@ class RCA_Ligand(RCA_Molecule):
 
         return False
 
-    # Ligands have more information and we thus have to expand the safe and read methods a little bit
-    # todo: unqiue name geht bei dem process irgendwie verloren, da muss ich irgendwie nochmal ran
-    #   vielleicht als Dummy immer nen None unique name setzen
     def write_to_mol_dict(self):
         return {
             "stoichiometry": self.stoichiometry,
@@ -649,23 +659,31 @@ class RCA_Ligand(RCA_Molecule):
     @classmethod
     def read_from_mol_dict(cls, dict_: dict, **kwargs):
         """
-
-        :param kwargs: kwargs is required to dump the graph creatin strategy which is to be avoided here
+        Reads the ligand from a provided dictionary.
         """
-        assert {"atomic_props", "global_props", "graph_dict", "denticity", "name", "ligand_to_metal", "CSD_code",
-                "original_metal"}.issubset(set(dict_.keys())), 'Any of the necessary keys is not present.'
+        necessary_props = ["atomic_props", "global_props", "graph_dict", "denticity", "name", 'ligand_to_metal']
+        assert set(necessary_props).issubset(set(dict_.keys())), f'Any of the necessary keys {necessary_props} is not present.'
+
+        not_wanted = ['graph_creating_strategy', 'csd_code']
+        for arg in not_wanted:
+            if arg in kwargs:
+                del kwargs[arg]
+
+        kwargs.update({key: val for key, val in dict_.items() if not key in necessary_props})
 
         # Optionally add graph if it is present in the dictionary
-        kwargs = {'graph_dict': graph_from_graph_dict(dict_['graph_dict'])} if not (dict_['graph_dict'] is None) else {}
+        if 'graph_dict' in dict_ and not (dict_['graph_dict'] is None):
+            graph = graph_from_graph_dict(dict_['graph_dict'])
+        else:
+            graph = None
 
         return cls(
             atomic_props=dict_["atomic_props"],
             global_props=dict_["global_props"],
             denticity=dict_["denticity"],
             name=dict_["name"],
-            ligand_to_metal=dict_["ligand_to_metal"],
-            csd_code=dict_["CSD_code"],
-            original_metal=dict_["original_metal"],
+            graph=graph,
+            ligand_to_metal=dict_['ligand_to_metal'],
             **kwargs
         )
 
@@ -679,7 +697,7 @@ class RCA_Ligand(RCA_Molecule):
 class RCA_Complex(RCA_Molecule):
 
     def __init__(self,
-                 mol: Atoms,
+                 mol: Atoms = None,
                  atomic_props: dict = None,
                  global_props: dict = None,
                  pymat_mol=None,
@@ -738,3 +756,38 @@ class RCA_Complex(RCA_Molecule):
             'ligands': [lig.write_to_mol_dict() for lig in self.ligands],
             'graph_hash': self.graph_hash
         }
+
+    @classmethod
+    def read_from_mol_dict(cls, dict_: dict, **kwargs):
+        """
+        Reads the ligand from a provided dictionary.
+        """
+        necessary_props = ["atomic_props", "global_props", "graph_dict"]
+        assert set(necessary_props).issubset(set(dict_.keys())), f'Any of the necessary keys {necessary_props} is not present.'
+
+        if 'ligands' in dict_:
+            dict_['ligands'] = [RCA_Ligand.read_from_mol_dict(lig) for lig in dict_['ligands']]
+            # This sounds stupid but this is because otherwise the RCA_molecule class sets up self.ligands = [] which then collides when the actual ligands which are read in here are added because for safety the code checks that it doesn't overwrite anything.
+            has_ligands = False
+        else:
+            has_ligands = True
+
+        if 'total_q' in dict_:
+            dict_['charge'] = dict_['total_q']
+            del dict_['total_q']
+
+        kwargs.update({key: val for key, val in dict_.items() if not key in necessary_props})
+
+        # Optionally add graph if it is present in the dictionary
+        if 'graph_dict' in dict_ and not (dict_['graph_dict'] is None):
+            graph = graph_from_graph_dict(dict_['graph_dict'])
+        else:
+            graph = None
+
+        return cls(
+            atomic_props=dict_["atomic_props"],
+            global_props=dict_["global_props"],
+            graph=graph,
+            has_ligands=has_ligands,
+            **kwargs
+        )

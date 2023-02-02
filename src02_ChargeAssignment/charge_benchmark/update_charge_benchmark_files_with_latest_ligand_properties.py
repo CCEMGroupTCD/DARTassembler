@@ -58,13 +58,15 @@ def get_properties_of_benchmark_dataset_from_full_ligand(full_ligand: dict, old_
     return old_ligand
 
 if __name__ == '__main__':
-    latest_full_ligand_db_path = '../../data/tmQMG_Jsons/tmQM_Ligands_full_v1.2.json'
-    charge_benchmark_datasets = ['../../database/ligand_charges/charge_benchmark/all_ligand_charges_with_high_confidence.csv']
-    version = '1.2'
+
+    db_version = '1.3'
+
+    latest_full_ligand_db_path = f'../../data/tmQMG_Jsons/tmQM_Ligands_full_v{db_version}.json'
+    charge_benchmark_datasets = [f'../../database/ligand_charges/charge_benchmark/all_ligand_charges_with_high_confidence_v{db_version}.csv']
     id_cols = ['CSD_code', 'stoichiometry']
     update_columns = ['unique_name', 'name', 'graph_hash']
 
-    assert latest_full_ligand_db_path.endswith(f'_v{version}.json'), f'Specified version number {version} does\'t match with version number in `latest_complex_db_path`.'
+    assert latest_full_ligand_db_path.endswith(f'_v{db_version}.json'), f'Specified version number {db_version} does\'t match with version number in `latest_complex_db_path`.'
     full_ligand_db = load_full_ligand_db(latest_full_ligand_db_path)
     full_ligand_dict = set_keys_of_dict(d=full_ligand_db, id_cols=id_cols)
 

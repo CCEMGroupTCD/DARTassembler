@@ -522,9 +522,10 @@ class LinearChargeSolver:
 
 if __name__ == '__main__':
     
-    n_test = 10000
-    all_complexes_path = '../../data/tmQMG_Jsons/complex_db_v1.2.json'
-    all_unique_ligands_path = ['../../database/ligand_charges/charge_benchmark/all_ligand_charges_with_high_confidence_v1.2.csv']
+    n_test = False
+    db_version = '1.3'
+    all_complexes_path = f'../../data/final_db_versions/complex_db_v{db_version}.json'
+    all_unique_ligands_path = [f'../../database/ligand_charges/charge_benchmark/all_ligand_charges_with_high_confidence_v{db_version}.csv']
     save_dir = '../../data/linear_charge_solver/output/'
     plot_dir = Path(save_dir, 'plots')
     

@@ -20,6 +20,12 @@ class BaselineDB:
         """
         self.db = dict_
 
+    def get_first_entry(self):
+        first_key = list(self.db.keys())[0]
+        first_item = self.db[first_key]
+
+        return first_item
+
     def append_DB(self, key, molecule, overwrite=True):
         if key in self.db and overwrite is False:
             print("Key already in DB and no overwrite, hence nothing changed")
@@ -96,8 +102,8 @@ class BaselineDB:
                 if i > max_number:
                     break
 
-            new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(mol_dict,
-                                                                                 graph_strategy,
+            new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(dict_=mol_dict,
+                                                                                 graph_creating_strategy=graph_strategy,
                                                                                  csd_code=identifier,
                                                                                  **kwargs
                                                                                  )
@@ -336,3 +342,7 @@ class LigandDB(BaselineDB):
             })
         df = pd.DataFrame(ligand_props)
         return df
+
+class ComplexDB(MoleculeDB):
+    def __init__(self, dict_):
+        super().__init__(dict_=dict_)
