@@ -326,10 +326,12 @@ class LigandExtraction():
                 df_ligand_charges = get_charges_of_unique_ligands(all_complexes_path=self.output_complexes_json)
                 self.update_databases_with_charges(df_ligand_charges=df_ligand_charges)
                 print('Charges successfully assigned.')
+        else:
+            calculate_charges = False
 
         with_charges = 'with charges' if calculate_charges else 'without charges'
         updates = ' Complex db and full ligand db were not updated with unique ligand information' if get_only_unique_ligand_db_without_charges else ''
-        print(f'Ligand database {with_charges} established successfully!{updates}')
+        print(f'\nLigand database {with_charges} established successfully!{updates}')
 
         end = datetime.now()
         print(f'Duration of extraction: {end - start}')

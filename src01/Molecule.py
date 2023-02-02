@@ -202,24 +202,12 @@ class RCA_Molecule:
         self.hash = int(hashlib.md5(self.graph_hash.encode(encoding='UTF-8', errors='strict')).hexdigest(), 16)
         return self.hash
 
-    # In case the hash is not good enough now some tools for exact comparison
-
-    # Since stoichiometry is now an attr of the class we don't need this function anymore.
-    # def get_stoichiometry(self):
-    #     if "atoms" in self.atomic_props:
-    #         # todo: spaeter soll nur das hier bleiben, der rest ist nur uebergang
-    #         return collections.Counter(self.atomic_props["atoms"])
-    #     else:
-    #         return collections.Counter([element(int(an)).symbol for an in self.mol.get_atomic_numbers()])
-
     def get_standardized_stoichiometry(self) -> str:
         """
-        Returns a string with the stoichiometry in a standardized way, the so-called Hill notation.
+        Returns a string with the stoichiometry in a standardized way. We use the Hill notation, except that for elements with stoichiometry 1 this 1 is written as well.
         :return: stoichiometry (str)
         """
         formula = get_standardized_stoichiometry_from_atoms_list(self.atomic_props['atoms'])
-        # formula2 = self.mol.get_chemical_formula()
-        # assert formula == formula2, f'Stoichiometries not consistent: {formula} vs {formula2}.'
         return formula
 
     def __eq__(self, other):
@@ -542,9 +530,19 @@ class RCA_Ligand(RCA_Molecule):
         self.ligand_to_metal = ligand_to_metal
         self.local_elements = self.get_local_elements()
 
+        if "csd_code" in kwargs.keys():
+            self.csd_code = kwargs['csd_code']
+
+        if "unique_name" in kwargs:
+            self.unique_name = kwargs["unique_name"]
+
         if 'original_metal' in kwargs.keys():
             self.original_metal = kwargs['original_metal']
+
+        try:
             self.original_metal_symbol = Pymatgen_Element.from_Z(self.original_metal).symbol
+        except (ValueError, AttributeError):
+            pass
 
     def get_local_elements(self) -> list:
         """
@@ -663,17 +661,13 @@ class RCA_Ligand(RCA_Molecule):
         other_props = {key: val for key, val in dict_.items() if not key in necessary_props}
 
         # Optionally add graph if it is present in the dictionary
-        if 'graph_dict' in dict_ and not (dict_['graph_dict'] is None):
-            graph = graph_from_graph_dict(dict_['graph_dict'])
-        else:
-            graph = None
+        kwargs = {'graph_dict': graph_from_graph_dict(dict_['graph_dict'])} if not (dict_['graph_dict'] is None) else {}
 
         return cls(
             atomic_props=dict_["atomic_props"],
             global_props=dict_["global_props"],
             denticity=dict_["denticity"],
             name=dict_["name"],
-            graph=graph,
             ligand_to_metal=dict_['ligand_to_metal'],
             other_props=other_props,
             **kwargs
