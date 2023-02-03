@@ -3,12 +3,21 @@ This is the main script for the extraction of ligands from a database.
 """
 from src01.ligand_extraction import LigandExtraction
 
-def main(database_path: str, data_store_path: str, calculate_charges: bool=True, overwrite_atomic_properties: bool=True, use_existing_input_json: bool=True, exclude_not_fully_connected_complexes: bool=True ,get_only_unique_ligand_db_without_charges: bool=False):
+
+def main(database_path: str,
+         data_store_path: str,
+         calculate_charges: bool=True,
+         overwrite_atomic_properties: bool=True,
+         use_existing_input_json: bool=True,
+         exclude_not_fully_connected_complexes: bool=True,
+         get_only_unique_ligand_db_without_charges: bool=False
+         ):
 
     db = LigandExtraction(
                             database_path=database_path,
                             data_store_path=data_store_path,
-                            exclude_not_fully_connected_complexes=exclude_not_fully_connected_complexes
+                            exclude_not_fully_connected_complexes=exclude_not_fully_connected_complexes,
+                            testing=100
                             )
     db.run_ligand_extraction(
                                 calculate_charges=calculate_charges,
@@ -18,6 +27,7 @@ def main(database_path: str, data_store_path: str, calculate_charges: bool=True,
                             )
 
     return
+
 
 if __name__ == '__main__':
 
