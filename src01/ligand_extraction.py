@@ -14,31 +14,34 @@ from warnings import warn
 import json
 import networkx as nx
 from src01.DataLoader import DataLoader
-from src01.io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, save_full_ligand_db, save_complex_db
-from src01.main_tmQMG import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, get_charges_of_unique_ligands, update_databases_with_charges, update_ligand_with_charge_inplace
+from src01.io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, \
+    save_full_ligand_db, save_complex_db
+from src01.main_tmQMG import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, \
+    get_charges_of_unique_ligands, update_databases_with_charges, update_ligand_with_charge_inplace
 from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warning_inplace, unroll_dict_into_columns
 from typing import Union
 from datetime import datetime
 
 
-
 class LigandExtraction():
 
-    def __init__(self, database_path: str, data_store_path: str, exclude_not_fully_connected_complexes: bool=True, testing: Union[bool, int]=False):
+    def __init__(self, database_path: str, data_store_path: str, exclude_not_fully_connected_complexes: bool = True,
+                 testing: Union[bool, int] = False):
 
         self.check_and_set_init_input(
-                                        database_path=database_path,
-                                        data_store_path=data_store_path,
-                                        exclude_not_fully_connected_complexes=exclude_not_fully_connected_complexes,
-                                        testing=testing,
-                                        )
+            database_path=database_path,
+            data_store_path=data_store_path,
+            exclude_not_fully_connected_complexes=exclude_not_fully_connected_complexes,
+            testing=testing,
+        )
 
         self.input_complexes_json = Path(self.data_store_path, 'tmQMG.json')
         self.output_complexes_json = Path(self.data_store_path, 'complex_db.json')
         self.unique_ligands_json = Path(data_store_path, 'tmQM_Ligands_unique.json')
         self.full_ligands_json = Path(data_store_path, 'tmQM_Ligands_full.json')
 
-    def check_and_set_init_input(self, database_path: str, data_store_path: str, exclude_not_fully_connected_complexes: bool, testing: Union[bool, int]):
+    def check_and_set_init_input(self, database_path: str, data_store_path: str,
+                                 exclude_not_fully_connected_complexes: bool, testing: Union[bool, int]):
         database_path = Path(str(database_path))
         data_store_path = Path(str(data_store_path))
 
@@ -59,7 +62,7 @@ class LigandExtraction():
 
         return
 
-    def load_input_data_to_json(self, overwrite_atomic_properties: bool=False):
+    def load_input_data_to_json(self, overwrite_atomic_properties: bool = False):
         """
         Establish and safe the Database (in our case tmQM) as json for simple loading.
         """
@@ -80,7 +83,7 @@ class LigandExtraction():
 
     def extract_ligands(self):
         self.complex_db = MoleculeDB.from_json(json_=str(self.input_complexes_json), type_="Complex",
-                                          identifier_list=None)
+                                               identifier_list=None)
         # TODO Instead of filtering the whole db, implement to check each complex individually
         self.complex_db = self.filter_input_complex_db(self.complex_db)
 
@@ -128,7 +131,8 @@ class LigandExtraction():
 
         return ligand_dict
 
-    def choose_unique_ligand_representative_from_all_same_ligands(self, same_ligands, strategy='most_common_denticity'):
+    @staticmethod
+    def choose_unique_ligand_representative_from_all_same_ligands(same_ligands, strategy='most_common_denticity'):
         if strategy == 'most_common_denticity':
             denticities = [lig['denticity'] for lig in same_ligands.values()]
             count_denticities = pd.Series(denticities).value_counts().sort_values(ascending=False)
@@ -164,7 +168,8 @@ class LigandExtraction():
             # Add useful statistical information of all ligands for this unique ligand
             count_denticities = pd.Series(denticities).value_counts().sort_values(ascending=False).to_dict()
             count_metals = pd.Series(metals).value_counts().sort_values(ascending=False).to_dict()
-            chosen_denticity_fraction = sum([dent == unique_ligand['denticity'] for dent in denticities]) / len(denticities)
+            chosen_denticity_fraction = sum([dent == unique_ligand['denticity'] for dent in denticities]) / len(
+                denticities)
 
             assert not 0 in count_denticities, 'The denticity for unconnected ligands is assumed to be -1 but here there appears a 0.'
             has_unconnected_ligands = -1 in count_denticities.keys()
@@ -179,7 +184,8 @@ class LigandExtraction():
                 'has_unconnected_ligands': has_unconnected_ligands
             }
             unique_ligand.update(unique_ligand_infos)
-            self.unique_ligand_info_props = list(unique_ligand_infos.keys()) # for updating the ligands from complex and full ligands db later
+            self.unique_ligand_info_props = list(
+                unique_ligand_infos.keys())  # for updating the ligands from complex and full ligands db later
 
             unique_ligand['all_ligand_names'] = same_ligands_names
 
@@ -201,7 +207,9 @@ class LigandExtraction():
 
         return
 
-    def update_ligand_with_unique_ligand_information_inplace(self, lig, ulig, share_properties: list=[], share_global_props: list=[], collect_properties: dict={}):
+    def update_ligand_with_unique_ligand_information_inplace(self, lig, ulig, share_properties: list = [],
+                                                             share_global_props: list = [],
+                                                             collect_properties: dict = {}):
         ulig = deepcopy(ulig)
 
         update_dict_with_warning_inplace(lig, ulig, share_properties)
@@ -215,7 +223,8 @@ class LigandExtraction():
 
         return
 
-    def update_complex_db_with_information(self, share_properties: list=[], share_global_props: list=[], collect_properties: dict={}):
+    def update_complex_db_with_information(self, share_properties: list = [], share_global_props: list = [],
+                                           collect_properties: dict = {}):
         print('Update complex db with unique ligand information.')
         complexes = load_complex_db(self.output_complexes_json)
         unique_ligands = load_unique_ligand_db(self.unique_ligands_json)
@@ -226,27 +235,27 @@ class LigandExtraction():
                 uname = self.ligand_to_unique_ligand[lig['name']]
                 ulig = unique_ligands[uname]
                 self.update_ligand_with_unique_ligand_information_inplace(
-                                                                    lig=lig,
-                                                                    ulig=ulig,
-                                                                    share_properties=share_properties,
-                                                                    share_global_props=share_global_props,
-                                                                    collect_properties=collect_properties
-                                                                    )
+                    lig=lig,
+                    ulig=ulig,
+                    share_properties=share_properties,
+                    share_global_props=share_global_props,
+                    collect_properties=collect_properties
+                )
 
             # Update global props with some useful information
             c['global_props']['n_ligands'] = len(c['ligands'])
-            n_ligands_occurring_once = sum([lig['unique_ligand_information']['occurrences'] == 1 for lig in c['ligands']])
+            n_ligands_occurring_once = sum(
+                [lig['unique_ligand_information']['occurrences'] == 1 for lig in c['ligands']])
             c['global_props']['n_ligands_occurring_once'] = n_ligands_occurring_once
             c['global_props']['frac_ligands_occurring_once'] = n_ligands_occurring_once / len(c['ligands'])
-
 
         print(f'Save updated complex database to {self.output_complexes_json}')
         save_complex_db(db=complexes, path=self.output_complexes_json)
 
         return
 
-
-    def update_full_ligand_db_with_information(self, share_properties: list=[], share_global_props: list=[], collect_properties: dict={}):
+    def update_full_ligand_db_with_information(self, share_properties: list = [], share_global_props: list = [],
+                                               collect_properties: dict = {}):
         print('Update full ligand db with unique ligand information.')
         full_ligands = load_full_ligand_db(self.full_ligands_json)
         unique_ligands = load_unique_ligand_db(self.unique_ligands_json)
@@ -255,18 +264,18 @@ class LigandExtraction():
             uname = self.ligand_to_unique_ligand[lig['name']]
             ulig = unique_ligands[uname]
             self.update_ligand_with_unique_ligand_information_inplace(
-                                                                lig=lig,
-                                                                ulig=ulig,
-                                                                share_properties=share_properties,
-                                                                share_global_props=share_global_props,
-                                                                collect_properties=collect_properties
-                                                                )
+                lig=lig,
+                ulig=ulig,
+                share_properties=share_properties,
+                share_global_props=share_global_props,
+                collect_properties=collect_properties
+            )
         print(f'Save updated full ligand database to {self.full_ligands_json}')
         save_full_ligand_db(db=full_ligands, path=self.full_ligands_json)
 
         return
 
-    def update_databases_with_charges(self, df_ligand_charges: pd.DataFrame,):
+    def update_databases_with_charges(self, df_ligand_charges: pd.DataFrame, ):
         df_ligand_charges = df_ligand_charges.set_index('unique_name')
         charges = df_ligand_charges.to_dict(orient='index')
 
@@ -293,20 +302,24 @@ class LigandExtraction():
     def ensure_input_complex_db_exists(self, overwrite_atomic_properties: bool, use_existing_input_json: bool):
         if use_existing_input_json:
             if not self.input_complexes_json.exists():
-                print(f'WARNING: Cannot use existing input json of complexes because path not found: {self.input_complexes_json}. Reload xzy, global properties and graph data instead.')
+                print(
+                    f'WARNING: Cannot use existing input json of complexes because path not found: {self.input_complexes_json}. Reload xzy, global properties and graph data instead.')
                 self.load_input_data_to_json(overwrite_atomic_properties=overwrite_atomic_properties)
         else:
             self.load_input_data_to_json(overwrite_atomic_properties=overwrite_atomic_properties)
 
         return
 
-    def run_ligand_extraction(self, calculate_charges: bool=True, overwrite_atomic_properties: bool=True, use_existing_input_json: bool=True, get_only_unique_ligand_db_without_charges: bool=False):
+    def run_ligand_extraction(self, calculate_charges: bool = True, overwrite_atomic_properties: bool = True,
+                              use_existing_input_json: bool = True,
+                              get_only_unique_ligand_db_without_charges: bool = False):
         """
         Runs the entire ligand extraction process from reading in the .xzy files to optionally assigning charges.
         """
         start = datetime.now()
 
-        self.ensure_input_complex_db_exists(overwrite_atomic_properties=overwrite_atomic_properties, use_existing_input_json=use_existing_input_json)
+        self.ensure_input_complex_db_exists(overwrite_atomic_properties=overwrite_atomic_properties,
+                                            use_existing_input_json=use_existing_input_json)
 
         self.extract_ligands()
         self.save_full_ligand_db()
@@ -317,8 +330,10 @@ class LigandExtraction():
             # Update complex db to include information about the unique ligands for the LCS.
             share_properties = ['unique_name']
             collect_properties = {'unique_ligand_information': self.unique_ligand_info_props}
-            self.update_complex_db_with_information(share_properties=share_properties, collect_properties=collect_properties)
-            self.update_full_ligand_db_with_information(share_properties=share_properties, collect_properties=collect_properties)
+            self.update_complex_db_with_information(share_properties=share_properties,
+                                                    collect_properties=collect_properties)
+            self.update_full_ligand_db_with_information(share_properties=share_properties,
+                                                        collect_properties=collect_properties)
 
             # Charge assignment using only the linear charge solver (LCS) right now
             if calculate_charges:
