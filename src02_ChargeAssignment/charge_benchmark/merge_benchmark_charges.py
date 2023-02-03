@@ -64,8 +64,8 @@ if __name__ == '__main__':
     benchmark_charge_filenames = {
                                     'Cian1': 'Cian_already_assigned_ligand_charges.csv',
                                     'Cian2': 'Cian_BenchMark.csv',
-                                    'Manting': 'Manting_ligand_charges.csv',
-                                    'Marconi1': 'Marconi_ligand_charges.csv'
+                                    'Manting': 'Manting_ligand_charges_corrected_by_Cian_020223.csv',
+                                    'Marconi1': 'Marconi_corrected_by_Cian_020223.csv'
                                 }
 
     # Update the resulting merged dfs with ligand information from the latest full ligand db.

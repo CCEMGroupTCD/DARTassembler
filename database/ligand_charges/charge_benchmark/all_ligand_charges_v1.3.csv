@@ -100,23 +100,23 @@ TAKTOQ,C24H16N2,Cu,0.0,2.0,3.0,,Cian2,unq_CSD-SEVNEM-02-a,CSD-TAKTOQ-02-b,680469
 KEYVIU,C30H40N2P2,Pd,0.0,2.0,3.0,,Cian2,unq_CSD-KEYVIU-02-a,CSD-KEYVIU-02-a,2a9dd50c1fb72816e86b339f9ab0afd9,"['P', 'P']",True
 DADFOG,C20H21N3,Zn,0.0,3.0,3.0,,Manting,unq_CSD-RUVDIX-02-a,CSD-DADFOG-03-a,8ef97df11b828de46e1252cf18bb6940,"['N', 'N', 'N']",True
 HUDYAG,C12H11N2S1,Re,-1.0,3.0,3.0,,Manting,unq_CSD-HUDYAG-03-a,CSD-HUDYAG-03-a,41f4d7d6d91d1689966c76264459f58f,"['S', 'N', 'N']",True
-GEHYIB,C32H36N4,Ni,-2.0,3.0,3.0,,Manting,unq_CSD-GEHYIB-04-a,CSD-GEHYIB-04-a,ee8a7ab56c7f5e484d029113ffc877ab,"['N', 'N', 'N', 'N']",True
+GEHYIB,C32H36N4,Ni,-2.0,4.0,3.0,,Manting,unq_CSD-GEHYIB-04-a,CSD-GEHYIB-04-a,ee8a7ab56c7f5e484d029113ffc877ab,"['N', 'N', 'N', 'N']",True
 DAGMAZ,C18H19N2O4,Pd,-1.0,3.0,3.0,,Manting,unq_CSD-DAGMAZ-03-a,CSD-DAGMAZ-03-a,2cad0aafd41f32ceaec60f039afe986f,"['N', 'N', 'C']",True
 XUNMOI,C8H5O2,Pd,-1.0,1.0,3.0,,Manting,unq_CSD-XUNMOI-01-a,CSD-XUNMOI-01-a,41453814b5547d599c6214745b3ae658,['C'],True
 COPTIL,Br1C27Cl1H19N3O1S1,Mo,-2.0,3.0,3.0,,Manting,,,,,False
 OBIZAC,C15H15N4O2S1,Hg,-1.0,2.0,3.0,,Manting,unq_CSD-OBIZAC-01-a,CSD-OBIZAC-01-a,1f303a2baf545de9abe80909c05e76d0,['S'],True
 EDUJEU,C24H49P2,Pd,-1.0,3.0,3.0,,Manting,unq_CSD-WUHPIZ-03-a,CSD-EDUJEU-03-a,99d2e20628acdde5e29be624f278d04f,"['P', 'P', 'C']",True
 RAQJUQ,Br1C13H8N5,Os,0.0,2.0,3.0,,Manting,,,,,False
-TEJKIF,C25H20S2,Ag,-2.0,1.0,3.0,,Manting,unq_CSD-TEJKIF-01-b,CSD-TEJKIF-01-b,ae5e4d2f2e1fb017c36a29153e72ed43,['C'],True
+TEJKIF,C25H20S2,Ag,0.0,1.0,3.0,,Manting,unq_CSD-TEJKIF-01-b,CSD-TEJKIF-01-b,ae5e4d2f2e1fb017c36a29153e72ed43,['C'],True
 ROFSIO,C10H18Si2,Fe,0.0,2.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-CEPYAX-02-a,CSD-ROFSIO-02-a,f4342f8086a5ec041a9eaf49bdf6be33,"['C', 'C']",False
 TIRDAA,C4H9N1O2,Mo,-2.0,3.0,3.0,,Manting,unq_CSD-TIRDAA-03-a,CSD-TIRDAA-03-a,a381c959a29189181778e946a0da1b7b,"['O', 'O', 'N']",True
 ZEGQOT,B10C10H18O4S2,Co,-2.0,3.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
 IGUBET,Br2C13H8N2O1,Cu,0.0,1.0,3.0,,Manting,,,,,False
 TURNOK,C24H39N3,Rh,0.0,1.0,3.0,,Manting,unq_CSD-TURNOK-01-a,CSD-TURNOK-01-a,a074c529b07c89a370e9ed6673169d09,['N'],True
-PAPMAV,C15H27N3O3,Os,0.0,2.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-PAPMAV-02-a,CSD-PAPMAV-02-a,fa0dd3a90cefce3e1fafa98e4740562c,"['N', 'N']",False
+PAPMAV,C15H27N3O3,Os,-2.0,2.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-PAPMAV-02-a,CSD-PAPMAV-02-a,fa0dd3a90cefce3e1fafa98e4740562c,"['N', 'N']",False
 YUYGUV,C7F2H5,Au,-1.0,1.0,3.0,,Manting,,,,,False
 CEXTAB,C25H21N5O2S1,Zn,-2.0,4.0,3.0,,Manting,unq_CSD-CEXTAB-04-a,CSD-CEXTAB-04-a,0f50bc49106d7e394102ddb1e4baeefb,"['O', 'O', 'N', 'N']",True
-AQATET,C1O3,Co,-1.0,2.0,3.0,,Manting,unq_CSD-CUSKIK-03-a,CSD-AQATET-03-a,75e7a4125709cb5a14d1ce2b84c3cdbd,"['O', 'O', 'C']",True
+AQATET,C1O3,Co,-2.0,2.0,3.0,,Manting,unq_CSD-CUSKIK-03-a,CSD-AQATET-03-a,75e7a4125709cb5a14d1ce2b84c3cdbd,"['O', 'O', 'C']",True
 XUFTIC,C28H36N2O2,Ru,-2.0,4.0,3.0,,Manting,unq_CSD-XUFTIC-04-a,CSD-XUFTIC-04-a,6c1672f58c71f7c88995906307a004e1,"['O', 'O', 'N', 'N']",True
 MPSOPD,C7H7O2S1,Pd,-1.0,1.0,3.0,,Manting,unq_CSD-VALCAM-01-b,CSD-MPSOPD-01-b,1023d86b74ed3d0c62431791a8173eb9,['C'],True
 XAWHAF,C24H21N2O3,Pd,-1.0,2.0,3.0,,Manting,unq_CSD-XAWHAF-02-b,CSD-XAWHAF-02-b,6870059c148503793eadbb858f32d94e,"['O', 'C']",True
@@ -151,14 +151,14 @@ OPAGES,C7F5N4,Hg,-1.0,1.0,3.0,,Manting,unq_CSD-OPAGES-01-a,CSD-OPAGES-01-a,5b3f5
 GIPSAC,Br1C11H11N2Se1,Ru,0.0,2.0,3.0,,Manting,,,,,False
 YEXXEF,C5H11Si1,Ni,-1.0,1.0,3.0,,Manting,unq_CSD-BIDMUW-02-a,CSD-YEXXEF-01-a,12062d6b087b7543793f5fb4a6aa3180,['C'],True
 BOYROX,C23H30N2,Pd,0.0,1.0,3.0,,Manting,unq_CSD-BOYROX-01-b,CSD-BOYROX-01-b,6b64c2c9c3386ca46506b38012887001,['C'],True
-BEHGOL,C14H21O1P1,Cr,0.0,0.0,3.0,,Manting,unq_CSD-BEHGOL-06-a,CSD-BEHGOL-06-a,a29c103e756f10b5bbed865f731c513e,"['C', 'C', 'C', 'C', 'C', 'C']",True
-MOHNED,C8H11N1O1,Ag,0.0,0.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-EMEHOU-01-b,CSD-MOHNED-01-b,c1c774059ba0b6511e822393be9f9324,['N'],False
+BEHGOL,C14H21O1P1,Cr,0.0,5.0,3.0,,Manting,unq_CSD-BEHGOL-06-a,CSD-BEHGOL-06-a,a29c103e756f10b5bbed865f731c513e,"['C', 'C', 'C', 'C', 'C', 'C']",True
+MOHNED,C8H11N1O1,Ag,0.0,1.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-EMEHOU-01-b,CSD-MOHNED-01-b,c1c774059ba0b6511e822393be9f9324,['N'],False
 NIZMUE,C7H16N3O2,Co,-1.0,4.0,3.0,,Manting,unq_CSD-NIZMUE-04-a,CSD-NIZMUE-04-a,4b40138f00fce9e5336e90ae392c031e,"['O', 'N', 'N', 'N']",True
 PIFQEC,C21H19N2,Pt,-1.0,2.0,3.0,,Manting,unq_CSD-PIFQEC-02-a,CSD-PIFQEC-02-a,0cdfffde88297905b3224767f4ae5296,"['N', 'N']",True
 BAXDUZ,C5H11,Co,-1.0,1.0,3.0,,Manting,unq_CSD-SAKVAE-01-a,CSD-BAXDUZ-01-a,da6254a4a4bdc9b23f5ebc651aa81d4d,['C'],True
 JOSYUL,C12H17N2O1,Pd,-1.0,3.0,3.0,,Manting,unq_CSD-JOSYUL-03-a,CSD-JOSYUL-03-a,f22f7d7add6e2efe2181f0fc8407260e,"['O', 'N', 'N']",True
 DAKGIG,C14F6H8N1,Ir,-1.0,2.0,3.0,,Manting,,,,,False
-QEMVIO,C15H20O1P1,Pt,0.0,1.0,3.0,Deprotonation occrs on the other same ligand gives change of -1,Manting,unq_CSD-QEMVIO-02-a,CSD-QEMVIO-02-a,8e4473daffc95f349d2e197df4cb0d25,"['P', 'C']",False
+QEMVIO,C15H20O1P1,Pt,-1.0,2.0,3.0,Deprotonation occrs on the other same ligand gives change of -1,Manting,unq_CSD-QEMVIO-02-a,CSD-QEMVIO-02-a,8e4473daffc95f349d2e197df4cb0d25,"['P', 'C']",False
 ALOYUX,C33H27N7O2,Zn,0.0,3.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-ALOYUX-03-a,CSD-ALOYUX-03-a,5e3b44cd275c75ff6e4879c8820d9923,"['N', 'N', 'N']",False
 WERYEY,C20H18N1O3P1,Ru,0.0,1.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-WERYEY-01-c,CSD-WERYEY-01-c,ea2ae765dbd722e029da037a47e95525,['P'],False
 IWIWOA,C19H16Si1,W,-2.0,1.0,3.0,,Manting,unq_CSD-IWIWOA-01-a,CSD-IWIWOA-01-a,9b97f13767603abede9263e6df5b8fc7,['C'],True
@@ -168,7 +168,7 @@ HIZSUE,C11Cl2H13N2,Pt,-1.0,3.0,3.0,,Manting,,,,,False
 BUNLOM,C21H23N4,Mn,0.0,4.0,3.0,,Manting,unq_CSD-BUNLOM-04-a,CSD-BUNLOM-04-a,693127d436ac3e9db851a4a9aca61622,"['N', 'N', 'N', 'N']",True
 VINMIP,C28H28O3P2,Ni,0.0,2.0,3.0,,Manting,unq_CSD-VINMIP-02-a,CSD-VINMIP-02-a,6eca32b2b1d80e07551c7df7cf138f9c,"['O', 'O']",True
 GODRIB,C12F6H12N2O2,Mn,-2.0,4.0,3.0,,Manting,,,,,False
-JAKNUE,C4H6N1,Co,0.0,1.0,3.0,,Manting,unq_CSD-JAKNUE-01-a,CSD-JAKNUE-01-a,6fe042db08ff71a4391c0e8d983515e2,['C'],True
+JAKNUE,C4H6N1,Co,-1.0,1.0,3.0,,Manting,unq_CSD-JAKNUE-01-a,CSD-JAKNUE-01-a,6fe042db08ff71a4391c0e8d983515e2,['C'],True
 LOJXOZ,C15H15N3O6,Os,0.0,3.0,3.0,,Manting,unq_CSD-LOJXOZ-03-a,CSD-LOJXOZ-03-a,f7f05110ee52b59d4ddea4e622fbbd65,"['N', 'N', 'N']",True
 AGACAO,C16H13N3O2,Mo,-2.0,3.0,3.0,,Manting,unq_CSD-AGACAO-03-a,CSD-AGACAO-03-a,c641b7263a63f3b105574d58ebcf3b46,"['O', 'O', 'N']",True
 MIXGOQ,Br1C8H7N3O1S1,Ni,-1.0,3.0,3.0,,Manting,,,,,False
@@ -190,8 +190,8 @@ BUFVAB,C19H31N1O3,Mo,-2.0,4.0,3.0,,Manting,unq_CSD-BUFVAB-04-a,CSD-BUFVAB-04-a,5
 CILFOV,C24H26N3O2S1,Pd,-2.0,2.0,3.0,,Manting,unq_CSD-CILFOV-02-a,CSD-CILFOV-02-a,65ec164e0643e81a34afa4208a75b4b5,"['N', 'C']",True
 KELLUJ,C12H9O1,Ti,-1.0,1.0,3.0,,Manting,unq_CSD-KELLUJ-01-c,CSD-KELLUJ-01-c,4af4e32fa7ac2e85094170b05da5c434,['O'],True
 QAXCAT,C16H12N5,Rh,-1.0,3.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-QAXCAT-03-a,CSD-QAXCAT-03-a,62a07ea4302a7e0d0efbc0fd097036a5,"['N', 'N', 'N']",False
-BIQYEI,C18H23P1,Pd,-1.0,2.0,3.0,,Manting,unq_CSD-BIQYEI-01-a,CSD-BIQYEI-01-a,7e04ec4d2252565b76f83abce8b7a90d,['P'],True
-DOMROM,C7H6N1O1,Pt,0.0,1.0,3.0,,Manting,unq_CSD-BIXSIN-01-c,CSD-DOMROM-01-b,f0cd2d71fc52ab37b2e06271790476a1,['N'],True
+BIQYEI,C18H23P1,Pd,-1.0,1.0,3.0,,Manting,unq_CSD-BIQYEI-01-a,CSD-BIQYEI-01-a,7e04ec4d2252565b76f83abce8b7a90d,['P'],True
+DOMROM,C7H6N1O1,Pt,-1.0,1.0,3.0,,Manting,unq_CSD-BIXSIN-01-c,CSD-DOMROM-01-b,f0cd2d71fc52ab37b2e06271790476a1,['N'],True
 HOXTIX,C21H14O2,Ti,-2.0,2.0,3.0,,Manting,unq_CSD-HOXTIX-02-a,CSD-HOXTIX-02-a,a53c68ee51e064924d0dc41d3fc5cb15,"['O', 'O']",True
 PAJDOV,C15H13N2P1S1,Au,0.0,1.0,3.0,,Manting,unq_CSD-PAJDOV-01-a,CSD-PAJDOV-01-a,89966ffe9d46cc82476178d6adae1083,['P'],True
 ZODMAI,C34Cl3H28N3O3,Ni,-2.0,4.0,3.0,,Manting,,,,,False
@@ -212,7 +212,7 @@ MIGFIS,C7H4N1O4,Ni,-2.0,2.0,3.0,,Manting,unq_CSD-MIGFIS-01-a,CSD-MIGFIS-01-a,fd6
 TANPII,C1H2N3O2,Co,-1.0,2.0,3.0,,Manting,unq_CSD-TANPII-02-c,CSD-TANPII-02-c,cdf55b078ff0315ea0f9af096f49e303,"['O', 'N']",True
 JAPPOF,C8H16N4P1,Pt,-1.0,2.0,3.0,,Manting,unq_CSD-DUKFOE-02-a,CSD-JAPPOF-02-a,0b3c016f9b7ea7477facb94ab4c42148,"['P', 'N']",True
 NIMTIM,C10H15N2O2,V,-1.0,4.0,3.0,,Manting,unq_CSD-NIMTIM-04-a,CSD-NIMTIM-04-a,744ccb9bea596ddcf7a072bfac414731,"['O', 'O', 'N', 'N']",True
-KIJJOD,C36H31N2,Pd,0.0,2.0,3.0,,Manting,unq_CSD-KIJJOD-03-a,CSD-KIJJOD-03-a,86bc6b1273ac8cbfbea7b076eb7b67f5,"['N', 'N', 'C']",True
+KIJJOD,C36H31N2,Pd,-1.0,3.0,3.0,,Manting,unq_CSD-KIJJOD-03-a,CSD-KIJJOD-03-a,86bc6b1273ac8cbfbea7b076eb7b67f5,"['N', 'N', 'C']",True
 CMEPDA,C7H15N1S1,Pd,0.0,2.0,3.0,,Manting,unq_CSD-CMEPDA-02-a,CSD-CMEPDA-02-a,a6c17425d7955c4ac2420afa58c25733,"['S', 'N']",True
 PUYXAJ,C22H25O3P1Se1,Pd,0.0,2.0,3.0,,Manting,unq_CSD-PUYXAJ-02-a,CSD-PUYXAJ-02-a,4052fc2e95d644d5f7a8f33a7b1cad38,"['Se', 'P']",True
 HAXPEB,C9H9N2O2,V,-1.0,3.0,3.0,,Manting,unq_CSD-HAXPEB-03-a,CSD-HAXPEB-03-a,16d9a42cce83d5c70b7afa8f1c7ec795,"['O', 'N', 'N']",True
@@ -227,9 +227,9 @@ QERXET,C29H29N3O2,Co,-2.0,5.0,3.0,,Manting,unq_CSD-QERXET-05-a,CSD-QERXET-05-a,2
 HAGJIK,C8Cl2H5O3,Zn,-1.0,1.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
 CEBYAK,C6H3P1,Re,0.0,1.0,3.0,,Manting,unq_CSD-CEBYAK-01-d,CSD-CEBYAK-01-d,a15fa1f445a054ab5a91a8b42254def3,['P'],True
 MIGHIV,C18H17N2,V,-1.0,2.0,3.0,,Manting,unq_CSD-MIGHIV-02-a,CSD-MIGHIV-02-a,3e97cbe3fa83f27b555db7df7a360b4e,"['N', 'N']",True
-CAPHUW,C12H10N3O1,Pd,-1.0,2.0,3.0,,Manting,unq_CSD-CAPHUW-03-a,CSD-CAPHUW-03-a,97b3f29e4398d9e5d1d3984e8bfd43db,"['O', 'N', 'N']",True
+CAPHUW,C12H10N3O1,Pd,-1.0,3.0,3.0,,Manting,unq_CSD-CAPHUW-03-a,CSD-CAPHUW-03-a,97b3f29e4398d9e5d1d3984e8bfd43db,"['O', 'N', 'N']",True
 FUTWAT,C24H54P4,Fe,0.0,4.0,3.0,,Manting,unq_CSD-FUTWAT-04-a,CSD-FUTWAT-04-a,c2576d653db59cedd73d824404259b4d,"['P', 'P', 'P', 'P']",True
-SIYFUB,C5H5O1,Ti,-1.0,2.0,3.0,C6H5NO real stoichiometry,Manting,unq_CSD-SIYFUB-03-a,CSD-SIYFUB-03-a,b1fdd4426d48fb8672b1cd551b430662,"['C', 'C', 'O']",False
+SIYFUB,C5H5O1,Ti,-2.0,2.0,1.0,C6H5NO real stoichiometry (Graph Issue),Manting,unq_CSD-SIYFUB-03-a,CSD-SIYFUB-03-a,b1fdd4426d48fb8672b1cd551b430662,"['C', 'C', 'O']",False
 IYUQUP,C24F2H13N2,Pt,-1.0,3.0,3.0,,Manting,,,,,False
 RADPET,C13H33N3Si2,Ta,-2.0,3.0,3.0,,Manting,unq_CSD-FEPFOW-04-a,CSD-RADPET-03-a,34076de653ef043a5476526c6c5615c1,"['N', 'N', 'N']",True
 BOCYEA,C10H10N1S2,Ru,0.0,1.0,3.0,,Manting,,,,,False
@@ -238,7 +238,7 @@ JATCAL,B1Br3C15H19N6,Ni,-1.0,3.0,3.0,,Manting,,,,,False
 FUZSOK,C12H10N4,Pt,-2.0,3.0,3.0,,Manting,unq_CSD-FUZSOK-03-a,CSD-FUZSOK-03-a,1106b663081dd3e9c96837f7b07eaded,"['N', 'N', 'N']",True
 GIJBOR,C10H20N1O3,Ti,-3.0,4.0,3.0,,Manting,unq_CSD-UROPOH-04-a,CSD-GIJBOR-04-a,75810cbea4306914ac8b805e3f9189ce,"['O', 'O', 'O', 'N']",True
 PIKLEC,C18H17N3O1,Pt,0.0,2.0,3.0,,Manting,unq_CSD-PIKLEC-02-a,CSD-PIKLEC-02-a,f95222dba3bc8ed512d984f2a50ddf13,"['N', 'N']",True
-QAGFOU,C15H20N2,Ti,0.0,6.0,3.0,Pi and monodentate coordinatin mode ignore denticity,Manting,unq_CSD-QAGFOU-06-a,CSD-QAGFOU-06-a,3f5b5ea551db760d0fb5db4729c7fd48,"['N', 'N', 'C', 'C', 'C', 'C']",False
+QAGFOU,C15H20N2,Ti,-2.0,6.0,3.0,Pi and monodentate coordinatin mode ignore denticity,Manting,unq_CSD-QAGFOU-06-a,CSD-QAGFOU-06-a,3f5b5ea551db760d0fb5db4729c7fd48,"['N', 'N', 'C', 'C', 'C', 'C']",False
 ALOBEJ,C14H20O2,Pt,-2.0,2.0,3.0,,Manting,unq_CSD-ZOPJAS-02-a,CSD-ALOBEJ-02-a,427ef79f25036963e9aae62c15b9f289,"['O', 'O']",True
 KAYPUW,C8H8N1O2,Zn,-1.0,2.0,3.0,,Manting,unq_CSD-KAYPUW-02-b,CSD-KAYPUW-02-b,53fa23e6bb8567e30484178cd769c1bd,"['O', 'N']",True
 BOCXIC,C20H21N3,Hg,0.0,2.0,3.0,,Manting,,,,,False
@@ -252,16 +252,16 @@ KIPYOX,C11H10N2,Pd,-1.0,2.0,3.0,If counting the counter anion to be interacting 
 UTEMEN,C12H29N1P2,Ni,0.0,2.0,3.0,,Manting,unq_CSD-UTEMOX-02-a,CSD-UTEMEN-02-a,c6fc4d4334abb23eb3c53b22a01af71a,"['P', 'P']",True
 AJIYIC,C20F2H20N2O2,Pt,-2.0,4.0,3.0,,Manting,,,,,False
 XAXZEB,C6H7N1O1,Pt,0.0,1.0,3.0,,Manting,unq_CSD-RAPTIO-01-f,CSD-XAXZEB-01-d,d521d0ee39d7a378eda8fe9cce85182f,['N'],True
-VIZHOB,C24H26O2,Ti,-1.0,2.0,3.0,,Manting,unq_CSD-VIZHOB-02-a,CSD-VIZHOB-02-a,50c5cd1ffe01a8013b5973909e408697,"['O', 'O']",True
+VIZHOB,C24H26O2,Ti,-2.0,2.0,3.0,,Manting,unq_CSD-VIZHOB-02-a,CSD-VIZHOB-02-a,50c5cd1ffe01a8013b5973909e408697,"['O', 'O']",True
 FONBAM,C4H4O5,Ni,-2.0,3.0,3.0,,Manting,,,,,False
 UBEYAB,C4H8O1,Pt,-2.0,2.0,3.0,,Manting,unq_CSD-UBEYAB-02-a,CSD-UBEYAB-02-a,9be9e9d6e2e9d273efc485102d1aa0b5,"['C', 'C']",True
 CAVMEU,C21H27N3,Ru,0.0,1.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-CAVMEU-01-a,CSD-CAVMEU-01-a,ac6f4a2b2c3758d712e9ba101c851c58,['C'],False
 KAYYUG,C18H36N6,Zn,0.0,4.0,3.0,,Manting,unq_CSD-KAYYUG-04-a,CSD-KAYYUG-04-a,dd4db14610878b200a4ea72c0ce3ebc6,"['N', 'N', 'N', 'N']",True
 WURGIB,C24H29N2O1P1,Zn,0.0,2.0,3.0,,Manting,unq_CSD-WURGIB-02-a,CSD-WURGIB-02-a,be6fb1ebaf8d1248b27c19c6a8644bc6,"['N', 'O']",True
-GATFUD,B1C21H34N6,Fe,-1.0,3.0,3.0,,Manting,,,,,False
+GATFUD,B1C21H34N6,Fe,-1.0,3.0,3.0,3D structure unavailable,Manting,,,,,False
 EFUWIL,C25H26N1O1P1,Pd,0.0,2.0,3.0,,Manting,unq_CSD-EFUWIL-02-a,CSD-EFUWIL-02-a,3ea5d8a1e118dd248daacc90e7e29514,"['P', 'N']",True
 NIGFUH,C6H5N2O3,Ir,-1.0,2.0,3.0,,Manting,unq_CSD-NIGFUH-02-a,CSD-NIGFUH-02-a,e01e766bf0ea955e9e79606aa9cec668,"['O', 'N']",True
-MASBEQ,C25H22N2O4,Ni,-1.0,4.0,3.0,,Manting,unq_CSD-MASBEQ-04-a,CSD-MASBEQ-04-a,818d13f0c0a2ff5b74f7e33f315aff24,"['O', 'O', 'N', 'N']",True
+MASBEQ,C25H22N2O4,Ni,-2.0,4.0,3.0,,Manting,unq_CSD-MASBEQ-04-a,CSD-MASBEQ-04-a,818d13f0c0a2ff5b74f7e33f315aff24,"['O', 'O', 'N', 'N']",True
 UGODUQ,C5H6N2,Zn,0.0,1.0,3.0,,Manting,unq_CSD-LEQBOY-01-b,CSD-UGODUQ-01-a,4bb6fd91bb2f7f30c106f78473ea12f3,['N'],True
 MAZXAO,C5H4N2O2,Pt,-1.0,1.0,3.0,,Manting,unq_CSD-CUHXUY-01-e,CSD-MAZXAO-01-f,d5a0c79e7fcbad0f48780bb6e2725870,['N'],True
 VUCYUO,C24H30N4,Ni,0.0,3.0,3.0,,Manting,unq_CSD-VUCYUO-03-a,CSD-VUCYUO-03-a,1860bca772f4577300433b4bf1f228c8,"['N', 'N', 'N']",True
@@ -273,7 +273,7 @@ FEKLAJ,C47F6H26N4,Zn,-2.0,4.0,3.0,,Manting,,,,,False
 KITNAF,C22H18N4,Zn,0.0,2.0,3.0,,Manting,unq_CSD-KITNAF-02-a,CSD-KITNAF-02-a,559968e73db3ed2a0a26e81e7c4c97d3,"['N', 'N']",True
 DEQJOB,C22H16N3O1,Pd,-1.0,3.0,3.0,,Manting,unq_CSD-DEQJOB-03-a,CSD-DEQJOB-03-a,d5b6a38abf309952424850925fc91971,"['N', 'O', 'N']",True
 XESHAG,C23H26N4,Fe,0.0,2.0,3.0,,Manting,unq_CSD-XESHAG-02-a,CSD-XESHAG-02-a,7ad3a962fb7a8399fd489270745bdbd9,"['N', 'C']",True
-BODPUI,C36F5H31N2O2S1,Rh,-1.0,0.0,3.0,Multicoordination mode,Manting,,,,,False
+BODPUI,C36F5H31N2O2S1,Rh,-1.0,8.0,3.0,Multicoordination mode denticity ambiguous,Manting,,,,,False
 MASSEH,C18H15N2O2S1,Pt,-1.0,2.0,3.0,,Manting,unq_CSD-MASSEH-02-a,CSD-MASSEH-02-a,448354240c10758673094092930c2cb3,"['N', 'N']",True
 RARRIL,C11H12O8S2,Co,-2.0,3.0,3.0,,Manting,unq_CSD-RARRIL-03-a,CSD-RARRIL-03-a,09840503d0b0d70fc1149ee3e537134a,"['S', 'S', 'C']",True
 ITUGIP,C9H22N4,Zn,0.0,2.0,3.0,,Manting,unq_CSD-ITUGIP-02-a,CSD-ITUGIP-02-a,bf2206b4abe72c869775ed9a5d92aef3,"['N', 'N']",True
@@ -290,7 +290,7 @@ PIPYUK,C7H10O2,Tc,-2.0,2.0,3.0,,Manting,unq_CSD-PIPYUK-02-a,CSD-PIPYUK-02-a,7e15
 QAWQUB,C11H17N3,Co,0.0,3.0,3.0,,Manting,unq_CSD-QAWQUB-03-a,CSD-QAWQUB-03-a,28f2e93060887824a74003ebfef60eb9,"['N', 'N', 'N']",True
 IXEYEQ,C7H5O1,Hg,-1.0,2.0,3.0,,Manting,unq_CSD-OFADEF-02-a,CSD-IXEYEQ-01-b,9be837f3ad4bb343c31d39ea05c486e9,['C'],True
 LIHPUN,C30H24N6,Pd,0.0,2.0,3.0,,Manting,unq_CSD-LIHRAV-02-a,CSD-LIHPUN-02-a,e1738f14468082bf6ed8a495dd5976e7,"['N', 'N']",True
-GIGJIQ,C7F1H10Si1,Ti,-1.0,0.0,3.0,Pi - ignore denticity ,Manting,,,,,False
+GIGJIQ,C7F1H10Si1,Ti,-1.0,5.0,3.0,Pi - ignore denticity ,Manting,,,,,False
 ULUDIO,C15H14O2,W,-2.0,2.0,3.0,,Manting,unq_CSD-ULUDIO-02-a,CSD-ULUDIO-02-a,478a4ce7224916523f901a035c896f86,"['O', 'O']",True
 WENGOO,C18H15N2,Pt,-1.0,3.0,3.0,,Manting,unq_CSD-QAWLOR-03-a,CSD-WENGOO-03-a,4ad2633505cf845d568bf79a403c8815,"['N', 'C', 'N']",True
 TESPEP,C8H22N2O3Si1,Ru,0.0,2.0,3.0,,Manting,unq_CSD-TESPEP-02-a,CSD-TESPEP-02-a,aec7e6b446cae02551a1f46e077d171f,"['N', 'N']",True
@@ -300,16 +300,16 @@ HANXEZ,C12H19N2,Ti,-1.0,3.0,3.0,,Manting,unq_CSD-HANXEZ-03-a,CSD-HANXEZ-03-a,b0e
 HOCDEJ,C24H33O2P1,Au,0.0,1.0,3.0,,Marconi1,unq_CSD-HOCDEJ-01-a,CSD-HOCDEJ-01-a,81c1403a6be54c89824dacd23bebe2a8,['P'],True
 RAMHAO,C8H9,Au,-1.0,1.0,3.0,Not really a ligand,Marconi1,unq_CSD-YIXCUD-01-a,CSD-RAMHAO-01-d,cc95f82d93840c1d91176e665f15423f,['C'],False
 ZUGPUO,C15H20N1P1,Pt,0.0,2.0,3.0,,Marconi1,unq_CSD-ZUGPUO-02-a,CSD-ZUGPUO-02-a,836db51b1737be9110438d59b97a72fb,"['P', 'N']",True
-HIJRUN,C6Cl1H5N1O1,Zn,0.0,2.0,3.0,,Marconi1,,,,,False
+HIJRUN,C6Cl1H5N1O1,Zn,0.0,2.0,1.0,Graph Issue,Marconi1,,,,,False
 HERRIF,C9H13N5O3,Ni,-2.0,4.0,3.0,,Marconi1,unq_CSD-HERRIF-04-a,CSD-HERRIF-04-a,a02932d226668b92416b0c9e6c5b49fd,"['N', 'N', 'N', 'N']",True
 OBOCOY,Br2C18H16N4,Zn,0.0,3.0,3.0,Could increase denticity to 4 probably,Marconi1,,,,,False
 KELRAV,C14H12N2O1,Pd,0.0,2.0,3.0,,Marconi1,unq_CSD-QARQUV-02-a,CSD-KELRAV-02-a,d345991729b7c9ee0050958fa6edc67c,"['N', 'N']",True
-QOKZUL,C26H36N8S2,Pt,-2.0,2.0,3.0,,Marconi1,unq_CSD-QOKZUL-04-a,CSD-QOKZUL-04-a,452ce225fa677c3faf1fc62b12e90c2b,"['S', 'S', 'N', 'N']",True
+QOKZUL,C26H36N8S2,Pt,-2.0,4.0,3.0,,Marconi1,unq_CSD-QOKZUL-04-a,CSD-QOKZUL-04-a,452ce225fa677c3faf1fc62b12e90c2b,"['S', 'S', 'N', 'N']",True
 MOWDOS,C9H16N2,Pt,0.0,1.0,3.0,,Marconi1,unq_CSD-MOWDOS-01-d,CSD-MOWDOS-01-d,2a5555c55371ed5b8c492c6dae443116,['C'],True
 NALXON,C18H14I1P1,Au,0.0,1.0,3.0,,Marconi1,unq_CSD-NALXON-01-b,CSD-NALXON-01-b,1967bebadecd2ba97b120ce9ddbc7ef8,['P'],True
 PAWXOD,C7H7N3,Au,0.0,1.0,3.0,,Marconi1,unq_CSD-PAWXOD-01-b,CSD-PAWXOD-01-b,7fa47eb339a843658de90d068541cd42,['N'],True
 LAXKAW,C13H16N1O2,Pd,-1.0,2.0,3.0,,Marconi1,unq_CSD-AXITOQ-02-a,CSD-LAXKAW-02-a,21c2c38d8f3ed457521e4735833aef46,"['O', 'N']",True
-WEDJEU,C12H20,Pt,0.0,2.0,3.0,,Marconi1,unq_CSD-BOYVIV-04-a,CSD-WEDJEU-04-a,cdc55b9ed276681f168844433aa42412,"['C', 'C', 'C', 'C']",True
+WEDJEU,C12H20,Pt,0.0,4.0,3.0,Technically 2 but this cycle butane can’t be used for the assembly,Marconi1,unq_CSD-BOYVIV-04-a,CSD-WEDJEU-04-a,cdc55b9ed276681f168844433aa42412,"['C', 'C', 'C', 'C']",False
 KAHXOH,C32H34N1P1,Pd,0.0,2.0,3.0,,Marconi1,unq_CSD-KAHXOH-02-a,CSD-KAHXOH-02-a,b7bca688f90ddf4d5dfadc54a73f7f71,"['N', 'P']",True
 QAGGUA,C27H51N1P2,Pt,0.0,2.0,3.0,,Marconi1,unq_CSD-QAGHAH-02-a,CSD-QAGGUA-02-a,5e46f79e7db9c295121c93986784fcad,"['P', 'P']",True
 YEYPOK,C6H5O1,Au,-1.0,1.0,3.0,"The ligand is the PN fragment (0,2,3)",Marconi1,unq_CSD-YEYPOK-01-b,CSD-YEYPOK-01-b,0051e0a7703a91c8680310f367168ce9,['C'],False
@@ -344,7 +344,7 @@ CINPOG,C4H11N1,Zn,-2.0,4.0,3.0,,Marconi1,unq_CSD-NALQOI-01-c,CSD-CINPOG-01-a,367
 TIGVEK,C25H40P4,Rh,0.0,4.0,3.0,,Marconi1,unq_CSD-TIGVEK-04-a,CSD-TIGVEK-04-a,ee505bba39eb29abbb88d921db7558f6,"['P', 'P', 'P', 'P']",True
 FIGNOZ,C5H9N4,Pd,-1.0,1.0,2.0,,Marconi1,unq_CSD-PEJHES-01-c,CSD-FIGNOZ-01-c,28ba0495e5d3814981310772b14f520e,['C'],False
 NOKGUR,C18H13N4O1,Pd,-1.0,3.0,3.0,,Marconi1,unq_CSD-TEHLIE-03-a,CSD-NOKGUR-03-a,9250428e9c585ea3bdb97384224950e7,"['N', 'N', 'N']",True
-LOMXER,C12H21N1Si1,Ru,0.0,4.0,3.0,Denticity is tricky here,Marconi1,unq_CSD-LOMXER-07-a,CSD-LOMXER-07-a,9ee02fdd306db5c15d597a8157eba7a4,"['N', 'C', 'C', 'C', 'C', 'C', 'C']",False
+LOMXER,C12H21N1Si1,Ru,0.0,7.0,3.0,Denticity is tricky here,Marconi1,unq_CSD-LOMXER-07-a,CSD-LOMXER-07-a,9ee02fdd306db5c15d597a8157eba7a4,"['N', 'C', 'C', 'C', 'C', 'C', 'C']",False
 WILBEZ,C4H7O2,Pd,-1.0,1.0,3.0,Not really a ligand,Marconi1,unq_CSD-WILBEZ-01-c,CSD-WILBEZ-01-c,267b09fbe09ddaa72dbf8176ca89583d,['C'],False
 GEZNUW,C19H24N3,Ir,-1.0,2.0,2.0,,Marconi1,unq_CSD-GEZNUW-02-a,CSD-GEZNUW-02-a,00e2042f801e6d0fc4059c7d55004307,"['N', 'N']",False
 OLEVEG,C4H8S2,Rh,0.0,1.0,3.0,,Marconi1,unq_CSD-OLEVOQ-01-c,CSD-OLEVEG-01-c,45f094b9bf55da9f6334c7c23a4e2240,['S'],True

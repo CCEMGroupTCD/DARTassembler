@@ -182,8 +182,8 @@ class LigandDB(BaselineDB):
     @classmethod
     def from_MoleculeDB(cls,
                         molDB: MoleculeDB,
-                        metals_of_interest=None,
-                        denticity_numbers_of_interest: list = None,
+                        metals_of_interest=None,   # important for assembly
+                        denticity_numbers_of_interest: list = None, # important for assembly
                         Testing=False):
         """
         molDB: Database of Molecules to extract ligands from

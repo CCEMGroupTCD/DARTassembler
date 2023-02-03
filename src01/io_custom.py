@@ -2,7 +2,7 @@
 Utility functions for input and output.
 """
 import json
-from src01.Molecule import RCA_Molecule, RCA_Ligand
+from src01.Molecule import RCA_Molecule, RCA_Ligand, RCA_Complex
 from tqdm import tqdm
 
 
@@ -28,7 +28,7 @@ def load_complex_db(path: str, molecule: str='dict') -> dict:
     check_molecule_value(molecule)
     db = load_json(path)
     if molecule == 'class':
-        db = {name: RCA_Molecule.read_from_mol_dict(mol) for name, mol in db.items()}
+        db = {name: RCA_Complex.read_from_mol_dict(mol) for name, mol in db.items()}
     return db
 
 def load_full_ligand_db(path: str, molecule: str='dict') -> dict:

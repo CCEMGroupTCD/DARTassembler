@@ -21,7 +21,7 @@ def main(database_path: str, data_store_path: str, calculate_charges: bool=True,
 
 if __name__ == '__main__':
 
-    database_path = '../database/tmQMg_fixed_gbl_props_cutoffs'             # directory of the complex database in correct input format with xyz files and global properties
+    database_path = '../database/tmQMg_fixed_gbl_props_cutoffs'             # in github
     data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_cutoffs_full"    # directory where we want to store the jsons
     calculate_charges = True                                                # if you want to run charge assignment after ligand extraction, takes ~30 min on tmQMg
     overwrite_atomic_properties = True                                      # if atomic properties json should be overwritten, not really critical
@@ -38,3 +38,4 @@ if __name__ == '__main__':
             exclude_not_fully_connected_complexes=exclude_not_fully_connected_complexes,
             get_only_unique_ligand_db_without_charges=get_only_unique_ligand_db_without_charges
         )
+    

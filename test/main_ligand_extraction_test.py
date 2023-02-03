@@ -20,10 +20,6 @@ import pandas as pd
 #   - rename
 #       - complex dict
 #           - total_q --> charge
-#   - pre-assembly filters:
-#       - chosen_denticity_fraction too small
-#   - pre-ligand extraction filters:
-#       - filter out complexes with H coordinated metals (ask Cian if makes sense)
 #
 # TODO when refactoring pipeline
 #   - BUGFIX:

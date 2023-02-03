@@ -709,6 +709,7 @@ class RCA_Complex(RCA_Molecule):
             self.metal = identify_metal_in_ase_mol(self.mol)
             self.metal_oxi_state = make_None_to_NaN(self.global_props['metal_oxi_state'])
             self.charge = make_None_to_NaN(self.global_props['charge'])
+            self.metal_idx = self.atomic_props['atoms'].index(self.metal)
 
             self.add_additional_complex_information_to_global_props()
 
