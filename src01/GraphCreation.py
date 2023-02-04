@@ -4,7 +4,6 @@ Still Under Construction, but already implemented in the workflow of the extract
 Should work fine with the default graph creation
 """
 import networkx as nx
-import pandas as pd
 import os
 import json
 
@@ -17,7 +16,6 @@ from ase.data import covalent_radii  # THE basic covalent radii data
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 
 from molSimplify.Classes.mol3D import mol3D
-from pysmiles import read_smiles
 
 import warnings
 
@@ -243,6 +241,11 @@ class GraphCreation:
 
         graph_file_path = f"{serverpath}/CSD/graphs/GraphJsonsTMQM_curated/"
 
+        try:
+            os.listdir(graph_file_path)
+        except FileNotFoundError:
+            print("Graph directory not found, standard graphs are getting created")
+            return
         #
         if f"{identifier}_g.json" in os.listdir(graph_file_path):
             with open(f"{graph_file_path}/{identifier}_g.json", "r") as f:

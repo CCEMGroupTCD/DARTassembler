@@ -2,7 +2,7 @@
 Class for extracting ligands from a database of complexes.
 """
 import warnings
-
+from warnings import warn
 import pandas as pd
 from copy import deepcopy
 from src01.DataBase import MoleculeDB, LigandDB
@@ -10,23 +10,34 @@ import gc
 import numpy as np
 from pathlib import Path
 from tqdm import tqdm
-from warnings import warn
 import json
 import networkx as nx
-from src01.DataLoader import DataLoader
-from src01.io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, \
-    save_full_ligand_db, save_complex_db
-from src01.main_tmQMG import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, \
-    get_charges_of_unique_ligands, update_databases_with_charges, update_ligand_with_charge_inplace
-from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warning_inplace, unroll_dict_into_columns
 from typing import Union
 from datetime import datetime
 
+from src01.DataLoader import DataLoader
+from src01.io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, \
+    save_full_ligand_db, save_complex_db
+from src01.utilities_extraction import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, \
+    get_charges_of_unique_ligands, update_databases_with_charges, update_ligand_with_charge_inplace
+from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warning_inplace, unroll_dict_into_columns
 
-class LigandExtraction():
 
-    def __init__(self, database_path: str, data_store_path: str, exclude_not_fully_connected_complexes: bool = True,
-                 testing: Union[bool, int] = False):
+class LigandExtraction:
+
+    def __init__(self, database_path: str,
+                 data_store_path: str,
+                 exclude_not_fully_connected_complexes: bool = True,
+                 testing: Union[bool, int] = False,
+                 graph_strat: str = "default"
+                 ):
+
+        self.database_path = None
+        self.data_store_path = None
+        self.exclude_not_fully_connected_complexes = None
+        self.testing = None
+
+        self.graph_strat = graph_strat
 
         self.check_and_set_init_input(
             database_path=database_path,
@@ -40,8 +51,12 @@ class LigandExtraction():
         self.unique_ligands_json = Path(data_store_path, 'tmQM_Ligands_unique.json')
         self.full_ligands_json = Path(data_store_path, 'tmQM_Ligands_full.json')
 
-    def check_and_set_init_input(self, database_path: str, data_store_path: str,
-                                 exclude_not_fully_connected_complexes: bool, testing: Union[bool, int]):
+    def check_and_set_init_input(self,
+                                 database_path: str,
+                                 data_store_path: str,
+                                 exclude_not_fully_connected_complexes: bool,
+                                 testing: Union[bool, int]
+                                 ):
         database_path = Path(str(database_path))
         data_store_path = Path(str(data_store_path))
 
@@ -81,9 +96,25 @@ class LigandExtraction():
 
         return complex_db
 
-    def extract_ligands(self):
-        self.complex_db = MoleculeDB.from_json(json_=str(self.input_complexes_json), type_="Complex",
-                                               identifier_list=None)
+    def extract_ligands(self,
+                        testing=None,
+                        graph_creating_strategy: str = "default"
+                        ):
+
+        # todo: needs to be refined a little
+        if isinstance(testing, int) is True:
+            max_number = testing
+        else:
+            max_number = None
+
+        self.complex_db = MoleculeDB.from_json(json_=str(self.input_complexes_json),
+                                               type_="Complex",
+                                               identifier_list=None,
+                                               max_number=max_number,
+                                               graph_strategy=graph_creating_strategy
+                                               )
+
+        #
         # TODO Instead of filtering the whole db, implement to check each complex individually
         self.complex_db = self.filter_input_complex_db(self.complex_db)
 
@@ -310,9 +341,12 @@ class LigandExtraction():
 
         return
 
-    def run_ligand_extraction(self, calculate_charges: bool = True, overwrite_atomic_properties: bool = True,
+    def run_ligand_extraction(self,
+                              calculate_charges: bool = True,
+                              overwrite_atomic_properties: bool = True,
                               use_existing_input_json: bool = True,
-                              get_only_unique_ligand_db_without_charges: bool = False):
+                              get_only_unique_ligand_db_without_charges: bool = False
+                              ):
         """
         Runs the entire ligand extraction process from reading in the .xzy files to optionally assigning charges.
         """
@@ -321,7 +355,10 @@ class LigandExtraction():
         self.ensure_input_complex_db_exists(overwrite_atomic_properties=overwrite_atomic_properties,
                                             use_existing_input_json=use_existing_input_json)
 
-        self.extract_ligands()
+        self.extract_ligands(testing=self.testing,
+                             graph_creating_strategy=self.graph_strat
+                             )
+
         self.save_full_ligand_db()
         self.build_unique_ligand_db()
 

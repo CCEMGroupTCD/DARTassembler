@@ -41,7 +41,6 @@ def csd_graphs_not_usable_yet():
 
 
 if __name__ == "__main__":
-
     """
     data_path = "../data_output/tmQMG_Jsons"
 
@@ -69,19 +68,23 @@ if __name__ == "__main__":
     """
     database_path = '../data_input/tmQM'
 
+    DB = MoleculeDB.from_json(json_="../../data_output/CSD_MM_G_Jsons/tmQMG.json",
+                              type_="Molecule",
+                              max_number=100,
+                              graph_strategy="CSD"
+                              )
+
     tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
                                    type_="Molecule",
                                    max_number=100,
                                    graph_strategy="CSD"
                                    )
 
-
-
     tmQM_DB2 = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
-                                   type_="Molecule",
-                                   max_number=100,
+                                    type_="Molecule",
+                                    max_number=100,
                                     graph_strategy="CSD"
-                                   )
+                                    )
 
     """
 

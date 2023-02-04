@@ -1,8 +1,6 @@
 # standard Pyhton packages
 import hashlib
-import warnings
 import networkx as nx
-import random
 import numpy as np
 from copy import deepcopy
 
@@ -10,11 +8,10 @@ from copy import deepcopy
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from ase.visualize import view
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
-from scipy.spatial.transform import Rotation as R
 from sympy import Point3D, Plane
 
 # collection of molecule objects of other packages
-from ase import io, Atoms, neighborlist
+from ase import io, Atoms
 from pymatgen.core.structure import Molecule as PyMatMol
 
 
@@ -247,7 +244,7 @@ class RCA_Molecule:
         else:
             lig_key = "NoCSD"
             csd = None
-        from src01.constants import mini_alphabet
+        from constants.constants import mini_alphabet
         j = 0
         while True:
             ligand_name = f'{lig_key}-0{denticity}-{mini_alphabet[j]}'

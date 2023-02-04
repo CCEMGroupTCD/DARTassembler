@@ -4,10 +4,7 @@ Test, which Graph creating methods performs best
 import networkx as nx
 from src01.DataBase import MoleculeDB, LigandDB
 from src01.DataLoader import DataLoader
-from src01.constants import metals_in_pse
-from pymatgen.core.periodic_table import Element as Pymatgen_Element
 import warnings
-import numpy as np
 
 import gc
 
