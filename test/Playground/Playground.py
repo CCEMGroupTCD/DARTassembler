@@ -40,8 +40,6 @@ def csd_graphs_not_usable_yet():
             breakpoint()
 
 
-
-
 if __name__ == "__main__":
 
     """
@@ -69,7 +67,7 @@ if __name__ == "__main__":
 
     print("done")
     """
-    database_path = '../database/tmQM'
+    database_path = '../data_input/tmQM'
 
     tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
                                    type_="Molecule",
