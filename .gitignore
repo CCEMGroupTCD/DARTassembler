@@ -43,17 +43,5 @@
 /.conda_config
 /constants/CSD/graphs/tmqm_graphs_from_csd.json
 /data_input/CSD_MM_G/atomic_properties/atomic_properties.json
-/data_output/CSD_MM_G_Jsons/complex_db.json
-/data_output/CSD_MM_G_Jsons/tmQM_Ligands_full.json
-/data_output/CSD_MM_G_Jsons/tmQM_Ligands_unique.json
-/data_output/CSD_MM_G_Jsons/tmQMG.json
-/data_output/tmQM_Jsons/complex_db.json
-/data_output/tmQM_Jsons/tmQM_Ligands_full.json
-/data_output/tmQM_Jsons/tmQM_Ligands_unique.json
-/data_output/tmQM_Jsons/tmQMG.json
-/data_output/tmQMG_Jsons/complex_db.json
-/data_output/tmQMG_Jsons/tmQM_Ligands_full.json
-/data_output/tmQMG_Jsons/tmQM_Ligands_unique.json
-/data_output/tmQMG_Jsons/tmQMG.json
 /data_input/tmQMG/atomic_properties/atomic_properties.json
 /data_input/tmQM/atomic_properties/atomic_properties.json
