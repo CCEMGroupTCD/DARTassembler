@@ -31,13 +31,16 @@ def main(database_path_: str,
          use_existing_input_json_: bool = True,
          exclude_not_fully_connected_complexes_: bool = True,
          get_only_unique_ligand_db_without_charges_: bool = False,
-         testing_: Union[bool, int] = False
+         testing_: Union[bool, int] = False,
+         graph_strat_: str = "default"
          ):
+
     db = LigandExtraction(
         database_path=database_path_,
         data_store_path=data_store_path_,
         exclude_not_fully_connected_complexes=exclude_not_fully_connected_complexes_,
-        testing=testing_
+        testing=testing_,
+        graph_strat=graph_strat_
     )
 
     db.run_ligand_extraction(
@@ -53,12 +56,15 @@ def main(database_path_: str,
 if __name__ == '__main__':
 
     #
-    #
-    database_path, data_store_path = select_example_database(DB="CSD_MM_G")
+    # example databases, choose between: tmqm, tmqmG, CSD_MM_G
+    database_path, data_store_path = select_example_database(DB="tmQM")
 
     #
-    testing = 500           # if we would like to only do a test run
+    testing = 1000           # if we would like to only do a test run
+    graph_strategy = "CSD"  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
+    #
+    #
     calculate_charges = True  # if you want to run charge assignment after ligand extraction, takes ~30 min on tmQMg
     overwrite_atomic_properties = True  # if atomic properties json should be overwritten, not really critical
     use_existing_input_json = True  # if the existing input json should be used or the process started from the xzy files
@@ -73,5 +79,6 @@ if __name__ == '__main__':
         use_existing_input_json_=use_existing_input_json,
         exclude_not_fully_connected_complexes_=exclude_not_fully_connected_complexes,
         get_only_unique_ligand_db_without_charges_=get_only_unique_ligand_db_without_charges,
-        testing_=testing
+        testing_=testing,
+        graph_strat_=graph_strategy
     )
