@@ -48,3 +48,7 @@
 /data_output/CSD_MM_Jsons/tmQM_Ligands_full.json
 /data_output/CSD_MM_Jsons/tmQM_Ligands_unique.json
 /data_output/CSD_MM_Jsons/tmQMG.json
+/data_output/CSD_MM_G_Jsons/complex_db.json
+/data_output/CSD_MM_G_Jsons/tmQM_Ligands_full.json
+/data_output/CSD_MM_G_Jsons/tmQM_Ligands_unique.json
+/data_output/CSD_MM_G_Jsons/tmQMG.json
