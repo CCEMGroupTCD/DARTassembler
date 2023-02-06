@@ -14,26 +14,26 @@ from pandas.api.types import is_string_dtype
 from pandas.api.types import is_numeric_dtype
 import numpy as np
 import matplotlib.pyplot as plt
-from superconductors_3D.machine_learning.own_libraries.utils.Scalers import Arcsinh_Scaler
+from src11_machine_learning.machine_learning.own_libraries.utils.Scalers import Arcsinh_Scaler
 import matplotlib.colors
 import sklearn
 from scipy import stats
 from matplotlib.lines import Line2D
 from matplotlib.ticker import ScalarFormatter, LogLocator, NullFormatter, FormatStrFormatter
 import seaborn as sns
-import superconductors_3D.machine_learning.Custom_Machine_Learning_v1_3 as ML
-from superconductors_3D.machine_learning.own_libraries.data import All_Data
+import src11_machine_learning.machine_learning.Custom_Machine_Learning_v1_3 as ML
+from src11_machine_learning.machine_learning.own_libraries.data import All_Data
 from itertools import product
 import warnings
 import yaml
 import copy
-from superconductors_3D.machine_learning.own_libraries.data.All_scores import All_scores
-from superconductors_3D.machine_learning.own_libraries.data.Domain_statistics import Domain_statistics
+from src11_machine_learning.machine_learning.own_libraries.data.All_scores import All_scores
+from src11_machine_learning.machine_learning.own_libraries.data.Domain_statistics import Domain_statistics
 from typing import Union
-from superconductors_3D.machine_learning.own_libraries.data import Feature_Importances
-from superconductors_3D.dataset_preparation.utils.check_dataset import get_chem_dict
+from src11_machine_learning.machine_learning.own_libraries.data import Feature_Importances
+# from src11_machine_learning.dataset_preparation.utils.check_dataset import get_chem_dict
 sns.set_theme()
-from superconductors_3D.machine_learning.own_libraries.utils.Scores import SMAPE
+from src11_machine_learning.machine_learning.own_libraries.utils.Scores import SMAPE
 
 
 def unroll_dictionaries(dictionary, sep='__'):
@@ -482,17 +482,17 @@ class MLRun():
         pred_lower_bound = f'${ML.SIGMA} \sigma$ lower bound'
         pred_upper_bound = f'${ML.SIGMA} \sigma$ upper bound'
         pred_scaled_unc = f'${ML.SIGMA} \sigma$ (scaled)'
-        
+
         # Rename x and y axis to make them nicer for Tc.
         if target == 'tc':
             error = f'{score} of $T_c$'
         else:
             error = f'{score} of {target}'
-        
+
         # When All_Data is finished this should be written to use it.
         data_path = os.path.join(self.run_dir, 'All_values_and_predictions.csv')
         df, _ = ML.load_df_and_metadata(data_path)
-        
+
         other_cols = [duplicate_col] if duplicate_col != None else []
         data = All_Data.All_Data.get_test_data(df,
                                                target,
@@ -506,16 +506,16 @@ class MLRun():
                                                pred_upper_bound=pred_upper_bound,
                                                pred_scaled_unc=pred_scaled_unc
                                                )
-        
+
 
         # Reduce data so that we have only one entry per superconductor instead of one entry per crystal and take mean of true/ pred/ unc tc columns.
         if duplicate_col != None:
             mean_cols=[true_target, pred_target, pred_lower_bound, pred_upper_bound, pred_scaled_unc]
             data = self.reduce_duplicates(data, duplicate_col, mean_cols=mean_cols)
-        
+
         assert score == 'SMAPE'
         data[score] = SMAPE(data[true_target], data[pred_target])
-        
+
         elemental_data = {'element': [], score: []}
         for formula, value in zip(data[chem_formula], data[score]):
             elements = list(get_chem_dict(formula).keys())
@@ -528,30 +528,30 @@ class MLRun():
         df = els.size().reset_index().rename(columns={0: 'occurrences of element'})
         df[score] = list(els[score].mean())
         df['std'] = list(els[score].std())
-        
+
         # Start plotting.
         plt.figure()
-       
+
         # Plot scatter plot.
         ax = plt.errorbar(x=df['occurrences of element'], y=df[score], yerr=df['std'], fmt='.')
-        
+
         # Add axis labels.
         plt.xlabel('occurrences of element')
         plt.ylabel(score)
-        
+
         # Add title.
         plt.title(model)
-        
+
         if log:
             plt.xscale('log')
-        
+
         # # Add legend for quantile bars
         # label = '25%/ 75% quantiles'
         # handles, labels = plt.gca().get_legend_handles_labels()
         # line = Line2D([0], [0], label=label, color='k')
         # handles.extend([line])
         # plt.legend(handles=handles)
-        
+
 
         # Save plot
         plt.tight_layout()
@@ -561,9 +561,9 @@ class MLRun():
         save_name = os.path.join(save_dir, f'score_elemental_prevalence_{target}_{model}_{score}.png')
         plt.savefig(save_name, dpi=300)
         plt.show()
-        
+
         return()
-        
+
         return()
     
     def hist_error_over_x(self, x, target, model, repetitions, domain_col, duplicate_col=None, ylim=None, errortype='MdAE', uncertainty='quantiles', log_bars=False):

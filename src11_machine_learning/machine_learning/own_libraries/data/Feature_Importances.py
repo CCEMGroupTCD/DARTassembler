@@ -16,7 +16,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import superconductors_3D.machine_learning.Custom_Machine_Learning_v1_3 as ML
+import src11_machine_learning.machine_learning.Custom_Machine_Learning_v1_3 as ML
 from itertools import product
 
     

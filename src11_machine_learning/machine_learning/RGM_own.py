@@ -9,7 +9,7 @@ This script contains my wrapper of the RGM of 2020 Jin to go with the standard s
 
 import os
 import numpy as np
-from superconductors_3D.machine_learning.Algorithms.RGM_Jin import RGM as RGM_Jin
+from src11_machine_learning.machine_learning.Algorithms.RGM_Jin import RGM as RGM_Jin
 import torch
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
@@ -23,7 +23,7 @@ from copy import deepcopy
 import mlflow
 import time
 # import torchviz
-from superconductors_3D.machine_learning.own_libraries.own_functions import enforce_types
+from src11_machine_learning.machine_learning.own_libraries.own_functions import enforce_types
 
 
 def log_metrics(metrics: dict, step: float = None, max_tries: float = 10, if_log_metrics: bool = True) -> None:

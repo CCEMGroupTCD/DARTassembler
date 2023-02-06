@@ -24,9 +24,13 @@ def check_molecule_value(output: str):
         raise ValueError(f'Unknown value for `output`: {output}')
 
     return
-def load_complex_db(path: str, molecule: str='dict') -> dict:
+def load_complex_db(path: str, molecule: str='dict', n_max=None) -> dict:
     check_molecule_value(molecule)
     db = load_json(path)
+
+    if not n_max is None:
+        db = {key: val for key, val in db.items()}
+
     if molecule == 'class':
         db = {name: RCA_Complex.read_from_mol_dict(mol) for name, mol in db.items()}
     return db

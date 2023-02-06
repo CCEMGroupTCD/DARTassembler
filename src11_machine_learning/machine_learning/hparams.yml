@@ -1,10 +1,10 @@
-n_epochs: 500
+n_epochs: 200
 nn_layers: 5
 nn_act: 'relu'
-nn_base_dim: 100
-nn_end_dim: 30
+nn_base_dim: 256
+nn_end_dim: 128
 nn_patience: 100
-nn_batch_size: 32
+nn_batch_size: 64
 nn_solver: 'adamw'
 RGM_batch_mode: 'Conserve_ratio'
 RGM_erm_e: 1

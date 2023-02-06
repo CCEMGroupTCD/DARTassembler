@@ -1,0 +1,46 @@
+model:
+  dataset_path: /home/marcel/Documents/uni/praktikum_hyperparam_automation/data/Country-data.csv
+  entry_point: "train.py" # The python file name that includes the function for evaluating the suggestions
+  function_name: "train"
+  copy_data: true # If the data should be copied in the workspace
+git_options:
+  git_uri: "git@github.com:aimat-lab/elasticnet.git"
+  branch: "master" # Either branch or version can be used. Using the option version allows to load specific tags
+experiment:
+  use_local_workspace: false # If a local experiment folder should be created in root folder or a dedicated workspace
+                            # directory (https://wiki.bwhpc.de/e/Workspace)
+  experiment_name: "Test"
+  cluster: "bwunicluster"  # Either "bwunicluster" or "horeka"
+  number_chain_jobs: 4 # How many times should a job - the suggestion evaluation - be chained together. It is used to
+                       # cirumvent the problem of time outs in the cluster
+  multimetric_experiment: true
+modules:
+  - devel/python/3.9.5_intel_19.1
+parameters:
+  - name: l1_ratio
+    type: double
+    bounds:
+      max: 1.0
+      min: 0.0
+  - name: alpha
+    type: double
+    bounds:
+      max: 1.0
+      min: 0.0
+sbatch_options:
+  partition: "dev_single"
+  ntasks: 4
+  mem: 4gb
+metrics:
+  - name: mse
+    objective: minimize
+    strategy: optimize
+  - name: r2
+    objective: maximize
+    strategy: optimize
+sigopt_options:
+  dev_run: true # If the dev api of sigopt should be used to get the suggestions
+  project_name: "elastic_net_test"
+  client_id: 11560
+  observation_budget: 30 # Max number of trials
+  parallel_bandwidth: 4 # Number of parallel evaluations

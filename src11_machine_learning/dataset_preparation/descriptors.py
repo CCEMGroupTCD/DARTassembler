@@ -108,7 +108,7 @@ class RDKit_2D:
 
 class SOAP_3D():
 
-    def __init__(self, ase_molecules: list, r_cut: float=10.0, n_max: int=3, l_max: int=2, crossover: bool=False, average: str='off'):
+    def __init__(self, ase_molecules: list, r_cut: float=10.0, n_max: int=3, l_max: int=2, crossover: bool=False, average: str='off', weighting=None):
         from dscribe.descriptors import SOAP
 
         self.molecules = ase_molecules
@@ -121,7 +121,8 @@ class SOAP_3D():
             n_max=n_max,
             l_max=l_max,
             crossover=crossover,
-            average=average
+            average=average,
+            weighting=weighting
             )
 
     def get_all_species_from_molecules(self):
@@ -142,6 +143,19 @@ class SOAP_3D():
         desc = self.soap.create(system=self.molecules, positions=positions)
 
         return desc
+
+    def get_descriptor_names(self):
+        n_features = self.soap.get_number_of_features()
+        n_per_element = n_features // len(self.species)
+        self.names = np.array(['x'*50]*n_features)
+
+        for el in self.species:
+            loc = self.soap.get_location([el, el])
+            el_names = [f'soap_{el}_{i}' for i in range(n_per_element)]
+            self.names[loc] = el_names
+
+        return self.names
+
 
 
 

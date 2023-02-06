@@ -12,9 +12,9 @@ import warnings
 import os
 # os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import numpy as np
-import tensorflow as tf
+# import tensorflow as tf
 from matplotlib import pyplot as plt
-import torch
+# import torch
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils.validation import check_is_fitted
@@ -27,16 +27,16 @@ import copy
 import yaml
 import datetime
 from shutil import copyfile
-from superconductors_3D.machine_learning.own_libraries.own_functions import movecol, isfloat
-import torch.optim
+from src11_machine_learning.machine_learning.own_libraries.own_functions import movecol, isfloat
+# import torch.optim
 import itertools
-import superconductors_3D.machine_learning.own_libraries.data.All_Data as All_Data
-import superconductors_3D.machine_learning.own_libraries.data.All_scores as All_Scores
-from superconductors_3D.machine_learning.own_libraries.data.Domain_statistics import save_Domain_statistics
-from superconductors_3D.machine_learning.own_libraries.data import Feature_Importances as FI
+import src11_machine_learning.machine_learning.own_libraries.data.All_Data as All_Data
+import src11_machine_learning.machine_learning.own_libraries.data.All_scores as All_Scores
+from src11_machine_learning.machine_learning.own_libraries.data.Domain_statistics import save_Domain_statistics
+from src11_machine_learning.machine_learning.own_libraries.data import Feature_Importances as FI
 from contextlib import redirect_stdout
 import json
-from superconductors_3D.machine_learning.own_libraries.utils.Models import Models, get_modelpath
+from src11_machine_learning.machine_learning.own_libraries.utils.Models import Models, get_modelpath
 
 
 
@@ -281,9 +281,16 @@ def out_of_sigma(y_true, y_pred, sigma_lower_bound, sigma_upper_bound):
     result = sum(out_of_sigma) / len(out_of_sigma)
     
     return result
-    
-    
-    
+
+
+def integer_accuracy(y_true, y_pred, sample_weight):
+    """Calculates the accuracy after rounding to the nearest integer.
+    """
+    y_true = np.round(y_true)
+    y_pred = np.round(y_pred)
+
+    score = sklearn.metrics.accuracy_score(y_true, y_pred, sample_weight=sample_weight)
+    return score
     
 
 def name_score_column(target, scorename, CV):
@@ -341,8 +348,14 @@ class Machine_Learning():
         self.random_seed = random_seed   # "None" for randomization.
         np.random.seed(self.random_seed)
         random.seed(self.random_seed)
-        torch.manual_seed(self.random_seed)
-        tf.random.set_seed(self.random_seed)
+        try:
+            torch.manual_seed(self.random_seed)
+        except NameError:
+            pass
+        try:
+            tf.random.set_seed(self.random_seed)
+        except NameError:
+            pass
         
         df_data = copy.deepcopy(data.reset_index(drop=True))  # Important for make_result_df()
         self.targets = targets
@@ -387,12 +400,13 @@ class Machine_Learning():
         self.copy_files = copy_files
                   
         self.all_scores = {"r2": sklearn.metrics.r2_score,
-                           "logr2": logr2,
+                           # "logr2": logr2,
                            "MAE": sklearn.metrics.mean_absolute_error,
+                           'iacc': integer_accuracy
                            # "MdAE": sklearn.metrics.median_absolute_error,
-                            "MSLE": sklearn.metrics.mean_squared_log_error,
+                           #  "MSLE": sklearn.metrics.mean_squared_log_error,
                             # "MARE": Sc_MARE,
-                            "SMAPE": Sc_SMAPE,
+                            # "SMAPE": Sc_SMAPE,
                             # "OoB": Sc_OoB,
                             # "ScSpec": Sc_specificity,
                             # "ScRecall": Sc_recall,

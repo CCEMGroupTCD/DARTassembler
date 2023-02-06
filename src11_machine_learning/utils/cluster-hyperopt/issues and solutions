@@ -1,0 +1,23 @@
+Issue: sigopt.exception.ApiException: ApiException (404): The requested resource could not be found
+Explanation: Sigopt-hyperopt needs an already existing project on sigopt, in which it will generate the new experiment (note the difference between an experiment and a project in sigopt).
+Solution: Generate project on sigopt website (https://app.sigopt.com/projects). Fill in the project id (not the project name!) in the config file under sigopt_options--> project_name. 
+
+Issue: Dependencies could not be installed with console output "SpecNotFound: Invalid name, try the format: user/package".
+Explanation: Probably the environment.yaml file could not be found. Maybe you misnamed it with .yml instead of .yaml?
+Solution: Make sure that the conda environment file is in the top level directory of the github repo and it is called exactly `environment.yaml`.
+
+Issue: Dependencies could not be installed with pip error: 
+`Pip subprocess error:
+ERROR: Could not find a version that satisfies the requirement sigopt-hyperopt==1.0.0
+ERROR: No matching distribution found for sigopt-hyperopt==1.0.0
+
+
+CondaEnvException: Pip failed
+`
+Explanation: You installed the sigopt-hyperopt package locally using pip, but pip cannot find this package online. Fortunately, the new conda environment doesn't need this package because it is used only for model training, the sigopt-hyperopt scripts are already running.
+Solutions: Delete this package from the environment.yaml file. Instead of installing this package with pip, you could also just install it locally via `conda develop`.
+
+ApiException (400): Invalid type for value: <...> - expected type number
+Explanation: When multimetric_experiment == False, sigopt expects as return value only a single number. Only if multimetric_experiment == True it expects a dict.
+Solution: In your train function when you return (value, metadata), the value must be a number and not a dict.
+It would be good if one could simpy always return a dict and the code would then itself either make it a value or leave the dict depending on if it is a multimetric experiment or not.

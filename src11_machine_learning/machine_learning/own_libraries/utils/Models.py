@@ -7,11 +7,11 @@ Created on Mon Nov 22 14:12:31 2021
 
 This script is a collection of classes for saving and loading models of the ML script.
 """
-from megnet.models import MEGNetModel
+
 import os
 import pickle
 import io
-import torch
+
 
 def get_modelpath(outdir, modelname, repetition):
     """Returns path without extension where a specific model would be saved. Used internally and externally. Outdir is the  directory of the whole run with a subdirectory 'models'.
@@ -36,9 +36,10 @@ class Pickle_tf():
         """
         tf_filename = self.get_tf_filepath(modelpath)
         try:
+            from megnet.models import MEGNetModel
             MEGNetModel.from_file(tf_filename)
             is_MEGNet = True
-        except FileNotFoundError:
+        except (FileNotFoundError, ModuleNotFoundError):
             is_MEGNet = False
             
         return is_MEGNet
@@ -77,7 +78,8 @@ class Pickle_tf():
         regr = Models().load_pickle(modelpath)
         tf_filepath = self.get_tf_filepath(modelpath)
         try:
-            # MEGNet            
+            # MEGNet
+            from megnet.models import MEGNetModel
             tf_model = MEGNetModel.from_file(tf_filepath)
             regressor_from_pipeline(regr).model = tf_model
         except AttributeError as e:
@@ -113,6 +115,7 @@ class Models():
         if save_torch_statedict:
             outpath = filename + '.pt'
             try:
+                import torch
                 model = regressor_from_pipeline(regr)
                 torch.save(model.trainer.state_dict(), outpath)
             except AttributeError:
@@ -157,5 +160,6 @@ class CPU_Unpickler(pickle.Unpickler):
     """
     def find_class(self, module, name):
         if module == 'torch.storage' and name == '_load_from_bytes':
+            import torch
             return lambda b: torch.load(io.BytesIO(b), map_location='cpu')
         else: return super().find_class(module, name)

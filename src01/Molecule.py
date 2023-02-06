@@ -707,9 +707,12 @@ class RCA_Complex(RCA_Molecule):
                             **kwargs
                              )
             self.metal = identify_metal_in_ase_mol(self.mol)
+            self.pmg_metal = Pymatgen_Element(self.metal)
+            self.metal_atomic_number = self.pmg_metal.Z
             self.metal_oxi_state = make_None_to_NaN(self.global_props['metal_oxi_state'])
             self.charge = make_None_to_NaN(self.global_props['charge'])
             self.metal_idx = self.atomic_props['atoms'].index(self.metal)
+
 
             self.add_additional_complex_information_to_global_props()
 
@@ -743,7 +746,8 @@ class RCA_Complex(RCA_Molecule):
             'metal_oxi_state': self.metal_oxi_state,
             'total_q': self.charge,
             'ligands': [lig.write_to_mol_dict() for lig in self.ligands],
-            'graph_hash': self.graph_hash
+            'graph_hash': self.graph_hash,
+            'metal_atomic_number': self.metal_atomic_number
         }
 
     @classmethod

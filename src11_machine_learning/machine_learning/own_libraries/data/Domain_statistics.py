@@ -9,7 +9,7 @@ This script includes a class for the file Domain_statistics.csv.
 """
 
 import pandas as pd
-import superconductors_3D.machine_learning.Custom_Machine_Learning_v1_3 as ML
+import src11_machine_learning.machine_learning.Custom_Machine_Learning_v1_3 as ML
 
 def get_score_col(score, target):
     return f'{score}_{target}'

@@ -1,0 +1,15 @@
+MODEL_REPO_NAME = 'model'
+ENVIRONMENT_YAML_NAME = 'environment.yaml'
+EXPERIMENT_CONFIG_NAME = 'experiment_config.yaml'
+EXPERIMENT_BASH_SCRIPT_NAME = "experiment.sh"
+ADDITIONAL_DEPENDENCIES = ["sigopt-hyperopt"]
+INDEX_URL = "https://aimat-lab.github.io/package-index/"
+JOB_ID_FILE_NAME = "job_ids.yaml"
+WORKER_CHAIN_BASE_NAME = "worker_chain_"
+JOB_IDS_FILE_NAME = "job_ids.txt"
+WORKER_FILE_LOGGER_NAME = "worker.log"
+WS_DATASET_DIR = "dataset"
+SIGOPT_TOKEN_FILE_ENV_NAME = "SIGOPT_ENV_FILE"
+VERSION_CONFIG_PARAM = "version"
+BRANCH_CONFIG_PARAM = "branch"
+LOCAL_EXPERIMENT_FOLDER_NAME = "Experiments"
