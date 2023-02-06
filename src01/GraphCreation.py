@@ -239,7 +239,7 @@ class GraphCreation:
         from constants.Serverpath.serverpath import serverpath
         from src01.utilities_graph import graph_from_graph_dict
 
-        graph_file_path = f"{serverpath}/CSD/graphs/GraphJsonsTMQM_curated/"
+        graph_file_path = f"{serverpath}/Raw_CSD_MM_G/Graphs"
 
         try:
             os.listdir(graph_file_path)

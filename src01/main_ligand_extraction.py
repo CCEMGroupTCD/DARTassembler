@@ -17,10 +17,12 @@ def select_example_database(DB: str) -> (str, str):
         return "../data_input/tmQM", "../data_output/tmQM_Jsons"
     elif DB.lower() == "tmqmg":
         return "../data_input/tmQMG", "../data_output/tmQMG_Jsons"
+    elif DB.lower() == "csd_mm":
+        return "../data_input/CSD_MM", "../data_output/CSD_MM_Jsons"
     elif DB.lower() == "csd_mm_g":
         return "../data_input/CSD_MM_G", "../data_output/CSD_MM_G_Jsons"
     else:
-        # unknown DB
+         # unknown DB
         return "", ""
 
 
@@ -57,11 +59,11 @@ if __name__ == '__main__':
 
     #
     # example databases, choose between: tmqm, tmqmG, CSD_MM_G
-    database_path, data_store_path = select_example_database(DB="tmQM")
+    database_path, data_store_path = select_example_database(DB="CSD_MM_G")
 
     #
-    testing = 1000           # if we would like to only do a test run
-    graph_strategy = "CSD"  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
+    testing = 1000           # if we would like to only do a test run (only works from the second run on)
+    graph_strategy = "default"  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     #
     #

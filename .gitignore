@@ -43,3 +43,8 @@
 /data_input/CSD_MM_G/atomic_properties/atomic_properties.json
 /data_input/tmQMG/atomic_properties/atomic_properties.json
 /data_input/tmQM/atomic_properties/atomic_properties.json
+/data_input/CSD_MM/atomic_properties/atomic_properties.json
+/data_output/CSD_MM_Jsons/complex_db.json
+/data_output/CSD_MM_Jsons/tmQM_Ligands_full.json
+/data_output/CSD_MM_Jsons/tmQM_Ligands_unique.json
+/data_output/CSD_MM_Jsons/tmQMG.json
