@@ -91,6 +91,9 @@ class BaselineDB:
         #
         #
         #
+        if (max_number == False) or (max_number is None):
+            max_number = len(json_dict)
+
         for i, (identifier, mol_dict) in tqdm(enumerate(json_dict.items()), desc=f"Build {type_}Database"):
 
             # For testing by identifier list
@@ -99,9 +102,8 @@ class BaselineDB:
                     continue
 
             # For testing by Max number
-            if max_number is not None or not (max_number == False):
-                if i >= max_number:
-                    break
+            if i >= max_number:
+                break
 
             new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(dict_=mol_dict,
                                                                                  graph_creating_strategy=graph_strategy,

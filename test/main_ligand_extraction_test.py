@@ -36,8 +36,8 @@ if __name__ == '__main__':
     database_path = '../data_input/CSD_MM_G'  # in github
     data_store_path = '../data_output/CSD_MM_G_Jsons'  # directory where we want to store the jsons
 
-    testing = 1000  # if we would like to only do a test run (only works from the second run on)
-    graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
+    testing = 100  # if we would like to only do a test run (only works from the second run on)
+    graph_strategy = 'default'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     calculate_charges = True  # if you want to run charge assignment after ligand extraction, takes ~30 min on tmQMg
     overwrite_atomic_properties = False  # if atomic properties json should be overwritten, not really critical
