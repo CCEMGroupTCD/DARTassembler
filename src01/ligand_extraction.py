@@ -82,7 +82,7 @@ class LigandExtraction:
         Establish and safe the Database (in our case tmQM) as json for simple loading.
         """
         db_dict = DataLoader(database_path_=self.database_path, overwrite=overwrite_atomic_properties).data_for_molDB
-        tmQMG_DB = MoleculeDB.from_json(json_=db_dict, type_="Complex", max_number=self.testing)
+        tmQMG_DB = MoleculeDB.from_json(json_=db_dict, type_="Complex", max_number=self.testing, graph_strategy=self.graph_strat)
         tmQMG_DB.to_json(path=self.input_complexes_json)
 
         return

@@ -59,7 +59,7 @@ if __name__ == '__main__':
     # example databases, choose between: tmqm, tmqmG, CSD_MM_G
     database = "CSD_MM_G"
 
-    testing = 1000           # if we would like to only do a test run (only works from the second run on)
+    testing = False           # if we would like to only do a test run (only works from the second run on)
     graph_strategy = "default"  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     calculate_charges = True  # if you want to run charge assignment after ligand extraction, takes ~30 min on tmQMg

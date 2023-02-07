@@ -40,6 +40,7 @@
 /constants/CSD/CSD_Smiles_full.csv
 
 /test/machine_learning
+/ccem_server
 
 /constants/CSD/mol2s/
 /.conda_config

@@ -76,6 +76,7 @@ class GraphCreation:
             # without any additional parameters
             # Note that this here defines the default, so if we want to change that we have to change the function
             # here as well
+            warnings.warn(f'Graph creating strategy {graph_creating_strategy} not found. Fallback to ASE cutoff graphs.')
             self.ase_cutoff_graph(mol=molecule)
 
     #
