@@ -9,6 +9,10 @@ import pandas as pd
 # TODO in preprocessing CSD:
 #   - filters:
 #       - if all elements of smiles and xyz match and also with formula in api
+#       - recognize valid counter ions/ solvent molecules vs graph errors in ligands by setting a cutoff at 3A (or so), if two graph fragments are closer than that it's treated as a graph error
+#   - add properties:
+#       - bond orders to graphs
+#       - distance to metal (of ligand atom closest to the metal)
 #
 # TODO in pipeline
 #   - check data pipeline from initial tmQMg up until input json
@@ -29,10 +33,10 @@ import pandas as pd
 if __name__ == '__main__':
     # specify the database path
     database_path = '../database/tmQMg_fixed_gbl_props_cutoffs'         #'../database/tmQMg'
-    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_cutoffs_test"  # Folder where we want to store the jsons
+    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_cutoffs_full"  # Folder where we want to store the jsons
     calculate_charges = True        # if you want to run charge assignment after ligand extraction
     overwrite_atomic_properties = True
-    use_existing_input_json = True
+    use_existing_input_json = False
     exclude_not_fully_connected_complexes = False
     get_only_unique_ligand_db_without_charges = False
 
@@ -108,7 +112,7 @@ if __name__ == '__main__':
             print('Successful refactoring. All data is still the same.')
 
         except AssertionError:
-            drop_cols = ['has_unconnected_ligands', 'unique_ligand_information', 'ligands']
+            drop_cols = ['metal_atomic_number']
             print(f'Failed testing whole df. Check again without {drop_cols}.')
             pd.testing.assert_frame_equal(df_new.drop(columns=drop_cols, errors='ignore'),
                                           df_old.drop(columns=drop_cols, errors='ignore'), check_like=True)
