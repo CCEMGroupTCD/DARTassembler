@@ -229,5 +229,15 @@ def mol2_to_graph(filename):
     """
     from rdkit.Chem.rdmolfiles import MolFromMol2File
 
-    mol2 = MolFromMol2File(filename)
+    mol2 = MolFromMol2File(filename, removeHs=False)
+    return rdchem_mol_to_nx(mol2)
+
+
+def mol2_str_to_graph(str_: str):
+    """
+    :param str_: The string of the mol2 file
+    """
+    from rdkit.Chem.rdmolfiles import MolFromMol2Block
+
+    mol2 = MolFromMol2Block(str_, removeHs=False)
     return rdchem_mol_to_nx(mol2)

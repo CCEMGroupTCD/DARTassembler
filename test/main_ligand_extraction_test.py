@@ -2,6 +2,7 @@
 This is the main script for the extraction of ligands from a database.
 """
 from src01.ligand_extraction import LigandExtraction
+from src01.main_ligand_extraction import select_example_database, main
 from src01.utilities import unroll_dict_into_columns, sort_dict_recursively_inplace
 from pathlib import Path
 import pandas as pd
@@ -31,26 +32,30 @@ import pandas as pd
 
 
 if __name__ == '__main__':
-    # specify the database path
-    database_path = '../database/tmQMg_fixed_gbl_props_cutoffs'         #'../database/tmQMg'
-    data_store_path = "../data/tmQMG_Jsons_fixed_gbl_props_cutoffs_full"  # Folder where we want to store the jsons
-    calculate_charges = True        # if you want to run charge assignment after ligand extraction
-    overwrite_atomic_properties = True
-    use_existing_input_json = False
-    exclude_not_fully_connected_complexes = False
-    get_only_unique_ligand_db_without_charges = False
+    # example databases, choose between: tmqm, tmqmG, CSD_MM_G
+    database_path = '../data_input/CSD_MM_G'  # in github
+    data_store_path = '../data_output/CSD_MM_G_Jsons'  # directory where we want to store the jsons
 
-    db = LigandExtraction(
-                            database_path=database_path,
-                            data_store_path=data_store_path,
-                            exclude_not_fully_connected_complexes=exclude_not_fully_connected_complexes
-                            )
-    db.run_ligand_extraction(
-                                calculate_charges=calculate_charges,
-                                overwrite_atomic_properties=overwrite_atomic_properties,
-                                use_existing_input_json=use_existing_input_json,
-                                get_only_unique_ligand_db_without_charges=get_only_unique_ligand_db_without_charges
-                            )
+    testing = 1000  # if we would like to only do a test run (only works from the second run on)
+    graph_strategy = 'default'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
+
+    calculate_charges = True  # if you want to run charge assignment after ligand extraction, takes ~30 min on tmQMg
+    overwrite_atomic_properties = True  # if atomic properties json should be overwritten, not really critical
+    use_existing_input_json = False  # if the existing input json should be used or the process started from the xzy files
+    exclude_not_fully_connected_complexes = False  # script not ready for unconnected graphs yet
+    get_only_unique_ligand_db_without_charges = False  # For graph benchmark useful, reduces runtime because it ignores charge assignment and updating the complex and full ligand db.
+
+    main(
+        database_path_=database_path,
+        data_store_path_=data_store_path,
+        calculate_charges_=calculate_charges,
+        overwrite_atomic_properties_=overwrite_atomic_properties,
+        use_existing_input_json_=use_existing_input_json,
+        exclude_not_fully_connected_complexes_=exclude_not_fully_connected_complexes,
+        get_only_unique_ligand_db_without_charges_=get_only_unique_ligand_db_without_charges,
+        testing_=testing,
+        graph_strat_=graph_strategy
+    )
 
 
     ###########################################
@@ -76,7 +81,7 @@ if __name__ == '__main__':
     }
     reduce_to_intersection_of_rows = []
     unroll_global_props = False
-    original_suffix = '_original_unconnected.json'
+    original_suffix = f'_original_{testing}.json'
     for db_name, df_new in check_db.items():
 
         old_path = Path(data_store_path, db_name + original_suffix)

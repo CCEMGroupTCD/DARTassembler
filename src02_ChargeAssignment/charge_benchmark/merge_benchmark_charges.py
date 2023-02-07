@@ -115,7 +115,7 @@ if __name__ == '__main__':
     print('Done!')
 
 
-    # old_df = pd.read_csv('/Users/timosommer/PhD/projects/RCA/projects/CreateTMC/database/ligand_charges/charge_benchmark/all_ligand_charges_new.csv')
+    # old_df = pd.read_csv('/Users/timosommer/PhD/projects/RCA/projects/CreateTMC/database/databases/charge_benchmark/all_ligand_charges_new.csv')
     # df = df.reset_index(drop=True)
     # drop_cols = []
     # # not_nan = df['unique_name'].notna()

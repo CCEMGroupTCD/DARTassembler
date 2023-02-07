@@ -4,7 +4,8 @@ Still Under Construction, but already implemented in the workflow of the extract
 Should work fine with the default graph creation
 """
 import networkx as nx
-import pandas as pd
+import os
+import json
 
 from ase import Atoms, neighborlist
 from pymatgen.analysis.graphs import MoleculeGraph
@@ -15,7 +16,6 @@ from ase.data import covalent_radii  # THE basic covalent radii data
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 
 from molSimplify.Classes.mol3D import mol3D
-from pysmiles import read_smiles
 
 import warnings
 
@@ -58,6 +58,12 @@ class GraphCreation:
                 warnings.warn("Missing Information, no graph could be created")
             else:
                 self.smiles_graph(identifier=kwargs["csd_code"])
+
+        elif graph_creating_strategy == "CSD":
+            if "csd_code" not in kwargs:
+                warnings.warn("Missing Information, no graph could be created")
+            else:
+                self.CSD_graphs(identifier=kwargs["csd_code"])
 
         elif graph_creating_strategy in ["default", "ase_cutoff"]:
             self.ase_cutoff_graph(mol=molecule, **kwargs)
@@ -198,7 +204,7 @@ class GraphCreation:
 
     #
     #
-    # 4. SmartString based methods
+    # 4. SmilesString based methods
     def smiles_graph(self, identifier):
         """
         simple graph creating method using pysmiles to convert the extracted smiles (from the CSD)
@@ -220,3 +226,27 @@ class GraphCreation:
             return
         """
         return
+
+    #
+    # 5. CSD Graphs
+    def CSD_graphs(self, identifier):
+        """
+        Here we shall use graphs created from the .mol2 files if possible
+        if not, we shall use the default graphs, by setting self.G = None,
+        because then the main programm will take care of it
+        """
+
+        from constants.Serverpath.serverpath import serverpath
+        from src01.utilities_graph import graph_from_graph_dict
+
+        graph_file_path = f"{serverpath}/Raw_CSD_MM_G/Graphs"
+
+        try:
+            os.listdir(graph_file_path)
+        except FileNotFoundError:
+            print("Graph directory not found, standard graphs are getting created")
+            return
+        #
+        if f"{identifier}_g.json" in os.listdir(graph_file_path):
+            with open(f"{graph_file_path}/{identifier}_g.json", "r") as f:
+                self.G = graph_from_graph_dict(json.load(f))

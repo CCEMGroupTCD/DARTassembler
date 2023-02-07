@@ -1,10 +1,8 @@
 import numpy as np
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
-from src01.constants import metals_in_pse
+from constants.constants import metals_in_pse
 from ase import Atoms
-import networkx as nx
 import warnings
-from copy import deepcopy
 import pandas as pd
 
 def unroll_dict_into_columns(df, dict_col: str, prefix: str):
@@ -74,15 +72,24 @@ def call_method_on_object(obj, method: str):
 def identify_metal_in_ase_mol(mol: Atoms):
 
     metals = set(mol.get_atomic_numbers()).intersection(set(metals_in_pse))
+    if len(metals) == 0:
+        # No metal in the complex at all, purely organic
+        # shouldnt be an issue at all, because then this gets stored as -1 denticitated ligand
+        # which is probably ok
+        warnings.warn("Organic Component alert")
+        return "C"              # as a placeholder
+
     assert len(metals) == 1, "Molecule seems to be not a single metal complex, metal identification failed"
 
     return Pymatgen_Element.from_Z(metals.pop()).symbol
+
 
 def identify_metal_in_atoms_list(atoms: list):
     metals = [el for el in atoms if Pymatgen_Element(el).is_metal]
     assert len(metals) == 1, "Molecule seems to be not a single metal complex, metal identification failed"
 
     return metals[0]
+
 
 def coordinates_to_xyz_str(coordinates: dict):
     """

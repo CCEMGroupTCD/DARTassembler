@@ -5,8 +5,7 @@
 /data/**
 /database/**
 /tmp/**
-/Debugging_and_Improvements/**
-/Bin_(Old)/**
+/Bin_(Old)
 
 
 /src03_Assembly/Z-test.py
@@ -37,7 +36,26 @@
 !database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/2_atomic_properties.xyz
 !database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/3_atomic_properties.xyz
 
-/data_output/
+
 /constants/CSD/CSD_Smiles_full.csv
 
 /test/machine_learning
+
+/constants/CSD/mol2s/
+/.conda_config
+/constants/CSD/graphs/tmqm_graphs_from_csd.json
+/data_input/CSD_MM_G/atomic_properties/atomic_properties.json
+/data_input/tmQMG/atomic_properties/atomic_properties.json
+/data_input/tmQM/atomic_properties/atomic_properties.json
+/data_input/CSD_MM/atomic_properties/atomic_properties.json
+/data_output/CSD_MM_Jsons/complex_db.json
+/data_output/CSD_MM_Jsons/tmQM_Ligands_full.json
+/data_output/CSD_MM_Jsons/tmQM_Ligands_unique.json
+/data_output/CSD_MM_Jsons/tmQMG.json
+/data_output/CSD_MM_G_Jsons/complex_db.json
+/data_output/CSD_MM_G_Jsons/tmQM_Ligands_full.json
+/data_output/CSD_MM_G_Jsons/tmQM_Ligands_unique.json
+/data_output/CSD_MM_G_Jsons/tmQMG.json
+/data_output/CSD_MM_G_Jsons/*_original*.json
+/data_output/CSD_MM_G_Jsons/tmQMG_1000.json
+

@@ -4,12 +4,11 @@ Test, which Graph creating methods performs best
 import networkx as nx
 from src01.DataBase import MoleculeDB, LigandDB
 from src01.DataLoader import DataLoader
-from src01.constants import metals_in_pse
-from pymatgen.core.periodic_table import Element as Pymatgen_Element
 import warnings
-import numpy as np
 
 import gc
+
+warnings.filterwarnings("ignore")
 
 
 class GraphTesting:
@@ -49,7 +48,7 @@ class GraphTesting:
             if Testing is True:
                 self.tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=self.database_path).data_for_molDB,
                                                     type_="Molecule",
-                                                    max_number=1000,
+                                                    max_number=500,
                                                     graph_strategy=d["strat"],
                                                     **d["kwargs"]
                                                     )
@@ -64,7 +63,8 @@ class GraphTesting:
             # Note: It is crucial to set the correct numbers of denticities, because otherwise -1 denticitated
             #       ligands are getting filtered out by default
             self.tmQM_Ligands = LigandDB.from_MoleculeDB(molDB=self.tmQM_DB,
-                                                         denticity_numbers_of_interest=[-1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                                                         denticity_numbers_of_interest=[-1, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                                                                                        10]
                                                          )
 
             # 3. Extract unique Ligands
@@ -111,7 +111,6 @@ class GraphTesting:
 
 
 if __name__ == "__main__":
-
     # Setting up the run list
     #
     run_list = {
@@ -120,16 +119,6 @@ if __name__ == "__main__":
             "strat": "default",
             "kwargs": {}
         },
-        1: {
-            "name": "smiles",
-            "strat": "smiles",
-            "kwargs": {}
-        }
-        #2: {
-        #    "name": "Pymatgen NN",
-        #    "strat": "pymatgen_NN",
-        #    "kwargs": {}
-        #}
     }
 
     """
@@ -160,6 +149,7 @@ if __name__ == "__main__":
         )
     """
 
+    """
     run_list.update(
         {len(run_list): {
             "name": f"MolSimplify",
@@ -168,8 +158,29 @@ if __name__ == "__main__":
         }
         }
     )
+    """
 
+    '''
+    run_list.update(
+        {len(run_list): {
+            "name": "Pymatgen NN",
+            "strat": "pymatgen_NN",
+            "kwargs": {}
+        }
+        }
+    )
+    '''
 
+    run_list.update(
+        {len(run_list): {
+            "name": "CSD Graphs",
+            "strat": "CSD",
+            "kwargs": {}
+        }
+        }
+    )
+
+    #
     #
     # Actually running the comparison
     GT = GraphTesting(run_list=run_list)
@@ -178,7 +189,9 @@ if __name__ == "__main__":
         "number unqiue ligands",
         "number of not fully connected graphs",
         "number of isolated ligands"
-    ])
+    ],
+        Testing=True
+    )
 
     GT.show_plots()
 

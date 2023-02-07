@@ -64,6 +64,7 @@ class BaselineDB:
         :param kwargs: additional arguments for the graph creation
         """
 
+
         if isinstance(json_, str):
             if not json_.endswith(".json"):
                 print("select a json file as input!")
@@ -98,8 +99,8 @@ class BaselineDB:
                     continue
 
             # For testing by Max number
-            if max_number is not None:
-                if i > max_number:
+            if max_number is not None or not (max_number == False):
+                if i >= max_number:
                     break
 
             new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(dict_=mol_dict,

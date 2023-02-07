@@ -1,8 +1,6 @@
 # standard Pyhton packages
 import hashlib
-import warnings
 import networkx as nx
-import random
 import numpy as np
 from copy import deepcopy
 
@@ -10,19 +8,19 @@ from copy import deepcopy
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from ase.visualize import view
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
-from scipy.spatial.transform import Rotation as R
 from sympy import Point3D, Plane
 
 # collection of molecule objects of other packages
-from ase import io, Atoms, neighborlist
+from ase import io, Atoms
 from pymatgen.core.structure import Molecule as PyMatMol
-from molSimplify.Classes.mol3D import mol3D
+
 
 # importing own scripts
-from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label
+from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
+    unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label
 from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
-from src03_Assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
+from src03_Assembly_Cian.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
 
 # Package name: RandomComplexAssembler (RCA)
@@ -246,7 +244,7 @@ class RCA_Molecule:
         else:
             lig_key = "NoCSD"
             csd = None
-        from src01.constants import mini_alphabet
+        from constants.constants import mini_alphabet
         j = 0
         while True:
             ligand_name = f'{lig_key}-0{denticity}-{mini_alphabet[j]}'
@@ -339,6 +337,9 @@ class RCA_Molecule:
 
         atoms, idc = get_sorted_atoms_and_indices_from_graph(self.graph)
         if 'atoms' in self.atomic_props:
+            #
+            # if not atoms == self.atomic_props['atoms']:
+            #     breakpoint()
             assert atoms == self.atomic_props['atoms'], 'Order of atoms in graph and in atomic_props doesn\'t match.'
 
         # first we gather some information around the metal in the initial graph
@@ -470,15 +471,6 @@ class RCA_Molecule:
     #
     #
     # converting into other classes of mol objects
-    def to_molsimplify_mol(self):
-        """
-        Here we convert the RCA Molecule into a molsimplify mol3D object
-        """
-
-        new_mol = mol3D()
-        new_mol.readfromstring(xyzstring=self.get_xyz_file_format_string())
-
-        return new_mol
 
     def to_stk_mol(self):
         return convert_RCA_to_stk_Molecule(self)
@@ -538,8 +530,8 @@ class RCA_Ligand(RCA_Molecule):
 
         if 'original_metal' in kwargs.keys():
             self.original_metal = kwargs['original_metal']
-
         try:
+
             self.original_metal_symbol = Pymatgen_Element.from_Z(self.original_metal).symbol
         except (ValueError, AttributeError):
             pass
