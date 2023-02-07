@@ -76,6 +76,7 @@ def original_metal_ligand(ligand):
     else:
         return None
 
+
 def get_standardized_stoichiometry_from_atoms_list(atoms: list) -> str:
     c = collections.Counter(atoms)
     elements = sorted(el for el in c.keys())

@@ -313,7 +313,7 @@ class RCA_Molecule:
 
         return inherit_global_properties
 
-    def de_assemble(self, Testing: bool = False, inherit_global_properties: list = ['CSD_code']):
+    def de_assemble(self, inherit_global_properties: list = ['CSD_code']):
         """
         now only graph based, makeslife waaay easier
 
@@ -337,9 +337,8 @@ class RCA_Molecule:
 
         atoms, idc = get_sorted_atoms_and_indices_from_graph(self.graph)
         if 'atoms' in self.atomic_props:
-            #
-            # if not atoms == self.atomic_props['atoms']:
-            #     breakpoint()
+            #if not atoms == self.atomic_props['atoms']:
+                #breakpoint()
             assert atoms == self.atomic_props['atoms'], 'Order of atoms in graph and in atomic_props doesn\'t match.'
 
         # first we gather some information around the metal in the initial graph
@@ -403,7 +402,6 @@ class RCA_Molecule:
 
             ligand_name, csd = self.ligand_naming(denticity, self.ligands)
 
-            kwargs = {'skin_': 0.3} if Testing == True else {'csd_code': csd}
             ligand_global_props = {prop: self.global_props[prop] for prop in inherit_global_properties}
             new_lig = RCA_Ligand(denticity=denticity,
                                  ligand_to_metal=local_indices,
@@ -411,13 +409,12 @@ class RCA_Molecule:
                                  name=ligand_name,
                                  graph=ligand_graph,
                                  global_props=ligand_global_props,
-                                 original_metal=Pymatgen_Element(metal_in_complex).Z,
-                                 **kwargs
+                                 original_metal=Pymatgen_Element(metal_in_complex).Z
                                  )
 
             self.ligands.append(new_lig)
 
-        if self.ligands == []:
+        if not self.ligands:
             print(f'WARNING: Complex {self.global_props["CSD_code"]} has no ligands extracted.')
 
     def write_to_mol_dict(self):

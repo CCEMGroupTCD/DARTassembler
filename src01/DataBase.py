@@ -61,7 +61,7 @@ class BaselineDB:
         :param type_: If we want either a molecule or a Ligand DB
         :param graph_strategy: How we want the graphs to be created (this is only important for molecules,
             because ligand graphs are created by the molecule graphs. For Ligands this will just be dumped as a kwarg)
-        :param kwargs: additional arguments for the graph creation
+        :param kwargs: additional arguments for the graph creation (only, if no graphs are present in the .json)
         """
 
 

@@ -3,6 +3,8 @@ This is the main script for the extraction of ligands from a database.
 """
 from src01.ligand_extraction import LigandExtraction
 from typing import Union
+from constants.constants import project_path
+
 
 def select_example_database(DB: str) -> (str, str):
     """
@@ -13,13 +15,13 @@ def select_example_database(DB: str) -> (str, str):
     """
 
     if DB.lower() == "tmqm":
-        return "../data_input/tmQM", "../data_output/tmQM_Jsons"
+        return f"{project_path}/data_input/tmQM", f"{project_path}/data_output/tmQM_Jsons"
     elif DB.lower() == "tmqmg":
-        return "../data_input/tmQMG", "../data_output/tmQMG_Jsons"
+        return f"{project_path}/data_input/tmQMG", f"{project_path}/data_output/tmQMG_Jsons"
     elif DB.lower() == "csd_mm":
-        return "../data_input/CSD_MM", "../data_output/CSD_MM_Jsons"
+        return f"{project_path}/data_input/CSD_MM", f"{project_path}/data_output/CSD_MM_Jsons"
     elif DB.lower() == "csd_mm_g":
-        return "../data_input/CSD_MM_G", "../data_output/CSD_MM_G_Jsons"
+        return f"{project_path}/data_input/CSD_MM_G", f"{project_path}/data_output/CSD_MM_G_Jsons"
     else:
          # unknown DB
         raise ValueError(f'Database not recognized: {DB}')

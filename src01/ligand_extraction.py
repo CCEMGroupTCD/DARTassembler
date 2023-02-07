@@ -1,26 +1,20 @@
 """
 Class for extracting ligands from a database of complexes.
 """
-import warnings
-from warnings import warn
 import pandas as pd
 from copy import deepcopy
-from src01.DataBase import MoleculeDB, LigandDB
-import gc
-import numpy as np
+from src01.DataBase import MoleculeDB
 from pathlib import Path
 from tqdm import tqdm
 import json
-import networkx as nx
 from typing import Union
 from datetime import datetime
 
 from src01.DataLoader import DataLoader
 from src01.io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, \
     save_full_ligand_db, save_complex_db
-from src01.utilities_extraction import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, \
-    get_charges_of_unique_ligands, update_databases_with_charges, update_ligand_with_charge_inplace
-from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warning_inplace, unroll_dict_into_columns
+from src01.utilities_extraction import get_charges_of_unique_ligands, update_ligand_with_charge_inplace
+from src01.utilities import update_dict_with_warning_inplace
 
 
 class LigandExtraction:
@@ -32,10 +26,15 @@ class LigandExtraction:
                  graph_strat: str = "default"
                  ):
 
-        self.database_path = None
-        self.data_store_path = None
+        self.ligand_to_unique_ligand = None
+        self.unique_ligand_info_props = None
+        self.grouped_ligands = None
+        self.database_path = ""
+        self.data_store_path = ""
         self.exclude_not_fully_connected_complexes = None
         self.testing = None
+        self.complex_db = None
+        self.all_hashes = {}
 
         self.graph_strat = graph_strat
 
@@ -83,6 +82,7 @@ class LigandExtraction:
         """
         db_dict = DataLoader(database_path_=self.database_path, overwrite=overwrite_atomic_properties).data_for_molDB
         tmQMG_DB = MoleculeDB.from_json(json_=db_dict, type_="Complex", max_number=self.testing, graph_strategy=self.graph_strat)
+
         tmQMG_DB.to_json(path=self.input_complexes_json)
 
         return
@@ -113,10 +113,10 @@ class LigandExtraction:
         self.complex_db = self.filter_input_complex_db(self.complex_db)
 
         self.all_hashes = {}
-        for csd_code, complex in tqdm(self.complex_db.db.items(), desc="Extracting ligands from complexes"):
-            complex.de_assemble(Testing=self.testing)
+        for csd_code, complex_ in tqdm(self.complex_db.db.items(), desc="Extracting ligands from complexes"):
+            complex_.de_assemble()
 
-            graph_hashes = {lig.name: lig.graph_hash for lig in complex.ligands}
+            graph_hashes = {lig.name: lig.graph_hash for lig in complex_.ligands}
             self.all_hashes.update(graph_hashes)
 
         self.complex_db.to_json(path=self.output_complexes_json)
@@ -157,7 +157,12 @@ class LigandExtraction:
         return ligand_dict
 
     @staticmethod
-    def choose_unique_ligand_representative_from_all_same_ligands(same_ligands, strategy='most_common_denticity'):
+    def choose_unique_ligand_representative_from_all_same_ligands(same_ligands,
+                                                                  strategy='most_common_denticity'
+                                                                  ) -> str:
+        #
+        name = None
+        #
         if strategy == 'most_common_denticity':
             denticities = [lig['denticity'] for lig in same_ligands.values()]
             count_denticities = pd.Series(denticities).value_counts().sort_values(ascending=False)
@@ -232,9 +237,17 @@ class LigandExtraction:
 
         return
 
-    def update_ligand_with_unique_ligand_information_inplace(self, lig, ulig, share_properties: list = [],
-                                                             share_global_props: list = [],
-                                                             collect_properties: dict = {}):
+    @staticmethod
+    def update_ligand_with_unique_ligand_information_inplace(lig, ulig, share_properties=None,
+                                                             share_global_props=None,
+                                                             collect_properties=None):
+        if collect_properties is None:
+            collect_properties = {}
+        if share_global_props is None:
+            share_global_props = []
+        if share_properties is None:
+            share_properties = []
+
         ulig = deepcopy(ulig)
 
         update_dict_with_warning_inplace(lig, ulig, share_properties)
@@ -248,8 +261,17 @@ class LigandExtraction:
 
         return
 
-    def update_complex_db_with_information(self, share_properties: list = [], share_global_props: list = [],
-                                           collect_properties: dict = {}):
+    def update_complex_db_with_information(self, share_properties=None,
+                                           share_global_props=None,
+                                           collect_properties=None
+                                           ):
+        if collect_properties is None:
+            collect_properties = {}
+        if share_global_props is None:
+            share_global_props = []
+        if share_properties is None:
+            share_properties = []
+
         print('Update complex db with unique ligand information.')
         complexes = load_complex_db(self.output_complexes_json)
         unique_ligands = load_unique_ligand_db(self.unique_ligands_json)
@@ -279,8 +301,17 @@ class LigandExtraction:
 
         return
 
-    def update_full_ligand_db_with_information(self, share_properties: list = [], share_global_props: list = [],
-                                               collect_properties: dict = {}):
+    def update_full_ligand_db_with_information(self, share_properties=None,
+                                               share_global_props=None,
+                                               collect_properties=None
+                                               ):
+        if collect_properties is None:
+            collect_properties = {}
+        if share_global_props is None:
+            share_global_props = []
+        if share_properties is None:
+            share_properties = []
+
         print('Update full ligand db with unique ligand information.')
         full_ligands = load_full_ligand_db(self.full_ligands_json)
         unique_ligands = load_unique_ligand_db(self.unique_ligands_json)
