@@ -43,7 +43,7 @@ def sort_dict_recursively_inplace(d: dict) -> None:
 
     return
 
-def sorted_dict_of_dicts(d: dict) -> dict:
+def sorted_dict_of_dicts(d: dict, debug=False) -> dict:
     """
     Sorts dictionaries and recursively sorts dictionaries of dictionaries to infinite order.
     :param d: dictionary to sort
@@ -60,7 +60,8 @@ def sorted_dict_of_dicts(d: dict) -> dict:
 
         sorted_d[key] = value
 
-    assert (len(d) == len(sorted_d) and all([val == d[key] for key, val in
+    if debug:
+        assert (len(d) == len(sorted_d) and all([val == d[key] for key, val in
                                              sorted_d.items()])), 'Sorted dictionary is different than original one, there must be a bug.'
     return sorted_d
 

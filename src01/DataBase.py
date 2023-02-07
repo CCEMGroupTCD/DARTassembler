@@ -8,6 +8,7 @@ from src01.utilities_graph import remove_node_features_from_graph, make_multigra
 from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
+from src01.io_custom import save_json
 
 
 class BaselineDB:
@@ -41,8 +42,7 @@ class BaselineDB:
     def to_json(self, path):
 
         print("Start Saving DB to json")
-        with open(path, "w+") as f:
-            json.dump(self.get_dict_in_json_format(), f, indent=4)
+        save_json(self.get_dict_in_json_format(), path=path, indent=4)
 
         print(f"Successfully saved DB to {path}")
 

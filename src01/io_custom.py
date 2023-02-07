@@ -4,6 +4,20 @@ Utility functions for input and output.
 import json
 from src01.Molecule import RCA_Molecule, RCA_Ligand, RCA_Complex
 from tqdm import tqdm
+import numpy as np
+
+class NumpyEncoder(json.JSONEncoder):
+    """Special json encoder for numpy types. This is important to use in json.dump so that if json encounters a np.array, it converts it to a list automatically, otherwise errors arise. Use like this:
+    dumped = json.dump(dic, cls=NumpyEncoder)
+    """
+    def default(self, obj):
+        if isinstance(obj, np.integer):
+            return int(obj)
+        elif isinstance(obj, np.floating):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
 
 
 def load_json(path) -> dict:
@@ -12,9 +26,9 @@ def load_json(path) -> dict:
 
     return db
 
-def save_json(db: dict, path: str):
+def save_json(db: dict, path: str, **kwargs):
     with open(path, 'w') as file:
-        json.dump(db, file)
+        json.dump(db, file, cls=NumpyEncoder, **kwargs)
 
     return
 
