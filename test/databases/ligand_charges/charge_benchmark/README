@@ -1,0 +1,11 @@
+# Ligand charge benchmark files
+
+The most important file is `all_ligand_charges_with_high_confidence_v*.csv`. When benchmarking charges, this file should be used, since it contains only good and confident charge assignments.
+
+The file `all_ligand_charges_v*.csv` contains all benchmarked charges, also ones which should or can not be benchmarked.
+
+The files with the names of the authors are the raw files in which they benchmarked everything. In the files described above, the files are merged and an author is assigned based on this mapping:
+    - 'Cian1': 'Cian_already_assigned_ligand_charges.csv',
+    - 'Cian2': 'Cian_BenchMark.csv',
+    - 'Manting': 'Manting_ligand_charges.csv',
+    - 'Marconi1': 'Marconi_ligand_charges.csv'
