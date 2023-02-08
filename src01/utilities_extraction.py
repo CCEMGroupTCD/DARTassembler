@@ -1,18 +1,21 @@
 
 import pandas as pd
 from copy import deepcopy
-from src01.DataBase import MoleculeDB, LigandDB
+from typing import Union
 import gc
 import json
 from tqdm import tqdm
 import numpy as np
 from pathlib import Path
+
+from constants.constants import project_path
+from src01.DataBase import MoleculeDB, LigandDB
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
 from src01.io_custom import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_full_ligand_db
 from src02_ChargeAssignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
 from typing import Union
 
-def get_charges_of_unique_ligands(all_complexes: Union[str, dict]) -> pd.DataFrame:
+def get_charges_of_unique_ligands(all_complexes: Union[str, Path, dict]) -> pd.DataFrame:
     """
     So far uses only the linear charge solver.
     :param all_complexes: path to a json of all complexes with ligands with unique ligand names
@@ -55,7 +58,7 @@ def update_ligand_with_charge_inplace(lig: dict, charges: dict):
     return
 
 
-def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_path: str):
+def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_path: Union[str, Path]):
     complex_db_path = Path(data_store_path, 'complex_db.json')
     ligands_db_path = Path(data_store_path, 'tmQM_Ligands_full.json')
     unique_ligands_db_path = Path(data_store_path, 'tmQM_Ligands_unique.json')
@@ -84,7 +87,9 @@ def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_pa
     return
 
 
-def unique_ligands_from_Ligand_batch_json_files(n=10, data_store_path: str="../data/tmQMG_Jsons_test"):
+def unique_ligands_from_Ligand_batch_json_files(n=10,
+                                                data_store_path: str = f"{project_path}/data/tmQMG_Jsons_test"
+                                                ):
     gc.collect()
 
     # first we generate the full ligand dict
@@ -96,7 +101,7 @@ def unique_ligands_from_Ligand_batch_json_files(n=10, data_store_path: str="../d
             ligand_dict.update(dict_)
             # expected_length += len(dict_)
 
-
+    #
     name_ghash_dict = {}
     # we append the dict piecewise by the graph hash
     for lig_key, lig_dict in tqdm(ligand_dict.items(), desc="Extracting graph hashs"):
@@ -157,7 +162,7 @@ def unique_ligands_from_Ligand_batch_json_files(n=10, data_store_path: str="../d
     return
 
 
-def update_complex_db_with_ligands(complex_json: str, ligand_json: str, save_complex_db_path: str):
+def update_complex_db_with_ligands(complex_json: str, ligand_json: str, save_complex_db_path: Union[str, Path]):
     """
     This function reads in the initial json file that was input of the ligand extraction process and also reads in the json with all extracted ligands. The dictionary for each complex is then updated with dictionaries of the ligands and again saved.
     This function is just very much hacked together and will be subject of refactoring everything into a single class soon.

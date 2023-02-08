@@ -34,13 +34,13 @@ import pandas as pd
 if __name__ == '__main__':
     # example databases, choose between: tmqm, tmqmG, CSD_MM_G
     database_path = '../data_input/CSD_MM_G'  # in github
-    data_store_path = '../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
+    data_store_path = '../data_output/CSD_MM_G_Jsons'  # directory where we want to store the jsons
 
-    testing = 4000  # if we would like to only do a test run
+    testing = False  # if we would like to only do a test run s
     graph_strategy = 'default'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     calculate_charges = True  # if you want to run charge assignment after ligand extraction, takes ~30 min on tmQMg
-    overwrite_atomic_properties = False  # if atomic properties json should be overwritten, not really critical
+    overwrite_atomic_properties = True  # if atomic properties json should be overwritten, not really critical
     use_existing_input_json = False  # if the existing input json should be used or the process started from the xzy files
     exclude_not_fully_connected_complexes = False  # script not ready for unconnected graphs yet
     get_only_unique_ligand_db_without_charges = False  # For graph benchmark useful, reduces runtime because it ignores charge assignment and updating the complex and full ligand db.

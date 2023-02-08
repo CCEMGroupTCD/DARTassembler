@@ -7,6 +7,7 @@ from ase import Atoms
 import warnings
 import pandas as pd
 
+
 def unroll_dict_into_columns(df, dict_col: str, prefix: str):
     dict_data = [d for d in df[dict_col]]
     df_dict_data = pd.DataFrame(dict_data, index=df.index)
@@ -15,11 +16,13 @@ def unroll_dict_into_columns(df, dict_col: str, prefix: str):
 
     return df
 
+
 def make_None_to_NaN(val):
     if val is None:
         return np.nan
     else:
         return val
+
 
 def update_dict_with_warning_inplace(dict_to_update, dict_with_information, update_properties: list=None):
     if update_properties is None:
@@ -34,6 +37,7 @@ def update_dict_with_warning_inplace(dict_to_update, dict_with_information, upda
 
     return
 
+
 def sort_dict_recursively_inplace(d: dict) -> None:
     """
     Sorts all dictionaries in a dictionary of dictionaries recursively by the key.
@@ -45,7 +49,9 @@ def sort_dict_recursively_inplace(d: dict) -> None:
 
     return
 
+
 def sorted_dict_of_dicts(d: dict, debug=False) -> dict:
+
     """
     Sorts dictionaries and recursively sorts dictionaries of dictionaries to infinite order.
     :param d: dictionary to sort

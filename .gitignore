@@ -60,3 +60,9 @@
 /data_output/CSD_MM_G_Jsons/*_original*.json
 /data_output/CSD_MM_G_Jsons/tmQMG_1000.json
 /data_output/CSD_MM_G_Jsons_test
+
+/data_output/tmQMG_Jsons/complex_db.json
+/data_output/tmQMG_Jsons/tmQM_Ligands_full.json
+/data_output/tmQMG_Jsons/tmQM_Ligands_unique.json
+/data_output/tmQMG_Jsons/tmQMG.json
+

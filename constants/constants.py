@@ -1,5 +1,8 @@
 # some global coordinates
 #
+from pathlib import Path
+project_path = Path(__file__).parent.resolve().parent
+
 #
 ATOMIC_PROPERTIES_COLUMN_SEPARATOR = '  ===  '
 
