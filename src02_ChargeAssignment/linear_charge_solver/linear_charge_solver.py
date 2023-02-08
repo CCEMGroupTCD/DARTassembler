@@ -45,8 +45,7 @@ def get_stoichiometry_from_ligand(ligand: dict) -> str:
 
 class LinearChargeSolver:
     
-    def __init__(self, all_complexes_path: str, save_dir: str, n_test: Union[bool,int]=False, ligand_data: Union[None,str,list]=None, true_charge_name: str=''):
-        self.all_complexes_path = Path(str(all_complexes_path))
+    def __init__(self, all_complexes: Union[str, dict], save_dir: str, n_test: Union[bool, int]=False, ligand_data: Union[None, str, list]=None, true_charge_name: str= ''):
         self.save_dir = save_dir
         self.n_test = n_test
         self.y_name = 'charge_bias'
@@ -54,7 +53,8 @@ class LinearChargeSolver:
 
         df_add_ligand_data = self.get_ligand_data(ligand_data)
 
-        self.all_complexes = self.get_all_complexes(self.all_complexes_path, self.n_test)
+        self.all_complexes = self.get_all_complexes(all_complexes, self.n_test)
+
         self.all_complexes_names = list(self.all_complexes.keys())
         self.all_complexes_indices = {c: idx for idx, c in enumerate(self.all_complexes_names)}
 
@@ -100,26 +100,29 @@ class LinearChargeSolver:
         self.removed_complexes_ids = []
         for c_id, c in self.all_complexes.items():
             
-            has_error = c['error'] != '' if 'error' in c else False
             has_no_ligands = c['ligands'] == []
             has_no_oxi_state = np.isnan(c['metal_oxi_state'])
             
-            if has_error or has_no_ligands or has_no_oxi_state:
+            if has_no_ligands or has_no_oxi_state:
                 self.removed_complexes_ids.append(c_id)
             
         for c_id in self.removed_complexes_ids:
             self.all_complexes.pop(c_id)
             
         end_n_complexes = len(self.all_complexes)
-        print(f'Removed {init_n_complexes - end_n_complexes} from input complexes.')
+        print(f'Removed {init_n_complexes - end_n_complexes} from input complexes due to missing OS or ligands.')
         
         return
     
-    def get_all_complexes(self, all_complexes_path: str, n_test) -> dict:
-        print('Reading in complexes.')
-        with open(all_complexes_path, 'r') as file:
-            self.all_complexes = json.load(file)
-        print('Read in all complexes.')
+    def get_all_complexes(self, all_complexes: str, n_test) -> dict:
+
+        try:
+            with open(all_complexes, 'r') as file:
+                print('Reading in complexes.')
+                self.all_complexes = json.load(file)
+        except TypeError:
+            self.all_complexes = all_complexes
+
         self.filter_input_complexes_inplace()
         
         if n_test != False:
@@ -252,7 +255,7 @@ class LinearChargeSolver:
             print(f'Rank: {self.lin_reg.rank_}')
             self.singular_values = self.lin_reg.singular_
         except AttributeError:
-            print('No rank or singular values.')
+            pass
 
         pred_charges = self.lin_reg.coef_
 
@@ -274,11 +277,11 @@ class LinearChargeSolver:
 
         
         end = datetime.now()
-        print(f'Duration of fit: {end - start}')
+        print(f'Duration of ligand charge fit: {end - start}')
         return pred_charges
 
     def get_ligand_df(self):
-        print('Make ligand df.')
+        # print('Make ligand df.')
         self.df_ligands = {}
         
         for uname, pred_charge in zip(self.unique_ligand_names, self.pred_charges):
@@ -311,7 +314,7 @@ class LinearChargeSolver:
         except ValueError:
             print('More ligands than complexes, can not write singular values to ligands. This is no problem and improves when you use more complexes.')
         except AttributeError:
-            print('No singular values found.')
+            pass
 
         try:
             self.df_ligands['scaled_pred_charge_exact'] = self.scaled_predicted_charges
@@ -328,7 +331,7 @@ class LinearChargeSolver:
             self.df_ligands['HC1_se'] = self.results.HC1_se
 
         except AttributeError:
-            print('No standard errors for fit found.')
+            pass
         
         self.df_ligands['dist_to_int'] = self.df_ligands['pred_charge_exact'] - self.df_ligands['pred_charge']
         self.df_ligands['abs_dist_to_int'] = self.df_ligands['dist_to_int'].abs()
@@ -369,14 +372,14 @@ class LinearChargeSolver:
         return
     
     def get_df_with_all_tabular_data(self, X: np.array, df_other_data: pd.DataFrame) -> pd.DataFrame:
-        print('Make df.')
+        # print('Make df.')
         df_X = pd.DataFrame(data=X, columns=self.unique_ligand_names, index=self.all_complexes_names)
         self.df = pd.concat([df_other_data, df_X], axis=1)
         
         try:
             self.df['predictions'] = self.predicted_values
         except AttributeError:
-            print('No predictions.')
+            pass
         
         return self.df
     
@@ -529,7 +532,7 @@ if __name__ == '__main__':
     save_dir = '../../data/linear_charge_solver/output/'
     plot_dir = Path(save_dir, 'plots')
     
-    solver = LinearChargeSolver(all_complexes_path=all_complexes_path, save_dir=save_dir, n_test=n_test, ligand_data=all_unique_ligands_path, true_charge_name='charge')
+    solver = LinearChargeSolver(all_complexes=all_complexes_path, save_dir=save_dir, n_test=n_test, ligand_data=all_unique_ligands_path, true_charge_name='charge')
     df_ligands = solver.calculate_unique_ligand_charges()
     solver.add_ligand_charge_to_all_complexes(df_ligands=solver.df_ligands)
     solver.save_dfs_to_csv()

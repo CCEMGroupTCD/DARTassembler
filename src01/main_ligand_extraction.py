@@ -51,7 +51,7 @@ def main(database_path_: str,
         get_only_unique_ligand_db_without_charges=get_only_unique_ligand_db_without_charges_
     )
 
-    return
+    return db
 
 
 if __name__ == '__main__':
@@ -65,12 +65,12 @@ if __name__ == '__main__':
     calculate_charges = True  # if you want to run charge assignment after ligand extraction, takes ~30 min on tmQMg
     overwrite_atomic_properties = True  # if atomic properties json should be overwritten, not really critical
     use_existing_input_json = True  # if the existing input json should be used or the process started from the xzy files
-    exclude_not_fully_connected_complexes = False  # script not ready for unconnected graphs yet
-    get_only_unique_ligand_db_without_charges = True  # For graph benchmark useful, reduces runtime because it ignores charge assignment and updating the complex and full ligand db.
+    exclude_not_fully_connected_complexes = False  # only keep complexes which are fully connected
+    get_only_unique_ligand_db_without_charges = False  # For graph benchmark useful, reduces runtime because it ignores charge assignment and updating the complex and full ligand db.
 
 
     database_path, data_store_path = select_example_database(DB=database)
-    main(
+    db = main(
         database_path_=database_path,
         data_store_path_=data_store_path,
         calculate_charges_=calculate_charges,

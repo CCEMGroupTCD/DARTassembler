@@ -34,9 +34,9 @@ import pandas as pd
 if __name__ == '__main__':
     # example databases, choose between: tmqm, tmqmG, CSD_MM_G
     database_path = '../data_input/CSD_MM_G'  # in github
-    data_store_path = '../data_output/CSD_MM_G_Jsons'  # directory where we want to store the jsons
+    data_store_path = '../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
-    testing = 1000  # if we would like to only do a test run (only works from the second run on)
+    testing = 4000  # if we would like to only do a test run
     graph_strategy = 'default'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     calculate_charges = True  # if you want to run charge assignment after ligand extraction, takes ~30 min on tmQMg
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     exclude_not_fully_connected_complexes = False  # script not ready for unconnected graphs yet
     get_only_unique_ligand_db_without_charges = False  # For graph benchmark useful, reduces runtime because it ignores charge assignment and updating the complex and full ligand db.
 
-    main(
+    db = main(
         database_path_=database_path,
         data_store_path_=data_store_path,
         calculate_charges_=calculate_charges,
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     }
     reduce_to_intersection_of_rows = []
     unroll_global_props = False
-    original_suffix = f'_original_{testing}.json'
+    original_suffix = f'_original_{testing}_with_charges.json'
     for db_name, df_new in check_db.items():
 
         old_path = Path(data_store_path, db_name + original_suffix)
@@ -117,7 +117,7 @@ if __name__ == '__main__':
             print('Successful refactoring. All data is still the same.')
 
         except AssertionError:
-            drop_cols = ['metal_atomic_number']
+            drop_cols = []
             print(f'Failed testing whole df. Check again without {drop_cols}.')
             pd.testing.assert_frame_equal(df_new.drop(columns=drop_cols, errors='ignore'),
                                           df_old.drop(columns=drop_cols, errors='ignore'), check_like=True)

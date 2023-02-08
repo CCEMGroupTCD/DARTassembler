@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import numpy as np
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from constants.constants import metals_in_pse
@@ -203,3 +205,15 @@ def get_all_atomic_properties_with_modified_coordinates_wo_metal_in_long_array(a
 
 def flatten_list(l: list) -> list:
     return [item for sublist in l for item in sublist]
+
+
+def get_duration_string(start: datetime, without_microseconds=True) -> str:
+    end = datetime.now()
+    duration = end - start
+
+    if without_microseconds:
+        duration = str(duration).split('.')[0]
+    else:
+        duration = str(duration)
+
+    return duration

@@ -10,19 +10,18 @@ from pathlib import Path
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
 from src01.io_custom import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_full_ligand_db
 from src02_ChargeAssignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
+from typing import Union
 
-
-def get_charges_of_unique_ligands(all_complexes_path: str) -> pd.DataFrame:
+def get_charges_of_unique_ligands(all_complexes: Union[str, dict]) -> pd.DataFrame:
     """
     So far uses only the linear charge solver.
-    :param all_complexes_path: path to a json of all complexes with ligands with unique ligand names
+    :param all_complexes: path to a json of all complexes with ligands with unique ligand names
     :return: dataframe with the charge of each unique ligand
     """
-    # all_complexes_path = '../../data/linear_charge_fitting/all_complexes_tmQMg.json'
     save_dir = '../../data/linear_charge_solver/output/'
 
     solver = LinearChargeSolver(
-                                all_complexes_path=all_complexes_path,
+                                all_complexes=all_complexes,
                                 save_dir=save_dir
                                 )
     df_ligands = solver.calculate_unique_ligand_charges(output_uncertain_charges_as_nan=False)
@@ -32,9 +31,9 @@ def get_charges_of_unique_ligands(all_complexes_path: str) -> pd.DataFrame:
 
 def update_ligand_with_charge_inplace(lig: dict, charges: dict):
     new_keys = ['pred_charge', 'pred_charge_confidence', 'pred_charge_is_confident']
-    assert not any([key in lig for key in new_keys])
+    assert not any([hasattr(lig, key) for key in new_keys])
 
-    uname = lig['unique_name']
+    uname = lig.unique_name
     if uname in charges:
         charge = charges[uname]['pred_charge']
         confidence = charges[uname]['confidence']
@@ -45,9 +44,9 @@ def update_ligand_with_charge_inplace(lig: dict, charges: dict):
         confidence = np.nan
         is_confident = False
 
-    lig['pred_charge'] = charge
-    lig['pred_charge_is_confident'] = is_confident
-    lig['global_props'].update({
+    lig.pred_charge = charge
+    lig.pred_charge_is_confident = is_confident
+    lig.global_props.update({
                                 'LCS_pred_charge': charge,
                                 'LCS_pred_charge_confidence': confidence,
                                 'LCS_pred_charge_is_confident': is_confident

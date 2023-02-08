@@ -627,20 +627,18 @@ class RCA_Ligand(RCA_Molecule):
         return False
 
     def write_to_mol_dict(self):
-        return {
-            "stoichiometry": self.stoichiometry,
-            "atomic_props": self.atomic_props,
-            "global_props": self.global_props,
-            "graph_dict": graph_to_dict_with_node_labels(self.graph),
-            "denticity": self.denticity,
-            "ligand_to_metal": self.ligand_to_metal,
-            "local_elements": self.local_elements,
-            "name": self.name,
-            "CSD_code": self.csd_code if hasattr(self, "csd_code") else None,
-            "original_metal": self.original_metal if hasattr(self, "original_metal") else None,
-            "original_metal_symbol": self.original_metal_symbol if hasattr(self, "original_metal_symbol") else None,
-            "graph_hash": self.graph_hash
-        }
+        # Manually initialize special fields
+        d = {
+                'graph_dict': graph_to_dict_with_node_labels(self.graph),
+                'CSD_code': self.csd_code
+            }
+
+        do_not_output_automatically = ['mol', 'graph', 'coordinates', 'hash', 'csd_code']
+        for prop, val in vars(self).items():
+            if not prop in do_not_output_automatically:
+                d[prop] = val
+
+        return d
 
     @classmethod
     def read_from_mol_dict(cls, dict_: dict, **kwargs):

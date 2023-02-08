@@ -2,9 +2,12 @@
 Utility functions for input and output.
 """
 import json
-from src01.Molecule import RCA_Molecule, RCA_Ligand, RCA_Complex
-from tqdm import tqdm
+from src01.Molecule import RCA_Ligand, RCA_Complex
 import numpy as np
+from datetime import datetime
+
+from src01.utilities import get_duration_string
+
 
 class NumpyEncoder(json.JSONEncoder):
     """Special json encoder for numpy types. This is important to use in json.dump so that if json encounters a np.array, it converts it to a list automatically, otherwise errors arise. Use like this:
@@ -39,6 +42,8 @@ def check_molecule_value(output: str):
 
     return
 def load_complex_db(path: str, molecule: str='dict', n_max=None) -> dict:
+    start = datetime.now()
+
     check_molecule_value(molecule)
     db = load_json(path)
 
@@ -47,23 +52,58 @@ def load_complex_db(path: str, molecule: str='dict', n_max=None) -> dict:
 
     if molecule == 'class':
         db = {name: RCA_Complex.read_from_mol_dict(mol) for name, mol in db.items()}
+
+    duration = get_duration_string(start=start)
+    print(f'Loaded complex db. Time: {duration}. ')
     return db
 
 def load_full_ligand_db(path: str, molecule: str='dict') -> dict:
+    start = datetime.now()
+
     check_molecule_value(molecule)
     db = load_json(path)
     if molecule == 'class':
         db = {name: RCA_Ligand.read_from_mol_dict(mol) for name, mol in db.items()}
+
+    duration = get_duration_string(start=start)
+    print(f'Loaded full ligand db. Time: {duration}. ')
     return db
 
 def load_unique_ligand_db(path: str) -> dict:
-    return load_json(path)
+    start = datetime.now()
+
+    db = load_json(path)
+
+    duration = get_duration_string(start=start)
+    print(f'Loaded unique ligand db. Time: {duration}. ')
+    return db
 
 def save_complex_db(db: dict, path: str):
+    start = datetime.now()
+
     save_json(db, path)
+
+    duration = get_duration_string(start=start)
+    print(f"Complex database saved to {path}. Time: {duration}.")
+
+    return
 
 def save_full_ligand_db(db: dict, path: str):
+    start = datetime.now()
+
     save_json(db, path)
 
+    duration = get_duration_string(start=start)
+    print(f"Full ligand database saved to {path}. Time: {duration}.")
+
+    return
+
 def save_unique_ligand_db(db: dict, path: str):
+    start = datetime.now()
+
     save_json(db, path)
+
+    duration = get_duration_string(start=start)
+    print(f"Unique ligand database saved to {path}. Time: {duration}.")
+
+    return

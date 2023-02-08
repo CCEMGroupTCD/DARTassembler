@@ -105,6 +105,9 @@ metals_in_pse = [el for a in [[21, 31], [39, 49], [57, 81], [89, 113]] for el in
 
 
 
-#
-mini_alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
+# Extend mini-alphabet in excel style because some complexes in the CSD have more than 24 ligands.
+mini_alphabet_0 = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
                  "v", "w", "x", "y", "z"]
+mini_alphabet = []
+for i in range(1, 1001):
+    mini_alphabet.extend([letter*i for letter in mini_alphabet_0])

@@ -9,6 +9,7 @@ from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
 from src01.io_custom import save_json
+from datetime import datetime
 
 
 class BaselineDB:
@@ -20,6 +21,9 @@ class BaselineDB:
         that the functionality is stable even if we use RCA_Ligands (As they are a subclass of RCA_Mol)
         """
         self.db = dict_
+
+    def __len__(self):
+        return len(self.db)
 
     def get_first_entry(self):
         first_key = list(self.db.keys())[0]
@@ -33,18 +37,16 @@ class BaselineDB:
         else:
             self.db[key] = molecule
 
-    def get_dict_in_json_format(self):
+    def get_dict_in_json_format(self, desc: str='Convert db to dict'):
         json_dict = {}
-        for key, mol in self.db.items():
+        for key, mol in tqdm(self.db.items(), desc):
             json_dict[key] = mol.write_to_mol_dict()
         return json_dict
 
-    def to_json(self, path):
+    def to_json(self, path, desc: str='Save DB to json'):
+        save_json(self.get_dict_in_json_format(desc=desc), path=path, indent=4)
 
-        print("Start Saving DB to json")
-        save_json(self.get_dict_in_json_format(), path=path, indent=4)
-
-        print(f"Successfully saved DB to {path}")
+        return
 
     @classmethod
     def from_json(cls,
@@ -63,8 +65,6 @@ class BaselineDB:
             because ligand graphs are created by the molecule graphs. For Ligands this will just be dumped as a kwarg)
         :param kwargs: additional arguments for the graph creation
         """
-
-
         if isinstance(json_, str):
             if not json_.endswith(".json"):
                 print("select a json file as input!")
@@ -86,7 +86,7 @@ class BaselineDB:
             print("Wrong type chosen, will be set to Molecule")
             type_ = "Molecule"
 
-        print("Start Establishing DB from .json")
+        # print("Start Establishing DB from .json")
 
         #
         #
@@ -126,15 +126,12 @@ class BaselineDB:
         print(f'Deleted {len(deleted_identifiers)} molecules from input because they were not fully connected.')
         return
 
-    def remove_node_features_from_molecular_graphs(self, keep: list = None):
+    def remove_node_features_from_molecular_graphs(self, keep: list = []):
         """
         Removes all node features from all molecular graphs in the db except the node features specified in keep.
         :param keep: list of node features which will not be removed
         :return: None
         """
-        if keep is None:
-            keep = ['node_label']
-
         for identifier, mol in self.db.items():
             remove_node_features_from_graph(
                 graph=mol.graph,
@@ -166,10 +163,9 @@ class BaselineDB:
         Makes all molecular multigraphs to graphs.
         :return: None
         """
-        for identifier, mol in self.db.items():
+        for identifier, mol in tqdm(self.db.items(), 'Standardize graphs to simple nx.Graph objects'):
             mol.graph = make_multigraph_to_graph(mol.graph)
 
-        print(f'Made all graphs to simple networkx.Graph objects.')
         return
 
 
@@ -200,7 +196,7 @@ class LigandDB(BaselineDB):
             denticity_numbers_of_interest = [denticity_numbers_of_interest]
         elif denticity_numbers_of_interest is None:
             # then we want all denticities
-            denticity_numbers_of_interest = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            denticity_numbers_of_interest = list(range(1, 9999))
 
         #
         # actual extraction:

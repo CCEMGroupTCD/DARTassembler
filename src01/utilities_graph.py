@@ -83,15 +83,13 @@ def graph_to_dict_with_node_labels(G, sort_dicts=True):
     return final_graph_dict
 
 
-def remove_node_features_from_graph(graph, keep=None, inplace=True):
+def remove_node_features_from_graph(graph, keep: list=[], inplace=True):
     """
     Removes all node features from the given graph except for the ones specified in `keep`.
     :param graph: networkx multigraph with node features
     :param keep: list of node features which will not be removed
     :return:
     """
-    if keep is None:
-        keep = ['node_label']
     if not inplace:
         graph = deepcopy(graph)
 
@@ -131,7 +129,9 @@ def remove_edge_features_from_graph(graph, keep=None, inplace=True):
 
 
 def make_multigraph_to_graph(graph) -> nx.Graph:
-    return nx.Graph(graph)
+    if not isinstance(graph, nx.Graph):
+        graph = nx.Graph(graph)
+    return graph
 
 
 def make_graph_labels_integers(G: [nx.Graph, nx.MultiGraph]):
