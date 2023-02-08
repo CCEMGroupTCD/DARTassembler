@@ -11,13 +11,17 @@ from src01.DataBase import LigandDB, MoleculeDB
 
 if __name__ == "__main__":
 
-    #
-    database_path, data_store_path = select_example_database(DB="tmQMG")
 
-    #
     # testing = 1000  # if we would like to only do a test run (only works from the second run on)
-    graph_strategy = "default"  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
+    graph_strategy = "CSD"  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
+    selected_DB = "CSD_MM_G"
 
+    if selected_DB.lower() in ["tmqm", "tmqmg"] and graph_strategy == "CSD":
+        raise ValueError("CSD Graphs can not be used with tmqm atomic properties")
+
+    #
+    database_path, data_store_path = select_example_database(DB=selected_DB)
+    #
     run(
         database_path_=database_path,
         data_store_path_=data_store_path,
@@ -26,7 +30,7 @@ if __name__ == "__main__":
         use_existing_input_json_=False,
         exclude_not_fully_connected_complexes_=False,
         get_only_unique_ligand_db_without_charges_=True,
-        testing_=1000,
+        testing_=100,
         graph_strat_=graph_strategy
     )
 

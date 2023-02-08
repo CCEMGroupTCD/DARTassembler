@@ -78,6 +78,8 @@ class RCA_Molecule:
                 graph = get_reindexed_graph(graph)
             self.graph = graph
 
+        self.validity_check_created_molecule()
+
         # As the graphs are now not optional anymore we can also make the hashes baseline
         self.graph_hash = self.get_graph_hash()
         self.hash = self.get_hash()
@@ -86,6 +88,19 @@ class RCA_Molecule:
 
         # Set kwargs so that they become properties of the molecule
         self.set_other_props_as_properties(other_props=other_props)
+
+    def validity_check_created_molecule(self):
+        """
+        This method aims to check if the created molecule is valid,
+        i.e. if all its attributes are compatible
+        """
+
+        # Graph check (only really needed if we create the graphs by an external input
+        # assures that the graph corresponds to the atomic properties and that the order is the same
+        # which is crucial for the extraction process
+        atoms, _ = get_sorted_atoms_and_indices_from_graph(self.graph)
+
+        assert atoms == self.atomic_props['atoms'], 'Order of atoms in graph and in atomic_props doesn\'t match.'
 
     def get_mol_from_input(self, mol):
         if mol is None:
@@ -337,8 +352,10 @@ class RCA_Molecule:
 
         atoms, idc = get_sorted_atoms_and_indices_from_graph(self.graph)
         if 'atoms' in self.atomic_props:
-            #if not atoms == self.atomic_props['atoms']:
-                #breakpoint()
+
+            # if not atoms == self.atomic_props['atoms']:
+            #     breakpoint()
+
             assert atoms == self.atomic_props['atoms'], 'Order of atoms in graph and in atomic_props doesn\'t match.'
 
         # first we gather some information around the metal in the initial graph
