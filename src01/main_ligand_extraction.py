@@ -70,7 +70,7 @@ if __name__ == '__main__':
     exclude_not_fully_connected_complexes = False  # script not ready for unconnected graphs yet
     get_only_unique_ligand_db_without_charges = True  # For graph benchmark useful, reduces runtime because it ignores charge assignment and updating the complex and full ligand db.
 
-
+    #
     database_path, data_store_path = select_example_database(DB=database)
     main(
         database_path_=database_path,

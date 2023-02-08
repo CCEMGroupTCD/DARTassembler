@@ -1,6 +1,8 @@
 """
-Building up on the new main_ligand_extraction.py
+Building up on the new main_ligand_extraction.py,
+is going to become the graph testing thing lateron
 """
+import networkx as nx
 
 from src01.main_ligand_extraction import main as run
 from src01.main_ligand_extraction import select_example_database
@@ -10,20 +12,11 @@ from src01.DataBase import LigandDB, MoleculeDB
 if __name__ == "__main__":
 
     #
-    # example databases, choose between: tmqm, tmqmG, CSD_MM_G
     database_path, data_store_path = select_example_database(DB="tmQMG")
 
     #
     # testing = 1000  # if we would like to only do a test run (only works from the second run on)
-    graph_strategy = "default"  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
-
-    #
-    #
-    # calculate_charges = True  # if you want to run charge assignment after ligand extraction, takes ~30 min on tmQMg
-    # overwrite_atomic_properties = True  # if atomic properties json should be overwritten, not really critical
-    # use_existing_input_json = True  # if the existing input json should be used or the process started from the xzy files
-    # exclude_not_fully_connected_complexes = False  # script not ready for unconnected graphs yet
-    # get_only_unique_ligand_db_without_charges = True  # For graph benchmark useful, reduces runtime because it ignores charge assignment and updating the complex and full ligand db.
+    graph_strategy = "CSD"  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     run(
         database_path_=database_path,
@@ -44,14 +37,27 @@ if __name__ == "__main__":
                                       max_number=100
                                       )
 
+    # number of unconnected complexes
+    metric01 = len([mol for mol in Complex_DB.db.values() if nx.is_connected(mol.graph) is False])
+
+    #
     Ligand_DB = LigandDB.from_json(
         json_=f"{data_store_path}/tmQM_Ligands_full.json",
         type_="Ligand",
         max_number=100
     )
+    #
+    metric02 = len(Ligand_DB.db)                                                        # number of total ligands
+    metric03 = len([lig for lig in Ligand_DB.db.values() if lig.denticity == -1])       # number of isolated ligands
 
+    #
     unique_Ligands = LigandDB.from_json(
         json_=f"{data_store_path}/tmQM_Ligands_unique.json",
         type_="Ligand",
         max_number=100
     )
+
+    metric04 = sum([len(ul.count_denticities) for ul in unique_Ligands.db.values()])        # number of unique ligands wirh denticity
+
+    #
+    print("done")

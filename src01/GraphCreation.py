@@ -19,6 +19,9 @@ from molSimplify.Classes.mol3D import mol3D
 
 import warnings
 
+from constants.Serverpath.serverpath import serverpath
+from src01.utilities_graph import graph_from_graph_dict
+
 # try:
 #     smiles_df = pd.read_csv("../constants/CSD/CSD_Smiles_full.csv")
 # except FileNotFoundError:
@@ -237,17 +240,14 @@ class GraphCreation:
         because then the main programm will take care of it
         """
 
-        from constants.Serverpath.serverpath import serverpath
-        from src01.utilities_graph import graph_from_graph_dict
-
         graph_file_path = f"{serverpath}/Raw_CSD_MM_G/Graphs"
 
         try:
-            os.listdir(graph_file_path)
+
+            if f"{identifier}_g.json" in os.listdir(graph_file_path):
+                with open(f"{graph_file_path}/{identifier}_g.json", "r") as f:
+                    self.G = graph_from_graph_dict(json.load(f))
+
         except FileNotFoundError:
             print("Graph directory not found, standard graphs are getting created")
             return
-        #
-        if f"{identifier}_g.json" in os.listdir(graph_file_path):
-            with open(f"{graph_file_path}/{identifier}_g.json", "r") as f:
-                self.G = graph_from_graph_dict(json.load(f))
