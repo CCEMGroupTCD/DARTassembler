@@ -19,7 +19,6 @@ from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warn
     get_duration_string
 
 
-
 class LigandExtraction:
 
     def __init__(self, database_path: str,
@@ -81,7 +80,9 @@ class LigandExtraction:
 
         return
 
-    def load_input_data_to_json(self, overwrite_atomic_properties: bool = False):
+    def load_input_data_to_json(self,
+                                overwrite_atomic_properties: bool = False,
+                                **kwargs):
         """
         Establish and safe the Database (in our case tmQM) as json for simple loading.
         """
@@ -92,14 +93,16 @@ class LigandExtraction:
                 json_=db_dict,
                 type_="Complex",
                 identifier_list=self.testing,
-                graph_strategy=self.graph_strat
+                graph_strategy=self.graph_strat,
+                **kwargs
             )
         else:
             input_complex_db = MoleculeDB.from_json(
                                                 json_=db_dict,
                                                 type_="Complex",
                                                 max_number=self.testing,
-                                                graph_strategy=self.graph_strat
+                                                graph_strategy=self.graph_strat,
+                                                **kwargs
                                                 )
         input_complex_db.to_json(path=self.input_complexes_json)
 
@@ -392,14 +395,18 @@ class LigandExtraction:
 
         return
 
-    def ensure_input_complex_db_exists(self, overwrite_atomic_properties: bool, use_existing_input_json: bool):
+    def ensure_input_complex_db_exists(self,
+                                       overwrite_atomic_properties: bool,
+                                       use_existing_input_json: bool,
+                                       **kwargs
+                                       ):
         if use_existing_input_json:
             if not self.input_complexes_json.exists():
                 print(
                     f'WARNING: Cannot use existing input json of complexes because path not found: {self.input_complexes_json}. Reload xzy, global properties and graph data instead.')
-                self.load_input_data_to_json(overwrite_atomic_properties=overwrite_atomic_properties)
+                self.load_input_data_to_json(overwrite_atomic_properties=overwrite_atomic_properties, **kwargs)
         else:
-            self.load_input_data_to_json(overwrite_atomic_properties=overwrite_atomic_properties)
+            self.load_input_data_to_json(overwrite_atomic_properties=overwrite_atomic_properties, **kwargs)
 
         return
 
@@ -416,7 +423,8 @@ class LigandExtraction:
         start = datetime.now()
 
         self.ensure_input_complex_db_exists(overwrite_atomic_properties=overwrite_atomic_properties,
-                                            use_existing_input_json=use_existing_input_json)
+                                            use_existing_input_json=use_existing_input_json,
+                                            **kwargs)
 
         self.extract_ligands(testing=self.testing,
                              graph_creating_strategy=self.graph_strat,

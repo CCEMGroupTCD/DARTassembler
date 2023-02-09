@@ -18,13 +18,11 @@ def generate_run_list():
         0: {
             "name": "nat cutoffs",
             "strat": "default",
-            "kwargs": {
-                "skin_": 1.0
-            }
+            "kwargs": {}
         },
     }
 
-    """
+    #
     for corr in np.linspace(-0.1, -1, 10):
         run_list.update(
             {len(run_list): {
@@ -77,7 +75,7 @@ def generate_run_list():
         }
         }
     )
-    """
+
     return run_list
 
 
@@ -141,7 +139,7 @@ class GraphTester:
         # Full_Ligand_DB = db.unique_ligand_db
 
         # compute the heuristics
-        # which are less important for now at least
+        # which are less important for now at least - only expressive if we make a full run.
         heuristics = {
             "number_of_unconnected_complexes": len([mol for mol in db.complex_db.db.values() if nx.is_connected(mol.graph) is False]),
             "number_of_total_ligands": len(db.full_ligand_db.db),

@@ -665,7 +665,7 @@ class RCA_Ligand(RCA_Molecule):
         other_props = {key: val for key, val in dict_.items() if not key in necessary_props}
 
         # Optionally add graph if it is present in the dictionary
-        kwargs = {'graph_dict': graph_from_graph_dict(dict_['graph_dict'])} if not (dict_['graph_dict'] is None) else {}
+        # kwargs = {'graph_dict': graph_from_graph_dict(dict_['graph_dict'])} if not (dict_['graph_dict'] is None) else {}
 
         return cls(
             atomic_props=dict_["atomic_props"],

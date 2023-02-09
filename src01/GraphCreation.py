@@ -100,7 +100,12 @@ class GraphCreation:
             for an, correction in dict_.items()
         }
 
-    def ase_cutoff_graph(self, mol: Atoms, skin_: float = 0.2, cutoff_corrections_for_metals: dict = None, **kwargs):
+    def ase_cutoff_graph(self,
+                         mol: Atoms,
+                         skin_: float = 0.2,
+                         cutoff_corrections_for_metals: dict = None,
+                         **kwargs
+                         ):
         """
         Standard graph creation method using the cutoffs from THE covalent radii paper.
         :param cutoff_corrections_for_metals: potential corrections for metal cutoffs
