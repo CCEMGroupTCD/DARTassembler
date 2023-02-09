@@ -71,7 +71,7 @@ class LigandExtraction:
             print(f'Path given as `data_store_path` ({data_store_path} doesn\'t exist yet. Making this directory.')
             data_store_path.mkdir(parents=True, exist_ok=True)
 
-        if not (isinstance(testing, int) or isinstance(testing, bool)):
+        if not (isinstance(testing, int) or isinstance(testing, bool) or isinstance(testing, list)):
             raise ValueError(f'Input variable `testing` must be int or bool but is {type(testing)}.')
 
         self.database_path = database_path
@@ -87,12 +87,20 @@ class LigandExtraction:
         """
         db_dict = DataLoader(database_path_=self.database_path, overwrite=overwrite_atomic_properties).data_for_molDB
 
-        input_complex_db = MoleculeDB.from_json(
-                                            json_=db_dict,
-                                            type_="Complex",
-                                            max_number=self.testing,
-                                            graph_strategy=self.graph_strat
-                                            )
+        if isinstance(self.testing, list):
+            input_complex_db = MoleculeDB.from_json(
+                json_=db_dict,
+                type_="Complex",
+                identifier_list=self.testing,
+                graph_strategy=self.graph_strat
+            )
+        else:
+            input_complex_db = MoleculeDB.from_json(
+                                                json_=db_dict,
+                                                type_="Complex",
+                                                max_number=self.testing,
+                                                graph_strategy=self.graph_strat
+                                                )
         input_complex_db.to_json(path=self.input_complexes_json)
 
         return
@@ -110,16 +118,28 @@ class LigandExtraction:
         return complex_db
 
     def extract_ligands(self,
-                        testing: Union[bool, int] = False,
-                        graph_creating_strategy: str = "default"
+                        testing: Union[bool, int, list[str]] = False,
+                        graph_creating_strategy: str = "default",
+                        **kwargs
                         ):
 
-        self.complex_db = MoleculeDB.from_json(json_=str(self.input_complexes_json),
-                                               type_="Complex",
-                                               identifier_list=None,
-                                               max_number=testing,
-                                               graph_strategy=graph_creating_strategy
-                                               )
+        if isinstance(testing, list) is True:
+            self.complex_db = MoleculeDB.from_json(json_=str(self.input_complexes_json),
+                                                   type_="Complex",
+                                                   identifier_list=testing,
+                                                   max_number=None,
+                                                   graph_strategy=graph_creating_strategy,
+                                                   **kwargs
+                                                   )
+        else:
+            # testing in instance bool or integer (as before)
+            self.complex_db = MoleculeDB.from_json(json_=str(self.input_complexes_json),
+                                                   type_="Complex",
+                                                   identifier_list=None,
+                                                   max_number=testing,
+                                                   graph_strategy=graph_creating_strategy,
+                                                   **kwargs
+                                                   )
 
 
         # TODO Instead of filtering the whole db, implement to check each complex individually
@@ -387,7 +407,8 @@ class LigandExtraction:
                               calculate_charges: bool = True,
                               overwrite_atomic_properties: bool = True,
                               use_existing_input_json: bool = True,
-                              get_only_unique_ligand_db_without_charges: bool = False
+                              get_only_unique_ligand_db_without_charges: bool = False,
+                              **kwargs
                               ):
         """
         Runs the entire ligand extraction process from reading in the .xzy files to optionally assigning charges.
@@ -398,7 +419,8 @@ class LigandExtraction:
                                             use_existing_input_json=use_existing_input_json)
 
         self.extract_ligands(testing=self.testing,
-                             graph_creating_strategy=self.graph_strat
+                             graph_creating_strategy=self.graph_strat,
+                             **kwargs
                              )
         if self.save_intermediate_databases:
             self.complex_db.to_json(path=self.output_complexes_json, desc='Save intermediate complex db')

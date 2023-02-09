@@ -53,7 +53,7 @@ class BaselineDB:
                   json_,
                   type_: str = "Molecule",
                   graph_strategy: str = "default",
-                  max_number=None,
+                  max_number = None,
                   identifier_list: list = None,
                   **kwargs
                   ):
@@ -341,6 +341,7 @@ class LigandDB(BaselineDB):
             })
         df = pd.DataFrame(ligand_props)
         return df
+
 
 class ComplexDB(MoleculeDB):
     def __init__(self, dict_):

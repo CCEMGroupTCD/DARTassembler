@@ -35,7 +35,8 @@ def main(database_path_: str,
          exclude_not_fully_connected_complexes_: bool = True,
          get_only_unique_ligand_db_without_charges_: bool = False,
          testing_: Union[bool, int] = False,
-         graph_strat_: str = "default"
+         graph_strat_: str = "default",
+         **kwargs
          ):
 
     db = LigandExtraction(
@@ -50,7 +51,8 @@ def main(database_path_: str,
         calculate_charges=calculate_charges_,
         overwrite_atomic_properties=overwrite_atomic_properties_,
         use_existing_input_json=use_existing_input_json_,
-        get_only_unique_ligand_db_without_charges=get_only_unique_ligand_db_without_charges_
+        get_only_unique_ligand_db_without_charges=get_only_unique_ligand_db_without_charges_,
+        **kwargs
     )
 
     return db
