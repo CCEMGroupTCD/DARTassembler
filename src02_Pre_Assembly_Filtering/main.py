@@ -1,6 +1,8 @@
-from src01.DataBase import LigandDB
 
-from src05_Pre_Ass_Filtering_Cian_update.FilteringStage import FilterStage
+
+from src01.DataBase import LigandDB
+from src02_Pre_Assembly_Filtering.FilteringStage import FilterStage
+from src01.main_ligand_extraction import select_example_database
 
 # ["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
 
@@ -11,7 +13,11 @@ if __name__ == "__main__":
     filtered_db = {unique_lig_name: RCA_Ligand} dict-type, which can then be employed for the ligandAssembl
     """
 
-    tmQM_unique_Ligands = LigandDB.from_json(json_='/Users/cianclarke/Documents/PhD/Complex_Assembly/Data/unique_ligand_db_v1.3.json',
+    #
+    selected_db = "CSD_MM_G"        # from which DB the ligands should come
+    _, datapath = select_example_database(DB=selected_db)
+
+    tmQM_unique_Ligands = LigandDB.from_json(json_=f"{datapath}/tmQM_Ligands_unique.json",
                                              type_="Ligand",
                                              max_number=5000
                                              )
@@ -97,6 +103,7 @@ if __name__ == "__main__":
     #
     #
     # Filter: Denticity Fraction
+    # 0.9 as a default
     Filter.filter_denticity_fraction(denticity=2, fraction=0.90)
 
     Filter.filter_denticity_fraction(denticity=3, fraction=0.90)
@@ -121,6 +128,7 @@ if __name__ == "__main__":
 
     Filter.add_constant_ligands()
 
+    # provide an overwrite option?
     Filter.database.to_json(path="../data/Filtered_Jsons/filteredLigDB_refactor_test_030223.json")
 
     print("Filtering Done")

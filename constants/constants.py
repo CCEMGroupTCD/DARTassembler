@@ -106,7 +106,8 @@ specified_test_molecules = benchmark_complexes + original_test_complexes
 # list of metal numbers in pse
 metals_in_pse = [el for a in [[21, 31], [39, 49], [57, 81], [89, 113]] for el in range(a[0], a[1])]
 
-
+from pymatgen.core.periodic_table import Element as Pymatgen_element
+transition_metal_symbols = [Pymatgen_element.from_Z(i).symbol for i in metals_in_pse]
 
 # Extend mini-alphabet in excel style because some complexes in the CSD have more than 24 ligands.
 mini_alphabet_0 = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
