@@ -565,6 +565,7 @@ class Window2(QMainWindow):  # This window corresponds to the Create Batch windo
             self.tmp_Dic.update({"Name": str(self.lineEdit_3.text())})
             self.tmp_Dic.update({"Output_Path": self.lineEdit.text()})
             self.tmp_Dic.update({"Input_Path": self.lineEdit_2.text()})
+            self.tmp_Dic.update({"Input_Path": self.lineEdit_2.text()})
             self.tmp_Dic.update({"MAX_num_complexes": self.spinBox.text()})
             self.tmp_Dic.update({"Isomers": self.comboBox_isomer.currentText()})
             self.tmp_Dic.update({"Optimisation_Choice": str(self.radioButton.isChecked())})

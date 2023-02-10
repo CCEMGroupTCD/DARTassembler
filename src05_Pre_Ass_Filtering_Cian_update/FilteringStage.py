@@ -2,10 +2,9 @@ from pathlib import Path
 from copy import deepcopy
 
 from src01.DataBase import MoleculeDB, LigandDB
-from src01.utilities_Molecule import original_metal_ligand
 
-from src02_Pre_Ass_Filtering_Cian.Box_Excluder_Filter import box_filter
-from src02_Pre_Ass_Filtering_Cian.constant_Ligands import get_monodentate_list, get_reactant
+from src05_Pre_Ass_Filtering_Cian_update.Box_Excluder_Filter import box_filter
+from src05_Pre_Ass_Filtering_Cian_update.constant_Ligands import get_monodentate_list, get_reactant
 
 
 class FilterStage:
@@ -34,33 +33,45 @@ class FilterStage:
         # safe to desired folder
         self.database.to_json(path=f"{self.safe_path}/DB_after_{filtering_step_name}.json")
 
-    def metals_of_interest_filter(self, metals_of_interest: [str, list[str]] = None):
+    def metals_of_interest_filter(self, denticity: int = None, metals_of_interest: [str, list[str]] = None):
         """
-
+        This function has been updated by Cian to work with the updated .mol file
         """
-        print("Metal of Interest Filter running")
-
-        if metals_of_interest is None:
-            print("No metals of interest selected, no filtering at all")
+        print(f"Filtering: Metal of Interest -> Denticity: {denticity}")
+        if (metals_of_interest is None) or (denticity is None):
+            print("!!!Warning!!! -> No metal of interest or denticity selected -> Proceeding to next filter")
             return
         elif isinstance(metals_of_interest, str):
             metals_of_interest = [metals_of_interest]
-
         new_db = deepcopy(self.database.db)
 
-        for identifier, ligand in self.database.db.items():
-            om = original_metal_ligand(ligand)
-            # if original metal is None we leave it through
-            if not (om in metals_of_interest or om is None):
-                del new_db[identifier]
+        for unq_name, ligand in self.database.db.items():
+            # Iterate through each ligand. If the denticity matches
+            # the one specified by the user {denticity: int}, but it was never part of
+            # complex with a metal specified by the user {metals_of_interest: [str, list[str]]} then it is
+            # removed
+            if int(ligand.denticity) == int(denticity):
+                #print(list(ligand.count_metals))
+                metal_of_interest_present = False
+                for metal in metals_of_interest:
+                    if metal in list(ligand.count_metals):
+                        #print("Matching Metal: " + str(metal))
+                        metal_of_interest_present = True
+                    else:
+                        pass
+                if metal_of_interest_present:
+                    pass
+                    #print("Metal of Interest Pass")
+                else:
+                    del new_db[unq_name]
+                    #print("Metal of Interest Fail -> Deleting ligand")
+            else:
+                pass
 
         self.database.db = new_db
-
-        #self.db = {identifier: ligand for identifier, ligand in self.db.items() if om in metals_of_interest or om is None}
-
+        # self.db = {identifier: ligand for identifier, ligand in self.db.items() if om in metals_of_interest or om is None}
         self.filter_tracking[len(self.filter_tracking)] = f"Metals of interest filter with {metals_of_interest}"
-
-        #self.safe_and_document_after_filterstep(filtering_step_name="Metal_of_Interest")
+        # self.safe_and_document_after_filterstep(filtering_step_name="Metal_of_Interest")
 
     def denticity_of_interest_filter(self, denticity_of_interest: [int, list[int]] = None):
         """
@@ -85,33 +96,174 @@ class FilterStage:
 
         self.filter_tracking[len(self.filter_tracking)] = f"Metals of interest filter with {denticity_of_interest}"
 
-        #self.safe_and_document_after_filterstep(filtering_step_name="Denticity_of_Interest")
+        # self.safe_and_document_after_filterstep(filtering_step_name="Denticity_of_Interest")
 
-    def filter_functional_group_atoms(self, atoms_of_interest: [str, list[str]] = None):
+    def filter_coordinating_group_atoms(self, denticity: int = None, atoms_of_interest: [str, list[str]] = None, instruction: str = None):
+        # instruction = must_contain_and_only_contain,this means that if the coordinating atoms specified by the user are exactly the same as the coordinating groups of the ligand then the ligand can pass
+        # instruction = must_at_least_contain        ,this means that if the coordinating atoms specified by the user are a subset of that of the ligand then the ligand can pass
+        # instruction = must_exclude                 ,this means that if the coordinating atoms specified by the user are not contained in any amount in the ligand then the ligand can pass
+        # instruction = must_only_contain_in_any_amount   ,this means that if all coordinating atoms specified by the user are contained to some degree in the ligand and no other coordinating atoms are conatined then the ligand can pass
+        # This filter only applies to ligands of the specified denticities. ligands with other denticities are allowed to pass
         """
-        Only leave in ligands where we have functional atoms equal to N and/or O
+        Only leave in ligands where we have functional atoms equal to specified atoms
+        """
+        print("Functional Group Filter running")
+
+        print(f"Filtering: Coordinating_atom_type -> Denticity: {denticity}")
+        if (atoms_of_interest is None) or (denticity is None) or (instruction is None):
+            print("!!!Warning!!! -> All arguments not specified  -> Proceeding to next filter")
+            return
+        if ((denticity != len(atoms_of_interest)) and instruction == True) or ((denticity < len(atoms_of_interest)) and instruction == False):
+            print("!!!Warning!!! -> The specified denticity is not consistent with specified coordinating atoms -> Proceeding to next filter ")
+
+        elif isinstance(atoms_of_interest, str):
+            atoms_of_interest = [atoms_of_interest]
+
+        new_db = deepcopy(self.database.db)
+
+        for unq_name, ligand in self.database.db.items():
+            #print("\n")
+            #print(unq_name)
+            #print(sorted(list(ligand.local_elements)))
+            if int(ligand.denticity) == int(denticity):
+                coordinating_atoms_present = False
+                # If the denticity of the ligand matches that specified by the user
+                if ((sorted(list(ligand.local_elements)) == sorted(atoms_of_interest)) and instruction == "must_contain_and_only_contain") or \
+                        (all(elem in list(ligand.local_elements) for elem in atoms_of_interest) and instruction == "must_at_least_contain") or \
+                        ((any(elem in list(ligand.local_elements) for elem in atoms_of_interest) == False) and instruction == "must_exclude") or \
+                        ((all(elem in atoms_of_interest for elem in list(ligand.local_elements))) and instruction == "must_only_contain_in_any_amount"):
+                    coordinating_atoms_present = True
+                else:
+                    pass
+                if coordinating_atoms_present:
+                    #print("Matching Coordinating groups PASS")
+                    pass
+                else:
+                    #print("Matching Coordinating groups Fail")
+                    del new_db[unq_name]
+            else:
+                # If the denticities don't match then we don't apply the filter and just skip
+                pass
+        self.database.db = new_db
+        self.filter_tracking[len(self.filter_tracking)] = f"Functional Atom filter with {atoms_of_interest}"
+
+        # self.safe_and_document_after_filterstep(filtering_step_name="FunctionalAtoms_of_Interest")
+
+    def filter_ligand_atoms(self, denticity: int = None, atoms_of_interest: [str, list[str]] = None, instruction: str = None):
+        # instruction = must_contain_and_only_contain,this means that if the coordinating atoms specified by the user are exactly the same as the coordinating groups of the ligand then the ligand can pass
+        # instruction = must_at_least_contain        ,this means that if the coordinating atoms specified by the user are a subset of that of the ligand then the ligand can pass
+        # instruction = must_exclude                 ,this means that if the coordinating atoms specified by the user are not contained in any amount in the ligand then the ligand can pass
+        # instruction = must_only_contain_in_any_amount   ,this means that if all coordinating atoms specified by the user are contained to some degree in the ligand and no other coordinating atoms are conatined then the ligand can pass
+        # This filter only applies to ligands of the specified denticities. ligands with other denticities are allowed to pass
+        """
+        Only leave in ligands where we have functional atoms equal to specified atoms
         """
         print("FunctionalGroup Filter running")
 
-        self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items()
-                   if ligand.functional_atom_check(atoms_of_interest) is True}
+        print(f"Filtering: ligand_atom_type")
+        if (atoms_of_interest is None) or (instruction is None) or (denticity is None):
+            print("!!!Warning!!! -> All arguments not specified  -> Proceeding to next filter")
+            return
 
+        elif isinstance(atoms_of_interest, str):
+            atoms_of_interest = [atoms_of_interest]
+
+        new_db = deepcopy(self.database.db)
+
+        for unq_name, ligand in self.database.db.items():
+            #print("\n")
+            #print(unq_name)
+            #print(sorted(list(ligand.atomic_props["atoms"])))
+            if int(ligand.denticity) == int(denticity):
+                coordinating_atoms_present = False
+                # If the denticity of the ligand matches that specified by the user
+                if ((sorted(list(ligand.atomic_props["atoms"])) == sorted(atoms_of_interest)) and instruction == "must_contain_and_only_contain") or \
+                        (all(elem in list(ligand.atomic_props["atoms"]) for elem in atoms_of_interest) and instruction == "must_at_least_contain") or \
+                        ((any(elem in list(ligand.atomic_props["atoms"]) for elem in atoms_of_interest) == False) and instruction == "must_exclude") or \
+                        ((all(elem in atoms_of_interest for elem in list(ligand.atomic_props["atoms"]))) and instruction == "must_only_contain_in_any_amount"):
+                    coordinating_atoms_present = True
+                else:
+                    pass
+                if coordinating_atoms_present:
+                    #print("Matching Coordinating groups PASS")
+                    pass
+                else:
+                    #print("Matching Coordinating groups Fail")
+                    del new_db[unq_name]
+            else:
+                # If the denticities don't match then we don't apply the filter and just skip
+                pass
+        self.database.db = new_db
         self.filter_tracking[len(self.filter_tracking)] = f"Functional Atom filter with {atoms_of_interest}"
 
-        #self.safe_and_document_after_filterstep(filtering_step_name="FunctionalAtoms_of_Interest")
+    # self.safe_and_document_after_filterstep(filtering_step_name="FunctionalAtoms_of_Interest")
 
     def filter_betaHs(self):
         """
         Filter out all ligands with beta Hydrogen in it
         """
-        print("betaH Filter running")
+        #print("betaH Filter running")
 
         self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items()
-                   if ligand.betaH_check() is False}
+                            if ligand.betaH_check() is False}
 
         self.filter_tracking[len(self.filter_tracking)] = f"betaH Filter"
 
-        #self.safe_and_document_after_filterstep(filtering_step_name="betaH Filter")
+        # self.safe_and_document_after_filterstep(filtering_step_name="betaH Filter")
+
+    def filter_molecular_weight(self, denticity: int = None, atomic_weight_min: float = None, atomic_weight_max: float = None):
+
+        new_db = deepcopy(self.database.db)
+
+        if (denticity is None) or (atomic_weight_min is None) or (atomic_weight_max is None):
+            print("!!!Warning!!! -> All arguments not specified  -> Proceeding to next filter")
+
+        else:
+            for unq_name, ligand in self.database.db.items():
+                #print(unq_name)
+                molecular_range_condition_satisified = False
+                MW = ligand.global_props["molecular_weight"]
+                print(MW)
+                if (atomic_weight_min <= MW < atomic_weight_max) and (ligand.denticity == denticity):
+                    pass
+                    #print("Molecular Weight Pass")
+                else:
+                    del new_db[unq_name]
+                    #print("Molecular Weight Fail")
+                #print("\n")
+        self.database.db = new_db
+        self.filter_tracking[len(self.filter_tracking)] = f"Molecular Weight Filter with MW_MIN_{atomic_weight_min} and MW_MAX_{atomic_weight_max}"
+
+    def filter_denticity_fraction(self, denticity: int = None, fraction: float = None):
+        # This filter will filter out ligands whose dominating denticity does not account for greater than the proportion
+        # specified by the user {fraction: float = None} of the total occurences of the complex
+        new_db = deepcopy(self.database.db)
+        if (denticity is None) or (fraction is None):
+            print("!!!Warning!!! -> All arguments not specified  -> Proceeding to next filter")
+
+        else:
+            for unq_name, ligand in self.database.db.items():
+                #print(unq_name)
+                occurence = float(ligand.occurrences)
+                #print(occurence)
+                current_highest_occurrence = 0
+                #print(ligand.count_denticities)
+                for key, value in ligand.count_denticities.items():
+                    if value > current_highest_occurrence:
+                        current_highest_occurrence = value
+                    else:
+                        pass
+                occurence_fraction = float(current_highest_occurrence/occurence)
+                #print(occurence_fraction)
+                if occurence_fraction > fraction:
+                    pass
+                    #print("PASS")
+                else:
+                    del new_db[unq_name]
+                    #print("FAIL")
+                #print("\n")
+            self.database.db = new_db
+            self.filter_tracking[len(self.filter_tracking)] = f"Denticity Fraction: {fraction}"
 
     def box_excluder_filter(self):
         """
@@ -121,7 +273,7 @@ class FilterStage:
         self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items() if box_filter(ligand) is True}
         self.filter_tracking[len(self.filter_tracking)] = f"Box Filter"
 
-        #self.safe_and_document_after_filterstep(filtering_step_name="Box Filter")
+        # self.safe_and_document_after_filterstep(filtering_step_name="Box Filter")
 
     def add_constant_ligands(self):
         """
@@ -132,4 +284,4 @@ class FilterStage:
         for lig in get_monodentate_list() + get_reactant():
             self.database.db[lig.name] = lig
 
-        #self.db.to_json(path=f"{self.safe_path}/DB_after_Adding_Const_Ligands.json")
+        # self.db.to_json(path=f"{self.safe_path}/DB_after_Adding_Const_Ligands.json")
