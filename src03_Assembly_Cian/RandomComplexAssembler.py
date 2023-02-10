@@ -1,7 +1,6 @@
 import random
 import mendeleev as atom
 from src03_Assembly_Cian.building_block_utility import mercury_remover
-from src03_Assembly_Cian.POST_ASSEMBLY_FILTER_2 import OPTIMISE
 import logging
 import stk
 import numpy as np
@@ -59,9 +58,9 @@ class RandomComplexAssembler:
     def convert_ligand_to_building_block_for_complex(self, ligands: dict[RCA_Ligand], topology) -> dict:
         # Here we pick and choose are ligands and rotate and place them based on our topology
         topology_determining_ligand_planar = self.planar_check(ligands)  # Check are either the tetra or tri ligands planar
-        print("topology_determining_ligand_planar " + str(topology_determining_ligand_planar))
+        # print("topology_determining_ligand_planar " + str(topology_determining_ligand_planar))
         topology_list = topology  # I changed this because in the previous version it seemed that the topologies were being
-        print("topology_list " + str(topology_list))
+        # print("topology_list " + str(topology_list))
         if type(topology_list[-1]) == list:
             topology_list.pop()
         else:
@@ -77,9 +76,10 @@ class RandomComplexAssembler:
         ligand_denticities = {}
         for i, ligand in enumerate(ligands.values()):
 
-            print("The number of atoms in this ligand are: " + str(len(ligand.atomic_props["atoms"])))
+
+            # print("The number of atoms in this ligand are: " + str(len(ligand.atomic_props["atoms"])))
             if ligand.denticity == 0:
-                print("in denticity 0")
+                # print("in denticity 0")
                 # This is the intermediate of interest, a user predefined monodentate ligand that is a reaction intermediate
                 # Below we dictate the rotations that must be carried out based on the selected topology
                 monodentate_topology = stk_e.Monodentate(metals=create_placeholder_Hg_bb(),
@@ -108,29 +108,37 @@ class RandomComplexAssembler:
                     single_atom_position = None
                     print("!!!Fatal Error!!! -> Your newly created topology {}, has not been accounted for in the assembly process (denticity = 0) -> Exiting Program ...".format(topology_list))
                     exit()
-                print("before")
+
+                # print("before")
+
                 bb_for_complex = stk.BuildingBlock.init_from_molecule(stk.ConstructedMolecule(
                     topology_graph=monodentate_topology),
                     functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())]
                 )
                 # This function below is to handle monodentate ligands with only one atom
-                print("after")
+
+                # print("after")
                 if len(ligand.atomic_props["atoms"]) == 1:
-                    print("we have decide we have 1 atom")
+                    # print("we have decided we have 1 atom")
+
                     old_position_matrix = bb_for_complex.get_position_matrix()
                     old_position_matrix[1] = single_atom_position
                     new_position_matrix = old_position_matrix
                     bb_for_complex = bb_for_complex.with_position_matrix(new_position_matrix)
                 else:
-                    print("we have decide we have multiple atoms")
+
+                    # print("we have decided we have multiple atoms")
+
                     pass
 
 
 
             elif ligand.denticity == 1:
                 # If our ligand has denticity of 1 we enter this if statement
-                print("in denticity 1")
-                print(type(topology_list))
+
+                # print("in denticity 1")
+                # print(type(topology_list))
+
                 if ((((topology_list == [4, 1, 1]) and (topology_determining_ligand_planar is False)) or (topology_list == [2, 1, 1])) and (first_lig1_placed == False)) or (
                         topology_list == [2, 1, 0]):
                     single_atom_position = [-1.2, 1.2, 0]
@@ -166,25 +174,31 @@ class RandomComplexAssembler:
                 )
                 if len(ligand.atomic_props["atoms"]) == 1:
                     # todo: get rid of this for single atoms
-                    #Please Note that this is purely a temporary fix for ligands with only one atom, this is not intended to be in the final version
-                    print("we have decide we have 1 atom")
+
+                    # Please Note that this is purely a temporary fix for ligands with only one atom, this is not intended to be in the final version
+                    # print("we have decide we have 1 atom")
+
                     old_position_matrix = bb_for_complex.get_position_matrix()
                     old_position_matrix[1] = single_atom_position
                     new_position_matrix = old_position_matrix
                     bb_for_complex = bb_for_complex.with_position_matrix(new_position_matrix)
                 else:
-                    print("we have decide we have multiple atoms")
+
+                    # print("we have decide we have multiple atoms")
+
                     pass
 
 
 
 
             elif ligand.denticity == 4:
-                print("in denticity 4")
+
+                # print("in denticity 4")
                 building_block = ligand.to_stk_bb()
 
                 if topology_determining_ligand_planar is True:
-                    print("planar tetradentate")
+                    # print("planar tetradentate")
+
                     # Then some rotation needs to be done
                     building_block = rotate_tetradentate_bb(building_block, ligand_=ligand)
 
@@ -197,9 +211,11 @@ class RandomComplexAssembler:
                         functional_groups=[
                             stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), )]
                     )
-                    print(list(bb_for_complex.get_atoms()))
-                    print(bb_for_complex.get_position_matrix())
-                    print("finished qefiuhbvlar")
+
+                    # print(list(bb_for_complex.get_atoms()))
+                    # print(bb_for_complex.get_position_matrix())
+                    # print("finished qefiuhbvlar")
+
 
                 elif topology_determining_ligand_planar is False:
                     # todo: This throws still errors
@@ -219,7 +235,9 @@ class RandomComplexAssembler:
 
 
             elif ligand.denticity == 3:
-                print("in denticity 3")
+
+                # print("in denticity 3")
+
                 building_block = ligand.to_stk_bb()
 
                 if topology_determining_ligand_planar is False:
@@ -243,7 +261,9 @@ class RandomComplexAssembler:
                     )
 
                     position_matrix = compl_constructed_mol.get_position_matrix()
-                    position_matrix[0] = [-0.6, 0, 0]
+
+                    position_matrix[0] = [-0.8, 0, 0]  # was previously -0.6
+
                     compl_constructed_mol = compl_constructed_mol.with_position_matrix(position_matrix=position_matrix)
 
                     if topology_list == [3, 2, 0] or [3, 2, 1]:
@@ -265,7 +285,9 @@ class RandomComplexAssembler:
 
 
             elif ligand.denticity == 2:
-                print("in denticity 2")
+
+                # print("in denticity 2")
+
                 if topology_list == [3, 2, 0]:
                     bidentate_topology = stk_e.Bidentate(metals=create_placeholder_Hg_bb(),
                                                          ligands=ligand.to_stk_bb()
@@ -300,7 +322,8 @@ class RandomComplexAssembler:
 
             elif ligand.denticity == 5:
                 # This elif statement shouldn't need much modifying.
-                print("in denticity 5")
+
+                # print("in denticity 5")
 
                 tetra_bb_for_penta, position_index = penta_as_tetra(ligand=ligand)
 
@@ -328,7 +351,8 @@ class RandomComplexAssembler:
                 )
 
             else:
-                print("Unknown Ligand Denticity, something went wrong")
+
+                print("!!!Fatal Error!!! -> Unknown Ligand Denticity -> Aborting Program")
                 raise ValueError
 
             ligand_buildingblocks[i] = bb_for_complex
@@ -347,8 +371,10 @@ class RandomComplexAssembler:
         # print("multiplicity: " + str(multiplicity))
         comp = deepcopy((random.choice(topology_input_list)))  # comp is short for composition and is just another word for topology
         complete_topology_nomenclature = deepcopy(str(comp))  # This may be redundant now
-        print("comp: " + str(comp))
-        print("complete_topology_nomenclature: " + str(complete_topology_nomenclature))
+
+        # print("comp: " + str(comp))
+        # print("complete_topology_nomenclature: " + str(complete_topology_nomenclature))
+
         # The following code  is used to process the topology string, its main role is to ensure that the same random
         # ligand is used, for example [2,2,[1,1]]
         if type(comp[-1]) == list:
@@ -372,13 +398,15 @@ class RandomComplexAssembler:
         elif type(int(comp[-1])) == int:
             if (0 not in self.ligand_dict.keys()) and (0 in comp):
                 print("!!!Warning!!! -> Reaction intermediate not specified but is necessitated by the chosen topology -> replacing with monodentate ligand")
-                i =0
+
+                i = 0
                 for item in comp:
                     if item == 0:
                         comp[i] = 1
                     else:
                         pass
-                    i = i+1
+
+                    i = i + 1
             ligands = {i: random.choice(self.ligand_dict[index]) for i, index in enumerate(comp)}  # ligands chosen based on the toplogy
 
         else:
@@ -400,7 +428,9 @@ class RandomComplexAssembler:
                 print("!!!Warning!!! -> The program has encountered a non_planar tetradentate ligand, The program as of yet can not assemble with this ligand, skipping to next assembly")
             complex_ = None
             logging.info("Not implemented yet")
-            return complex_, ligands, metal, int(metal_ox), multiplicity, complete_topology_nomenclature
+
+            return complex_, ligands, metal, int(metal_ox), multiplicity, complete_topology_nomenclature, None
+
         else:
             # and thus we got everything to assemble the complex
             # Here we extract information regarding the functional groups (currently used exclusively for the optimization process)
@@ -409,28 +439,34 @@ class RandomComplexAssembler:
             functional_groups_type = {key_: lig.get_assembly_dict()["type"] for key_, lig in ligands.items()}
             # Next we start picking and choosing our ligands
             building_blocks, denticities = self.convert_ligand_to_building_block_for_complex(ligands, comp, )
-            print("comp: " + str(comp))
-            print("complete_topology_nomenclature: " + str(complete_topology_nomenclature))
-            complex_ = (
+
+            # print("comp: " + str(comp))
+            # print("complete_topology_nomenclature: " + str(complete_topology_nomenclature))
+            complex_, rotated_building_blocks = (
                 self.isomer_handler(topology=str(complete_topology_nomenclature), building_blocks_list=building_blocks, metal_input=metal, charge_input=metal_ox, denticity_list=denticities,
                                     return_all_isomers=isomer_build_status, func_groups_str=functional_groups_str, func_groups_index=functional_groups_index, func_groups_type=functional_groups_type,
-                                    opt_choice=opt_decision))
-            return complex_, ligands, metal, int(metal_ox), multiplicity, complete_topology_nomenclature
+                                    opt_choice=opt_decision, ligand_list=ligands))
+            return complex_, ligands, metal, int(metal_ox), multiplicity, complete_topology_nomenclature, rotated_building_blocks
 
-    def isomer_handler(self, topology, building_blocks_list, metal_input, charge_input, denticity_list, return_all_isomers, func_groups_str, func_groups_index, func_groups_type, opt_choice):
-        print("This is the topology " + str(topology))
+    def isomer_handler(self, topology, building_blocks_list, metal_input, charge_input, denticity_list, return_all_isomers, func_groups_str, func_groups_index, func_groups_type, opt_choice,
+                       ligand_list):
+        # ("This is the topology " + str(topology))
         # The goal of this function is to take in a complex and return all possible isomers of that complex
-
+        #
+        #
+        # 1
         if (str(topology) == '[2, 1, 0]') or (str(topology) == "[2, 1, 1, ['1', '2', '2']]") or (str(topology) == "[2, 1, 1, ['1', '2', '3']]") or (str(topology) == "[2, 2, ['1', '1']]") or (
                 str(topology) == "[2, 2, ['1', '2']]"):
-            print("we are going to rotate one of the bidentates")
+            # print("we are going to rotate one of the bidentates")
             # I expect only one isomer from this if statement (so a list of two constructed molecules). Only a single bidentate needs to be flipped 180
             bidentate_already_rotated = False  # This is to ensure we don't enter the same if statement twice
             building_blocks_rotated = {}  # This will contain all the ligands for the isomer of our complex
             for j in range(len(building_blocks_list)):
                 # We iterate through all the complexes in our input complex
                 if (denticity_list[j] == 2) and (bidentate_already_rotated == False):
-                    # If we come across a bidentate ligand and its the first time we have come across one then ...
+
+                    # If we come across a bidentate ligand and it's the first time we have come across one then ...
+
                     bidentate_already_rotated = True
                     # Then we flip 180 degrees
                     building_blocks_rotated[j] = building_blocks_list[j].with_rotation_about_axis(angle=180.0 * (np.pi / 180.0), axis=np.array((1, 0, 0)), origin=np.array((0, 0, 0)), )
@@ -474,41 +510,56 @@ class RandomComplexAssembler:
             complex_normal_built = stk.ConstructedMolecule(topology_graph=complex_normal)
             complex_normal_built = mercury_remover(complex_normal_built)
             if opt_choice == "True":
-                print("initiating Optimisation")
-                complex_normal_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_normal_built, func_groups_str, func_groups_index, func_groups_type)
+
+                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
+                # print("initiating Optimisation")
+                # complex_normal_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_normal_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
             else:
-                print("Not Optimising")
+                # print("Not Optimising")
                 pass
 
             complex_flipped_built = stk.ConstructedMolecule(topology_graph=complex_flipped)
             complex_flipped_built = mercury_remover(complex_flipped_built)
             if opt_choice == "True":
-                print("initiating Optimisation")
-                complex_flipped_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_flipped_built, func_groups_str, func_groups_index, func_groups_type)
+
+                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
+                # print("initiating Optimisation")
+                # complex_flipped_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_flipped_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
             else:
-                print("Not Optimising")
+                # print("Not Optimising")
                 pass
 
             if return_all_isomers == "Generate Lowest Energy":
-                print("returning lowest energy isomer")
+                # print("returning lowest energy isomer")
                 # If we only want to generate the lowest energy topology then ...
-                print("input complex energy: " + str(get_energy_stk(complex_normal_built)))
-                print("flipped complex energy: " + str(get_energy_stk(complex_flipped_built)))
+                # print("input complex energy: " + str(get_energy_stk(complex_normal_built)))
+                # print("flipped complex energy: " + str(get_energy_stk(complex_flipped_built)))
                 if get_energy_stk(complex_flipped_built) <= get_energy_stk(complex_normal_built):
-                    print("flipped is lower in energy ")
+                    # print("flipped is lower in energy ")
                     # we return a list for the sake of simplicity at the other end
-                    return [complex_flipped_built]
+                    return [complex_flipped_built], [building_blocks_rotated]
                 elif get_energy_stk(complex_flipped_built) > get_energy_stk(complex_normal_built):
-                    print("normal is lowest in energy")
-                    return [complex_normal_built]
+                    # print("normal is lowest in energy")
+                    return [complex_normal_built], [building_blocks_list]
             elif return_all_isomers == "Generate All":
+                print("Cis Energy: " + str(get_energy_stk(complex_normal_built)))
+                print("Trans Energy: " + str(get_energy_stk(complex_flipped_built)))
                 isomer_list = [complex_normal_built, complex_flipped_built]
-                return isomer_list
+                building_blocks = [building_blocks_list, building_blocks_rotated]
+                post_filter(isomer_list=isomer_list, building_blocks_list=building_blocks).closest_distance()
+                return isomer_list, building_blocks
+
             else:
                 print("!!!Fatal error!!! -> Isomer Build status not as expected -> Exiting program ...")
                 exit()
 
+
+        #
+        #
+        # 2
+
         elif str(topology) == '[3, 2, 0]':
+            # building_blocks_list -> good
             # These are the empty dictionaries that will contain all the building blocks for each isomer
             # This is by far the most 'involved' isomer generation processes
             building_blocks_rotated_bi = {}
@@ -551,74 +602,89 @@ class RandomComplexAssembler:
                                                                                building_blocks_rotated_bi_and_tri.items()}
                                                                       )
 
+            # There is a problem here
             complex_normal_built = stk.ConstructedMolecule(topology_graph=complex_normal)
             complex_normal_built = mercury_remover(complex_normal_built)
             if opt_choice == "True":
-                print("initiating Optimisation")
-                complex_normal_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_normal_built, func_groups_str, func_groups_index, func_groups_type)
+                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
+                # print("initiating Optimisation")
+                # complex_normal_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_normal_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
             else:
-                print("Not Optimising")
+                # print("Not Optimising")
                 pass
 
             complex_rotated_bi_built = stk.ConstructedMolecule(topology_graph=complex_rotated_bi)
             complex_rotated_bi_built = mercury_remover(complex_rotated_bi_built)
             if opt_choice == "True":
-                print("initiating Optimisation")
-                complex_rotated_bi_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_bi_built, func_groups_str, func_groups_index, func_groups_type)
+
+                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
+                # print("initiating Optimisation")
+                # complex_rotated_bi_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_bi_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
             else:
-                print("Not Optimising")
+                # print("Not Optimising")
                 pass
 
             complex_rotated_tri_built = stk.ConstructedMolecule(topology_graph=complex_rotated_tri)
             complex_rotated_tri_built = mercury_remover(complex_rotated_tri_built)
             if opt_choice == "True":
-                print("initiating Optimisation")
-                complex_rotated_tri_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_tri_built, func_groups_str, func_groups_index, func_groups_type)
+
+                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
+                # print("initiating Optimisation")
+                # complex_rotated_tri_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_tri_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
             else:
-                print("Not Optimising")
+                # print("Not Optimising")
                 pass
 
             complex_rotated_bi_and_tri_built = stk.ConstructedMolecule(topology_graph=complex_rotated_bi_and_tri)
             complex_rotated_bi_and_tri_built = mercury_remover(complex_rotated_bi_and_tri_built)
             if opt_choice == "True":
-                print("initiating Optimisation")
-                complex_rotated_bi_and_tri_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_bi_and_tri_built, func_groups_str, func_groups_index, func_groups_type)
+
+                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
+                # print("initiating Optimisation")
+                # complex_rotated_bi_and_tri_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_bi_and_tri_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
             else:
-                print("Not Optimising")
+                # print("Not Optimising")
                 pass
 
             isomer_list = [complex_normal_built, complex_rotated_bi_built, complex_rotated_tri_built, complex_rotated_bi_and_tri_built]
+            building_blocks = [building_blocks_list, building_blocks_rotated_bi, building_blocks_rotated_tri, building_blocks_rotated_bi_and_tri]
+
             isomer_energy_list = [get_energy_stk(complex_normal_built), get_energy_stk(complex_rotated_bi_built), get_energy_stk(complex_rotated_tri_built),
                                   get_energy_stk(complex_rotated_bi_and_tri_built)]
             if return_all_isomers == "Generate Lowest Energy":
                 smallest_energy = min(isomer_energy_list)
-                for complex_ in isomer_list:
+
+                for complex_, building_block in zip(isomer_list, building_blocks):
                     if abs(get_energy_stk(complex_) - smallest_energy) < 0.001:  # are they approximately = (just in case there are floating point errors)
-                        return [complex_]
+                        return [complex_], [building_block]
                     else:
                         pass
 
             if return_all_isomers == "Generate All":
-                return isomer_list
+
+                return isomer_list, building_blocks
 
             else:
                 print("!!!Fatal error!!! -> Isomer Build status not as expected")
                 exit()
+
+
+        #
+        #
+        # 3
 
         elif (str(topology) == "[4, 1, 1, ['1', '2', '3']]") or (str(topology) == "[4, 1, 0]"):
             # Here we are just flipping the tetradentate ligand
             building_blocks_rotated_tetra = {}
             for j in range(len(building_blocks_list)):
                 if denticity_list[j] == 4:
-                    print("efblfhvbs")
-                    print(building_blocks_list[j].get_position_matrix())
-                    print("ragfbl3dhfv")
+
+                    # print(building_blocks_list[j].get_position_matrix())
                     building_blocks_rotated_tetra[j] = building_blocks_list[j].with_rotation_about_axis(angle=180.0 * (np.pi / 180.0), axis=np.array((1, 0, 0)), origin=np.array((0, 0, 0)), )
                 else:
-                    print("ewgg")
-                    print(building_blocks_list[j].get_position_matrix())
-                    print(list(building_blocks_list[j].get_atoms()))
-                    print("jghrighr")
+                    # print(building_blocks_list[j].get_position_matrix())
+                    # print(list(building_blocks_list[j].get_atoms()))
+
                     building_blocks_rotated_tetra[j] = building_blocks_list[j]
 
             complex_normal = stk_e.complex_topology_three(metals=self.create_metal_building_block(metal_input, charge_input),
@@ -632,38 +698,45 @@ class RandomComplexAssembler:
                                                                  )
 
             complex_normal_built = stk.ConstructedMolecule(topology_graph=complex_normal)
-            print(complex_normal_built.get_position_matrix())
-            print(list(complex_normal_built.get_atoms()))
+
             complex_normal_built = mercury_remover(complex_normal_built)
             if opt_choice == "True":
-                print("initiating Optimisation")
-                complex_normal_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_normal_built, func_groups_str, func_groups_index, func_groups_type)
+                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
+                # print("initiating Optimisation")
+                # complex_normal_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_normal_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
             else:
-                print("Not Optimising")
+                # print("Not Optimising")
+
                 pass
 
             complex_rotated_tetra_built = stk.ConstructedMolecule(topology_graph=complex_rotated_tetra)
             complex_rotated_tetra_built = mercury_remover(complex_rotated_tetra_built)
             if opt_choice == "true":
-                print("initiating Optimisation")
-                complex_rotated_tetra_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_tetra_built, func_groups_str, func_groups_index, func_groups_type)
-            else:
-                print("Not Optimising")
-                pass
 
+                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
+                # print("initiating Optimisation")
+                # complex_rotated_tetra_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_tetra_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
+            else:
+                # print("Not Optimising")
+                pass
             isomer_list = [complex_normal_built, complex_rotated_tetra_built]
+            building_blocks = [building_blocks_list, building_blocks_rotated_tetra]
             if return_all_isomers == "Generate Lowest Energy":
                 if get_energy_stk(complex_normal_built) <= get_energy_stk(complex_rotated_tetra_built):
-                    return [complex_normal_built]
+                    return [complex_normal_built], [building_blocks_list]
                 elif get_energy_stk(complex_normal_built) > get_energy_stk(complex_rotated_tetra_built):
-                    return [complex_rotated_tetra_built]
+                    return [complex_rotated_tetra_built], [building_blocks_rotated_tetra]
 
             elif return_all_isomers == "Generate All":
-                return isomer_list
+                return isomer_list, building_blocks
 
+        #
+        #
+        # 4
 
         else:  # This is for complexes that have no isomers
-            print("This particular complex has no isomers")
+            # print("This particular complex has no isomers")
+
             if len(building_blocks_list) == 3:
                 complex_top = stk_e.complex_topology_three(metals=self.create_metal_building_block(metal_input, charge_input),
                                                            ligands={building_block: (i,) for i, building_block in
@@ -678,19 +751,24 @@ class RandomComplexAssembler:
 
             else:
                 complex_top = None
-                print("!!!Fatal Error!!! -> You need to update your Octahedral Constructor")
+
+                # print("!!!Fatal Error!!! -> You need to update your Octahedral Constructor")
+
                 exit()
 
             complex_built = stk.ConstructedMolecule(topology_graph=complex_top)
             complex_built = mercury_remover(complex_built)
             if opt_choice == "True":
-                print("initiating Optimisation")
-                complex_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_built, func_groups_str, func_groups_index, func_groups_type)
+
+                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
+                # print("initiating Optimisation")
+                # complex_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
             else:
-                print("Not Optimising")
+                # print("Not Optimising")
                 pass
 
-            return [complex_built]
+            return [complex_built], [building_blocks_list]
+
 
     @staticmethod
     def calculate_spin(metal_input, oxidation_state_input, spin_input):
@@ -732,3 +810,36 @@ class RandomComplexAssembler:
                 exit()
         # print("spin_output :" + str(spin_output))
         return spin_output
+
+
+
+class post_filter:
+    def __init__(self, isomer_list, building_blocks_list):
+        self.buildings_blocks_list = building_blocks_list
+        self.isomer_list = isomer_list
+        self.distance_cutoff = 2.0
+
+    def closest_distance(self):
+        i = 0
+        failed_isomers = []
+        for building_blocks in self.buildings_blocks_list:                  #loop through the building blocks list for each isomer
+            for keys_1, values_1 in building_blocks.items():                #loop through the building blocks for within each isomer
+                for keys_2, values_2 in building_blocks.items():            #loop through the building blocks for within each isomer
+                    print(keys_1)
+                    print(keys_2)
+                    if keys_1 == keys_2:                                    #Don't compare anything if they are the same ligand
+                        pass
+                    elif keys_1 != keys_2:                                  # compare distance if the ligands are not the same ligand
+                        closest_approach = None
+                        for point_1 in values_1.get_position_matrix():      # we loop through all the positions of the atoms
+                            for point_2 in values_2.get_position_matrix():  # we loop through all the positions of the atoms
+                                distance = np.linalg.norm(point_1 - point_2)# Calculate distance
+                                if (closest_approach is None) or ((distance < closest_approach) and (distance != 0)):   # The (distance != 0) is to account for the presence of mercury
+                                    closest_approach = distance
+                        print("The closest distance = "+str(closest_approach)+" A ")
+                        if closest_approach <= self.distance_cutoff:
+                            print("Failure")
+                        else:
+                            pass
+            i = i+1
+

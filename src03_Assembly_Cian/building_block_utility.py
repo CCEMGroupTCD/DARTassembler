@@ -1,11 +1,10 @@
+import os
+import openbabel as ob
 import stk
 from openbabel import pybel
-
-from openbabel import openbabel as ob
 import itertools
-
-import os
-
+from rdkit import Chem
+from rdkit.Chem import rdmolfiles
 from src02_Pre_Ass_Filtering_Cian.constants import get_boxes, intensity, sharpness
 from src03_Assembly_Cian.stk_extension import *
 from src01.Molecule import RCA_Ligand
@@ -154,6 +153,68 @@ def penta_as_tetra(ligand: RCA_Ligand):
 
 
 # todo: From here on
+
+def Bidentate_Rotator_old(ligand_bb, ligand, top_list=None, bool_placed=None, box_entered=None):
+
+    stk_Building_Block = mercury_remover(ligand_bb)
+
+    index_list = ligand.get_assembly_dict()["index"]
+
+    functional_group_2 = list(stk_Building_Block.get_atomic_positions(atom_ids=index_list[1]))
+
+    vector = list(stk_Building_Block.get_direction(atom_ids=[int(index_list[0]), int(index_list[1]), ]))
+
+    x2, y2, z2 = functional_group_2[0][0], functional_group_2[0][1], functional_group_2[0][2]
+    x1, y1, z1 = vector[0], vector[1], vector[2]
+
+    Boxes = get_boxes(denticity=ligand.denticity, input_topology=top_list, bool_placed_boxes=bool_placed)
+
+    rotation_increment = 1.0
+    dict_box = {}
+    dict_ = {value: 0 for value in np.arange(0, 361, rotation_increment)}
+    for angle in dict_:
+        stk_Building_Block = stk_Building_Block.with_rotation_about_axis(angle=rotation_increment * (np.pi / 180.0),
+                                                                         axis=np.array((x1, y1, z1)),
+                                                                         origin=np.array((x2, y2, z2)), )
+        # movie(stk_Building_Block)
+        total_atoms_in_box = 0
+        box_entered = []
+        for counter, atom in enumerate(list(stk_Building_Block.get_atomic_positions())):
+            point_ = [atom[i] for i in range(3)]
+            k = 1
+            for Box in Boxes:
+                if Box.point_in_box(point=point_):
+                    score_x = intensity / (1.0 + (sharpness * ((point_[0]) - ((Box.x2 - Box.x1) / 2.0) + Box.x1) ** 2))
+                    score_y = intensity / (1.0 + (sharpness * ((point_[1]) - ((Box.y2 - Box.y1) / 2.0) + Box.y1) ** 2))
+                    score_z = intensity / (1.0 + (sharpness * ((point_[2]) - ((Box.z2 - Box.z1) / 2.0) + Box.z1) ** 2))
+                    total_atoms_in_box = total_atoms_in_box + score_x + score_y + score_z
+                    box_entered.append(k)
+                k = k + 1
+        dict_box.update({str(angle): box_entered})
+        dict_[angle] = float(total_atoms_in_box)
+
+    minimum_angle = min(dict_, key=dict_.get)
+    #print("minimum angle = " + str(minimum_angle) + "boxes entered " + str(dict_box[str(minimum_angle)]))
+    #print(dict_box)
+
+
+    #
+    #
+    stk_Building_Block = stk_Building_Block.with_rotation_about_axis(angle=minimum_angle * (np.pi / 180.0),
+                                                                     axis=np.array((x1, y1, z1)),
+                                                                     origin=np.array((x2, y2, z2)), )
+    # visualize(stk_Building_Block)
+    num_atoms = stk_Building_Block.get_num_atoms()
+    stk_Building_Block.write("../tmp/temp_xyz.xyz")
+    os.system("echo 'Hg 0.0       0.0        0.0' >> ../tmp/temp_xyz.xyz")
+    exec(str(os.system("sed '1 s/.*/" + str(num_atoms + 1) + "/' ../tmp/temp_xyz.xyz >  ../tmp/temp_xyz_2.xyz")))
+    os.system('obabel .xyz ../tmp/temp_xyz_2.xyz .mol -O  ../tmp/temp_mol.mol ---errorlevel 1')
+    os.system(
+        "sed 's/Hg[[:space:]][[:space:]]0[[:space:]][[:space:]]0/Hg  0  2/g' ../tmp/temp_mol.mol > ../tmp/temp_mol_2.mol")
+
+    return "../tmp/temp_mol_2.mol"
+
+
 def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, box_entered=None):
     stk_Building_Block = mercury_remover(ligand_bb)
 
@@ -193,8 +254,8 @@ def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, box_en
         dict_[angle] = float(total_atoms_in_box)
 
     minimum_angle = min(dict_, key=dict_.get)
-    print("minimum angle = "+str(minimum_angle)+"boxes entered " + str(dict_box[str(minimum_angle)]))
-    print(dict_box)
+    #print("minimum angle = " + str(minimum_angle) + "boxes entered " + str(dict_box[str(minimum_angle)]))
+    #print(dict_box)
 
     #
     #
@@ -202,20 +263,25 @@ def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, box_en
                                                                      axis=np.array((x1, y1, z1)),
                                                                      origin=np.array((x2, y2, z2)), )
     # visualize(stk_Building_Block)
-    num_atoms = stk_Building_Block.get_num_atoms()
-    stk_Building_Block.write("../tmp/temp_xyz.xyz")
-    os.system("echo 'Hg 0.0       0.0        0.0' >> ../tmp/temp_xyz.xyz")
-    exec(str(os.system("sed '1 s/.*/" + str(num_atoms + 1) + "/' ../tmp/temp_xyz.xyz >  ../tmp/temp_xyz_2.xyz")))
-    os.system('obabel .xyz ../tmp/temp_xyz_2.xyz .mol -O  ../tmp/temp_mol.mol ---errorlevel 1')
-    os.system(
-        "sed 's/Hg[[:space:]][[:space:]]0[[:space:]][[:space:]]0/Hg  0  2/g' ../tmp/temp_mol.mol > ../tmp/temp_mol_2.mol")
-
+    # I think after here we need to add a mercury
+    tmp_mol = stk_Building_Block.to_rdkit_mol()
+    Hg_xyz = f'1\n \nHg 0 0 0 '  # xyz string of just metal
+    mol_b = ob.OBMol()
+    conv = ob.OBConversion()
+    conv.SetInAndOutFormats("xyz", "mol")
+    conv.ReadString(mol_b, Hg_xyz)
+    metal_string_output = conv.WriteString(mol_b)
+    mol_Hg = rdmolfiles.MolFromMolBlock(metal_string_output, removeHs=False, sanitize=False, strictParsing=False)  # Created rdkit object of just metal atom
+    mol_Hg.GetAtomWithIdx(0).SetFormalCharge(2)
+    combined_mol = Chem.CombineMols(tmp_mol, mol_Hg)
+    rdmolfiles.MolToMolFile(combined_mol, "../tmp/temp_mol_2.mol")
+    # The error seems to be that there is no functional group we need to make sure that mercury has a formal charge
     return "../tmp/temp_mol_2.mol"
 
 
 def get_energy(molecule):
     path = ligand_to_mol(molecule)  # Here there is a dependency on the above ligand_to_mol function.
-    print(path)
+    #print(path)
     mol = next(pybel.readfile("mol", str(path)))
     obmol = mol.OBMol
     ff = ob.OBForceField_FindType("uff")
@@ -254,6 +320,7 @@ def nonplanar_tetra_solver(bb, lig):
         z_mid = (z1 + z2) / 2
         mid_points = [x_mid, y_mid, z_mid]
         #The add_atom functionality does not update the coordinates attribute correctly in the molecule class
+
         lig.add_atom(symbol="Hg", coordinates=[x_mid, y_mid, z_mid])  # add dummy metal
         Energy = get_energy(lig)  # get energy
         # lig.remove_last_element_in_xyz()  # get rid of dummy metal
@@ -303,9 +370,6 @@ def nonplanar_tetra_solver(bb, lig):
     position_of_Hg_in_mol = [key for key, item in lig.coordinates.items() if item[0] == "Hg"][0]
     ###########################################################################################
 
-
-
-
     # The following Block of code ensures that the remaining coordinating groups exist in the xy plane
     complex_tetradentate = tetra_bb_2.with_rotation_to_minimize_angle(start=tetra_bb_2.get_plane_normal(
         atom_ids=[int(location_list[0]), int(location_list[1]),
@@ -343,12 +407,21 @@ def nonplanar_tetra_solver(bb, lig):
     return "../tmp/tmp.mol"
 
 
-def ligand_to_mol(ligand: RCA_Ligand, target_path="../tmp/tmp.mol", xyz_path="../tmp/tmp.xyz"):
+def ligand_to_mol_old(ligand: RCA_Ligand, target_path="../tmp/tmp.mol", xyz_path="../tmp/tmp.xyz"):
     xyz_str = ligand.get_xyz_file_format_string()
     with open(xyz_path, "w+") as f:
         f.write(xyz_str)
     os.system(f'obabel .xyz {xyz_path} .mol -O  {target_path} ---errorlevel 1')
     return target_path
+
+
+def ligand_to_mol(ligand: RCA_Ligand, target_path="../tmp/tmp.mol", xyz_path="../tmp/tmp.xyz"):
+    xyz_str = ligand.get_xyz_file_format_string()
+    mol_b = ob.OBMol()
+    conv = ob.OBConversion()
+    conv.SetInAndOutFormats("xyz", "mol")
+    conv.ReadString(mol_b, xyz_str)
+    conv.WriteFile(mol_b, target_path)
 
 
 def tmp_clean_up(*args):
@@ -357,7 +430,24 @@ def tmp_clean_up(*args):
 
 
 def mercury_remover(stk_Building_block):
-    print(stk_Building_block.get_num_atoms())
+
+    mol = stk_Building_block.to_rdkit_mol()
+    Hg_index = []
+    for atom in mol.GetAtoms():
+        if atom.GetAtomicNum() == 80:
+            Hg_index.append(int(atom.GetIdx()))
+        else:
+            pass
+    mol_RW = Chem.EditableMol(mol)
+    for index in Hg_index:
+        mol_RW.RemoveAtom(index-Hg_index.index(index))
+    non_editable_mol = mol_RW.GetMol()
+    output_stk_bb = stk.BuildingBlock.init_from_rdkit_mol(non_editable_mol)
+    return output_stk_bb
+
+
+def mercury_remove_old(stk_Building_block):
+
     stk.MolWriter().write(stk_Building_block, '../tmp/stk_Building_block.mol')
     os.system('obabel .mol ../tmp/stk_Building_block.mol .xyz -O  ../tmp/stk_Building_block.xyz ---errorlevel 1')
     os.system("rm -f ../tmp/stk_Building_block.mol")
@@ -382,9 +472,11 @@ def mercury_remover(stk_Building_block):
     os.system("rm -f ../tmp/stk_Building_block.mol")
     return stk_Building_block1
 
+
 def building_block_to_mol(bb):
     stk.MolWriter().write(bb, '../tmp/tmp_bb_energy.mol')
     return '../tmp/tmp_bb_energy.mol'
+
 
 def get_energy_stk(building_block):
     path = building_block_to_mol(building_block)  # Here there is a dependency on the above ligand_to_mol function.
@@ -397,3 +489,4 @@ def get_energy_stk(building_block):
     uffE = ff.Energy(False) * kj_to_kcal
     #print("The energy is "+str(uffE))
     return uffE
+

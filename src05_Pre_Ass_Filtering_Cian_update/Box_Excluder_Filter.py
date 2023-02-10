@@ -4,8 +4,7 @@ from src02_Pre_Ass_Filtering_Cian.constants import get_boxes
 from ase import io
 from stk import *
 import time
-from src03_Assembly_Cian.stk_utils import create_placeholder_Hg_bb
-import src03_Assembly_Cian.stk_extension as stk_e
+
 import logging
 import stk
 import numpy as np
@@ -14,6 +13,7 @@ from src03_Assembly_Cian.building_block_utility import rotate_tridentate_bb, rot
 from src03_Assembly_Cian.stk_utils import create_placeholder_Hg_bb
 import src03_Assembly_Cian.stk_extension as stk_e
 from src01.Molecule import RCA_Ligand
+
 
 
 def delete_Hg(complex_):
@@ -46,25 +46,21 @@ def delete_Hg(complex_):
 
 
 def delete_Hg_improved(complex_):
-    #Takes approximately 50% less time than the previous example
-    start_time = time.perf_counter()
-    new_string = []
-    Hg_count = 0
-    for position, atom in zip(complex_.get_position_matrix(), list(complex_.get_atoms())):
-        if str(atom).startswith("Hg"):
-            Hg_count += 1
-            pass
-        else:
-            new_string.append(str(str(atom).split("(")[0]) + " " + str(position[0]) + " " + str(position[1]) + " " + str(position[2]))
-    new_string.insert(0, str(int(complex_.get_num_atoms()) - Hg_count))
-    new_string.insert(1, "")
-    with open("../tmp/complex_delete_Hg_filter.xyz", "w+") as f:
-        f.write(''.join([(str(line + "\n")) for line in new_string]))
-    os.system('obabel .xyz ../tmp/complex_delete_Hg_filter.xyz .mol -O  ../tmp/complex.mol ---errorlevel 1')
-    end_time = time.perf_counter()
-    execution_time = end_time - start_time
-    print(f"The execution time is: {execution_time}")
-    return stk.BuildingBlock.init_from_file('../tmp/complex.mol')
+
+        mol = complex_.to_rdkit_mol()
+        Hg_index = []
+        for atom in mol.GetAtoms():
+            if atom.GetAtomicNum() == 80:
+                Hg_index.append(int(atom.GetIdx()))
+            else:
+                pass
+        mol_RW = Chem.EditableMol(mol)
+        for index in Hg_index:
+            mol_RW.RemoveAtom(index - Hg_index.index(index))
+        non_editable_mol = mol_RW.GetMol()
+        output_stk_bb = stk.BuildingBlock.init_from_rdkit_mol(non_editable_mol)
+        return output_stk_bb
+
 
 
 def visualize_complex():
@@ -126,20 +122,31 @@ def box_filter(ligand: RCA_Ligand, optimize_=True, box_default_descicion=False) 
                                            position_matrix=np.ndarray([0, 0, 0])
                                            )
 
-        lig_assembly_dict = ligand.get_assembly_dict()
 
-        xyz_str = lig_assembly_dict["str"]
-        with open("../tmp/lig_xyz.xyz", "w+") as f:
-            f.write(xyz_str)
+        #lig_assembly_dict = ligand.get_assembly_dict()
 
-        os.system('obabel .xyz ../tmp/lig_xyz.xyz .mol -O  ../tmp/lig_mol.mol ---errorlevel 1')
+        #xyz_str = lig_assembly_dict["str"]
 
-        """ligand_bb = build_ligand(type_list=lig_assembly_dict["type"],
-                                 index_list=lig_assembly_dict["index"],
-                                 path_="../tmp/lig_mol.mol"
-                                 )"""
+        ###
+        #mol_b = ob.OBMol()
+        #conv = ob.OBConversion()
+        #conv.SetInAndOutFormats("xyz", "mol")
+        #conv.ReadString(mol_b, xyz_str)
+        #metal_string_output = conv.WriteString(mol_b)
+        #mol_metal = rdmolfiles.MolFromMolBlock(metal_string_output, removeHs=False, sanitize=False, strictParsing=False)  # Created rdkit object of just metal atom
+        #ligand_bb = stk.BuildingBlock.init_from_rdkit_mol(mol_metal)
+        ###
+
+
+
+
+        #with open("../tmp/lig_xyz.xyz", "w+") as f:
+            #f.write(xyz_str)
+
+        #os.system('obabel .xyz ../tmp/lig_xyz.xyz .mol -O  ../tmp/lig_mol.mol ---errorlevel 1')
         ligand_bb = ligand.to_stk_bb()
-        os.remove("../tmp/lig_mol.mol")
+        #os.remove("../tmp/lig_mol.mol")
+
 
         print("The ligand denticity is: " + str(ligand.denticity))
 

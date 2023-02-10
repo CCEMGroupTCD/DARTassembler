@@ -41,3 +41,14 @@ if __name__ == "__main__":
     Filter.database.to_json(path="../data/Filtered_Jsons/filteredLigDB_Cian_Ct_ff_graph.json")
 
     print("Filtering Done")
+
+
+    #todo: filter out ligands with coordinating atoms --> "iff contains these" "doesnt contain these" etc...
+    #todo: filter out ligands that have a denticity occurrence below a certain percentage -> chosen denticity fraction
+    #todo: filter by molecular weight,
+    #todo: filter by atoms that must be in the molecule
+    #todo: filter by ligands that dont contain particular atoms
+    #todo: filter out ligands with 5 atoms in a plane
+    #todo: subgraph match
+    #todo: each filter should be a sub filter of the denticity filters
+

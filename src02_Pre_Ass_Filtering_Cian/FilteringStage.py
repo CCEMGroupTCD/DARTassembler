@@ -42,6 +42,7 @@ class FilterStage:
 
         if metals_of_interest is None:
             print("No metals of interest selected, no filtering at all")
+
             return
         elif isinstance(metals_of_interest, str):
             metals_of_interest = [metals_of_interest]
@@ -50,6 +51,7 @@ class FilterStage:
 
         for identifier, ligand in self.database.db.items():
             om = original_metal_ligand(ligand)
+            print(ligand)
             # if original metal is None we leave it through
             if not (om in metals_of_interest or om is None):
                 del new_db[identifier]

@@ -5,7 +5,6 @@ from copy import deepcopy
 import networkx as nx
 import hashlib
 import pandas as pd
-
 from src01.utilities_Molecule import original_metal_ligand
 from src01.Molecule import RCA_Molecule, RCA_Ligand
 atomic_number_Hg = 80
@@ -145,6 +144,7 @@ class TransitionMetalComplex:
             for i in lig.ligand_to_metal:
                 U.add_edge(0, sorted(Gr.nodes)[i])
 
+        # outputs graph of assembled complex
         return U
 
     def create_random_name(self):
