@@ -644,7 +644,7 @@ class RCA_Ligand(RCA_Molecule):
         # Manually initialize special fields
         d = {
                 'graph_dict': graph_to_dict_with_node_labels(self.graph),
-                'CSD_code': self.global_props['CSD_code']   # todo remove
+                #'CSD_code': self.global_props['CSD_code']   # todo remove
             }
 
         do_not_output_automatically = ['mol', 'graph', 'coordinates', 'hash', 'csd_code']

@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from src01.DataBase import MoleculeDB, LigandDB
 
-from src02_Pre_Assembly_Filtering.Box_Excluder_Filter import box_filter
+from src02_Pre_Assembly_Filtering.box_filter import box_filter
 from src02_Pre_Assembly_Filtering.constant_Ligands import get_monodentate_list, get_reactant
 
 

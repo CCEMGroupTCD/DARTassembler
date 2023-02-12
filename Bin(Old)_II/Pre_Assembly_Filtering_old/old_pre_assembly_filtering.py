@@ -1,6 +1,6 @@
 from src01.Molecule import RCA_Molecule
 from src03_Assembly_Cian.building_block_utility import *
-from src02_Pre_Assembly_Filtering.constants_pre_ass_filtering import get_boxes
+from src02_Pre_Assembly_Filtering.constants_box_filter import get_boxes
 from ase import io
 from stk import *
 import time
@@ -17,7 +17,7 @@ from src01.Molecule import RCA_Ligand
 
 
 def visualize_complex():
-    mol_ = io.read('../tmp/complex.xyz')
+    mol_ = io.read('../../tmp/complex.xyz')
     ase_mol = RCA_Molecule(mol=mol_)
     ase_mol.view_3d()
     os.system("rm -f ../tmp/complex.xyz")
