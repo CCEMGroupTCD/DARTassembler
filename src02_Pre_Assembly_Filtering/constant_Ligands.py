@@ -14,7 +14,8 @@ def get_reactant():
                       ligand_to_metal=[0],
                       name="ActiveSite",
                       unique_name="ActiveSite",
-                      graph=None
+                      graph=None,
+                      other_props={"charge": -1}
                       )
 
 
@@ -30,7 +31,8 @@ def get_monodentate_list():
                          ligand_to_metal=[0],
                          name="Hydroxi",
                          unique_name="Hydroxi",
-                         graph=None
+                         graph=None,
+                         other_props={"charge": -1}
                          )
     monodentate_ligands.append(Hydroxi)
 
@@ -43,7 +45,8 @@ def get_monodentate_list():
                     ligand_to_metal=[0],
                     name="CO",
                     unique_name="CO",
-                    graph=None
+                    graph=None,
+                    other_props={"charge": 100}
                     )
     monodentate_ligands.append(CO)
 
@@ -56,7 +59,8 @@ def get_monodentate_list():
                     ligand_to_metal=[1],
                     name="CN",
                     unique_name="CN",
-                    graph=None
+                    graph=None,
+                    other_props={"charge": 100}
                     )
     monodentate_ligands.append(CN)
 
@@ -74,7 +78,8 @@ def get_monodentate_list():
                          ligand_to_metal=[0],
                          name="NH3",
                          unique_name="NH3",
-                         graph=None
+                         graph=None,
+                         other_props={"charge": 100}
                          )
     monodentate_ligands.append(Ammonia)
     #
@@ -90,7 +95,8 @@ def get_monodentate_list():
                           ligand_to_metal=[0],
                           name="Cl",
                           unique_name="Cl",
-                          graph=None
+                          graph=None,
+                          other_props={"charge": -1}
                           )
     monodentate_ligands.append(Chlorine)
     #
@@ -107,7 +113,8 @@ def get_monodentate_list():
                           ligand_to_metal=[0],
                           name="F",
                           unique_name="F",
-                          graph=None
+                          graph=None,
+                          other_props={"charge": -1}
                           )
     monodentate_ligands.append(Fluorine)
     #
@@ -124,7 +131,8 @@ def get_monodentate_list():
                          ligand_to_metal=[0],
                          name="Br",
                          unique_name="Br",
-                         graph=None
+                         graph=None,
+                         other_props={"charge": -1}
                          )
     monodentate_ligands.append(Bromine)
     #
@@ -141,7 +149,8 @@ def get_monodentate_list():
                         ligand_to_metal=[0],
                         name="I",
                         unique_name="I",
-                        graph=None
+                        graph=None,
+                        other_props={"charge": -1}
                         )
     monodentate_ligands.append(Iodide)
     #
@@ -158,9 +167,10 @@ def get_monodentate_list():
     Tetramethylamine = RCA_Ligand(atomic_props=atomic_props,
                                   denticity=1,
                                   ligand_to_metal=[0],
-                                  name="NH3",
-                                  unique_name="NH3",
-                                  graph=None
+                                  name="NC3H9",
+                                  unique_name="NC3H9",
+                                  graph=None,
+                                  other_props={"charge": 100}
                                   )
     monodentate_ligands.append(Tetramethylamine)
 

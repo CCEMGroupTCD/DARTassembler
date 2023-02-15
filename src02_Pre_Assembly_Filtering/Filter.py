@@ -16,23 +16,29 @@ class Filter:
 
     def __init__(self,
                  datapath_,
-                 max_number: int = None
+                 ligand_db: LigandDB = None,
+                 max_number: int = None,
+                 filter_yaml_path: str = "Filter_setup.yml"
                  ):
         """
 
+        :param ligand_db: If we want to give a custom Ligand DB, rather than reading in from the default document
         """
         self.datapath = datapath_
 
-        with open("Filter_setup.yml", "r") as file:
+        with open(filter_yaml_path, "r") as file:
             self.setup = yaml.load(file, SafeLoader)
 
         self.check_setup_yml()
 
-        self.unique_Ligands = LigandDB.from_json(
-            json_=str(Path(datapath_, "tmQM_Ligands_unique.json")),
-            type_="Ligand",
-            max_number=max_number
-        )
+        if ligand_db is None:
+            self.unique_Ligands = LigandDB.from_json(
+                json_=str(Path(datapath_, "tmQM_Ligands_unique.json")),
+                type_="Ligand",
+                max_number=max_number
+            )
+        else:
+            self.unique_Ligands = ligand_db
 
         self.filtered_db = deepcopy(self.unique_Ligands)
 

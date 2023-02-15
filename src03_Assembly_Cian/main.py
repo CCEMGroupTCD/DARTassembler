@@ -25,8 +25,7 @@ from openbabel import pybel
 from rdkit.Chem import PyMol
 
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-import networkx as nx
+
 
 test_batch_list = [
     {'Name': 'first test batch', "Input_Path": "/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/data/Filtered_Jsons/filteredLigDB_Cian_Ct_ff_graph.json",
@@ -170,13 +169,15 @@ class Assembly:
                 A = Assembled_complex.functional_groups
                 #print("These_are_the_functional_group types" + str(A))
                 if isomer_counter == 0:  # If this is the first isomer of a complex then ...
-                    if str(output_path)[-1] != "/":
-                        print("!!!Fatal_Error!!! -> your path should end in a '/' character -> Exiting Program")
-                        exit()
-                    else:
 
-                        self.current_working_Directory = "RCA_" + str(''.join(choice(ascii_uppercase) for j in range(12)))  # Generate random name of complex
-                        os.system("mkdir " + str(output_path) + "{}".format(self.current_working_Directory))  # Set-up directory that will store all isomers/info on a particular complex
+                    # todo: Outcommented, maybe we need another way to catch that error
+                    # if str(output_path)[-1] != "/":
+                    #     print("!!!Fatal_Error!!! -> your path should end in a '/' character -> Exiting Program")
+                    #     exit()
+                    # else:
+
+                    self.current_working_Directory = "RCA_" + str(''.join(choice(ascii_uppercase) for j in range(12)))  # Generate random name of complex
+                    os.system("mkdir " + str(output_path) + "{}".format(self.current_working_Directory))  # Set-up directory that will store all isomers/info on a particular complex
                 else:
                     pass
                 timer_end = timer()
@@ -208,9 +209,10 @@ class Assembly:
                     if isomer_counter == len(list_of_complexes_wih_isomers):  # If this is the last isomer of this complex the ...
                         for keys in Assembled_complex.ligand_props.keys():
                             info.update({"Ligand_{}_Name".format(keys + 1): ligands[keys].name})
-                            info.update({"Ligand_{}_Original_Metal".format(keys + 1): ligands[keys].original_metal})
+                            # todo: No original metal anymore
+                            # info.update({"Ligand_{}_Original_Metal".format(keys + 1): ligands[keys].original_metal})
                             info.update({"Ligand_{}_Graph_Hash".format(keys + 1): ligands[keys].graph_hash})
-                            info.update({"Ligand_{}_Original_Metal_Symbol".format(keys + 1): ligands[keys].original_metal_symbol})
+                            #info.update({"Ligand_{}_Original_Metal_Symbol".format(keys + 1): ligands[keys].original_metal_symbol})
                             info.update({"Ligand_{}_Global_Props".format(keys + 1): ligands[keys].global_props})
                             info.update({"Ligand_{}_Atomic_Props".format(keys + 1): ligands[keys].coordinates})
                             info.update({"Ligand_{}_Denticity".format(keys + 1): ligands[keys].denticity})
@@ -228,6 +230,9 @@ class Assembly:
 
     def assembly_main(self):
         # This is the entry point to the assembly process
+
+        # only for Felix, can be deleted in the future
+        total_assembled_complexes = []
 
         for batch in self.list_of_batches:  # We loop through all the batches that have been received
             F = LigandDB.from_json(json_=batch["Input_Path"], type_="Ligand")  # We initiate the database in the RandomComplexAssembler
@@ -252,14 +257,24 @@ class Assembly:
                 if list_of_complexes_wih_isomers is not None:
                     self.output_controller(list_of_complexes_wih_isomers, ligands, metal, metal_ox_state, creation_path, multiplicity, batch_name, complex_timer_start, chosen_topology,
                                            rotated_building_blocks, (str(int(batch["Random_Seed"]) + i)), batch)
+
+                    for complex_ in list_of_complexes_wih_isomers:
+                        Assembled_complex = TMC(compl=complex_,
+                                                ligands=ligands,
+                                                metal=metal,
+                                                metal_charge=int(metal_ox_state)
+                                                )
+                        total_assembled_complexes.append(Assembled_complex)
+
                 elif list_of_complexes_wih_isomers is None:
                     print("!!!Warning!!! -> None type complex list encountered -> Skipping to next complex")
                     pass
                 i += 1
         print("Assembly Completed Successfully")
-        exit()  # Once the assembly is complete we exit
+        return total_assembled_complexes
+        #exit()  # Once the assembly is complete we exit
 
 
 # Uncomment the following lines of code if you wish to do Debugging without the GUI
-instance = Assembly(test_batch_list_2)
-instance.assembly_main()
+#instance = Assembly(test_batch_list_2)
+#instance.assembly_main()

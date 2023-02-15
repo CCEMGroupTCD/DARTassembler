@@ -1,0 +1,17 @@
+---
+# make such a file for each batch for the assembly
+Name: "Test Batch"
+#
+#
+#
+MAX_num_complexes: 100
+#
+#
+Topologies:
+  - '[2, 1, 1, ["1", "2", "2"]]'
+  - '[ 2, 2, [ "1", "1" ] ]'
+Metals:
+  - ['Cr', '+4', 'Low']
+  - ['Cu', '+7', 'High']
+  - ['V', '+2', 'Low']
+Isomers: "Generate All"
