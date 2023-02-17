@@ -13,10 +13,10 @@
 
 /src02_LigandCharge/test.json
 
-!/data/tmQMG_Jsons_test/
-!/data/tmQMG_Jsons_test/complex_db_original.json
-!/data/tmQMG_Jsons_test/tmQM_Ligands_unique_original.json
-!/data/tmQMG_Jsons_test/tmQM_Ligands_full_original.json
+!/test/tmQMG_Jsons_test/
+!/test/tmQMG_Jsons_test/complex_db_original.json
+!/test/tmQMG_Jsons_test/tmQM_Ligands_unique_original.json
+!/test/tmQMG_Jsons_test/tmQM_Ligands_full_original.json
 
 !/database/ligand_charges/
 !/database/ligand_charges/charge_benchmark/
@@ -78,3 +78,6 @@
 /data_output/tmQM_Jsons/Filtering/filterSetup.json
 
 
+/data_output/tmQM_Jsons/Assembled_Moleculesall.xyz
+/data_output/tmQM_Jsons/Assembled_Moleculestmp_output_test_cian.xyz
+/test/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/

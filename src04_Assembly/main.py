@@ -114,7 +114,7 @@ class Assembly:
         return total_assembled_complexes
 
 
-# Uncomment the following lines of code if you wish to do Debugging without the GUI
+# Uncomment the following lines of code if you wish to do Debugging without the src13_GUI
 # instance = Assembly(test_batch_list)
 # instance.assembly_main()
 

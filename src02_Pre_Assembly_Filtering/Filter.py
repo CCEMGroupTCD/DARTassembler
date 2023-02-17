@@ -113,6 +113,35 @@ class Filter:
 
         return
 
+    def filter_charge_confidence(self,
+                                 filter_for: str = None
+                                 ):
+        """
+        # filter_for = "confident"
+        # filter_for = "not_confident"
+        """
+
+        new_db = deepcopy(self.filtered_db.db)
+        if (filter_for is None) or (filter_for != ("confident" or "not_confident")):
+            print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
+
+        else:
+            confident = 0
+            not_confident = 0
+            for unq_name, ligand in self.filtered_db.db.items():
+                confidence = ligand.pred_charge_is_confident
+
+                if confidence:
+                    confident += 1
+                elif not confidence:
+                    not_confident += 1
+                    del new_db[unq_name]
+                else:
+                    print("!!!Fatal Error!!! -> Charge Confidence Incorrectly Specified  -> Aborting Program")
+            print("Charge Assignment Confident:" + str(confident))
+            print("Charge Assignment Not Confident:" + str(not_confident))
+            self.filtered_db.db = new_db
+
     def denticity_of_interest_filter(self,
                                      denticity_of_interest: [int, list[int]] = None
                                      ):
@@ -387,11 +416,14 @@ class Filter:
         self.filtered_db.db = new_db
         print("finished")
 
-
-
     def run_filters(self):
 
         print(f"Number of Ligands before Filtering: {len(self.filtered_db.db)}")
+
+        #
+        # mandatory charge_filter
+        self.filter_charge_confidence()
+        print(f"Number of Ligands after Charge Confidence Filter: {len(self.filtered_db.db)}")
 
         #
         #
