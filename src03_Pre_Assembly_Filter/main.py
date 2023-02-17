@@ -1,6 +1,6 @@
 from src01.DataBase import LigandDB
 
-from src05_Pre_Ass_Filtering_Cian_update.FilteringStage import FilterStage
+from src03_Pre_Assembly_Filter.FilteringStage import FilterStage
 
 # ["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
 
@@ -75,13 +75,13 @@ if __name__ == "__main__":
     #
     # Filter: Ligand Atoms
 
-    Filter.filter_ligand_atoms(denticity=2, atoms_of_interest=['O', 'C', 'N', 'H', 'Cl', 'F', 'I', 'Br'], instruction="must_only_contain_in_any_amount")
+    Filter.filter_ligand_atoms(denticity=2, atoms_of_interest=['O', 'C', 'N', 'H'], instruction="must_only_contain_in_any_amount")
 
-    Filter.filter_ligand_atoms(denticity=3, atoms_of_interest=['O', 'C', 'N', 'H', 'Cl', 'F', 'I', 'Br'], instruction="must_only_contain_in_any_amount")
+    Filter.filter_ligand_atoms(denticity=3, atoms_of_interest=['O', 'C', 'N', 'H'], instruction="must_only_contain_in_any_amount")
 
-    Filter.filter_ligand_atoms(denticity=4, atoms_of_interest=['O', 'C', 'N', 'H', 'Cl', 'F', 'I', 'Br'], instruction="must_only_contain_in_any_amount")
+    Filter.filter_ligand_atoms(denticity=4, atoms_of_interest=['O', 'C', 'N', 'H'], instruction="must_only_contain_in_any_amount")
 
-    Filter.filter_ligand_atoms(denticity=5, atoms_of_interest=['O', 'C', 'N', 'H', 'Cl', 'F', 'I', 'Br'], instruction="must_only_contain_in_any_amount")
+    Filter.filter_ligand_atoms(denticity=5, atoms_of_interest=['O', 'C', 'N', 'H'], instruction="must_only_contain_in_any_amount")
 
     print(f"After Ligand Atom filter: {len(Filter.database.db)}")
 
@@ -135,7 +135,7 @@ if __name__ == "__main__":
 
     Filter.add_constant_ligands()
 
-    Filter.database.to_json(path="../data/Filtered_Jsons/filteredLigDB_OER_160223.json")
+    Filter.database.to_json(path="../data/Filtered_Jsons/filteredLigDB_OER_170223.json")
 
     #print("Filtering Done")
 

@@ -25,4 +25,5 @@ possible_serverpaths = [
                         "/Users/felixk/Documents/PhD/Data/CreateTMC",
                         '/Users/timosommer/PhD/projects/RCA/projects/CreateTMC/ccem_server'
                         ]
-serverpath = get_serverpath(possible_serverpaths=possible_serverpaths)
+#serverpath = get_serverpath(possible_serverpaths=possible_serverpaths)
+serverpath=None

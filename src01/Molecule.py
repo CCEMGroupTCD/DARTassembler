@@ -20,7 +20,7 @@ from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node
     unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label
 from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
-from src03_Assembly_Cian.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
+from src04_Assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
 
 # Package name: RandomComplexAssembler (RCA)
@@ -643,8 +643,7 @@ class RCA_Ligand(RCA_Molecule):
     def write_to_mol_dict(self):
         # Manually initialize special fields
         d = {
-                'graph_dict': graph_to_dict_with_node_labels(self.graph),
-                'CSD_code': self.global_props['CSD_code']   # todo remove
+                'graph_dict': graph_to_dict_with_node_labels(self.graph)
             }
 
         do_not_output_automatically = ['mol', 'graph', 'coordinates', 'hash', 'csd_code']

@@ -5,8 +5,8 @@ from openbabel import pybel
 import itertools
 from rdkit import Chem
 from rdkit.Chem import rdmolfiles
-from src05_Pre_Ass_Filtering_Cian_update.constants_BoxExcluder import get_boxes, intensity, sharpness
-from src03_Assembly_Cian.stk_extension import *
+from src03_Pre_Assembly_Filter.constants_BoxExcluder import get_boxes, intensity, sharpness
+from src04_Assembly.stk_extension import *
 from src01.Molecule import RCA_Ligand
 
 

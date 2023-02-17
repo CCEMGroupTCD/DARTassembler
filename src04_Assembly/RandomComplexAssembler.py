@@ -1,16 +1,16 @@
 import random
 import mendeleev as atom
-from src03_Assembly_Cian.building_block_utility import mercury_remover
+from src04_Assembly.building_block_utility import mercury_remover
 import logging
 import stk
 import numpy as np
 import os
 import re
 from pymatgen.core.periodic_table import Element
-from src03_Assembly_Cian.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
+from src04_Assembly.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
     get_optimal_rotation_angle_tridentate, Bidentate_Rotator, nonplanar_tetra_solver, get_energy_stk
-from src03_Assembly_Cian.stk_utils import create_placeholder_Hg_bb
-import src03_Assembly_Cian.stk_extension as stk_e
+from src04_Assembly.stk_utils import create_placeholder_Hg_bb
+import src04_Assembly.stk_extension as stk_e
 from copy import deepcopy
 from src01.DataBase import LigandDB
 from src01.Molecule import RCA_Ligand

@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from PyQt5 import QtCore, QtWidgets, QtGui, QtSvg
 import json
-from src03_Assembly_Cian.main import Assembly
+from src04_Assembly.main import Assembly
 
 global assembly_input_list
 assembly_input_list = []
