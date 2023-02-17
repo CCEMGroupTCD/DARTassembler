@@ -30,7 +30,7 @@ class Run:
                  get_charges: bool = False,
                  filter_setup_path: str = "Filter_setup.yml",
                  batch_yml_path: str = "example_batch.yml",
-                 optimisation: bool = True,
+                 optimisation: bool = False,
                  random_seed: int = 1,
                  gaussian_input_specifications: str = "gaussian_specifications.yml"
                  ):

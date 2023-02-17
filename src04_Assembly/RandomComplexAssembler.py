@@ -513,15 +513,15 @@ class RandomComplexAssembler:
             complex_normal_built = stk.ConstructedMolecule(topology_graph=complex_normal)
             complex_normal_built = mercury_remover(complex_normal_built)
             complex_normal_built, building_blocks_list = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list, metal=metal_input).closest_distance()
-            complex_normal_built, building_blocks_list_opt = OPTIMISE(isomer=complex_normal_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_normal_built, building_blocks_list
-            complex_normal_built = complex_normal_built[0]
+            complex_normal_built, building_blocks_list_opt = OPTIMISE(isomer=complex_normal_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") or (opt_choice == True) else complex_normal_built, building_blocks_list
+            complex_normal_built = complex_normal_built[0] if (opt_choice == "True") or (opt_choice == True) else complex_normal_built
             complex_normal_built = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list_opt, metal=metal_input).post_optimisation_filter()
 
             complex_flipped_built = stk.ConstructedMolecule(topology_graph=complex_flipped)
             complex_flipped_built = mercury_remover(complex_flipped_built)
             complex_flipped_built, building_blocks_rotated = post_filter(isomer=complex_flipped_built, building_blocks=building_blocks_rotated, metal=metal_input).closest_distance()
-            complex_flipped_built, building_blocks_rotated_opt = OPTIMISE(isomer=complex_flipped_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_flipped_built, building_blocks_rotated
-            complex_flipped_built = complex_flipped_built[0]
+            complex_flipped_built, building_blocks_rotated_opt = OPTIMISE(isomer=complex_flipped_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") or (opt_choice == True) else complex_flipped_built, building_blocks_rotated
+            complex_flipped_built = complex_flipped_built[0] if (opt_choice == "True") or (opt_choice == True) else complex_flipped_built
             complex_flipped_built = post_filter(isomer=complex_flipped_built, building_blocks=building_blocks_rotated_opt, metal=metal_input).post_optimisation_filter()
 
             if return_all_isomers == "Generate Lowest Energy":
@@ -610,29 +610,29 @@ class RandomComplexAssembler:
             complex_normal_built = stk.ConstructedMolecule(topology_graph=complex_normal)
             complex_normal_built = mercury_remover(complex_normal_built)
             complex_normal_built, building_blocks_list = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list, metal=metal_input).closest_distance()
-            complex_normal_built, building_blocks_list_opt = OPTIMISE(isomer=complex_normal_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_normal_built, building_blocks_list
-            complex_normal_built = complex_normal_built[0]
+            complex_normal_built, building_blocks_list_opt = OPTIMISE(isomer=complex_normal_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") or (opt_choice == True) else complex_normal_built, building_blocks_list
+            complex_normal_built = complex_normal_built[0] if (opt_choice == "True") or (opt_choice == True) else complex_normal_built
             complex_normal_built = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list_opt, metal=metal_input).post_optimisation_filter()
 
             complex_rotated_bi_built = stk.ConstructedMolecule(topology_graph=complex_rotated_bi)
             complex_rotated_bi_built = mercury_remover(complex_rotated_bi_built)
             complex_rotated_bi_built, building_blocks_rotated_bi = post_filter(isomer=complex_rotated_bi_built, building_blocks=building_blocks_rotated_bi, metal=metal_input).closest_distance()
-            complex_rotated_bi_built, building_blocks_rotated_bi_opt = OPTIMISE(isomer=complex_rotated_bi_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_bi).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_rotated_bi_built, building_blocks_rotated_bi
-            complex_rotated_bi_built = complex_rotated_bi_built[0]
+            complex_rotated_bi_built, building_blocks_rotated_bi_opt = OPTIMISE(isomer=complex_rotated_bi_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_bi).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") or (opt_choice == True) else complex_rotated_bi_built, building_blocks_rotated_bi
+            complex_rotated_bi_built = complex_rotated_bi_built[0] if (opt_choice == "True") or (opt_choice == True) else complex_rotated_bi_built
             complex_rotated_bi_built = post_filter(isomer=complex_rotated_bi_built, building_blocks=building_blocks_rotated_bi_opt, metal=metal_input).post_optimisation_filter()
 
             complex_rotated_tri_built = stk.ConstructedMolecule(topology_graph=complex_rotated_tri)
             complex_rotated_tri_built = mercury_remover(complex_rotated_tri_built)
             complex_rotated_tri_built, building_blocks_rotated_tri = post_filter(isomer=complex_rotated_tri_built, building_blocks=building_blocks_rotated_tri, metal=metal_input).closest_distance()
-            complex_rotated_tri_built, building_blocks_rotated_tri_opt = OPTIMISE(isomer=complex_rotated_tri_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_tri).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_rotated_tri_built, building_blocks_rotated_tri
-            complex_rotated_tri_built = complex_rotated_tri_built[0]
+            complex_rotated_tri_built, building_blocks_rotated_tri_opt = OPTIMISE(isomer=complex_rotated_tri_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_tri).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") or (opt_choice == True) else complex_rotated_tri_built, building_blocks_rotated_tri
+            complex_rotated_tri_built = complex_rotated_tri_built[0] if (opt_choice == "True") or (opt_choice == True) else complex_rotated_tri_built
             complex_rotated_tri_built = post_filter(isomer=complex_rotated_tri_built, building_blocks=building_blocks_rotated_tri_opt, metal=metal_input).post_optimisation_filter()
 
             complex_rotated_bi_and_tri_built = stk.ConstructedMolecule(topology_graph=complex_rotated_bi_and_tri)
             complex_rotated_bi_and_tri_built = mercury_remover(complex_rotated_bi_and_tri_built)
             complex_rotated_bi_and_tri_built, building_blocks_rotated_bi_and_tri = post_filter(isomer=complex_rotated_bi_and_tri_built, building_blocks=building_blocks_rotated_bi_and_tri, metal=metal_input).closest_distance()
-            complex_rotated_bi_and_tri_built, building_blocks_rotated_bi_and_tri_opt = OPTIMISE(isomer=complex_rotated_bi_and_tri_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_bi_and_tri).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_rotated_bi_and_tri_built, building_blocks_rotated_bi_and_tri
-            complex_rotated_bi_and_tri_built = complex_rotated_bi_and_tri_built[0]
+            complex_rotated_bi_and_tri_built, building_blocks_rotated_bi_and_tri_opt = OPTIMISE(isomer=complex_rotated_bi_and_tri_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_bi_and_tri).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") or (opt_choice == True) else complex_rotated_bi_and_tri_built, building_blocks_rotated_bi_and_tri
+            complex_rotated_bi_and_tri_built = complex_rotated_bi_and_tri_built[0] if (opt_choice == "True") or (opt_choice == True) else complex_rotated_bi_and_tri_built
             complex_rotated_bi_and_tri_built = post_filter(isomer=complex_rotated_bi_and_tri_built, building_blocks=building_blocks_rotated_bi_and_tri_opt, metal=metal_input).post_optimisation_filter()
 
             isomer_list = [complex_normal_built, complex_rotated_bi_built, complex_rotated_tri_built, complex_rotated_bi_and_tri_built]
@@ -703,15 +703,15 @@ class RandomComplexAssembler:
             complex_normal_built = stk.ConstructedMolecule(topology_graph=complex_normal)
             complex_normal_built = mercury_remover(complex_normal_built)
             complex_normal_built, building_blocks_list = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list, metal=metal_input).closest_distance()
-            complex_normal_built, building_blocks_list_opt = OPTIMISE(isomer=complex_normal_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True")else complex_normal_built, building_blocks_list
-            complex_normal_built = complex_normal_built[0]
+            complex_normal_built, building_blocks_list_opt = OPTIMISE(isomer=complex_normal_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") or (opt_choice == True) else complex_normal_built, building_blocks_list
+            complex_normal_built = complex_normal_built[0] if (opt_choice == "True") or (opt_choice == True) else complex_normal_built
             complex_normal_built = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list_opt, metal=metal_input).post_optimisation_filter()
 
             complex_rotated_tetra_built = stk.ConstructedMolecule(topology_graph=complex_rotated_tetra)
             complex_rotated_tetra_built = mercury_remover(complex_rotated_tetra_built)
             complex_rotated_tetra_built, building_blocks_rotated_tetra = post_filter(isomer=complex_rotated_tetra_built, building_blocks=building_blocks_rotated_tetra, metal=metal_input).closest_distance()
-            complex_rotated_tetra_built, building_blocks_rotated_tetra_built_opt = OPTIMISE(isomer=complex_rotated_tetra_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_tetra).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_rotated_tetra_built, building_blocks_rotated_tetra
-            complex_rotated_tetra_built = complex_rotated_tetra_built[0]
+            complex_rotated_tetra_built, building_blocks_rotated_tetra_built_opt = OPTIMISE(isomer=complex_rotated_tetra_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_tetra).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") or (opt_choice == True) else complex_rotated_tetra_built, building_blocks_rotated_tetra
+            complex_rotated_tetra_built = complex_rotated_tetra_built[0] if (opt_choice == "True") or (opt_choice == True) else complex_rotated_tetra_built
             complex_rotated_tetra_built = post_filter(isomer=complex_rotated_tetra_built, building_blocks=building_blocks_rotated_tetra, metal=metal_input).post_optimisation_filter()
 
             if return_all_isomers == "Generate Lowest Energy":
@@ -770,8 +770,8 @@ class RandomComplexAssembler:
             complex_built = stk.ConstructedMolecule(topology_graph=complex_top)
             complex_built = mercury_remover(complex_built)
             complex_built, building_blocks_list = post_filter(isomer=complex_built, building_blocks=building_blocks_list, metal=metal_input).closest_distance()
-            complex_built, building_blocks_list = OPTIMISE(isomer=complex_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_built, building_blocks_list
-            complex_built = complex_built[0]
+            complex_built, building_blocks_list = OPTIMISE(isomer=complex_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") or (opt_choice == True) else complex_built, building_blocks_list
+            complex_built = complex_built[0] if (opt_choice == "True") or (opt_choice == True) else complex_built
 
             if complex_built is not None:
                 return [complex_built]
