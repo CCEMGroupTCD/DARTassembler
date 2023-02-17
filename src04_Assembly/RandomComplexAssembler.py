@@ -4,6 +4,9 @@ from src03_Assembly_Cian.building_block_utility import mercury_remover
 import logging
 import stk
 import numpy as np
+import os
+import re
+from pymatgen.core.periodic_table import Element
 from src03_Assembly_Cian.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
     get_optimal_rotation_angle_tridentate, Bidentate_Rotator, nonplanar_tetra_solver, get_energy_stk
 from src03_Assembly_Cian.stk_utils import create_placeholder_Hg_bb
@@ -11,6 +14,8 @@ import src03_Assembly_Cian.stk_extension as stk_e
 from copy import deepcopy
 from src01.DataBase import LigandDB
 from src01.Molecule import RCA_Ligand
+from rdkit.Chem import rdmolfiles
+from openbabel import openbabel as ob
 
 
 class RandomComplexAssembler:
@@ -75,7 +80,6 @@ class RandomComplexAssembler:
         ligand_buildingblocks = {}  # This will be updated with our ligand building blocks
         ligand_denticities = {}
         for i, ligand in enumerate(ligands.values()):
-
 
             # print("The number of atoms in this ligand are: " + str(len(ligand.atomic_props["atoms"])))
             if ligand.denticity == 0:
@@ -305,10 +309,10 @@ class RandomComplexAssembler:
 
                 complex_bidentate = stk.ConstructedMolecule(topology_graph=bidentate_topology)
 
-                if (first_lig2_placed_b == False):
+                if not first_lig2_placed_b:
                     new_mol_path = Bidentate_Rotator(ligand_bb=complex_bidentate, ligand=ligand, top_list=topology_list, bool_placed=first_lig2_placed_b)
                     first_lig2_placed_b = True
-                elif (first_lig2_placed_b == True):
+                elif first_lig2_placed_b:
                     new_mol_path = Bidentate_Rotator(ligand_bb=complex_bidentate, ligand=ligand, top_list=topology_list, bool_placed=first_lig2_placed_b)
 
                 else:
@@ -429,7 +433,7 @@ class RandomComplexAssembler:
             complex_ = None
             logging.info("Not implemented yet")
 
-            return complex_, ligands, metal, int(metal_ox), multiplicity, complete_topology_nomenclature, None
+            return complex_, ligands, metal, int(metal_ox), multiplicity, complete_topology_nomenclature
 
         else:
             # and thus we got everything to assemble the complex
@@ -442,16 +446,15 @@ class RandomComplexAssembler:
 
             # print("comp: " + str(comp))
             # print("complete_topology_nomenclature: " + str(complete_topology_nomenclature))
-            complex_, rotated_building_blocks = (
+            complex_ = (
                 self.isomer_handler(topology=str(complete_topology_nomenclature), building_blocks_list=building_blocks, metal_input=metal, charge_input=metal_ox, denticity_list=denticities,
-                                    return_all_isomers=isomer_build_status, func_groups_str=functional_groups_str, func_groups_index=functional_groups_index, func_groups_type=functional_groups_type,
-                                    opt_choice=opt_decision, ligand_list=ligands))
-            return complex_, ligands, metal, int(metal_ox), multiplicity, complete_topology_nomenclature, rotated_building_blocks
+                                    return_all_isomers=isomer_build_status, opt_choice=opt_decision, ligand_list=ligands))
+            return complex_, ligands, metal, int(metal_ox), multiplicity, complete_topology_nomenclature
 
-    def isomer_handler(self, topology, building_blocks_list, metal_input, charge_input, denticity_list, return_all_isomers, func_groups_str, func_groups_index, func_groups_type, opt_choice,
-                       ligand_list):
+    def isomer_handler(self, topology, building_blocks_list, metal_input, charge_input, denticity_list, return_all_isomers, opt_choice, ligand_list):
         # ("This is the topology " + str(topology))
         # The goal of this function is to take in a complex and return all possible isomers of that complex
+
         #
         #
         # 1
@@ -509,45 +512,48 @@ class RandomComplexAssembler:
             # Now we build our isomers, remove any dummy atoms and optimise if we so desire
             complex_normal_built = stk.ConstructedMolecule(topology_graph=complex_normal)
             complex_normal_built = mercury_remover(complex_normal_built)
-            if opt_choice == "True":
-
-                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
-                # print("initiating Optimisation")
-                # complex_normal_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_normal_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
-            else:
-                # print("Not Optimising")
-                pass
+            complex_normal_built, building_blocks_list = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list, metal=metal_input).closest_distance()
+            complex_normal_built, building_blocks_list_opt = OPTIMISE(isomer=complex_normal_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_normal_built, building_blocks_list
+            complex_normal_built = complex_normal_built[0]
+            complex_normal_built = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list_opt, metal=metal_input).post_optimisation_filter()
 
             complex_flipped_built = stk.ConstructedMolecule(topology_graph=complex_flipped)
             complex_flipped_built = mercury_remover(complex_flipped_built)
-            if opt_choice == "True":
-
-                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
-                # print("initiating Optimisation")
-                # complex_flipped_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_flipped_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
-            else:
-                # print("Not Optimising")
-                pass
+            complex_flipped_built, building_blocks_rotated = post_filter(isomer=complex_flipped_built, building_blocks=building_blocks_rotated, metal=metal_input).closest_distance()
+            complex_flipped_built, building_blocks_rotated_opt = OPTIMISE(isomer=complex_flipped_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_flipped_built, building_blocks_rotated
+            complex_flipped_built = complex_flipped_built[0]
+            complex_flipped_built = post_filter(isomer=complex_flipped_built, building_blocks=building_blocks_rotated_opt, metal=metal_input).post_optimisation_filter()
 
             if return_all_isomers == "Generate Lowest Energy":
-                # print("returning lowest energy isomer")
-                # If we only want to generate the lowest energy topology then ...
-                # print("input complex energy: " + str(get_energy_stk(complex_normal_built)))
-                # print("flipped complex energy: " + str(get_energy_stk(complex_flipped_built)))
-                if get_energy_stk(complex_flipped_built) <= get_energy_stk(complex_normal_built):
-                    # print("flipped is lower in energy ")
-                    # we return a list for the sake of simplicity at the other end
-                    return [complex_flipped_built], [building_blocks_rotated]
-                elif get_energy_stk(complex_flipped_built) > get_energy_stk(complex_normal_built):
-                    # print("normal is lowest in energy")
-                    return [complex_normal_built], [building_blocks_list]
+
+                if (complex_flipped_built is not None) and (complex_normal_built is not None):
+                    if get_energy_stk(complex_flipped_built) <= get_energy_stk(complex_normal_built):
+                        return [complex_flipped_built]
+                    elif get_energy_stk(complex_flipped_built) > get_energy_stk(complex_normal_built):
+                        return [complex_normal_built]
+
+                elif (complex_flipped_built is not None) and (complex_normal_built is None):
+                    return [complex_flipped_built]
+
+                elif (complex_flipped_built is None) and (complex_normal_built is not None):
+                    return [complex_normal_built]
+
+                elif (complex_flipped_built is None) and (complex_normal_built is None):
+                    return None, None
+
+
             elif return_all_isomers == "Generate All":
-                print("Cis Energy: " + str(get_energy_stk(complex_normal_built)))
-                print("Trans Energy: " + str(get_energy_stk(complex_flipped_built)))
-                isomer_list = [complex_normal_built, complex_flipped_built]
-                building_blocks = [building_blocks_list, building_blocks_rotated]
-                post_filter(isomer_list=isomer_list, building_blocks_list=building_blocks).closest_distance()
-                return isomer_list, building_blocks
+                if (complex_flipped_built is not None) and (complex_normal_built is not None):
+                    #print("Returning All Isomers")
+                    #print("Cis Energy: " + str(get_energy_stk(complex_normal_built)))
+                    #print("Trans Energy: " + str(get_energy_stk(complex_flipped_built)))
+                    isomer_list = [complex_normal_built, complex_flipped_built]
+                    return isomer_list
+                elif (complex_flipped_built is None) and (complex_normal_built is not None):
+                    return [complex_normal_built]
+                elif (complex_flipped_built is not None) and (complex_normal_built is None):
+                    return [complex_flipped_built]
+
 
             else:
                 print("!!!Fatal error!!! -> Isomer Build status not as expected -> Exiting program ...")
@@ -602,67 +608,65 @@ class RandomComplexAssembler:
                                                                                building_blocks_rotated_bi_and_tri.items()}
                                                                       )
 
-            # There is a problem here
             complex_normal_built = stk.ConstructedMolecule(topology_graph=complex_normal)
             complex_normal_built = mercury_remover(complex_normal_built)
-            if opt_choice == "True":
-                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
-                # print("initiating Optimisation")
-                # complex_normal_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_normal_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
-            else:
-                # print("Not Optimising")
-                pass
+            complex_normal_built, building_blocks_list = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list, metal=metal_input).closest_distance()
+            complex_normal_built, building_blocks_list_opt = OPTIMISE(isomer=complex_normal_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_normal_built, building_blocks_list
+            complex_normal_built = complex_normal_built[0]
+            complex_normal_built = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list_opt, metal=metal_input).post_optimisation_filter()
 
             complex_rotated_bi_built = stk.ConstructedMolecule(topology_graph=complex_rotated_bi)
             complex_rotated_bi_built = mercury_remover(complex_rotated_bi_built)
-            if opt_choice == "True":
-
-                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
-                # print("initiating Optimisation")
-                # complex_rotated_bi_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_bi_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
-            else:
-                # print("Not Optimising")
-                pass
+            complex_rotated_bi_built, building_blocks_rotated_bi = post_filter(isomer=complex_rotated_bi_built, building_blocks=building_blocks_rotated_bi, metal=metal_input).closest_distance()
+            complex_rotated_bi_built, building_blocks_rotated_bi_opt = OPTIMISE(isomer=complex_rotated_bi_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_bi).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_rotated_bi_built, building_blocks_rotated_bi
+            complex_rotated_bi_built = complex_rotated_bi_built[0]
+            complex_rotated_bi_built = post_filter(isomer=complex_rotated_bi_built, building_blocks=building_blocks_rotated_bi_opt, metal=metal_input).post_optimisation_filter()
 
             complex_rotated_tri_built = stk.ConstructedMolecule(topology_graph=complex_rotated_tri)
             complex_rotated_tri_built = mercury_remover(complex_rotated_tri_built)
-            if opt_choice == "True":
-
-                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
-                # print("initiating Optimisation")
-                # complex_rotated_tri_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_tri_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
-            else:
-                # print("Not Optimising")
-                pass
+            complex_rotated_tri_built, building_blocks_rotated_tri = post_filter(isomer=complex_rotated_tri_built, building_blocks=building_blocks_rotated_tri, metal=metal_input).closest_distance()
+            complex_rotated_tri_built, building_blocks_rotated_tri_opt = OPTIMISE(isomer=complex_rotated_tri_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_tri).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_rotated_tri_built, building_blocks_rotated_tri
+            complex_rotated_tri_built = complex_rotated_tri_built[0]
+            complex_rotated_tri_built = post_filter(isomer=complex_rotated_tri_built, building_blocks=building_blocks_rotated_tri_opt, metal=metal_input).post_optimisation_filter()
 
             complex_rotated_bi_and_tri_built = stk.ConstructedMolecule(topology_graph=complex_rotated_bi_and_tri)
             complex_rotated_bi_and_tri_built = mercury_remover(complex_rotated_bi_and_tri_built)
-            if opt_choice == "True":
-
-                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
-                # print("initiating Optimisation")
-                # complex_rotated_bi_and_tri_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_bi_and_tri_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
-            else:
-                # print("Not Optimising")
-                pass
+            complex_rotated_bi_and_tri_built, building_blocks_rotated_bi_and_tri = post_filter(isomer=complex_rotated_bi_and_tri_built, building_blocks=building_blocks_rotated_bi_and_tri, metal=metal_input).closest_distance()
+            complex_rotated_bi_and_tri_built, building_blocks_rotated_bi_and_tri_opt = OPTIMISE(isomer=complex_rotated_bi_and_tri_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_bi_and_tri).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_rotated_bi_and_tri_built, building_blocks_rotated_bi_and_tri
+            complex_rotated_bi_and_tri_built = complex_rotated_bi_and_tri_built[0]
+            complex_rotated_bi_and_tri_built = post_filter(isomer=complex_rotated_bi_and_tri_built, building_blocks=building_blocks_rotated_bi_and_tri_opt, metal=metal_input).post_optimisation_filter()
 
             isomer_list = [complex_normal_built, complex_rotated_bi_built, complex_rotated_tri_built, complex_rotated_bi_and_tri_built]
             building_blocks = [building_blocks_list, building_blocks_rotated_bi, building_blocks_rotated_tri, building_blocks_rotated_bi_and_tri]
 
-            isomer_energy_list = [get_energy_stk(complex_normal_built), get_energy_stk(complex_rotated_bi_built), get_energy_stk(complex_rotated_tri_built),
-                                  get_energy_stk(complex_rotated_bi_and_tri_built)]
+            isomer_energy_list = [get_energy_stk(complex_normal_built), get_energy_stk(complex_rotated_bi_built), get_energy_stk(complex_rotated_tri_built), get_energy_stk(complex_rotated_bi_and_tri_built)]
+
+            #for isomer, building_block, isomer_energy in zip(isomer_list, building_blocks, isomer_energy_list):
+            del_list = []
+            for j in range(len(isomer_list)):
+                # We delete any Nones in our list
+                if (isomer_list[j] is None) or (building_blocks[j] is None) or (isomer_energy_list[j] is None):
+                    del_list.append(j)
+
+            for del_ in reversed(del_list):
+                del isomer_energy_list[del_]
+                del isomer_list[del_]
+                del building_blocks[del_]
+            if not isomer_list:
+                return [None]
+
             if return_all_isomers == "Generate Lowest Energy":
                 smallest_energy = min(isomer_energy_list)
 
                 for complex_, building_block in zip(isomer_list, building_blocks):
-                    if abs(get_energy_stk(complex_) - smallest_energy) < 0.001:  # are they approximately = (just in case there are floating point errors)
-                        return [complex_], [building_block]
+                    if abs(get_energy_stk(complex_) - smallest_energy) < 0.0001:  # are they approximately = (just in case there are floating point errors)
+                        return [complex_]
                     else:
                         pass
 
             if return_all_isomers == "Generate All":
 
-                return isomer_list, building_blocks
+                return isomer_list
 
             else:
                 print("!!!Fatal error!!! -> Isomer Build status not as expected")
@@ -698,37 +702,45 @@ class RandomComplexAssembler:
                                                                  )
 
             complex_normal_built = stk.ConstructedMolecule(topology_graph=complex_normal)
-
             complex_normal_built = mercury_remover(complex_normal_built)
-            if opt_choice == "True":
-                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
-                # print("initiating Optimisation")
-                # complex_normal_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_normal_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
-            else:
-                # print("Not Optimising")
-
-                pass
+            complex_normal_built, building_blocks_list = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list, metal=metal_input).closest_distance()
+            complex_normal_built, building_blocks_list_opt = OPTIMISE(isomer=complex_normal_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True")else complex_normal_built, building_blocks_list
+            complex_normal_built = complex_normal_built[0]
+            complex_normal_built = post_filter(isomer=complex_normal_built, building_blocks=building_blocks_list_opt, metal=metal_input).post_optimisation_filter()
 
             complex_rotated_tetra_built = stk.ConstructedMolecule(topology_graph=complex_rotated_tetra)
             complex_rotated_tetra_built = mercury_remover(complex_rotated_tetra_built)
-            if opt_choice == "true":
+            complex_rotated_tetra_built, building_blocks_rotated_tetra = post_filter(isomer=complex_rotated_tetra_built, building_blocks=building_blocks_rotated_tetra, metal=metal_input).closest_distance()
+            complex_rotated_tetra_built, building_blocks_rotated_tetra_built_opt = OPTIMISE(isomer=complex_rotated_tetra_built, ligand_list=ligand_list, building_blocks=building_blocks_rotated_tetra).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_rotated_tetra_built, building_blocks_rotated_tetra
+            complex_rotated_tetra_built = complex_rotated_tetra_built[0]
+            complex_rotated_tetra_built = post_filter(isomer=complex_rotated_tetra_built, building_blocks=building_blocks_rotated_tetra, metal=metal_input).post_optimisation_filter()
 
-                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
-                # print("initiating Optimisation")
-                # complex_rotated_tetra_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_rotated_tetra_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
-            else:
-                # print("Not Optimising")
-                pass
-            isomer_list = [complex_normal_built, complex_rotated_tetra_built]
-            building_blocks = [building_blocks_list, building_blocks_rotated_tetra]
             if return_all_isomers == "Generate Lowest Energy":
-                if get_energy_stk(complex_normal_built) <= get_energy_stk(complex_rotated_tetra_built):
-                    return [complex_normal_built], [building_blocks_list]
-                elif get_energy_stk(complex_normal_built) > get_energy_stk(complex_rotated_tetra_built):
-                    return [complex_rotated_tetra_built], [building_blocks_rotated_tetra]
+
+                if (complex_rotated_tetra_built is not None) and (complex_normal_built is not None):
+                    if get_energy_stk(complex_rotated_tetra_built) <= get_energy_stk(complex_normal_built):
+                        return [complex_rotated_tetra_built]
+                    elif get_energy_stk(complex_rotated_tetra_built) > get_energy_stk(complex_normal_built):
+                        return [complex_normal_built]
+
+                elif (complex_rotated_tetra_built is not None) and (complex_normal_built is None):
+                    return [complex_rotated_tetra_built]
+
+                elif (complex_rotated_tetra_built is None) and (complex_normal_built is not None):
+                    return [complex_normal_built]
+
+                elif (complex_rotated_tetra_built is None) and (complex_normal_built is None):
+                    return None, None
+
 
             elif return_all_isomers == "Generate All":
-                return isomer_list, building_blocks
+                if (complex_rotated_tetra_built is not None) and (complex_normal_built is not None):
+                    isomer_list = [complex_normal_built, complex_rotated_tetra_built]
+                    return isomer_list
+                elif (complex_rotated_tetra_built is None) and (complex_normal_built is not None):
+                    return [complex_normal_built]
+                elif (complex_rotated_tetra_built is not None) and (complex_normal_built is None):
+                    return [complex_rotated_tetra_built]
 
         #
         #
@@ -758,17 +770,14 @@ class RandomComplexAssembler:
 
             complex_built = stk.ConstructedMolecule(topology_graph=complex_top)
             complex_built = mercury_remover(complex_built)
-            if opt_choice == "True":
+            complex_built, building_blocks_list = post_filter(isomer=complex_built, building_blocks=building_blocks_list, metal=metal_input).closest_distance()
+            complex_built, building_blocks_list = OPTIMISE(isomer=complex_built, ligand_list=ligand_list, building_blocks=building_blocks_list).Optimise_STK_Constructed_Molecule() if (opt_choice == "True") else complex_built, building_blocks_list
+            complex_built = complex_built[0]
 
-                print("!!!Warning!!! -> Optimisation has been temporarily removed -> return unoptimized structure")
-                # print("initiating Optimisation")
-                # complex_built = OPTIMISE.Optimise_STK_Constructed_Molecule(complex_built, func_groups_str, func_groups_index, func_groups_type, ligand_list)
+            if complex_built is not None:
+                return [complex_built]
             else:
-                # print("Not Optimising")
-                pass
-
-            return [complex_built], [building_blocks_list]
-
+                return [None]
 
     @staticmethod
     def calculate_spin(metal_input, oxidation_state_input, spin_input):
@@ -812,34 +821,158 @@ class RandomComplexAssembler:
         return spin_output
 
 
-
 class post_filter:
-    def __init__(self, isomer_list, building_blocks_list):
-        self.buildings_blocks_list = building_blocks_list
-        self.isomer_list = isomer_list
-        self.distance_cutoff = 2.0
+    def __init__(self, isomer, building_blocks, metal):
+        self.building_blocks = building_blocks
+        self.isomer = isomer
+        self.failed_isomers = []
+        self.threshold = 0.3    #Angstrom todo: needs to be tuned
 
     def closest_distance(self):
-        i = 0
-        failed_isomers = []
-        for building_blocks in self.buildings_blocks_list:                  #loop through the building blocks list for each isomer
-            for keys_1, values_1 in building_blocks.items():                #loop through the building blocks for within each isomer
-                for keys_2, values_2 in building_blocks.items():            #loop through the building blocks for within each isomer
-                    print(keys_1)
-                    print(keys_2)
-                    if keys_1 == keys_2:                                    #Don't compare anything if they are the same ligand
-                        pass
-                    elif keys_1 != keys_2:                                  # compare distance if the ligands are not the same ligand
-                        closest_approach = None
-                        for point_1 in values_1.get_position_matrix():      # we loop through all the positions of the atoms
-                            for point_2 in values_2.get_position_matrix():  # we loop through all the positions of the atoms
-                                distance = np.linalg.norm(point_1 - point_2)# Calculate distance
-                                if (closest_approach is None) or ((distance < closest_approach) and (distance != 0)):   # The (distance != 0) is to account for the presence of mercury
-                                    closest_approach = distance
-                        print("The closest distance = "+str(closest_approach)+" A ")
-                        if closest_approach <= self.distance_cutoff:
-                            print("Failure")
-                        else:
-                            pass
-            i = i+1
+        # This function will detect and filter out complexes that have clashing between atoms in different ligands but it WILL NOT detect clashing between atoms of the same
+        # ligand or the metal centre
+        # todo: detect clashing between atoms and the metal centre without taking into account the functional groups maybe an idea for the future
+        for keys_1, values_1 in self.building_blocks.items():  # loop through the building blocks within each isomer
+            values_1 = mercury_remover(values_1)  # Eliminate the temporary Mercury
+            for keys_2, values_2 in self.building_blocks.items():  # loop through the building blocks for within each isomer
+                values_2 = mercury_remover(values_2)  # Eliminate the temporary Mercury
+                if keys_1 == keys_2:  # Don't compare anything if they are the same ligand
+                    pass
+                elif keys_1 != keys_2:  # Compare distance if the ligands are not the same ligand
+                    for point_1, atom_1 in zip(values_1.get_position_matrix(), values_1.get_atoms()):  # we loop through all the positions of the atoms
+                        atom_1_type = [str(atom_1).split("(")][0][0]
+                        cov_1 = Element(atom_1_type).atomic_radius
+                        for point_2, atom_2 in zip(values_2.get_position_matrix(), values_2.get_atoms()):  # we loop through all the positions of the atoms
+                            atom_2_type = [str(atom_2).split("(")][0][0]
+                            cov_2 = Element(atom_2_type).atomic_radius
+                            distance = np.linalg.norm(point_1 - point_2)  # Calculate distance
+                            if distance < (cov_1 + cov_2):  # This function shouldn't take into account ligand metal distances
+                                print("PRE OPTIMISATION FILTER FAILED, RETURNING NONE")  # if clashing is present
+                                return None, None
+                            else:
+                                pass
+        return self.isomer, self.building_blocks
 
+    def post_optimisation_filter(self):
+        if self.building_blocks is None and self.isomer is None:
+            print("NONE DETECTED AS INPUT IN POST OPTIMISATION FILTER")
+            return None
+        for keys_1, values_1 in self.building_blocks.items():
+            #print(keys_1)
+            for bond in list(values_1.get_bonds()):
+                atom_1_id = bond.get_atom1().get_id()
+                atom_2_id = bond.get_atom2().get_id()
+                atom_1_pos = list(values_1.get_atomic_positions(atom_1_id))
+                atom_2_pos = list(values_1.get_atomic_positions(atom_2_id))
+                atom_1_AN = bond.get_atom1().get_atomic_number()
+                atom_2_AN = bond.get_atom2().get_atomic_number()
+                distance = np.linalg.norm(atom_1_pos[0] - atom_2_pos[0])
+                #print(distance)
+                if distance > ((Element.from_Z(atom_1_AN).atomic_radius + Element.from_Z(atom_2_AN).atomic_radius) + self.threshold):
+                    print("POST FILTER FAILED, RETURNING NONE")
+                    return None
+                else:
+                    pass
+        return self.isomer
+
+
+
+class OPTIMISE:
+    def __init__(self, isomer, ligand_list, building_blocks):
+        self.isomer = isomer
+        self.ligands = ligand_list
+        self.building_blocks = building_blocks
+
+    @staticmethod
+    def movie(input_file, working_directory):
+        os.system('touch {}{}'.format(working_directory, "movie_loop.xyz"))
+        os.system('cat {}{} >> {}{}'.format(working_directory, input_file, working_directory, "movie_loop.xyz"))
+
+    def Optimise_STK_Constructed_Molecule(self):
+        #print("1 " + str(type(self.isomer)))
+        if (self.isomer is None) and (self.building_blocks is None):
+            print("NONE DETECTED IN OPTIMISER")
+            return None, None
+        else:
+            print("Beginning Optimisation")
+           # print("2 " + str(type(self.isomer)))
+            debug = False
+            # todo: Return the rotated stk building blocks as well, they may still be of use to someone
+            # REFERENCE: https://github.com/hjkgrp/molSimplify/blob/c3776d0309b5757d5d593e42db411a251b558e59/molSimplify/Scripts/structgen.py#L658
+            # REFERENCE: https://gist.github.com/andersx/7784817
+
+            # stk to xyz string
+            complex_mol = self.isomer.to_rdkit_mol()
+            xyz_string = rdmolfiles.MolToXYZBlock(complex_mol)
+
+            # setup conversion
+            conv = ob.OBConversion()
+            conv.SetInAndOutFormats('xyz', 'xyz')
+            mol = ob.OBMol()
+            conv.ReadString(mol, xyz_string)
+
+            # Define constraints
+            # OPEN BABEL INDEXING SARTS AT ONE !!!!!!!!!!!!!!!!!!!!!!!!!!!
+            constraints = ob.OBFFConstraints()
+            constraints.AddAtomConstraint(1)  # Here we lock the metal
+
+
+            # we constrain the all the coordinating atoms to the metal
+            sum_of_atoms = []
+            for index in self.ligands:
+                ligand = self.ligands[index]
+                coord_indexes = ligand.ligand_to_metal
+                for atom_index in coord_indexes:
+                    constraints.AddAtomConstraint(1 + 1 + atom_index + sum(sum_of_atoms))  # The one is to account for open babel indexing starting at 1 and to account for the metal
+                sum_of_atoms.append(len(ligand.atomic_props["atoms"]))
+
+            # Set up the force field with the constraints
+            forcefield = ob.OBForceField.FindForceField("Uff")
+            forcefield.Setup(mol, constraints)
+            forcefield.SetConstraints(constraints)
+
+            # Do a 500 steps conjugate gradient minimiazation
+            # and save the coordinates to mol.
+            # The below function is very slow -> better off just setting i = 200 if you are not debugging
+            if debug:
+                for i in range(50):
+                    forcefield.ConjugateGradients(i)
+                    forcefield.GetCoordinates(mol)
+                    conv.WriteFile(mol, "/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/loop_xyz")
+                    self.movie(input_file="loop_xyz", working_directory="/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/")
+
+            elif not debug:
+                forcefield.ConjugateGradients(200)
+                forcefield.GetCoordinates(mol)
+            #
+            #
+            # UPDATE THE COORDINATES OF THE STK BUILDING BLOCK ISOMER WITH THE NEW COORDINATES
+            xyz_string_output = conv.WriteString(mol)
+            list_of_nums = re.findall(r"[-+]?(?:\d*\.*\d+)", f"Current Level: {xyz_string_output}")
+            num_of_atoms = int(list_of_nums[0])
+            del list_of_nums[0]  # we remove the number that corresponds to the number of atoms
+            i = 0
+            new_position_matrix = []
+            for coord in range(num_of_atoms):
+                new_position_matrix.append([float(list_of_nums[0 + i]), float(list_of_nums[1 + i]), float(list_of_nums[2 + i])])
+                i += 3
+            new_position_matrix = np.array(new_position_matrix)
+            self.isomer = self.isomer.with_position_matrix(new_position_matrix)
+            #print("3 "+str(type(self.isomer)))
+            #
+            #
+            # UPDATE THE COORDINATES OF THE STK BUILDING BLOCK WITH THE NEW COORDINATES
+            i = 0
+            num_of_lig_atoms = []
+            for bb in self.building_blocks.values():
+                bb = mercury_remover(bb)
+                pos_matrix = bb.get_position_matrix()
+                #print(pos_matrix)
+                for atom in range(bb.get_num_atoms()):
+                    pos_matrix[atom] = new_position_matrix[atom+1+sum(num_of_lig_atoms)]
+                num_of_lig_atoms.append(bb.get_num_atoms())
+                bb = bb.with_position_matrix(pos_matrix)
+                self.building_blocks[i] = bb
+                i += 1
+        #print("4 "+str(type(self.isomer)))
+        return self.isomer, self.building_blocks

@@ -428,3 +428,79 @@ if __name__ == "__main__":
 
     a.graph()
 """
+########################################################################################################################################################################################################
+
+class Optimise:
+    def __init__(self, complex_, ligands_, metal_, bb, metal_ox):
+        self.complex = complex_
+        self.ligands = ligands_  # todo need to switch from using ligands to using the correctly rotated stk_building blocks
+        self.metal = metal_
+        self.stk_building_blocks = bb
+        self.metal_ox =metal_ox
+
+    def optimiser_experimental(self):
+        ligand_total_num_atoms = []  # Contains the total number of atoms for each ligand
+        list_of_ligand_mol_objects = []  # List of rdkit mol representations of each ligand
+        for i in range(len(self.ligands.keys())):  # Loop through all ligands
+            RCA_Molecule_instance = RCA_Molecule(atomic_props=self.ligands[i].atomic_props)  # rdkit instance of the ligand
+            ligand_total_num_atoms.append(len(self.ligands[i].atomic_props["atoms"]))
+            #####HERE I MAKE A VERY DANGEROUS ASSUMPTION THAT THE ORDER OF THE LIGANDS IN THE LIGAND FILE IS THE SAME AS THE ORDER OF THE LIGANDS IN THE BB LOST######
+            tmp_lig_mol = self.stk_building_blocks[0][i].to_rdkit_mol()
+            tmp_xyz_string = rdmolfiles.MolToXYZBlock(tmp_lig_mol)
+            conv = ob.OBConversion()  # Openbabel functionality to convert xyz to mol
+            conv.SetInAndOutFormats("xyz", "mol")  # Set conversion settings
+            mol_ = ob.OBMol()  # Initiate a rdkit mol object
+            conv.ReadString(mol_, tmp_xyz_string)  # Read in xyz string
+            string_ouput = conv.WriteString(mol_)  # Output mol string
+            stk_mol = rdmolfiles.MolFromMolBlock(string_ouput, removeHs=False, sanitize=False, strictParsing=False)  # Generate mol object from mol string with all sanitization turned completely off
+            stk_mol_without_Hg = Chem.RWMol()  # initialise mol object
+            stk_mol_without_Hg.InsertMol(stk_mol)
+            idx = []
+            for atom in stk_mol_without_Hg.GetAtoms():
+                if atom.GetAtomicNum() == 80:
+                    print("here")
+                    idx.append(int(atom.GetIdx()))
+                else:
+                    print("passing")
+                    pass
+            for item in idx:
+                stk_mol_without_Hg.RemoveAtom(item)
+            assert len(self.ligands[i].atomic_props["atoms"]) == stk_mol_without_Hg.GetNumAtoms()
+            Draw.MolToFile(stk_mol_without_Hg, "image.png", size=(600, 600))
+            list_of_ligand_mol_objects.append(stk_mol_without_Hg)  # append the list with the mol object
+
+        combo = Chem.RWMol()  # Initiate editable rdkit mol object
+        for ligand_mol_object in list_of_ligand_mol_objects:  # Combine all ligand mol objects
+            combo = Chem.CombineMols(combo, ligand_mol_object)
+        metal_xyz = f'1\n \n{self.metal} 0 0 0 '  # xyz string of just metal
+        mol_b = ob.OBMol()
+        conv = ob.OBConversion()
+        conv.SetInAndOutFormats("xyz", "mol")
+        conv.ReadString(mol_b, metal_xyz)
+        metal_string_output = conv.WriteString(mol_b)
+        mol_metal = rdmolfiles.MolFromMolBlock(metal_string_output, removeHs=False, sanitize=False, strictParsing=False)  # Created rdkit object of just metal atom
+        combo = Chem.CombineMols(mol_metal, combo)  # Add metal with the rest of the ligands
+        assembled_complex_mol = Chem.RWMol()  # create a new editable mol object
+        assembled_complex_mol.InsertMol(combo)  # add comboned ligands and metal mols
+        # Now we need to iterate through each coordinating atom and add a dative bond to the metal
+        previous_num_atoms = 0  # This variable is updated with the sum of all atoms from all previous ligands
+        for i in range(len(self.ligands.keys())):  # we iterate through all the ligands in the complex
+            indexes = self.ligands[i].ligand_to_metal  # These are the indexes at which each coordinating atom occurs
+            for index in indexes:
+                assembled_complex_mol.AddBond(0, int(1 + int(index) + int(previous_num_atoms)), Chem.BondType.DATIVE)  # we add a bond between the metal and the coordinating groups
+            previous_num_atoms += ligand_total_num_atoms[i]
+        #
+        #
+        # optimisation
+        loops = 100
+        assembled_complex_mol.GetAtomWithIdx(0).SetFormalCharge(int(self.metal_ox))
+        Chem.SanitizeMol(assembled_complex_mol, Chem.SANITIZE_ALL)
+        for i in range(loops):
+            AllChem.UFFOptimizeMolecule(assembled_complex_mol, 1)
+            rdmolfiles.MolToXYZFile(assembled_complex_mol, "/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/movie_frame.xyz")
+            os.system(
+                'cat {} >> {}'.format("/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/movie_frame.xyz", "/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/movie.xyz"))
+
+            pass
+        Draw.MolToFile(assembled_complex_mol, "image.png", size=(600, 600))
+        print("done")

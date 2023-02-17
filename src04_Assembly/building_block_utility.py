@@ -1,11 +1,11 @@
 import os
-import openbabel as ob
+from openbabel import openbabel as ob
 import stk
 from openbabel import pybel
 import itertools
 from rdkit import Chem
 from rdkit.Chem import rdmolfiles
-from src02_Pre_Ass_Filtering_Cian.constants import get_boxes, intensity, sharpness
+from src05_Pre_Ass_Filtering_Cian_update.constants_BoxExcluder import get_boxes, intensity, sharpness
 from src03_Assembly_Cian.stk_extension import *
 from src01.Molecule import RCA_Ligand
 
@@ -361,11 +361,11 @@ def nonplanar_tetra_solver(bb, lig):
     type_list.remove(value1)
     type_list.remove(value2)
 
-
-    # Currently the issue with tetradentate non-planar ligands is with the assembly.
-    # The molecule class prevents the self.coordinates attribute being updated with the relevant
-    # information from the add_atom method. The molecule class will need to be updated in the future to
-    # allow for the number of atoms to be updated
+    # todo: !!!WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING!!!
+    # todo: Currently the issue with tetradentate non-planar ligands is with the assembly.
+    # todo: The molecule class prevents the self.coordinates attribute being updated with the relevant
+    # todo: information from the add_atom method. The molecule class will need to be updated in the future to
+    # todo: allow for the number of atoms to be updated
     ###########################################################################################
     position_of_Hg_in_mol = [key for key, item in lig.coordinates.items() if item[0] == "Hg"][0]
     ###########################################################################################
@@ -479,14 +479,20 @@ def building_block_to_mol(bb):
 
 
 def get_energy_stk(building_block):
-    path = building_block_to_mol(building_block)  # Here there is a dependency on the above ligand_to_mol function.
-    mol = next(pybel.readfile("mol", str(path)))
-    obmol = mol.OBMol
-    ff = ob.OBForceField_FindType("uff")
-    assert (ff.Setup(obmol))
-    kj_to_kcal = 1.0 / 4.184
-    ff.SetCoordinates(mol.OBMol)
-    uffE = ff.Energy(False) * kj_to_kcal
-    #print("The energy is "+str(uffE))
-    return uffE
+    if building_block is None:
+        print("in get energy function returning none")
+        return None
+    else:
+        #print(building_block)
+        #print(type(building_block))
+        path = building_block_to_mol(building_block)  # Here there is a dependency on the above ligand_to_mol function.
+        mol = next(pybel.readfile("mol", str(path)))
+        obmol = mol.OBMol
+        ff = ob.OBForceField_FindType("uff")
+        assert (ff.Setup(obmol))
+        kj_to_kcal = 1.0 / 4.184
+        ff.SetCoordinates(mol.OBMol)
+        uffE = ff.Energy(False) * kj_to_kcal
+        #print("The energy is "+str(uffE))
+        return uffE
 

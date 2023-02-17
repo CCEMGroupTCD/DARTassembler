@@ -26,7 +26,8 @@ class TransitionMetalComplex:
                  compl: stk.ConstructedMolecule,
                  ligands: dict[RCA_Ligand],
                  metal_charge: int,
-                 metal: str
+                 metal: str,
+                 spin: int
                  ):
         """
         In general, during the creation process we get
@@ -48,13 +49,19 @@ class TransitionMetalComplex:
                 "original metal": original_metal_ligand(ligand),
                 "charge": ligand.global_props["charge"] if "charge" in ligand.global_props else None,
                 "size": len(ligand.atomic_props["x"]),
-                "stocheometry": ligand.stoichiometry
+                "stoichiometry": ligand.stoichiometry,
+                "Metal Spin:": spin,
             }
             for key, ligand in ligands.items()
         }
 
         try:
-            self.total_charge = sum([metal_charge] + [ligand.global_props["charge"] for ligand in ligands.values()])
+            charge_list = []
+            for ligand in ligands.values():
+                charge = ligand.global_props['LCS_pred_charge']
+                charge_list.append(int(charge))
+            self.total_charge = metal_charge + sum(charge_list)
+            #self.total_charge = sum([metal_charge] + [ligand.global_props['LCS_pred_charge'] for ligand in ligands.values()])
         except KeyError:
             # in this case we might not have all of the charges
             self.total_charge = None
