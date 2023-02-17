@@ -1,6 +1,6 @@
 from src01.Molecule import RCA_Molecule, RCA_Ligand
 from src04_Assembly.building_block_utility import *
-from src03_Pre_Assembly_Filter.constants_BoxExcluder import get_boxes
+from src02_Pre_Assembly_Filtering.constants_box_filter import get_boxes
 from ase import io
 from stk import *
 

@@ -541,7 +541,6 @@ class RandomComplexAssembler:
                 elif (complex_flipped_built is None) and (complex_normal_built is None):
                     return None, None
 
-
             elif return_all_isomers == "Generate All":
                 if (complex_flipped_built is not None) and (complex_normal_built is not None):
                     #print("Returning All Isomers")
@@ -892,7 +891,7 @@ class OPTIMISE:
         #print("1 " + str(type(self.isomer)))
         if (self.isomer is None) and (self.building_blocks is None):
             print("NONE DETECTED IN OPTIMISER")
-            return None, None
+            return (None, None), None
         else:
             print("Beginning Optimisation")
            # print("2 " + str(type(self.isomer)))

@@ -11,7 +11,7 @@ from src01.main_ligand_extraction import select_example_database
 
 from src02_Pre_Assembly_Filtering.Filter import Filter
 
-from src03_Assembly_Cian.main import Assembly
+from src04_Assembly.main import Assembly
 
 
 class Run:
@@ -30,7 +30,7 @@ class Run:
                  get_charges: bool = False,
                  filter_setup_path: str = "Filter_setup.yml",
                  batch_yml_path: str = "example_batch.yml",
-                 optimisation: bool = False,
+                 optimisation: bool = True,
                  random_seed: int = 1,
                  gaussian_input_specifications: str = "gaussian_specifications.yml"
                  ):
@@ -122,8 +122,6 @@ class Run:
 
         with open(batch_yml_path, "r") as file:
             batch_inf = yaml.load(file, SafeLoader)
-
-
 
         batch_dict = {
             'Name': batch_inf["Name"],

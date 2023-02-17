@@ -9,6 +9,7 @@ from src01.utilities import get_duration_string
 from typing import Union
 from pathlib import Path
 
+
 class NumpyEncoder(json.JSONEncoder):
     """Special json encoder for numpy types. This is important to use in json.dump so that if json encounters a np.array, it converts it to a list automatically, otherwise errors arise. Use like this:
     dumped = json.dump(dic, cls=NumpyEncoder)
@@ -21,6 +22,7 @@ class NumpyEncoder(json.JSONEncoder):
         elif isinstance(obj, np.ndarray):
             return obj.tolist()
         return json.JSONEncoder.default(self, obj)
+
 
 def load_json(path: Union[str, Path]) -> dict:
     with open(path, 'r') as file:
