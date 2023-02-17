@@ -317,12 +317,7 @@ class TransitionMetalComplex:
                               cluster_path: str = "/home/michael/molsimp_comfiles/Co_31a_14_OH/Co_31a_14_OH.com"
                               ):
 
-        header_ = """
-        %chk=Co_31a_14_OH_LSb3lyp.chk 
-        %nprocshared=40 
-        %mem=100GB 
-        #p guess=read  gen scrf=(smd, solvent=h2o) pseudo=read scf=xqc ub3lyp pop=(regular, npa) 
-        """
+        header_ = """%chk=Co_31a_14_OH_LSb3lyp.chk\n%nprocshared=40\n%mem=100GB\n#p guess=read  gen scrf=(smd, solvent=h2o) pseudo=read scf=xqc ub3lyp pop=(regular, npa)"""
 
         path_line = f"{cluster_path} auto generated "
 
