@@ -4,7 +4,7 @@ if __name__ == "__main__":
 
     # setup for the assembly
     run = Run(database="tmQM",
-              testing=100,
+              testing=15000,
               calculate_charges=True,
               get_charges=True,
               batch_yml_path="example_batch.yml",

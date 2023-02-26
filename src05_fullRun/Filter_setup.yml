@@ -8,43 +8,107 @@ denticities:
   #
  # choose the original metals of ligands with the respective denticity
  # if none is selected all metals are chosen as a default
+metals:
+  2:
+    - Fe
+    - Mn
+    - Cr
+    - Ru
+    - Co
+    - Ni
+    - Cu
+    - Ir
+    - Mo
+  3:
+    - Fe
+    - Mn
+    - Cr
+    - Ru
+    - Co
+    - Ni
+    - Cu
+    - Ir
+    - Mo
+  4:
+    - Fe
+    - Mn
+    - Cr
+    - Ru
+    - Co
+    - Ni
+    - Cu
+    - Ir
+    - Mo
+  5:
+    - Fe
+    - Mn
+    - Cr
+    - Ru
+    - Co
+    - Ni
+    - Cu
+    - Ir
+    - Mo
   #
   # chose the coordinating atoms for each denticity. If none are chosen, all are selected (i.e. not filtering)
   # if no instruction is selected the default "must_contain_and_only_contain" is selected
 coordinating_group_atoms:
   2:
     atoms:
-      - C
-      - H
-      - B
-    instruction: must_exclude
+      - N
+      - O
+    instruction: must_contain_and_only_contain
+  3:
+    atoms:
+      - N
+      - O
+    instruction: must_contain_and_only_contain
+  4:
+    atoms:
+      - N
+      - O
+    instruction: must_contain_and_only_contain
+  5:
+    atoms:
+      - N
+      - O
+    instruction: must_contain_and_only_contain
   #
   # chose the contained atoms for each ligand with respective denticity. If none are chosen, all are selected (i.e. not filtering)
   # if no instruction is selected the default "must_contain_and_only_contain" is selected
+#
 ligand_atoms:
   2:
     atoms:
+      - N
+      - O
       - C
       - H
-    instruction: must_at_least_contain
+    instruction: must_contain_and_only_contain
   3:
     atoms:
+      - N
+      - O
       - C
       - H
-    instruction: must_at_least_contain
+    instruction: must_contain_and_only_contain
   4:
     atoms:
+      - N
+      - O
       - C
       - H
-    instruction: must_at_least_contain
+    instruction: must_contain_and_only_contain
   5:
     atoms:
+      - N
+      - O
       - C
       - H
-    instruction: must_at_least_contain
+    instruction: must_contain_and_only_contain
   #
   # beta Hydrogen filter active, yes/no
-beta_hydrogen_filter: no
+beta_hydrogen_filter: yes
   #
   # do one wants to filter multidentate ligands (and if so for which denticities)
 denticity_fraction_filter:
@@ -56,3 +120,7 @@ molecular_weight:
   #2:
     #min: 200.1
     #max: 300.2
+submolecule_filter:
+  - c1ccccc1
+  - c1ccoc1
+  # more

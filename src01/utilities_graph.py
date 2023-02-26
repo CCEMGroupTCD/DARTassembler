@@ -4,10 +4,22 @@ from copy import deepcopy
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from rdkit import Chem
+from pysmiles import read_smiles
 
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+
+
+def smiles2nx(smiles_str: str, explicit_H: bool = True):
+    """
+    a convenient method to convert smiles string into nx.graphs with the desired format for our purposes
+    """
+    G = nx.Graph(read_smiles(smiles_str, explicit_hydrogen=explicit_H))
+    for node in G.nodes:
+        G.nodes[node]["node_label"] = G.nodes[node]["element"]
+
+    return G
 
 
 def view_graph(G, node_label='node_label', node_size=150):
@@ -31,6 +43,17 @@ def get_sorted_atoms_and_indices_from_graph(graph):
 
 def node_check(dict1, dict2):
     return dict1["node_label"] == dict2["node_label"]
+
+
+# a slightly more elegant form of the node check
+def node_match(n1, n2):
+    """
+    will be called like
+    node_match(G1.nodes[n1], G2.nodes[n2])
+    (from networkx documentation)
+    """
+    return n1["node_label"] == n2["node_label"]
+
 
 
 def graphs_are_equal(G1, G2):

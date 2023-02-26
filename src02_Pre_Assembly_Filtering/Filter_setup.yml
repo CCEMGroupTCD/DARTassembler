@@ -115,3 +115,7 @@ molecular_weight:
   #2:
     #min: 200.1
     #max: 300.2
+# smiles for submol filter
+submolecule_filter:
+  - c1ccccc1
+  # more

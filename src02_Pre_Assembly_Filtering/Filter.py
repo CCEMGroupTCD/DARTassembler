@@ -8,6 +8,9 @@ import json
 from constants.constants import transition_metal_symbols
 import numpy as np
 from pymatgen.core.periodic_table import Element
+import networkx as nx
+import networkx.algorithms.isomorphism as iso
+from src01.utilities_graph import node_check, smiles2nx
 
 from src01.DataBase import LigandDB
 from src02_Pre_Assembly_Filtering.box_filter import box_filter
@@ -110,6 +113,11 @@ class Filter:
             for dent, specifications in self.setup["molecular_weight"].items():
                 if specifications["min"] > specifications["max"]:
                     raise ValueError("Selected molecular weight minimum is bigger than molecular weight maximum")
+
+        if not 'submolecule_filter' in self.setup:
+            self.setup['submolecule_filter'] = []
+        elif self.setup['submolecule_filter'] is None:
+            self.setup['submolecule_filter'] = []
 
         return
 
@@ -416,6 +424,50 @@ class Filter:
         self.filtered_db.db = new_db
         print("finished")
 
+    def subgraph_filter(self):
+        """
+        We perform a subgraph search,
+        where we want to see if the inserted molecule is part of the ligand
+        input-format: smiles
+        # todo: At the moment the filter is also positive if the ligand is a subgraph of the input molecule
+        is okay for now as we shall assume that the input molecules are small
+
+        We further assume that we are only interested in the core skeleton and all hydrogens could
+        in the ligand be replaced by bonds, thus explicit_H = false
+
+        If the molecule too small, we will skip this filter, i.e. len(subG.nodes) < 2
+        as this is the same as a single atom filter and we recommend using another filter type
+        """
+
+        new_db = deepcopy(self.filtered_db.db)
+
+        for smiles in self.setup["submolecule_filter"]:
+
+            subG = smiles2nx(smiles_str=smiles, explicit_H=False)
+
+            if len(subG.nodes) < 2:
+                warnings.warn(f"The skeleton of the selected molecule for the subgraph search consists of a"
+                              f"single molecule. We recommend using the Ligand Atom type filter")
+                continue
+
+            for unq_name, ligand in self.filtered_db.db.items():
+                G = ligand.graph
+
+                subG_m = nx.MultiGraph(subG)
+                G_m = nx.MultiGraph(G)
+
+                if iso.MultiGraphMatcher(G_m, subG_m, node_match=node_check).subgraph_is_isomorphic() is True:
+                    try:
+                        del new_db[unq_name]
+                    except KeyError:
+                        # already deleted
+                        pass
+                else:
+                    pass
+
+        self.filtered_db.db = new_db
+        return
+
     def run_filters(self):
 
         print(f"Number of Ligands before Filtering: {len(self.filtered_db.db)}")
@@ -496,6 +548,12 @@ class Filter:
             for dent in self.setup["denticity_fraction_filter"]:
                 self.filter_denticity_fraction(denticity=dent)
             print(f"Number of Ligands after Denticity fraction filter: {len(self.filtered_db.db)}")
+
+        #
+        # now we run the subgraph filter
+        print(f"Subgraph filter for {len(self.setup['submolecule_filter'])} Molecules running")
+        self.subgraph_filter()
+        print(f"Number of Ligands after Subgraph filter: {len(self.filtered_db.db)}")
 
         #
         # mandatory filters
