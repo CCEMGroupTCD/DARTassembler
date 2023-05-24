@@ -1,44 +1,56 @@
 # standard Pyhton packages
 import hashlib
+import warnings
+
 import networkx as nx
 import numpy as np
 from copy import deepcopy
+from sympy import Point3D, acos, pi
 
 # some special functions which are required
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
+from pymatgen.core.composition import Composition
 from ase.visualize import view
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
 from sympy import Point3D, Plane
+from typing import Union, Tuple, Any
+import re
 
 # collection of molecule objects of other packages
 from ase import io, Atoms
 from pymatgen.core.structure import Molecule as PyMatMol
+from rdkit import Chem
+from rdkit.Chem.rdMolDescriptors import CalcMolFormula
+from rdkit.Chem import Descriptors
+from pysmiles import read_smiles, write_smiles
 
-
+from constants.constants import metals_in_pse
+from src01.bond_orders import graph_to_smiles, bond_order_rdkit_to_pysmiles
 # importing own scripts
 from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
-    unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label
-from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace
-from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
+    unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label, \
+    get_graph_fragments, count_atoms_with_n_bonds, get_graph_hash, get_heavy_atoms_graph, \
+    get_only_complex_graph_connected_to_metal, get_adjacency_matrix, assert_graph_and_coordinates_are_consistent
+from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between
+from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, graph_to_rdkit_mol, \
+    unknown_rdkit_bond_orders
 from src04_Assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
 
 # Package name: RandomComplexAssembler (RCA)
-class RCA_Molecule:
+class RCA_Molecule(object):
     """
-    The idea of this class is to build a method which contains an ase molecule for visualization
-    but also other convenient features,
-    as a graph representation
-    and all the global information we have at hand when creating a database
+    The idea of this class is to build a method which contains an ase molecule for visualization but also other convenient features, as a graph representation and all the global information we have at hand when creating a database
     """
 
     def __init__(self, mol: Atoms = None,
                  atomic_props: dict = None,
                  global_props: dict = None,
                  graph=None,
-                 graph_creating_strategy="default",
+                 graph_creating_strategy=None,  # do not specify 'default' as default, because then there would be no warning when making the graphs
                  has_ligands=True,
                  reindex_graph: bool = False,
+                 warnings: list = [],
                  other_props: dict={},
                  **kwargs
                  ):
@@ -48,8 +60,8 @@ class RCA_Molecule:
             skin: float
             cutoff_corrections_for_metals
             strategy: (pymatgen strategy)
-
         """
+        self.warnings = warnings
 
         if atomic_props is None:
             atomic_props = {}
@@ -58,10 +70,17 @@ class RCA_Molecule:
 
         self.atomic_props = atomic_props
         self.global_props = global_props
+
+        # todo: refactor so that `comment` is not in the atomic_props anymore but in the global_props
+        if 'comment' in self.atomic_props:
+            self.global_props['comment'] = ''.join(self.atomic_props['comment'])
+            del self.atomic_props['comment']
+
         # Generate mol from atomic_props if possible and no mol given yet
         self.mol = self.get_mol_from_input(mol)
 
-        self.add_additional_molecule_information_to_global_props()
+        self.n_atoms = len(self.atomic_props['atoms'])
+        self.n_hydrogens = sum(1 for atom in self.atomic_props['atoms'] if atom == 'H')
 
         if has_ligands is True:
             # if we expect ligands, we can set up an empty ligand list
@@ -75,19 +94,41 @@ class RCA_Molecule:
                                          )
         else:
             if reindex_graph:
-                graph = get_reindexed_graph(graph)
+                graph = self.get_reindexed_graph()
             self.graph = graph
+
+        self.n_bonds = len(self.graph.edges)
+        self.has_good_bond_orders = self.has_good_bond_orders()             # has bond orders and all are known
+        self.has_bond_order_attribute = self.has_bond_order_attribute()     # has bond order attribute for all bonds, but some bonds are marked as unknown
+        self.has_unknown_bond_orders = self.has_unknown_bond_orders()       # at least one of the bond orders is unknown
 
         self.validity_check_created_molecule()
 
         # As the graphs are now not optional anymore we can also make the hashes baseline
         self.graph_hash = self.get_graph_hash()
+        self.heavy_atoms_graph_hash = self.get_heavy_atoms_graph_hash()
+        self.bond_order_graph_hash = self.get_bond_order_graph_hash()
         self.hash = self.get_hash()
 
         self.stoichiometry = self.get_standardized_stoichiometry()
+        self.n_protons = self.get_n_protons()
+
+        self.add_additional_molecule_information_to_global_props()
 
         # Set kwargs so that they become properties of the molecule
         self.set_other_props_as_properties(other_props=other_props)
+
+        # if self.has_good_bond_orders:
+        #     self.smiles = self.get_smiles()
+        # else:
+        #     self.smiles = None
+
+        # if self.has_bond_order_attribute:
+        #     self.n_unknown_bond_orders = self.count_unknown_bond_orders()
+        #     for _, _, edge in self.graph.edges(data=True):
+        #         edge['bond_order_pysmiles'] = bond_order_rdkit_to_pysmiles[edge['bond_type']]
+        # else:
+        #     self.n_unknown_bond_orders = None
 
     def validity_check_created_molecule(self):
         """
@@ -100,7 +141,53 @@ class RCA_Molecule:
         # which is crucial for the extraction process
         atoms, _ = get_sorted_atoms_and_indices_from_graph(self.graph)
 
-        assert atoms == self.atomic_props['atoms'], 'Order of atoms in graph and in atomic_props doesn\'t match.'
+        both_atom_lists_printed = f'\ngraph atoms: {atoms}\natomic_props["atoms"]: {self.atomic_props["atoms"]}'
+        same_atoms_contained = sorted(atoms) == sorted(self.atomic_props['atoms'])
+        assert same_atoms_contained, f'The atoms from the graph and the atoms from the atomic_props don\'t match:{both_atom_lists_printed}'
+        same_order_of_atoms = atoms == self.atomic_props['atoms']
+        assert same_order_of_atoms, f'Order of atoms in graph and in atomic_props doesn\'t match:{both_atom_lists_printed}'
+
+    def add_warning(self, warning):
+        self.warnings.append(warning)
+
+        return
+
+    def get_reindexed_graph(self, node_label='node_label') -> nx.Graph:
+        """
+        Reindex and sort the graph nodes from 0 to n-1 to match the atom order in the atomic_props. Also make a lot of checks to make sure everything is consistent.
+        :return: reindexed graph
+        """
+        reindexed_graph = get_reindexed_graph(self.graph)
+
+        try:
+            ligand_to_metal = self.ligand_to_metal
+        except AttributeError:
+            # Molecule is not a ligand
+            ligand_to_metal = None
+        assert_graph_and_coordinates_are_consistent(
+                                                    graph=reindexed_graph,
+                                                    atoms=self.atomic_props['atoms'],
+                                                    graph_hash=self.graph_hash,
+                                                    ligand_to_metal=ligand_to_metal,
+                                                    node_label=node_label
+                                                    )
+        return reindexed_graph
+
+    def check_if_graph_and_coordinates_are_consistent(self, node_label='node_label'):
+        try:
+            ligand_to_metal = self.ligand_to_metal
+        except AttributeError:
+            # Molecule is not a ligand
+            ligand_to_metal = None
+        assert_graph_and_coordinates_are_consistent(
+                                                        graph=self.graph,
+                                                        graph_hash=self.graph_hash,
+                                                        atoms=self.atomic_props['atoms'],
+                                                        ligand_to_metal=ligand_to_metal,
+                                                        node_label=node_label
+                                                    )
+
+        return
 
     def get_mol_from_input(self, mol):
         if mol is None:
@@ -115,17 +202,20 @@ class RCA_Molecule:
         for prop, value in other_props.items():
             differing_prop_already_exists = hasattr(self, prop) and self.__getattribute__(prop) != value
             if differing_prop_already_exists:
-                raise Warning(f'Property {prop} is tried to be set but already exists.')
+                print(f'Property {prop} already exists and is different.')
             self.__setattr__(prop, value)
 
         return
 
     def add_additional_molecule_information_to_global_props(self):
-        n_atoms = len(self.atomic_props['atoms'])
+        n_elements = len(list(np.unique(self.atomic_props['atoms'])))
         mol_weight = self.mol.get_masses().sum()
+        n_C_H_bonds = self.count_C_H_bonds()
         info = {
-                    'n_atoms': n_atoms,
-                    'molecular_weight': mol_weight
+                    'n_atoms': self.n_atoms,
+                    'n_elements': n_elements,
+                    'molecular_weight': mol_weight,
+                    'n_C_H_bonds': n_C_H_bonds
                     }
 
         update_dict_with_warning_inplace(
@@ -134,6 +224,94 @@ class RCA_Molecule:
                                         )
 
         return info
+
+    def get_smiles(self) -> str:
+        """
+        Returns the SMILES string of the molecule.
+        @return: SMILES string of the molecule.
+        """
+        smiles = graph_to_smiles(self.graph, element_label='node_label', bond_label='bond_type')
+        return smiles
+
+    def count_C_H_bonds(self, node_label='node_label') -> int:
+        """
+        Returns the number of C-H bonds in the molecule.
+        @return: number of C-H bonds in the molecule.
+        """
+        n_bonds = 0
+        atoms = self.graph.nodes(data=True)
+        for idx1, idx2 in self.graph.edges():
+            el1 = atoms[idx1][node_label]
+            el2 = atoms[idx2][node_label]
+            if sorted([el1, el2]) == ['C', 'H']:
+                n_bonds += 1
+
+        return n_bonds
+
+    def get_n_protons(self) -> int:
+        n_protons = Composition(self.stoichiometry).total_electrons
+        assert n_protons == sum([Pymatgen_Element(el).Z for el in self.atomic_props['atoms']])
+        return n_protons
+
+    def has_bond_type(self, bond_types: list, bond_type_name: str='bond_type') -> bool:
+        """
+        Checks whether the molecular graph has any of the specified bond types.
+        @param bond_types: list of integers of rdkit bond types
+        @return: True if the molecular graph has any of the specified bond types, False otherwise
+        """
+        for idx1, idx2, bond_dict in self.graph.edges(data=True):
+            bond_type = bond_dict[bond_type_name]
+            if bond_type in bond_types:
+                return True
+
+        return False
+
+    def count_bond_types(self, bond_types: list, bond_type_name: str='bond_type') -> int:
+        """
+        Counts the number of specified bond types in the molecular graph.
+        @param bond_types: list of integers of rdkit bond types
+        @return: True if the molecular graph has any of the specified bond types, False otherwise
+        """
+        n = 0
+        for idx1, idx2, bond_dict in self.graph.edges(data=True):
+            bond_type = bond_dict[bond_type_name]
+            if bond_type in bond_types:
+                n += 1
+
+        return n
+
+    def has_bond_order_attribute(self, bond_label: str= 'bond_type') -> bool:
+        """
+        Checks if the graph has bond orders for all bonds. Note, these bond orders can be unknown to rdkit and therefore be not useful. If you want to test just for good bond orders, use `self.has_good_bond_orders()`.
+        """
+        bond_orders_present = [bond_label in self.graph.edges[edge] for edge in self.graph.edges]
+        contains_bond_orders = all(bond_orders_present)
+
+        if not contains_bond_orders and any(bond_orders_present):
+            warnings.warn('Not all bonds in the molecule have bond orders. Some bonds have bond orders, some do not. Return False in check `self.has_bond_orders()`.')
+
+        return contains_bond_orders
+
+    def has_unknown_bond_orders(self):
+        """
+        Checks whether the molecular graph has any bond orders that cannot be understood by smiles.
+        @return:
+        """
+        return self.has_bond_type(unknown_rdkit_bond_orders)
+
+    def count_unknown_bond_orders(self):
+        """
+        Counts the number of bond orders which are specified as unknown.
+        @return:
+        """
+        return self.count_bond_types(unknown_rdkit_bond_orders)
+
+    def has_good_bond_orders(self):
+        """
+        Checkes
+        @return:
+        """
+        return self.has_bond_order_attribute() and not self.has_unknown_bond_orders()
 
     @classmethod
     def make_from_atomic_properties(cls,
@@ -202,10 +380,23 @@ class RCA_Molecule:
         return self.hash
 
     def get_graph_hash(self):
-
-        self.graph_hash = graph_hash(self.graph, node_attr='node_label', iterations=3, digest_size=16)
-        self.get_hash()
+        self.graph_hash = get_graph_hash(self.graph)
         return self.graph_hash
+
+    def get_bond_order_graph_hash(self, element_label='node_label', bond_label='bond_type'):
+        if self.has_good_bond_orders:
+            graph_hash = get_graph_hash(self.graph, node_attr=element_label, edge_attr=bond_label)
+        else:
+            graph_hash = None
+
+        return graph_hash
+
+    def get_heavy_atoms_graph_hash(self, element_label='node_label'):
+
+        heavy_graph = get_heavy_atoms_graph(self.graph, element_label=element_label)
+        graph_hash = get_graph_hash(heavy_graph)
+
+        return graph_hash
 
     def get_hash(self):
         if not self.has_graph_hash():
@@ -220,8 +411,39 @@ class RCA_Molecule:
         Returns a string with the stoichiometry in a standardized way. We use the Hill notation, except that for elements with stoichiometry 1 this 1 is written as well.
         :return: stoichiometry (str)
         """
-        formula = get_standardized_stoichiometry_from_atoms_list(self.atomic_props['atoms'])
+        formula = get_standardized_stoichiometry_from_atoms_list(self.get_elements_list())
         return formula
+
+    def get_elements_list(self) -> list:
+        """
+        Returns a list of the elements in the molecule.
+        :return: list of elements
+        """
+        return self.atomic_props['atoms']
+
+    def get_atomic_distances_between_atoms(self, skip_elements: Union[str, list]=[]) -> float:
+        """
+        Returns the minimum, maximum and all distances between two atoms in the molecule.
+        @param skip_elements: Do not include bonds with these elements in the calculation
+        @return: tuple of (minimum, maximum, all) distance of atoms in Angstrom
+        """
+        if isinstance(skip_elements, str):
+            skip_elements = [skip_elements]
+
+        atoms = self.mol.get_chemical_symbols()
+        valid = np.array([not (el in skip_elements) for el in atoms])
+
+        distances = self.mol.get_all_distances()
+        distances = distances[valid,:][:,valid]
+
+        if len(distances) > 1:
+            min_dist = np.where(distances > 0, distances, np.inf).min()
+            max_dist = np.where(distances > 0, distances, -np.inf).max()
+        else:
+            min_dist = np.nan
+            max_dist = np.nan
+
+        return min_dist, max_dist, distances
 
     def __eq__(self, other):
         if not self.stoichiometry == other.stoichiometry:
@@ -233,11 +455,12 @@ class RCA_Molecule:
         return not self.__eq__(other)
 
     # Finally we want to be able to turn our complex into an .xyz file
-    def get_xyz_file_format_string(self):
+    def get_xyz_file_format_string(self, comment: str='') -> str:
         """
         returns a string that can be written into an .xyz file
         """
-        str_ = f"{len(self.atomic_props['x'])}\n \n"
+        str_ = f"{len(self.atomic_props['x'])}\n"
+        str_ += comment + '\n'
         for i, _ in enumerate(self.atomic_props['x']):
             str_ += f"{self.atomic_props['atoms'][i]}  {self.atomic_props['x'][i]}  {self.atomic_props['y'][i]}  {self.atomic_props['z'][i]} \n"
 
@@ -270,48 +493,6 @@ class RCA_Molecule:
 
         return ligand_name, csd
 
-    def shift_metal_to_origin(self):
-        """
-        Actually, this method is outdated not required.
-        However, the idea was to shift the molecule to the origin, so that the metal is right in the origin
-        which is the first part - the shift
-
-        and afterwards, rotate the the metal, so that one of the functional atoms is algined with the x-axis
-        """
-        #
-        # get shift vector
-        metal_symb = identify_metal_in_ase_mol(self.mol)
-        metal_index = self.atomic_props["atoms"].index(metal_symb)
-
-        # do the shifting
-        for key in ["x", "y", "z"]:
-            self.atomic_props[key] = [value - self.atomic_props[key][metal_index] for value in self.atomic_props[key]]
-
-        """
-        # Now we rotate. First we identify the element we want to rotate on
-        metal_node = find_node_in_graph_by_label(G=self.graph, label_to_find=metal_symb, expected_hits=1)
-        rotation_element_index = list(self.graph.neighbors(metal_node))[0]
-
-        # Next, we obtain the rotation matrix
-        rotation_element_vector = np.array([self.atomic_props[key][rotation_element_index] for key in ["x", "y", "z"]])
-            # now we can idenftify the desired vector, on which we'd like to rotate the vector
-        desired_rotation = np.array([np.linalg.norm(rotation_element_vector), 0, 0])
-
-        # and we can thus find the rotation matrix
-        A = R.align_vectors(rotation_element_vector.reshape(-1, 1).T, desired_rotation.reshape(-1, 1).T)[0].as_matrix()
-
-        for index, _ in enumerate(self.atomic_props["x"]):
-            location_vec_for_index = np.array([self.atomic_props[key][index] for key in ["x", "y", "z"]])
-
-            # now we rotate
-            v_new = location_vec_for_index.dot(A)
-
-            # and we modify the atomic properties
-            for i, key in enumerate(["x", "y", "z"]):
-                self.atomic_props[key][index] = v_new.tolist()[i] if abs(v_new.tolist()[i]) > 0.001 else 0
-        """
-        return
-
     def check_input_inherit_global_properties(self, inherit_global_properties: list) -> list:
         """
         Checks whether `inherit_global_properties` has correct input format.
@@ -327,112 +508,6 @@ class RCA_Molecule:
                     f'Unknown values {unknown_global_property}. All properties in inherit_global_properties must be found in self.global_properties.')
 
         return inherit_global_properties
-
-    def de_assemble(self, inherit_global_properties: list = ['CSD_code']):
-        """
-        now only graph based, makeslife waaay easier
-
-        All that is based on the following assumption:
-        the nodes are denoted as integers and we shall assume that these integers
-        correspond to their index in the atomic properties, i.e. the position
-        so, for example for node 1, the x-coordinate can be found by
-        self.atomic_props["x"][1] or more general self.atomic_props["x"][node]
-        Ich glaube das haelt auf jeden Fall fuer alle selber erzeugten Graphen
-
-        den Dummen Testparamater muss ich mitschleppen, um das gegen meine alte, ultra behinderte Grapherstellung testen
-        zu koennen
-        """
-        if not hasattr(self, "ligands"):
-            self.ligands = []
-
-        inherit_global_properties = self.check_input_inherit_global_properties(inherit_global_properties)
-
-        # wie gesagt, etwas outdated eigentlich
-        self.shift_metal_to_origin()
-
-        atoms, idc = get_sorted_atoms_and_indices_from_graph(self.graph)
-        if 'atoms' in self.atomic_props:
-
-            # if not atoms == self.atomic_props['atoms']:
-            #     breakpoint()
-
-            assert atoms == self.atomic_props['atoms'], 'Order of atoms in graph and in atomic_props doesn\'t match.'
-
-        # first we gather some information around the metal in the initial graph
-        graph = deepcopy(self.graph)
-        metal_in_complex = identify_metal_in_ase_mol(self.mol)
-        metal_node = find_node_in_graph_by_label(G=graph, label_to_find=metal_in_complex, expected_hits=1)
-        metal_neighbors = list(graph.neighbors(metal_node))  # sind jetzt alle benachbarten nodes vom metal
-        metal_neighbor_elements = [graph.nodes[i]['node_label'] for i in metal_neighbors]
-
-        for i, el in zip(idc, atoms):
-            graph.nodes[i]['orig_idx'] = i
-            graph.nodes[i]['metal_neighbor'] = i in metal_neighbors
-            assert graph.nodes[i]['node_label'] == el, 'atom and index don\'t match.'
-
-        # next we create the ripped graph
-        ripped_graph = deepcopy(graph)
-        ripped_graph.remove_node(metal_node)
-
-        conn_components = [sorted(comp) for comp in
-                           nx.connected_components(ripped_graph)]  # sorting of components very important
-        conn_components = [comp for comp in
-                           sorted(conn_components, key=str)]  # important: sort by string of list, makes order of ligands unique
-
-        for component in conn_components:
-            # if this set is empty, the ligand has no connection to the metal
-            functional_atom_indices = sorted(list(set(component).intersection(set(metal_neighbors))))
-            assert max(component) <= len(
-                ripped_graph), 'Indices dont make sense. Most likely this is an implementation error where due to the deletion of the metal atom the indices of original and ripped graph dont match.'
-
-            denticity = len(functional_atom_indices)
-            if denticity == 0:
-                # because in the assembly 0 is the placeholder for the reactant, whereas -1 means this is just a remainder in the .xyz, not
-                # connected to the metal at all
-                denticity = -1
-
-            # with that it is insanely easy to determine the atomic properties of the ligand
-            assert component == sorted(
-                component), 'The list of ligand indices is not sorted, but that is assumed in many parts of this project.'
-            ligand_atomic_props = {key_: [el for i, el in enumerate(item_) if i in component] for key_, item_ in
-                                   self.atomic_props.items()}
-            ligand_atomic_props['original_complex_indices'] = component
-
-            # problem: the functional_atom_indices are the indices in the full original metal, rather than the ligand only
-            # so we have to convert them to the index in the ligand_atomic_props
-
-            # dont have to compute the ligand graph new, removes computation time and
-            # was a source for errors before
-            ligand_graph = deepcopy(graph.subgraph(component))
-            atoms_lig, idc_lig = get_sorted_atoms_and_indices_from_graph(ligand_graph)
-
-            local_indices = [component.index(ind) for ind in functional_atom_indices]
-            local_elements = [ligand_atomic_props['atoms'][i] for i in local_indices]
-
-            # Doublechecking
-            if local_indices != []:   # otherwise error for unconnected ligands
-                assert max(local_indices) < len(ligand_graph), 'local_indices make no sense, an index is greater than the number of elements.'
-            assert all(el in metal_neighbor_elements for el in local_elements), 'Inconsistent elements of the metal neighbors.'
-            assert local_indices == sorted(local_indices), 'local_indices is not sorted but should be.'
-            assert atoms_lig == ligand_atomic_props['atoms'], 'elements of graph and atomic_props not consistent'
-            assert [atoms[i] for i in component] == ligand_atomic_props['atoms'], 'ligand atoms not consistent with original complex atoms.'
-
-            ligand_name, csd = self.ligand_naming(denticity, self.ligands)
-
-            ligand_global_props = {prop: self.global_props[prop] for prop in inherit_global_properties}
-            new_lig = RCA_Ligand(denticity=denticity,
-                                 ligand_to_metal=local_indices,
-                                 atomic_props=ligand_atomic_props,
-                                 name=ligand_name,
-                                 graph=ligand_graph,
-                                 global_props=ligand_global_props,
-                                 original_metal=Pymatgen_Element(metal_in_complex).Z
-                                 )
-
-            self.ligands.append(new_lig)
-
-        if not self.ligands:
-            print(f'WARNING: Complex {self.global_props["CSD_code"]} has no ligands extracted.')
 
     def write_to_mol_dict(self):
         """
@@ -482,6 +557,31 @@ class RCA_Molecule:
                                                    **kwargs
                                                    )
 
+    def count_atoms_with_n_bonds(self, element: Union[str, None], n_bonds: int, graph_element_label: str='node_label') -> int:
+        """
+        Count the number of occurrences of element `element` with exactly `n_bonds` bonds.
+        @param element (str, None): specification of the element, e.g. 'C'. If None, all elements are counted.
+        @param n_bonds (int): count an atom if it has exactly this number of bonds
+        @param graph_element_label: the label of the element string in the graph attributes. Only necessary if element is not None.
+        @return (int): integer count of the occurrences
+        """
+        return count_atoms_with_n_bonds(graph=self.graph, element=element, n_bonds=n_bonds, graph_element_label=graph_element_label)
+
+    def contains_only(self, atoms: Union[str, list], except_elements: list=[]) -> bool:
+        """
+        Returns True if the molecule contains only elements out of the list `atoms`, otherwise False.
+        @param atoms: list of elements to check for
+        @param except_elements: ignore these elements in the molecule when testing
+        @return:
+        """
+        if isinstance(atoms, str):
+            atoms = [atoms]
+
+        own_atoms = [atom for atom in self.atomic_props['atoms'] if not atom in except_elements]
+        contains_only_atoms = all(np.isin(own_atoms, atoms))
+
+        return contains_only_atoms
+
     #
     #
     # converting into other classes of mol objects
@@ -529,12 +629,17 @@ class RCA_Ligand(RCA_Molecule):
 
         self.coordinates = {i: [at, coord_list_3D[i]] for i, at in enumerate(atom_list)}
 
-        self.denticity = denticity
-        self.name = name
+        # This attribute transforms the indices of atoms in the atomic properties (starting with 0 until n-1) to the corresponding indices of self.graph. This is necessary because self.graph has indices not starting at 0 and going to n-1, but it has kept the original indices from the complex. This is a historic issue that has not been solved yet.
+        self.atomic_index_to_graph_index = {atm_idx: graph_idx for atm_idx, graph_idx in enumerate(sorted(self.graph.nodes))}
+        self.graph_index_to_atomic_index = {graph_idx: atm_idx for graph_idx, atm_idx in self.atomic_index_to_graph_index.items()}
+
+        self.denticity = denticity # integer denticity, -1 for unconnected
+        self.name = name # str name of ligand
 
         # the indices and elements where the ligands was bound to the metal
         self.ligand_to_metal = ligand_to_metal
         self.local_elements = self.get_local_elements()
+        self.was_connected_to_metal = len(self.local_elements) > 0
 
         if "csd_code" in kwargs.keys():
             self.csd_code = kwargs['csd_code']
@@ -544,11 +649,131 @@ class RCA_Ligand(RCA_Molecule):
 
         if 'original_metal' in kwargs.keys():
             self.original_metal = kwargs['original_metal']
+        if 'original_metal_position' in kwargs.keys():
+            self.original_metal_position = kwargs['original_metal_position']
         try:
-
             self.original_metal_symbol = Pymatgen_Element.from_Z(self.original_metal).symbol
         except (ValueError, AttributeError):
             pass
+
+        if 'original_metal_os' in kwargs.keys():
+            self.original_metal_os = kwargs['original_metal_os']
+
+        # The graph_hash_with_metal is not calculated with the real original metal, but with a pseudo metal which is always the same, so that only the connections to the metal matter, but different original metals won't give different hashes. This means ligands are considered the same independent of the original metal under this hash.
+        self.graph_hash_with_metal = self.get_graph_hash_with_metal(metal_symbol='Hg')
+        self.heavy_atoms_graph_hash_with_metal = self.get_heavy_atoms_graph_hash_with_metal(metal_symbol='Hg')
+
+        self.has_betaH = self.betaH_check()
+        self.has_neighboring_coordinating_atoms = self.check_for_neighboring_coordinating_atoms()
+
+        self.stats = self.get_ligand_stats()
+
+        assert nx.is_connected(self.graph), f'Graph of ligand with name {self.name} is not fully connected.'
+
+    def get_ligand_stats(self) -> dict:
+        """
+        Returns a dictionary with potentially interesting ligand statistics.
+        @return: Dictionary with stats
+        """
+        min_distance_to_metal, max_distance_to_metal, coordinating_atom_distances = self.get_atomic_distance_to_original_metal(mode='all')
+        min_dist, max_dist, _ = self.get_atomic_distances_between_atoms()
+        max_dist_per_atoms = max_dist / len(self.atomic_props['atoms'])
+        stats = {
+                    'min_distance_to_metal': min_distance_to_metal,
+                    'max_distance_to_metal': max_distance_to_metal,
+                    'coordinating_atom_distances_to_metal': coordinating_atom_distances,
+                    'min_atomic_distance': min_dist,
+                    'max_atomic_distance': max_dist,
+                    'max_dist_per_atoms': max_dist_per_atoms
+                }
+
+        return stats
+
+    def count_atoms_with_n_bonds(self, element: Union[str, None], n_bonds: int, graph_element_label: str='node_label', remember_metal: bool=False) -> int:
+        """
+        Count the number of occurrences of element `element` with exactly `n_bonds` bonds.
+        @param element (str, None): specification of the element, e.g. 'C'. If None, all elements are counted.
+        @param n_bonds (int): count an atom if it has exactly this number of bonds
+        @param graph_element_label (str): the label of the element string in the graph attributes. Only necessary if element is not None.
+        @param remember_metal (bool): If the original bonds to the metal should be considered or not.
+        @return (int): integer count of the occurrences
+        """
+        graph = self.graph_with_metal if remember_metal else self.graph
+        n = count_atoms_with_n_bonds(graph=graph, element=element, n_bonds=n_bonds, graph_element_label=graph_element_label)
+
+        return n
+
+    def get_atomic_distance(self, mode: str= 'min'):
+        """
+        Returns the distance of atoms to each other.
+        @param mode: any of ['min', 'max', 'coordinating', 'all']
+        @return: Returns the specified distance(s)
+        """
+        distances = np.linalg.norm(self.mol.positions - np.array(self.original_metal_position), axis=1)
+
+        mode = mode.lower()
+        if mode == 'min':
+            return distances.min()
+        elif mode == 'max':
+            return distances.max()
+        elif mode == 'coordinating':
+            return distances[self.ligand_to_metal].tolist()
+        elif mode == 'all':
+            return distances.min(), distances.max(), distances[self.ligand_to_metal].tolist()
+
+    def get_atomic_distance_to_original_metal(self, mode: str= 'min'):
+        """
+        Returns the distance of the ligand from the metal. Can also be used to get the maximum distance of an atom in the ligand to the metal or the distances of all coordinating elements.
+        @param mode: any of ['min', 'max', 'coordinating', 'all']
+        @return: Returns the specified distance(s)
+        """
+        distances = np.linalg.norm(self.mol.positions - np.array(self.original_metal_position), axis=1)
+
+        mode = mode.lower()
+        if mode == 'min':
+            return distances.min()
+        elif mode == 'max':
+            return distances.max()
+        elif mode == 'coordinating':
+            return distances[self.ligand_to_metal].tolist()
+        elif mode == 'all':
+            return distances.min(), distances.max(), distances[self.ligand_to_metal].tolist()
+
+    def get_graph_with_metal(self, metal_symbol: Union[str, None]=None):
+        """
+        Returns the graph of the ligand but with the original metal connected to the coordinating atoms.
+        @return:
+        """
+        graph_with_metal = nx.Graph(self.graph)   # unfreeze graph
+        if metal_symbol is None:
+            metal_symbol = self.original_metal_symbol
+
+        # Add metal node and bonds of coordinating atoms
+        metal_idx = max(self.graph.nodes) + 1
+        graph_with_metal.add_node(metal_idx, node_label=metal_symbol)
+        for atom_idx in self.ligand_to_metal:
+            # Indices of graph and atomic indices don't match
+            graph_idx = self.atomic_index_to_graph_index[atom_idx]
+            graph_with_metal.add_edge(metal_idx, graph_idx)
+
+        return graph_with_metal
+
+    def get_graph_hash_with_metal(self, metal_symbol, graph_atom_label:str= 'node_label') -> str:
+        """
+        Returns the graph hash of the ligand including the metal and the bonds to the metal.
+        @return: graph hash
+        """
+        graph_with_metal = self.get_graph_with_metal(metal_symbol=metal_symbol)
+        return get_graph_hash(graph_with_metal, node_attr=graph_atom_label)
+
+    def get_heavy_atoms_graph_hash_with_metal(self, metal_symbol, graph_atom_label:str= 'node_label') -> str:
+        """
+        Returns the graph hash of the ligand including the metal and the bonds to the metal. Only heavy atoms are considered.
+        @return: graph hash
+        """
+        graph_with_metal = self.get_graph_with_metal(metal_symbol=metal_symbol)
+        heavy_graph_with_metal = get_heavy_atoms_graph(graph_with_metal)
+        return get_graph_hash(heavy_graph_with_metal, node_attr=graph_atom_label)
 
     def get_local_elements(self) -> list:
         """
@@ -556,6 +781,52 @@ class RCA_Ligand(RCA_Molecule):
         :return: list of elements in first coordination sphere
         """
         return [self.atomic_props["atoms"][i] for i in self.ligand_to_metal]
+
+    def betaH_check(self, node_label='node_label') -> bool:
+        """
+        Checks if the ligand has beta Hydrogen. Alpha H is ignored. Beta H is defined as a H atom which is exactly two bonds away from a coordinating atom.
+        @return: True if beta Hydrogen is present, False otherwise
+        """
+        graph = self.get_reindexed_graph()     # historical issue
+        A = get_adjacency_matrix(graph)
+
+        # The second power of the adjacency matrix, i.e. A^2[i,j] represents the number of paths of length two
+        # from i to j. Hence, as we are only interested in Hydrogen which has a distance of two to our functional atoms
+        # we can make quick use of that
+        B = np.matmul(A, A)
+
+        for functional_index in self.ligand_to_metal:
+            for index, atom_symbol in graph.nodes(data=node_label):
+                # search for beta Hydrogen while excluding alpha Hydrogen
+                if B[functional_index, index] > 0 and A[functional_index, index] == 0 and atom_symbol == "H":
+                    # self.view_3d()
+                    return True
+
+        return False
+
+    def check_for_neighboring_coordinating_atoms(self) -> bool:
+        """
+        Checks if any of the coordinating atoms are neighbors.
+        @return: True if two coordinating atoms are neighbors, False otherwise
+        """
+        graph = self.get_reindexed_graph()     # historical issue
+        for i in self.ligand_to_metal:
+            for j in self.ligand_to_metal:
+                if i != j and graph.has_edge(i, j):
+                    return True
+
+        return False
+
+    def sort_atomic_props_to_have_coordinating_atoms_first(self):
+        """
+        Sorts the atomic properties such that the atoms that are coordinating are first in the list.
+        Attention: This does not change anything else, only the atomic properties. The graph and the ligand_to_metal are still the same!
+        """
+        for key in self.atomic_props.keys():
+            self.atomic_props[key] = [self.atomic_props[key][i] for i in self.ligand_to_metal] + [
+                self.atomic_props[key][i] for i in range(len(self.atomic_props[key])) if i not in self.ligand_to_metal]
+
+        return
 
     def get_assembly_dict(self):
         """
@@ -590,30 +861,6 @@ class RCA_Ligand(RCA_Molecule):
             atoms_of_interest = [atoms_of_interest]
         return set(self.get_assembly_dict()["type"]).issubset(set(atoms_of_interest))
 
-    def betaH_check(self):
-        """
-        returns True if beta Hydrogen are contained, false if not
-        """
-        A = nx.adjacency_matrix(self.graph).todense()
-
-        B = np.matmul(A, A)
-        # The second power of the adjacency matrix, i.e. A^2[i,j] represents the number of paths of length two
-        # from i to j. Hence, as we are only interested in hydrogens that have distance two to our functional atoms
-        # we can make quick use of that
-
-        # todo: Der functional_index ist nicht der Index im Graph!!!
-        #   glaube das waere geloest wenn wir den Graph ordern und zwar kanonisch nach label des nodes
-
-        for functional_index in self.ligand_to_metal:
-            for index, atom_symbol in enumerate(self.atomic_props['atoms']):
-
-                if B[functional_index, index] > 0 and atom_symbol == "H":
-                    # print("Beta Hydrogen detected")
-                    # self.view_3d()
-                    return True
-
-        return False
-
     # todo: unittests!!
     def planar_check(self, eps=2):
         """
@@ -640,13 +887,14 @@ class RCA_Ligand(RCA_Molecule):
 
         return False
 
-    def write_to_mol_dict(self):
-        # Manually initialize special fields
-        d = {
-                'graph_dict': graph_to_dict_with_node_labels(self.graph)
-            }
+    def write_to_mol_dict(self, include_graph_dict: bool=True) -> dict:
+        d = {}
 
-        do_not_output_automatically = ['mol', 'graph', 'coordinates', 'hash', 'csd_code']
+        # Manually initialize special fields
+        if include_graph_dict:
+            d['graph_dict'] = graph_to_dict_with_node_labels(self.graph)
+
+        do_not_output_automatically = ['mol', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
         for prop, val in vars(self).items():
             if not prop in do_not_output_automatically:
                 d[prop] = val
@@ -661,10 +909,19 @@ class RCA_Ligand(RCA_Molecule):
         necessary_props = ["atomic_props", "global_props", "graph_dict", "denticity", "name", 'ligand_to_metal']
         assert set(necessary_props).issubset(set(dict_.keys())), f'Any of the necessary keys {necessary_props} is not present.'
 
+        # Add default properties for properties not in the json. This is useful for properties which have been introduced in later versions of the code.
+        optional_props = {'warnings': []}
+        for prop, default in optional_props.items():
+            if not prop in dict_:
+                dict_[prop] = default
+
         other_props = {key: val for key, val in dict_.items() if not key in necessary_props}
 
         # Optionally add graph if it is present in the dictionary
-        # kwargs = {'graph_dict': graph_from_graph_dict(dict_['graph_dict'])} if not (dict_['graph_dict'] is None) else {}
+        if 'graph_dict' in dict_ and not (dict_['graph_dict'] is None):
+            graph = graph_from_graph_dict(dict_['graph_dict'])
+        else:
+            graph = None
 
         return cls(
             atomic_props=dict_["atomic_props"],
@@ -672,6 +929,8 @@ class RCA_Ligand(RCA_Molecule):
             denticity=dict_["denticity"],
             name=dict_["name"],
             ligand_to_metal=dict_['ligand_to_metal'],
+            graph=graph,
+            warnings=dict_['warnings'],
             other_props=other_props,
             **kwargs
         )
@@ -679,7 +938,7 @@ class RCA_Ligand(RCA_Molecule):
     # some stk functionality
     def to_stk_bb(self):
         """
-        this is really only designed for ligands as a normal RCA_Molecule doesnt have the required properties
+        this is really only designed for ligands as a normal RCA_Molecule doesn't have the required properties
         """
         return RCA_Mol_to_stkBB(self)
 
@@ -709,6 +968,9 @@ class RCA_Complex(RCA_Molecule):
                             other_props=other_props,
                             **kwargs
                              )
+            self.check_if_graph_and_coordinates_are_consistent()
+            self.shift_metal_to_origin()
+
             self.metal = identify_metal_in_ase_mol(self.mol)
             self.pmg_metal = Pymatgen_Element(self.metal)
             self.metal_atomic_number = self.pmg_metal.Z
@@ -716,10 +978,302 @@ class RCA_Complex(RCA_Molecule):
             self.charge = make_None_to_NaN(self.global_props['charge'])
             self.metal_idx = self.atomic_props['atoms'].index(self.metal)
 
+            self.donor_indices = sorted(self.graph.neighbors(self.metal_idx))
+            self.donor_elements = [self.atomic_props['atoms'][idx] for idx in self.donor_indices]
+            self.n_donors = len(self.donor_indices)
+
+            self.metal_position = (self.atomic_props['x'][self.metal_idx], self.atomic_props['y'][self.metal_idx], self.atomic_props['z'][self.metal_idx])
+            self.fully_connected = nx.is_connected(self.graph)
+            self.mol_id = self.global_props['CSD_code']
+
+            # Set parameters for octahedral complexes
+            self.is_octahedral = self.check_octahedral()
+            mean_distance, sd_distance, max_angular_deviation = self.calculate_distortion_parameters()
+            self.global_props['donors_mean_dist'] = mean_distance
+            self.global_props['donors_sd_dist'] = sd_distance
+            self.global_props['oct_max_ang_dev'] = max_angular_deviation
 
             self.add_additional_complex_information_to_global_props()
 
             return
+
+
+    def has_metal_os(self):
+        return ~np.isnan(self.metal_oxi_state)
+
+    def calculate_distortion_parameters(self) -> tuple[float, float, float]:
+        """
+        Function to calculate distortion parameters of the complex
+        :return: sd_distance (standard deviation of neighbour distances from the metal atom) and max_angular_deviation (maximum deviation from 90 or 180 degrees in bond angles)
+        """
+        # Calculate neighbour distances and positions
+        metal_pos = np.array(self.metal_position)
+        neighbours = self.donor_indices
+        neighbour_positions = []
+        neighbour_distances = []
+        for neighbour_idx in neighbours:
+            neighbour_pos = np.array([self.atomic_props['x'][neighbour_idx], self.atomic_props['y'][neighbour_idx], self.atomic_props['z'][neighbour_idx]])
+            neighbour_positions.append(neighbour_pos)
+            neighbour_distances.append(np.linalg.norm(neighbour_pos - metal_pos))
+
+        # Calculate standard deviation of neighbour distances
+        if len(neighbour_distances) > 0:
+            mean_distance = float(np.mean(neighbour_distances))
+            sd_distance = float(np.std(neighbour_distances))
+        else:
+            mean_distance = np.nan
+            sd_distance = np.nan
+
+        # Calculate maximum angular deviation for octahedral complexes
+        if len(neighbours) == 6:
+            max_angular_deviation = 0
+            for i in range(len(neighbour_positions)):
+                for j in range(i+1, len(neighbour_positions)):
+                    # Calculate the vector from the metal to the neighbours
+                    vector_i = neighbour_positions[i] - metal_pos
+                    vector_j = neighbour_positions[j] - metal_pos
+
+                    # Calculate the angle between these vectors
+                    cos_angle = np.dot(vector_i, vector_j) / (np.linalg.norm(vector_i) * np.linalg.norm(vector_j))
+                    cos_angle = np.clip(cos_angle, -1, 1)  # Ensure cos_angle is within the valid range [-1, 1]
+                    angle = np.arccos(cos_angle) * 180 / np.pi  # Convert to degrees
+
+                    # Check the angular deviation from 90 or 180 degrees
+                    angular_deviation = min(abs(angle - 90), abs(angle - 180))
+                    max_angular_deviation = max(max_angular_deviation, angular_deviation)
+        else:
+            max_angular_deviation = np.nan
+
+        return mean_distance, sd_distance, max_angular_deviation
+
+    def check_octahedral(self, angular_threshold=40) -> bool:
+        """
+        Function to check if the complex is octahedral or not
+        The conditions for a complex to be octahedral are:
+            - The complex must have 6 donor atoms
+            - The maximum deviation from 90 or 180 degrees in bond angles should be less than `angular_threshold`
+        :return: True if the complex is octahedral, False otherwise
+        """
+        if len(self.donor_indices) != 6:
+            return False
+
+        _, _, max_angular_deviation = self.calculate_distortion_parameters()
+        is_oct = bool(max_angular_deviation > angular_threshold)    # bool() for json serialisation
+
+        return is_oct
+
+    def count_ligands_with_stoichiometry(self, atoms: list, only_connected=False):
+        if isinstance(atoms, str):
+            atoms = [atoms]
+        atoms = sorted(atoms)
+
+        n = 0
+        for lig in self.ligands:
+            if not only_connected or lig.was_connected_to_metal:
+                lig_atoms = sorted(lig.atomic_props['atoms'])
+                if atoms == lig_atoms:
+                    n += 1
+
+        return n
+
+    def count_n_unconnected_ligands(self, max_n_atoms: np.inf) -> int:
+        """
+        Counts the number of unconnected ligands with a maximum number of atoms of `max_n_atoms`.
+        @param max_n_atoms: Maximum number of atoms of ligands to count
+        @return: Number of ligands with this maximum number of atoms
+        """
+        n = sum([not lig.was_connected_to_metal and len(lig.atomic_props['atoms']) <= max_n_atoms for lig in self.ligands])
+        return n
+
+
+    def count_atoms_in_ligands(self, atoms: Union[list, str], only_if_connected_to_metal: bool=False, per_ligand:bool=False) -> Union[list, int]:
+        """
+        Returns the number of occurrences of the specified elements in the complex.
+        @param atoms: list of atoms to count the total occurrences
+        @param only_if_connected_to_metal: If True, ignore unconnected ligands
+        @param per_ligand:If True, returns a list of occupancies for each ligand. Otherwise returns the total for all complexes.
+        @return: Number of occurrences of specified elements, either as list per ligand or the total as integer
+        """
+        if isinstance(atoms, str):
+            atoms = [atoms]
+
+        n = []
+        for lig in self.ligands:
+            if only_if_connected_to_metal and lig.was_connected_to_metal:
+                n.append(sum([el in atoms for el in lig.atomic_props['atoms']]))
+
+        if not per_ligand:
+            n = sum(n)
+
+        return n
+
+    def get_graph_fragments(self, atom_label='node_label') -> tuple[list, list]:
+        """
+        Returns a list of the fragment indices (unconnected components) and their elements of the molecular graph.
+        """
+        indices_fragments, element_fragments = get_graph_fragments(graph=self.graph, atom_label=atom_label)
+
+        return indices_fragments, element_fragments
+
+    def get_only_complex_graph_connected_to_metal(self, atom_label='node_label') -> nx.Graph:
+        """
+        Returns the graph of only the metal complex without unconnected ligands.
+        """
+        complex_graph = get_only_complex_graph_connected_to_metal(graph=self.graph, atom_label=atom_label)
+
+        return complex_graph
+
+    def has_fragment(self, frag: Union[str, list]) -> bool:
+        """
+        Checks whether the complex graph has an unconnected fragment with the elements specified in frag.
+        @param frag: Either a string specifying a single atom or a list of strings specifying several atoms. E.g. frag='Cl' checks if any unconnected chloride exists. frag='[H, H, O]' checks whether any unconnected water exists. The order in the list doesn't matter but the number of occurrences of elements does matter.
+        """
+        if isinstance(frag, str):
+            frag = [frag]
+
+        fragments = [sorted(comp) for comp in nx.connected_components(self.graph)]
+        el_fragments = [[self.atomic_props['atoms'][i] for i in fragment] for fragment in fragments]
+
+        has_unconnected_fragment = False
+        frag = sorted(frag)
+        for fragment in el_fragments:
+            fragment = sorted(fragment)
+            if fragment == frag:
+                has_unconnected_fragment = True
+                break
+
+        return has_unconnected_fragment
+
+    def count_ligands_containing_only(self, atoms: Union[str, list], denticity_range: list=[], n_atoms_range: list=[], except_elements=[]) -> int:
+        """
+        Count how many ligands contain only atoms specified in `atoms`, except for elements in `except elements`.
+        @param atoms: atoms to check for.
+        @param denticity_range: if specified, count ligands only if it has a denticity in this range (inclusive)
+        @param n_atoms_range: if specified, count ligands only if the number of atoms which are not excluded by `except_element` is in this range (inclusive)
+        @param except_elements: Ignore these elements in the ligands when checking the presence of the atoms in the ligand and when checking n_atoms_range.
+        @return: Integer
+        """
+        n = 0
+        for lig in self.ligands:
+            correct_denticity = is_between(lig.denticity, denticity_range)
+            correct_n_atoms = is_between(len([a for a in lig.atomic_props['atoms'] if not a in except_elements]), n_atoms_range)
+            if correct_denticity and correct_n_atoms and lig.contains_only(atoms, except_elements=except_elements):
+                n += 1
+
+        return n
+
+
+    def count_coordinating_atoms_with_distance_to_metal_greater_than(self, distance, element=None, max_n_atoms=np.inf) -> int:
+        """
+        Returns the number of coordinating atoms of type `element` with a distance to the metal greater than `distance`.
+        @param max_n_atoms: Include only ligands with a number of atoms up to this number.
+        """
+        n = 0
+        for lig in self.ligands:
+            for idx, el in enumerate(lig.local_elements):
+                correct_atom = el == element or element is None
+                if correct_atom and len(lig.atomic_props['atoms']) <= max_n_atoms:
+                    if lig.get_atomic_distance_to_original_metal(mode='coordinating')[idx] > distance:
+                        n += 1
+
+        return n
+
+    def has_consistent_stoichiometry_with_CSD(self, print_different_elements=False) -> bool:
+        try:
+            csd_stoichiometry = self.global_props['CSD_stoichiometry']
+            pattern = r'[A-Z][a-z]?\d*'
+            csd_stoichiometry = ' '.join(re.findall(pattern, csd_stoichiometry))
+            csd_comp = Composition(csd_stoichiometry)
+        except KeyError:
+            warnings.warn('Global property `CSD_stoichiometry` not found. Skip check for consistent stoichiometry with xyz.')
+            return True
+        except:
+            warnings.warn(f'CSD_stoichiometry could not be parsed for complex {self.mol_id}. Skip check for consistent stoichiometry with xyz.')
+            return True
+
+        xyz_comp = Composition(self.stoichiometry)
+        consistent = csd_comp.almost_equals(xyz_comp)
+
+        if not consistent and print_different_elements:
+            xyz_elements = [el.symbol for el in xyz_comp.elements]
+            csd_elements = [el.symbol for el in csd_comp.elements]
+            different_elements = set(xyz_elements).symmetric_difference(csd_elements)
+            if different_elements:
+                print(f'Differing elements in stoichiometries of xyz and CSD in complex {self.mol_id}: {list(different_elements)}')
+            diff_dict = {el: int(xyz_comp[el]-csd_comp[el]) for el in set(csd_elements+xyz_elements)}
+            diff_dict = {key: val for key, val in diff_dict.items() if val != 0}
+            print(f'Different elements counts for complex {self.mol_id}: {diff_dict}')
+
+        return consistent
+
+    def has_consistent_stoichiometry_with_smiles(self, smiles: str, ignore_element_count: bool=False, print_warnings: bool=True, only_complex: bool=False) -> bool:
+        try:
+            mol_graph = read_smiles(smiles, explicit_hydrogen=True, zero_order_bonds=False)
+
+            if only_complex:
+                _, frag_atoms = get_graph_fragments(graph=mol_graph, atom_label='element')
+                atoms = [a for a in frag_atoms if self.metal in a][0]
+            else:
+                atoms, _ = get_sorted_atoms_and_indices_from_graph(mol_graph, atom_label='element')
+
+            comp = Composition(''.join(atoms))
+        except KeyError:
+            if print_warnings:
+                warnings.warn('Global property `smiles` not found. Skip check for consistent stoichiometry with xyz.')
+            return True
+        except:
+            if print_warnings:
+                warnings.warn(f'Smiles could not be parsed for complex {self.mol_id}. Skip check for consistent stoichiometry with xyz.')
+            return True
+
+        if only_complex:
+            _, frag_atoms = self.get_graph_fragments()
+            atoms = [a for a in frag_atoms if self.metal in a][0]
+            xyz_comp = Composition(''.join(atoms))
+        else:
+            xyz_comp = Composition(self.stoichiometry)
+
+        if ignore_element_count:
+            # Check only if the same elements occur, not if the elements have the same count.
+            xyz_elements = [el.symbol for el in xyz_comp.elements]
+            csd_elements = [el.symbol for el in comp.elements]
+            different_elements = set(xyz_elements).symmetric_difference(csd_elements)
+            consistent = len(different_elements) == 0
+        else:
+            consistent = comp.almost_equals(xyz_comp)
+
+        return consistent
+
+
+    def complex_is_biggest_fragment(self, allow_complexes_greater_than: int = np.nan) -> bool:
+        """
+        Checks whether the complex (fragment with the transition metal) is the fragment with the most atoms. This is useful to check whether the transition metal might not belong to an actual complex but to a counterion.
+        :param allow_complexes_greater_than: Always return true for complexes with a higher number of atoms than this parameter
+        """
+        _, el_fragments = self.get_graph_fragments()
+
+        max_n_other_atoms = 0
+        n_complex_atoms = 0
+        for atoms in el_fragments:
+            is_complex = any([Pymatgen_Element(atom).Z in metals_in_pse for atom in atoms])
+            if is_complex:
+                assert n_complex_atoms == 0, f'There seem to be complexes with more than one transition metal in complex {self.mol_id}.'
+                n_complex_atoms = len(atoms)
+            else:
+                if len(atoms) > max_n_other_atoms:
+                    max_n_other_atoms = len(atoms)
+        assert n_complex_atoms != 0, f'There seem to be no transition metals in complex {self.mol_id}.'
+
+        if max_n_other_atoms > n_complex_atoms and n_complex_atoms <= allow_complexes_greater_than:
+            is_biggest_fragment = False
+            # print(f'N complex atoms in {self.mol_id}: {n_complex_atoms}')
+        else:
+            is_biggest_fragment = True
+
+        return is_biggest_fragment
+
+    def metal_center_is_transition_metal(self):
+        return Pymatgen_Element(self.metal).is_transition_metal
 
     def add_additional_complex_information_to_global_props(self):
         info = {}
@@ -734,24 +1288,167 @@ class RCA_Complex(RCA_Molecule):
 
         return info
 
+    def shift_metal_to_origin(self):
+        """
+        Actually, this method is outdated not required.
+        However, the idea was to shift the molecule to the origin, so that the metal is right in the origin
+        which is the first part - the shift
 
-    def write_to_mol_dict(self):
+        and afterwards, rotate the the metal, so that one of the functional atoms is algined with the x-axis
         """
-        Outputs complex as dictionary.
+        #
+        # get shift vector
+        metal_symb = identify_metal_in_ase_mol(self.mol)
+        metal_index = self.atomic_props["atoms"].index(metal_symb)
+
+        # do the shifting
+        for key in ["x", "y", "z"]:
+            self.atomic_props[key] = [value - self.atomic_props[key][metal_index] for value in self.atomic_props[key]]
+
         """
-        return {
-            "atomic_props": self.atomic_props,
-            "global_props": self.global_props,
-            "graph_dict": graph_to_dict_with_node_labels(self.graph),
-            'mol_id': self.global_props['CSD_code'],
-            'stoichiometry': self.stoichiometry,
-            'metal': self.metal,
-            'metal_oxi_state': self.metal_oxi_state,
-            'total_q': self.charge,
-            'ligands': [lig.write_to_mol_dict() for lig in self.ligands],
-            'graph_hash': self.graph_hash,
-            'metal_atomic_number': self.metal_atomic_number
-        }
+        # Now we rotate. First we identify the element we want to rotate on
+        metal_node = find_node_in_graph_by_label(G=self.graph, label_to_find=metal_symb, expected_hits=1)
+        rotation_element_index = list(self.graph.neighbors(metal_node))[0]
+
+        # Next, we obtain the rotation matrix
+        rotation_element_vector = np.array([self.atomic_props[key][rotation_element_index] for key in ["x", "y", "z"]])
+            # now we can idenftify the desired vector, on which we'd like to rotate the vector
+        desired_rotation = np.array([np.linalg.norm(rotation_element_vector), 0, 0])
+
+        # and we can thus find the rotation matrix
+        A = R.align_vectors(rotation_element_vector.reshape(-1, 1).T, desired_rotation.reshape(-1, 1).T)[0].as_matrix()
+
+        for index, _ in enumerate(self.atomic_props["x"]):
+            location_vec_for_index = np.array([self.atomic_props[key][index] for key in ["x", "y", "z"]])
+
+            # now we rotate
+            v_new = location_vec_for_index.dot(A)
+
+            # and we modify the atomic properties
+            for i, key in enumerate(["x", "y", "z"]):
+                self.atomic_props[key][index] = v_new.tolist()[i] if abs(v_new.tolist()[i]) > 0.001 else 0
+        """
+        return
+
+    def de_assemble(self, inherit_global_properties: list = ['CSD_code']):
+        """
+        now only graph based, makeslife waaay easier
+
+        All that is based on the following assumption:
+        the nodes are denoted as integers and we shall assume that these integers
+        correspond to their index in the atomic properties, i.e. the position
+        so, for example for node 1, the x-coordinate can be found by
+        self.atomic_props["x"][1] or more general self.atomic_props["x"][node]
+        Ich glaube das haelt auf jeden Fall fuer alle selber erzeugten Graphen
+
+        den Dummen Testparamater muss ich mitschleppen, um das gegen meine alte, ultra behinderte Grapherstellung testen
+        zu koennen
+        """
+        if not hasattr(self, "ligands"):
+            self.ligands = []
+
+        inherit_global_properties = self.check_input_inherit_global_properties(inherit_global_properties)
+
+        atoms, idc = get_sorted_atoms_and_indices_from_graph(self.graph)
+        if 'atoms' in self.atomic_props:
+            assert atoms == self.atomic_props['atoms'], 'Order of atoms in graph and in atomic_props doesn\'t match.'
+
+        # first we gather some information around the metal in the initial graph
+        graph = deepcopy(self.graph)
+        metal_in_complex = identify_metal_in_ase_mol(self.mol)
+        metal_node = find_node_in_graph_by_label(G=graph, label_to_find=metal_in_complex, expected_hits=1)
+        metal_neighbors = list(graph.neighbors(metal_node))  # all neighbor nodes of the metal
+        metal_neighbor_elements = [graph.nodes[i]['node_label'] for i in metal_neighbors]
+
+        for i, el in zip(idc, atoms):
+            # graph.nodes[i]['orig_idx'] = i
+            # graph.nodes[i]['metal_neighbor'] = i in metal_neighbors
+            assert graph.nodes[i]['node_label'] == el, 'atom and index don\'t match.'
+
+        # next we create the ripped graph
+        ripped_graph = deepcopy(graph)
+        ripped_graph.remove_node(metal_node)
+
+        conn_components = [sorted(comp) for comp in
+                           nx.connected_components(ripped_graph)]  # sorting of components very important
+        conn_components = [comp for comp in
+                           sorted(conn_components,
+                                  key=str)]  # important: sort by string of list, makes order of ligands unique
+
+        for component in conn_components:
+            # if this set is empty, the ligand has no connection to the metal
+            functional_atom_indices = sorted(list(set(component).intersection(set(metal_neighbors))))
+            assert max(component) <= len(
+                ripped_graph), 'Indices dont make sense. Most likely this is an implementation error where due to the deletion of the metal atom the indices of original and ripped graph dont match.'
+
+            denticity = len(functional_atom_indices)
+            if denticity == 0:
+                # because in the assembly 0 is the placeholder for the reactant, whereas -1 means this is just a remainder in the .xyz, not
+                # connected to the metal at all
+                denticity = -1
+
+            # with that it is insanely easy to determine the atomic properties of the ligand
+            assert component == sorted(
+                component), 'The list of ligand indices is not sorted, but that is assumed in many parts of this project.'
+            ligand_atomic_props = {key_: [el for i, el in enumerate(item_) if i in component] for key_, item_ in
+                                   self.atomic_props.items()}
+            ligand_atomic_props['original_complex_indices'] = component
+
+            ligand_graph = deepcopy(ripped_graph.subgraph(component))
+            atoms_lig, idc_lig = get_sorted_atoms_and_indices_from_graph(ligand_graph)
+
+            # problem: the functional_atom_indices are the indices in the full original metal, rather than the ligand only
+            # so we have to convert them to the index in the ligand_atomic_props
+            local_indices = [component.index(ind) for ind in functional_atom_indices]
+            local_elements = [ligand_atomic_props['atoms'][i] for i in local_indices]
+
+            # Doublechecking
+            if local_indices != []:  # otherwise error for unconnected ligands
+                assert max(local_indices) < len(
+                    ligand_graph), 'local_indices make no sense, an index is greater than the number of elements.'
+            assert all(
+                el in metal_neighbor_elements for el in local_elements), 'Inconsistent elements of the metal neighbors.'
+            assert local_indices == sorted(local_indices), 'local_indices is not sorted but should be.'
+            assert atoms_lig == ligand_atomic_props['atoms'], 'elements of graph and atomic_props not consistent'
+            assert [atoms[i] for i in component] == ligand_atomic_props[
+                'atoms'], 'ligand atoms not consistent with original complex atoms.'
+
+            ligand_name, csd = self.ligand_naming(denticity, self.ligands)
+
+            ligand_global_props = {prop: self.global_props[prop] for prop in inherit_global_properties}
+            new_lig = RCA_Ligand(denticity=denticity,
+                                 ligand_to_metal=local_indices,
+                                 atomic_props=ligand_atomic_props,
+                                 name=ligand_name,
+                                 graph=ligand_graph,
+                                 global_props=ligand_global_props,
+                                 original_metal=Pymatgen_Element(metal_in_complex).Z,
+                                 original_metal_position=self.metal_position,
+                                 original_metal_os=self.metal_oxi_state
+                                 )
+
+            self.ligands.append(new_lig)
+
+        if not self.ligands:
+            print(f'WARNING: Complex {self.global_props["CSD_code"]} has no ligands extracted.')
+
+
+    def write_to_mol_dict(self, include_graph_dict: bool=True, include_ligands: bool=True) -> dict:
+        d = {}
+
+        # Manually initialize special fields
+        if include_graph_dict:
+            d['graph_dict'] = graph_to_dict_with_node_labels(self.graph)
+        d['ligands'] = [lig.write_to_mol_dict() for lig in self.ligands]
+
+        # Do not output write these fields to the output dictionary, mostly because they are not json serializable
+        do_not_output_automatically = ['ligands', 'mol', 'pmg_metal', 'smiles', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
+
+        for prop, val in vars(self).items():
+            if not prop in do_not_output_automatically:
+                d[prop] = val
+
+        return d
 
     @classmethod
     def read_from_mol_dict(cls, dict_: dict, **kwargs):

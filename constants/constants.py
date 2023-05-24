@@ -115,3 +115,8 @@ mini_alphabet_0 = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "
 mini_alphabet = []
 for i in range(1, 1001):
     mini_alphabet.extend([letter*i for letter in mini_alphabet_0])
+
+# warnings
+unconfident_charge_warning = 'Charge assignment not confident.'
+similar_molecule_with_diff_n_hydrogens_warning = 'Similar molecule found with different number of hydrogens.'
+odd_n_electrons_warning = 'Odd electron count.'

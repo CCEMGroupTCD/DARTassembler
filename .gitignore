@@ -6,7 +6,9 @@
 /database/**
 /tmp/**
 /Bin_(Old)
-
+/figures
+/test/data/**
+/data.zip
 
 /src04_Assembly/Z-test.py
 /src04_Assembly/test12.py
@@ -81,3 +83,5 @@
 /data_output/tmQM_Jsons/Assembled_Moleculesall.xyz
 /data_output/tmQM_Jsons/Assembled_Moleculestmp_output_test_cian.xyz
 /test/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/
+
+/*.docx

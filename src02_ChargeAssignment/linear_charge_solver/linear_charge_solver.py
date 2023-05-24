@@ -8,48 +8,49 @@ import json
 from pathlib import Path
 from sklearn.linear_model import LinearRegression, Ridge, SGDRegressor, Lasso
 from copy import deepcopy
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, r2_score
 from datetime import datetime
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-import statsmodels.api as sm
-from statsmodels.regression.quantile_regression import QuantReg
+# import statsmodels.api as sm
+# from statsmodels.regression.quantile_regression import QuantReg
 from sklearn.preprocessing import StandardScaler
 from collections import Counter
 from typing import Union
 from itertools import product
 pd.options.mode.chained_assignment = None
+from scipy.sparse import dok_array
 
-
-def get_stoichiometry_from_ligand(ligand: dict) -> str:
-    """
-    Returns stoichiometry sorted by
-    :param ligand:
-    :return:
-    """
-    if 'stoichiometry' in ligand:
-        return ligand['stoichiometry']
-    
-    atomic_props = ligand['atomic_props']
-    if 'coordinates' in atomic_props:
-        elements = atomic_props['coordinates']
-    elif 'partial_charge' in atomic_props:
-        elements = atomic_props['partial_charge']
-    else:
-        raise ValueError('Cannot calculate stoichiometry from given ligand.')
-    
-    stoichiometry = Counter([val[0] for val in elements.values()])
-    stoichiometry = ''.join(sorted([f'{el}{count}' for el, count in stoichiometry.items()]))
-    
-    return stoichiometry
 
 class LinearChargeSolver:
     
-    def __init__(self, all_complexes: Union[str, dict], save_dir: str, n_test: Union[bool, int]=False, ligand_data: Union[None, str, list]=None, true_charge_name: str= ''):
+    def __init__(self,
+                 all_complexes: Union[str, dict],
+                 save_dir: str,
+                 n_test: Union[bool, int] = False,
+                 ligand_data: Union[None, str, list] = None,
+                 true_charge_name: str= '',
+                 use_sparse_matrix: bool = True,
+                 max_iterations: Union[None, int] = None,
+                 lin_reg_alpha: float = 0.000000001,
+                 lin_reg_max_iter: int = 50_000
+                 ) -> None:
+        """
+        @param all_complexes: Either a dictionary or a path to a json of the complex database.
+        @param save_dir: Where to save output
+        @param n_test: Set to an integer to reduce the number of complexes for a test run.
+        @param ligand_data: Ligand information to keep, mostly useful for debugging.
+        @param true_charge_name: If ligand_data has a column for a ground truth charge, the name of this column to calculate scores.
+        @param use_sparse_matrix: If True, uses a sparse matrix for X to drastically reduce runtime and memory.
+        """
         self.save_dir = save_dir
         self.n_test = n_test
         self.y_name = 'charge_bias'
         self.true_charge_name = true_charge_name
+        self.use_sparse_matrix = use_sparse_matrix
+        self.max_iterations = max_iterations
+        self.lin_reg_alpha = lin_reg_alpha
+        self.lin_reg_max_iter = lin_reg_max_iter
 
         df_add_ligand_data = self.get_ligand_data(ligand_data)
 
@@ -145,14 +146,16 @@ class LinearChargeSolver:
     
                 name = lig["name"]
                 uname = lig['unique_name']
-                graph_hash = lig['graph_hash']
+                # graph_hash = lig['graph_hash']
+                n_protons = lig['n_protons']
                 
-                stoichiometry = get_stoichiometry_from_ligand(lig)
+                stoichiometry = lig['stoichiometry']
                 
                 if not uname in self.unique_ligands:
                     self.unique_ligands[uname] = {
-                                        'graph_hash': graph_hash,
+                                        # 'graph_hash': graph_hash,
                                         'stoichiometry': stoichiometry,
+                                        'n_protons': n_protons
                                         }
 
                     if uname in add_ligand_data.keys():
@@ -208,17 +211,23 @@ class LinearChargeSolver:
 
     def get_tabular_data(self):
         other_data = {}
-        X = np.zeros(shape=(self.n_complexes, self.n_ligands), dtype=int)
+
+        if self.use_sparse_matrix:
+            X = dok_array((self.n_complexes, self.n_ligands), dtype=int)
+        else:
+            X = np.zeros(shape=(self.n_complexes, self.n_ligands), dtype=int)
         
         for c_id in self.all_complexes_names:   # Don't use dict.items() to make sure order is correct.
             c = self.all_complexes[c_id]
             c_idx = self.all_complexes_indices[c_id]
             
-            # Our versions of the tmQM and the tmQMg have different names for the total charge.
+            # Our versions of the tmQM, the tmQMg and the CSD have different names for the total charge.
             if 'total_charge' in c:
                 self.charge_input_name = 'total_charge'
             elif 'total_q' in c:
                 self.charge_input_name = 'total_q'
+            elif 'charge' in c:
+                self.charge_input_name = 'charge'
             else:
                 raise ValueError('Could not identify total charge for each complex in input json.')
             
@@ -238,6 +247,53 @@ class LinearChargeSolver:
         
         return X, y, df_other_data
 
+    def get_complexes_with_converged_ligands(self, X_new, y_new, pred_charges_new, n_ligand_protons):
+        # Exclude complexes if the sum of their ligands is not consistent with total charge and oxidation state
+        total_ligand_charges = np.round(pred_charges_new)
+        total_charges = (X_new*total_ligand_charges).sum(axis=1)
+        consistent = y_new == total_charges
+
+        # Exclude ligands with odd number of electrons
+        odd_ligand_electrons = (-total_ligand_charges + n_ligand_protons)%2 == 1
+        only_ligands_with_even_n_electrons = (X_new*odd_ligand_electrons).sum(axis=1) == 0
+
+        converged = consistent & (only_ligands_with_even_n_electrons)
+
+        return converged
+
+    def iter_exclude_bad_ligands_and_refit(self, X, y, pred_charges):
+        X_new, y_new = deepcopy(X), deepcopy(y)
+        pred_charges_new = deepcopy(pred_charges)
+        n_ligand_protons = np.array([self.unique_ligands[uname]['n_protons'] for uname in self.unique_ligand_names], dtype=int)
+        for i in range(self.max_iterations):
+            converged = self.get_complexes_with_converged_ligands(X_new=X_new, y_new=y_new, pred_charges_new=pred_charges_new, n_ligand_protons=n_ligand_protons)
+
+            if not all(converged):
+                print(f'\t- Not converged complexes: {100*sum(~converged)/len(converged):.2g}%')
+                print(f'\t\t- Partial R2 score: {self.get_R2_score(X_new, y_new, pred_charges_new):.4g}')
+                X_new, y_new = X_new[converged], y_new[converged]
+                lin_reg = Lasso(fit_intercept=False, alpha=self.lin_reg_alpha, max_iter=self.lin_reg_max_iter)
+                lin_reg.fit(X=X_new, y=y_new)
+
+                # Do not update ligands with only excluded complexes since these will all have values of 0
+                ligand_still_exists_after_converging = X_new.sum(axis=0) != 0
+                pred_charges[ligand_still_exists_after_converging] = lin_reg.coef_[ligand_still_exists_after_converging]
+            else:
+                print(f'\t- Converged after {i} iteration(s).')
+                print(f'\t\t- Partial R2 score: {self.get_R2_score(X_new, y_new, pred_charges_new):.4g}')
+                break
+
+        return pred_charges, ligand_still_exists_after_converging
+
+    def get_predicted_charges_under_scaling(self, X, y, scale_charge_by: int=500):
+        pseudo_lin_reg = Lasso(fit_intercept=False, alpha=self.lin_reg_alpha, max_iter=self.lin_reg_max_iter)
+        pseudo_charges_per_ligand = np.sum(X, axis=1) * scale_charge_by
+        y_pseudo = deepcopy(y) + pseudo_charges_per_ligand
+        pseudo_lin_reg.fit(X=X, y=y_pseudo)
+        scaled_predicted_charges = pseudo_lin_reg.coef_ - scale_charge_by
+
+        return scaled_predicted_charges
+
     def get_fitted_charges(self, X, y):
         print('Do the fit.')
         start = datetime.now()
@@ -245,11 +301,17 @@ class LinearChargeSolver:
         # self.lin_reg = LinearRegression(fit_intercept=False)
         # # self.lin_reg = SGDRegressor(fit_intercept=False, loss='squared_error', max_iter=1_000, tol=1e-4, n_iter_no_change=100, epsilon=0, alpha=0)
         # self.lin_reg = Ridge(fit_intercept=False, alpha=0.0001)
-        alpha = 0.000000001
-        max_iter = 1_000
-        self.lin_reg = Lasso(fit_intercept=False, alpha=alpha, max_iter=max_iter)
+
+        self.lin_reg = Lasso(fit_intercept=False, alpha=self.lin_reg_alpha, max_iter=self.lin_reg_max_iter)
 
         self.lin_reg.fit(X=X, y=y)
+        pred_charges = self.lin_reg.coef_
+
+        if not self.max_iterations is None:
+            print('Repeat fit without failed complexes until convergence:')
+            pred_charges, self.ligand_still_exists_after_converging = self.iter_exclude_bad_ligands_and_refit(X=X, y=y, pred_charges=pred_charges)
+        else:
+            self.ligand_still_exists_after_converging = np.array([True]*X.shape[1])
 
         try:
             print(f'Rank: {self.lin_reg.rank_}')
@@ -257,14 +319,7 @@ class LinearChargeSolver:
         except AttributeError:
             pass
 
-        pred_charges = self.lin_reg.coef_
-
-        pseudo_lin_reg = Lasso(fit_intercept=False, alpha=alpha, max_iter=max_iter)
-        add_pseudo_charge = 500
-        pseudo_charges_per_ligand = np.sum(X, axis=1) * add_pseudo_charge
-        y_pseudo = deepcopy(y) + pseudo_charges_per_ligand
-        pseudo_lin_reg.fit(X=X, y=y_pseudo)
-        self.scaled_predicted_charges =  pseudo_lin_reg.coef_ - add_pseudo_charge
+        self.scaled_predicted_charges = self.get_predicted_charges_under_scaling(X=X, y=y)
 
 
         # self.lin_reg = sm.OLS(y, X, hasconst=False)
@@ -286,13 +341,17 @@ class LinearChargeSolver:
         
         for uname, pred_charge in zip(self.unique_ligand_names, self.pred_charges):
             lig = self.unique_ligands[uname]
-            # Occurences counts how often a ligand occurs in different complexes. Multiple occurrences in a single complex are counted only once.
-            occurences = sum(self.df[uname] != 0)
             self.df_ligands[uname] = {
                                         'pred_charge_exact': pred_charge,
-                                        'pred_charge': round(pred_charge),
-                                        'occurrences': occurences,
+                                        'pred_charge': round(pred_charge)
                                         }
+
+            # Occurences counts how often a ligand occurs in different complexes. Multiple occurrences in a single complex are counted only once.
+            # If self.use_sparse_matrix is True, self.df will not have the full occupation matrix and the occurrences cannot be calculated.
+            if not self.use_sparse_matrix:
+                occurences = sum(self.df[uname] != 0)
+                self.df_ligands[uname]['occurrences'] = occurences
+
             if self.has_true_charge:
                 self.df_ligands[uname].update({
                                         'error': pred_charge - lig[self.true_charge_name],
@@ -336,45 +395,77 @@ class LinearChargeSolver:
         self.df_ligands['dist_to_int'] = self.df_ligands['pred_charge_exact'] - self.df_ligands['pred_charge']
         self.df_ligands['abs_dist_to_int'] = self.df_ligands['dist_to_int'].abs()
 
-        confidence, is_confident = self.get_uncertainty_of_prediction(self.df_ligands)
+        confidence, is_confident = self.get_confidence_of_prediction(self.df_ligands)
         self.df_ligands['confidence'] = confidence
         self.df_ligands['is_confident'] = is_confident
         
         return self.df_ligands
     
-    def get_uncertainty_of_prediction(self, df_ligands, too_high_charge=10) -> pd.Series:
-        # Make uncertainty the reverse absolute distance to next integer and scale between 0 (very uncertain) and 1 (very certain).
-        unc = 1 - 2*deepcopy(df_ligands['abs_dist_to_int'])
+    def get_confidence_of_prediction(self, df_ligands, expected_charge_interval=(-4, 1), cutoff=0.6) -> tuple:
+        # Scale confidence between 0 (very uncertain) and 1 (very confident).
+        self.confidence = 1 - 2*deepcopy(df_ligands['abs_dist_to_int'])
 
-        # Set uncertainty to 0 if the predicted charge is obviously too high.
-        charge_is_too_high = df_ligands['pred_charge'].abs() > too_high_charge
-        unc.loc[charge_is_too_high] = 0
+        # Set uncertainty to 0 if the predicted charge is suspiciously high.
+        charge_is_too_high = (df_ligands['pred_charge'] < expected_charge_interval[0]) | (df_ligands['pred_charge'] > expected_charge_interval[1])
+        self.confidence.loc[charge_is_too_high] = 0
 
+        self.confidence.loc[~self.ligand_still_exists_after_converging] = 0
+
+        print(
+f"""N confident ligands:
+    - Convergence: {100 * sum(self.ligand_still_exists_after_converging) / len(self.confidence):.2g}%
+    - High charge: {100 * sum(~charge_is_too_high) / len(self.confidence):.3g}%"""
+            )
         try:
             charge_not_scale_invariant = ~self.df_ligands['charge_scale_invariant']
-            unc.loc[charge_not_scale_invariant] = 0
+            self.confidence.loc[charge_not_scale_invariant] = 0
+            print(f'\t- Scale invariance: {100 * sum(~charge_not_scale_invariant) / len(self.confidence):.2g}%')
         except KeyError:
             print('Could not find scaled predicted charges to compare with for uncertainty prediction.')
 
-        is_confident = unc > 0.8
+        self.is_confident = self.confidence >= cutoff
+        print(f'  -> Total: {100 * sum(self.is_confident)/len(self.confidence):.2g}% ({sum(self.is_confident)})')
 
-        return unc, is_confident
+        return self.confidence, self.is_confident
     
     def check_standard_output(self, df_ligands):
         """Checks that the output dataframe adheres to the standard.
         """
-        necessary_columns = ['graph_hash', 'unique_name', 'pred_charge', 'confidence']
+        necessary_columns = ['unique_name', 'pred_charge', 'confidence']
         assert all([col in df_ligands.columns for col in necessary_columns]), f'The output of the ligand dataframe is not as described by the standard: It does\nt have one or more of the necessary columns ({necessary_columns}).'
         
-        for col in ['graph_hash', 'unique_name']:
+        for col in ['unique_name']:
             assert not df_ligands[col].duplicated().any(), f'The output of the ligand dataframe is not as described by the standard: It has duplicates in the column {col} which should be unique.'
             
         return
-    
-    def get_df_with_all_tabular_data(self, X: np.array, df_other_data: pd.DataFrame) -> pd.DataFrame:
-        # print('Make df.')
-        df_X = pd.DataFrame(data=X, columns=self.unique_ligand_names, index=self.all_complexes_names)
-        self.df = pd.concat([df_other_data, df_X], axis=1)
+
+    def get_R2_score(self, X, y, pred_charges):
+        pred_charges = pred_charges.round()
+        y_pred = (X*pred_charges).sum(axis=1)
+        score = r2_score(y_true=y, y_pred=y_pred)
+
+        return score
+
+    def print_overall_scores(self):
+        score = self.get_R2_score(self.X, self.y, self.pred_charges)
+        print(f'R2 score all: {score:.4g}')
+
+        try:
+            conf_score = self.get_R2_score(self.X[:, self.is_confident], self.y, self.pred_charges[self.is_confident])
+            print(f'R2 score confident: {conf_score:.4g}')
+        except AttributeError:
+            pass
+
+        return
+
+    def get_df_with_all_tabular_data(self, df_other_data: pd.DataFrame,  X: np.array) -> pd.DataFrame:
+        if not X is None:
+            df_X = pd.DataFrame(data=X, columns=self.unique_ligand_names, index=self.all_complexes_names)
+            dfs = [df_other_data, df_X]
+        else:
+            dfs = [df_other_data]
+
+        self.df = pd.concat(dfs, axis=1)
         
         try:
             self.df['predictions'] = self.predicted_values
@@ -390,11 +481,12 @@ class LinearChargeSolver:
     
     def fit_charge_solver(self):
         
-        X, y, df_other_data = self.get_tabular_data()
+        self.X, self.y, df_other_data = self.get_tabular_data()
     
-        self.pred_charges = self.get_fitted_charges(X, y)
-        
-        self.get_df_with_all_tabular_data(X, df_other_data)
+        self.pred_charges = self.get_fitted_charges(self.X, self.y)
+
+        X = None if self.use_sparse_matrix else self.X
+        self.get_df_with_all_tabular_data(df_other_data=df_other_data, X=X)
         
         return
     
@@ -514,6 +606,8 @@ class LinearChargeSolver:
         self.fit_charge_solver()
         df_ligands = deepcopy(self.get_ligand_df())
 
+        self.print_overall_scores()
+
         if output_uncertain_charges_as_nan:
             df_ligands.loc[~df_ligands['is_confident'], 'pred_charge'] = np.nan
 
@@ -526,17 +620,17 @@ class LinearChargeSolver:
 if __name__ == '__main__':
     
     n_test = False
-    db_version = '1.3'
+    db_version = '1.4_all'
     all_complexes_path = f'../../data/final_db_versions/complex_db_v{db_version}.json'
-    all_unique_ligands_path = [f'../../database/ligand_charges/charge_benchmark/all_ligand_charges_with_high_confidence_v{db_version}.csv']
+    all_unique_ligands_path = [f'../../test/debug/databases/charge_benchmark/all_ligand_charges_with_high_confidence_v{db_version}.csv']
     save_dir = '../../data/linear_charge_solver/output/'
     plot_dir = Path(save_dir, 'plots')
     
     solver = LinearChargeSolver(all_complexes=all_complexes_path, save_dir=save_dir, n_test=n_test, ligand_data=all_unique_ligands_path, true_charge_name='charge')
     df_ligands = solver.calculate_unique_ligand_charges()
     solver.add_ligand_charge_to_all_complexes(df_ligands=solver.df_ligands)
-    solver.save_dfs_to_csv()
-    solver.save_all_complexes_as_json()
+    # solver.save_dfs_to_csv()
+    # solver.save_all_complexes_as_json()
     
     acc = solver.calculate_scores()
     solver.plot_abs_error_vs_dist_to_int(plot_dir)

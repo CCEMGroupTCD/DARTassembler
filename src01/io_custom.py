@@ -73,10 +73,12 @@ def load_full_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
     print(f'Loaded full ligand db. Time: {duration}. ')
     return db
 
-def load_unique_ligand_db(path: Union[str, Path]) -> dict:
+def load_unique_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
     start = datetime.now()
 
     db = load_json(path)
+    if molecule == 'class':
+        db = {name: RCA_Ligand.read_from_mol_dict(mol) for name, mol in db.items()}
 
     duration = get_duration_string(start=start)
     print(f'Loaded unique ligand db. Time: {duration}. ')

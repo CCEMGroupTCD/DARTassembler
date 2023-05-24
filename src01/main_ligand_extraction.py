@@ -36,6 +36,8 @@ def main(database_path_: str,
          get_only_unique_ligand_db_without_charges_: bool = False,
          testing_: Union[bool, int] = False,
          graph_strat_: str = "default",
+         exclude_charged_complexes: bool = False,
+         max_charge_iterations: Union[int, None] = 10,
          **kwargs
          ):
 
@@ -44,7 +46,8 @@ def main(database_path_: str,
         data_store_path=data_store_path_,
         exclude_not_fully_connected_complexes=exclude_not_fully_connected_complexes_,
         testing=testing_,
-        graph_strat=graph_strat_
+        graph_strat=graph_strat_,
+        exclude_charged_complexes=exclude_charged_complexes
     )
 
     db.run_ligand_extraction(
@@ -52,6 +55,7 @@ def main(database_path_: str,
         overwrite_atomic_properties=overwrite_atomic_properties_,
         use_existing_input_json=use_existing_input_json_,
         get_only_unique_ligand_db_without_charges=get_only_unique_ligand_db_without_charges_,
+        max_charge_iterations=max_charge_iterations,
         **kwargs
     )
 
@@ -63,16 +67,22 @@ if __name__ == '__main__':
     # example databases, choose between: tmqm, tmqmG, CSD_MM_G
     database = "CSD_MM_G"
 
-    testing = False           # if we would like to only do a test run (only works from the second run on)
+    testing = 50_000           # if we would like to only do a test run (only works from the second run on)
     graph_strategy = "default"  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     calculate_charges = True  # if you want to run charge assignment after ligand extraction, takes ~30 min on tmQMg
     overwrite_atomic_properties = True  # if atomic properties json should be overwritten, not really critical
     use_existing_input_json = False  # if the existing input json should be used or the process started from the xzy files
-    exclude_not_fully_connected_complexes = False  # only keep complexes which are fully connected
     get_only_unique_ligand_db_without_charges = False  # For graph benchmark useful, reduces runtime because it ignores charge assignment and updating the complex and full ligand db.
+    max_charge_iterations = 10  # The maximum number of iterations in charge assignment for iterative consistency checking
 
-    #
+
+    # Input complex filters
+    exclude_not_fully_connected_complexes = True  # only keep complexes which are fully connected
+    exclude_charged_complexes = True   # Keep only input complexes with charge of 0
+
+
+
     database_path, data_store_path = select_example_database(DB=database)
     db = main(
         database_path_=database_path,
@@ -83,5 +93,7 @@ if __name__ == '__main__':
         exclude_not_fully_connected_complexes_=exclude_not_fully_connected_complexes,
         get_only_unique_ligand_db_without_charges_=get_only_unique_ligand_db_without_charges,
         testing_=testing,
-        graph_strat_=graph_strategy
+        graph_strat_=graph_strategy,
+        exclude_charged_complexes=exclude_charged_complexes,
+        max_charge_iterations=max_charge_iterations
     )

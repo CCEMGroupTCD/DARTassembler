@@ -8,11 +8,14 @@ import warnings
 import pandas as pd
 
 
-def unroll_dict_into_columns(df, dict_col: str, prefix: str):
+def unroll_dict_into_columns(df, dict_col: str, prefix: str, delete_dict: bool=False) -> pd.DataFrame:
     dict_data = [d for d in df[dict_col]]
     df_dict_data = pd.DataFrame(dict_data, index=df.index)
     df_dict_data = df_dict_data.rename(columns={col: prefix + col for col in df_dict_data})
+
     df = df.join(df_dict_data, validate='1:1')
+    if delete_dict:
+        df = df.drop(columns=dict_col)
 
     return df
 
@@ -76,6 +79,27 @@ def sorted_dict_of_dicts(d: dict, debug=False) -> dict:
 
 def call_method_on_object(obj, method: str):
     return getattr(obj, method)
+
+def is_between(value: float, range: list, include_left=True, include_right=True) -> bool:
+    if len(range) == 0:
+        return True
+    if not sorted(range) == list(range):
+        raise ValueError(f'`range` is not sorted!: {range}')
+
+    elif len(range) == 2:
+        if include_left and include_right:
+            between = range[0] <= value <= range[1]
+        elif include_left:
+            between = range[0] <= value < range[1]
+        elif include_right:
+            between = range[0] < value <= range[1]
+        else:
+            between = range[0] < value < range[1]
+    else:
+        ValueError(f'Length of `range` must be either 0 or 2 but is {len(range)}.')
+
+    return between
+
 
 
 def identify_metal_in_ase_mol(mol: Atoms):

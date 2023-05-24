@@ -12,7 +12,7 @@ def set_dict_keys_to_csd_code_and_stoichiometry(d: dict) -> dict:
     duplicate_keys = []
 
     for values in d.values():
-        csd_code, stoichiometry = values['CSD_code'], values['stoichiometry']
+        csd_code, stoichiometry, uname = values['global_props']['CSD_code'], values['stoichiometry'], values['unique_name']
 
         if not csd_code in new_d:
             new_d[csd_code] = {}
@@ -20,35 +20,42 @@ def set_dict_keys_to_csd_code_and_stoichiometry(d: dict) -> dict:
         if not stoichiometry in new_d[csd_code]:
             new_d[csd_code][stoichiometry] = values
         else:
-            duplicate_keys.append([csd_code, stoichiometry])
+            duplicate_keys.append([csd_code, stoichiometry, uname])
 
-    # Remove ligands with not unique CSD_code, stoichiometry keys.
+    # Remove ligands with not unique CSD_code, stoichiometry, unique name keys.
     duplicate_keys = pd.DataFrame(duplicate_keys).drop_duplicates().values.tolist()
-    for dupl_csd_code, dupl_stoichiometry in duplicate_keys:
-        del new_d[dupl_csd_code][dupl_stoichiometry]
+    for dupl_csd_code, dupl_stoichiometry, _ in duplicate_keys:
+        try:
+            del new_d[dupl_csd_code][dupl_stoichiometry]
+        except KeyError:
+            pass
 
     return new_d
 
 def update_ligands_with_information_from_ligand_db(df_benchmark: pd.DataFrame, latest_full_ligand_db_path: str, update_properties: list) -> pd.DataFrame:
     full_ligand_db = load_full_ligand_db(latest_full_ligand_db_path)
-
-    # Setup dictionary (for performance) so that each ligand can be looked up by CSD code and stoichiometry
-    full_ligand_dict = set_dict_keys_to_csd_code_and_stoichiometry(d=full_ligand_db)
+    df_full_ligand_db = pd.DataFrame.from_dict(full_ligand_db, orient='index')
 
     benchmark_ligands = df_benchmark.to_dict(orient='index')
     for lig in benchmark_ligands.values():
 
-        # If the CSD code or the stoichiometry cannot be found in the ligand database, write NaN to the benchmark csv.
-        try:
-            full_ligand = full_ligand_dict[lig['CSD_code']][lig['stoichiometry']]
+        ligand_df = df_full_ligand_db[df_full_ligand_db['global_props'].apply(lambda gbl: gbl['CSD_code'] == lig['CSD_code'])]
+        ligand_df = ligand_df[ligand_df['stoichiometry'] == lig['stoichiometry']]
+
+        same_stoi_but_different_ligands = ligand_df['unique_name'].nunique() > 1
+        lig_not_in_db = len(ligand_df) == 0
+
+        if same_stoi_but_different_ligands or lig_not_in_db:
+            # If the CSD code or the stoichiometry cannot be found in the ligand database, write NaN to the benchmark csv.
+            new_lig_props = {col: np.nan for col in update_properties}
+        else:
+            full_ligand = ligand_df.iloc[0,:].to_dict()
 
             # Doublecheck that the ligand has all relevant properties given.
             props_not_in_lig = [prop for prop in update_properties if prop not in full_ligand]
             assert not props_not_in_lig, f'Missing properties {props_not_in_lig} in ligand {full_ligand["name"]}.'
 
             new_lig_props = {key: full_ligand[key] for key in update_properties}
-        except KeyError:
-            new_lig_props = {col: np.nan for col in update_properties}
 
         lig.update(new_lig_props)
 
@@ -60,17 +67,17 @@ def update_ligands_with_information_from_ligand_db(df_benchmark: pd.DataFrame, l
 
 if __name__ == '__main__':
 
-    benchmark_charge_dir = '../../database/ligand_charges/charge_benchmark'
+    benchmark_charge_dir = '../../test/debug/databases/charge_benchmark'
     benchmark_charge_filenames = {
                                     'Cian1': 'Cian_already_assigned_ligand_charges.csv',
-                                    'Cian2': 'Cian_BenchMark.csv',
-                                    'Manting': 'Manting_ligand_charges_corrected_by_Cian_020223.csv',
+                                    'Cian2': 'Cian_BenchMark_corrected_170223.csv',
+                                    'Manting': 'Manting_Corrected_170223.csv',
                                     'Marconi1': 'Marconi_corrected_by_Cian_020223.csv'
                                 }
 
     # Update the resulting merged dfs with ligand information from the latest full ligand db.
     # Ligands are identified by 'CSD_code' and 'stoichiometry' (hard coded).
-    db_version = '1.3'
+    db_version = '1.4_all'
     latest_full_ligand_db_path = f'../../data/final_db_versions/full_ligand_db_v{db_version}.json'
     update_properties = ['unique_name', 'name', 'graph_hash', 'local_elements']
 

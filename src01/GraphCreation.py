@@ -72,9 +72,6 @@ class GraphCreation:
         elif graph_creating_strategy in ["default", "ase_cutoff"]:
             self.ase_cutoff_graph(mol=molecule, **kwargs)
 
-        else:
-            raise NotImplementedError
-
         if self.G is None:
             # then all graph strategies have failed so far, we use the default creation
             # without any additional parameters

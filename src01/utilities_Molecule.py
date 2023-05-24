@@ -1,10 +1,73 @@
 import collections
 
+import networkx as nx
+from rdkit import Chem
+
 from pymatgen.core.composition import Composition
 
 # Removed this due to circular import error, and this was only used for type hinting.
 # from src01.Molecule import RCA_Ligand
 
+unknown_rdkit_bond_orders = [0, 20, 21]
+
+def graph_to_rdkit_mol(graph: nx.Graph, element_label: str='node_label', bond_label: str='bond_type') -> Chem.Mol:
+    """
+    Create an rdkit mol object from a graph. Note that the bond type must be specified in the graph under the attribute called `edge_label`.
+    @param graph: input graph of the molecule
+    @param element_label: element label for the node dictionary
+    @param bond_label: bond type label for the edge dictionary
+    @return: rdkit mol object
+    """
+
+    # create empty editable mol object
+    mol = Chem.RWMol()
+
+    # add atoms to mol and keep track of index
+    node_to_idx = {}
+    for idx, atom in graph.nodes(data=True):
+        a = Chem.Atom(atom[element_label])
+        molIdx = mol.AddAtom(a)
+        node_to_idx[idx] = molIdx
+
+    # add bonds between adjacent atoms
+    for idx1, idx2, bond in graph.edges(data=True):
+        bond = bond[bond_label]
+
+        try:
+            bond_type = Chem.rdchem.BondType.values[bond]
+        except AttributeError:
+            ValueError(f'Unknown bond type {bond} in molecule.')
+
+        mol.AddBond(node_to_idx[idx1], node_to_idx[idx2], bond_type)
+
+    # Convert RWMol to Mol object
+    mol = mol.GetMol()
+
+    assert mol.GetNumAtoms() == len(graph), f'Number of atoms in rdkit molecule ({mol.GetNumAtoms()}) does not match number of atoms in molecule ({len(graph)})'
+    return mol
+
+def rdkit_mol_to_graph(mol: Chem.Mol, element_label: str='node_label', bond_label: str= 'bond_type') -> nx.Graph:
+    """
+    Create a graph from an rdkit mol object
+    @param mol: RDKit mol object
+    @param element_label: element label for node dictionary
+    @param bond_label: bond type label for edge dictionary
+    @return: networkx graph of the molecule
+    """
+    G = nx.Graph()
+
+    for atom in mol.GetAtoms():
+        node = atom.GetIdx()
+        label = atom.GetSymbol()
+        G.add_node(node, **{element_label: label})
+
+    for bond in mol.GetBonds():
+        u = bond.GetBeginAtomIdx()
+        v = bond.GetEndAtomIdx()
+        label = bond.GetBondTypeAsDouble()
+        G.add_edge(u, v, **{bond_label: label})
+
+    return G
 
 def get_all_ligands_by_graph_hashes(all_ligands: list) -> dict:
     """

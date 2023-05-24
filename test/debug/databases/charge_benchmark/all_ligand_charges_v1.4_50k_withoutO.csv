@@ -1,0 +1,350 @@
+CSD_code,stoichiometry,metal,charge,denticity,confidence,comment,author,unique_name,name,graph_hash,local_elements,high_confidence
+KAGYIB,C17H17N2O2,Au,-1.0,2.0,3.0,,Cian2,,,,,False
+CUSGEE,C26H23N2O2S1,Zn,-1.0,3.0,3.0,,Cian2,,,,,False
+IQEPOK,C2H6N1P1,Pt,0.0,1.0,2.0,Radical,Cian2,,,,,False
+WUHLAM,C36H44N4,Ni,-2.0,4.0,3.0,,Cian2,,,,,False
+ACUWOK,C6H12S3,Pt,0.0,2.0,3.0,Denticity is ambiguous,Cian2,,,,,False
+VAPJAZ,C13H12N4S1,Pd,-2.0,3.0,3.0,,Cian2,,,,,False
+MIJPIF,C14H12N1O1,Ir,-1.0,2.0,3.0,,Cian2,unq_CSD-BASDEH-02-a,CSD-MIJPIF-02-a,04ddb8c62de22698eb8c9946696b3a57,"['O', 'N']",True
+KELKIW,Br4C6H1O2,Ag,-1.0,2.0,2.0,Br-Ag bond,Cian2,,,,,False
+RAVVUI,C14H12N3O4S2,Ru,-1.0,2.0,3.0,,Cian2,,,,,False
+NEGDUZ,C18H13O2P1S1,Pd,0.0,1.0,3.0,P-M bond,Cian2,,,,,False
+YIPJIQ,C20H26N4,Rh,0.0,2.0,3.0,Radical,Cian2,,,,,False
+VIPJOU,C20H19N5,Zn,0.0,2.0,3.0,,Cian2,,,,,False
+SAQHUP,C11H11N1O6,Zn,-2.0,4.0,3.0,,Cian2,,,,,False
+WUMLAR,C25H44O1P2,Ir,-2.0,4.0,3.0,,Cian2,,,,,False
+YIXWUY,C16H21N3,Pd,0.0,3.0,3.0,,Cian2,,,,,False
+ANOJOD,C13H8N1,Pd,-1.0,2.0,3.0,,Cian2,,,,,False
+BAYWIK,C9Cl1H7O1,Co,0.0,4.0,2.0,Would not work in the assembly process,Cian2,,,,,False
+GAFKUU,Cl3Si1,Ti,0.0,2.0,1.0,INCORRECT STOICHIOMETRY,Cian2,,,,,False
+ELOBUD,C24H29N2P1,Pd,-1.0,4.0,3.0,Discrepancy in graphs,Cian2,,,,,False
+MICTID,C20H22N2O1,Ni,-2.0,3.0,3.0,,Cian2,unq_CSD-MICTID-03-a,CSD-MICTID-03-a,552ce3fd01d7ae8d93eff6432cc8ddf4,"['N', 'N', 'C']",True
+DIDPEL,C7H7,Zr,-1.0,1.0,3.0,Cp,Cian2,,,,,False
+BEBFUL,C18Cl2H10N4O2,Co,-2.0,4.0,3.0,,Cian2,,,,,False
+KAMBIM,C8H14N2O1S1,Pd,0.0,3.0,2.0,Denticity is ambiguous,Cian2,,,,,False
+RAMDAL,C16H18N4,Cd,0.0,4.0,3.0,,Cian2,,,,,False
+LOTZEB,C14H22N2,Ru,0.0,2.0,3.0,,Cian2,unq_CSD-LOTZEB-02-a,CSD-LOTZEB-02-a,3bf72169723f8d0e5cda16d8fa39146b,"['N', 'N']",True
+VETLIR,C25H24N3O1,Pt,-1.0,3.0,3.0,,Cian2,,,,,False
+GECBAT,C6H16N2,Ag,0.0,2.0,3.0,,Cian2,,,,,False
+WODYOG,Br1C15H23N3O1,Co,-1.0,4.0,3.0,,Cian2,,,,,False
+HENVUS,C20H10,Rh,0.0,6.0,1.0,,Cian2,,,,,False
+ADUGOY,C12H15N2S2,Pd,-1.0,2.0,3.0,,Cian2,,,,,False
+PURFIR,C21H21O1P1,Ru,0.0,1.0,3.0,,Cian2,,,,,False
+MOZRIC,C23H21N2O3,Mn,-3.0,5.0,3.0,,Cian2,unq_CSD-MOZRIC-05-a,CSD-MOZRIC-05-a,c5e3b5f90adaa425a461d5b245259cfe,"['N', 'N', 'O', 'O', 'O']",True
+EHIBOM,C11H10N2S2,Cd,0.0,2.0,3.0,,Cian2,,,,,False
+SUQSEE,C42F20H4N4O4,Pt,-2.0,4.0,3.0,,Cian2,,,,,False
+SECVAA,C22Cl4H18N4,Ni,-2.0,4.0,3.0,,Cian2,,,,,False
+WOJGAE,C8H10O2,Pt,-2.0,2.0,3.0,,Cian2,,,,,False
+FEGGAB,C12H27O4Si1,Pt,-1.0,1.0,3.0,,Cian2,,,,,False
+JAMHUB,C9H13N5S1,Cd,0.0,3.0,3.0,,Cian2,,,,,False
+RAXZEV,C15H12N4,Ni,-2.0,4.0,3.0,,Cian2,,,,,False
+FICKIM,C11H13O2,Ti,-1.0,2.0,3.0,,Cian2,,,,,False
+BILQUI,C12H30P4,Fe,0.0,4.0,2.0,,Cian2,unq_CSD-AXIWOT-04-a,CSD-BILQUI-04-a,da3170df374dfda7d15c773d708f62fd,"['P', 'P', 'P', 'P']",False
+WOMXAZ,C32H28N6,Pd,0.0,2.0,2.0,,Cian2,,,,,False
+HOJJUM,C6H5N1O2,Pt,0.0,1.0,3.0,,Cian2,,,,,False
+LASJIB,C8H11N2O6,Zn,-3.0,5.0,2.0,Don’t think total charge is zero!!!!,Cian2,,,,,False
+GEMLAM,C31H22N4,Cu,0.0,2.0,3.0,,Cian2,,,,,False
+JUNWAQ,C6H11N1,Rh,0.0,1.0,2.0,Positive an negative charge on same ligand,Cian2,,,,,False
+XEYPAV,C33H24N4O2,Ni,-2.0,4.0,3.0,,Cian2,,,,,False
+BEXQIH,C7H11N1,Pd,0.0,1.0,3.0,,Cian2,unq_CSD-PIKCET-01-d,CSD-BEXQIH-01-b,5a48d11fb749fd1d78d7ddec5165c00b,['C'],True
+MANSID,C15H10N1,Os,-1.0,2.0,3.0,,Cian2,unq_CSD-PORNIU-02-a,CSD-MANSID-02-b,4a55a09bca88f967be04787feea1cd51,"['N', 'C']",True
+KOGMEY,C18H12S4,Ru,-2.0,4.0,3.0,,Cian2,,,,,False
+OVESAL,C19H21N5O2,Zn,0.0,4.0,3.0,,Cian2,,,,,False
+RUGSUI,C7H14N1O1S1,Au,-1.0,1.0,3.0,,Cian2,,,,,False
+IBEWIX,C14H8N5S2,Zn,-1.0,3.0,3.0,,Cian2,,,,,False
+UHEGAR,Br1C14H12N3O1,Pt,0.0,1.0,3.0,,Cian2,,,,,False
+HOVMEL,C10H11N1S1,Pd,0.0,1.0,2.0,Possible Radical ,Cian2,,,,,False
+GIWXOA,C7H2N2O7,Ni,-2.0,2.0,3.0,,Cian2,,,,,False
+VUGDAE,C22H39N1P1,Pd,-1.0,3.0,3.0,,Cian2,,,,,False
+MIGCIQ,C11H7N2O2,Ru,-1.0,3.0,3.0,,Cian2,,,,,False
+DUWJUB,C8H9S1,Pd,-1.0,2.0,3.0,,Cian2,,,,,False
+QEFTAY,C9H9N3S1,Pt,-2.0,3.0,3.0,,Cian2,unq_CSD-QEFTAY-03-a,CSD-QEFTAY-03-a,56e6a8ceabd0a5143fada9757af6a089,"['S', 'N', 'C']",True
+XONNIZ,Br1C21H15N2O3,Ni,-2.0,3.0,3.0,,Cian2,,,,,False
+ZIMWEZ,C22H18N6O3,Pd,-2.0,3.0,3.0,,Cian2,,,,,False
+MAQJAR,C4H5O2S1,Ir,-1.0,3.0,1.0,Should discard in analysis,Cian2,unq_CSD-MAQJAR-03-a,CSD-MAQJAR-03-a,6ca7094a06f3baa926f50865ade1138a,"['C', 'C', 'S']",False
+ATAVEX,C12H12O2,Fe,0.0,4.0,2.0,Should discard in analysis,Cian2,,,,,False
+RIJDAR,C7H9N3S1,Pd,0.0,2.0,3.0,,Cian2,,,,,False
+NUXMUO,C28H28P2,Mo,0.0,2.0,3.0,,Cian2,,,,,False
+GIKJOA,C5H4N1O2,Re,-1.0,2.0,2.0,,Cian2,,,,,False
+HIJFAI,C30H29N3O2,Pd,-2.0,4.0,3.0,,Cian2,,,,,False
+WODFUS,B1C41H36N3,Zn,0.0,3.0,3.0,,Cian2,,,,,False
+ESAJUE,B2C21H19N6O1,Ru,-1.0,3.0,1.0,B can have multiple oxdtation states ,Cian2,,,,,False
+QEGBUC,C23H29N1,Ru,0.0,1.0,1.0,Carbene - Maybe - Really not sure ,Cian2,unq_CSD-PANKIB-01-c,CSD-QEGBUC-01-c,6b3306342308933cc1b476d3faf049a8,['C'],False
+HISLIG,C13H10N2O5,Zn,-2.0,4.0,3.0,,Cian2,,,,,False
+BEFHAW,C21H15N3O3,Ni,-2.0,4.0,3.0,,Cian2,,,,,False
+PIQXEU,C12H13N3O1,Cu,0.0,2.0,1.0,Carbene,Cian2,unq_CSD-PIQXEU-02-a,CSD-PIQXEU-02-a,874fbe7f969956e4e52e57a8980ecda3,"['N', 'C']",False
+OCUBIY,C17H19N2,Pt,-1.0,3.0,3.0,,Cian2,,,,,False
+FIVJUS,C10H7N2O1,Ru,-1.0,2.0,3.0,,Cian2,,,,,False
+NAYYOD,C12H25N4O2,Co,-1.0,5.0,3.0,,Cian2,,,,,False
+EJUCUH,C20H31N1O2,V,-2.0,3.0,3.0,,Cian2,,,,,False
+WUZHOQ,C19H32N1O2,Ti,-1.0,3.0,3.0,,Cian2,,,,,False
+WIGWIT,C17H18O2,Ti,-2.0,2.0,3.0,,Cian2,,,,,False
+AWUYOI,C28H22N2O2,Ti,-2.0,4.0,3.0,,Cian2,unq_CSD-AWUYOI-04-a,CSD-AWUYOI-04-a,8cb338cbc4e752bfc0c8fb485fa4e434,"['N', 'N', 'O', 'O']",True
+JABDIA,C9H12I1N1,Pd,0.0,2.0,2.0,,Cian2,,,,,False
+HOPQEJ,C3H6N2,Mn,0.0,1.0,3.0,Carbene Radical ,Cian2,,,,,False
+EZUYUT,C24H23O3P1,Au,0.0,1.0,2.0,ylide,Cian2,,,,,False
+XOCJUV,C3H7Se1,Ni,-1.0,1.0,1.0,Carbenes present in complex,Cian2,,,,,False
+XAYCEG,C5H4N2S1,Ir,-2.0,2.0,2.0,,Cian2,,,,,False
+WORBOW,C33H37N1O2P1,Ti,-1.0,3.0,3.0,,Cian2,,,,,False
+QEPYIW,B1C14H10N2S4,Cu,-1.0,3.0,2.0,B can have multiple oxdtation states ,Cian2,,,,,False
+ZUYDII,C18H18N4O2,Cu,0.0,1.0,3.0,Carbene Radical ,Cian2,,,,,False
+GUKDEW,C32H37N4O2,Pd,-1.0,3.0,3.0,,Cian2,,,,,False
+ABAKAS,C6H7N3,Pt,0.0,1.0,3.0,Carbene Radical,Cian2,,,,,False
+VUJHEP,C32H32N2O2,Zn,0.0,2.0,3.0,,Cian2,,,,,False
+BESTOJ,C12H8S3,Ni,-2.0,3.0,3.0,,Cian2,unq_CSD-BESTOJ-03-a,CSD-BESTOJ-03-a,d93186cd72e7f70df81fc495ffb83e37,"['S', 'S', 'S']",True
+CEQYII,Br1C14Cl1H10N1,Pt,-1.0,2.0,3.0,,Cian2,,,,,False
+PUZROT,C14F3H11N2O1,Cu,0.0,2.0,3.0,Cu +1,Cian2,,,,,False
+EBOYIG,C37F15H8N4,Au,-3.0,4.0,3.0,,Cian2,,,,,False
+QOWGOY,C24H28N2,Pt,0.0,2.0,3.0,,Cian2,,,,,False
+TAKTOQ,C24H16N2,Cu,0.0,2.0,3.0,,Cian2,unq_CSD-POYRAW-02-a,CSD-TAKTOQ-02-b,680469f435005211c3b94be1cb50836c,"['N', 'N']",True
+KEYVIU,C30H40N2P2,Pd,0.0,2.0,3.0,,Cian2,,,,,False
+DADFOG,C20H21N3,Zn,0.0,3.0,3.0,,Manting,,,,,False
+HUDYAG,C12H11N2S1,Re,-1.0,3.0,3.0,,Manting,,,,,False
+GEHYIB,C32H36N4,Ni,-2.0,4.0,3.0,,Manting,,,,,False
+DAGMAZ,C18H19N2O4,Pd,-1.0,3.0,3.0,,Manting,,,,,False
+XUNMOI,C8H5O2,Pd,-1.0,1.0,3.0,,Manting,,,,,False
+COPTIL,Br1C27Cl1H19N3O1S1,Mo,-2.0,3.0,3.0,,Manting,,,,,False
+OBIZAC,C15H15N4O2S1,Hg,-1.0,2.0,3.0,,Manting,,,,,False
+EDUJEU,C24H49P2,Pd,-1.0,3.0,3.0,,Manting,,,,,False
+RAQJUQ,Br1C13H8N5,Os,0.0,2.0,3.0,,Manting,,,,,False
+TEJKIF,C25H20S2,Ag,0.0,1.0,3.0,,Manting,unq_CSD-TEJKIF-01-b,CSD-TEJKIF-01-b,ae5e4d2f2e1fb017c36a29153e72ed43,['C'],True
+ROFSIO,C10H18Si2,Fe,0.0,2.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+TIRDAA,C4H9N1O2,Mo,-2.0,3.0,3.0,,Manting,unq_CSD-TIRDAA-03-a,CSD-TIRDAA-03-a,a381c959a29189181778e946a0da1b7b,"['O', 'O', 'N']",True
+ZEGQOT,B10C10H18O4S2,Co,-2.0,3.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+IGUBET,Br2C13H8N2O1,Cu,0.0,1.0,3.0,,Manting,,,,,False
+TURNOK,C24H39N3,Rh,0.0,1.0,3.0,,Manting,unq_CSD-TURNOK-01-a,CSD-TURNOK-01-a,a074c529b07c89a370e9ed6673169d09,['N'],True
+PAPMAV,C15H27N3O3,Os,-2.0,2.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+YUYGUV,C7F2H5,Au,-1.0,1.0,3.0,,Manting,,,,,False
+CEXTAB,C25H21N5O2S1,Zn,-2.0,4.0,3.0,,Manting,unq_CSD-CEXTAB-04-a,CSD-CEXTAB-04-a,0f50bc49106d7e394102ddb1e4baeefb,"['O', 'O', 'N', 'N']",True
+AQATET,C1O3,Co,-2.0,2.0,3.0,,Manting,,,,,False
+XUFTIC,C28H36N2O2,Ru,-2.0,4.0,3.0,,Manting,,,,,False
+MPSOPD,C7H7O2S1,Pd,-1.0,1.0,3.0,,Manting,unq_CSD-MPSOPD-01-b,CSD-MPSOPD-01-b,1023d86b74ed3d0c62431791a8173eb9,['C'],True
+XAWHAF,C24H21N2O3,Pd,-1.0,2.0,3.0,,Manting,,,,,False
+FIGMAK,C13H9N3O2,V,-2.0,3.0,3.0,,Manting,,,,,False
+PIFGIU,C9H22N2,Pt,0.0,2.0,3.0,,Manting,unq_CSD-PIFGIU-02-a,CSD-PIFGIU-02-a,3df2565810f93312db3b1257aad493d0,"['N', 'N']",True
+FIFKIR,B1C25H22N5,Pt,0.0,2.0,3.0,,Manting,,,,,False
+JUSVOK,C9Cl6H2O4,Ni,-2.0,1.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+NEBYOL,C28H26N4,Fe,0.0,4.0,3.0,,Manting,,,,,False
+INISIJ,C7H16N2,Pd,0.0,2.0,3.0,,Manting,,,,,False
+ZEYMUL,C28H40N6,Zn,0.0,2.0,3.0,,Manting,,,,,False
+AKEHAZ,C2H1,Ru,-1.0,1.0,3.0,,Manting,,,,,False
+COCQOB,C8H7N2O3S1,Au,-1.0,1.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+QONDAY,C36H24O4P2,Pd,0.0,2.0,3.0,,Manting,,,,,False
+EQOVOV,C9H23N3O1,Zn,0.0,3.0,3.0,,Manting,,,,,False
+TEBZUY,C17H12N3S1,Pt,-1.0,3.0,3.0,,Manting,unq_CSD-TEBZUY-03-a,CSD-TEBZUY-03-a,3a9eb5743a41a952b1917a6fe39feb7c,"['S', 'N', 'N']",True
+NESJAX,C18H20N2O2,Pd,0.0,2.0,3.0,,Manting,,,,,False
+YOHPEQ,C16H17N2O1,Pd,-2.0,2.0,3.0,,Manting,,,,,False
+HISFOG,C14H11N3O3,Mo,-2.0,3.0,3.0,,Manting,,,,,False
+AQIBEH,C12H26N2O4,Cu,0.0,2.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+NUVNAV,C15H16O1S2,Pd,0.0,2.0,3.0,,Manting,,,,,False
+BIVROO,C20H18N4O4,Zn,-2.0,2.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-BIVROO-02-a,CSD-BIVROO-02-a,3c547d3976312674ef5027f358ae9860,"['N', 'N']",False
+SOBPAC,C26Cl2H32N2O2,Pt,-2.0,4.0,3.0,,Manting,,,,,False
+PALKEU,C15H14N4,Pd,-1.0,3.0,3.0,,Manting,unq_CSD-PALKAQ-03-a,CSD-PALKEU-03-a,db89908799f662096a86604b0f1ebeaf,"['C', 'N', 'N']",True
+AFAPEC,C6H11N2O4,Pt,-1.0,3.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+QERQOW,C14H13N3O1,Ag,0.0,3.0,3.0,,Manting,unq_CSD-AZIWAI-02-a,CSD-QERQOW-02-a,cb11f41341058c8426c24ba1bc6b5056,"['N', 'N']",True
+QECGAG,C18H31N2P1Si2,W,0.0,1.0,3.0,,Manting,unq_CSD-QECGAG-01-a,CSD-QECGAG-01-a,c5fe891b817b1484c47d3ecb2fd87bcd,['P'],True
+ROFKOP,C16H22N3P1,Mn,0.0,3.0,3.0,,Manting,,,,,False
+CEDXAN,C18H14N1O1,Ru,-1.0,2.0,3.0,,Manting,unq_CSD-SUXTIP-02-a,CSD-CEDXAN-02-a,f8c18f2a61cc8dd090c6d48ddc157299,"['O', 'N']",True
+ZEXFUD,C12H12,Co,-2.0,2.0,3.0,,Manting,,,,,False
+KUVMET,C11H8N1O1,Ru,-1.0,2.0,3.0,,Manting,,,,,False
+OPAGES,C7F5N4,Hg,-1.0,1.0,3.0,,Manting,,,,,False
+GIPSAC,Br1C11H11N2Se1,Ru,0.0,2.0,3.0,,Manting,,,,,False
+YEXXEF,C5H11Si1,Ni,-1.0,1.0,3.0,,Manting,,,,,False
+BOYROX,C23H30N2,Pd,0.0,1.0,3.0,,Manting,unq_CSD-BOYROX-01-b,CSD-BOYROX-01-b,6b64c2c9c3386ca46506b38012887001,['C'],True
+BEHGOL,C14H21O1P1,Cr,0.0,5.0,3.0,,Manting,,,,,False
+MOHNED,C8H11N1O1,Ag,0.0,1.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-BOZKEI-02-a,CSD-MOHNED-01-b,c1c774059ba0b6511e822393be9f9324,['N'],False
+NIZMUE,C7H16N3O2,Co,-1.0,4.0,3.0,,Manting,,,,,False
+PIFQEC,C21H19N2,Pt,-1.0,2.0,3.0,,Manting,unq_CSD-PIFQEC-02-a,CSD-PIFQEC-02-a,0cdfffde88297905b3224767f4ae5296,"['N', 'N']",True
+BAXDUZ,C5H11,Co,-1.0,1.0,3.0,,Manting,unq_CSD-PAFWUP-01-a,CSD-BAXDUZ-01-a,da6254a4a4bdc9b23f5ebc651aa81d4d,['C'],True
+JOSYUL,C12H17N2O1,Pd,-1.0,3.0,3.0,,Manting,,,,,False
+DAKGIG,C14F6H8N1,Ir,-1.0,2.0,3.0,,Manting,,,,,False
+QEMVIO,C15H20O1P1,Pt,-1.0,2.0,3.0,Deprotonation occrs on the other same ligand gives change of -1,Manting,unq_CSD-QEMVIO-02-a,CSD-QEMVIO-02-a,8e4473daffc95f349d2e197df4cb0d25,"['P', 'C']",False
+ALOYUX,C33H27N7O2,Zn,0.0,3.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+WERYEY,C20H18N1O3P1,Ru,0.0,1.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+IWIWOA,C19H16Si1,W,-2.0,1.0,3.0,,Manting,,,,,False
+JEWFEX,C28H31N2P1,Pd,-1.0,2.0,3.0,,Manting,,,,,False
+IHOHOD,C14H18N6O2,Ni,-2.0,4.0,3.0,,Manting,,,,,False
+HIZSUE,C11Cl2H13N2,Pt,-1.0,3.0,3.0,,Manting,,,,,False
+BUNLOM,C21H23N4,Mn,0.0,4.0,3.0,,Manting,unq_CSD-BUNLOM-04-a,CSD-BUNLOM-04-a,693127d436ac3e9db851a4a9aca61622,"['N', 'N', 'N', 'N']",True
+VINMIP,C28H28O3P2,Ni,0.0,2.0,3.0,,Manting,,,,,False
+GODRIB,C12F6H12N2O2,Mn,-2.0,4.0,3.0,,Manting,,,,,False
+JAKNUE,C4H6N1,Co,-1.0,1.0,3.0,,Manting,,,,,False
+LOJXOZ,C15H15N3O6,Os,0.0,3.0,3.0,,Manting,,,,,False
+AGACAO,C16H13N3O2,Mo,-2.0,3.0,3.0,,Manting,,,,,False
+MIXGOQ,Br1C8H7N3O1S1,Ni,-1.0,3.0,3.0,,Manting,,,,,False
+JAWCUI,C46F10H18N4,Zn,-2.0,4.0,3.0,,Manting,,,,,False
+GICFUW,C9H6N3O2,Zn,1.0,1.0,3.0,,Manting,,,,,False
+UYUCIB,C28H27N3O3S1,Ni,-2.0,4.0,3.0,,Manting,,,,,False
+EMALOU,C13H14N2O2,Ag,-1.0,1.0,3.0,,Manting,,,,,False
+FIKQIZ,C2H2N3,Au,-1.0,1.0,3.0,,Manting,,,,,False
+DOPYUC,C16H11N2O2,Pd,-1.0,2.0,3.0,,Manting,,,,,False
+BILQUJ,B1C18H13N9,Ag,-1.0,3.0,3.0,,Manting,,,,,False
+HOLPON,C19H25N8O3,Ni,-2.0,4.0,3.0,if counting the OCOMe as ionically bonded to C=NH2+,Manting,,,,,False
+YOKXOL,C18H21O1P1,Pd,0.0,1.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+FIGLAJ,As2C24H42N2Si4,Ti,-2.0,3.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+EBUZAC,C13H10N3O1,V,-1.0,3.0,3.0,,Manting,,,,,False
+PIQKEF,C21H29N2P1Si2,W,0.0,1.0,3.0,,Manting,unq_CSD-PIQKEF-01-a,CSD-PIQKEF-01-a,4dfcf6fcc74d1b9999ed0736faf3970e,['P'],True
+XOZMEE,C10H12N3O1,Co,-1.0,2.0,3.0,Weird,Manting,,,,,False
+XEJPEH,C6H9O4S2,Re,-1.0,3.0,3.0,,Manting,,,,,False
+BUFVAB,C19H31N1O3,Mo,-2.0,4.0,3.0,,Manting,unq_CSD-BUFVAB-04-a,CSD-BUFVAB-04-a,54f1e53d44e39ce089729c5e18945003,"['O', 'O', 'O', 'N']",True
+CILFOV,C24H26N3O2S1,Pd,-2.0,2.0,3.0,,Manting,unq_CSD-CILFOV-02-a,CSD-CILFOV-02-a,65ec164e0643e81a34afa4208a75b4b5,"['N', 'C']",True
+KELLUJ,C12H9O1,Ti,-1.0,1.0,3.0,,Manting,,,,,False
+QAXCAT,C16H12N5,Rh,-1.0,3.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-QAXCAT-03-a,CSD-QAXCAT-03-a,62a07ea4302a7e0d0efbc0fd097036a5,"['N', 'N', 'N']",False
+BIQYEI,C18H23P1,Pd,-1.0,1.0,3.0,,Manting,unq_CSD-BIQYEI-01-a,CSD-BIQYEI-01-a,7e04ec4d2252565b76f83abce8b7a90d,['P'],True
+DOMROM,C7H6N1O1,Pt,-1.0,1.0,3.0,,Manting,,,,,False
+HOXTIX,C21H14O2,Ti,-2.0,2.0,3.0,,Manting,,,,,False
+PAJDOV,C15H13N2P1S1,Au,0.0,1.0,3.0,,Manting,unq_CSD-PAJDOV-01-a,CSD-PAJDOV-01-a,89966ffe9d46cc82476178d6adae1083,['P'],True
+ZODMAI,C34Cl3H28N3O3,Ni,-2.0,4.0,3.0,,Manting,,,,,False
+ALIREU,C34H22N8O2,Ni,-2.0,4.0,3.0,,Manting,,,,,False
+BEHQEK,Br1C16H18P1,Pd,0.0,1.0,3.0,,Manting,,,,,False
+UPEGAZ,C22H28O3P1S1,Pd,-1.0,2.0,3.0,,Manting,,,,,False
+RUZGUQ,C14H9N3O2,Mo,-2.0,3.0,3.0,,Manting,,,,,False
+CEDXEQ,C19H17P1,Ru,0.0,1.0,3.0,,Manting,unq_CSD-LOJBAP-01-b,CSD-CEDXEQ-01-c,6ea062bdc31cb458936ad039071c9b33,['P'],True
+JIDYAW,C10H14N3O1S1,Co,-1.0,4.0,3.0,,Manting,,,,,False
+RUJQOC,C4H11N3O2P1,Pt,-1.0,2.0,3.0,,Manting,,,,,False
+WISWAZ,C22H18N5O1,Ru,-1.0,2.0,3.0,,Manting,,,,,False
+NESDAR,C20H24N2O4,Zn,0.0,2.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+QUWDOC,C12H12N2Se2,Zn,0.0,2.0,3.0,,Manting,,,,,False
+XIYNOI,C4H4N3S1,Au,-1.0,1.0,3.0,,Manting,,,,,False
+NEDNAM,C11H13N2O1S1,Au,-1.0,1.0,3.0,,Manting,,,,,False
+SEPZAO,C4H7,Pt,-1.0,1.0,3.0,,Manting,,,,,False
+MIGFIS,C7H4N1O4,Ni,-2.0,2.0,3.0,,Manting,,,,,False
+TANPII,C1H2N3O2,Co,-1.0,2.0,3.0,,Manting,unq_CSD-TANPII-02-c,CSD-TANPII-02-c,cdf55b078ff0315ea0f9af096f49e303,"['O', 'N']",True
+JAPPOF,C8H16N4P1,Pt,-1.0,2.0,3.0,,Manting,,,,,False
+NIMTIM,C10H15N2O2,V,-1.0,4.0,3.0,,Manting,,,,,False
+KIJJOD,C36H31N2,Pd,-1.0,3.0,3.0,,Manting,,,,,False
+CMEPDA,C7H15N1S1,Pd,0.0,2.0,3.0,,Manting,,,,,False
+PUYXAJ,C22H25O3P1Se1,Pd,0.0,2.0,3.0,,Manting,unq_CSD-PUYXAJ-02-a,CSD-PUYXAJ-02-a,4052fc2e95d644d5f7a8f33a7b1cad38,"['Se', 'P']",True
+HAXPEB,C9H9N2O2,V,-1.0,3.0,3.0,,Manting,,,,,False
+NEVKEE,C10H28N3Si2,Ti,-1.0,3.0,3.0,,Manting,,,,,False
+HEFFIJ,C34H38N2,Ni,0.0,2.0,3.0,,Manting,,,,,False
+DAMLUA,C13H20N4O1,Zn,0.0,2.0,3.0,,Manting,,,,,False
+MOBFEO,C12H20N4O4,Co,-2.0,6.0,3.0,,Manting,,,,,False
+TEFCOZ,C26H38N2O1,Cu,0.0,2.0,3.0,,Manting,unq_CSD-TEFCOZ-02-a,CSD-TEFCOZ-02-a,287a08a10b5d9eff51bd9b82b7c55430,"['N', 'N']",True
+QAWVUH,C24H27N1Se3,Hg,0.0,4.0,3.0,,Manting,unq_CSD-QAWVUH-03-a,CSD-QAWVUH-03-a,c9649508ae4e31fd548ad61b4bb8a93a,"['Se', 'Se', 'Se']",True
+XAFBOV,C41H27N4O1,Rh,-1.0,2.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+QERXET,C29H29N3O2,Co,-2.0,5.0,3.0,,Manting,,,,,False
+HAGJIK,C8Cl2H5O3,Zn,-1.0,1.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+CEBYAK,C6H3P1,Re,0.0,1.0,3.0,,Manting,,,,,False
+MIGHIV,C18H17N2,V,-1.0,2.0,3.0,,Manting,unq_CSD-MIGHIV-02-a,CSD-MIGHIV-02-a,3e97cbe3fa83f27b555db7df7a360b4e,"['N', 'N']",True
+CAPHUW,C12H10N3O1,Pd,-1.0,3.0,3.0,,Manting,unq_CSD-CAPHUW-03-a,CSD-CAPHUW-03-a,97b3f29e4398d9e5d1d3984e8bfd43db,"['O', 'N', 'N']",True
+FUTWAT,C24H54P4,Fe,0.0,4.0,3.0,,Manting,,,,,False
+SIYFUB,C5H5O1,Ti,-2.0,2.0,1.0,C6H5NO real stoichiometry (Graph Issue),Manting,,,,,False
+IYUQUP,C24F2H13N2,Pt,-1.0,3.0,3.0,,Manting,,,,,False
+RADPET,C13H33N3Si2,Ta,-2.0,3.0,3.0,,Manting,,,,,False
+BOCYEA,C10H10N1S2,Ru,0.0,1.0,3.0,,Manting,,,,,False
+NIJCOY,C14H24,Pd,-2.0,2.0,3.0,,Manting,,,,,False
+JATCAL,B1Br3C15H19N6,Ni,-1.0,3.0,3.0,,Manting,,,,,False
+FUZSOK,C12H10N4,Pt,-2.0,3.0,3.0,,Manting,,,,,False
+GIJBOR,C10H20N1O3,Ti,-3.0,4.0,3.0,,Manting,,,,,False
+PIKLEC,C18H17N3O1,Pt,0.0,2.0,3.0,,Manting,unq_CSD-PIKLEC-02-a,CSD-PIKLEC-02-a,f95222dba3bc8ed512d984f2a50ddf13,"['N', 'N']",True
+QAGFOU,C15H20N2,Ti,-2.0,6.0,3.0,Pi and monodentate coordinatin mode ignore denticity,Manting,,,,,False
+ALOBEJ,C14H20O2,Pt,-2.0,2.0,3.0,,Manting,,,,,False
+KAYPUW,C8H8N1O2,Zn,-1.0,2.0,3.0,,Manting,,,,,False
+BOCXIC,C20H21N3,Hg,0.0,2.0,3.0,,Manting,unq_CSD-BOCXIC-02-a,CSD-BOCXIC-02-a,3833db5f6467e44677f09bbf18171aee,"['N', 'N']",True
+DICJEH,C9H14N1O2S2,Au,-1.0,2.0,3.0,,Manting,,,,,False
+SADFUY,C7H18N2Si2,W,-1.0,1.0,3.0,,Manting,,,,,False
+OFAFUW,C12H20N4O2,Ni,-2.0,4.0,3.0,,Manting,,,,,False
+MIMMAW,C15H14N1O1S1,Pd,-1.0,3.0,3.0,,Manting,unq_CSD-MIMMAW-03-a,CSD-MIMMAW-03-a,13c45ee39c9a9ece8b395912c1f22187,"['S', 'N', 'C']",True
+BIZGIA,C7H9O4S2,Co,-1.0,2.0,3.0,,Manting,,,,,False
+GEJVUP,C15H14N2,Au,0.0,1.0,3.0,,Manting,,,,,False
+KIPYOX,C11H10N2,Pd,-1.0,2.0,3.0,If counting the counter anion to be interacting ionically,Manting,,,,,False
+UTEMEN,C12H29N1P2,Ni,0.0,2.0,3.0,,Manting,,,,,False
+AJIYIC,C20F2H20N2O2,Pt,-2.0,4.0,3.0,,Manting,,,,,False
+XAXZEB,C6H7N1O1,Pt,0.0,1.0,3.0,,Manting,,,,,False
+VIZHOB,C24H26O2,Ti,-2.0,2.0,3.0,,Manting,,,,,False
+FONBAM,C4H4O5,Ni,-2.0,3.0,3.0,,Manting,,,,,False
+UBEYAB,C4H8O1,Pt,-2.0,2.0,3.0,,Manting,unq_CSD-UBEYAB-02-a,CSD-UBEYAB-02-a,9be9e9d6e2e9d273efc485102d1aa0b5,"['C', 'C']",True
+CAVMEU,C21H27N3,Ru,0.0,1.0,3.0,Can have higher denticity if allowed,Manting,unq_CSD-CAVMEU-01-a,CSD-CAVMEU-01-a,ac6f4a2b2c3758d712e9ba101c851c58,['C'],False
+KAYYUG,C18H36N6,Zn,0.0,4.0,3.0,,Manting,,,,,False
+WURGIB,C24H29N2O1P1,Zn,0.0,2.0,3.0,,Manting,,,,,False
+GATFUD,B1C21H34N6,Fe,-1.0,3.0,3.0,3D structure unavailable,Manting,,,,,False
+EFUWIL,C25H26N1O1P1,Pd,0.0,2.0,3.0,,Manting,,,,,False
+NIGFUH,C6H5N2O3,Ir,-1.0,2.0,3.0,,Manting,,,,,False
+MASBEQ,C25H22N2O4,Ni,-2.0,4.0,3.0,,Manting,unq_CSD-MASBEQ-04-a,CSD-MASBEQ-04-a,818d13f0c0a2ff5b74f7e33f315aff24,"['O', 'O', 'N', 'N']",True
+UGODUQ,C5H6N2,Zn,0.0,1.0,3.0,,Manting,,,,,False
+MAZXAO,C5H4N2O2,Pt,-1.0,1.0,3.0,,Manting,unq_CSD-MAZXAO-01-f,CSD-MAZXAO-01-f,d5a0c79e7fcbad0f48780bb6e2725870,['N'],True
+VUCYUO,C24H30N4,Ni,0.0,3.0,3.0,,Manting,,,,,False
+LULNUB,C15H20N4O2,Re,0.0,3.0,3.0,,Manting,,,,,False
+MASWOU,C14H13N3O1S1,Ni,0.0,1.0,3.0,weird,Manting,unq_CSD-MASWOU-01-a,CSD-MASWOU-01-a,1161eaca7f9c218042fbebdc0d381710,['S'],False
+JALJIS,C12H12N4,Zn,0.0,2.0,3.0,,Manting,,,,,False
+DUCBOS,C13H10N6,La,0.0,3.0,3.0,,Manting,,,,,False
+FEKLAJ,C47F6H26N4,Zn,-2.0,4.0,3.0,,Manting,,,,,False
+KITNAF,C22H18N4,Zn,0.0,2.0,3.0,,Manting,,,,,False
+DEQJOB,C22H16N3O1,Pd,-1.0,3.0,3.0,,Manting,,,,,False
+XESHAG,C23H26N4,Fe,0.0,2.0,3.0,,Manting,,,,,False
+BODPUI,C36F5H31N2O2S1,Rh,-1.0,8.0,3.0,Multicoordination mode denticity ambiguous,Manting,,,,,False
+MASSEH,C18H15N2O2S1,Pt,-1.0,2.0,3.0,,Manting,unq_CSD-MASSAD-02-a,CSD-MASSEH-02-a,448354240c10758673094092930c2cb3,"['N', 'N']",True
+RARRIL,C11H12O8S2,Co,-2.0,3.0,3.0,,Manting,,,,,False
+ITUGIP,C9H22N4,Zn,0.0,2.0,3.0,,Manting,,,,,False
+ASAVOH,C19H22N4O4,Mn,-4.0,4.0,3.0,,Manting,,,,,False
+MUTYEG,C11H20N2O1,Zn,0.0,2.0,3.0,,Manting,unq_CSD-MUTYEG-02-a,CSD-MUTYEG-02-a,8c9bb715bea19e786a25a8f83f6735d1,"['N', 'N']",True
+SIVJOZ,C19H35N2Si1,Ir,-1.0,3.0,3.0,,Manting,unq_CSD-SIVJOZ-03-a,CSD-SIVJOZ-03-a,d75243b9d098243a472dbd3da4689d10,"['Si', 'N', 'N']",True
+XOZMUU,C13H12N1,Pd,-1.0,2.0,3.0,,Manting,,,,,False
+BERKUH,C12H11N3O1,Cd,0.0,3.0,3.0,,Manting,unq_CSD-BERKUH-03-a,CSD-BERKUH-03-a,27c66b3ffad962834421488027d99cd7,"['N', 'N', 'O']",True
+DUNGUQ,C2H4N1O1,Pt,-1.0,1.0,3.0,Can have higher denticity if allowed,Manting,,,,,False
+TUFDEE,C6H9N2O2S1,Re,-1.0,3.0,3.0,,Manting,,,,,False
+HILDAI,C23H20N4,Ni,0.0,3.0,3.0,,Manting,,,,,False
+FOCWEZ,C4H9N2Si1,Rh,-1.0,1.0,3.0,,Manting,,,,,False
+PIPYUK,C7H10O2,Tc,-2.0,2.0,3.0,,Manting,,,,,False
+QAWQUB,C11H17N3,Co,0.0,3.0,3.0,,Manting,unq_CSD-QAWQUB-03-a,CSD-QAWQUB-03-a,28f2e93060887824a74003ebfef60eb9,"['N', 'N', 'N']",True
+IXEYEQ,C7H5O1,Hg,-1.0,2.0,3.0,,Manting,,,,,False
+LIHPUN,C30H24N6,Pd,0.0,2.0,3.0,,Manting,,,,,False
+GIGJIQ,C7F1H10Si1,Ti,-1.0,5.0,3.0,Pi - ignore denticity ,Manting,,,,,False
+ULUDIO,C15H14O2,W,-2.0,2.0,3.0,,Manting,,,,,False
+WENGOO,C18H15N2,Pt,-1.0,3.0,3.0,,Manting,,,,,False
+TESPEP,C8H22N2O3Si1,Ru,0.0,2.0,3.0,,Manting,unq_CSD-TESPAL-02-a,CSD-TESPEP-02-a,aec7e6b446cae02551a1f46e077d171f,"['N', 'N']",True
+NOBYOV,C13Cl1H18N2O1,V,-1.0,3.0,3.0,,Manting,,,,,False
+XIRFIP,C18H20N3,Au,-1.0,2.0,3.0,,Manting,,,,,False
+HANXEZ,C12H19N2,Ti,-1.0,3.0,3.0,,Manting,,,,,False
+HOCDEJ,C24H33O2P1,Au,0.0,1.0,3.0,,Marconi1,,,,,False
+RAMHAO,C8H9,Au,-1.0,1.0,3.0,Not really a ligand,Marconi1,,,,,False
+ZUGPUO,C15H20N1P1,Pt,0.0,2.0,3.0,,Marconi1,,,,,False
+HIJRUN,C6Cl1H5N1O1,Zn,0.0,2.0,1.0,Graph Issue,Marconi1,,,,,False
+HERRIF,C9H13N5O3,Ni,-2.0,4.0,3.0,,Marconi1,,,,,False
+OBOCOY,Br2C18H16N4,Zn,0.0,3.0,3.0,Could increase denticity to 4 probably,Marconi1,,,,,False
+KELRAV,C14H12N2O1,Pd,0.0,2.0,3.0,,Marconi1,,,,,False
+QOKZUL,C26H36N8S2,Pt,-2.0,4.0,3.0,,Marconi1,,,,,False
+MOWDOS,C9H16N2,Pt,0.0,1.0,3.0,,Marconi1,unq_CSD-MOWDOS-01-d,CSD-MOWDOS-01-d,2a5555c55371ed5b8c492c6dae443116,['C'],True
+NALXON,C18H14I1P1,Au,0.0,1.0,3.0,,Marconi1,unq_CSD-PIBHUG-02-a,CSD-NALXON-01-b,1967bebadecd2ba97b120ce9ddbc7ef8,['P'],True
+PAWXOD,C7H7N3,Au,0.0,1.0,3.0,,Marconi1,unq_CSD-PAWXOD-01-b,CSD-PAWXOD-01-b,7fa47eb339a843658de90d068541cd42,['N'],True
+LAXKAW,C13H16N1O2,Pd,-1.0,2.0,3.0,,Marconi1,,,,,False
+WEDJEU,C12H20,Pt,0.0,4.0,3.0,Technically 2 but this cycle butane can’t be used for the assembly,Marconi1,,,,,False
+KAHXOH,C32H34N1P1,Pd,0.0,2.0,3.0,,Marconi1,,,,,False
+QAGGUA,C27H51N1P2,Pt,0.0,2.0,3.0,,Marconi1,unq_CSD-QAGGUA-02-a,CSD-QAGGUA-02-a,5e46f79e7db9c295121c93986784fcad,"['P', 'P']",True
+YEYPOK,C6H5O1,Au,-1.0,1.0,3.0,"The ligand is the PN fragment (0,2,3)",Marconi1,,,,,False
+NEJWAB,C22H13,Pt,-1.0,1.0,3.0,Not really a ligand,Marconi1,,,,,False
+VAPBOF,C14H10N3,Pt,-1.0,3.0,3.0,,Marconi1,,,,,False
+HACGAU,C18H14O3P1S1,Au,-1.0,1.0,3.0,Charge located in the SO3 group,Marconi1,,,,,False
+JOSSAL,C12H10O4,Ru,-2.0,2.0,2.0,,Marconi1,,,,,False
+CALDIF,C13H11N1S1,Pd,0.0,2.0,3.0,,Marconi1,unq_CSD-CALDIF-02-a,CSD-CALDIF-02-a,bb3ff9b69f31f79093154657f9163f2b,"['S', 'N']",True
+HEVBAM,C17H26N1P1,Rh,0.0,2.0,3.0,,Marconi1,,,,,False
+QIQLOT,C26H30N2O1,Pt,0.0,1.0,3.0,With other metal can behave differently,Marconi1,,,,,False
+GEYWUE,C20H30N8,Pt,0.0,2.0,3.0,With other metal can behave differently,Marconi1,,,,,False
+ODALIR,C35H38N2O1,Pt,-2.0,4.0,3.0,,Marconi1,,,,,False
+NIDFEM,C22H18N4,Zn,-2.0,4.0,3.0,,Marconi1,,,,,False
+CAGWAL,C6H7O1,Pd,-1.0,2.0,3.0,"Not really a ligand, allyl group",Marconi1,unq_CSD-CAGWAL-03-a,CSD-CAGWAL-03-a,8f4e2420a37aae6c1bffd994fe70e3c5,"['C', 'C', 'C']",False
+ZUCYOL,C21H24N1O1P1,Pd,0.0,2.0,3.0,,Marconi1,,,,,False
+BEVKAR,C14H12N2,Ru,0.0,2.0,3.0,,Marconi1,unq_CSD-PINTUD-02-a,CSD-BEVKAR-02-a,cc6b62d69fd15c81072a137d269150cf,"['N', 'N']",True
+FELPAP,C12H17N1O1S1,Pd,0.0,2.0,3.0,,Marconi1,,,,,False
+RECTIF,C11H8N4,Au,0.0,1.0,3.0,,Marconi1,,,,,False
+TIVQIZ,C25H45P2,Ir,-1.0,3.0,3.0,,Marconi1,,,,,False
+LISQEK,C10H10N2,Pt,0.0,1.0,3.0,,Marconi1,unq_CSD-TAWNIR-01-a,CSD-LISQEK-01-b,864d65fcab8befb195d908478e13f15a,['C'],True
+ALITUM,C29H32N3P2,Pd,1.0,2.0,3.0,The charge is located in the NR3H,Marconi1,,,,,False
+EHOLUJ,C11H17N3O1,Zn,0.0,3.0,3.0,,Marconi1,,,,,False
+JEFGIL,C28H30N4,Zn,0.0,2.0,3.0,,Marconi1,,,,,False
+IJEMOA,C4H9Se1,Pt,-1.0,1.0,3.0,Not really a ligand,Marconi1,,,,,False
+WETVAT,C21H14N1O1,Ir,-1.0,2.0,3.0,,Marconi1,,,,,False
+TISGAE,As1C26H26P1,Pd,0.0,2.0,3.0,,Marconi1,,,,,False
+JILSEC,C13H18N2,Pd,0.0,2.0,3.0,,Marconi1,,,,,False
+WIRGUB,C16H18P1Se2,Au,-1.0,2.0,2.0,,Marconi1,,,,,False
+BEXBIQ,B30C9H39P1,Au,0.0,1.0,3.0,,Marconi1,,,,,False
+YAZCOT,C20H13N2,Ir,-1.0,2.0,3.0,,Marconi1,,,,,False
+CINPOG,C4H11N1,Zn,-2.0,4.0,3.0,,Marconi1,,,,,False
+TIGVEK,C25H40P4,Rh,0.0,4.0,3.0,,Marconi1,unq_CSD-TIGVEK-04-a,CSD-TIGVEK-04-a,ee505bba39eb29abbb88d921db7558f6,"['P', 'P', 'P', 'P']",True
+FIGNOZ,C5H9N4,Pd,-1.0,1.0,2.0,,Marconi1,,,,,False
+NOKGUR,C18H13N4O1,Pd,-1.0,3.0,3.0,,Marconi1,,,,,False
+LOMXER,C12H21N1Si1,Ru,0.0,7.0,3.0,Denticity is tricky here,Marconi1,unq_CSD-LOMXER-07-a,CSD-LOMXER-07-a,9ee02fdd306db5c15d597a8157eba7a4,"['N', 'C', 'C', 'C', 'C', 'C', 'C']",False
+WILBEZ,C4H7O2,Pd,-1.0,1.0,3.0,Not really a ligand,Marconi1,,,,,False
+GEZNUW,C19H24N3,Ir,-1.0,2.0,2.0,,Marconi1,,,,,False
+OLEVEG,C4H8S2,Rh,0.0,1.0,3.0,,Marconi1,,,,,False

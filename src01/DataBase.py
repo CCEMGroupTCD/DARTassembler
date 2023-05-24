@@ -9,7 +9,9 @@ from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
 from src01.io_custom import save_json
+from typing import Union
 from datetime import datetime
+from pathlib import Path
 
 
 class BaselineDB:
@@ -21,9 +23,13 @@ class BaselineDB:
         that the functionality is stable even if we use RCA_Ligands (As they are a subclass of RCA_Mol)
         """
         self.db = dict_
+        self.names = list(self.db.keys())
 
     def __len__(self):
         return len(self.db)
+
+    def __eq__(self, other):
+        return self.db == other.db
 
     def get_first_entry(self):
         first_key = list(self.db.keys())[0]
@@ -44,7 +50,8 @@ class BaselineDB:
         return json_dict
 
     def to_json(self, path, desc: str='Save DB to json'):
-        save_json(self.get_dict_in_json_format(desc=desc), path=path, indent=4)
+        d = self.get_dict_in_json_format(desc=desc)
+        save_json(d, path=path, indent=4)
 
         return
 
@@ -52,7 +59,7 @@ class BaselineDB:
     def from_json(cls,
                   json_,
                   type_: str = "Molecule",
-                  graph_strategy: str = "default",
+                  graph_strategy: Union[str,None] = None,
                   max_number = None,
                   identifier_list: list = None,
                   **kwargs
@@ -65,20 +72,11 @@ class BaselineDB:
             because ligand graphs are created by the molecule graphs. For Ligands this will just be dumped as a kwarg)
         :param kwargs: additional arguments for the graph creation (only, if no graphs are present in the .json)
         """
-        if isinstance(json_, str):
-            if not json_.endswith(".json"):
-                print("select a json file as input!")
-                return
-
+        if isinstance(json_, dict):
+            json_dict = json_
+        else:
             with open(json_, "r") as file:
                 json_dict = json.load(file)
-
-        elif isinstance(json_, dict):
-            json_dict = json_
-
-        else:
-            print("Wrong Input format for json_")
-            return
 
         new_dict_ = {}
 
@@ -112,6 +110,10 @@ class BaselineDB:
                                                                                  )
 
         return cls(new_dict_)
+
+
+
+
 
     def filter_not_fully_connected_molecules(self):
         deleted_identifiers = []
@@ -172,11 +174,20 @@ class BaselineDB:
 class MoleculeDB(BaselineDB):
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
+        self.type = 'Molecule'
 
+    def check_db_equal(self, db: str):
+        db = MoleculeDB.from_json(json_=db, type_='Molecule')
+        return self == db
 
-class LigandDB(BaselineDB):
+class LigandDB(MoleculeDB):
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
+        self.type = 'Ligand'
+
+    def check_db_equal(self, db: str) -> bool:
+        db = LigandDB.from_json(json_=db, type_='Ligand')
+        return self == db
 
     @classmethod
     def from_MoleculeDB(cls,
@@ -346,3 +357,8 @@ class LigandDB(BaselineDB):
 class ComplexDB(MoleculeDB):
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
+        self.type = 'Complex'
+
+    def check_db_equal(self, db: str):
+        db = ComplexDB.from_json(json_=db, type_='Complex')
+        return self == db

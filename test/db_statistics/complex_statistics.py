@@ -22,10 +22,9 @@ def unroll_dict_in_df_column(df:pd.DataFrame, column: str, prefix: str):
 
 if __name__ == '__main__':
 
-    db_version = '1.3'
-    save_plots_dir = f'../data/db_statistics/complex_statistics/v{db_version}'
-    db_path = f'../data/final_db_versions/complex_db_v{db_version}.json'
-
+    db_version = '1.6'
+    save_plots_dir = f'../../data/db_statistics/complex_statistics/v{db_version}'
+    db_path = f'../../data/final_db_versions/complex_db_v{db_version}.json'
 
 
     save_plots_dir = Path(save_plots_dir)
@@ -38,9 +37,9 @@ if __name__ == '__main__':
     #%% plot histograms of global props
     props = {
         'metal_oxi_state': {'discrete': True},
-         'total_q': {'discrete': True},
+         'total_q': {'discrete': True, 'ylog': True},
          'gbl_metal_partial_charge': {},
-         'gbl_charge': {'discrete': True},
+         'gbl_charge': {'discrete': True, 'ylog': True},
         'gbl_molecular_mass': {},
          'gbl_n_atoms': {'discrete': True},
          'gbl_n_electrons': {'discrete': True},
@@ -66,33 +65,33 @@ if __name__ == '__main__':
          'gbl_highest_vibrational_frequency': {'ylog': True},
             }
     for prop, configs in props.items():
-        plt.figure()
-        assert prop in data, f'{prop} not in data'
-        bins = 'auto' if not 'bins' in configs else configs['bins']
-        discrete = False if not 'discrete' in configs else configs['discrete']
-        log_scale = None if not 'xlog' in configs else configs['xlog']
-        sns.histplot(data=data, x=prop, discrete=discrete, log_scale=log_scale, bins=bins)
-        if 'ylog' in configs and configs['ylog']:
-                plt.yscale('log')
-        if 'xlabel_fontsize' in configs:
-            plt.xticks(size=configs['xlabel_fontsize'])
-        plt.title(f'Distribution of {prop} in complexes')
-        save_path = Path(save_plots_dir, f'hist_{prop}.png')
-        plt.savefig(fname=save_path, dpi=300)
-        plt.close()
+        try:
+            plt.figure()
+            bins = 'auto' if not 'bins' in configs else configs['bins']
+            discrete = False if not 'discrete' in configs else configs['discrete']
+            log_scale = None if not 'xlog' in configs else configs['xlog']
+            sns.histplot(data=data, x=prop, discrete=discrete, log_scale=log_scale, bins=bins)
+            if 'ylog' in configs and configs['ylog']:
+                    plt.yscale('log')
+            if 'xlabel_fontsize' in configs:
+                plt.xticks(size=configs['xlabel_fontsize'])
+            plt.title(f'Distribution of {prop} in complexes')
+            save_path = Path(save_plots_dir, f'hist_{prop}.png')
+            plt.savefig(fname=save_path, dpi=300)
+            plt.close()
+        except ValueError:
+            print(f'Property {prop} doesn\'t exist, skip it.')
 
     #%% plot histogram of metals
     plt.figure()
     all_metals_hist = data['metal'].value_counts().rename('Count').to_frame().reset_index(names='metal')
     sns.barplot(data=all_metals_hist, x='metal', y='Count', color='b')
-    plt.xticks(size=8)
+    plt.xticks(size=6)
     plt.title(f'Distribution of metal in complexes')
     save_path = Path(save_plots_dir, f'hist_metal.png')
     plt.savefig(fname=save_path, dpi=300)
     plt.close()
 
-
-    print('Done!')
 
     # %% plot histogram of metals
     plt.figure(figsize=(15, 6))

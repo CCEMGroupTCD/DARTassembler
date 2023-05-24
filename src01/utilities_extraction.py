@@ -10,12 +10,13 @@ from pathlib import Path
 
 from constants.constants import project_path
 from src01.DataBase import MoleculeDB, LigandDB
+from src01.Molecule import RCA_Ligand
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
 from src01.io_custom import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_full_ligand_db
 from src02_ChargeAssignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
 from typing import Union
 
-def get_charges_of_unique_ligands(all_complexes: Union[str, Path, dict]) -> pd.DataFrame:
+def get_charges_of_unique_ligands(all_complexes: Union[str, Path, dict], max_iterations=None) -> pd.DataFrame:
     """
     So far uses only the linear charge solver.
     :param all_complexes: path to a json of all complexes with ligands with unique ligand names
@@ -25,14 +26,15 @@ def get_charges_of_unique_ligands(all_complexes: Union[str, Path, dict]) -> pd.D
 
     solver = LinearChargeSolver(
                                 all_complexes=all_complexes,
-                                save_dir=save_dir
+                                save_dir=save_dir,
+                                max_iterations=max_iterations
                                 )
     df_ligands = solver.calculate_unique_ligand_charges(output_uncertain_charges_as_nan=False)
 
     return df_ligands
 
 
-def update_ligand_with_charge_inplace(lig: dict, charges: dict):
+def update_ligand_with_charge_inplace(lig: RCA_Ligand, charges: dict):
     new_keys = ['pred_charge', 'pred_charge_confidence', 'pred_charge_is_confident']
     assert not any([hasattr(lig, key) for key in new_keys])
 
@@ -41,18 +43,21 @@ def update_ligand_with_charge_inplace(lig: dict, charges: dict):
         charge = charges[uname]['pred_charge']
         confidence = charges[uname]['confidence']
         is_confident = charges[uname]['is_confident']
+        pred_charge_exact = charges[uname]['pred_charge_exact']
     else:
         # This means that this unique ligand was not part of the output of the charge assignment because its complexes were filtered out in the charge assignment due to lack of oxidation state or similar issues.
         charge = np.nan
         confidence = np.nan
         is_confident = False
+        pred_charge_exact = np.nan
 
     lig.pred_charge = charge
     lig.pred_charge_is_confident = is_confident
     lig.global_props.update({
                                 'LCS_pred_charge': charge,
                                 'LCS_pred_charge_confidence': confidence,
-                                'LCS_pred_charge_is_confident': is_confident
+                                'LCS_pred_charge_is_confident': is_confident,
+                                'LCS_pred_charge_exact': pred_charge_exact
                                 })
 
     return

@@ -5,11 +5,76 @@ from networkx import weisfeiler_lehman_graph_hash as graph_hash
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from rdkit import Chem
 from pysmiles import read_smiles
+import warnings
 
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+from typing import Union
+from networkx import weisfeiler_lehman_graph_hash as graph_hash
 
+
+def get_only_complex_graph_connected_to_metal(graph, metal: str, atom_label='node_label') -> nx.Graph:
+    """
+    Returns the graph of only the metal complex without unconnected ligands.
+    """
+    if isinstance(metal, int) or isinstance(metal, float):
+        raise ValueError(f"metal should be a string but is {metal}!")
+
+    fragment_idc, fragment_els = get_graph_fragments(graph=graph, atom_label=atom_label)
+    complex_graph = None
+    for frag_elements, frac_indices in zip(fragment_els, fragment_idc):
+        if metal in frag_elements:
+            assert complex_graph is None, "There should only be one fragment with the metal!"
+            complex_graph = deepcopy(graph.subgraph(frac_indices))
+
+    if complex_graph is None:
+        raise ValueError(f"There is no fragment with the metal {metal}!")
+
+    return complex_graph
+
+def get_heavy_atoms_graph(graph, element_label='node_label'):
+    graph = nx.Graph(graph)     # copy and unfreeze graph
+    graph.remove_nodes_from(list(idx for idx, atom in graph.nodes(data=True) if atom[element_label] == 'H'))
+
+    return graph
+
+def assert_graph_and_coordinates_are_consistent(graph: nx.Graph, atoms: list[str], graph_hash: str, ligand_to_metal: list[int]= None, node_label='node_label'):
+    """
+    Check if the graph and the coordinates are consistent, i.e. if the graph has the same atoms in the same order as the atomic_props and if the graph has the correct coordinating atom indices
+    @param graph:
+    @param atoms:
+    @param graph_hash:
+    @param ligand_to_metal:
+    @param node_label:
+    @return:
+    """
+    # Check if graph hashes are the same
+    new_graph_hash = get_graph_hash(graph)
+    assert new_graph_hash == graph_hash, f'Graph hashes don\'t match: {new_graph_hash} vs {graph_hash}'
+
+    # Check if the relabeled graph has the same atoms in the same order as the atomic_props
+    relabeled_atoms = [a for _, a in graph.nodes(data=node_label)]
+    assert relabeled_atoms == atoms, f'Atoms in reindexed graph and atomic_props don\'t match: {relabeled_atoms} vs {atoms}'
+
+    # Check if the relabeled graph has the correct coordinating atom indices, for ligands only
+    if not ligand_to_metal is None:
+        relabeled_coord_atoms = [i for i, a in graph.nodes(data='metal_neighbor') if a is True]
+        if len(relabeled_coord_atoms) > 0:
+            assert relabeled_coord_atoms == ligand_to_metal, f'Coordinating atoms in relabeled graph and ligand don\'t match: {relabeled_coord_atoms} vs {ligand_to_metal}'
+
+    return
+
+def get_graph_hash(graph, node_attr='node_label', iterations=3, digest_size=16, edge_attr=None) -> str:
+    """
+    Returns the graph hash of a graph
+    @param graph: graph
+    @param node_attr: node attribute to be used for the hash
+    @param iterations: iterations of the hash
+    @param digest_size: digest size of the hash
+    @return: graph hash
+    """
+    return graph_hash(graph, node_attr=node_attr, edge_attr=edge_attr, iterations=iterations, digest_size=digest_size)
 
 def smiles2nx(smiles_str: str, explicit_H: bool = True):
     """
@@ -31,9 +96,22 @@ def view_graph(G, node_label='node_label', node_size=150):
     )
     plt.show()
 
+def get_graph_fragments(graph, atom_label: Union[str, None]=None) -> list:
+    """
+    Returns a list of the fragments (unconnected components) of the molecular graph. Returns both the indices and the elements, if atom_label is provided.
+    @param graph: networkx graph
+    @param atom_label: string label of the elements in the graph attributes
+    """
+    fragment_idc = [sorted(comp) for comp in nx.connected_components(graph)]
+    if not atom_label is None:
+        fragment_els = [[graph.nodes[i][atom_label] for i in fragment] for fragment in fragment_idc]
+        return fragment_idc, fragment_els
+    else:
+        return fragment_idc
 
-def get_sorted_atoms_and_indices_from_graph(graph):
-    nodes = pd.Series({i: el for i, el in graph.nodes.data('node_label')})
+
+def get_sorted_atoms_and_indices_from_graph(graph, atom_label='node_label'):
+    nodes = pd.Series({i: el for i, el in graph.nodes.data(atom_label)})
     nodes = nodes.sort_index()
     atoms = nodes.tolist()
     idc = nodes.index.tolist()
@@ -178,6 +256,15 @@ def make_graph_labels_integers(G: [nx.Graph, nx.MultiGraph]):
 
     return G
 
+def get_adjacency_matrix(graph):
+    assert list(graph.nodes) == sorted(
+        graph.nodes), 'Nodes are not sorted, this might lead to problems with the indexing of the adjacency matrix.'
+
+    with warnings.catch_warnings():  # ignore FutureWarning from networkx
+        warnings.simplefilter(action='ignore', category=FutureWarning)
+        A = nx.to_numpy_array(graph)
+
+    return A
 
 def graph_from_graph_dict(d):
     # assert d hat keys graph, node_attrib sind eigentlich optional
@@ -196,9 +283,52 @@ def graph_from_graph_dict(d):
 
     return H
 
-
 def get_reindexed_graph(graph):
-    return nx.relabel.convert_node_labels_to_integers(graph, first_label=0, ordering='sorted')
+    """
+    Reindex and sort the given graph nodes so that the order of the index labels stays the same but the indices now go from 0 to n-1.
+    @param graph: graph to reindex.
+    @return: reindexed graph with indices from 0 to n-1, sorted by labels.
+    """
+    if not all(isinstance(node, int) for node in graph.nodes):
+        warnings.warn(f'Graph nodes are not integers. Proceed reindexing, but results might not be as expected: {graph.nodes}.')
+
+    old_labels = sorted(list(graph.nodes))
+    mapping = {old_label: new_label for new_label, old_label in enumerate(old_labels)}
+    reindexed_graph = nx.relabel_nodes(graph, mapping)
+
+    # Create a new graph with sorted nodes
+    # Order is important: First add all nodes without edges
+    sorted_graph = nx.Graph()
+    for node in sorted(reindexed_graph.nodes):
+        sorted_graph.add_node(node, **reindexed_graph.nodes[node])
+    # Now add edges
+    for node in sorted(reindexed_graph.nodes):
+        for neighbor, edge_attrs in reindexed_graph[node].items():
+            sorted_graph.add_edge(node, neighbor, **edge_attrs)
+
+    nodes = list(sorted_graph.nodes)
+    assert nodes == sorted(nodes), f'Nodes are not sorted after reindexing: {nodes}'
+    assert list(sorted_graph.nodes) == list(range(len(nodes))), f'Nodes are not indexed from 0 to n-1 after reindexing: {nodes}'
+
+    return sorted_graph
+
+def count_atoms_with_n_bonds(graph: nx.Graph, element: Union[str, None], n_bonds: int, graph_element_label: str='node_label') -> int:
+    """
+    Count the number of occurrences of element `element` with exactly `n_bonds` bonds in the given molecular graph.
+    @param graph (network.Graph): molecular graph.
+    @param element (str, None): specification of the element, e.g. 'C'. If None, all elements are counted.
+    @param n_bonds (int): count an atom if it has exactly this number of bonds.
+    @param graph_element_label (str): the label of the element string in the graph attributes. Only necessary if `element` is not `None`.
+    @return (int): integer count of the occurrences.
+    """
+    n = 0
+    for atom_idx, atom in graph.nodes(data=True):
+        if element is None or atom[graph_element_label] == element:
+            n_atom_bonds = len(list(nx.all_neighbors(graph, atom_idx)))
+            if n_atom_bonds == n_bonds:
+                n += 1
+
+    return n
 
 
 def unify_graph(G):
