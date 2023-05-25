@@ -140,12 +140,12 @@ if __name__ == '__main__':
     database_path = '../data_input/CSD_MM_G'  # in github
     data_store_path = '../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
-    testing = 3000  # if we would like to only do a test run
+    testing = 5000  # if we would like to only do a test run
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     calculate_charges = True  # if you want to run charge assignment after ligand extraction
     overwrite_atomic_properties = False  # if atomic properties json should be overwritten, not really critical
-    use_existing_input_json = True  # if the existing input json should be used or the process started from the xzy files
+    use_existing_input_json = False  # if the existing input json should be used or the process started from the xzy files
     get_only_unique_ligand_db_without_charges = False  # For graph benchmark useful, reduces runtime because it ignores charge assignment and updating the complex and full ligand db.
     max_charge_iterations = 10  # The maximum number of iterations in charge assignment for iterative consistency checking
 
