@@ -241,7 +241,7 @@ if __name__ == '__main__':
 
             except AssertionError:
                 drop_cols = list(set(df_new.columns).symmetric_difference(set(df_old.columns)))
-                drop_cols = drop_cols + ['has_betaH', 'ligands', 'graph_dict']
+                drop_cols = drop_cols + ['ligands']
                 print(f'Failed testing whole df. Check again without {drop_cols}.')
                 pd.testing.assert_frame_equal(df_new.drop(columns=drop_cols, errors='ignore'),
                                               df_old.drop(columns=drop_cols, errors='ignore'), check_like=True)
