@@ -36,7 +36,6 @@ class LigandExtraction:
                  exclude_not_fully_connected_complexes: bool = True,
                  testing: Union[bool, int] = False,
                  graph_strat: str = "default",
-                 save_intermediate_databases: bool = False,
                  exclude_charged_complexes: bool = False,
                  only_complexes_with_os: bool = False,
                  only_real_transition_metals: bool = False,
@@ -51,7 +50,7 @@ class LigandExtraction:
         self.exclude_not_fully_connected_complexes = None
         self.testing = None
         self.complex_db = None
-        self.basic_ligand_infos = None
+        self.df_full_ligand_db = None
         self.test_complexes = None
         self.exclude_charged_complexes = exclude_charged_complexes
         self.only_complexes_with_os = only_complexes_with_os
@@ -60,7 +59,6 @@ class LigandExtraction:
         self.unique_ligand_id = unique_ligand_id
 
         self.excluded_complex_ids = defaultdict(list)
-        self.save_intermediate_databases = save_intermediate_databases
         self.graph_strat = graph_strat
 
         self.check_and_set_init_input(
@@ -69,6 +67,10 @@ class LigandExtraction:
             exclude_not_fully_connected_complexes=exclude_not_fully_connected_complexes,
             testing=testing,
         )
+
+        # Define properties which will be passed to the Linear Charge Solver
+        self.LCS_needed_complex_props = ['mol_id', 'metal_oxi_state', 'charge', 'ligand_names']
+        self.LCS_needed_ligand_props = ['stoichiometry', 'name', 'n_protons', 'unique_name']
 
         self.input_complexes_json = Path(self.data_store_path, 'tmQMG.json')
         self.output_complexes_json = Path(self.data_store_path, 'complex_db.json')
@@ -362,7 +364,8 @@ class LigandExtraction:
         self.prefilter_input_complex_db()
         self.complex_db = self.standardize_input_complex_db(self.complex_db)
 
-        self.basic_ligand_infos = []
+        df_full_ligand_db = []
+        df_complex_db = []
         for csd_code, comp in tqdm(self.complex_db.db.items(), desc="Extracting ligands from complexes"):
             comp.de_assemble()
 
@@ -371,13 +374,21 @@ class LigandExtraction:
                 # Make a dataframe with basic ligand infos which doesn't take up much memory but has enough information to compute the grouping in unique ligands.
                 ligand_infos = self.get_ligand_class_properties_of_complex(
                                                                             complex_=comp,
-                                                                            props=['name', 'graph_hash', 'denticity', 'has_good_bond_orders', self.unique_ligand_id]
+                                                                            props=['name', 'stoichiometry', 'n_protons', 'graph_hash', 'denticity', 'has_good_bond_orders', self.unique_ligand_id]
                                                                             )
-                self.basic_ligand_infos.extend(ligand_infos)
+                df_full_ligand_db.extend(ligand_infos)
+                df_complex_db.append({
+                                            'mol_id': comp.mol_id,
+                                            'stoichiometry': comp.stoichiometry,
+                                            'metal_oxi_state': comp.metal_oxi_state,
+                                            'charge': comp.charge,
+                                            'ligand_names': [lig.name for lig in comp.ligands],
+                                        })
             else:
                 self.excluded_complex_ids[validity].append(csd_code)
 
-        self.basic_ligand_infos = pd.DataFrame(self.basic_ligand_infos)
+        self.df_full_ligand_db = pd.DataFrame(df_full_ligand_db).set_index('name', drop=False)
+        self.df_complex_db = pd.DataFrame(df_complex_db).set_index('mol_id', drop=False)
 
         self.delete_filtered_complexes_from_db()
         self.print_excluded_complexes()
@@ -410,7 +421,7 @@ class LigandExtraction:
         if groupby is None:
             groupby = self.unique_ligand_id
 
-        grouped_ligands = self.basic_ligand_infos.groupby(groupby, sort=False).agg(list)
+        grouped_ligands = self.df_full_ligand_db.groupby(groupby, sort=False).agg(list)
 
         return grouped_ligands
 
@@ -509,6 +520,10 @@ class LigandExtraction:
         for uname, ulig in self.unique_ligand_db.db.items():
             for name in ulig.all_ligand_names:
                 self.ligand_to_unique_ligand[name] = uname
+
+        # Add unique name column to full ligand df
+        df_ligand_to_unique_ligand = pd.DataFrame.from_dict(self.ligand_to_unique_ligand, orient='index', columns=['unique_name'])
+        self.df_full_ligand_db  = pd.merge(self.df_full_ligand_db, df_ligand_to_unique_ligand, left_index=True, right_index=True, how='left')
 
         return
 
@@ -653,21 +668,20 @@ class LigandExtraction:
 
         return
 
-    def get_complex_dict_for_LCS(self):
+    def get_complex_dict_for_LCS(self) -> dict:
         """
-        Returns a dictionary of all complexes with only the needed properties for the LCS.
+        Returns a dictionary of all complexes with only the needed properties for the Linear Charge Solver.
         """
-        needed_complex_props = ['mol_id', 'metal_oxi_state', 'charge']
-        needed_ligand_props = ['stoichiometry', 'name', 'unique_name', 'n_protons']
+        charge_complexes = self.df_complex_db[self.LCS_needed_complex_props].to_dict(orient='index')
 
-        charge_complexes = {}
-        for c_id, c in self.complex_db.db.items():
-            charge_complexes[c_id] = {prop: getattr(c, prop) for prop in needed_complex_props}
-
+        for c_id, c in charge_complexes.items():
             charge_complexes[c_id]['ligands'] = []
-            for lig in c.ligands:
-                lig_props = {prop: getattr(lig, prop) for prop in needed_ligand_props}
+            for name in c['ligand_names']:
+                lig = self.df_full_ligand_db.loc[name]
+                lig_props = {prop: lig.loc[prop] for prop in self.LCS_needed_ligand_props}
                 charge_complexes[c_id]['ligands'].append(lig_props)
+            # Delete ligand names because they are not needed anymore
+            del charge_complexes[c_id]['ligand_names']
 
         return charge_complexes
 
@@ -681,8 +695,7 @@ class LigandExtraction:
                               calculate_charges: bool = True,
                               overwrite_atomic_properties: bool = True,
                               use_existing_input_json: bool = True,
-                              get_only_unique_ligand_db_without_charges: bool = False,
-                              max_charge_iterations: Union[int, None] = None,
+                              max_charge_iterations: Union[int, None] = 10,
                               **kwargs
                               ):
         """
@@ -698,47 +711,33 @@ class LigandExtraction:
                              graph_creating_strategy=self.graph_strat,
                              **kwargs
                              )
-        if self.save_intermediate_databases:
-            self.complex_db.to_json(path=self.output_complexes_json, desc='Save intermediate complex db')
 
         # Attention: The ligands of the full ligand database are just a view on the ligands of the complex db. This is done for memory efficiency and speed. To change this, it is not enough to just set copy to True, but the full ligand db needs to be updated with unique ligand information and with charges.
         self.full_ligand_db = self.build_full_ligand_db(copy=False)
-        if self.save_intermediate_databases:
-            self.full_ligand_db.to_json(path=self.full_ligands_json, desc='Save intermediate full ligand db')
 
         self.build_unique_ligand_db()
-        if self.save_intermediate_databases:
-            self.unique_ligand_db.to_json(path=self.unique_ligands_json, desc='Save intermediate unique ligand db')
 
-        if not get_only_unique_ligand_db_without_charges:
-            # Update complex db to include information about the unique ligands for the LCS.
-            share_properties = ['unique_name']
-            collect_properties = {'unique_ligand_information': self.unique_ligand_info_props}
-            self.update_complex_db_with_information(share_properties=share_properties,
-                                                    collect_properties=collect_properties)
-            if self.save_intermediate_databases:
-                self.complex_db.to_json(path=self.output_complexes_json, desc='Save updated complex database')
+        # Update complex db to include information about the unique ligands for the LCS.
+        share_properties = ['unique_name']
+        collect_properties = {'unique_ligand_information': self.unique_ligand_info_props}
+        self.update_complex_db_with_information(share_properties=share_properties,
+                                                collect_properties=collect_properties)
 
-            if self.save_intermediate_databases:
-                self.full_ligand_db.to_json(path=self.full_ligands_json, desc='Save updated full ligand database')
+        # Charge assignment using only the linear charge solver (LCS) right now
+        if calculate_charges:
+            print('\nCHARGE CALCULATION:')
+            df_ligand_charges = self.calculate_ligand_charges(max_iterations=max_charge_iterations)
+            self.update_databases_with_charges(df_ligand_charges=df_ligand_charges)
 
-            # Charge assignment using only the linear charge solver (LCS) right now
-            if calculate_charges:
-                print('\nCHARGE CALCULATION:')
-                df_ligand_charges = self.calculate_ligand_charges(max_iterations=max_charge_iterations)
-                self.update_databases_with_charges(df_ligand_charges=df_ligand_charges)
-        else:
-            calculate_charges = False
-
+        # Update unique ligand db with global information about identical ligands
         self.update_unique_ligand_db_with_database_info()
 
         self.unique_ligand_db.to_json(self.unique_ligands_json, desc='Save unique ligand db to json')
-        self.full_ligand_db.to_json(self.full_ligands_json, desc='Save full ligand db to json')
-        self.complex_db.to_json(self.output_complexes_json, desc='Save complex db to json')
+        self.full_ligand_db.to_json(self.full_ligands_json, desc='Save full ligand db to json', json_lines=True)
+        self.complex_db.to_json(self.output_complexes_json, desc='Save complex db to json', json_lines=True)
 
         with_charges = 'with charges' if calculate_charges else 'without charges'
-        updates = ' Complex db and full ligand db were not updated with unique ligand information.' if get_only_unique_ligand_db_without_charges else ''
-        print(f'\nLigand database {with_charges} established successfully!{updates}')
+        print(f'\nLigand database {with_charges} established successfully!')
 
         duration = get_duration_string(start)
         print(f'Duration of extraction: {duration}')

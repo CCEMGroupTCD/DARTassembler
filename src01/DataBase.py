@@ -1,3 +1,4 @@
+import functools
 import json
 from copy import deepcopy
 from tqdm import tqdm
@@ -8,11 +9,11 @@ from src01.utilities_graph import remove_node_features_from_graph, make_multigra
 from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
-from src01.io_custom import save_json
+from src01.io_custom import save_json, NumpyEncoder
 from typing import Union
 from datetime import datetime
 from pathlib import Path
-
+import jsonlines
 
 class BaselineDB:
     def __init__(self, dict_: dict):
@@ -49,9 +50,15 @@ class BaselineDB:
             json_dict[key] = mol.write_to_mol_dict()
         return json_dict
 
-    def to_json(self, path, desc: str='Save DB to json'):
-        d = self.get_dict_in_json_format(desc=desc)
-        save_json(d, path=path, indent=4)
+    def to_json(self, path, desc: str='Save DB to json', json_lines: bool=False):
+        if json_lines:
+            with jsonlines.open(path, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as writer:
+                for key, mol in tqdm(self.db.items(), desc):
+                    data = {'key': key, 'value': mol.write_to_mol_dict()}
+                    writer.write(data)
+        else:
+            d = self.get_dict_in_json_format(desc=desc)
+            save_json(d, path=path, indent=4)
 
         return
 

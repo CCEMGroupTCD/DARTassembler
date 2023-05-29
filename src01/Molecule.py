@@ -33,7 +33,7 @@ from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node
     get_only_complex_graph_connected_to_metal, get_adjacency_matrix, assert_graph_and_coordinates_are_consistent
 from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, graph_to_rdkit_mol, \
-    unknown_rdkit_bond_orders
+    unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center
 from src04_Assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
 
@@ -658,6 +658,7 @@ class RCA_Ligand(RCA_Molecule):
 
         if 'original_metal_os' in kwargs.keys():
             self.original_metal_os = kwargs['original_metal_os']
+        self.is_centrosymmetric, self.centrosymmetry_ang_dev = self.check_if_centrosymmetric(return_ang_dev=True)
 
         # The graph_hash_with_metal is not calculated with the real original metal, but with a pseudo metal which is always the same, so that only the connections to the metal matter, but different original metals won't give different hashes. This means ligands are considered the same independent of the original metal under this hash.
         self.graph_hash_with_metal = self.get_graph_hash_with_metal(metal_symbol='Hg')
@@ -688,6 +689,32 @@ class RCA_Ligand(RCA_Molecule):
                 }
 
         return stats
+
+    def calculate_angular_deviation_from_centrosymmetry(self) -> float:
+        """
+        Calculate the angular deviation from centrosymmetry. Only defined for monodentate ligands.
+        :return: Angular deviation from centrosymmetry for monodentates, np.nan for others.
+        """
+        return calculate_angular_deviation_of_bond_axis_from_ligand_center(atomic_props=self.atomic_props, donor_indices=self.ligand_to_metal, metal_position=self.original_metal_position)
+
+    def check_if_centrosymmetric(self, threshold: float=8, return_ang_dev=False) -> Union[bool, tuple[bool, float]]:
+        """
+        Check if the ligand is centrosymmetric. Only defined for monodentate ligands.
+        @return: True if the ligand is monodentate and centrosymmetric, False otherwise.
+        """
+        if self.denticity != 1:
+            if return_ang_dev:
+                return False, np.nan
+            else:
+                return False
+
+        ang_dev = self.calculate_angular_deviation_from_centrosymmetry()
+        centrosymmetric = bool(ang_dev < threshold)
+
+        if return_ang_dev:
+            return centrosymmetric, ang_dev
+        else:
+            return centrosymmetric
 
     def count_atoms_with_n_bonds(self, element: Union[str, None], n_bonds: int, graph_element_label: str='node_label', remember_metal: bool=False) -> int:
         """

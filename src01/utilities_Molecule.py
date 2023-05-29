@@ -2,7 +2,8 @@ import collections
 
 import networkx as nx
 from rdkit import Chem
-
+from pymatgen.core.periodic_table import Element as Pymatgen_Element
+import numpy as np
 from pymatgen.core.composition import Composition
 
 # Removed this due to circular import error, and this was only used for type hinting.
@@ -82,6 +83,54 @@ def get_all_ligands_by_graph_hashes(all_ligands: list) -> dict:
 
     return all_ligands_by_hashes
 
+def calculate_angular_deviation_of_bond_axis_from_ligand_center(atomic_props: dict, metal_position: tuple, donor_indices: list, use_center_of_mass: bool=False) -> float:
+    """
+    Calculate for monodentate ligands the angular deviation of the bond axis from the ligand center or center of mass.
+    :param atomic_props: Dictionary containing atom types and their coordinates.
+    :param metal_position: Coordinates of the metal center.
+    :param donor_indices: Indices of atoms involved in coordination to the metal center.
+    :param use_center_of_mass: Whether to use the center of mass or the center of points.
+    :return: Angular deviation from centrosymmetry for monodentates, np.nan for others.
+    """
+    # Check if monodentate
+    if len(donor_indices) != 1:
+        return np.nan
+
+    x_centroid_list = np.array(atomic_props['x'])
+    y_centroid_list = np.array(atomic_props['y'])
+    z_centroid_list = np.array(atomic_props['z'])
+
+    # Calculate centroid
+    if use_center_of_mass:
+        atoms_list = atomic_props['atoms']
+        masses = np.array([Pymatgen_Element(atom).atomic_mass for atom in atoms_list])
+        x_centroid = np.sum(masses * x_centroid_list) / np.sum(masses)
+        y_centroid = np.sum(masses * y_centroid_list) / np.sum(masses)
+        z_centroid = np.sum(masses * z_centroid_list) / np.sum(masses)
+    else:
+        x_centroid = np.mean(x_centroid_list)
+        y_centroid = np.mean(y_centroid_list)
+        z_centroid = np.mean(z_centroid_list)
+
+    centre_of_points = np.array([x_centroid, y_centroid, z_centroid]) - np.array(metal_position)
+    coord_atom_pos = np.array([x_centroid_list[donor_indices[0]],
+                               y_centroid_list[donor_indices[0]],
+                               z_centroid_list[donor_indices[0]]]) - np.array(metal_position)
+
+    v1 = coord_atom_pos
+    v2 = centre_of_points
+    v3 = v2 - v1
+    if np.all(v1 != v2):
+        cosine = np.dot(v1 * (-1), v3) / (np.linalg.norm(v1 * (-1)) * np.linalg.norm(v3))
+        cosine = np.clip(cosine, -1, 1)  # Clip the cosine value to avoid ValueError in np.arccos
+        angle = np.arccos(cosine)
+        angle = np.degrees(angle)
+    else:
+        angle = 180
+
+    min_ang_dev = min((abs(180 - angle), abs(0 - angle)))
+
+    return min_ang_dev
 
 def group_list_without_hashing(ligand_list: list) -> list:
     """

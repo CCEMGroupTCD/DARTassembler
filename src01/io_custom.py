@@ -8,7 +8,7 @@ from datetime import datetime
 from src01.utilities import get_duration_string
 from typing import Union
 from pathlib import Path
-
+import jsonlines
 
 class NumpyEncoder(json.JSONEncoder):
     """Special json encoder for numpy types. This is important to use in json.dump so that if json encounters a np.array, it converts it to a list automatically, otherwise errors arise. Use like this:
@@ -21,12 +21,32 @@ class NumpyEncoder(json.JSONEncoder):
             return float(obj)
         elif isinstance(obj, np.ndarray):
             return obj.tolist()
+        elif isinstance(obj, np.bool_):
+            return bool(obj)
+        elif isinstance(obj, np.str_):
+            return str(obj)
+        elif isinstance(obj, np.string_):
+            return str(obj)
         return json.JSONEncoder.default(self, obj)
 
 
 def load_json(path: Union[str, Path]) -> dict:
-    with open(path, 'r') as file:
-        db = json.load(file)
+    """
+    Load a JSON or JSON Lines file. If the file is a JSON Lines file, it is converted to a dictionary.
+    :param path: Path to the JSON or JSON Lines file
+    :return: Dictionary with the contents of the file
+    """
+    try:
+        # Try to load as normal JSON file first
+        with open(path, 'r') as file:
+            db = json.load(file)
+    except json.JSONDecodeError:
+        # If normal JSON fails, try to load as JSON Lines
+        with jsonlines.open(path, 'r') as reader:
+            db = {}
+            for line in reader:
+                # Since 'line' is a dictionary, no need to use json.loads
+                db[line["key"]] = line["value"]
 
     return db
 

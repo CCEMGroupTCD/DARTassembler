@@ -8,6 +8,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score, r2_score
 
 from src01.DataBase import LigandDB, ComplexDB
+from src01.io_custom import load_json
 from src01.main_ligand_extraction import main
 from src01.utilities import unroll_dict_into_columns, sort_dict_recursively_inplace
 from pathlib import Path
@@ -140,14 +141,12 @@ if __name__ == '__main__':
     database_path = '../data_input/CSD_MM_G'  # in github
     data_store_path = '../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
-    testing = 5000  # if we would like to only do a test run
+    testing = 100  # if we would like to only do a test run. Set to False for full run
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     calculate_charges = True  # if you want to run charge assignment after ligand extraction
-    overwrite_atomic_properties = False  # if atomic properties json should be overwritten, not really critical
-    use_existing_input_json = False  # if the existing input json should be used or the process started from the xzy files
-    get_only_unique_ligand_db_without_charges = False  # For graph benchmark useful, reduces runtime because it ignores charge assignment and updating the complex and full ligand db.
-    max_charge_iterations = 10  # The maximum number of iterations in charge assignment for iterative consistency checking
+    overwrite_atomic_properties = False  # if atomic properties json should be overwritten. Only necessary after changing input files.
+    use_existing_input_json = True  # if the existing input json should be used. For speeding up test runs.
 
     # Input complex filters
     exclude_not_fully_connected_complexes = False  # only keep complexes which are fully connected
@@ -160,11 +159,9 @@ if __name__ == '__main__':
         overwrite_atomic_properties_=overwrite_atomic_properties,
         use_existing_input_json_=use_existing_input_json,
         exclude_not_fully_connected_complexes_=exclude_not_fully_connected_complexes,
-        get_only_unique_ligand_db_without_charges_=get_only_unique_ligand_db_without_charges,
         testing_=testing,
         graph_strat_=graph_strategy,
         exclude_charged_complexes=exclude_charged_complexes,
-        max_charge_iterations=max_charge_iterations
     )
     
 
@@ -187,14 +184,15 @@ if __name__ == '__main__':
         #%%
 
         print('Read in output to look at it.')
-        df_unique_ligands = pd.read_json(db.unique_ligands_json, orient='index')
+        df_unique_ligands = pd.DataFrame.from_dict(load_json(db.unique_ligands_json), orient='index')
         df_unique_ligands = unroll_dict_into_columns(df_unique_ligands, dict_col='global_props', prefix='gbl_', delete_dict=True)
         df_unique_ligands = unroll_dict_into_columns(df_unique_ligands, dict_col='stats', prefix='stats_', delete_dict=True)
-        df_full_ligands = pd.read_json(db.full_ligands_json, orient='index')
+        df_full_ligands = pd.DataFrame.from_dict(load_json(db.full_ligands_json), orient='index')
         df_full_ligands = unroll_dict_into_columns(df_full_ligands, dict_col='global_props', prefix='gbl_', delete_dict=True)
         df_full_ligands = unroll_dict_into_columns(df_full_ligands, dict_col='stats', prefix='stats_', delete_dict=True)
-        df_complexes = pd.read_json(db.output_complexes_json, orient='index')
+        df_complexes = pd.DataFrame.from_dict(load_json(db.output_complexes_json), orient='index')
         df_complexes = unroll_dict_into_columns(df_complexes, dict_col='global_props', prefix='gbl_', delete_dict=True)
+
 
         c = df_complexes.iloc[0].to_dict()
         ulig = df_unique_ligands.iloc[0].to_dict()
@@ -215,7 +213,7 @@ if __name__ == '__main__':
                 print(f'ERROR: Path for {db_name} doesn\'t exist. Cannot doublecheck output.')
                 continue
 
-            df_old = pd.read_json(old_path, orient='index')
+            df_old = pd.DataFrame.from_dict(load_json(old_path), orient='index')
             df_old = unroll_dict_into_columns(df_old, dict_col='global_props', prefix='gbl_', delete_dict=True)
             try:
                 df_old = unroll_dict_into_columns(df_old, dict_col='stats', prefix='stats_', delete_dict=True)
@@ -269,8 +267,7 @@ if __name__ == '__main__':
         #     print('  Complex db: not the same!')
         # else:
         #     print('  Complex db: good')
-
-
+        #
 
     print('Done!')
 
