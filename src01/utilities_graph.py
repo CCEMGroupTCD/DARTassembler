@@ -75,6 +75,7 @@ def get_graph_hash(graph, node_attr='node_label', iterations=3, digest_size=16, 
     @return: graph hash
     """
     return graph_hash(graph, node_attr=node_attr, edge_attr=edge_attr, iterations=iterations, digest_size=digest_size)
+
 def smiles2nx(smiles_str: str, explicit_H: bool = True):
     """
     a convenient method to convert smiles string into nx.graphs with the desired format for our purposes

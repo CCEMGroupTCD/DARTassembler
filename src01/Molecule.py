@@ -5,7 +5,6 @@ import warnings
 import networkx as nx
 import numpy as np
 from copy import deepcopy
-from sympy import Point3D, acos, pi
 
 # some special functions which are required
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
@@ -37,7 +36,6 @@ from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_l
 from src05_Assembly_Refactor.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
 
-# Package name: RandomComplexAssembler (RCA)
 class RCA_Molecule(object):
     """
     The idea of this class is to build a method which contains an ase molecule for visualization but also other convenient features, as a graph representation and all the global information we have at hand when creating a database
@@ -149,6 +147,7 @@ class RCA_Molecule(object):
         assert same_atoms_contained, f'The atoms from the graph and the atoms from the atomic_props don\'t match:{both_atom_lists_printed}'
         same_order_of_atoms = atoms == self.atomic_props['atoms']
         assert same_order_of_atoms, f'Order of atoms in graph and in atomic_props doesn\'t match:{both_atom_lists_printed}'
+
     def add_warning(self, warning):
         self.warnings.append(warning)
 
