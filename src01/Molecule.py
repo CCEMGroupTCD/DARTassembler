@@ -755,10 +755,14 @@ class RCA_Ligand(RCA_Molecule):
         @param element (str, None): specification of the element, e.g. 'C'. If None, all elements are counted.
         @param n_bonds (int): count an atom if it has exactly this number of bonds
         @param graph_element_label (str): the label of the element string in the graph attributes. Only necessary if element is not None.
-        @param remember_metal (bool): If the original bonds to the metal should be considered or not.
+        @param remember_metal (bool): If the original bonds to the metal should be considered or not. Only relevant for ligands.
         @return (int): integer count of the occurrences
         """
-        graph = self.graph_with_metal if remember_metal else self.graph
+        try:
+            graph = self.graph_with_metal if remember_metal else self.graph
+        except AttributeError:
+            graph = self.graph
+
         n = count_atoms_with_n_bonds(graph=graph, element=element, n_bonds=n_bonds, graph_element_label=graph_element_label)
 
         return n

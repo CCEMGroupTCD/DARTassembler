@@ -68,49 +68,49 @@ def graph_to_smiles(graph, element_label='node_label', bond_label='bond_type'):
     return smiles
 
 
-if __name__ == '__main__':
-
-    # db_version = '1.6'
-    # db_path = f'../data/final_db_versions/complex_db_v{db_version}.json'
-    #
-    #
-    # # db_path = '/Users/timosommer/PhD/projects/RCA/projects/CreateTMC/data_output/CSD_MM_G_Jsons_test/complex_db.json'
-    # df = pd.DataFrame.from_dict(load_complex_db(path=db_path), orient='index')
-    # data = load_complex_db(path=db_path, molecule='class')
-    # # df = df[df['denticity'] > 0]
-    # # lig = data['unq_CSD-FIXVAL-02-a']
-    #
-    # #%%
-    # ligands = {}
-    # all_bond_orders = []
-    # for name, lig in data.items():
-    #     bond_orders = [edge['bond_type'] for _, _, edge in lig.graph.edges(data=True)]
-    #     all_bond_orders.extend(bond_orders)
-    #     ligands[name] = {
-    #                         'bond_orders': bond_orders,
-    #                         'good_bond_orders': lig.check_for_good_bond_orders(),
-    #     }
-    # df_ligs = pd.DataFrame.from_dict(ligands, orient='index')
-    # df = df.join(df_ligs)
-    #
-    # #%%
-    # frac_good_bond_orders = df['good_bond_orders'].sum() / len(df)
-    # good_bond_orders = pd.Series(all_bond_orders).value_counts()
-    # print(f'Fraction of molecules with good bond orders: {frac_good_bond_orders:.2f}')
-    # print(f'Good bond orders: {good_bond_orders}')
-
-    # #%% plot bond orders
-    # plt.figure()
-    # sns.histplot(all_bond_orders)
-    # plt.savefig('/Users/timosommer/Downloads/bond_orders.png', dpi=300)
-
-
-
-
-    # lig = df.iloc[0]
-    #
-    # bond_orders = {name: [edge['bond_type'] for _, edge in mol.graph.edges(data=True)] for name, mol in data.items()}
-    # ligands = {}
-    # for name, mol in data.items():
-    #     _, _, edge_dict = mol.graph.nodes(data=True)
-    #     bond_orders = edge_dict['bond_type']
+# if __name__ == '__main__':
+#
+#     db_version = '1.6'
+#     db_path = f'../data/final_db_versions/complex_db_v{db_version}.json'
+#
+#
+#     # db_path = '/Users/timosommer/PhD/projects/RCA/projects/CreateTMC/data_output/CSD_MM_G_Jsons_test/complex_db.json'
+#     df = pd.DataFrame.from_dict(load_complex_db(path=db_path), orient='index')
+#     data = load_complex_db(path=db_path, molecule='class')
+#     # df = df[df['denticity'] > 0]
+#     # lig = data['unq_CSD-FIXVAL-02-a']
+#
+#     #%%
+#     ligands = {}
+#     all_bond_orders = []
+#     for name, lig in data.items():
+#         bond_orders = [edge['bond_type'] for _, _, edge in lig.graph.edges(data=True)]
+#         all_bond_orders.extend(bond_orders)
+#         ligands[name] = {
+#                             'bond_orders': bond_orders,
+#                             'good_bond_orders': lig.check_for_good_bond_orders(),
+#         }
+#     df_ligs = pd.DataFrame.from_dict(ligands, orient='index')
+#     df = df.join(df_ligs)
+#
+#     #%%
+#     frac_good_bond_orders = df['good_bond_orders'].sum() / len(df)
+#     good_bond_orders = pd.Series(all_bond_orders).value_counts()
+#     print(f'Fraction of molecules with good bond orders: {frac_good_bond_orders:.2f}')
+#     print(f'Good bond orders: {good_bond_orders}')
+#
+#     #%% plot bond orders
+#     plt.figure()
+#     sns.histplot(all_bond_orders)
+#     plt.savefig('/Users/timosommer/Downloads/bond_orders.png', dpi=300)
+#
+#
+#
+#
+#     lig = df.iloc[0]
+#
+#     bond_orders = {name: [edge['bond_type'] for _, edge in mol.graph.edges(data=True)] for name, mol in data.items()}
+#     ligands = {}
+#     for name, mol in data.items():
+#         _, _, edge_dict = mol.graph.nodes(data=True)
+#         bond_orders = edge_dict['bond_type']

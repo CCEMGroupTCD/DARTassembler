@@ -1,36 +1,73 @@
-from src01.Molecule import RCA_Molecule, RCA_Ligand
+from src01.Molecule import RCA_Molecule
 from src04_Assembly.building_block_utility import *
-from src02_Pre_Assembly_Filtering.constants_box_filter import get_boxes
+from src03_Pre_Assembly_Filter.constants_BoxExcluder import get_boxes
 from ase import io
 from stk import *
+import time
 
 import logging
 import stk
 import numpy as np
-
-from src04_Assembly.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
+from src05_Assembly_Refactor.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
     get_optimal_rotation_angle_tridentate, Bidentate_Rotator, nonplanar_tetra_solver, get_energy_stk
-from src04_Assembly.stk_utils import create_placeholder_Hg_bb
-import src04_Assembly.stk_extension as stk_e
+from src05_Assembly_Refactor.stk_utils import create_placeholder_Hg_bb
+import src05_Assembly_Refactor.stk_extension as stk_e
+from src01.Molecule import RCA_Ligand
 
 
+
+def delete_Hg(complex_):
+    start_time = time.perf_counter()
+    stk.MolWriter().write(complex_, '../tmp/complex.mol')
+    os.system('obabel .mol ../tmp/complex.mol .xyz -O  ../tmp/complex.xyz ---errorlevel 1')
+    path = "../tmp/complex.xyz"
+    os.system("rm -f ../tmp/complex.mol")
+    with open(path, "r") as f:
+        new_str = []
+        counter = 0
+        for line in f.readlines():
+            if len(line.split()) > 0:
+                if line.split()[0] != "Hg":
+                    new_str.append(line)
+                else:
+                    counter += 1
+            else:
+                new_str.append("\n\n")
+
+        new_str[0] = str(int(new_str[0]) - counter)
+    with open(path, "w+") as f:
+        f.write(''.join([elem for elem in new_str]))
+    os.system('obabel .xyz ../tmp/complex.xyz .mol -O  ../tmp/complex.mol ---errorlevel 1')
+    end_time = time.perf_counter()
+    execution_time = end_time - start_time
+    print(f"The execution time is: {execution_time}")
+    exit()
+    return stk.BuildingBlock.init_from_file('../tmp/complex.mol')
 
 
 def delete_Hg_improved(complex_):
 
-    mol = complex_.to_rdkit_mol()
-    Hg_index = []
-    for atom in mol.GetAtoms():
-        if atom.GetAtomicNum() == 80:
-            Hg_index.append(int(atom.GetIdx()))
-        else:
-            pass
-    mol_RW = Chem.EditableMol(mol)
-    for index in Hg_index:
-        mol_RW.RemoveAtom(index - Hg_index.index(index))
-    non_editable_mol = mol_RW.GetMol()
-    output_stk_bb = stk.BuildingBlock.init_from_rdkit_mol(non_editable_mol)
-    return output_stk_bb
+        mol = complex_.to_rdkit_mol()
+        Hg_index = []
+        for atom in mol.GetAtoms():
+            if atom.GetAtomicNum() == 80:
+                Hg_index.append(int(atom.GetIdx()))
+            else:
+                pass
+        mol_RW = Chem.EditableMol(mol)
+        for index in Hg_index:
+            mol_RW.RemoveAtom(index - Hg_index.index(index))
+        non_editable_mol = mol_RW.GetMol()
+        output_stk_bb = stk.BuildingBlock.init_from_rdkit_mol(non_editable_mol)
+        return output_stk_bb
+
+
+
+def visualize_complex():
+    mol_ = io.read('../tmp/complex.xyz')
+    ase_mol = RCA_Molecule(mol=mol_)
+    ase_mol.view_3d()
+    os.system("rm -f ../tmp/complex.xyz")
 
 
 def box_excluder_descision(stk_Building_Block, denticity_, planar=True, threshhold=0.):
@@ -61,7 +98,7 @@ def box_excluder_descision(stk_Building_Block, denticity_, planar=True, threshho
         return True
 
 
-def box_filter(ligand: RCA_Ligand, box_default_descicion=False) -> bool:
+def box_filter(ligand: RCA_Ligand, optimize_=True, box_default_descicion=False) -> bool:
     """
     Returns True if a ligand looks good and can pass
     and false if not
@@ -69,6 +106,11 @@ def box_filter(ligand: RCA_Ligand, box_default_descicion=False) -> bool:
     try:
         print("################################################################################################################################################")
         metal, charge = "Fe", "+2"
+
+        metal_bb = stk.BuildingBlock(smiles='[Hg+2]',
+                                     functional_groups=(stk.SingleAtom(stk.Hg(0, charge=2)) for i in range(6)),
+                                     position_matrix=np.ndarray([0, 0, 0])
+                                     )
 
         # build the metal block with the new metal atom
         smiles_str = f"[{metal}{charge}]"
@@ -80,7 +122,31 @@ def box_filter(ligand: RCA_Ligand, box_default_descicion=False) -> bool:
                                            position_matrix=np.ndarray([0, 0, 0])
                                            )
 
+
+        #lig_assembly_dict = ligand.get_assembly_dict()
+
+        #xyz_str = lig_assembly_dict["str"]
+
+        ###
+        #mol_b = ob.OBMol()
+        #conv = ob.OBConversion()
+        #conv.SetInAndOutFormats("xyz", "mol")
+        #conv.ReadString(mol_b, xyz_str)
+        #metal_string_output = conv.WriteString(mol_b)
+        #mol_metal = rdmolfiles.MolFromMolBlock(metal_string_output, removeHs=False, sanitize=False, strictParsing=False)  # Created rdkit object of just metal atom
+        #ligand_bb = stk.BuildingBlock.init_from_rdkit_mol(mol_metal)
+        ###
+
+
+
+
+        #with open("../tmp/lig_xyz.xyz", "w+") as f:
+            #f.write(xyz_str)
+
+        #os.system('obabel .xyz ../tmp/lig_xyz.xyz .mol -O  ../tmp/lig_mol.mol ---errorlevel 1')
         ligand_bb = ligand.to_stk_bb()
+        #os.remove("../tmp/lig_mol.mol")
+
 
         print("The ligand denticity is: " + str(ligand.denticity))
 
@@ -161,18 +227,22 @@ def box_filter(ligand: RCA_Ligand, box_default_descicion=False) -> bool:
                 functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), ), ]
             )
 
+
+
         elif ligand.denticity == 2:
             ligand_name = str(ligand.name)
             print("The ligand name is " + str(ligand_name))
             print("I have encountered a bidentate ligand")
-            # Rember that the Bidentate_planar_Right_needs to be edited to accomidate a bidentate ligand in different positions
+            #Rember that the Bidentate_planar_Right_needs to be edited to accomidate a bidentate ligand in different positions
             bidentate_topology = stk_e.Bidentate_Planar_Right(metals=create_placeholder_Hg_bb(), ligands=ligand_bb)
             complex_bidentate = stk.ConstructedMolecule(topology_graph=bidentate_topology)
 
             print("The number of atoms are " + str(complex_bidentate.get_atomic_positions()))
             new_mol_path = Bidentate_Rotator(ligand_bb=complex_bidentate, ligand=ligand, top_list=[2, 2], bool_placed=False)
             bb_for_comp = stk.BuildingBlock.init_from_file(new_mol_path, functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), ), ], )
-
+            #bb_for_comp.write('../tmp/complex.xyz')
+            #visualize_complex()
+            #a = input("return")
         else:
             print("Something went wrong")
             raise ValueError

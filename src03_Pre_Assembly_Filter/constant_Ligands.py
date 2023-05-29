@@ -8,6 +8,7 @@ def get_reactant():
     Will decode the reactant by denticity 0
     In our case it is only OH
     """
+    reactants = []
     atomic_props = {"atoms": ["O", "H"], "x": [0, 0.2096], "y": [0, -0.5615], "z": [1.4361, 2.1227]}
     Hydroxide = RCA_Ligand(atomic_props=atomic_props,
                            denticity=0,
@@ -20,8 +21,7 @@ def get_reactant():
     Hydroxide.global_props.update({"LCS_pred_charge": -1})
     #reactants.append(Hydroxide)
 
-
-    return Hydroxide
+    return reactants
 
 
 def get_monodentate_list():
@@ -42,7 +42,6 @@ def get_monodentate_list():
                            )
     Hydroxide.global_props.update({"LCS_pred_charge": -1})
     #monodentate_ligands.append(Hydroxide)
-
 
     #
     #
@@ -90,7 +89,6 @@ def get_monodentate_list():
                          unique_name="NH3",
                          graph=None,
                          original_metal_position = [0, 0, 0]
-
                          )
     Ammonia.global_props.update({"LCS_pred_charge": 0})
     # monodentate_ligands.append(Ammonia)
@@ -173,12 +171,9 @@ def get_monodentate_list():
     #
     # 9.
     atomic_props = {"atoms": ["N", "C", "C", "C", "H", "H", "H", "H", "H", "H", "H", "H", "H"],
-                    "x": [-7.01591, -5.83377, -6.93084, -8.23178, - 5.73266, -4.92471, - 5.87628, - 6.04180, - 6.88690,
-                          - 7.79583, - 8.31804, - 9.12049, - 8.25563],
-                    "y": [-0.65827, -1.38182, 0.75351, -1.25868, - 1.35195, - 0.95903, - 2.43084, 1.21526, 0.89466,
-                          1.30534, - 2.30545, - 0.74356, - 1.22239],
-                    "z": [-0.50304, -0.03640, -0.13104, 0.04461, 1.05466, - 0.47857, - 0.35010, - 0.57495, 0.95509,
-                          - 0.51569, - 0.26761, - 0.33684, 1.13989]
+                    "x": [-7.01591, -5.83377, -6.93084, -8.23178, - 5.73266, -4.92471, - 5.87628, - 6.04180, - 6.88690, - 7.79583, - 8.31804, - 9.12049, - 8.25563],
+                    "y": [-0.65827, -1.38182, 0.75351, -1.25868, - 1.35195, - 0.95903, - 2.43084, 1.21526, 0.89466, 1.30534, - 2.30545, - 0.74356, - 1.22239],
+                    "z": [-0.50304, -0.03640, -0.13104, 0.04461, 1.05466, - 0.47857, - 0.35010, - 0.57495, 0.95509, - 0.51569, - 0.26761, - 0.33684, 1.13989]
                     }
     Tetramethylamine = RCA_Ligand(atomic_props=atomic_props,
                                   denticity=1,
