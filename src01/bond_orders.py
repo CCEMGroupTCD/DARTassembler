@@ -88,7 +88,7 @@ if __name__ == '__main__':
         all_bond_orders.extend(bond_orders)
         ligands[name] = {
                             'bond_orders': bond_orders,
-                            'good_bond_orders': lig.has_good_bond_orders(),
+                            'good_bond_orders': lig.check_for_good_bond_orders(),
         }
     df_ligs = pd.DataFrame.from_dict(ligands, orient='index')
     df = df.join(df_ligs)

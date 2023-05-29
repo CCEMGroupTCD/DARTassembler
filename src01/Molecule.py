@@ -97,10 +97,11 @@ class RCA_Molecule(object):
                 graph = self.get_reindexed_graph()
             self.graph = graph
 
+        # Bond and bond order attributes
         self.n_bonds = len(self.graph.edges)
-        self.has_good_bond_orders = self.has_good_bond_orders()             # has bond orders and all are known
-        self.has_bond_order_attribute = self.has_bond_order_attribute()     # has bond order attribute for all bonds, but some bonds are marked as unknown
-        self.has_unknown_bond_orders = self.has_unknown_bond_orders()       # at least one of the bond orders is unknown
+        self.has_bond_order_attribute = self.check_for_bond_order_attribute()     # has bond order attribute for all bonds, but some bonds are marked as unknown
+        self.has_unknown_bond_orders = self.check_for_unknown_bond_orders()       # at least one of the bond orders is unknown
+        self.has_good_bond_orders = self.check_for_good_bond_orders()             # has bond orders and all are known
 
         self.validity_check_created_molecule()
 
@@ -119,13 +120,13 @@ class RCA_Molecule(object):
         self.set_other_props_as_properties(other_props=other_props)
 
         # outcommented for now because not really needed and maybe computationally expensive
-        # if self.has_good_bond_orders:
+        # if self.check_for_good_bond_orders():
         #     self.smiles = self.get_smiles()
         # else:
         #     self.smiles = None
 
         # outcommented for now because memory intensive
-        # if self.has_bond_order_attribute:
+        # if self.check_for_bond_order_attribute():
         #     self.n_unknown_bond_orders = self.count_unknown_bond_orders()
         #     for _, _, edge in self.graph.edges(data=True):
         #         edge['bond_order_pysmiles'] = bond_order_rdkit_to_pysmiles[edge['bond_type']]
@@ -249,7 +250,6 @@ class RCA_Molecule(object):
 
         return n_bonds
 
-
     def get_n_protons(self) -> int:
         n_protons = Composition(self.stoichiometry).total_electrons
         assert n_protons == sum([Pymatgen_Element(el).Z for el in self.atomic_props['atoms']])
@@ -261,6 +261,9 @@ class RCA_Molecule(object):
         @param bond_types: list of integers of rdkit bond types
         @return: True if the molecular graph has any of the specified bond types, False otherwise
         """
+        if not self.check_for_bond_order_attribute():
+            return False
+
         for idx1, idx2, bond_dict in self.graph.edges(data=True):
             bond_type = bond_dict[bond_type_name]
             if bond_type in bond_types:
@@ -268,13 +271,15 @@ class RCA_Molecule(object):
 
         return False
 
-
-    def count_bond_types(self, bond_types: list, bond_type_name: str='bond_type') -> int:
+    def count_bond_types(self, bond_types: list, bond_type_name: str='bond_type') -> Union[int, float]:
         """
         Counts the number of specified bond types in the molecular graph.
         @param bond_types: list of integers of rdkit bond types
         @return: True if the molecular graph has any of the specified bond types, False otherwise
         """
+        if not self.check_for_bond_order_attribute():
+            return np.nan
+
         n = 0
         for idx1, idx2, bond_dict in self.graph.edges(data=True):
             bond_type = bond_dict[bond_type_name]
@@ -283,38 +288,61 @@ class RCA_Molecule(object):
 
         return n
 
-    def has_bond_order_attribute(self, bond_label: str= 'bond_type') -> bool:
+    def check_for_bond_order_attribute(self, bond_label: str= 'bond_type') -> bool:
         """
-        Checks if the graph has bond orders for all bonds. Note, these bond orders can be unknown to rdkit and therefore be not useful. If you want to test just for good bond orders, use `self.has_good_bond_orders()`.
+        Checks if the graph has bond orders for all bonds. Note, these bond orders can be unknown to rdkit and therefore be not useful. If you want to test just for good bond orders, use `self.check_for_good_bond_orders()`.
         """
-        bond_orders_present = [bond_label in self.graph.edges[edge] for edge in self.graph.edges]
-        contains_bond_orders = all(bond_orders_present)
+        try:
+            # Do not compute again if already computed
+            contains_bond_orders = self.has_bond_order_attribute
+        except AttributeError:
+            bond_orders_present = [bond_label in self.graph.edges[edge] for edge in self.graph.edges]
+            contains_bond_orders = all(bond_orders_present)
 
-        if not contains_bond_orders and any(bond_orders_present):
-            warnings.warn('Not all bonds in the molecule have bond orders. Some bonds have bond orders, some do not. Return False in check `self.has_bond_order_attribute()`.')
+            if not contains_bond_orders and any(bond_orders_present):
+                warnings.warn('Not all bonds in the molecule have bond orders. Some bonds have bond orders, some do not. Return False in check `self.check_for_bond_order_attribute()`.')
 
         return contains_bond_orders
 
-    def has_unknown_bond_orders(self):
+    def check_for_unknown_bond_orders(self) -> bool:
         """
         Checks whether the molecular graph has any bond orders that cannot be understood by smiles.
         @return:
         """
+        try:
+            # Do not compute again if already computed
+            return self.has_unknown_bond_orders
+        except AttributeError:
+            pass
+
+        if not self.check_for_bond_order_attribute():
+            return True
+
         return self.has_bond_type(unknown_rdkit_bond_orders)
 
-    def count_unknown_bond_orders(self):
+    def count_unknown_bond_orders(self) -> Union[int, float]:
         """
         Counts the number of bond orders which are specified as unknown.
         @return:
         """
+        if not self.check_for_bond_order_attribute():
+            return np.nan
+
         return self.count_bond_types(unknown_rdkit_bond_orders)
 
-    def has_good_bond_orders(self):
+    def check_for_good_bond_orders(self) -> bool:
         """
-        Checkes
-        @return:
+        Checks whether the molecular graph has any bond orders that cannot be understood by smiles.
+        @return: True if the molecular graph has any bond orders that cannot be understood by smiles, False otherwise
         """
-        return self.has_bond_order_attribute() and not self.has_unknown_bond_orders()
+        try:
+            good_bond_orders_present = self.has_good_bond_orders
+        except AttributeError:
+            good_bond_orders_present = self.check_for_bond_order_attribute() and not self.check_for_unknown_bond_orders()
+
+        return good_bond_orders_present
+
+
 
     @classmethod
     def make_from_atomic_properties(cls,
@@ -387,7 +415,7 @@ class RCA_Molecule(object):
         return self.graph_hash
 
     def get_bond_order_graph_hash(self, element_label='node_label', bond_label='bond_type'):
-        if self.has_good_bond_orders:
+        if self.check_for_good_bond_orders():
             graph_hash = get_graph_hash(self.graph, node_attr=element_label, edge_attr=bond_label)
         else:
             graph_hash = None
