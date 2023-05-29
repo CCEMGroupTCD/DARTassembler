@@ -21,6 +21,7 @@ import warnings
 #warnings.filterwarnings("ignore")
 
 from constants.Serverpath.serverpath import serverpath
+from src01.io_custom import load_json
 from src01.utilities_graph import graph_from_graph_dict
 
 # try:
@@ -243,8 +244,7 @@ class GraphCreation:
         graph_file_path = f"{serverpath}/Raw_CSD_MM_G/Graphs"
 
         try:
-            with open(f"{graph_file_path}/{identifier}_g.json", "r") as f:
-                self.G = graph_from_graph_dict(json.load(f))
+            self.G = graph_from_graph_dict(load_json(f"{graph_file_path}/{identifier}_g.json"))
 
         except FileNotFoundError:
             warnings.warn("Graph directory not found, standard graphs are getting created", UserWarning)

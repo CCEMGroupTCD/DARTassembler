@@ -18,7 +18,7 @@ from collections import Counter
 from src01.DataLoader import DataLoader
 from src01.Molecule import RCA_Complex
 from src01.io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, \
-    save_full_ligand_db, save_complex_db
+    save_full_ligand_db, save_complex_db, load_json
 from src01.utilities_Molecule import unknown_rdkit_bond_orders
 from src01.utilities_extraction import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, \
     get_charges_of_unique_ligands, update_databases_with_charges, update_ligand_with_charge_inplace
@@ -658,8 +658,7 @@ class LigandExtraction:
                     f'WARNING: Cannot use existing input json of complexes because path not found: {self.input_complexes_json}. Reload xzy, global properties and graph data instead.')
                 self.load_input_data_to_json(overwrite_atomic_properties=overwrite_atomic_properties, **kwargs)
             else:
-                with open(self.input_complexes_json, "r") as file:
-                    n_complexes_in_json = len(json.load(file))
+                n_complexes_in_json = len(load_json(self.input_complexes_json))
 
                 if not self.testing is None and (self.testing > n_complexes_in_json or self.testing == False):
                     print(

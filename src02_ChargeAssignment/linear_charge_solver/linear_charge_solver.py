@@ -18,6 +18,9 @@ from sklearn.preprocessing import StandardScaler
 from collections import Counter
 from typing import Union
 from itertools import product
+
+from src01.io_custom import load_json
+
 pd.options.mode.chained_assignment = None
 from scipy.sparse import dok_array
 
@@ -118,9 +121,8 @@ class LinearChargeSolver:
     def get_all_complexes(self, all_complexes: str, n_test) -> dict:
 
         try:
-            with open(all_complexes, 'r') as file:
-                print('Reading in complexes.')
-                self.all_complexes = json.load(file)
+            self.all_complexes = load_json(all_complexes)
+            print('Reading in complexes.')
         except TypeError:
             self.all_complexes = all_complexes
 

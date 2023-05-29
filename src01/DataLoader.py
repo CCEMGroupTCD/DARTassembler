@@ -8,6 +8,8 @@ import numpy as np
 import io
 import networkx as nx
 
+from src01.io_custom import load_json
+
 
 class DataLoader:
     """
@@ -70,7 +72,7 @@ class DataLoader:
             self.has_graphs = False
 
     def get_global_prop_dict(self):
-        # Q@F: Is this not easier using df.to_dict()?
+        # refactor?: maybe use df.to_dict() instead? But, then the None values in the csv are converted to NaN, e.g. for the oxidation state, and this changes things when tested for 5000 complexes. global_property_dict = df.set_index(self.identifier, drop=False).to_dict(orient='index')
         df = pd.read_csv(self.global_path)
         json_dict = json.loads(df.set_index(self.identifier).to_json(orient='split'))
 
@@ -102,8 +104,7 @@ class DataLoader:
         """
         print("Converting DataFolders into dict for MolDB")
 
-        with open(Path(self.path, "atomic_properties", "atomic_properties.json"), "r") as file:
-            atomic_props_json = json.load(file)
+        atomic_props_json = load_json(Path(self.path, "atomic_properties", "atomic_properties.json"))
 
         if self.has_global:
             global_property_dict = self.get_global_prop_dict()
