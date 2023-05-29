@@ -1,5 +1,5 @@
 """
-This is the main script for the extraction of ligands from a database.
+This is the main script for the extraction of ligands.py from a database.
 """
 from copy import deepcopy
 from typing import Union
@@ -113,7 +113,8 @@ class ChargeBenchmark:
 
 # TODO in preprocessing CSD:
 #   - filters:
-#       - recognize valid counter ions/ solvent molecules vs graph errors in ligands by setting a cutoff at 3A (or so), if two graph fragments are closer than that it's treated as a graph error
+#       - if all elements of smiles and xyz match and also with formula in api
+#       - recognize valid counter ions/ solvent molecules vs graph errors in ligands.py by setting a cutoff at 3A (or so), if two graph fragments are closer than that it's treated as a graph error
 #       - if ligand has C but no H (or maybe if ligand has only C)
 #       - more than one metal from d or f block
 #   - add properties:
@@ -140,7 +141,7 @@ if __name__ == '__main__':
     database_path = '../data_input/CSD_MM_G'  # in github
     data_store_path = '../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
-    testing = 5000  # if we would like to only do a test run
+    testing = 100  # if we would like to only do a test run
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     calculate_charges = True  # if you want to run charge assignment after ligand extraction

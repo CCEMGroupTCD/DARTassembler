@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 with open('/Users/timosommer/PhD/projects/RCA/projects/CreateTMC/data/tmQMG_Jsons_original/test.json', 'r') as file:
     d1= json.load(file)
 c1 = d1['CUSGEE']
-# for lig in c1['ligands']:
+# for lig in c1['ligands.py']:
 #         pc = [val[1][0] for val in lig['atomic_props']['partial_charge'].values()]
 #         spc = sum(pc)
 #         print(spc)

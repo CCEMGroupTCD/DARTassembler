@@ -39,7 +39,6 @@ class GraphCreation:
                  **kwargs
                  ):
         """
-
         :param kwargs: potential arguments for other graph creation methods, see the specific method for more information
         """
         self.G = None
@@ -223,11 +222,9 @@ class GraphCreation:
         try:
             smiles = smiles_df.set_index("CSD_code").loc[identifier, "smiles"]
             self.G = nx.Graph(read_smiles(smiles, explicit_hydrogen=True))
-
             # the nodes need to be renamed, as the default is "element" rather than "node_label"
             for node in self.G.nodes:
                 self.G.nodes[node]["node_label"] = self.G.nodes[node]["element"]
-
         except Exception as e:
             print(f"Smiles based Graph creation not possible, {e}")
             return

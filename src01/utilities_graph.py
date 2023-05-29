@@ -75,7 +75,6 @@ def get_graph_hash(graph, node_attr='node_label', iterations=3, digest_size=16, 
     @return: graph hash
     """
     return graph_hash(graph, node_attr=node_attr, edge_attr=edge_attr, iterations=iterations, digest_size=digest_size)
-
 def smiles2nx(smiles_str: str, explicit_H: bool = True):
     """
     a convenient method to convert smiles string into nx.graphs with the desired format for our purposes
@@ -285,9 +284,9 @@ def graph_from_graph_dict(d):
 
 def get_reindexed_graph(graph):
     """
-    Reindex and sort the given graph nodes so that the order of the index labels stays the same but the indices now go from 0 to n-1.
+    Reindex the given graph so that the order of the indices stays the same but the indices now go from 0 to n-1. This is a very important function because the graphs of the ligands currently keep the indices from when they were in the complex, which means their indices do not go from 0 to n-1. This means the indices of the atoms in the graphs and the atoms in the atomic_props dict is different, just the order is the same.
     @param graph: graph to reindex.
-    @return: reindexed graph with indices from 0 to n-1, sorted by labels.
+    @return: reindexed graph with indices from  0 to n-1 in the same numerical order as before.
     """
     if not all(isinstance(node, int) for node in graph.nodes):
         warnings.warn(f'Graph nodes are not integers. Proceed reindexing, but results might not be as expected: {graph.nodes}.')
@@ -309,8 +308,26 @@ def get_reindexed_graph(graph):
     nodes = list(sorted_graph.nodes)
     assert nodes == sorted(nodes), f'Nodes are not sorted after reindexing: {nodes}'
     assert list(sorted_graph.nodes) == list(range(len(nodes))), f'Nodes are not indexed from 0 to n-1 after reindexing: {nodes}'
-
     return sorted_graph
+
+def count_atoms_with_n_bonds(graph: nx.Graph, element: Union[str, None], n_bonds: int, graph_element_label: str='node_label') -> int:
+    """
+    Count the number of occurrences of element `element` with exactly `n_bonds` bonds in the given molecular graph.
+    @param graph (network.Graph): molecular graph.
+    @param element (str, None): specification of the element, e.g. 'C'. If None, all elements are counted.
+    @param n_bonds (int): count an atom if it has exactly this number of bonds.
+    @param graph_element_label (str): the label of the element string in the graph attributes. Only necessary if `element` is not `None`.
+    @return (int): integer count of the occurrences.
+    """
+    n = 0
+    for atom_idx, atom in graph.nodes(data=True):
+        if element is None or atom[graph_element_label] == element:
+            n_atom_bonds = len(list(nx.all_neighbors(graph, atom_idx)))
+            if n_atom_bonds == n_bonds:
+                n += 1
+
+    return n
+
 
 def count_atoms_with_n_bonds(graph: nx.Graph, element: Union[str, None], n_bonds: int, graph_element_label: str='node_label') -> int:
     """
@@ -335,7 +352,6 @@ def unify_graph(G):
     """
     THis method aims to bring graph from the tmQMG format in their .gml into the format we require for our
     process,
-
     i.e. it assures that the nodes are labelled by integers
     and that the resulting class is a nx.Graph object rather than a nx.MultiGraph object
     """

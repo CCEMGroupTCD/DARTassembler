@@ -414,6 +414,7 @@ class LigandExtraction:
 
         return grouped_ligands
 
+
     @staticmethod
     def choose_unique_ligand_representative_from_all_same_ligands(same_ligands,
                                                                   strategy='good_bond_orders',
@@ -464,6 +465,7 @@ class LigandExtraction:
 
             uname = 'unq_' + name
             unique_ligand.unique_name = uname
+
 
             denticities = pd.unique(self.graph_hash_grouped_ligands.loc[unique_ligand.graph_hash]['denticity'])
             metals = [self.full_ligand_db.db[ligand_name].original_metal_symbol for ligand_name in same_ligands_names]

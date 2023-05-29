@@ -1,5 +1,5 @@
 """
-This is the main script for the extraction of ligands from a database.
+This is the main script for the extraction of ligands.py from a database.
 """
 from src01.ligand_extraction import LigandExtraction
 from typing import Union

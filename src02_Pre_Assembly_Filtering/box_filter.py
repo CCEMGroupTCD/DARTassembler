@@ -129,8 +129,9 @@ def box_filter(ligand: RCA_Ligand, box_default_descicion=False) -> bool:
                                                                functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), )])
 
         elif ligand.denticity == 4 and ligand.planar_check() is False:
-            print("Not implemented yet")
-            return True  # will always let it through
+            bb_for_complex = nonplanar_tetra_solver(stk_bb=ligand_bb, ligand=ligand)
+            bb_for_comp = stk.BuildingBlock.init_from_molecule(bb_for_complex, functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg]', bonders=(0,), deleters=(), ), ], )
+            print("done")
 
 
         elif ligand.denticity == 5:

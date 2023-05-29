@@ -22,6 +22,7 @@ def set_dict_keys_to_csd_code_and_stoichiometry(d: dict) -> dict:
         else:
             duplicate_keys.append([csd_code, stoichiometry, uname])
 
+
     # Remove ligands with not unique CSD_code, stoichiometry, unique name keys.
     duplicate_keys = pd.DataFrame(duplicate_keys).drop_duplicates().values.tolist()
     for dupl_csd_code, dupl_stoichiometry, _ in duplicate_keys:

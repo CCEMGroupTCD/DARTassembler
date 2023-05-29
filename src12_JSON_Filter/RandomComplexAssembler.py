@@ -39,7 +39,7 @@ class RandomComplexAssembler:
         return final_metal_bb
 
     @staticmethod
-    def planar_check(ligands):  # Check if ligands are planar or not
+    def planar_check(ligands):  # Check if ligands.py are planar or not
         """
         If a tri or tetradentate ligand is contained in the topology, we need to evaluate whether this is
         a planar one or not.
@@ -52,8 +52,8 @@ class RandomComplexAssembler:
         return True
 
     def convert_ligand_to_building_block_for_complex(self, ligands: dict[RCA_Ligand], topology) -> dict:
-        # Here we pick and choose are ligands and rotate and place them based on our topology
-        topology_determining_ligand_planar = self.planar_check(ligands)  # Check are either the tetra or tri ligands planar
+        # Here we pick and choose are ligands.py and rotate and place them based on our topology
+        topology_determining_ligand_planar = self.planar_check(ligands)  # Check are either the tetra or tri ligands.py planar
         print("topology_determining_ligand_planar " + str(topology_determining_ligand_planar))
         topology_list = topology  # I changed this because in the previous version it seemed that the topologies were being
         print("topology_list " + str(topology_list))
@@ -310,10 +310,10 @@ class RandomComplexAssembler:
         if type(comp[-1]) == list:
             similarity_list = comp[-1]
             comp.pop()
-            ligands = {i: random.choice(self.ligand_dict[index]) for i, index in enumerate(comp)}  # ligands chosen based on the toplogy
+            ligands = {i: random.choice(self.ligand_dict[index]) for i, index in enumerate(comp)}  # ligands.py chosen based on the toplogy
             passed_similarity_codes = []
             i = 0
-            # This for loop looks at the final list to determine if any ligands should be identical
+            # This for loop looks at the final list to determine if any ligands.py should be identical
             for similarity_code_1 in similarity_list:
                 j = 0
                 for similarity_code_2 in similarity_list:
@@ -326,7 +326,7 @@ class RandomComplexAssembler:
                     j = j + 1
                 i = i + 1
         elif type(int(comp[-1])) == int:
-            ligands = {i: random.choice(self.ligand_dict[index]) for i, index in enumerate(comp)}  # ligands chosen based on the toplogy
+            ligands = {i: random.choice(self.ligand_dict[index]) for i, index in enumerate(comp)}  # ligands.py chosen based on the toplogy
 
         else:
             ligands = None
@@ -346,7 +346,7 @@ class RandomComplexAssembler:
             functional_groups_str = {key_: lig.get_assembly_dict()["str"] for key_, lig in ligands.items()}
             functional_groups_index = {key_: lig.get_assembly_dict()["index"] for key_, lig in ligands.items()}
             functional_groups_type = {key_: lig.get_assembly_dict()["type"] for key_, lig in ligands.items()}
-            # Next we start picking and choosing our ligands
+            # Next we start picking and choosing our ligands.py
             building_blocks, denticities = self.convert_ligand_to_building_block_for_complex(ligands, comp, )
             print("comp: " + str(comp))
             print("complete_topology_nomenclature: " + str(complete_topology_nomenclature))
@@ -365,7 +365,7 @@ class RandomComplexAssembler:
             print("we are going to rotate one of the bidentates")
             # I expect only one isomer from this if statement (so a list of two constructed molecules). Only a single bidentate needs to be flipped 180
             bidentate_already_rotated = False  # This is to ensure we don't enter the same if statement twice
-            building_blocks_rotated = {}  # This will contain all the ligands for the isomer of our complex
+            building_blocks_rotated = {}  # This will contain all the ligands.py for the isomer of our complex
             for j in range(len(building_blocks_list)):
                 # We iterate through all the complexes in our input complex
                 if (denticity_list[j] == 2) and (bidentate_already_rotated == False):
@@ -378,7 +378,7 @@ class RandomComplexAssembler:
                     building_blocks_rotated[j] = building_blocks_list[j]
 
             if len(building_blocks_list) == 2:
-                # If there are only two ligands that comprise our complex then ...
+                # If there are only two ligands.py that comprise our complex then ...
                 # This is our input complex
                 complex_normal = stk_e.complex_topology_two(metals=self.create_metal_building_block(metal_input, charge_input),
                                                             ligands={building_block: (i,) for i, building_block in
@@ -392,7 +392,7 @@ class RandomComplexAssembler:
                                                              )
 
             elif len(building_blocks_list) == 3:
-                # If there are 3 ligands in our complex then ...
+                # If there are 3 ligands.py in our complex then ...
                 complex_normal = stk_e.complex_topology_three(metals=self.create_metal_building_block(metal_input, charge_input),
                                                               ligands={building_block: (i,) for i, building_block in
                                                                        building_blocks_list.items()}
