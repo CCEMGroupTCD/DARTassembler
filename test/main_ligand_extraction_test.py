@@ -142,7 +142,7 @@ if __name__ == '__main__':
     database_path = '../data_input/CSD_MM_G'  # in github
     data_store_path = '../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
-    testing = 5000  # if we would like to only do a test run. Set to False for full run
+    testing = 100  # if we would like to only do a test run. Set to False for full run
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     calculate_charges = True  # if you want to run charge assignment after ligand extraction
@@ -268,7 +268,7 @@ if __name__ == '__main__':
         #     print('  Complex db: not the same!')
         # else:
         #     print('  Complex db: good')
-        #
+
 
     print('Done!')
 

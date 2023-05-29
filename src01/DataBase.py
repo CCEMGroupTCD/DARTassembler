@@ -9,7 +9,7 @@ from src01.utilities_graph import remove_node_features_from_graph, make_multigra
 from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
-from src01.io_custom import save_json, NumpyEncoder
+from src01.io_custom import save_json, NumpyEncoder, load_json
 from typing import Union
 from datetime import datetime
 from pathlib import Path
@@ -81,8 +81,7 @@ class BaselineDB:
         if isinstance(json_, dict):
             json_dict = json_
         else:
-            with open(json_, "r") as file:
-                json_dict = json.load(file)
+            json_dict = load_json(json_)
 
         new_dict_ = {}
 

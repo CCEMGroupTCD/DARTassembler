@@ -291,7 +291,7 @@ class RCA_Molecule(object):
         contains_bond_orders = all(bond_orders_present)
 
         if not contains_bond_orders and any(bond_orders_present):
-            warnings.warn('Not all bonds in the molecule have bond orders. Some bonds have bond orders, some do not. Return False in check `self.has_bond_orders()`.')
+            warnings.warn('Not all bonds in the molecule have bond orders. Some bonds have bond orders, some do not. Return False in check `self.has_bond_order_attribute()`.')
 
         return contains_bond_orders
 
