@@ -72,8 +72,8 @@ def rdkit_mol_to_graph(mol: Chem.Mol, element_label: str='node_label', bond_labe
 
 def get_all_ligands_by_graph_hashes(all_ligands: list) -> dict:
     """
-    Get dictionary of graph hashes with list of ligands with this graph hash
-    :param all_ligands: list of all ligands with graph hashes
+    Get dictionary of graph hashes with list of ligands.py with this graph hash
+    :param all_ligands: list of all ligands.py with graph hashes
     :return: dictionary of graph hash: list_of_ligands
     """
     all_hashes = list(set([lig.graph_hash for lig in all_ligands]))

@@ -15,9 +15,11 @@ def get_reactant():
                            name="ActiveSite_OH",
                            unique_name="ActiveSite_OH",
                            graph=None,
-                            other_props={"charge": -1}
+                           original_metal_position = [0, 0, 0]
                            )
     Hydroxide.global_props.update({"LCS_pred_charge": -1})
+    #reactants.append(Hydroxide)
+
 
     return Hydroxide
 
@@ -29,28 +31,30 @@ def get_monodentate_list():
     #
     # 1.
     atomic_props = {"atoms": ["O", "H"], "x": [0, 0.2096], "y": [0, -0.5615], "z": [1.4361, 2.1227]}
-    Hydroxi = RCA_Ligand(atomic_props=atomic_props,
-                         denticity=1,
-                         ligand_to_metal=[0],
-                         name="Hydroxi",
-                         unique_name="Hydroxi",
-                         graph=None,
-                         other_props={"charge": -1}
-                         )
-    Hydroxi.global_props.update({"LCS_pred_charge": -1})
-    # monodentate_ligands.append(Hydroxi)
+    Hydroxide = RCA_Ligand(atomic_props=atomic_props,
+                           denticity=1,
+                           ligand_to_metal=[0],
+                           name="OH",
+                           unique_name="OH",
+                           graph=None,
+                           original_metal_position = [0, 0, 0]
+
+                           )
+    Hydroxide.global_props.update({"LCS_pred_charge": -1})
+    #monodentate_ligands.append(Hydroxide)
+
 
     #
     #
     # 2.
-    atomic_props = {"atoms": ["C", "O"], "x": [3.18739, 4.26068], "y": [-0.87756, -0.53207], "z": [0.64611, 0.60959]}
+    atomic_props = {"atoms": ["C", "O"], "x": [3.18739, 3.18739], "y": [-0.87756, -0.87756], "z": [0.64611, 1.77411]}
     CO = RCA_Ligand(atomic_props=atomic_props,
                     denticity=1,
                     ligand_to_metal=[0],
                     name="CO",
                     unique_name="CO",
                     graph=None,
-                    other_props={"charge": 0}
+                    original_metal_position = [0, 0, 0]
                     )
     CO.global_props.update({"LCS_pred_charge": 0})
     # monodentate_ligands.append(CO)
@@ -65,7 +69,7 @@ def get_monodentate_list():
                     name="CN",
                     unique_name="CN",
                     graph=None,
-                    other_props={"charge": -1}
+                    original_metal_position = [0, 0, 0]
                     )
     CN.global_props.update({"LCS_pred_charge": -1})
     # monodentate_ligands.append(CN)
@@ -85,7 +89,8 @@ def get_monodentate_list():
                          name="NH3",
                          unique_name="NH3",
                          graph=None,
-                         other_props={"charge": 0}
+                         original_metal_position = [0, 0, 0]
+
                          )
     Ammonia.global_props.update({"LCS_pred_charge": 0})
     # monodentate_ligands.append(Ammonia)
@@ -103,10 +108,10 @@ def get_monodentate_list():
                           name="Cl",
                           unique_name="Cl",
                           graph=None,
-                          other_props={"charge": -1}
+                          original_metal_position = [0, 0, 0]
                           )
     Chloride.global_props.update({"LCS_pred_charge": -1})
-    #monodentate_ligands.append(Chloride)
+    # monodentate_ligands.append(Chloride)
     #
     #
     # 6.
@@ -122,17 +127,17 @@ def get_monodentate_list():
                           name="F",
                           unique_name="F",
                           graph=None,
-                          other_props={"charge": -1}
+                          original_metal_position = [0, 0, 0]
                           )
     Fluoride.global_props.update({"LCS_pred_charge": -1})
-    #monodentate_ligands.append(Fluoride)
+    # monodentate_ligands.append(Fluoride)
     #
     #
     # 7.
     atomic_props = {"atoms": ["Br"],
-                    "x": [0],
-                    "y": [0],
-                    "z": [0],
+                    "x": [1.0],
+                    "y": [1.0],
+                    "z": [1.0],
                     }
 
     Bromide = RCA_Ligand(atomic_props=atomic_props,
@@ -141,17 +146,17 @@ def get_monodentate_list():
                          name="Br",
                          unique_name="Br",
                          graph=None,
-                         other_props={"charge": -1}
+                         original_metal_position = [0, 0, 0]
                          )
     Bromide.global_props.update({"LCS_pred_charge": -1})
-    #monodentate_ligands.append(Bromide)
+    # monodentate_ligands.append(Bromide)
     #
     #
     # 8.
     atomic_props = {"atoms": ["I"],
-                    "x": [1.0, ],
-                    "y": [1.0, ],
-                    "z": [1.0, ],
+                    "x": [1.0],
+                    "y": [1.0],
+                    "z": [1.0],
                     }
 
     Iodide = RCA_Ligand(atomic_props=atomic_props,
@@ -160,10 +165,10 @@ def get_monodentate_list():
                         name="I",
                         unique_name="I",
                         graph=None,
-                        other_props={"charge": -1}
+                        original_metal_position = [0, 0, 0]
                         )
     Iodide.global_props.update({"LCS_pred_charge": -1})
-    #monodentate_ligands.append(Iodide)
+    # monodentate_ligands.append(Iodide)
     #
     #
     # 9.
@@ -178,13 +183,13 @@ def get_monodentate_list():
     Tetramethylamine = RCA_Ligand(atomic_props=atomic_props,
                                   denticity=1,
                                   ligand_to_metal=[0],
-                                  name="NC3H9",
-                                  unique_name="NC3H9",
+                                  name="NH3",
+                                  unique_name="NH3",
                                   graph=None,
-                                  other_props={"charge": 0}
+                                  original_metal_position = [0, 0, 0]
                                   )
     Tetramethylamine.global_props.update({"LCS_pred_charge": 0})
-    #monodentate_ligands.append(Tetramethylamine)
+    # monodentate_ligands.append(Tetramethylamine)
 
     #
     #
@@ -199,9 +204,26 @@ def get_monodentate_list():
                           ligand_to_metal=[2],
                           name="Pyridine",
                           unique_name="Pyridine",
-                          graph=None
+                          graph=None,
+                          original_metal_position = [0, 0, 0]
                           )
     Pyridine.global_props.update({"LCS_pred_charge": 0})
-    monodentate_ligands.append(Pyridine)
+    # monodentate_ligands.append(Pyridine)
+                                        #N
+    atomic_props = {"atoms": ["C", "C", "C", "C", "C", "C", "F", "F", "F", "F", "F"],
+                    "x": [-2.78072, -2.64593, -1.45555, -1.62507, -0.38426, -0.35119, -3.76261, -3.51801, -1.69090, 0.53485, 0.59281],
+                    "y": [-1.73705, -0.35782, 0.28087, -2.51117, -1.88256, -0.49715, -2.19633, 0.28963, -3.59530, -2.45726, 0.04004],
+                    "z": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    }
+    pentafluorophenyl = RCA_Ligand(atomic_props=atomic_props,
+                                   denticity=1,
+                                   ligand_to_metal=[2],
+                                   name="pentafluorophenyl",
+                                   unique_name="pentafluorophenyl",
+                                   graph=None,
+                                   original_metal_position=[0, 0, 0]
+                                   )
+    pentafluorophenyl.global_props.update({"LCS_pred_charge": -1})
+    monodentate_ligands.append(pentafluorophenyl)
 
     return monodentate_ligands

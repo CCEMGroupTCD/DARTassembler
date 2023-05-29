@@ -5,9 +5,6 @@
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5 import uic
 import sys, time
-from src04_Assembly import main
-global test_batch_list
-test_batch_list = [{'Name': 'first test batch', 'Path_to_ligands': 'path_1', 'MAX_num_complexes': '123', 'Topology_1': '[2, 1, 1, ["1", "2", "2"]]', 'Topology_2': '[ 2, 2, [ "1", "1" ] ]', 'Metal_1': ['Cr', '+4', 'Low'], 'Metal_2': ['Cu', '+7', 'High'], 'Metal_3': ['V', '+2', 'Low']}, {'Name': 'second test batch', 'Path_to_ligands': 'path/2', 'MAX_num_complexes': '4', 'Topology_1': '[2, 1, 0]', 'Topology_2': '[2, 1, 0]', 'Topology_3': '[2, 1, 0]', 'Topology_4': '[2, 1, 1, ["1", "2", "2"]]', 'Metal_1': ['V', '+2', 'High'], 'Metal_2': ['Mn', '+2', 'High'], 'Metal_3': ['Mn', '+2', 'High']}, {'Name': 'third test batch', 'Path_to_ligands': 'agaargbsgfdgzh', 'MAX_num_complexes': '26395625', 'Topology_1': '[4, 1, 1, ["1", "2", "2"]]', 'Metal_1': ['Cr', '+1', 'Low'], 'Metal_2': ['Fe', '+1', 'Low']}]
 
 class PyShine_THREADS_APP(QtWidgets.QMainWindow):
     def __init__(self):
@@ -78,15 +75,12 @@ class ThreadClass(QtCore.QThread):
 
     def run(self):
         print('Starting thread...', self.index)
-        main.assembly_main(test_batch_list)
-        self.is_running = False
-        self.terminate()
-        """cnt = 0
+        cnt = 0
         while (True):
             cnt += 1
             if cnt == 99: cnt = 0
-            time.sleep(1)
-            self.any_signal.emit(cnt)"""
+            time.sleep(0.01)
+            self.any_signal.emit(cnt)
 
     def stop(self):
         self.is_running = False

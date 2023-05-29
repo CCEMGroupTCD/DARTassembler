@@ -72,7 +72,6 @@ class BaselineDB:
                   **kwargs
                   ):
         """
-
         :param json_: Either the dict itself or the path to a json file
         :param type_: If we want either a molecule or a Ligand DB
         :param graph_strategy: How we want the graphs to be created (this is only important for molecules,

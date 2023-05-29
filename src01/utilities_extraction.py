@@ -19,7 +19,7 @@ from typing import Union
 def get_charges_of_unique_ligands(all_complexes: Union[str, Path, dict], max_iterations=None) -> pd.DataFrame:
     """
     So far uses only the linear charge solver.
-    :param all_complexes: path to a json of all complexes with ligands with unique ligand names
+    :param all_complexes: path to a json of all complexes with ligands.py with unique ligand names
     :return: dataframe with the charge of each unique ligand
     """
     save_dir = '../../data/linear_charge_solver/output/'
@@ -73,7 +73,7 @@ def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_pa
 
     unique_ligands = load_unique_ligand_db(path=unique_ligands_db_path)
     not_intersecting_ligands = set(unique_ligands.keys()).symmetric_difference(set(charges.keys()))
-    print(f'Number of unique ligands not outputted by the charge assignment: {len(not_intersecting_ligands)}')
+    print(f'Number of unique ligands.py not outputted by the charge assignment: {len(not_intersecting_ligands)}')
     for ulig in unique_ligands.values():
         update_ligand_with_charge_inplace(ulig, charges)
     save_unique_ligand_db(db=unique_ligands, path=unique_ligands_db_path)
@@ -85,7 +85,7 @@ def update_databases_with_charges(df_ligand_charges: pd.DataFrame, data_store_pa
 
     complexes = load_complex_db(path=complex_db_path)
     for c in complexes.values():
-        for lig in c['ligands']:
+        for lig in c['ligands.py']:
             update_ligand_with_charge_inplace(lig, charges)
     save_complex_db(db=complexes, path=complex_db_path)
 
@@ -114,7 +114,7 @@ def unique_ligands_from_Ligand_batch_json_files(n=10,
         name_ghash_dict[lig_key] = lig_dict["graph_hash"]
 
     grouped_ligands_by_hash = {}
-    for k, v in tqdm(name_ghash_dict.items(), desc="grouping ligands by hash"):
+    for k, v in tqdm(name_ghash_dict.items(), desc="grouping ligands.py by hash"):
         grouped_ligands_by_hash.setdefault(v, []).append(k)
 
     unique_ligand_dict = {}
@@ -129,7 +129,7 @@ def unique_ligands_from_Ligand_batch_json_files(n=10,
         denticities = [ligand_dict[ligand_name]['denticity'] for ligand_name in same_ligands]
         metals = [ligand_dict[ligand_name]['original_metal_symbol'] for ligand_name in same_ligands]
 
-        # Add useful statistical information of all ligands for this unique ligand
+        # Add useful statistical information of all ligands.py for this unique ligand
         count_denticities = pd.Series(denticities).value_counts().sort_values(ascending=False).to_dict()
         count_metals = pd.Series(metals).value_counts().sort_values(ascending=False).to_dict()
         unique_ligand_infos = {
@@ -143,9 +143,9 @@ def unique_ligands_from_Ligand_batch_json_files(n=10,
         unique_ligand['all_ligand_names'] = same_ligands
 
         for ligand_name in same_ligands:
-            # update ligands with unique_ligand information for easier debugging
+            # update ligands.py with unique_ligand information for easier debugging
             ligand_dict[ligand_name]['unique_ligand_information'] = unique_ligand_infos
-            # update ligands with bool flag if this ligand is the ligand chosen as unique ligand
+            # update ligands.py with bool flag if this ligand is the ligand chosen as unique ligand
             ligand_dict[ligand_name]['is_chosen_unique_ligand'] = ligand_name == name
 
         # Delete attribute original metal from unique_ligand since it is confusing and no real attribute of a unique ligand
@@ -155,8 +155,8 @@ def unique_ligands_from_Ligand_batch_json_files(n=10,
         unique_ligand_dict[uname] = unique_ligand
 
     #
-    # Now we can dump ligand_dict to json, which is a huge dict containing ALL ligands with their unique name
-    # and also unique_ligand_dict which only contains unique ligands
+    # Now we can dump ligand_dict to json, which is a huge dict containing ALL ligands.py with their unique name
+    # and also unique_ligand_dict which only contains unique ligands.py
     with open(f"{data_store_path}/tmQM_Ligands_full.json", "w+") as file:
         json.dump(ligand_dict, file)
         print(f"Full ligand database saved to {f'{data_store_path}/tmQM_Ligands_full.json'}")
@@ -169,14 +169,14 @@ def unique_ligands_from_Ligand_batch_json_files(n=10,
 
 def update_complex_db_with_ligands(complex_json: str, ligand_json: str, save_complex_db_path: Union[str, Path]):
     """
-    This function reads in the initial json file that was input of the ligand extraction process and also reads in the json with all extracted ligands. The dictionary for each complex is then updated with dictionaries of the ligands and again saved.
+    This function reads in the initial json file that was input of the ligand extraction process and also reads in the json with all extracted ligands.py. The dictionary for each complex is then updated with dictionaries of the ligands.py and again saved.
     This function is just very much hacked together and will be subject of refactoring everything into a single class soon.
     :param complex_json: path to the initial input json of the ligand extraction process
-    :param ligand_json: path to the json of all extracted ligands
-    :param save_complex_db_path: path to where the with ligands enriched complex db should be saved as json
+    :param ligand_json: path to the json of all extracted ligands.py
+    :param save_complex_db_path: path to where the with ligands.py enriched complex db should be saved as json
     :return:
     """
-    print('Start updating complex db with ligands.')
+    print('Start updating complex db with ligands.py.')
 
     CSD_global_props_paths = ['../Bin_(Old)/databases(raw)/tmQM_raw/raw_data/CSD.csv', '../database/tmQM/raw_data/CSD.csv']
     CSD_global_props_path = None
@@ -215,7 +215,7 @@ def update_complex_db_with_ligands(complex_json: str, ligand_json: str, save_com
         del c['graph_dict']
 
         metals = [lig['original_metal_symbol'] for lig in ligands.values()]
-        assert len(np.unique(metals)) == 1, 'different original metals for ligands from the same complex.'
+        assert len(np.unique(metals)) == 1, 'different original metals for ligands.py from the same complex.'
         c['mol_id'] = c_id
         c['stoichiometry'] = get_standardized_stoichiometry_from_atoms_list(c['atomic_props']['atoms'])
         c['metal'] = metals[0]
@@ -224,10 +224,10 @@ def update_complex_db_with_ligands(complex_json: str, ligand_json: str, save_com
         c['Metal_q'] = c['atomic_props']['partial_charge'][c['atomic_props']['atoms'].index(c['metal'])]
         c['global_props']['CSD_iupac_name'] = csd_global['name']
 
-        c['ligands'] = []
+        c['ligands.py'] = []
         for lig_id, lig in ligands.items():
             del lig['graph_dict']
-            c['ligands'].append(lig)
+            c['ligands.py'].append(lig)
 
         assert c['global_props']['CSD_code'] == c_id
         assert c['total_q'] == c['global_props']['charge']

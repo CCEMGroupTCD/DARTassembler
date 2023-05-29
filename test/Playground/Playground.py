@@ -1,6 +1,6 @@
 """
 I always needed a file where, which could simply be run in the debugger
-mode to get quick acess to the tmQM and its ligands
+mode to get quick acess to the tmQM and its ligands.py
 in the RCA_Molecule and RCA_Ligand format respecitvely
 and here it is
 """

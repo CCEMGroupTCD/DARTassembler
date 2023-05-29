@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from PyQt5 import QtCore, QtWidgets, QtGui, QtSvg
 import json
-from src04_Assembly.main import Assembly
+#from src04_Assembly.main import Assembly
 
 global assembly_input_list
 assembly_input_list = []
@@ -356,17 +356,17 @@ class Window2(QMainWindow):  # This window corresponds to the Create Batch windo
         self.pushButton_3.setText(_translate("Batch_Widget", "Add"))
         self.pushButton_4.setText(_translate("Batch_Widget", "Remove"))
         self.comboBox_4.setItemText(0, _translate("Batch_Widget", "Select Topology"))
-        self.comboBox_4.setItemText(1, _translate("Batch_Widget", "[2, 1, 0]"))
-        self.comboBox_4.setItemText(2, _translate("Batch_Widget", "[2, 1, 1, [\"1\", \"2\", \"2\"]]"))
-        self.comboBox_4.setItemText(3, _translate("Batch_Widget", "[2, 1, 1, [\"1\", \"2\", \"3\"]]"))
-        self.comboBox_4.setItemText(4, _translate("Batch_Widget", "[ 2, 2, [ \"1\", \"1\" ] ]"))
-        self.comboBox_4.setItemText(5, _translate("Batch_Widget", "[ 2, 2, [ \"1\", \"2\" ] ]"))
-        self.comboBox_4.setItemText(6, _translate("Batch_Widget", "[3, 2, 0]"))
-        self.comboBox_4.setItemText(7, _translate("Batch_Widget", "[4, 1, 0]"))
-        self.comboBox_4.setItemText(8, _translate("Batch_Widget", "[4, 1, 1, [\"1\", \"2\", \"2\"]]"))
-        self.comboBox_4.setItemText(9, _translate("Batch_Widget", "[4, 1, 1, [\"1\", \"2\", \"3\"]]"))
-        self.comboBox_4.setItemText(10, _translate("Batch_Widget", "[5, 0]"))
-        self.comboBox_4.setItemText(11, _translate("Batch_Widget", "[5, 1]"))
+        self.comboBox_4.setItemText(1, _translate("Batch_Widget", "[2, 1, 0]--[1, 2, 3]"))
+        self.comboBox_4.setItemText(2, _translate("Batch_Widget", "[2, 1, 1]--[1, 2, 2]"))
+        self.comboBox_4.setItemText(3, _translate("Batch_Widget", "[2, 1, 1]--[1, 2, 3]"))
+        self.comboBox_4.setItemText(4, _translate("Batch_Widget", "[2, 2]--[1, 1]"))
+        self.comboBox_4.setItemText(5, _translate("Batch_Widget", "[2, 2]--[1, 2]"))
+        self.comboBox_4.setItemText(6, _translate("Batch_Widget", "[3, 2, 0]--[1, 2, 3]"))
+        self.comboBox_4.setItemText(7, _translate("Batch_Widget", "[4, 1, 0]--[1, 2, 3]"))
+        self.comboBox_4.setItemText(8, _translate("Batch_Widget", "[4, 1, 1]--[1, 2, 2]"))
+        self.comboBox_4.setItemText(9, _translate("Batch_Widget", "[4, 1, 1]--[1, 2, 3]"))
+        self.comboBox_4.setItemText(10, _translate("Batch_Widget","[5, 0]--[1, 2]"))
+        self.comboBox_4.setItemText(11, _translate("Batch_Widget","[5, 1]--[1, 2]"))
         self.pushButton_5.setText(_translate("Batch_Widget", "View"))
 
         item = self.tableWidget.horizontalHeaderItem(0)
@@ -636,78 +636,95 @@ class Window2(QMainWindow):  # This window corresponds to the Create Batch windo
         self.svgWidget.close()
 
         print(self.current_topology)
-        if self.current_topology == "[2, 1, 0]":
+        if self.current_topology == "[2, 1, 0]--[1, 2, 3]":
 
             self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/2_1_1__1_2_3.svg',
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
 
-        elif self.current_topology == "[2, 1, 1, [\"1\", \"2\", \"2\"]]":
-            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/2_1_1__1_2_2.svg',
+
+        elif self.current_topology == "[2, 1, 1]--[1, 2, 2]":
+            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/GUI/topology_images/2_1_1__1_2_2.svg',
+
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
 
 
-        elif self.current_topology == "[2, 1, 1, [\"1\", \"2\", \"3\"]]":
-            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/2_1_1__1_2_3.svg',
+        elif self.current_topology == "[2, 1, 1]--[1, 2, 3]":
+            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/GUI/topology_images/2_1_1__1_2_3.svg',
+
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
 
 
-        elif self.current_topology == "[ 2, 2, [ \"1\", \"1\" ] ]":
-            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/2_2__1_1.svg',
+
+        elif self.current_topology == "[2, 2]--[1, 1]":
+            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/GUI/topology_images/2_2__1_1.svg',
+
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
 
 
-        elif self.current_topology == "[ 2, 2, [ \"1\", \"2\" ] ]":
-            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/2_2__1_2.svg',
+
+        elif self.current_topology == "[2, 2]--[1, 2]":
+            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/GUI/topology_images/2_2__1_2.svg',
+
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
 
 
-        elif self.current_topology == "[3, 2, 0]":
-            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/3_2_0.svg',
+
+        elif self.current_topology == "[3, 2, 0]--[1, 2, 3]":
+            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/GUI/topology_images/3_2_0.svg',
+
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
 
 
-        elif self.current_topology == "[4, 1, 0]":
-            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/4_1_1__1_2_3.svg',
+        elif self.current_topology == "[4, 1, 0]--[1, 2, 3]":
+            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/GUI/topology_images/4_1_1__1_2_3.svg',
+
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
 
 
-        elif self.current_topology == "[4, 1, 1, [\"1\", \"2\", \"2\"]]":
-            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/4_1_1__1_2_2.svg',
+
+        elif self.current_topology == "[4, 1, 1]--[1, 2, 2]":
+            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/GUI/topology_images/4_1_1__1_2_2.svg',
+
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
 
 
-        elif self.current_topology == "[4, 1, 1, [\"1\", \"2\", \"3\"]]":
-            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/4_1_1__1_2_3.svg',
+
+        elif self.current_topology == "[4, 1, 1]--[1, 2, 3]":
+            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/GUI/topology_images/4_1_1__1_2_3.svg',
+
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
 
 
-        elif self.current_topology == "[5, 0]":
-            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/5_1.svg',
+
+        elif self.current_topology == "[5, 0]--[1, 2]":
+            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/GUI/topology_images/5_1.svg',
+
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
 
 
-        elif self.current_topology == "[5, 1]":
-            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/src13_GUI/topology_images/5_1.svg',
+        elif self.current_topology == "[5, 1]--[1, 2]":
+            self.svgWidget = QtSvg.QSvgWidget('/Users/cianclarke/Documents/PhD/Complex_Assembly/GUI/topology_images/5_1.svg',
+
                                               self.frame_4)  # The fact that I put in batch widget means that i add it to that widget
             self.svgWidget.setGeometry(115, 380, 130, 130)
             self.svgWidget.show()
@@ -929,8 +946,8 @@ class ThreadClass(QtCore.QThread):
 
     def run(self):
         print('Starting thread...', self.index)
-        Assembly_instance = Assembly(list_of_batches=assembly_input_list)
-        Assembly_instance.assembly_main()
+        Assembly_instance = None #Assembly(list_of_batches=assembly_input_list)
+        #Assembly_instance.assembly_main()
         self.is_running = False
         self.terminate()
 

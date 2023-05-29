@@ -61,7 +61,7 @@ class GraphTesting:
 
             # 2. Create Ligand database
             # Note: It is crucial to set the correct numbers of denticities, because otherwise -1 denticitated
-            #       ligands are getting filtered out by default
+            #       ligands.py are getting filtered out by default
             self.tmQM_Ligands = LigandDB.from_MoleculeDB(molDB=self.tmQM_DB,
                                                          denticity_numbers_of_interest=[-1, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                                                                                         10]
@@ -82,11 +82,11 @@ class GraphTesting:
         we return a value for each metric given a database according to their name
         """
 
-        if name == "number unqiue ligands":
+        if name == "number unqiue ligands.py":
             return len(self.tmQM_unique_Ligands.db.values())
         elif name == "number of not fully connected graphs":
             return len([mol for mol in self.tmQM_DB.db.values() if nx.is_connected(mol.graph) is False])
-        elif name == "number of isolated ligands":
+        elif name == "number of isolated ligands.py":
             return len([lig for lig in self.tmQM_Ligands.db.values() if lig.denticity == -1])
         else:
             warnings.warn("Metric not implemented")
@@ -187,9 +187,9 @@ if __name__ == "__main__":
     GT = GraphTesting(run_list=run_list)
 
     GT.run(metrics=[
-        "number unqiue ligands",
+        "number unqiue ligands.py",
         "number of not fully connected graphs",
-        "number of isolated ligands"
+        "number of isolated ligands.py"
     ],
         Testing=True
     )

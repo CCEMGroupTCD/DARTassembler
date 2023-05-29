@@ -66,23 +66,26 @@ def get_boxes(denticity, planar: bool = True, input_topology=None, bool_placed_b
         print("the type of input is: "+str(type(input_topology)))
         print("The input topology is: "+str(input_topology))
         print("we are in the box list section of the code")
-        if (denticity == 2) and ((input_topology == [2, 2]) or (input_topology == [2, 1, 1] or input_topology == [2, 1, 0]))and bool_placed_boxes == False:
+        if (denticity == 2) and ((input_topology == [2, 2]) or (input_topology == [2, 1, 1] or input_topology == [2, 1, 0]) or (input_topology == [2, 0])) and bool_placed_boxes == False:
             # place bidentate in the plane to the right
-            print("we are extracting boxes for bidentate ligands 1")
-            box_list.append(Box(-4.0, 4.0, -1.4, 1.4, 0.5, 100))  # Top_Plate
-            box_list.append(Box(-4.0, 4.0, -1.4, 1.4, -100.0, -0.5))  # Bottom_Plate
+            print("we are extracting boxes for bidentate ligands.py 1")
+            #FRANK
+            box_list.append(Box(-4.0, 4.0, -1.4, 1.4, 0.3, 100))  # Top_Plate
+            box_list.append(Box(-4.0, 4.0, -1.4, 1.4, -100.0, -0.3))  # Bottom_Plate
             box_list.append(Box(-100, 0.5, -1.4, 1.4, -100.0, 100.0))  # Left_Plate_Big
             box_list.append(Box(-100.0, 100.0, 10.4, 100, -100.0, 100.0))  # Back_Plate
             box_list.append(Box(-100.0, 100.0, -100, -10.4, -100.0, 100.0))  # Front_Plate
             #################################################################
-            #box_list.append(Box(-100, 4.0, -8.0, 8.0, 4.0, 5.0))        # +z
-            #box_list.append(Box(-100, 4.0, -8.0, 8.0, -5.0, -4.0))      # -z
-            #box_list.append(Box(-100, -0.05, -2.0, 2.0, -100, 100.0))    # +x
+            #CASINI
+            #box_list.append(Box(-4.0, 4.0, -1.4, 1.4, 0.5, 100))  # Top_Plate
+            #box_list.append(Box(-4.0, 4.0, -1.4, 1.4, -100.0, -0.5))  # Bottom_Plate
+            #box_list.append(Box(-100, 0.5, -1.4, 1.4, -100.0, 100.0))  # Left_Plate_Big
+            #box_list.append(Box(-100.0, 100.0, 10.4, 100, -100.0, 100.0))  # Back_Plate
+            #box_list.append(Box(-100.0, 100.0, -100, -10.4, -100.0, 100.0))  # Front_Plate
+            #################################################################
 
-            #box_list.append(Box(-100, 100, -100, 100, 1.2, 100))        # +z high
-            #box_list.append(Box(-100, 100, -100, 100, -100, -1.2))      # -z low
         elif (denticity == 2) and (input_topology == [2, 2]) and bool_placed_boxes == True: # place bidentate in the plane to the left
-            print("we are extracting boxes for bidentate ligands 2")
+            print("we are extracting boxes for bidentate ligands.py 2")
             box_list.append(Box(-4.0, 4.0, -1.4, 1.4, 0.5, 100))  # Top_Plate
             box_list.append(Box(-4.0, 4.0, -1.4, 1.4, -100.0, -0.5))  # Bottom_Plate
             box_list.append(Box(-0.5, 100, -1.4, 1.4, -100.0, 100.0))  # Right_Plate_Big

@@ -7,8 +7,7 @@
 /tmp/**
 /Bin_(Old)
 /figures
-/test/data/**
-/data.zip
+
 
 /src04_Assembly/Z-test.py
 /src04_Assembly/test12.py
@@ -68,12 +67,14 @@
 /data_output/tmQMG_Jsons/tmQM_Ligands_unique.json
 /data_output/tmQMG_Jsons/tmQMG.json
 
+/*log.docx
+
 /data_output/tmQM_Jsons/complex_db.json
 /data_output/tmQM_Jsons/tmQM_Ligands_full.json
 /data_output/tmQM_Jsons/tmQM_Ligands_unique.json
 /data_output/tmQM_Jsons/tmQMG.json
 /data_output/tmQM_Jsons/Assembled_Molecules/
-/src05_fullRun/Co_31a_14_OH_LSb3lyp.com
+/src06_fullRun/Co_31a_14_OH_LSb3lyp.com
 /data_output/CSD_MM_G_Jsons/Filtering/
 /data_output/tmQM_Jsons/Filtering/
 /data_output/tmQM_Jsons/Filtering/filteredLigDB.json
@@ -83,5 +84,3 @@
 /data_output/tmQM_Jsons/Assembled_Moleculesall.xyz
 /data_output/tmQM_Jsons/Assembled_Moleculestmp_output_test_cian.xyz
 /test/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/
-
-/*.docx
