@@ -14,6 +14,8 @@ from typing import Union
 from datetime import datetime
 from pathlib import Path
 import jsonlines
+from memory_profiler import profile
+
 
 class BaselineDB:
     def __init__(self, dict_: dict):

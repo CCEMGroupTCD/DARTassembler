@@ -27,6 +27,7 @@ from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warn
 from constants.testing import CHARGE_BENCHMARKED_COMPLEXES
 from constants.constants import odd_n_electrons_warning, unconfident_charge_warning, similar_molecule_with_diff_n_hydrogens_warning
 from collections import defaultdict
+from memory_profiler import profile
 
 
 class LigandExtraction:
@@ -733,7 +734,7 @@ class LigandExtraction:
         # Update unique ligand db with global information about identical ligands
         self.update_unique_ligand_db_with_database_info()
 
-        self.unique_ligand_db.to_json(self.unique_ligands_json, desc='Save unique ligand db to json')
+        self.unique_ligand_db.to_json(self.unique_ligands_json, desc='Save unique ligand db to json', json_lines=True)
         self.full_ligand_db.to_json(self.full_ligands_json, desc='Save full ligand db to json', json_lines=True)
         self.complex_db.to_json(self.output_complexes_json, desc='Save complex db to json', json_lines=True)
 
