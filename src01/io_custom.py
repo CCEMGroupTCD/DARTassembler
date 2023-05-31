@@ -59,6 +59,8 @@ def iterate_over_json(path: Union[str, Path]) -> tuple[str, dict]:
                 # Since 'line' is a dictionary, no need to use json.loads
                 yield line['key'], line['value']
 
+    return
+
 def save_json(db: dict, path: Union[str, Path], **kwargs):
     with open(path, 'w') as file:
         json.dump(db, file, cls=NumpyEncoder, **kwargs)

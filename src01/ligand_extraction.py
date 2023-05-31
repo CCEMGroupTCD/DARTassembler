@@ -547,7 +547,7 @@ class LigandExtraction:
             identical_ligand_info['original_metal_symbol'].append(samelig.original_metal_symbol)
             identical_ligand_info['original_metal_os'].append(samelig.original_metal_os)
             identical_ligand_info['original_complex_charge'].append(
-                samelig.original_metal_os)  # TODO: fix bug, should be lig.original_complex_charge
+                self.df_complex_db.loc[samelig.original_complex_id, 'charge'])
             identical_ligand_info['original_complex_id'].append(samelig.original_complex_id)
         ulig.identical_ligand_info = identical_ligand_info
 
@@ -571,11 +571,6 @@ class LigandExtraction:
         ulig.odd_n_electron_count = bool(ulig.n_electrons % 2 == 1)
         if ulig.odd_n_electron_count:
             ulig.add_warning(odd_n_electrons_warning)
-
-        ulig.identical_ligand_info['pred_charge'] = [ulig.pred_charge for name in
-                                                     ulig.identical_ligand_info['name']]
-        ulig.identical_ligand_info['pred_charge_is_confident'] = [ulig.pred_charge_is_confident
-                                                                  for name in ulig.identical_ligand_info['name']]
 
         ulig.has_warnings = bool(len(ulig.warnings) > 0)
 

@@ -263,7 +263,7 @@ class RCA_Molecule(object):
         return n_bonds
 
     def get_n_protons(self) -> int:
-        n_protons = float(sum([Pymatgen_Element(el).Z for el in self.atomic_props['atoms']]))   # todo: remove float
+        n_protons = sum([Pymatgen_Element(el).Z for el in self.atomic_props['atoms']])
         return n_protons
 
     def has_bond_type(self, bond_types: list, bond_type_name: str='bond_type') -> bool:
@@ -1009,8 +1009,7 @@ class RCA_Ligand(RCA_Molecule):
         if include_graph_dict:
             d['graph_dict'] = graph_to_dict_with_node_labels(self.graph)
 
-        # todo: remove original_complex_id from list
-        do_not_output_automatically = ['mol', 'node_label', 'original_complex_id', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
+        do_not_output_automatically = ['mol', 'node_label', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
         for prop, val in vars(self).items():
             if not prop in do_not_output_automatically:
                 d[prop] = val

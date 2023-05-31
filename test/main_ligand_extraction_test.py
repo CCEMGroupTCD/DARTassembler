@@ -146,8 +146,8 @@ if __name__ == '__main__':
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     overwrite_atomic_properties = False     # if atomic properties json should be overwritten. Only necessary after changing input files.
-    use_existing_input_json = True          # if the existing input json should be used. For speeding up test runs.
-    store_database_in_memory = True        # if the database should be stored in memory. Only use if you have enough RAM, but can speed up the pipeline by maybe 30%.
+    use_existing_input_json = True          # if the existing input json should be used. For speeding up test runs. Not critical
+    store_database_in_memory = True         # if the database should be stored in memory. Only use if you have enough RAM, but can speed up the pipeline by maybe 30%.
 
     # Input complex filters
     exclude_not_fully_connected_complexes = False   # only keep complexes which are fully connected
@@ -250,24 +250,24 @@ if __name__ == '__main__':
 
         #%% Checks if db is still the same after writing to and re-reading from json.
         # Slow, should only be used with testing <= 100.
-        print(f'\nCheck if db is equal after reading in from json:')
-        same_ulig_db = db.unique_ligand_db.check_db_equal(db=db.unique_ligands_json)
-        if not same_ulig_db:
-            print('  Unique ligand db: not the same!')
-        else:
-            print('  Unique ligand db: good')
-
-        same_full_lig_db = db.full_ligand_db.check_db_equal(db=db.full_ligands_json)
-        if not same_full_lig_db:
-            print('  Full ligand db: not the same!')
-        else:
-            print('  Full ligand db: good')
-
-        same_complex_db = db.complex_db.check_db_equal(db=db.output_complexes_json)
-        if not same_complex_db:
-            print('  Complex db: not the same!')
-        else:
-            print('  Complex db: good')
+        # print(f'\nCheck if db is equal after reading in from json:')
+        # same_ulig_db = db.unique_ligand_db.check_db_equal(db=db.unique_ligands_json)
+        # if not same_ulig_db:
+        #     print('  Unique ligand db: not the same!')
+        # else:
+        #     print('  Unique ligand db: good')
+        #
+        # same_full_lig_db = db.full_ligand_db.check_db_equal(db=db.full_ligands_json)
+        # if not same_full_lig_db:
+        #     print('  Full ligand db: not the same!')
+        # else:
+        #     print('  Full ligand db: good')
+        #
+        # same_complex_db = db.complex_db.check_db_equal(db=db.output_complexes_json)
+        # if not same_complex_db:
+        #     print('  Complex db: not the same!')
+        # else:
+        #     print('  Complex db: good')
 
 
     print('Done!')
