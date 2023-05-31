@@ -666,6 +666,7 @@ class RCA_Ligand(RCA_Molecule):
 
         self.denticity = denticity # integer denticity, -1 for unconnected
         self.name = name # str name of ligand
+        self.original_complex_id = self.global_props['CSD_code']
 
         # the indices and elements where the ligands was bound to the metal
         self.ligand_to_metal = ligand_to_metal
@@ -958,7 +959,8 @@ class RCA_Ligand(RCA_Molecule):
         if include_graph_dict:
             d['graph_dict'] = graph_to_dict_with_node_labels(self.graph)
 
-        do_not_output_automatically = ['mol', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
+        # todo: remove original_complex_id from list
+        do_not_output_automatically = ['mol', 'original_complex_id', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
         for prop, val in vars(self).items():
             if not prop in do_not_output_automatically:
                 d[prop] = val

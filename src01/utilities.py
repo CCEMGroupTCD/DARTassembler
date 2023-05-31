@@ -6,7 +6,10 @@ from constants.constants import metals_in_pse
 from ase import Atoms
 import warnings
 import pandas as pd
+from collections import namedtuple
 
+def series2namedtuple(s, name='S'):
+    return namedtuple(name, s.index)(*s)
 
 def unroll_dict_into_columns(df, dict_col: str, prefix: str, delete_dict: bool=False) -> pd.DataFrame:
     dict_data = [d for d in df[dict_col]]

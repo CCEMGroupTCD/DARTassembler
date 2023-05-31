@@ -142,10 +142,9 @@ if __name__ == '__main__':
     database_path = '../data_input/CSD_MM_G'  # in github
     data_store_path = '../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
-    testing = 5000  # if we would like to only do a test run. Set to False for full run
+    testing = 1000  # if we would like to only do a test run. Set to False for full run
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
-    calculate_charges = True  # if you want to run charge assignment after ligand extraction
     overwrite_atomic_properties = False  # if atomic properties json should be overwritten. Only necessary after changing input files.
     use_existing_input_json = True  # if the existing input json should be used. For speeding up test runs.
 
@@ -156,7 +155,6 @@ if __name__ == '__main__':
     db = main(
         database_path_=database_path,
         data_store_path_=data_store_path,
-        calculate_charges_=calculate_charges,
         overwrite_atomic_properties_=overwrite_atomic_properties,
         use_existing_input_json_=use_existing_input_json,
         exclude_not_fully_connected_complexes_=exclude_not_fully_connected_complexes,

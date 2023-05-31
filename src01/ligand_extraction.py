@@ -23,7 +23,7 @@ from src01.utilities_Molecule import unknown_rdkit_bond_orders
 from src01.utilities_extraction import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, \
     get_charges_of_unique_ligands, update_databases_with_charges, update_ligand_with_charge_inplace
 from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warning_inplace, unroll_dict_into_columns, \
-    get_duration_string
+    get_duration_string, series2namedtuple
 from constants.testing import CHARGE_BENCHMARKED_COMPLEXES
 from constants.constants import odd_n_electrons_warning, unconfident_charge_warning, similar_molecule_with_diff_n_hydrogens_warning
 from collections import defaultdict
@@ -283,38 +283,6 @@ class LigandExtraction:
 
         return True
 
-    def update_unique_ligand_db_with_database_info(self):
-        """
-        Updates the unique ligand database with information from the whole database.
-        """
-        needed_props = ['heavy_atoms_graph_hash_with_metal', 'graph_hash', 'pred_charge', 'n_hydrogens']
-        data = {uname: {key: val for key, val in ulig.write_to_mol_dict(include_graph_dict=False).items() if key in needed_props} for uname, ulig in self.unique_ligand_db.db.items()}
-        df = pd.DataFrame.from_dict(data, orient='index')
-
-        all_most_common_n_H = df.groupby(['heavy_atoms_graph_hash_with_metal'])['n_hydrogens'].agg(lambda x: Counter(x).most_common(1)[0][0])
-        all_charges_with_same_graph_hash = df.groupby('graph_hash')['pred_charge'].agg(lambda x: dict(Counter(x)))
-
-        for uname, ulig in self.unique_ligand_db.db.items():
-            ulig.same_graph_charges = all_charges_with_same_graph_hash[ulig.graph_hash]
-            ulig.n_pred_charges = len(ulig.same_graph_charges)
-
-            most_common_n_H = all_most_common_n_H[ulig.heavy_atoms_graph_hash_with_metal]
-            ulig.common_graph_with_diff_n_hydrogens = bool(most_common_n_H != ulig.n_hydrogens)
-            if ulig.common_graph_with_diff_n_hydrogens:
-                ulig.add_warning(similar_molecule_with_diff_n_hydrogens_warning)
-
-            ulig.n_electrons = ulig.n_protons - ulig.pred_charge
-            ulig.odd_n_electron_count = bool(ulig.n_electrons % 2 == 1)
-            if ulig.odd_n_electron_count:
-                ulig.add_warning(odd_n_electrons_warning)
-
-            ulig.identical_ligand_info['pred_charge'] = [self.full_ligand_db.db[name].pred_charge for name in ulig.identical_ligand_info['name']]
-            ulig.identical_ligand_info['pred_charge_is_confident'] = [self.full_ligand_db.db[name].pred_charge_is_confident for name in ulig.identical_ligand_info['name']]
-
-            ulig.has_warnings = bool(len(ulig.warnings) > 0)
-
-        return
-
     def standardize_input_complex_db(self, complex_db):
         # TODO refactor these so that it outputs what is excluded
         complex_db.remove_node_features_from_molecular_graphs(keep=['node_label'])
@@ -373,9 +341,10 @@ class LigandExtraction:
             validity = self.postfilter_if_ligands_valid(comp)
             if validity == True:
                 # Make a dataframe with basic ligand infos which doesn't take up much memory but has enough information to compute the grouping in unique ligands.
+                get_ligand_props = ['name', 'stoichiometry', 'n_protons', 'graph_hash', 'denticity', 'has_good_bond_orders', self.unique_ligand_id, 'original_metal_symbol', 'original_metal_os', 'was_connected_to_metal', 'original_complex_id', 'n_hydrogens', 'original_complex_id', 'heavy_atoms_graph_hash_with_metal']
                 ligand_infos = self.get_ligand_class_properties_of_complex(
                                                                             complex_=comp,
-                                                                            props=['name', 'stoichiometry', 'n_protons', 'graph_hash', 'denticity', 'has_good_bond_orders', self.unique_ligand_id]
+                                                                            props=get_ligand_props
                                                                             )
                 df_full_ligand_db.extend(ligand_infos)
                 df_complex_db.append({
@@ -384,17 +353,82 @@ class LigandExtraction:
                                             'metal_oxi_state': comp.metal_oxi_state,
                                             'charge': comp.charge,
                                             'ligand_names': [lig.name for lig in comp.ligands],
+                                            'metal': comp.metal,
                                         })
             else:
                 self.excluded_complex_ids[validity].append(csd_code)
 
         self.df_full_ligand_db = pd.DataFrame(df_full_ligand_db).set_index('name', drop=False)
         self.df_complex_db = pd.DataFrame(df_complex_db).set_index('mol_id', drop=False)
+        self.df_unique_ligand_db = self.get_unique_ligand_df()
+        self.ligand_to_unique_ligand = self.get_ligand_to_unique_ligand_dict()
+
+        # Add unique name column to full ligand df
+        df_ligand_to_unique_ligand = pd.DataFrame.from_dict(self.ligand_to_unique_ligand, orient='index', columns=['unique_name'])
+        self.df_full_ligand_db = pd.merge(self.df_full_ligand_db, df_ligand_to_unique_ligand, left_index=True, right_index=True, how='left')
 
         self.delete_filtered_complexes_from_db()
         self.print_excluded_complexes()
 
         return
+
+    def get_unique_ligand_df(self) -> pd.DataFrame:
+        """
+        Returns a dataframe with all unique ligands from the full ligand db.
+        """
+        self.grouped_ligands = self.group_same_ligands()
+        unique_ligands = {}
+        for grouped_ligand in tqdm(self.grouped_ligands.to_dict(orient='index').values(), desc="Building unique ligand db"):
+            same_ligand_names = grouped_ligand['name']
+            name = self.choose_unique_ligand_representative_from_all_same_ligands(same_ligands=same_ligand_names)
+            uname = 'unq_' + name
+
+            unique_ligands[uname] = self.df_full_ligand_db.loc[name].to_dict()
+            unique_ligands[uname].update({
+                                            'unique_name': uname,
+                                            'same_ligand_names': same_ligand_names
+                                            })
+
+
+            # Add useful statistical information of all ligands for this unique ligand
+            df_same_ligands = self.df_full_ligand_db.loc[same_ligand_names]
+            ligand_graph_hash = unique_ligands[uname]['graph_hash']
+            df_same_graph_hash = self.df_full_ligand_db.query('graph_hash == @ligand_graph_hash')
+            denticities = pd.unique(df_same_graph_hash['denticity'])
+            metals = df_same_ligands['original_metal_symbol'].tolist()
+            count_metals = pd.Series(metals).value_counts().sort_values(ascending=False).to_dict()
+            n_graph_hashes = len(pd.unique(df_same_graph_hash['graph_hash_with_metal']))
+            assert not 0 in denticities, 'The denticity for unconnected ligands is assumed to be -1 but here there appears a 0.'
+            has_unconnected_ligands = -1 in denticities
+            unique_ligand_infos = {
+                                    'occurrences': len(same_ligand_names),
+                                    'same_graph_denticities': denticities,
+                                    'count_metals': count_metals,
+                                    'n_same_graph_denticities': len(denticities),
+                                    'n_metals': len(count_metals),
+                                    'n_same_graphs': n_graph_hashes,
+                                    'has_unconnected_ligands': has_unconnected_ligands,
+                                    'all_ligands_metals': metals,
+                                    }
+            unique_ligands[uname].update(unique_ligand_infos)
+
+        df = pd.DataFrame.from_dict(unique_ligands, orient='index')
+        self.unique_ligand_info_props = list(
+            unique_ligand_infos.keys())  # for updating the ligands from complex and full ligands db later
+
+        return df
+
+    def get_ligand_to_unique_ligand_dict(self) -> dict:
+        """
+        Returns a dict with ligand names as keys and unique ligand names as values.
+        """
+        ligand_to_unique_ligand = {}
+        for ulig in self.df_unique_ligand_db.itertuples():
+            uname = ulig.unique_name
+            for name in ulig.same_ligand_names:
+                ligand_to_unique_ligand[name] = uname
+
+        return ligand_to_unique_ligand
 
     def build_full_ligand_db(self, copy: bool=True):
         full_ligands = {}
@@ -427,33 +461,21 @@ class LigandExtraction:
         return grouped_ligands
 
 
-    @staticmethod
-    def choose_unique_ligand_representative_from_all_same_ligands(same_ligands,
+    def choose_unique_ligand_representative_from_all_same_ligands(self,
+                                                                  same_ligands,
                                                                   strategy='good_bond_orders',
                                                                   ) -> str:
+        if isinstance(same_ligands, dict):
+            same_ligands = list(same_ligands.keys())
 
-        name = None
-        if strategy == 'most_common_denticity':
-
-            # Counter ions/ solvent molecules should not count as most common denticity because we are not really interested in them.
-            only_counter_ions = all([not lig.was_connected_to_metal for lig in same_ligands.values()])
-            if only_counter_ions:
-                denticities = [lig.denticity for lig in same_ligands.values()]
-            else:
-                denticities = [lig.denticity for lig in same_ligands.values() if lig.was_connected_to_metal]
-
-            count_denticities = pd.Series(denticities).value_counts().sort_values(ascending=False)
-            most_common_denticity = count_denticities.index[0]
-            for name, lig in same_ligands.items():
-                if lig.denticity == most_common_denticity:
-                    break
-        elif strategy == 'first':
+        if strategy == 'first':
             # Just take the first entry.
-            name = list(same_ligands.keys())[0]
+            name = same_ligands[0]
         elif strategy == 'good_bond_orders':
             # Preferably take ligands which have good bond orders
-            name = list(same_ligands.keys())[0]
-            for lig_name, lig in same_ligands.items():
+            name = same_ligands[0]
+            same_ligand_props = self.df_full_ligand_db.loc[same_ligands]
+            for lig_name, lig in same_ligand_props.iterrows():
                 if lig.has_good_bond_orders:
                     name = lig_name
                     break
@@ -464,87 +486,80 @@ class LigandExtraction:
         return name
 
     def build_unique_ligand_db(self):
-        self.grouped_ligands = self.group_same_ligands()
-        self.graph_hash_grouped_ligands = self.group_same_ligands(groupby='graph_hash')
+        """
+        Build the unique ligand db from the full ligand db.
+        """
+        all_most_common_n_H = self.df_unique_ligand_db.groupby(['heavy_atoms_graph_hash_with_metal'])['n_hydrogens'].agg(lambda x: Counter(x).most_common(1)[0][0])
+        all_charges_with_same_graph_hash = self.df_unique_ligand_db.groupby('graph_hash')['pred_charge'].agg(lambda x: dict(Counter(x)))
 
         self.unique_ligand_db = {}
-        for grouped_ligand in tqdm(self.grouped_ligands.to_dict(orient='index').values(), desc="Building unique ligand db"):
-            same_ligands_names = grouped_ligand['name']
-            same_ligands = {name: self.full_ligand_db.db[name] for name in same_ligands_names}
-            name = self.choose_unique_ligand_representative_from_all_same_ligands(same_ligands=same_ligands)
+        for ligand in tqdm(self.df_unique_ligand_db.itertuples(), desc="Building unique ligand db"):
+            same_ligand_names = ligand.same_ligand_names
+            name = ligand.name
+            uname = ligand.unique_name
 
-            unique_ligand = deepcopy(self.full_ligand_db.db[name])
-
-            uname = 'unq_' + name
-            unique_ligand.unique_name = uname
-
-
-            denticities = pd.unique(self.graph_hash_grouped_ligands.loc[unique_ligand.graph_hash]['denticity'])
-            metals = [self.full_ligand_db.db[ligand_name].original_metal_symbol for ligand_name in same_ligands_names]
-
-            # Add useful statistical information of all ligands for this unique ligand
-            count_metals = pd.Series(metals).value_counts().sort_values(ascending=False).to_dict()
-            n_graph_hashes = len(pd.unique(self.graph_hash_grouped_ligands.loc[unique_ligand.graph_hash]['graph_hash_with_metal']))
-
-            assert not 0 in denticities, 'The denticity for unconnected ligands is assumed to be -1 but here there appears a 0.'
-            has_unconnected_ligands = -1 in denticities
+            df_same_ligands = self.df_full_ligand_db.loc[same_ligand_names]
+            ulig = deepcopy(self.full_ligand_db.db[name])
+            ulig.unique_name = uname
+            ulig.all_ligand_names = same_ligand_names
 
             identical_ligand_info = defaultdict(list)
-            for lig in same_ligands.values():
+            for lig in df_same_ligands.itertuples():
                 identical_ligand_info['name'].append(lig.name)
                 identical_ligand_info['original_metal_symbol'].append(lig.original_metal_symbol)
                 identical_ligand_info['original_metal_os'].append(lig.original_metal_os)
-                identical_ligand_info['original_complex_charge'].append(lig.original_metal_os)
-                identical_ligand_info['original_complex_id'].append(lig.global_props['CSD_code'])
-            unique_ligand.identical_ligand_info = identical_ligand_info
+                identical_ligand_info['original_complex_charge'].append(lig.original_metal_os)  # TODO: fix bug, should be lig.original_complex_charge
+                identical_ligand_info['original_complex_id'].append(lig.original_complex_id)
+            ulig.identical_ligand_info = identical_ligand_info
 
-            unique_ligand_infos = {
-                'occurrences': len(same_ligands_names),
-                'same_graph_denticities': denticities,
-                'count_metals': count_metals,
-                'n_same_graph_denticities': len(denticities),
-                'n_metals': len(count_metals),
-                'n_same_graphs': n_graph_hashes,
-                'has_unconnected_ligands': has_unconnected_ligands,
-                'all_ligands_metals': metals,
-            }
-            for prop, val in unique_ligand_infos.items():
-                setattr(unique_ligand, prop, val)
-            self.unique_ligand_info_props = list(
-                unique_ligand_infos.keys())  # for updating the ligands from complex and full ligands db later
+            # Set unique ligand information as properties in the unique ligand instead of as collected dictionary
+            for prop, val in ulig.unique_ligand_information.items():
+                setattr(ulig, prop, val)
+            del ulig.unique_ligand_information     # not needed anymore
 
-            unique_ligand.all_ligand_names = same_ligands_names
+            # Delete attributes which make sense only for ligands but not for unique ligands
+            del ulig.is_chosen_unique_ligand
 
-            self.unique_ligand_db[uname] = unique_ligand
+            ulig.same_graph_charges = all_charges_with_same_graph_hash[ulig.graph_hash]
+            ulig.n_pred_charges = len(ulig.same_graph_charges)
+
+            most_common_n_H = all_most_common_n_H[ulig.heavy_atoms_graph_hash_with_metal]
+            ulig.common_graph_with_diff_n_hydrogens = bool(most_common_n_H != ulig.n_hydrogens)
+            if ulig.common_graph_with_diff_n_hydrogens:
+                ulig.add_warning(similar_molecule_with_diff_n_hydrogens_warning)
+
+            ulig.n_electrons = ulig.n_protons - ulig.pred_charge
+            ulig.odd_n_electron_count = bool(ulig.n_electrons % 2 == 1)
+            if ulig.odd_n_electron_count:
+                ulig.add_warning(odd_n_electrons_warning)
+
+            ulig.identical_ligand_info['pred_charge'] = [self.full_ligand_db.db[name].pred_charge for name in ulig.identical_ligand_info['name']]
+            ulig.identical_ligand_info['pred_charge_is_confident'] = [self.full_ligand_db.db[name].pred_charge_is_confident for name in ulig.identical_ligand_info['name']]
+
+            ulig.has_warnings = bool(len(ulig.warnings) > 0)
+
+            self.unique_ligand_db[uname] = ulig
+        self.n_unique_ligands = len(self.unique_ligand_db)
         self.unique_ligand_db = LigandDB(self.unique_ligand_db)
-
-        # Add useful property for later
-        self.ligand_to_unique_ligand = {}
-        for uname, ulig in self.unique_ligand_db.db.items():
-            for name in ulig.all_ligand_names:
-                self.ligand_to_unique_ligand[name] = uname
-
-        # Add unique name column to full ligand df
-        df_ligand_to_unique_ligand = pd.DataFrame.from_dict(self.ligand_to_unique_ligand, orient='index', columns=['unique_name'])
-        self.df_full_ligand_db  = pd.merge(self.df_full_ligand_db, df_ligand_to_unique_ligand, left_index=True, right_index=True, how='left')
 
         return
 
+
     @staticmethod
-    def update_ligand_with_unique_ligand_information_inplace(lig, ulig, share_properties=None,
-                                                             share_global_props=None,
-                                                             collect_properties=None):
+    def update_ligand_with_unique_ligand_information_inplace(
+                                                                lig,
+                                                                ulig,
+                                                                share_properties=None,
+                                                                collect_properties=None
+                                                                ):
         if collect_properties is None:
             collect_properties = {}
-        if share_global_props is None:
-            share_global_props = []
         if share_properties is None:
             share_properties = []
 
         for prop in share_properties:
             value = deepcopy(getattr(ulig, prop))
             setattr(lig, prop, value)
-        update_dict_with_warning_inplace(lig.global_props, deepcopy(ulig.global_props), share_global_props)
 
         # Collect properties from unique ligand in a dictionary in the full ligands.
         for new_prop, old_props in collect_properties.items():
@@ -581,24 +596,23 @@ class LigandExtraction:
 
     def update_complex_db_with_information(self,
                                            share_properties: list = [],
-                                           share_global_props: list = [],
                                            collect_properties: dict = {}
                                            ):
         self.ensure_complex_db()
-        self.ensure_unique_ligand_db()
+        charges = self.df_unique_ligand_db.to_dict(orient='index')
 
         # Update ligands with unique ligand information
         for c in tqdm(self.complex_db.db.values(), 'Update complex db with unique ligand information'):
             for lig in c.ligands:
                 uname = self.ligand_to_unique_ligand[lig.name]
-                ulig = self.unique_ligand_db.db[uname]
+                ulig = series2namedtuple(self.df_unique_ligand_db.loc[uname])
                 self.update_ligand_with_unique_ligand_information_inplace(
                     lig=lig,
                     ulig=ulig,
                     share_properties=share_properties,
-                    share_global_props=share_global_props,
                     collect_properties=collect_properties
                 )
+                update_ligand_with_charge_inplace(lig, charges=charges)
 
             # Update global props with some useful information
             c.global_props['n_ligands'] = len(c.ligands)
@@ -607,27 +621,6 @@ class LigandExtraction:
                 [lig.unique_ligand_information['occurrences'] == 1 for lig in c.ligands])
             c.global_props['n_ligands_occurring_once'] = n_ligands_occurring_once
             c.global_props['frac_ligands_occurring_once'] = n_ligands_occurring_once / len(c.ligands)
-
-        return
-
-    def update_full_ligand_db_with_information(self,
-                                               share_properties: list = [],
-                                               share_global_props: list = [],
-                                               collect_properties: dict = {}
-                                               ):
-        self.ensure_full_ligand_db()
-        self.ensure_unique_ligand_db()
-
-        for lig in tqdm(self.full_ligand_db.db.values(), 'Update full ligand db with unique ligand information'):
-            uname = self.ligand_to_unique_ligand[lig.name]
-            ulig = self.unique_ligand_db.db[uname]
-            self.update_ligand_with_unique_ligand_information_inplace(
-                lig=lig,
-                ulig=ulig,
-                share_properties=share_properties,
-                share_global_props=share_global_props,
-                collect_properties=collect_properties
-            )
 
         return
 
@@ -693,8 +686,21 @@ class LigandExtraction:
 
         return df_ligand_charges
 
+    def assign_charges_to_unique_ligands(self, max_charge_iterations: Union[int, None]):
+        """
+        Assigns charges to the unique ligands in the database. Currently, the Linear Charge Solver method is used for this only.
+        """
+        print('\nCHARGE CALCULATION:')
+        df_ligand_charges = self.calculate_ligand_charges(max_iterations=max_charge_iterations)
+        df_ligand_charges = df_ligand_charges.set_index('unique_name')
+        df_ligand_charges = df_ligand_charges[
+            [col for col in df_ligand_charges.columns if not col in self.LCS_needed_ligand_props]]
+        self.df_unique_ligand_db = self.df_unique_ligand_db.join(df_ligand_charges)
+        self.df_unique_ligand_db['is_confident'] = self.df_unique_ligand_db['is_confident'].fillna(False)
+
+        return
+
     def run_ligand_extraction(self,
-                              calculate_charges: bool = True,
                               overwrite_atomic_properties: bool = True,
                               use_existing_input_json: bool = True,
                               max_charge_iterations: Union[int, None] = 10,
@@ -714,10 +720,8 @@ class LigandExtraction:
                              **kwargs
                              )
 
-        # Attention: The ligands of the full ligand database are just a view on the ligands of the complex db. This is done for memory efficiency and speed. To change this, it is not enough to just set copy to True, but the full ligand db needs to be updated with unique ligand information and with charges.
-        self.full_ligand_db = self.build_full_ligand_db(copy=False)
-
-        self.build_unique_ligand_db()
+        # Charge assignment using only the linear charge solver (LCS) right now
+        self.assign_charges_to_unique_ligands(max_charge_iterations=max_charge_iterations)
 
         # Update complex db to include information about the unique ligands for the LCS.
         share_properties = ['unique_name']
@@ -725,21 +729,18 @@ class LigandExtraction:
         self.update_complex_db_with_information(share_properties=share_properties,
                                                 collect_properties=collect_properties)
 
-        # Charge assignment using only the linear charge solver (LCS) right now
-        if calculate_charges:
-            print('\nCHARGE CALCULATION:')
-            df_ligand_charges = self.calculate_ligand_charges(max_iterations=max_charge_iterations)
-            self.update_databases_with_charges(df_ligand_charges=df_ligand_charges)
+        # Attention: The ligands of the full ligand database are just a view on the ligands of the complex db. This is done for memory efficiency and speed. To change this, it is not enough to just set copy to True, but the full ligand db needs to be updated with unique ligand information and with charges.
+        self.full_ligand_db = self.build_full_ligand_db(copy=False)
 
-        # Update unique ligand db with global information about identical ligands
-        self.update_unique_ligand_db_with_database_info()
+        # Make the unique ligand database from the full ligand database
+        self.build_unique_ligand_db()
 
+        # Save all databases
         self.unique_ligand_db.to_json(self.unique_ligands_json, desc='Save unique ligand db to json', json_lines=True)
         self.full_ligand_db.to_json(self.full_ligands_json, desc='Save full ligand db to json', json_lines=True)
         self.complex_db.to_json(self.output_complexes_json, desc='Save complex db to json', json_lines=True)
 
-        with_charges = 'with charges' if calculate_charges else 'without charges'
-        print(f'\nLigand database {with_charges} established successfully!')
+        print(f'\nLigand database (n={self.n_unique_ligands}) with charges established successfully!')
 
         duration = get_duration_string(start)
         print(f'Duration of extraction: {duration}')
