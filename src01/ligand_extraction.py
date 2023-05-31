@@ -1,8 +1,10 @@
 """
 Class for extracting ligands from a database of complexes.
 """
+import functools
 import warnings
 
+import jsonlines
 import pandas as pd
 from copy import deepcopy
 from src01.DataBase import LigandDB, ComplexDB
@@ -16,9 +18,9 @@ from datetime import datetime
 from collections import Counter
 
 from src01.DataLoader import DataLoader
-from src01.Molecule import RCA_Complex
+from src01.Molecule import RCA_Complex, RCA_Ligand
 from src01.io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, \
-    save_full_ligand_db, save_complex_db, load_json
+    save_full_ligand_db, save_complex_db, load_json, NumpyEncoder, iterate_over_json
 from src01.utilities_Molecule import unknown_rdkit_bond_orders
 from src01.utilities_extraction import unique_ligands_from_Ligand_batch_json_files, update_complex_db_with_ligands, \
     get_charges_of_unique_ligands, update_databases_with_charges, update_ligand_with_charge_inplace
@@ -40,7 +42,8 @@ class LigandExtraction:
                  exclude_charged_complexes: bool = False,
                  only_complexes_with_os: bool = False,
                  only_real_transition_metals: bool = False,
-                 unique_ligand_id: str = 'graph_hash_with_metal'
+                 unique_ligand_id: str = 'graph_hash_with_metal',
+                 store_database_in_memory: bool = False,
                  ):
 
         self.ligand_to_unique_ligand = None
@@ -50,9 +53,14 @@ class LigandExtraction:
         self.data_store_path = ""
         self.exclude_not_fully_connected_complexes = None
         self.testing = None
-        self.complex_db = None
+
         self.df_full_ligand_db = None
+        self.df_unique_ligand_db = None
+        self.df_complex_db = None
+
         self.test_complexes = None
+        self.n_pred_charges = None
+        self.store_database_in_memory = store_database_in_memory
         self.exclude_charged_complexes = exclude_charged_complexes
         self.only_complexes_with_os = only_complexes_with_os
         self.only_real_transition_metals = only_real_transition_metals
@@ -75,6 +83,7 @@ class LigandExtraction:
 
         self.input_complexes_json = Path(self.data_store_path, 'tmQMG.json')
         self.output_complexes_json = Path(self.data_store_path, 'complex_db.json')
+        self.tmp_output_complexes_json = Path(self.data_store_path, 'TEMPORARY_complex_db.json')
         self.unique_ligands_json = Path(data_store_path, 'tmQM_Ligands_unique.json')
         self.full_ligands_json = Path(data_store_path, 'tmQM_Ligands_full.json')
 
@@ -130,6 +139,7 @@ class LigandExtraction:
         """
         db_dict = DataLoader(database_path_=self.database_path, overwrite=overwrite_atomic_properties).data_for_molDB
 
+        # Reorder complexes so that the benchmarked complexes are the first ones, to get a good statistic even when testing only with few complexes
         if self.test_complexes:
             db_dict = self.reorder_input_complexes(db_dict=db_dict, first_complexes=self.test_complexes)
 
@@ -149,98 +159,105 @@ class LigandExtraction:
                                                 graph_strategy=self.graph_strat,
                                                 **kwargs
                                                 )
-        input_complex_db.to_json(path=self.input_complexes_json)
 
-        return
-
-    def delete_filtered_complexes_from_db(self):
-        for c_ids in self.excluded_complex_ids.values():
-            for c_id in c_ids:
-                try:
-                    del self.complex_db.db[c_id]
-                except KeyError:
-                    pass
-
-    def prefilter_input_complex_db(self):
-        """
-        Filters input complexes in `self.complex_db` by multiple criteria without needing information about ligands.
-        """
-        for c_id, c in tqdm(self.complex_db.db.items(), desc='Filter input complexes'):
-            if c.n_donors == 0:
-                self.excluded_complex_ids['Metal ion'].append(c_id)
-
-            if c.has_fragment(frag='O'):
-                self.excluded_complex_ids['Has unconnected O'].append(c_id)
-
-            if c.has_fragment(frag='H'):
-                self.excluded_complex_ids['Has unconnected H'].append(c_id)
-
-            if c.has_fragment(frag=['O', 'O']):
-                self.excluded_complex_ids['Has unconnected O2'].append(c_id)
-
-            if c.has_fragment(frag=['H', 'O']):
-                self.excluded_complex_ids['Has unconnected OH'].append(c_id)
-
-            if not c.global_props['is 3d']:
-                self.excluded_complex_ids['Is not 3D'].append(c_id)
-
-            if not c.has_consistent_stoichiometry_with_CSD():
-                self.excluded_complex_ids['Inconsistent CSD stoichiometry'].append(c_id)
-
-            # if not c.has_consistent_stoichiometry_with_smiles(smiles=c.global_props['smiles'], ignore_element_count=True, print_warnings=False):
-            #     self.excluded_complex_ids['Inconsistent smiles elements'].append(c_id)
-
-            if c.global_props['smiles'] is None and not c.has_bond_type(unknown_rdkit_bond_orders):
-                self.excluded_complex_ids['No smiles without bad bonds'].append(c_id)
-
-            # if not c.complex_is_biggest_fragment(allow_complexes_greater_than=10):
-            #     self.excluded_complex_ids['Complex is counter ion'].append(c_id)
-
-            if not 'H' in c.atomic_props['atoms']:
-                self.excluded_complex_ids['Complex has no H'].append(c_id)
-
-            if not 'C' in c.atomic_props['atoms']:
-                self.excluded_complex_ids['Complex has no C'].append(c_id)
-
-            if c.count_atoms_with_n_bonds(element='C', n_bonds=1) > 0:
-                self.excluded_complex_ids['C atom with only 1 bond'].append(c_id)
-
-            min_dist, _, _ = c.get_atomic_distances_between_atoms()
-            if min_dist < 0.5:
-                self.excluded_complex_ids['Atoms closer than 0.5A'].append(c_id)
-
-            min_dist, _, _ = c.get_atomic_distances_between_atoms(skip_elements='H')
-            if min_dist < 0.85:
-                self.excluded_complex_ids['Heavy atoms closer than 0.85A'].append(c_id)
-
-            if self.only_complexes_with_os and not c.has_metal_os():
-                self.excluded_complex_ids['No metal OS'].append(c_id)
-
-            if self.only_real_transition_metals and not c.metal_center_is_transition_metal():
-                self.excluded_complex_ids['Metal center not transition metal'].append(c_id)
-
-            if self.exclude_not_fully_connected_complexes and not c.fully_connected:
-                self.excluded_complex_ids['Not fully connected'].append(c_id)
-
-            if self.exclude_charged_complexes and c.charge != 0:
-                self.excluded_complex_ids['Is charged'].append(c_id)
-
-        # Exclude all invalid complexes.
-        self.delete_filtered_complexes_from_db()
+        input_complex_db.to_json(path=self.input_complexes_json, json_lines=True)
 
         return
 
     def print_excluded_complexes(self):
         print('Excluded complexes:')
-        n_input_complexes = len(self.complex_db)
         for reason, c_ids in self.excluded_complex_ids.items():
-            print(f'    - {reason}: {len(c_ids)} ({len(c_ids) / n_input_complexes*100:.2g}%)')
+            print(f'    - {reason}: {len(c_ids)} ({len(c_ids) / self.n_input_complexes_before_filtering*100:.2g}%)')
 
-        print(f'  New number of input complexes: {len(self.complex_db)}')
+        print(f'  New number of input complexes: {self.n_complexes}')
 
         return
 
-    def postfilter_if_ligands_valid(self, comp: RCA_Complex) -> Union[bool, str]:
+    def prefilter_if_complex_valid(self, c_id, c):
+        """
+        Filters input complexes in `self.complex_db` by multiple criteria without needing information about ligands.
+        """
+        if c.n_donors == 0:
+            self.excluded_complex_ids['Metal ion'].append(c_id)
+            return False
+
+        if c.has_fragment(frag='O'):
+            self.excluded_complex_ids['Has unconnected O'].append(c_id)
+            return False
+
+        if c.has_fragment(frag='H'):
+            self.excluded_complex_ids['Has unconnected H'].append(c_id)
+            return False
+
+        if c.has_fragment(frag=['O', 'O']):
+            self.excluded_complex_ids['Has unconnected O2'].append(c_id)
+            return False
+
+        if c.has_fragment(frag=['H', 'O']):
+            self.excluded_complex_ids['Has unconnected OH'].append(c_id)
+            return False
+
+        if not c.global_props['is 3d']:
+            self.excluded_complex_ids['Is not 3D'].append(c_id)
+            return False
+
+        if not c.has_consistent_stoichiometry_with_CSD():
+            self.excluded_complex_ids['Inconsistent CSD stoichiometry'].append(c_id)
+            return False
+
+        # if not c.has_consistent_stoichiometry_with_smiles(smiles=c.global_props['smiles'], ignore_element_count=True, print_warnings=False):
+        #     self.excluded_complex_ids['Inconsistent smiles elements'].append(c_id)
+        #     return False
+
+        if c.global_props['smiles'] is None and not c.has_bond_type(unknown_rdkit_bond_orders):
+            self.excluded_complex_ids['No smiles without bad bonds'].append(c_id)
+            return False
+
+        # if not c.complex_is_biggest_fragment(allow_complexes_greater_than=10):
+        #     self.excluded_complex_ids['Complex is counter ion'].append(c_id)
+        #     return False
+
+        if not 'H' in c.atomic_props['atoms']:
+            self.excluded_complex_ids['Complex has no H'].append(c_id)
+            return False
+
+        if not 'C' in c.atomic_props['atoms']:
+            self.excluded_complex_ids['Complex has no C'].append(c_id)
+            return False
+
+        if c.count_atoms_with_n_bonds(element='C', n_bonds=1) > 0:
+            self.excluded_complex_ids['C atom with only 1 bond'].append(c_id)
+            return False
+
+        min_dist, _, _ = c.get_atomic_distances_between_atoms()
+        if min_dist < 0.5:
+            self.excluded_complex_ids['Atoms closer than 0.5A'].append(c_id)
+            return False
+
+        min_dist, _, _ = c.get_atomic_distances_between_atoms(skip_elements='H')
+        if min_dist < 0.85:
+            self.excluded_complex_ids['Heavy atoms closer than 0.85A'].append(c_id)
+            return False
+
+        if self.only_complexes_with_os and not c.has_metal_os():
+            self.excluded_complex_ids['No metal OS'].append(c_id)
+            return False
+
+        if self.only_real_transition_metals and not c.metal_center_is_transition_metal():
+            self.excluded_complex_ids['Metal center not transition metal'].append(c_id)
+            return False
+
+        if self.exclude_not_fully_connected_complexes and not c.fully_connected:
+            self.excluded_complex_ids['Not fully connected'].append(c_id)
+            return False
+
+        if self.exclude_charged_complexes and c.charge != 0:
+            self.excluded_complex_ids['Is charged'].append(c_id)
+            return False
+
+        return True
+
+    def postfilter_if_ligands_valid(self, c_id: str, comp: RCA_Complex) -> Union[bool, str]:
         """
         Function for filtering complexes after the ligand extraction. Return False to exclude that complex.
         """
@@ -250,46 +267,47 @@ class LigandExtraction:
             raise ValueError(f'The ligand list of the complex {comp.mol_id} is empty.')
 
         if comp.count_ligands_with_stoichiometry(atoms=['O'], only_connected=True) >= 3:
-            return 'More than 3 O ligands'
+            self.excluded_complex_ids['More than 3 O ligands'].append(c_id)
+            return False
 
         if comp.count_ligands_with_stoichiometry(atoms=['N'], only_connected=True) >= 2:
-            return 'More than 2 N ligands'
+            self.excluded_complex_ids['More than 2 N ligands'].append(c_id)
+            return False
 
         if comp.count_ligands_with_stoichiometry(atoms=['C']) > 0:
-            return 'Ligand which is just C'
+            self.excluded_complex_ids['Ligand which is just C'].append(c_id)
+            return False
 
         if comp.count_n_unconnected_ligands(max_n_atoms=1) > 5:
-            return 'More than 5 unconnected ligands'
+            self.excluded_complex_ids['More than 5 unconnected ligands'].append(c_id)
+            return False
 
         if comp.count_coordinating_atoms_with_distance_to_metal_greater_than(distance=1.9, element='O', max_n_atoms=1) > 0:
-            return 'Oxygen ligand more than 1.9A away from metal'
+            self.excluded_complex_ids['Oxygen ligand more than 1.9A away from metal'].append(c_id)
+            return False
 
         alkalis = ['Li', 'Na', 'K', 'Rb', 'Cs', 'Fr']
         if comp.count_atoms_in_ligands(atoms=alkalis, only_if_connected_to_metal=True) > 0:
-            return 'Alkali metal in ligand'
+            self.excluded_complex_ids['Alkali metal in ligand'].append(c_id)
+            return False
 
         noble_gases = ['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn', 'Og']
         if comp.count_atoms_in_ligands(atoms=noble_gases, only_if_connected_to_metal=True) > 0:
-            return 'Noble gas in ligand'
+            self.excluded_complex_ids['Noble gas in ligand'].append(c_id)
+            return False
 
         heavy_metals = ['Tl', 'Pb', 'Bi', 'Po', 'Nh', 'Fl', 'Mc', 'Lv']
         if comp.count_atoms_in_ligands(atoms=heavy_metals, only_if_connected_to_metal=True) > 0:
-            return 'Heavy metal in ligand'
+            self.excluded_complex_ids['Heavy metal in ligand'].append(c_id)
+            return False
 
         # Exclude likely cage structures of metals which are no real ligands.
         metals = ['B', 'Al', 'Ga', 'In', 'Tl', 'Nh', 'Si', 'Ge', 'Sn', 'Pb', 'Fl', 'As', 'Sb', 'Bi', 'Mc', 'Te', 'Po', 'Lv']
         if comp.count_ligands_containing_only(atoms=metals, denticity_range=[1, np.inf], n_atoms_range=[2, np.inf], except_elements=['H']):
-            return 'Metal cage structures'
+            self.excluded_complex_ids['Metal cage structures'].append(c_id)
+            return False
 
         return True
-
-    def standardize_input_complex_db(self, complex_db):
-        # TODO refactor these so that it outputs what is excluded
-        complex_db.remove_node_features_from_molecular_graphs(keep=['node_label'])
-
-        complex_db.normalize_multigraphs_into_simple_graphs()
-
-        return complex_db
 
     def get_ligand_class_properties_of_complex(self, complex_, props: list) -> list:
         """
@@ -305,69 +323,93 @@ class LigandExtraction:
 
         return ligand_infos
 
-    def extract_ligands(self,
-                        testing: Union[bool, int, list[str]] = False,
-                        graph_creating_strategy: str = "default",
-                        **kwargs
-                        ):
-
-        if isinstance(testing, list) is True:
-            self.complex_db = ComplexDB.from_json(json_=str(self.input_complexes_json),
-                                                   type_="Complex",
-                                                   identifier_list=testing,
-                                                   max_number=None,
-                                                   graph_strategy=graph_creating_strategy,
-                                                   **kwargs
-                                                   )
-        else:
-            # testing in instance bool or integer (as before)
-            self.complex_db = ComplexDB.from_json(json_=str(self.input_complexes_json),
-                                                   type_="Complex",
-                                                   identifier_list=None,
-                                                   max_number=testing,
-                                                   graph_strategy=graph_creating_strategy,
-                                                   **kwargs
-                                                   )
-
-
-        self.prefilter_input_complex_db()
-        self.complex_db = self.standardize_input_complex_db(self.complex_db)
+    def extract_ligands(self):
+        """
+        Extracts ligands from complexes and writes the complexes with ligands to an intermediate json file.
+        """
+        # Properties of the ligand which should be recorded in the global ligand dataframe.
+        important_ligand_props = ['name', 'stoichiometry', 'n_protons', 'graph_hash', 'denticity', 'has_good_bond_orders',
+                                    self.unique_ligand_id, 'original_metal_symbol', 'original_metal_os',
+                                    'was_connected_to_metal', 'original_complex_id', 'n_hydrogens', 'original_complex_id',
+                                    'heavy_atoms_graph_hash_with_metal']
 
         df_full_ligand_db = []
         df_complex_db = []
-        for csd_code, comp in tqdm(self.complex_db.db.items(), desc="Extracting ligands from complexes"):
-            comp.de_assemble()
+        if self.store_database_in_memory:
+            self.complex_db = {}
+        self.n_input_complexes_before_filtering = 0
 
-            validity = self.postfilter_if_ligands_valid(comp)
-            if validity == True:
-                # Make a dataframe with basic ligand infos which doesn't take up much memory but has enough information to compute the grouping in unique ligands.
-                get_ligand_props = ['name', 'stoichiometry', 'n_protons', 'graph_hash', 'denticity', 'has_good_bond_orders', self.unique_ligand_id, 'original_metal_symbol', 'original_metal_os', 'was_connected_to_metal', 'original_complex_id', 'n_hydrogens', 'original_complex_id', 'heavy_atoms_graph_hash_with_metal']
-                ligand_infos = self.get_ligand_class_properties_of_complex(
-                                                                            complex_=comp,
-                                                                            props=get_ligand_props
-                                                                            )
-                df_full_ligand_db.extend(ligand_infos)
-                df_complex_db.append({
-                                            'mol_id': comp.mol_id,
-                                            'stoichiometry': comp.stoichiometry,
-                                            'metal_oxi_state': comp.metal_oxi_state,
-                                            'charge': comp.charge,
-                                            'ligand_names': [lig.name for lig in comp.ligands],
-                                            'metal': comp.metal,
-                                        })
-            else:
-                self.excluded_complex_ids[validity].append(csd_code)
+        with jsonlines.open(self.tmp_output_complexes_json, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as complex_writer:
+            for idx, (csd_code, comp_dict) in tqdm(enumerate(iterate_over_json(self.input_complexes_json)), desc='Extracting ligands from complexes'):
+                if self.testing is False or idx < self.testing:
+                    self.n_input_complexes_before_filtering += 1
 
+                    # Make complex class from dict
+                    comp = RCA_Complex.read_from_mol_dict(dict_=comp_dict)
+
+                    # Normalize the complex
+                    comp.remove_node_features_from_molecular_graphs_inplace()
+                    comp.normalize_multigraph_into_graph_inplace()
+
+                    # Filter out bad complexes
+                    # All complexes which are filtered out are added to `self.excluded_complex_ids` with the reason why they were excluded.
+                    complex_is_valid = self.prefilter_if_complex_valid(c_id=csd_code, c=comp)
+
+                    if complex_is_valid:
+                        # Extract ligands from the complex and add as property `comp.ligands`
+                        comp.de_assemble()
+
+                        # Do another filtering step, this time using information from the ligands.
+                        complex_ligands_are_valid = self.postfilter_if_ligands_valid(c_id=csd_code, comp=comp)
+
+                        if complex_ligands_are_valid:
+
+                            # Record important information for dataframes of complexes and ligands
+                            ligand_infos = self.get_ligand_class_properties_of_complex(
+                                                                                        complex_=comp,
+                                                                                        props=important_ligand_props
+                                                                                        )
+                            df_full_ligand_db.extend(ligand_infos)
+                            df_complex_db.append({
+                                                        'mol_id': comp.mol_id,
+                                                        'stoichiometry': comp.stoichiometry,
+                                                        'metal_oxi_state': comp.metal_oxi_state,
+                                                        'charge': comp.charge,
+                                                        'ligand_names': [lig.name for lig in comp.ligands],
+                                                        'metal': comp.metal,
+                                                    })
+
+                            if not self.store_database_in_memory:
+                                comp.append_to_file(key=csd_code, writer=complex_writer)    # Write to jsonlines file
+                            else:
+                                self.complex_db[csd_code] = comp        # Store in memory
+
+
+        if self.store_database_in_memory:
+            self.complex_db = ComplexDB(self.complex_db)
+            self.full_ligand_db = self.build_full_ligand_db(copy=False)
+
+        # Important: make dataframes of important information for ligands, complexes, unique ligands.
+        # That way, we don't need to keep the entire database in memory but can still access the information we need.
+        # ligands
         self.df_full_ligand_db = pd.DataFrame(df_full_ligand_db).set_index('name', drop=False)
+        self.n_full_ligands = len(self.df_full_ligand_db)
+        # complexes
         self.df_complex_db = pd.DataFrame(df_complex_db).set_index('mol_id', drop=False)
+        self.n_complexes = len(self.df_complex_db)
+        # unique ligands
         self.df_unique_ligand_db = self.get_unique_ligand_df()
+        self.n_unique_ligands = len(self.df_unique_ligand_db)
+
+        # Get useful mapping from name to unique name for later use
         self.ligand_to_unique_ligand = self.get_ligand_to_unique_ligand_dict()
 
-        # Add unique name column to full ligand df
+        # Add `unique name` column to full ligand df
         df_ligand_to_unique_ligand = pd.DataFrame.from_dict(self.ligand_to_unique_ligand, orient='index', columns=['unique_name'])
         self.df_full_ligand_db = pd.merge(self.df_full_ligand_db, df_ligand_to_unique_ligand, left_index=True, right_index=True, how='left')
+        # Add `occurrences` column to full ligand df
+        self.df_full_ligand_db = pd.merge(self.df_full_ligand_db, self.df_unique_ligand_db['occurrences'], left_on='unique_name', right_index=True, how='left')
 
-        self.delete_filtered_complexes_from_db()
         self.print_excluded_complexes()
 
         return
@@ -378,7 +420,7 @@ class LigandExtraction:
         """
         self.grouped_ligands = self.group_same_ligands()
         unique_ligands = {}
-        for grouped_ligand in tqdm(self.grouped_ligands.to_dict(orient='index').values(), desc="Building unique ligand db"):
+        for grouped_ligand in tqdm(self.grouped_ligands.to_dict(orient='index').values(), desc="Building unique ligand dataframe"):
             same_ligand_names = grouped_ligand['name']
             name = self.choose_unique_ligand_representative_from_all_same_ligands(same_ligands=same_ligand_names)
             uname = 'unq_' + name
@@ -392,8 +434,7 @@ class LigandExtraction:
 
             # Add useful statistical information of all ligands for this unique ligand
             df_same_ligands = self.df_full_ligand_db.loc[same_ligand_names]
-            ligand_graph_hash = unique_ligands[uname]['graph_hash']
-            df_same_graph_hash = self.df_full_ligand_db.query('graph_hash == @ligand_graph_hash')
+            df_same_graph_hash = self.df_full_ligand_db.query('graph_hash == @unique_ligands[@uname]["graph_hash"]')
             denticities = pd.unique(df_same_graph_hash['denticity'])
             metals = df_same_ligands['original_metal_symbol'].tolist()
             count_metals = pd.Series(metals).value_counts().sort_values(ascending=False).to_dict()
@@ -485,65 +526,60 @@ class LigandExtraction:
 
         return name
 
-    def build_unique_ligand_db(self):
+    def get_unique_ligand_from_ligand(self, ligand: RCA_Ligand) -> RCA_Ligand:
         """
-        Build the unique ligand db from the full ligand db.
+        Returns the unique ligand, given a normal ligand. The unique ligand has some additional and some deleted properties in contrast to the normal ligand.
+        @param ligand: normal ligand
+        @return: unique ligand
         """
-        all_most_common_n_H = self.df_unique_ligand_db.groupby(['heavy_atoms_graph_hash_with_metal'])['n_hydrogens'].agg(lambda x: Counter(x).most_common(1)[0][0])
-        all_charges_with_same_graph_hash = self.df_unique_ligand_db.groupby('graph_hash')['pred_charge'].agg(lambda x: dict(Counter(x)))
+        ulig = deepcopy(ligand)
 
-        self.unique_ligand_db = {}
-        for ligand in tqdm(self.df_unique_ligand_db.itertuples(), desc="Building unique ligand db"):
-            same_ligand_names = ligand.same_ligand_names
-            name = ligand.name
-            uname = ligand.unique_name
+        uname = self.ligand_to_unique_ligand[ligand.name]
+        same_ligand_names = self.df_full_ligand_db.loc[self.df_full_ligand_db['unique_name'] == uname, 'name'].tolist()
+        df_same_ligands = self.df_full_ligand_db.loc[same_ligand_names]
 
-            df_same_ligands = self.df_full_ligand_db.loc[same_ligand_names]
-            ulig = deepcopy(self.full_ligand_db.db[name])
-            ulig.unique_name = uname
-            ulig.all_ligand_names = same_ligand_names
+        ulig.unique_name = uname
+        ulig.all_ligand_names = same_ligand_names
 
-            identical_ligand_info = defaultdict(list)
-            for lig in df_same_ligands.itertuples():
-                identical_ligand_info['name'].append(lig.name)
-                identical_ligand_info['original_metal_symbol'].append(lig.original_metal_symbol)
-                identical_ligand_info['original_metal_os'].append(lig.original_metal_os)
-                identical_ligand_info['original_complex_charge'].append(lig.original_metal_os)  # TODO: fix bug, should be lig.original_complex_charge
-                identical_ligand_info['original_complex_id'].append(lig.original_complex_id)
-            ulig.identical_ligand_info = identical_ligand_info
+        identical_ligand_info = defaultdict(list)
+        for samelig in df_same_ligands.itertuples():
+            identical_ligand_info['name'].append(samelig.name)
+            identical_ligand_info['original_metal_symbol'].append(samelig.original_metal_symbol)
+            identical_ligand_info['original_metal_os'].append(samelig.original_metal_os)
+            identical_ligand_info['original_complex_charge'].append(
+                samelig.original_metal_os)  # TODO: fix bug, should be lig.original_complex_charge
+            identical_ligand_info['original_complex_id'].append(samelig.original_complex_id)
+        ulig.identical_ligand_info = identical_ligand_info
 
-            # Set unique ligand information as properties in the unique ligand instead of as collected dictionary
-            for prop, val in ulig.unique_ligand_information.items():
-                setattr(ulig, prop, val)
-            del ulig.unique_ligand_information     # not needed anymore
+        # Set unique ligand information as properties in the unique ligand instead of as collected dictionary
+        for prop, val in ulig.unique_ligand_information.items():
+            setattr(ulig, prop, val)
+        del ulig.unique_ligand_information  # not needed anymore
 
-            # Delete attributes which make sense only for ligands but not for unique ligands
-            del ulig.is_chosen_unique_ligand
+        # Delete attributes which make sense only for ligands but not for unique ligands
+        del ulig.is_chosen_unique_ligand
 
-            ulig.same_graph_charges = all_charges_with_same_graph_hash[ulig.graph_hash]
-            ulig.n_pred_charges = len(ulig.same_graph_charges)
+        ulig.same_graph_charges = self.all_charges_with_same_graph_hash[ulig.graph_hash]
+        ulig.n_pred_charges = len(ulig.same_graph_charges)
 
-            most_common_n_H = all_most_common_n_H[ulig.heavy_atoms_graph_hash_with_metal]
-            ulig.common_graph_with_diff_n_hydrogens = bool(most_common_n_H != ulig.n_hydrogens)
-            if ulig.common_graph_with_diff_n_hydrogens:
-                ulig.add_warning(similar_molecule_with_diff_n_hydrogens_warning)
+        most_common_n_H = self.all_most_common_n_H[ulig.heavy_atoms_graph_hash_with_metal]
+        ulig.common_graph_with_diff_n_hydrogens = bool(most_common_n_H != ulig.n_hydrogens)
+        if ulig.common_graph_with_diff_n_hydrogens:
+            ulig.add_warning(similar_molecule_with_diff_n_hydrogens_warning)
 
-            ulig.n_electrons = ulig.n_protons - ulig.pred_charge
-            ulig.odd_n_electron_count = bool(ulig.n_electrons % 2 == 1)
-            if ulig.odd_n_electron_count:
-                ulig.add_warning(odd_n_electrons_warning)
+        ulig.n_electrons = ulig.n_protons - ulig.pred_charge
+        ulig.odd_n_electron_count = bool(ulig.n_electrons % 2 == 1)
+        if ulig.odd_n_electron_count:
+            ulig.add_warning(odd_n_electrons_warning)
 
-            ulig.identical_ligand_info['pred_charge'] = [self.full_ligand_db.db[name].pred_charge for name in ulig.identical_ligand_info['name']]
-            ulig.identical_ligand_info['pred_charge_is_confident'] = [self.full_ligand_db.db[name].pred_charge_is_confident for name in ulig.identical_ligand_info['name']]
+        ulig.identical_ligand_info['pred_charge'] = [ulig.pred_charge for name in
+                                                     ulig.identical_ligand_info['name']]
+        ulig.identical_ligand_info['pred_charge_is_confident'] = [ulig.pred_charge_is_confident
+                                                                  for name in ulig.identical_ligand_info['name']]
 
-            ulig.has_warnings = bool(len(ulig.warnings) > 0)
+        ulig.has_warnings = bool(len(ulig.warnings) > 0)
 
-            self.unique_ligand_db[uname] = ulig
-        self.n_unique_ligands = len(self.unique_ligand_db)
-        self.unique_ligand_db = LigandDB(self.unique_ligand_db)
-
-        return
-
+        return ulig
 
     @staticmethod
     def update_ligand_with_unique_ligand_information_inplace(
@@ -697,6 +733,23 @@ class LigandExtraction:
             [col for col in df_ligand_charges.columns if not col in self.LCS_needed_ligand_props]]
         self.df_unique_ligand_db = self.df_unique_ligand_db.join(df_ligand_charges)
         self.df_unique_ligand_db['is_confident'] = self.df_unique_ligand_db['is_confident'].fillna(False)
+        self.n_pred_charges = self.df_unique_ligand_db['pred_charge'].notna().sum()
+
+        return
+
+    def iterate_over_complexes(self):
+        """
+        Iterates over all complexes in the database and yields them one by one.
+        """
+        if self.store_database_in_memory:
+            for c_id, c in self.complex_db.db.items():
+                yield c_id, c
+        else:
+            with jsonlines.open(self.tmp_output_complexes_json, 'r') as reader:
+                for line in reader:
+                    c_id = line['key']
+                    c = RCA_Complex.read_from_mol_dict(dict_=line['value'])
+                    yield c_id, c
 
         return
 
@@ -715,34 +768,69 @@ class LigandExtraction:
                                             use_existing_input_json=use_existing_input_json,
                                             **kwargs)
 
-        self.extract_ligands(testing=self.testing,
-                             graph_creating_strategy=self.graph_strat,
-                             **kwargs
-                             )
+        self.extract_ligands()
 
         # Charge assignment using only the linear charge solver (LCS) right now
         self.assign_charges_to_unique_ligands(max_charge_iterations=max_charge_iterations)
 
-        # Update complex db to include information about the unique ligands for the LCS.
         share_properties = ['unique_name']
         collect_properties = {'unique_ligand_information': self.unique_ligand_info_props}
-        self.update_complex_db_with_information(share_properties=share_properties,
-                                                collect_properties=collect_properties)
+        self.all_most_common_n_H = self.df_unique_ligand_db.groupby(['heavy_atoms_graph_hash_with_metal'])['n_hydrogens'].agg(lambda x: Counter(x).most_common(1)[0][0])
+        self.all_charges_with_same_graph_hash = self.df_unique_ligand_db.groupby('graph_hash')['pred_charge'].agg(lambda x: dict(Counter(x)))
+        charges = self.df_unique_ligand_db.to_dict(orient='index')
 
-        # Attention: The ligands of the full ligand database are just a view on the ligands of the complex db. This is done for memory efficiency and speed. To change this, it is not enough to just set copy to True, but the full ligand db needs to be updated with unique ligand information and with charges.
-        self.full_ligand_db = self.build_full_ligand_db(copy=False)
+        if self.store_database_in_memory:
+            self.unique_ligand_db = {}
 
-        # Make the unique ligand database from the full ligand database
-        self.build_unique_ligand_db()
+        # Open jsonlines files for writing of unique ligands, ligands and complexes
+        with jsonlines.open(self.output_complexes_json, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as complex_writer:
+            with jsonlines.open(self.full_ligands_json, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as lig_writer:
+                with jsonlines.open(self.unique_ligands_json, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as ulig_writer:
 
-        # Save all databases
-        self.unique_ligand_db.to_json(self.unique_ligands_json, desc='Save unique ligand db to json', json_lines=True)
-        self.full_ligand_db.to_json(self.full_ligands_json, desc='Save full ligand db to json', json_lines=True)
-        self.complex_db.to_json(self.output_complexes_json, desc='Save complex db to json', json_lines=True)
+                    for c_id, c in tqdm(self.iterate_over_complexes(), desc='Writing databases to disk', total=self.n_complexes):
+                        for lig in c.ligands:
+                            # Update ligands with unique ligand information
+                            uname = self.ligand_to_unique_ligand[lig.name]
+                            ulig_props = series2namedtuple(self.df_unique_ligand_db.loc[uname])
+                            self.update_ligand_with_unique_ligand_information_inplace(
+                                lig=lig,
+                                ulig=ulig_props,
+                                share_properties=share_properties,
+                                collect_properties=collect_properties
+                            )
+                            update_ligand_with_charge_inplace(lig, charges=charges)
 
-        print(f'\nLigand database (n={self.n_unique_ligands}) with charges established successfully!')
+                            # Write ligand to disk as json
+                            lig.append_to_file(key=lig.name, writer=lig_writer)
+
+                            # Make unique ligand and write to disk as json
+                            if lig.is_chosen_unique_ligand:
+                                ulig = self.get_unique_ligand_from_ligand(ligand=lig)
+                                ulig.append_to_file(key=uname, writer=ulig_writer)
+                                if self.store_database_in_memory:
+                                    self.unique_ligand_db[uname] = ulig
+
+                        # Update global props of complex with some useful information about unique ligands
+                        df_complex_ligands = self.df_full_ligand_db.query('original_complex_id == @c.mol_id')
+                        n_ligands = len(df_complex_ligands)
+                        c.global_props['n_ligands'] = n_ligands
+                        c.global_props['n_unique_ligands'] = len(set(df_complex_ligands['unique_name']))
+                        n_ligands_occurring_once = sum(df_complex_ligands['occurrences'] == 1)
+                        c.global_props['n_ligands_occurring_once'] = n_ligands_occurring_once
+                        c.global_props['frac_ligands_occurring_once'] = n_ligands_occurring_once / n_ligands
+
+                        # Write complex data to disk as json
+                        c.append_to_file(key=c_id, writer=complex_writer)
+
+                    # Delete temporary json file
+                    self.tmp_output_complexes_json.unlink()
+
+        if self.store_database_in_memory:
+            self.unique_ligand_db = LigandDB(self.unique_ligand_db)
+
 
         duration = get_duration_string(start)
-        print(f'Duration of extraction: {duration}')
+        print(f'\nDuration of extraction: {duration}')
+        print(f'Ligand database with charges (n={self.n_pred_charges}/{self.n_unique_ligands}) established successfully!')
 
         return

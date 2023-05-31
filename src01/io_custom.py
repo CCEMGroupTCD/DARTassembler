@@ -36,20 +36,28 @@ def load_json(path: Union[str, Path]) -> dict:
     :param path: Path to the JSON or JSON Lines file
     :return: Dictionary with the contents of the file
     """
+    db = {key: value for key, value in iterate_over_json(path)}
+
+    return db
+
+def iterate_over_json(path: Union[str, Path]) -> tuple[str, dict]:
+    """
+    Iterate over a JSON or JSON Lines file and yield the key and value of each entry.
+    :param path: Path to the JSON or JSON Lines file
+    :return: Tuple with the key and value of each entry
+    """
     try:
         # Try to load as normal JSON file first
         with open(path, 'r') as file:
             db = json.load(file)
+            for key, value in db.items():
+                yield key, value
     except json.JSONDecodeError:
         # If normal JSON fails, try to load as JSON Lines
         with jsonlines.open(path, 'r') as reader:
-            db = {}
             for line in reader:
                 # Since 'line' is a dictionary, no need to use json.loads
-                db[line["key"]] = line["value"]
-
-    return db
-
+                yield line['key'], line['value']
 
 def save_json(db: dict, path: Union[str, Path], **kwargs):
     with open(path, 'w') as file:

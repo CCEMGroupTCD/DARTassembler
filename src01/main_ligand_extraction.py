@@ -36,6 +36,7 @@ def main(database_path_: str,
          graph_strat_: str = "default",
          exclude_charged_complexes: bool = False,
          max_charge_iterations: Union[int, None] = 10,
+         store_database_in_memory: bool = False,
          **kwargs
          ):
 
@@ -45,7 +46,8 @@ def main(database_path_: str,
         exclude_not_fully_connected_complexes=exclude_not_fully_connected_complexes_,
         testing=testing_,
         graph_strat=graph_strat_,
-        exclude_charged_complexes=exclude_charged_complexes
+        exclude_charged_complexes=exclude_charged_complexes,
+        store_database_in_memory=store_database_in_memory
     )
 
     db.run_ligand_extraction(
@@ -68,7 +70,7 @@ if __name__ == '__main__':
 
     overwrite_atomic_properties = True  # if atomic properties json should be overwritten. Only necessary after changing input files.
     use_existing_input_json = False  # if the existing input json should be used or the process started from the xzy files
-
+    store_database_in_memory = False    # if the database should be stored in memory. Only use if you have enough RAM, but can speed up the pipeline by maybe 30%.
 
     # Input complex filters
     exclude_not_fully_connected_complexes = True  # only keep complexes which are fully connected
@@ -86,4 +88,5 @@ if __name__ == '__main__':
         testing_=testing,
         graph_strat_=graph_strategy,
         exclude_charged_complexes=exclude_charged_complexes,
+        store_database_in_memory=store_database_in_memory
     )

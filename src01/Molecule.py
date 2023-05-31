@@ -29,7 +29,8 @@ from src01.bond_orders import graph_to_smiles, bond_order_rdkit_to_pysmiles
 from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
     unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label, \
     get_graph_fragments, count_atoms_with_n_bonds, get_graph_hash, get_heavy_atoms_graph, \
-    get_only_complex_graph_connected_to_metal, get_adjacency_matrix, assert_graph_and_coordinates_are_consistent
+    get_only_complex_graph_connected_to_metal, get_adjacency_matrix, assert_graph_and_coordinates_are_consistent, \
+    remove_node_features_from_graph, make_multigraph_to_graph
 from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, graph_to_rdkit_mol, \
     unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center
@@ -60,6 +61,7 @@ class RCA_Molecule(object):
             strategy: (pymatgen strategy)
         """
         self.warnings = warnings
+        self.node_label = 'node_label'  # node label specifying the atom type
 
         if atomic_props is None:
             atomic_props = {}
@@ -79,6 +81,7 @@ class RCA_Molecule(object):
 
         self.n_atoms = len(self.atomic_props['atoms'])
         self.n_hydrogens = sum(1 for atom in self.atomic_props['atoms'] if atom == 'H')
+        self.n_protons = self.get_n_protons()
 
         if has_ligands is True:
             # if we expect ligands, we can set up an empty ligand list
@@ -94,28 +97,38 @@ class RCA_Molecule(object):
             if reindex_graph:
                 graph = self.get_reindexed_graph()
             self.graph = graph
-
-        # Bond and bond order attributes
-        self.n_bonds = len(self.graph.edges)
-        self.has_bond_order_attribute = self.check_for_bond_order_attribute()     # has bond order attribute for all bonds, but some bonds are marked as unknown
-        self.has_unknown_bond_orders = self.check_for_unknown_bond_orders()       # at least one of the bond orders is unknown
-        self.has_good_bond_orders = self.check_for_good_bond_orders()             # has bond orders and all are known
-
-        self.validity_check_created_molecule()
-
-        # As the graphs are now not optional anymore we can also make the hashes baseline
         self.graph_hash = self.get_graph_hash()
-        self.heavy_atoms_graph_hash = self.get_heavy_atoms_graph_hash()
-        self.bond_order_graph_hash = self.get_bond_order_graph_hash()
-        self.hash = self.get_hash()
-
-        self.stoichiometry = self.get_standardized_stoichiometry()
-        self.n_protons = self.get_n_protons()
-        self.add_additional_molecule_information_to_global_props()
-
 
         # Set kwargs so that they become properties of the molecule
         self.set_other_props_as_properties(other_props=other_props)
+
+        # Bond and bond order attributes
+        self.n_bonds = len(self.graph.edges)
+        if not hasattr(self, 'has_bond_order_attribute'):
+            self.has_bond_order_attribute = self.check_for_bond_order_attribute()     # has bond order attribute for all bonds, but some bonds are marked as unknown
+        if not hasattr(self, 'has_unknown_bond_orders'):
+            self.has_unknown_bond_orders = self.check_for_unknown_bond_orders()       # at least one of the bond orders is unknown
+        if not hasattr(self, 'has_good_bond_orders'):
+            self.has_good_bond_orders = self.check_for_good_bond_orders()             # has bond orders and all are known
+
+        self.validity_check_created_molecule()
+
+        # Different graph hashes
+        if not hasattr(self, 'heavy_atoms_graph_hash'):
+            self.heavy_atoms_graph_hash = self.get_heavy_atoms_graph_hash()
+        if not hasattr(self, 'bond_order_graph_hash'):
+            self.bond_order_graph_hash = self.get_bond_order_graph_hash()
+        if not hasattr(self, 'hash'):
+            self.hash = self.get_hash()
+
+        # Set additional properties
+        if not hasattr(self, 'stoichiometry'):
+            self.stoichiometry = self.get_standardized_stoichiometry()
+
+        self.add_additional_molecule_information_to_global_props()
+
+
+
 
         # outcommented for now because not really needed and maybe computationally expensive
         # if self.check_for_good_bond_orders():
@@ -250,8 +263,7 @@ class RCA_Molecule(object):
         return n_bonds
 
     def get_n_protons(self) -> int:
-        n_protons = Composition(self.stoichiometry).total_electrons
-        assert n_protons == sum([Pymatgen_Element(el).Z for el in self.atomic_props['atoms']])
+        n_protons = float(sum([Pymatgen_Element(el).Z for el in self.atomic_props['atoms']]))   # todo: remove float
         return n_protons
 
     def has_bond_type(self, bond_types: list, bond_type_name: str='bond_type') -> bool:
@@ -540,6 +552,28 @@ class RCA_Molecule(object):
 
         return inherit_global_properties
 
+    def remove_node_features_from_molecular_graphs_inplace(self, keep: list = None):
+        """
+        Removes all node features from all molecular graphs in the db except the node features specified in keep.
+        :param keep: list of node features which will not be removed
+        :return: None
+        """
+        if keep is None:
+            keep = [self.node_label]
+
+        remove_node_features_from_graph(graph=self.graph, keep=keep, inplace=True)
+
+        return
+
+    def normalize_multigraph_into_graph_inplace(self):
+        """
+        If self.graph is a MultiGraph, it is normalized into a Graph.
+        :return: None
+        """
+        self.graph = make_multigraph_to_graph(self.graph)
+
+        return
+
     def write_to_mol_dict(self):
         """
         Graph hash not that important for molecules I guess
@@ -550,6 +584,19 @@ class RCA_Molecule(object):
             "graph_dict": graph_to_dict_with_node_labels(self.graph),
             # "graph_hash": self.graph_hash
         }
+
+    def append_to_file(self, key: str, writer):
+        """
+        write the mol object to a file. E.g.:
+        ```
+        with jsonlines.open(path, mode='w') as writer:
+            mol.write_to_file(key=mol.name, writer=writer)
+        ```
+        """
+        data = {'key': key, 'value': self.write_to_mol_dict()}
+        writer.write(data)
+
+        return
 
     @classmethod
     def read_from_mol_dict(cls,
@@ -693,10 +740,13 @@ class RCA_Ligand(RCA_Molecule):
         self.is_centrosymmetric, self.centrosymmetry_ang_dev = self.check_if_centrosymmetric(return_ang_dev=True)
 
         # The graph_hash_with_metal is not calculated with the real original metal, but with a pseudo metal which is always the same, so that only the connections to the metal matter, but different original metals won't give different hashes. This means ligands are considered the same independent of the original metal under this hash.
-        self.graph_hash_with_metal = self.get_graph_hash_with_metal(metal_symbol='Hg')
-        self.heavy_atoms_graph_hash_with_metal = self.get_heavy_atoms_graph_hash_with_metal(metal_symbol='Hg')
+        if not hasattr(self, 'graph_hash_with_metal'):
+            self.graph_hash_with_metal = self.get_graph_hash_with_metal(metal_symbol='Hg')
+        if not hasattr(self, 'heavy_atoms_graph_hash_with_metal'):
+            self.heavy_atoms_graph_hash_with_metal = self.get_heavy_atoms_graph_hash_with_metal(metal_symbol='Hg')
 
-        self.has_betaH = self.betaH_check()
+        if not hasattr(self, 'has_betaH'):
+            self.has_betaH = self.betaH_check()
         self.has_neighboring_coordinating_atoms = self.check_for_neighboring_coordinating_atoms()
 
 
@@ -960,7 +1010,7 @@ class RCA_Ligand(RCA_Molecule):
             d['graph_dict'] = graph_to_dict_with_node_labels(self.graph)
 
         # todo: remove original_complex_id from list
-        do_not_output_automatically = ['mol', 'original_complex_id', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
+        do_not_output_automatically = ['mol', 'node_label', 'original_complex_id', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
         for prop, val in vars(self).items():
             if not prop in do_not_output_automatically:
                 d[prop] = val
@@ -1506,7 +1556,7 @@ class RCA_Complex(RCA_Molecule):
         d['ligands'] = [lig.write_to_mol_dict() for lig in self.ligands]
 
         # Do not output write these fields to the output dictionary, mostly because they are not json serializable
-        do_not_output_automatically = ['ligands', 'mol', 'pmg_metal', 'smiles', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
+        do_not_output_automatically = ['ligands', 'node_label', 'mol', 'pmg_metal', 'smiles', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
 
         for prop, val in vars(self).items():
             if not prop in do_not_output_automatically:
