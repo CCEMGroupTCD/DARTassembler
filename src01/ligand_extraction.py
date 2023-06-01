@@ -173,7 +173,7 @@ class LigandExtraction:
 
         return
 
-    def prefilter_if_complex_valid(self, c_id, c):
+    def prefilter_if_complex_valid(self, c_id, c) -> bool:
         """
         Filters input complexes in `self.complex_db` by multiple criteria without needing information about ligands.
         """
@@ -257,7 +257,7 @@ class LigandExtraction:
 
         return True
 
-    def postfilter_if_ligands_valid(self, c_id: str, comp: RCA_Complex) -> Union[bool, str]:
+    def postfilter_if_ligands_valid(self, c_id: str, comp: RCA_Complex) -> bool:
         """
         Function for filtering complexes after the ligand extraction. Return False to exclude that complex.
         """
@@ -433,10 +433,10 @@ class LigandExtraction:
 
 
             # Add useful statistical information of all ligands for this unique ligand
-            df_same_ligands = self.df_full_ligand_db.loc[same_ligand_names]
-            df_same_graph_hash = self.df_full_ligand_db.query('graph_hash == @unique_ligands[@uname]["graph_hash"]')
+            graph_hash = unique_ligands[uname]['graph_hash']
+            df_same_graph_hash = self.df_full_ligand_db.loc[self.df_full_ligand_db['graph_hash'] == graph_hash, ['graph_hash', 'denticity', 'graph_hash_with_metal']]
             denticities = pd.unique(df_same_graph_hash['denticity'])
-            metals = df_same_ligands['original_metal_symbol'].tolist()
+            metals = self.df_full_ligand_db.loc[same_ligand_names, 'original_metal_symbol'].tolist()
             count_metals = pd.Series(metals).value_counts().sort_values(ascending=False).to_dict()
             n_graph_hashes = len(pd.unique(df_same_graph_hash['graph_hash_with_metal']))
             assert not 0 in denticities, 'The denticity for unconnected ligands is assumed to be -1 but here there appears a 0.'
@@ -454,8 +454,8 @@ class LigandExtraction:
             unique_ligands[uname].update(unique_ligand_infos)
 
         df = pd.DataFrame.from_dict(unique_ligands, orient='index')
-        self.unique_ligand_info_props = list(
-            unique_ligand_infos.keys())  # for updating the ligands from complex and full ligands db later
+        # for updating the ligands from complex and full ligands db later
+        self.unique_ligand_info_props = list(unique_ligand_infos.keys())
 
         return df
 
@@ -515,9 +515,9 @@ class LigandExtraction:
         elif strategy == 'good_bond_orders':
             # Preferably take ligands which have good bond orders
             name = same_ligands[0]
-            same_ligand_props = self.df_full_ligand_db.loc[same_ligands]
-            for lig_name, lig in same_ligand_props.iterrows():
-                if lig.has_good_bond_orders:
+            same_ligand_props = self.df_full_ligand_db['has_good_bond_orders'].loc[same_ligands]
+            for lig_name, has_good_bond_orders in same_ligand_props.items():
+                if has_good_bond_orders:
                     name = lig_name
                     break
         else:
@@ -535,20 +535,19 @@ class LigandExtraction:
         ulig = deepcopy(ligand)
 
         uname = self.ligand_to_unique_ligand[ligand.name]
-        same_ligand_names = self.df_full_ligand_db.loc[self.df_full_ligand_db['unique_name'] == uname, 'name'].tolist()
-        df_same_ligands = self.df_full_ligand_db.loc[same_ligand_names]
+        df_same_ligands = self.df_full_ligand_db.loc[self.df_full_ligand_db['unique_name'] == uname]
+        same_ligand_names = df_same_ligands['name'].tolist()
 
         ulig.unique_name = uname
         ulig.all_ligand_names = same_ligand_names
 
-        identical_ligand_info = defaultdict(list)
-        for samelig in df_same_ligands.itertuples():
-            identical_ligand_info['name'].append(samelig.name)
-            identical_ligand_info['original_metal_symbol'].append(samelig.original_metal_symbol)
-            identical_ligand_info['original_metal_os'].append(samelig.original_metal_os)
-            identical_ligand_info['original_complex_charge'].append(
-                self.df_complex_db.loc[samelig.original_complex_id, 'charge'])
-            identical_ligand_info['original_complex_id'].append(samelig.original_complex_id)
+        identical_ligand_info = {}
+        identical_ligand_info['name'] = same_ligand_names
+        identical_ligand_info['original_metal_symbol'] = df_same_ligands['original_metal_symbol'].tolist()
+        identical_ligand_info['original_metal_os'] = df_same_ligands['original_metal_os'].tolist()
+        original_complex_ids = df_same_ligands['original_complex_id'].tolist()
+        identical_ligand_info['original_complex_charge'] = self.df_complex_db.loc[original_complex_ids, 'charge'].tolist()
+        identical_ligand_info['original_complex_id'] = df_same_ligands['original_complex_id'].tolist()
         ulig.identical_ligand_info = identical_ligand_info
 
         # Set unique ligand information as properties in the unique ligand instead of as collected dictionary
@@ -719,7 +718,7 @@ class LigandExtraction:
 
     def assign_charges_to_unique_ligands(self, max_charge_iterations: Union[int, None]):
         """
-        Assigns charges to the unique ligands in the database. Currently, the Linear Charge Solver method is used for this only.
+        Assigns charges to the unique ligands in the database. Currently, only the Linear Charge Solver method is used for this.
         """
         print('\nCHARGE CALCULATION:')
         df_ligand_charges = self.calculate_ligand_charges(max_iterations=max_charge_iterations)
@@ -748,6 +747,90 @@ class LigandExtraction:
 
         return
 
+    def update_and_save_ligand(self, lig, writer):
+        """
+        Updates the ligand with unique ligand information and charges and saves it to disk.
+        """
+        share_properties = ['unique_name']
+        collect_properties = {'unique_ligand_information': self.unique_ligand_info_props}
+
+        # Update ligands with unique ligand information
+        uname = self.ligand_to_unique_ligand[lig.name]
+        ulig_props = series2namedtuple(self.df_unique_ligand_db.loc[uname])
+        self.update_ligand_with_unique_ligand_information_inplace(
+            lig=lig,
+            ulig=ulig_props,
+            share_properties=share_properties,
+            collect_properties=collect_properties
+        )
+        update_ligand_with_charge_inplace(lig, charges=self.charge_dict)
+
+        # Write ligand to disk as json
+        lig.append_to_file(key=lig.name, writer=writer)
+
+        return
+
+    def update_and_save_unique_ligand(self, lig, writer):
+        ulig = self.get_unique_ligand_from_ligand(ligand=lig)
+        uname = ulig.unique_name
+        ulig.append_to_file(key=uname, writer=writer)
+        if self.store_database_in_memory:
+            self.unique_ligand_db[uname] = ulig
+
+        return
+
+    def update_and_save_complex(self, c, writer):
+        # Update global props of complex with some useful information about unique ligands
+        df_complex_ligands = self.df_full_ligand_db.loc[self.df_full_ligand_db['original_complex_id'] == c.mol_id, ['unique_name', 'occurrences']]
+        n_ligands = len(df_complex_ligands)
+        c.global_props['n_ligands'] = n_ligands
+        c.global_props['n_unique_ligands'] = len(set(df_complex_ligands['unique_name']))
+        n_ligands_occurring_once = sum(df_complex_ligands['occurrences'] == 1)
+        c.global_props['n_ligands_occurring_once'] = n_ligands_occurring_once
+        c.global_props['frac_ligands_occurring_once'] = n_ligands_occurring_once / n_ligands
+
+        # Write complex data to disk as json
+        c.append_to_file(key=c.mol_id, writer=writer)
+
+        return
+    def save_databases_to_json(self):
+        """
+        Saves the databases to jsonlines files. At the same time, additional properties are calculated and stored. This function can read complexes from a temporary jsonlines file if the database is not stored in memory to reduce memory usage. This function does both the calculation of additional properties and the saving of the databases to jsonlines files so that each complex needs to be read only once.
+        """
+
+        # Prepare some data for the calculation of additional properties.
+        self.all_most_common_n_H = self.df_unique_ligand_db.groupby(['heavy_atoms_graph_hash_with_metal'])[
+            'n_hydrogens'].agg(lambda x: Counter(x).most_common(1)[0][0])
+        self.all_charges_with_same_graph_hash = self.df_unique_ligand_db.groupby('graph_hash')['pred_charge'].agg(
+            lambda x: dict(Counter(x)))
+        self.charge_dict = self.df_unique_ligand_db.to_dict(orient='index')
+
+        if self.store_database_in_memory:
+            self.unique_ligand_db = {}
+
+        # Open jsonlines files for writing of unique ligands, ligands and complexes
+        encoder = functools.partial(json.dumps, cls=NumpyEncoder)
+        with jsonlines.open(self.output_complexes_json, mode='w', dumps=encoder) as complex_writer:
+            with jsonlines.open(self.full_ligands_json, mode='w', dumps=encoder) as lig_writer:
+                with jsonlines.open(self.unique_ligands_json, mode='w', dumps=encoder) as ulig_writer:
+
+                    # Iterate once over all complexes
+                    desc = 'Writing databases to disk'
+                    for c_id, c in tqdm(self.iterate_over_complexes(), desc=desc, total=self.n_complexes):
+                        for lig in c.ligands:
+                            self.update_and_save_ligand(lig=lig, writer=lig_writer)
+                            if lig.is_chosen_unique_ligand:
+                                self.update_and_save_unique_ligand(lig=lig, writer=ulig_writer)
+                        self.update_and_save_complex(c, writer=complex_writer)
+
+                    # Delete temporary json file
+                    self.tmp_output_complexes_json.unlink()
+
+        if self.store_database_in_memory:
+            self.unique_ligand_db = LigandDB(self.unique_ligand_db)
+
+        return
+
     def run_ligand_extraction(self,
                               overwrite_atomic_properties: bool = True,
                               use_existing_input_json: bool = True,
@@ -759,70 +842,19 @@ class LigandExtraction:
         """
         start = datetime.now()
 
+        # Read in complexes from xyz files and graphs
         self.ensure_input_complex_db_exists(overwrite_atomic_properties=overwrite_atomic_properties,
                                             use_existing_input_json=use_existing_input_json,
                                             **kwargs)
 
+        # Extract ligands from complexes and save them in property 'ligands' of each complex.
         self.extract_ligands()
 
-        # Charge assignment using only the linear charge solver (LCS) right now
+        # Assign charges to unique ligands
         self.assign_charges_to_unique_ligands(max_charge_iterations=max_charge_iterations)
 
-        share_properties = ['unique_name']
-        collect_properties = {'unique_ligand_information': self.unique_ligand_info_props}
-        self.all_most_common_n_H = self.df_unique_ligand_db.groupby(['heavy_atoms_graph_hash_with_metal'])['n_hydrogens'].agg(lambda x: Counter(x).most_common(1)[0][0])
-        self.all_charges_with_same_graph_hash = self.df_unique_ligand_db.groupby('graph_hash')['pred_charge'].agg(lambda x: dict(Counter(x)))
-        charges = self.df_unique_ligand_db.to_dict(orient='index')
-
-        if self.store_database_in_memory:
-            self.unique_ligand_db = {}
-
-        # Open jsonlines files for writing of unique ligands, ligands and complexes
-        with jsonlines.open(self.output_complexes_json, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as complex_writer:
-            with jsonlines.open(self.full_ligands_json, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as lig_writer:
-                with jsonlines.open(self.unique_ligands_json, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as ulig_writer:
-
-                    for c_id, c in tqdm(self.iterate_over_complexes(), desc='Writing databases to disk', total=self.n_complexes):
-                        for lig in c.ligands:
-                            # Update ligands with unique ligand information
-                            uname = self.ligand_to_unique_ligand[lig.name]
-                            ulig_props = series2namedtuple(self.df_unique_ligand_db.loc[uname])
-                            self.update_ligand_with_unique_ligand_information_inplace(
-                                lig=lig,
-                                ulig=ulig_props,
-                                share_properties=share_properties,
-                                collect_properties=collect_properties
-                            )
-                            update_ligand_with_charge_inplace(lig, charges=charges)
-
-                            # Write ligand to disk as json
-                            lig.append_to_file(key=lig.name, writer=lig_writer)
-
-                            # Make unique ligand and write to disk as json
-                            if lig.is_chosen_unique_ligand:
-                                ulig = self.get_unique_ligand_from_ligand(ligand=lig)
-                                ulig.append_to_file(key=uname, writer=ulig_writer)
-                                if self.store_database_in_memory:
-                                    self.unique_ligand_db[uname] = ulig
-
-                        # Update global props of complex with some useful information about unique ligands
-                        df_complex_ligands = self.df_full_ligand_db.query('original_complex_id == @c.mol_id')
-                        n_ligands = len(df_complex_ligands)
-                        c.global_props['n_ligands'] = n_ligands
-                        c.global_props['n_unique_ligands'] = len(set(df_complex_ligands['unique_name']))
-                        n_ligands_occurring_once = sum(df_complex_ligands['occurrences'] == 1)
-                        c.global_props['n_ligands_occurring_once'] = n_ligands_occurring_once
-                        c.global_props['frac_ligands_occurring_once'] = n_ligands_occurring_once / n_ligands
-
-                        # Write complex data to disk as json
-                        c.append_to_file(key=c_id, writer=complex_writer)
-
-                    # Delete temporary json file
-                    self.tmp_output_complexes_json.unlink()
-
-        if self.store_database_in_memory:
-            self.unique_ligand_db = LigandDB(self.unique_ligand_db)
-
+        # Save complexes, ligands, unique ligands into a jsonlines file each
+        self.save_databases_to_json()
 
         duration = get_duration_string(start)
         print(f'\nDuration of extraction: {duration}')
