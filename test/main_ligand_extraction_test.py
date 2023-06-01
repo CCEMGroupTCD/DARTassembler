@@ -153,6 +153,11 @@ if __name__ == '__main__':
     exclude_not_fully_connected_complexes = False   # only keep complexes which are fully connected
     exclude_charged_complexes = False               # Keep only input complexes with charge of 0
 
+
+
+    # Just for safety, in case I forget
+    if testing == False:
+        store_database_in_memory = False
     db = main(
         database_path_=database_path,
         data_store_path_=data_store_path,
