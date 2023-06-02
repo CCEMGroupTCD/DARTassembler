@@ -552,10 +552,10 @@ class LigandExtraction:
         identical_ligand_info['original_complex_id'] = df_same_ligands['original_complex_id'].tolist()
         ulig.identical_ligand_info = identical_ligand_info
 
-        # Set unique ligand information as properties in the unique ligand instead of as collected dictionary
-        for prop, val in ulig.unique_ligand_information.items():
+        # Set unique ligand stats information
+        props = self.df_unique_ligand_db.loc[uname, self.unique_ligand_info_props].to_dict()
+        for prop, val in props.items():
             setattr(ulig, prop, val)
-        del ulig.unique_ligand_information  # not needed anymore
 
         # Delete attributes which make sense only for ligands but not for unique ligands
         del ulig.is_chosen_unique_ligand
@@ -750,12 +750,12 @@ class LigandExtraction:
 
         return
 
-    def update_and_save_ligand(self, lig, writer):
+    def update_and_save_ligand(self, lig, writer=None):
         """
         Updates the ligand with unique ligand information and charges and saves it to disk.
         """
         share_properties = ['unique_name']
-        collect_properties = {'unique_ligand_information': self.unique_ligand_info_props}
+        collect_properties = {}
 
         # Update ligands with unique ligand information
         uname = self.ligand_to_unique_ligand[lig.name]
@@ -769,7 +769,8 @@ class LigandExtraction:
         update_ligand_with_charge_inplace(lig, charges=self.charge_dict)
 
         # Write ligand to disk as json
-        lig.append_to_file(key=lig.name, writer=writer)
+        if writer is not None:
+            lig.append_to_file(key=lig.name, writer=writer)
 
         return
 
@@ -811,23 +812,22 @@ class LigandExtraction:
         if self.store_database_in_memory:
             self.unique_ligand_db = {}
 
-        # Open jsonlines files for writing of unique ligands, ligands and complexes
+        # Open jsonlines files for writing of unique ligands and complexes
         encoder = functools.partial(json.dumps, cls=NumpyEncoder)
         with jsonlines.open(self.output_complexes_json, mode='w', dumps=encoder) as complex_writer:
-            with jsonlines.open(self.full_ligands_json, mode='w', dumps=encoder) as lig_writer:
-                with jsonlines.open(self.unique_ligands_json, mode='w', dumps=encoder) as ulig_writer:
+            with jsonlines.open(self.unique_ligands_json, mode='w', dumps=encoder) as ulig_writer:
 
-                    # Iterate once over all complexes
-                    desc = 'Writing databases to disk'
-                    for c_id, c in tqdm(self.iterate_over_complexes(), desc=desc, total=self.n_complexes):
-                        for lig in c.ligands:
-                            self.update_and_save_ligand(lig=lig, writer=lig_writer)
-                            if lig.is_chosen_unique_ligand:
-                                self.update_and_save_unique_ligand(lig=lig, writer=ulig_writer)
-                        self.update_and_save_complex(c, writer=complex_writer)
+                # Iterate once over all complexes
+                desc = 'Writing databases to disk'
+                for c_id, c in tqdm(self.iterate_over_complexes(), desc=desc, total=self.n_complexes):
+                    for lig in c.ligands:
+                        self.update_and_save_ligand(lig=lig, writer=None)
+                        if lig.is_chosen_unique_ligand:
+                            self.update_and_save_unique_ligand(lig=lig, writer=ulig_writer)
+                    self.update_and_save_complex(c, writer=complex_writer)
 
-                    # Delete temporary json file
-                    self.tmp_output_complexes_json.unlink()
+                # Delete temporary json file
+                self.tmp_output_complexes_json.unlink()
 
         if self.store_database_in_memory:
             self.unique_ligand_db = LigandDB(self.unique_ligand_db)

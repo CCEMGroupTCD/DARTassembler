@@ -8,7 +8,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score, r2_score
 
 from src01.DataBase import LigandDB, ComplexDB
-from src01.io_custom import load_json
+from src01.io_custom import load_json, load_full_ligand_db
 from src01.main_ligand_extraction import main
 from src01.utilities import unroll_dict_into_columns, sort_dict_recursively_inplace
 from pathlib import Path
@@ -142,11 +142,11 @@ if __name__ == '__main__':
     database_path = '../data_input/CSD_MM_G'  # in github
     data_store_path = '../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
-    testing = 100  # if we would like to only do a test run. Set to False for full run
+    testing = 1000  # if we would like to only do a test run. Set to False for full run
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     overwrite_atomic_properties = False     # if atomic properties json should be overwritten. Only necessary after changing input files.
-    use_existing_input_json = False          # if the existing input json should be used. For speeding up test runs. Not critical
+    use_existing_input_json = True          # if the existing input json should be used. For speeding up test runs. Not critical
     store_database_in_memory = False         # if the database should be stored in memory. Only use if you have enough RAM, but can speed up the pipeline by maybe 30%.
 
     # Input complex filters
@@ -185,7 +185,7 @@ if __name__ == '__main__':
 
         #%%
         charge_benchmark = ChargeBenchmark(true_charge_name='charge')
-        charge_benchmark.calculate_scores_of_charge_benchmark(db.full_ligands_json)
+        charge_benchmark.calculate_scores_of_charge_benchmark(db.output_complexes_json)
         # charge_benchmark.calculate_scores_of_charge_benchmark('/Users/timosommer/PhD/projects/RCA/projects/CreateTMC/data/final_db_versions/full_ligand_db_v1.6.json')
         #%%
 
@@ -193,7 +193,7 @@ if __name__ == '__main__':
         df_unique_ligands = pd.DataFrame.from_dict(load_json(db.unique_ligands_json), orient='index')
         df_unique_ligands = unroll_dict_into_columns(df_unique_ligands, dict_col='global_props', prefix='gbl_', delete_dict=True)
         df_unique_ligands = unroll_dict_into_columns(df_unique_ligands, dict_col='stats', prefix='stats_', delete_dict=True)
-        df_full_ligands = pd.DataFrame.from_dict(load_json(db.full_ligands_json), orient='index')
+        df_full_ligands = pd.DataFrame.from_dict(load_full_ligand_db(db.output_complexes_json), orient='index')
         df_full_ligands = unroll_dict_into_columns(df_full_ligands, dict_col='global_props', prefix='gbl_', delete_dict=True)
         df_full_ligands = unroll_dict_into_columns(df_full_ligands, dict_col='stats', prefix='stats_', delete_dict=True)
         df_complexes = pd.DataFrame.from_dict(load_json(db.output_complexes_json), orient='index')

@@ -107,7 +107,16 @@ def load_full_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
     start = datetime.now()
 
     check_molecule_value(molecule)
-    db = load_json(path)
+
+    if 'complex' in path.stem:
+        # If the complex database is provided, the ligand database is a subset of it
+        db = {}
+        for c_id, c in iterate_over_json(path):
+            for lig in c['ligands']:
+                db[lig['name']] = lig
+    else:
+        db = load_json(path)
+
     if molecule == 'class':
         db = {name: RCA_Ligand.read_from_mol_dict(mol) for name, mol in db.items()}
 
