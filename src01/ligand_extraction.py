@@ -29,8 +29,9 @@ from src01.utilities import sort_dict_recursively_inplace, update_dict_with_warn
 from constants.testing import CHARGE_BENCHMARKED_COMPLEXES
 from constants.constants import odd_n_electrons_warning, unconfident_charge_warning, similar_molecule_with_diff_n_hydrogens_warning
 from collections import defaultdict
-from memory_profiler import profile
-
+# from memory_profiler import profile as mem_profile
+from test.profiling import profile as line_profile
+from test.profiling import print_stats
 
 class LigandExtraction:
 
@@ -414,11 +415,13 @@ class LigandExtraction:
 
         return
 
+    # @profile
     def get_unique_ligand_df(self) -> pd.DataFrame:
         """
         Returns a dataframe with all unique ligands from the full ligand db.
         """
         self.grouped_ligands = self.group_same_ligands()
+        df_same_graph_hash = self.df_full_ligand_db.loc[:, ['graph_hash', 'denticity', 'graph_hash_with_metal']].groupby('graph_hash').agg(lambda x: x.unique().tolist())
         unique_ligands = {}
         for grouped_ligand in tqdm(self.grouped_ligands.to_dict(orient='index').values(), desc="Building unique ligand dataframe"):
             same_ligand_names = grouped_ligand['name']
@@ -434,11 +437,10 @@ class LigandExtraction:
 
             # Add useful statistical information of all ligands for this unique ligand
             graph_hash = unique_ligands[uname]['graph_hash']
-            df_same_graph_hash = self.df_full_ligand_db.loc[self.df_full_ligand_db['graph_hash'] == graph_hash, ['graph_hash', 'denticity', 'graph_hash_with_metal']]
-            denticities = pd.unique(df_same_graph_hash['denticity'])
-            metals = self.df_full_ligand_db.loc[same_ligand_names, 'original_metal_symbol'].tolist()
-            count_metals = pd.Series(metals).value_counts().sort_values(ascending=False).to_dict()
-            n_graph_hashes = len(pd.unique(df_same_graph_hash['graph_hash_with_metal']))
+            denticities = df_same_graph_hash.loc[graph_hash, 'denticity']
+            metals = self.df_full_ligand_db.loc[same_ligand_names, 'original_metal_symbol']
+            count_metals = metals.value_counts().sort_values(ascending=False).to_dict()
+            n_graph_hashes = len(df_same_graph_hash.loc[graph_hash, 'graph_hash_with_metal'])
             assert not 0 in denticities, 'The denticity for unconnected ligands is assumed to be -1 but here there appears a 0.'
             has_unconnected_ligands = -1 in denticities
             unique_ligand_infos = {
@@ -449,7 +451,7 @@ class LigandExtraction:
                                     'n_metals': len(count_metals),
                                     'n_same_graphs': n_graph_hashes,
                                     'has_unconnected_ligands': has_unconnected_ligands,
-                                    'all_ligands_metals': metals,
+                                    'all_ligands_metals': metals.tolist(),
                                     }
             unique_ligands[uname].update(unique_ligand_infos)
 

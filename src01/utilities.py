@@ -8,6 +8,7 @@ import warnings
 import pandas as pd
 from collections import namedtuple
 
+
 def series2namedtuple(s, name='S'):
     return namedtuple(name, s.index)(*s)
 
