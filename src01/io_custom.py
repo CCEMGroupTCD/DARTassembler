@@ -61,6 +61,18 @@ def iterate_over_json(path: Union[str, Path]) -> tuple[str, dict]:
 
     return
 
+def get_n_entries_of_json_db(path: Union[str, Path]) -> int:
+    """
+    Get the number of entries in a JSON or JSON Lines file.
+    :param path: Path to the JSON or JSON Lines file
+    :return: Number of entries in the file
+    """
+    n_entries = 0
+    for _ in iterate_over_json(path):
+        n_entries += 1
+
+    return n_entries
+
 def save_json(db: dict, path: Union[str, Path], **kwargs):
     with open(path, 'w') as file:
         json.dump(db, file, cls=NumpyEncoder, **kwargs)

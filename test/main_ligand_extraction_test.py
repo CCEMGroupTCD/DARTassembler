@@ -142,11 +142,11 @@ if __name__ == '__main__':
     database_path = '../data_input/CSD_MM_G'  # in github
     data_store_path = '../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
-    testing = 10000  # if we would like to only do a test run. Set to False for full run
+    testing = 100  # if we would like to only do a test run. Set to False for full run
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
 
     overwrite_atomic_properties = False     # if atomic properties json should be overwritten. Only necessary after changing input files.
-    use_existing_input_json = True          # if the existing input json should be used. For speeding up test runs. Not critical
+    use_existing_input_json = False          # if the existing input json should be used. For speeding up test runs. Not critical
     store_database_in_memory = False         # if the database should be stored in memory. Only use if you have enough RAM, but can speed up the pipeline by maybe 30%.
 
     # Input complex filters
