@@ -1,10 +1,88 @@
-# from src01.io_custom import load_unique_ligand_db, load_complex_db     # circular import error
+import warnings
+import numpy as np
+import json
+import jsonlines
+from pathlib import Path
+from typing import Union
+import networkx as nx
+import matplotlib.pyplot as plt
+import pysmiles
 from copy import deepcopy
 
-import pandas as pd
-import pysmiles
-import warnings
-import networkx as nx
+
+
+def load_json(path: Union[str, Path], n_max: int=None) -> dict:
+    """
+    Load a JSON or JSON Lines file. If the file is a JSON Lines file, it is converted to a dictionary.
+    :param path: Path to the JSON or JSON Lines file
+    :return: Dictionary with the contents of the file
+    """
+    # Accept False, None or np.inf to disable n_max
+    if n_max is None or n_max is False:
+        n_max = np.inf
+
+    db = {}
+    for i, (key, value) in enumerate(iterate_over_json(path)):
+        if i >= n_max:
+            break
+        db[key] = value
+
+    return db
+
+def iterate_over_json(path: Union[str, Path]) -> tuple[str, dict]:
+    """
+    Iterate over a JSON or JSON Lines file and yield the key and value of each entry.
+    :param path: Path to the JSON or JSON Lines file
+    :return: Tuple with the key and value of each entry
+    """
+    try:
+        # Try to load as normal JSON file first
+        with open(path, 'r') as file:
+            db = json.load(file)
+            for key, value in db.items():
+                yield key, value
+    except json.JSONDecodeError:
+        # If normal JSON fails, try to load as JSON Lines
+        with jsonlines.open(path, 'r') as reader:
+            for line in reader:
+                # Since 'line' is a dictionary, no need to use json.loads
+                yield line['key'], line['value']
+
+    return
+
+def view_graph(G, node_label='node_label', node_size=150):
+    nx.draw_networkx(
+        G,
+        node_size=node_size,  # 500,
+        with_labels=True,
+        labels={node: G.nodes[node][node_label] for node in G.nodes}
+    )
+    plt.show()
+
+def make_graph_labels_integers(G: [nx.Graph, nx.MultiGraph]):
+    str_to_int_node_mapping = {node: int(node) for node in G.nodes}
+
+    assert list(str_to_int_node_mapping.values()) == [int(key) for key in str_to_int_node_mapping.keys()]
+
+    # now relabel them inplace (-> copy=False)
+    nx.relabel_nodes(G, mapping=str_to_int_node_mapping, copy=False)
+
+    return G
+
+def graph_from_graph_dict(d):
+
+    G_new = nx.from_dict_of_dicts(d["graph"])
+    nx.set_node_attributes(G_new, d["node_attributes"])
+
+    G_new = make_graph_labels_integers(G_new)
+
+    #
+    # Bring nodes in canonical order
+    H = nx.Graph()
+    H.add_nodes_from(sorted(G_new.nodes(data=True)))
+    H.add_edges_from(G_new.edges(data=True))
+
+    return H
 
 bond_order_rdkit_to_pysmiles = {
     0: 0,
@@ -14,9 +92,6 @@ bond_order_rdkit_to_pysmiles = {
     4: 4,
     12: 1.5
     }
-
-
-# Currently not deterministic!!
 def graph_to_smiles(graph, element_label='node_label', bond_label='bond_type'):
     """
     Convert networkx graph of a molecule to smiles string.
@@ -74,51 +149,3 @@ def graph_to_smiles(graph, element_label='node_label', bond_label='bond_type'):
     assert n_H == n_H_smiles, f'Number of hydrogens in graph ({n_H}) does not match number of hydrogens in smiles ({n_H_smiles}).'
 
     return smiles
-
-
-# if __name__ == '__main__':
-#
-#     db_version = '1.6'
-#     db_path = f'../data/final_db_versions/complex_db_v{db_version}.json'
-#
-#
-#     # db_path = '/Users/timosommer/PhD/projects/RCA/projects/CreateTMC/data_output/CSD_MM_G_Jsons_test/complex_db.json'
-#     df = pd.DataFrame.from_dict(load_complex_db(path=db_path), orient='index')
-#     data = load_complex_db(path=db_path, molecule='class')
-#     # df = df[df['denticity'] > 0]
-#     # lig = data['unq_CSD-FIXVAL-02-a']
-#
-#     #%%
-#     ligands = {}
-#     all_bond_orders = []
-#     for name, lig in data.items():
-#         bond_orders = [edge['bond_type'] for _, _, edge in lig.graph.edges(data=True)]
-#         all_bond_orders.extend(bond_orders)
-#         ligands[name] = {
-#                             'bond_orders': bond_orders,
-#                             'good_bond_orders': lig.check_for_good_bond_orders(),
-#         }
-#     df_ligs = pd.DataFrame.from_dict(ligands, orient='index')
-#     df = df.join(df_ligs)
-#
-#     #%%
-#     frac_good_bond_orders = df['good_bond_orders'].sum() / len(df)
-#     good_bond_orders = pd.Series(all_bond_orders).value_counts()
-#     print(f'Fraction of molecules with good bond orders: {frac_good_bond_orders:.2f}')
-#     print(f'Good bond orders: {good_bond_orders}')
-#
-#     #%% plot bond orders
-#     plt.figure()
-#     sns.histplot(all_bond_orders)
-#     plt.savefig('/Users/timosommer/Downloads/bond_orders.png', dpi=300)
-#
-#
-#
-#
-#     lig = df.iloc[0]
-#
-#     bond_orders = {name: [edge['bond_type'] for _, edge in mol.graph.edges(data=True)] for name, mol in data.items()}
-#     ligands = {}
-#     for name, mol in data.items():
-#         _, _, edge_dict = mol.graph.nodes(data=True)
-#         bond_orders = edge_dict['bond_type']

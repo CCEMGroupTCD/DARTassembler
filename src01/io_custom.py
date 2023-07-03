@@ -30,13 +30,21 @@ class NumpyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
-def load_json(path: Union[str, Path]) -> dict:
+def load_json(path: Union[str, Path], n_max: int=None) -> dict:
     """
     Load a JSON or JSON Lines file. If the file is a JSON Lines file, it is converted to a dictionary.
     :param path: Path to the JSON or JSON Lines file
     :return: Dictionary with the contents of the file
     """
-    db = {key: value for key, value in iterate_over_json(path)}
+    # Accept False, None or np.inf to disable n_max
+    if n_max is None or n_max is False:
+        n_max = np.inf
+
+    db = {}
+    for i, (key, value) in enumerate(iterate_over_json(path)):
+        if i >= n_max:
+            break
+        db[key] = value
 
     return db
 
@@ -91,10 +99,7 @@ def load_complex_db(path: Union[str, Path], molecule: str='dict', n_max=None) ->
     start = datetime.now()
 
     check_molecule_value(molecule)
-    db = load_json(path)
-
-    if not n_max is None:
-        db = {key: val for key, val in db.items()}
+    db = load_json(path, n_max=n_max)
 
     if molecule == 'class':
         db = {name: RCA_Complex.read_from_mol_dict(mol) for name, mol in db.items()}
@@ -124,10 +129,10 @@ def load_full_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
     print(f'Loaded full ligand db. Time: {duration}. ')
     return db
 
-def load_unique_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
+def load_unique_ligand_db(path: Union[str, Path], molecule: str='dict', n_max=None) -> dict:
     start = datetime.now()
 
-    db = load_json(path)
+    db = load_json(path, n_max=n_max)
     if molecule == 'class':
         db = {name: RCA_Ligand.read_from_mol_dict(mol) for name, mol in db.items()}
 

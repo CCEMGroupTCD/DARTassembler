@@ -212,6 +212,26 @@ class RCA_Molecule(object):
 
         return mol
 
+    def get_ase_molecule(self, remove_elements: list=[]):
+        """
+        Get ASE molecule from atomic properties.
+        :param remove_elements: list of elements to remove from the molecule
+        """
+        coord_list_3D = [[self.atomic_props[key_][i] for key_ in ["x", "y", "z"]] for i, _ in
+                         enumerate(self.atomic_props["x"])]
+        atom_list = self.atomic_props["atoms"]
+
+        # Remove specified elements
+        if remove_elements:
+            for i, (el, coords) in enumerate(zip(atom_list, coord_list_3D)):
+                if el in remove_elements:
+                    del atom_list[i]
+                    del coord_list_3D[i]
+
+        mol = Atoms(atom_list, positions=coord_list_3D)
+
+        return mol
+
     def set_other_props_as_properties(self, other_props):
         for prop, value in other_props.items():
             differing_prop_already_exists = hasattr(self, prop) and self.__getattribute__(prop) != value

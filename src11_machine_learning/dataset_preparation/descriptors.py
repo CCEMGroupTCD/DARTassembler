@@ -9,6 +9,8 @@ from rdkit.ML.Descriptors import MoleculeDescriptors
 import pandas as pd
 import itertools
 import ase
+import sys
+from io import StringIO
 from tqdm import tqdm
 from molSimplify.Informatics.autocorrelation import generate_full_complex_autocorrelations
 from molSimplify.Classes.mol3D import mol3D
@@ -79,19 +81,25 @@ def warn_if_nan_values(df):
     
 class RDKit_2D:
     def __init__(self, smiles):
-        # self.smiles = smiles
-        # self.errors = []
-        # self.mols = []
-        # for sm in smiles:
-        #     sio = sys.stderr = StringIO()
-        #     mol = Chem.MolFromSmiles(sm)
-        #     error = sio.getvalue()
-        #     error = error if not error == '' else np.nan
-        #     self.errors.append(error)
-        #
-        # self.df_err = pd.DataFrame({'isosmiles': self.smiles, 'errors': self.errors})
-        self.mols = [Chem.MolFromSmiles(i) for i in smiles]
-        self.smiles = smiles
+        self.original_smiles_provided = smiles
+        self.smiles = []
+        self.errors = []
+        self.mols = []
+        for sm in smiles:
+            # sio = sys.stderr = StringIO()
+            mol = Chem.MolFromSmiles(sm)
+            # error = sio.getvalue()
+            error = mol is None
+            if error:
+                self.errors.append(error)
+            else:
+                self.errors.append(np.nan)
+                self.mols.append(mol)
+                self.smiles.append(sm)
+        sys.stderr = sys.__stderr__
+
+        self.df_err = pd.DataFrame({'isosmiles': self.original_smiles_provided, 'errors': self.errors})
+
     
     def compute_2Drdkit(self):
         rdkit_2d_desc = []
@@ -101,7 +109,7 @@ class RDKit_2D:
             rdkit_2d_desc.append(ds)
             
         header = [f'rdkit_{desc}' for desc in calc.GetDescriptorNames()]
-        df = pd.DataFrame(rdkit_2d_desc, columns=header)
+        df = pd.DataFrame(rdkit_2d_desc, columns=header, index=self.smiles)
         warn_if_nan_values(df)
         
         return df

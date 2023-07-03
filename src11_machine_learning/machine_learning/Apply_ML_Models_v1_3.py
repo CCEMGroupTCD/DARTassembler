@@ -666,9 +666,11 @@ def train_with_args(args):
     
 
     
-    targets = ['metal_oxi_state']
-    soap_features = [col for col in df_data.columns if col.startswith('soap')]
-    features = ['total_q', 'metal_atomic_number'] + soap_features
+    targets = ['n_missing_H']
+    # soap_features = [col for col in df_data.columns if col.startswith('soap')]
+    rdkit_features = [col for col in df_data.columns if col.startswith('rdkit')]
+    features = ['denticity', 'pred_charge'] + rdkit_features
+
     # Define scaling/ transformation of features and targets.
     log_transform = FunctionTransformer(
                                         func=restricted_arcsinh,
@@ -766,10 +768,9 @@ def main(args_from_fn):
     # =============================================================================
 
     # use_models = ['1NN', 'LR', 'XGB', 'SVGP', 'NNsk', 'NN', 'RGM']
-    use_models = ['XGB', 'NNsk']
+    use_models = ['XGB']
     experiment = ''
-    add_params =  {
-  }
+    add_params =  {}
     output_note = ''
     outdirname = '../../data/machine_learning/analysis/results'
     calcdir = os.getcwd()
@@ -780,12 +781,12 @@ def main(args_from_fn):
     CV_keep_groups = None     # for KFold, Random
     n_reps = 1      # for Random
     train_frac = 0.8 # for Random
-    domain_colname = 'metal'  # for LOGO
+    domain_colname = None  # for LOGO
     # Weights
     sample_weights = None
     metrics_sample_weights = None
     # Dataset
-    dataset = projectpath('database', 'machine_learning', 'descriptors_complex_db_v1.3_only=1.csv')
+    dataset = projectpath('test', 'ML_detect_missing_H', 'data', 'ligand_descriptors_v1.7.csv')
     # Hyperparameters
     hparams_file = 'hparams.yml'
     n_jobs = 1

@@ -12,6 +12,7 @@ from src01.io_custom import load_unique_ligand_db
 from pathlib import Path
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 sns.set_theme()
+import itertools
 
 
 
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     exclude_unconnected_ligands = True
     exclude_uncertain_charges = True
 
-    ligands = load_unique_ligand_db(path=db_path, molecule='class')
+    # ligands = load_unique_ligand_db(path=db_path, molecule='class')
     #%%
     df = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path), orient='index')
 
@@ -74,7 +75,7 @@ if __name__ == '__main__':
     # df = df.query('not has_BetaH and only_CHNO and only_ON_donors')
     # df = df[((df['denticity'] > 1) & (df['denticity'] < 6)) | df['mono_and_small']]
     #
-    # groups = df.groupby(['denticity', 'pred_charge']).size().reset_index()
+    groups = df.groupby(['denticity', 'pred_charge']).size().reset_index().rename(columns={0: 'count'})
 
 
     #%% Start playing here
@@ -82,11 +83,11 @@ if __name__ == '__main__':
     # Count possible complexes by combining denticity and charge
     # This assumes that we have 10 metals in oxidation state 3, which is already connected to one OH ligand.
     # The other two ligands are assumed to be a bidentate and a tridentate which account together for a charge of -2.
-    # metals = ['Cr', 'Mn', 'Fe', 'Ru', 'Co', 'Ni']
-    # filter_factor = 0.5         # Factor to account for the pre and post filtering in the assembly
-    # charges_2 = df.query('denticity == 2')['pred_charge'].to_numpy(dtype=int)
-    # charges_3 = df.query('denticity == 3')['pred_charge'].to_numpy(dtype=int)
-    # n_complexes = calculate_n_321_complexes_with_OH_fixed(charges_2, charges_3, metals, filter_factor)
+    metals = ['Cr', 'Mn', 'Fe', 'Ru', 'Co', 'Ni']
+    filter_factor = 0.5         # Factor to account for the pre and post filtering in the assembly
+    charges_2 = df.query('denticity == 2')['pred_charge'].to_numpy(dtype=int)
+    charges_3 = df.query('denticity == 3')['pred_charge'].to_numpy(dtype=int)
+    n_complexes = calculate_n_321_complexes_with_OH_fixed(charges_2, charges_3, metals, filter_factor)
 
 
     # n_metals = 10               # Each metal of first row of transition metals, assuming os = 3

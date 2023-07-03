@@ -17,7 +17,7 @@ def flatten(l):
 
 if __name__ == '__main__':
 
-    db_version = '1.6'
+    db_version = '1.7'
     save_plots_dir = f'../../data/db_statistics/unique_ligand_statistics/v{db_version}'
     db_path = f'../../data/final_db_versions/unique_ligand_db_v{db_version}.json'
     exclude_unconnected_ligands = True
@@ -27,8 +27,9 @@ if __name__ == '__main__':
 
     save_plots_dir = Path(save_plots_dir)
     save_plots_dir.mkdir(parents=True, exist_ok=True)
-    data = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path), orient='index')
+    data_raw = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path), orient='index')
 
+    data = data_raw.copy()
     if exclude_unconnected_ligands:
         data = data[data['denticity'] > 0]
     if exclude_uncertain_charges:
@@ -121,12 +122,13 @@ if __name__ == '__main__':
             print(f'Property {prop} not in atomic_props, it is skipped.')
 
     #%% Make pie plot of where unique ligands are lost/ filtered
+    pie_data = data_raw[data_raw['denticity'] > 0]
     uligs_numbers = {
-                        'no oxidation state\nof complex': data['pred_charge'].isna().sum(),
-                        'charge not confident': ((~data['pred_charge_is_confident']) & data['pred_charge'].notna()).sum(),
-                        'confident charge assigned': data['pred_charge_is_confident'].sum()
+                        'no oxidation state\nof complex': pie_data['pred_charge'].isna().sum(),
+                        'charge not confident': ((~pie_data['pred_charge_is_confident']) & pie_data['pred_charge'].notna()).sum(),
+                        'confident charge assigned': pie_data['pred_charge_is_confident'].sum()
     }
-    assert sum(uligs_numbers.values()) == len(data)
+    assert sum(uligs_numbers.values()) == len(pie_data)
     plt.figure()
     colors = sns.color_palette()
     numbers = list(uligs_numbers.values())
