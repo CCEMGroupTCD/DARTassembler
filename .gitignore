@@ -86,3 +86,4 @@
 /test/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/
 
 /test/ML_detect_missing_H/data/**
+/test/machine_learning/**

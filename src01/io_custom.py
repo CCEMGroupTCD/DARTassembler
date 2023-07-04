@@ -42,9 +42,13 @@ def load_json(path: Union[str, Path], n_max: int=None) -> dict:
 
     db = {}
     for i, (key, value) in enumerate(iterate_over_json(path)):
-        if i >= n_max:
-            break
-        db[key] = value
+        try:
+            if i >= n_max:
+                break
+            db[key] = value
+        except TypeError:
+            if key in n_max:
+                db[key] = value
 
     return db
 

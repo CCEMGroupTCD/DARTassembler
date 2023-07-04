@@ -11,6 +11,7 @@ from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from pymatgen.core.composition import Composition
 from ase.visualize import view
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
+import mordred
 from sympy import Point3D, Plane
 from typing import Union, Tuple, Any
 import re
@@ -25,6 +26,7 @@ from pysmiles import read_smiles, write_smiles
 
 from constants.constants import metals_in_pse
 from src01.bond_orders import graph_to_smiles, bond_order_rdkit_to_pysmiles
+from src01.utilities_ML import get_element_descriptors
 # importing own scripts
 from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
     unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label, \
@@ -35,6 +37,7 @@ from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, graph_to_rdkit_mol, \
     unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center
 from src05_Assembly_Refactor.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
+from src11_machine_learning.dataset_preparation.descriptors import RDKit_2D, compute_RAC_from_graph
 
 
 class RCA_Molecule(object):
@@ -694,6 +697,8 @@ class RCA_Molecule(object):
                                 enumerate(self.atomic_props["x"])])
 
 
+
+
 class RCA_Ligand(RCA_Molecule):
     """
     Ligands need a little more information, hence we need to expand the RCA_Molecule class
@@ -1076,6 +1081,35 @@ class RCA_Ligand(RCA_Molecule):
         this is really only designed for ligands as a normal RCA_Molecule doesn't have the required properties
         """
         return RCA_Mol_to_stkBB(self)
+
+    def generate_descriptors(self, get_3D_descriptors: bool = True) -> dict:
+        """
+        Generates descriptors for the ligand.
+        """
+        descriptors = {}
+
+        # Global descriptors
+        descriptors['denticiy'] = self.denticity
+        descriptors['planar'] = self.planar_check()
+        descriptors['molecular_weight'] = self.global_props['molecular_weight']
+        descriptors['n_atoms'] = self.n_atoms
+        descriptors['n_bonds'] = self.n_bonds
+
+        # Coordinated atoms descriptors
+        coords_descriptors = [get_element_descriptors(el) for el in self.local_elements]
+        coords_descriptors = {key: np.mean([d[key] for d in coords_descriptors]) for key in
+                              coords_descriptors[0].keys()}
+        descriptors.update(coords_descriptors)
+
+        # Graph and 3D descriptors
+        mol = Chem.MolFromSmiles(self.get_smiles())
+        calc = mordred.Calculator(descriptors, ignore_3D=not get_3D_descriptors)
+        mordred_descriptors = calc.pandas(mol).to_dict(orient='records')[0]
+        descriptors.update(mordred_descriptors)
+
+        return descriptors
+
+
 
 class RCA_Complex(RCA_Molecule):
 
@@ -1564,6 +1598,50 @@ class RCA_Complex(RCA_Molecule):
 
         if not self.ligands:
             print(f'WARNING: Complex {self.global_props["CSD_code"]} has no ligands extracted.')
+
+    def get_smiles(self, only_core_complex: bool=False) -> str:
+        smiles = super().get_smiles()
+        if only_core_complex:
+            smiles = [sm for sm in smiles.split('.') if self.metal in sm]
+            assert len(smiles) == 1, 'There should be exactly one SMILES string containing the metal.'
+            smiles = smiles[0]
+
+        return smiles
+
+    def generate_descriptors_of_complex_graph(self, only_core_complex: bool=True):
+        """
+        Generates descriptors for the complex and its ligands. For the ligands, also 3D descriptors are generated, but only based on the unique ligand geometry without taking into account the environment.
+        """
+        descriptors = {}
+
+        # Complex descriptors
+        descriptors['n_ligands'] = sum(1 for lig in self.ligands if lig.denticity > 0 or not only_core_complex)
+
+        # Metal center descriptors
+        metal_descriptors = get_element_descriptors(self.metal)
+        metal_descriptors = {f'metal_{key}': val for key, val in metal_descriptors.items()}
+        descriptors.update(metal_descriptors)
+
+        # Coordinating_atom descriptors
+        coords_descriptors = [get_element_descriptors(el) for el in self.donor_elements]
+        coords_descriptors = {key: np.mean([d[key] for d in coords_descriptors]) for key in coords_descriptors[0].keys()}
+        coords_descriptors = {f'coord_{key}': val for key, val in coords_descriptors.items()}
+        descriptors.update(coords_descriptors)
+
+        # Graph descriptors
+        smiles = self.get_smiles(only_core_complex=only_core_complex)
+        # graph_descriptors = RDKit_2D([smiles]).compute_2Drdkit().to_dict(orient='records')[0]
+        graph_descriptors, colnames = compute_RAC_from_graph(smiles, return_colnames=True)
+        graph_descriptors = {f'graph_{key}': val for key, val in zip(colnames, graph_descriptors)}
+        descriptors.update(graph_descriptors)
+
+        return descriptors
+
+
+
+
+
+
 
 
     def write_to_mol_dict(self, include_graph_dict: bool=True, include_ligands: bool=True) -> dict:
