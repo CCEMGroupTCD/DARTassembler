@@ -56,7 +56,7 @@ class BuildIsomers:
         #
         #
         # 2.
-        elif str(self.topology) == '[3, 2, 0]--[1, 2, 3]':
+        elif (str(self.topology) == '[3, 2, 0]--[1, 2, 3]') or (str(self.topology) == '[3, 2, 1]--[1, 2, 3]'):
             # These are the empty dictionaries that will contain all the building blocks for each isomer
             # This is by far the most 'involved' isomer generation processes
             building_blocks_rotated_bi = {}

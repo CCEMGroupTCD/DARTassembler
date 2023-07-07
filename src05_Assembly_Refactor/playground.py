@@ -1,6 +1,5 @@
 from rdkit.Chem import rdmolfiles
 from src01.DataBase import LigandDB
-from src01 import Molecule
 from openbabel import openbabel as ob
 import stk
 import os
