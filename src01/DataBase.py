@@ -102,7 +102,10 @@ class BaselineDB:
             because ligand graphs are created by the molecule graphs. For Ligands this will just be dumped as a kwarg)
         :param kwargs: additional arguments for the graph creation (only, if no graphs are present in the .json)
         """
-        # Allow False or None to not use max_number
+        if type_ not in ["Ligand", "Molecule", "Complex"]:
+            raise ValueError(f"Type {type_} not known. Please choose either 'Ligand', 'Complex' or 'Molecule'")
+
+        # Allow False or None to disable max_number
         if max_number == False:
             max_number = None
 
@@ -113,26 +116,19 @@ class BaselineDB:
 
         new_dict_ = {}
 
-        if type_ not in ["Ligand", "Molecule", "Complex"]:
-            print("Wrong type chosen, will be set to Molecule")
-            type_ = "Molecule"
 
-        # print("Start Establishing DB from .json")
 
-        #
-        #
-        #
         if max_number is None:
             max_number = len(json_dict)
 
-        for i, (identifier, mol_dict) in tqdm(enumerate(json_dict.items()), desc=f"Build {type_}Database"):
+        for i, (identifier, mol_dict) in tqdm(enumerate(json_dict.items()), desc=f"Build {type_} Database"):
 
             # For testing by identifier list
             if identifier_list is not None:
                 if identifier not in identifier_list:
                     continue
 
-            # For testing by Max number
+            # For testing by max number
             if i >= max_number:
                 break
 

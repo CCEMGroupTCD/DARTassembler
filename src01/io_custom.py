@@ -64,7 +64,7 @@ def iterate_over_json(path: Union[str, Path], n_max: int=None, show_progress: bo
         # Try to load as normal JSON file first
         with open(path, 'r') as file:
             db = json.load(file)
-            for i, (key, value) in tqdm(enumerate(db.items()), disable=not show_progress, desc='Load json'):
+            for i, (key, value) in enumerate(db.items()):
                 if check_if_return_entry(i, n_max):
                     yield key, value
                 else:
@@ -141,7 +141,7 @@ def load_full_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
     print(f'Loaded full ligand db. Time: {duration}. ')
     return db
 
-def load_unique_ligand_db_iteratively(path: Union[str, Path], molecule: str='dict', n_max=None, show_progress: bool=True) -> dict:
+def load_unique_ligand_db_iteratively(path: Union[str, Path], molecule: str='dict', n_max=None, show_progress: bool=False) -> dict:
     check_molecule_value(molecule)  # Check if the molecule value is valid
     for name, mol in tqdm(iterate_over_json(path, n_max=n_max, show_progress=False), disable=not show_progress, desc='Load unique ligand db'):
         if molecule == 'class':
