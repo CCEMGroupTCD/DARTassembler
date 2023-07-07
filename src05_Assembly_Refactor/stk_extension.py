@@ -1,5 +1,4 @@
 import warnings
-
 import numpy as np
 from stk.molecular.topology_graphs.topology_graph import Edge
 from stk.molecular.topology_graphs.metal_complex.metal_complex import MetalComplex

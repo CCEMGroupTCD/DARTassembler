@@ -1,6 +1,5 @@
 import warnings
 from copy import deepcopy
-import ast
 import random
 import itertools
 from src05_Assembly_Refactor.Assemble import PlacementRotation

@@ -100,7 +100,7 @@ def get_boxes(denticity, planar: bool = True, input_topology=None, bool_placed_b
 
             #box_list.append(Box(-100, 100, -100, 100, 1.2, 100))        # +z high
             #box_list.append(Box(-100, 100, -100, 100, -100, -1.2))      # -z low
-        elif (denticity == 2) and (input_topology == [3, 2, 0]):
+        elif (denticity == 2) and ((input_topology == [3, 2, 0]) or (input_topology == [3, 2, 1])):
             positive_y_edge = 0.1
             negative_y_edge = -0.1
             positive_x_frontier = 0.5

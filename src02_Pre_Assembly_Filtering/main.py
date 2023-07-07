@@ -1,6 +1,6 @@
 from src01.DataBase import LigandDB
-
-from src03_Pre_Assembly_Filter.FilteringStage import FilterStage
+from constants.Paths import project_path
+from src02_Pre_Assembly_Filtering.FilteringStage import FilterStage
 
 # ["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
 lanthanides_actinides = ["La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu", "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr"]
@@ -10,9 +10,13 @@ if __name__ == "__main__":
     One easy method which includes all the custom filters one could potentially apply to a ligand
     filtered_db = {unique_lig_name: RCA_Ligand} dict-type, which can then be employed for the ligandAssembl
     """
-    tmQM_unique_Ligands = LigandDB.from_json(json_='/Users/cianclarke/Documents/PhD/Complex_Assembly/Data/unique_ligand_db_v1.6.json',
+    #'/Users/cianclarke/Documents/PhD/Complex_Assembly/Data/unique_ligand_db_v1.6.json'
+    #TODO: Timo be careful I have stuck my ligand json somewhere else I dont know if we have
+    # a dedicated place for it in the code but we probably should
+    # that's why I have no refactored this path
+    tmQM_unique_Ligands = LigandDB.from_json(json_="/Users/cianclarke/Documents/PhD/Complex_Assembly/Data/unique_ligand_db_v1.6.json",
                                              type_="Ligand",
-                                             max_number=200
+                                             max_number=2000
                                              )
 
     Filter = FilterStage(tmQM_unique_Ligands)
@@ -23,7 +27,7 @@ if __name__ == "__main__":
     #
     # Filter: Denticity of Interest
 
-    Filter.denticity_of_interest_filter(denticity_of_interest=[1, 2, 3])
+    Filter.denticity_of_interest_filter(denticity_of_interest=[1, 2, 3, 4, 5])
 
     print(f"After Denticity Filter: {len(Filter.database.db)}")
 
@@ -47,7 +51,7 @@ if __name__ == "__main__":
     #
     # Filter: Metal of Interest
 
-    # Filter.metals_of_interest_filter(denticity=2, metals_of_interest=Lanthanides_actinides)
+    # Filter.metals_of_interest_filter(denticity=2, metals_of_interest=["Pd", "Ni"])
 
     # Filter.metals_of_interest_filter(denticity=3, metals_of_interest=["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"])
 
@@ -61,21 +65,21 @@ if __name__ == "__main__":
     #
     # Filter: Coordinating Atoms
 
-    Filter.filter_coordinating_group_atoms(denticity=3, atoms_of_interest=["N", "N", "N"], instruction="must_contain_and_only_contain")
+    # Filter.filter_coordinating_group_atoms(denticity=3, atoms_of_interest=["N", "N", "N"], instruction="must_contain_and_only_contain")
 
-    Filter.filter_coordinating_group_atoms(denticity=2, atoms_of_interest=["N", "N"], instruction="must_only_contain_in_any_amount")
+    # Filter.filter_coordinating_group_atoms(denticity=2, atoms_of_interest=["O", "O"], instruction="must_contain_and_only_contain")
 
-    Filter.filter_coordinating_group_atoms(denticity=4, atoms_of_interest=["N", "O", "P"], instruction="must_only_contain_in_any_amount")
+    # Filter.filter_coordinating_group_atoms(denticity=4, atoms_of_interest=["N", "O", "P"], instruction="must_only_contain_in_any_amount")
 
     # Filter.filter_coordinating_group_atoms(denticity=5, atoms_of_interest=["P", "N", "O", "S"], instruction="must_only_contain_in_any_amount")
 
-    print(f"After Coordinating Group filter: {len(Filter.database.db)}")
+    # print(f"After Coordinating Group filter: {len(Filter.database.db)}")
 
     #
     #
     # Filter: Ligand Atoms
 
-    # Filter.filter_ligand_atoms(denticity=2, atoms_of_interest=['C', 'H', 'N'], instruction="must_only_contain_in_any_amount")
+    # Filter.filter_ligand_atoms(denticity=2, atoms_of_interest=['C', 'H', 'N', 'O'], instruction="must_only_contain_in_any_amount")
 
     # Filter.filter_ligand_atoms(denticity=2, atoms_of_interest=['C', 'H'], instruction="must_at_least_contain")
 
@@ -151,13 +155,13 @@ if __name__ == "__main__":
     #
     # Filter: filter ligand_charges
 
-    Filter.filter_ligand_charges(denticity=3, charge=0)
+    #Filter.filter_ligand_charges(denticity=3, charge=0)
 
-    Filter.filter_ligand_charges(denticity=2, charge=-1)
+    # Filter.filter_ligand_charges(denticity=2, charge=0)
 
-    Filter.filter_ligand_charges(denticity=1, charge=-1)
+    #Filter.filter_ligand_charges(denticity=1, charge=-1)
 
-    print(f"After charge filter: {len(Filter.database.db)}")
+    # print(f"After charge filter: {len(Filter.database.db)}")
 
     #
     #
@@ -170,7 +174,10 @@ if __name__ == "__main__":
     #
     #
     # Filter: Atom_Count
-    Filter.filter_atom_count(denticity=1, number=15, instruction="less_than")
+
+    Filter.filter_atom_count(denticity=1, number=10, instruction="less_than")
+
+    print(f"After monodentate size filter: {len(Filter.database.db)}")
 
     #
     #
@@ -180,9 +187,9 @@ if __name__ == "__main__":
 
     # Filter.filter_sub_structure_search(denticity=2, SMARTS="c1ncccc1", instruction="must_include")
 
-    Filter.database.to_json(path="../data/Filtered_Jsons/filteredLigDB_050523_NNN+NN_ligs_for poster.json")
+
+    Filter.database.to_json(path=str(project_path().extend("data", "Filtered_Jsons", "INTEGRATION_TEST_LIGAND_DATABASE_270623.json")))
     print(f"END: {len(Filter.database.db)}")
     print("Filtering Done")
 
-    # todo: filter out ligands.py with 5 atoms in a plane
     # todo: subgraph match

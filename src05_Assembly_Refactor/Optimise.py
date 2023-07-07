@@ -1,10 +1,12 @@
-import os
-import warnings
-from rdkit.Chem import rdmolfiles
-from openbabel import openbabel as ob
 from building_block_utility import mercury_remover
-import re
+from constants.Paths import project_path
+from openbabel import openbabel as ob
+from rdkit.Chem import rdmolfiles
+from pathlib import Path
 import numpy as np
+import warnings
+import shutil
+import re
 
 
 class OPTIMISE:
@@ -14,10 +16,34 @@ class OPTIMISE:
         self.building_blocks = building_blocks
         self.instruction = instruction
 
-    @staticmethod
-    def movie(input_file, working_directory):
-        os.system('touch {}{}'.format(working_directory, "movie_loop.xyz"))
-        os.system('cat {}{} >> {}{}'.format(working_directory, input_file, working_directory, "movie_loop.xyz"))
+    def concatenate_files(self, file1_path, file2_path, output_path):
+        """
+        Concatenates the contents of two input files into a new output file.
+
+        Args:
+            file1_path (str or pathlib.Path): The path to the first input file.
+            file2_path (str or pathlib.Path): The path to the second input file.
+            output_path (str or pathlib.Path): The path to the output file.
+        """
+        # Open the output file for writing
+        with open(output_path, 'w') as f_out:
+            # Open the first input file for reading
+            with open(file1_path, 'r') as f_in:
+                # Copy the contents of the first input file to the output file
+                shutil.copyfileobj(f_in, f_out)
+            # Open the second input file for reading
+            with open(file2_path, 'r') as f_in:
+                # Copy the contents of the second input file to the output file
+                shutil.copyfileobj(f_in, f_out)
+
+    def movie(self):
+        self.touch_file(str(project_path().extend("tmp", "opt_movie.xyz")))
+        self.touch_file(str(project_path().extend("tmp", "opt_out_xyz.xyz")))
+
+        self.concatenate_files(file1_path=str(project_path().extend("tmp", "opt_movie.xyz")), file2_path=str(project_path().extend("tmp", "opt_in_xyz.xyz")),
+                               output_path=str(project_path().extend("tmp", "opt_out_xyz.xyz")))
+        old_path = Path(str(project_path().extend("tmp", "opt_out_xyz.xyz")))
+        old_path.rename(str(project_path().extend("tmp", "opt_movie.xyz")))
 
     def Optimise_STK_Constructed_Molecule(self):
         # print("1 " + str(type(self.isomer)))
@@ -70,15 +96,17 @@ class OPTIMISE:
             # Do a 500 steps conjugate gradient minimiazation
             # and save the coordinates to mol.
             # The below function is very slow -> better off just setting i = 200 if you are not debugging
+            # it is worth nothing that the final coordinates of an optimised molecule will be slightly different
+            # depending on whether or not debug is set to true or false. This is an important point especially for unit testing
             if debug:
                 for i in range(50):
                     forcefield.ConjugateGradients(i)
                     forcefield.GetCoordinates(mol)
-                    conv.WriteFile(mol, "/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/loop_xyz")
-                    self.movie(input_file="loop_xyz", working_directory="/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/")
+                    conv.WriteFile(mol, str(project_path().extend("tmp", "opt_in_xyz.xyz")))
+                    self.movie()
 
             elif not debug:
-                forcefield.ConjugateGradients(200)
+                forcefield.ConjugateGradients(50)
                 forcefield.GetCoordinates(mol)
             #
             #
@@ -110,5 +138,10 @@ class OPTIMISE:
                 bb = bb.with_position_matrix(pos_matrix)
                 self.building_blocks[i] = bb
                 i += 1
-        # print("4 "+str(type(self.isomer)))
         return [self.isomer, self.building_blocks]
+
+    def touch_file(self, file_path: str):
+        # Convert the file path to a Path object
+        file_path = Path(file_path)
+        # Touch the file by setting its modification time to the current time
+        file_path.touch()

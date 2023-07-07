@@ -4,14 +4,13 @@ from copy import deepcopy
 import numpy as np
 from src01.DataBase import MoleculeDB, LigandDB
 
-from src03_Pre_Assembly_Filter.Box_Excluder_Filter import box_filter
-from src03_Pre_Assembly_Filter.constant_Ligands import get_monodentate_list, get_reactant
+from src02_Pre_Assembly_Filtering.Box_Excluder_Filter import box_filter
+from src02_Pre_Assembly_Filtering.constant_Ligands import get_monodentate_list, get_reactant
 from pymatgen.core.periodic_table import Element
 from src01.Molecule import RCA_Ligand
 from rdkit.Chem import rdmolfiles
 from src05_Assembly_Refactor.building_block_utility import ligand_to_mol
 from rdkit.Chem.Draw import rdMolDraw2D
-from scipy import stats
 
 
 class FilterStage:
@@ -512,7 +511,7 @@ class FilterStage:
                     elif (num_atoms > number) and (instruction == "less_than"):
                         del new_db[unq_name]
                     else:
-                        ligand.view_3d()
+                        #ligand.view_3d()
                         pass
                 else:
                     pass

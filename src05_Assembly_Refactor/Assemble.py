@@ -1,4 +1,5 @@
-
+from pathlib import Path
+import shutil
 from typing import Any
 from stk import BuildingBlock
 import pickle
@@ -26,6 +27,7 @@ class PlacementRotation:
 
     @staticmethod
     def visualize(input_complex):
+        # This method allows mw to visualize in a blocking way during debug but is not essential at all
         print("initializing visualization")
         stk.MolWriter().write(input_complex, 'input_complex.mol')
         os.system('obabel .mol input_complex.mol .xyz -O  output_complex.xyz')
@@ -36,6 +38,7 @@ class PlacementRotation:
 
     @staticmethod
     def input_controller(batch_input):
+        # Here we take the inputs and format them
         Batch_name = str(batch_input["Name"])
         Ligand_json = str(batch_input["Input_Path"])
         Assembled_Complex_json = str(batch_input["Output_Path"])
@@ -55,8 +58,34 @@ class PlacementRotation:
                 pass
         return Batch_name, Ligand_json, Assembled_Complex_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_list
 
-    @staticmethod
+    def touch_file(self, file_path: str):
+        # Convert the file path to a Path object
+        file_path = Path(file_path)
+        # Touch the file by setting its modification time to the current time
+        file_path.touch()
+
+    def concatenate_files(self,file1_path, file2_path, output_path):
+        """
+        Concatenates the contents of two input files into a new output file.
+
+        Args:
+            file1_path (str or pathlib.Path): The path to the first input file.
+            file2_path (str or pathlib.Path): The path to the second input file.
+            output_path (str or pathlib.Path): The path to the output file.
+        """
+        # Open the output file for writing
+        with open(output_path, 'w') as f_out:
+            # Open the first input file for reading
+            with open(file1_path, 'r') as f_in:
+                # Copy the contents of the first input file to the output file
+                shutil.copyfileobj(f_in, f_out)
+            # Open the second input file for reading
+            with open(file2_path, 'r') as f_in:
+                # Copy the contents of the second input file to the output file
+                shutil.copyfileobj(f_in, f_out)
+
     def output_controller_(
+            self,
             list_of_complexes_wih_isomers: list = None,
             ligands: dict = None,
             metal: str = None,
@@ -70,7 +99,7 @@ class PlacementRotation:
             output_directory: str =None,
             frames: int = None):
 
-        # todo: in order to check for duplicates we may need to append a list here
+        #todo: in order to check for duplicates we may need to append a list here
         for complex_ in list_of_complexes_wih_isomers:  # We loop through all the created isomers
             if (complex_ is not None) and (complex_ != (None, None)):
                 Assembled_complex = TMC(compl=complex_, ligands=ligands, metal=metal, metal_charge=metal_ox_state, spin=metal_multiplicity)
@@ -84,11 +113,14 @@ class PlacementRotation:
                 #
                 # 2.
                 if concatonate_xyz:
-                    Assembled_complex.mol.print_to_xyz(str(output_path) + "tmp_output_test_cian.xyz")  # Print to a temporary file
-                    os.system('touch  ' + str(output_path) + f'{concatonate_xyz_name}')
+                    self.touch_file(str(output_path) + f'/{concatonate_xyz_name}')
+                    Assembled_complex.mol.print_to_xyz(str(output_path) + "/tmp_in_xyz.xyz")  # Print to a temporary file
                     for i in range(frames):
-                        os.system('cat ' + str(output_path) + f'tmp_output_test_cian.xyz >> {str(output_path)}/{concatonate_xyz_name}')  # all.xyz contains a concatenated list of XYZs for ASE
-                    print("done")
+                        pass
+                        self.concatenate_files(file1_path=str(output_path) + f'/{concatonate_xyz_name}', file2_path=str(output_path) + "/tmp_in_xyz.xyz", output_path=str(output_path) + "/tmp_out_xyz.xyz")
+                        old_path = Path(str(output_path) + "/tmp_out_xyz.xyz")
+                        old_path.rename(str(output_path) + f'/{concatonate_xyz_name}')
+                    Path(str(output_path) + "/tmp_in_xyz.xyz").unlink()
                 #
                 #
                 # 3.
@@ -124,7 +156,6 @@ class PlacementRotation:
                     ###---BIDENTATE_JSON--###
                     with open(f"{output_directory}/{name}/{name}.pkl", "wb") as outfile:
                         pickle.dump(bidentate_ligand, outfile)
-                    # test_ligand = pickle.load(open("/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/test/AuCl2_CSD-OZIYON-02-b/AuCl2_CSD-OZIYON-02-b.pkl",'rb'))
                 else:
                     pass
             else:
@@ -132,13 +163,14 @@ class PlacementRotation:
 
     @staticmethod
     def process_single_atom(bb_for_complex):
+        # This is here to remove the hydrogen atoms for mono-atomic ligands
         stk_mol = bb_for_complex.to_rdkit_mol()
         edit_mol = Chem.RWMol(stk_mol)
         num_removed_atoms = []
         for atom in stk_mol.GetAtoms():
             pass
             if atom.GetSymbol() == "H":
-                print(atom.GetIdx())
+                #print(atom.GetIdx())
                 edit_mol.RemoveAtom(atom.GetIdx() - len(num_removed_atoms))
                 num_removed_atoms.append(1)
             else:
@@ -149,6 +181,7 @@ class PlacementRotation:
 
     @staticmethod
     def format_topologies(top_string):
+        #This simply splits the topology and similarity(instruction) lists
         output_list = str(top_string).split("--")
         topology = output_list[0]
         instruction = output_list[1]
@@ -169,6 +202,9 @@ class PlacementRotation:
         # coords specifies the position of the donor atom relative to the metal
         stk_e.Monodentate._ligand_vertex_prototypes[0]._position = np.array(coordinates)
         if len(ligand.atomic_props["atoms"]) == 1:
+            #TODO: RDKIT really does not like H- as ligand. This will throw an error in this case.  !!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!
+            # This bit of code is quite unstable to be brutally honest. errors are quite prone here
+            # Todo
             single_atom = ligand.atomic_props['atoms'][0]
             ligand_bb = stk.BuildingBlock(smiles=f"{single_atom}", functional_groups=[stk.SmartsFunctionalGroupFactory(smarts=f"{single_atom}", bonders=(0,), deleters=(), )])
             complex = stk.ConstructedMolecule(
@@ -177,7 +213,7 @@ class PlacementRotation:
                     ligands=ligand_bb,
                 ),
             )
-            bb_for_complex = self.process_single_atom(complex)
+            bb_for_complex = self.process_single_atom(complex) #stk seems to always generate a building block of a single atom with a hydrogen attached so we need to remove it
             bb_for_complex = stk.BuildingBlock.init_from_molecule(bb_for_complex, functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())])
             return bb_for_complex
         else:
@@ -191,7 +227,6 @@ class PlacementRotation:
 
     @staticmethod
     def Process_Bidentate(ligand: RCA_Ligand = None, coordinates: list = None, bidentate_placed: bool = None, top_list: list = None, direction: str = None):
-
         if direction == "Right":
             stk_e.Bidentate_Planar_Right._ligand_vertex_prototypes[0]._position = np.array(coordinates)
             bidentate_topology = stk_e.Bidentate_Planar_Right(metals=create_placeholder_Hg_bb(), ligands=ligand.to_stk_bb())
@@ -224,7 +259,6 @@ class PlacementRotation:
         ligand_buildingblocks = {}
         ligand_denticities = {}
         for i, ligand in enumerate(ligands.values()):
-
             if ligand.denticity == 0:
                 if (topology_list == [4, 1, 0] and (topology_determining_ligand_planar is True)) or (topology_list == [3, 2, 0]):
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Top()
@@ -334,7 +368,7 @@ class PlacementRotation:
                 #
                 # If our ligand has denticity of 2 we enter this if statement
                 #
-                if topology_list == [3, 2, 0]:
+                if topology_list == [3, 2, 0] or topology_list == [3, 2, 1]:
                     coord = Bidentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Bottom()
                     bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Bottom", bidentate_placed=first_lig2_placed, top_list=topology_list)
 

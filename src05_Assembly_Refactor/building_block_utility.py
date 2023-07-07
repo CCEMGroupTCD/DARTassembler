@@ -5,13 +5,14 @@ from openbabel import pybel
 import itertools
 from rdkit import Chem
 from rdkit.Chem import rdmolfiles
-from src03_Pre_Assembly_Filter.constants_BoxExcluder import get_boxes, intensity, sharpness
+from src02_Pre_Assembly_Filtering.constants_BoxExcluder import get_boxes, intensity, sharpness
 from src05_Assembly_Refactor.stk_extension import *
 from src01.Molecule import RCA_Ligand
 from copy import deepcopy
 
 
 def rotate_tetradentate_bb(tetradentate_bb, ligand_):
+    # This function rotates the tetradentate building block such that the normal axis is parallel with the z-axis.
     for axis_ in [np.array((0, 1, 0)), np.array((1, 0, 0))]:
         tetradentate_bb = tetradentate_bb.with_rotation_to_minimize_angle(
             start=tetradentate_bb.get_plane_normal(
@@ -20,11 +21,11 @@ def rotate_tetradentate_bb(tetradentate_bb, ligand_):
             axis=axis_,
             origin=np.array((0, 0, 0))
         )
-
     return tetradentate_bb
 
 
 def rotate_tridentate_bb(tridentate_bb_, ligand_):
+    # This function rotates the tridentate building block such that the normal axis is parallel with the z-axis.
     index_list = ligand_.get_assembly_dict()["index"]
     for axis_ in [np.array((0, 1, 0)), np.array((1, 0, 0))]:
         tridentate_bb_ = tridentate_bb_.with_rotation_to_minimize_angle(
@@ -33,17 +34,12 @@ def rotate_tridentate_bb(tridentate_bb_, ligand_):
             axis=axis_,
             origin=np.array((0, 0, 0))
         )
-
     return tridentate_bb_
 
 
-def rotate_pentadentate_bb(pentadentate_bb,
-                           indices,
-                           rotations: [np.array, list[np.array]]
-                           ):
+def rotate_pentadentate_bb(pentadentate_bb, indices, rotations: [np.array, list[np.array]]):
     if not isinstance(rotations, list):
         rotations = [rotations]
-
     for rot in rotations:
         pentadentate_bb = pentadentate_bb.with_rotation_to_minimize_angle(
             start=pentadentate_bb.get_plane_normal(atom_ids=[int(ind) for ind in indices]),

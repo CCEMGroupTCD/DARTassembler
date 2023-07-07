@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from constants.Paths import project_path
 from src01.DataBase import MoleculeDB, LigandDB
 import networkx as nx
 from copy import deepcopy
@@ -100,17 +100,18 @@ class TEST:
             print(f"Counter: {i}")
             i = i + 1
     def loop_standard(self):
-        all_atoms = []
+        NUM_LIGS = 0
         for unq_name, ligand in self.database.db.items():
-            stoic = str(ligand.stoichiometry)
-            if stoic.startswith("C40H30"):
-                ligand.view_3d()
+            print(ligand.denticity)
+            if int(ligand.denticity) == int(3):
+                NUM_LIGS += 1
+                #ligand.view_3d()
                 pass
             else:
                 pass
-
+        print(NUM_LIGS)
         print("done")
-        print(all_atoms)
+
 
 
 
@@ -120,7 +121,7 @@ if __name__ == "__main__":
     filtered_db = {unique_lig_name: RCA_Ligand} dict-type, which can then be employed for the ligandAssembly
     """
 
-    tmQM_unique_Ligands = LigandDB.from_json(json_='/Users/cianclarke/Documents/PhD/Complex_Assembly/Data/unique_ligand_db_v1.6.json',
+    tmQM_unique_Ligands = LigandDB.from_json(json_=project_path().extend("data", "Filtered_Jsons", "INTEGRATION_TEST_LIGAND_DATABASE_270623.json"),
                                              type_="Ligand",
                                              max_number=63053649734659453576395
                                              )
