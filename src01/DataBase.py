@@ -11,7 +11,7 @@ from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
-from src01.io_custom import save_json, NumpyEncoder, load_json
+from src01.io_custom import save_json, NumpyEncoder, load_json, load_unique_ligand_db, load_complex_db
 from scipy.special import comb
 from typing import Union
 from datetime import datetime
@@ -19,6 +19,8 @@ from pathlib import Path
 import jsonlines
 from memory_profiler import profile
 import itertools
+
+from src11_machine_learning.dataset_preparation.descriptors import SOAP_3D
 
 
 class BaselineDB:
@@ -198,7 +200,6 @@ class BaselineDB:
 
         return
 
-
 class MoleculeDB(BaselineDB):
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
@@ -213,6 +214,21 @@ class LigandDB(MoleculeDB):
         super().__init__(dict_=dict_)
         self.type = 'Ligand'
 
+    @classmethod
+    def load_from_json(cls, path: Union[str, Path], n_max: int=None, show_progress: bool=True, only_core_ligands: bool=False):
+        """
+        Load a JSON or JSON Lines file.
+        :param path: Path to the JSON or JSON Lines file
+        :return: A LigandDB object
+        """
+        db = load_unique_ligand_db(path=path, n_max=n_max, show_progress=show_progress, molecule='class')
+        if only_core_ligands:
+            # Remove all free ligands which were not connected to the metal.
+            db = {identifier: lig for identifier, lig in db.items() if lig.denticity > 0}
+
+        return cls(db)
+
+
     def check_db_equal(self, db: str) -> bool:
         """
         Checks if two ligand databases are equal.
@@ -223,6 +239,39 @@ class LigandDB(MoleculeDB):
         except ValueError:
             pass
         return self == db
+
+    def get_SOAP_descriptors(self, r_cut=50.0, n_max=2, l_max=1, crossover=False, average='inner', weighting=None, only_from_donors: bool=False):
+        """
+        Adds SOAP features to all molecules in the database.
+        :return: SOAP descriptors.
+        """
+        ase_ligands = [lig.mol for lig in self.db.values()]
+        soap = SOAP_3D(
+            ase_molecules=ase_ligands,
+            r_cut=r_cut,
+            n_max=n_max,
+            l_max=l_max,
+            crossover=crossover,
+            average=average,
+            weighting=weighting
+        )
+
+        if only_from_donors:
+            positions = [lig.get_atomic_positions(atomic_indices=lig.ligand_to_metal) for lig in self.db.values()]
+        else:
+            positions = None
+
+        soap_desc = soap.calculate_descriptors(positions=positions)
+
+        # Add SOAP descriptors to molecules
+        for i, lig in enumerate(self.db.values()):
+            lig.soap = soap_desc[i]
+
+        # Create dataframe with SOAP descriptors
+        soap_labels, mol_names = soap.get_descriptor_names(), list(self.db.keys())
+        df = pd.DataFrame(data=soap_desc, columns=soap_labels, index=mol_names)
+
+        return df
 
     @classmethod
     def from_MoleculeDB(cls,
@@ -466,6 +515,16 @@ class ComplexDB(MoleculeDB):
     def check_db_equal(self, db: str):
         db = ComplexDB.from_json(json_=db, type_='Complex')
         return self == db
+
+    @classmethod
+    def load_from_json(cls, path: Union[str, Path], n_max: int=None, show_progress: bool=True):
+        """
+        Load a JSON or JSON Lines file.
+        :param path: Path to the JSON or JSON Lines file
+        :return: A ComplexDB object
+        """
+        db = load_complex_db(path=path, n_max=n_max, show_progress=show_progress, molecule='class')
+        return cls(db)
 
 
 if __name__ == '__main__':

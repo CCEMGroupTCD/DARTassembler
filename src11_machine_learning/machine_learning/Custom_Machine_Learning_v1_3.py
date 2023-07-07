@@ -402,7 +402,7 @@ class Machine_Learning():
         self.all_scores = {"r2": sklearn.metrics.r2_score,
                            # "logr2": logr2,
                            "MAE": sklearn.metrics.mean_absolute_error,
-                           'iacc': integer_accuracy
+                           # 'iacc': integer_accuracy
                            # "MdAE": sklearn.metrics.median_absolute_error,
                            #  "MSLE": sklearn.metrics.mean_squared_log_error,
                             # "MARE": Sc_MARE,
@@ -808,6 +808,16 @@ class Machine_Learning():
                 train_score_std = train_scores_std[score_idx][target_idx]
                 test_score = test_scores[score_idx][target_idx]
                 test_score_std = test_scores_std[score_idx][target_idx]
+                print(f'   ---       {score_name}:\tTraining: {train_score:.3f} ± {train_score_std:.3f}\t\tTesting: {test_score:.3f} ± {test_score_std:.3f}')
+
+        # Print mean performance scores if multiple targets
+        if len(self.targets) > 1:
+            print(f'   ---     Overall mean: ')
+            for score_idx, score_name in enumerate(self.all_scores.keys()):
+                train_score = train_scores[score_idx].mean()
+                train_score_std = train_scores[score_idx].std()
+                test_score = test_scores[score_idx].mean()
+                test_score_std = test_scores[score_idx].std()
                 print(f'   ---       {score_name}:\tTraining: {train_score:.3f} ± {train_score_std:.3f}\t\tTesting: {test_score:.3f} ± {test_score_std:.3f}')
         return
     
