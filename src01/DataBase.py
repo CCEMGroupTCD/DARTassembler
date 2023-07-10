@@ -11,7 +11,7 @@ from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
-from src01.io_custom import save_json, NumpyEncoder, load_json, load_unique_ligand_db, load_complex_db
+from src01.io_custom import save_json, NumpyEncoder, load_json, load_unique_ligand_db, load_complex_db, iterate_over_json
 from scipy.special import comb
 from typing import Union
 from datetime import datetime
@@ -86,61 +86,6 @@ class BaselineDB:
 
         return
 
-    @classmethod
-    def from_json(cls,
-                  json_,
-                  type_: str = "Molecule",
-                  graph_strategy: Union[str,None] = None,
-                  max_number = None,
-                  identifier_list: list = None,
-                  **kwargs
-                  ):
-        """
-        :param json_: Either the dict itself or the path to a json file
-        :param type_: If we want either a molecule or a Ligand DB
-        :param graph_strategy: How we want the graphs to be created (this is only important for molecules,
-            because ligand graphs are created by the molecule graphs. For Ligands this will just be dumped as a kwarg)
-        :param kwargs: additional arguments for the graph creation (only, if no graphs are present in the .json)
-        """
-        if type_ not in ["Ligand", "Molecule", "Complex"]:
-            raise ValueError(f"Type {type_} not known. Please choose either 'Ligand', 'Complex' or 'Molecule'")
-
-        # Allow False or None to disable max_number
-        if max_number == False:
-            max_number = None
-
-        if isinstance(json_, dict):
-            json_dict = json_
-        else:
-            json_dict = load_json(json_, n_max=max_number)
-
-        new_dict_ = {}
-
-
-
-        if max_number is None:
-            max_number = len(json_dict)
-
-        for i, (identifier, mol_dict) in tqdm(enumerate(json_dict.items()), desc=f"Build {type_} Database"):
-
-            # For testing by identifier list
-            if identifier_list is not None:
-                if identifier not in identifier_list:
-                    continue
-
-            # For testing by max number
-            if i >= max_number:
-                break
-
-            new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(dict_=mol_dict,
-                                                                                 graph_creating_strategy=graph_strategy,
-                                                                                 csd_code=identifier,
-                                                                                 **kwargs
-                                                                                 )
-
-        return cls(new_dict_)
-
-
     def filter_not_fully_connected_molecules(self):
         deleted_identifiers = []
         for identifier, mol in self.db.items():
@@ -197,18 +142,62 @@ class BaselineDB:
         return
 
 class MoleculeDB(BaselineDB):
+    type = 'Molecule'
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
-        self.type = 'Molecule'
 
     def check_db_equal(self, db: str):
         db = MoleculeDB.from_json(json_=db, type_='Molecule')
         return self == db
 
+    @classmethod
+    def from_json(cls,
+                  json_,
+                  type_: str = "Molecule",
+                  graph_strategy: Union[str, None] = None,
+                  max_number: Union[int, list[str], None] = None,
+                  show_progress: bool = True,
+                  **kwargs
+                  ):
+        """
+        :param json_: path to json file
+        :param type_: ignored. Only for historical reasons
+        :param graph_strategy: strategy to create the graph
+        :param max_number: maximum number of molecules to read in
+        :param show_progress: show progress bar
+        :param kwargs: kwargs for the graph creation
+        """
+        db = {}
+        if isinstance(json_, dict):
+            for n, (identifier, mol) in tqdm(enumerate(json_.items()), desc=f"Build {cls.type} Database", disable=not show_progress):
+                if isinstance(max_number, int):
+                    if n >= max_number:
+                        break
+                elif isinstance(max_number, (list, tuple, set)):
+                    if identifier not in max_number:
+                        continue
+                db[identifier] = globals()[f"RCA_{cls.type}"].read_from_mol_dict(
+                                                                                    dict_=mol,
+                                                                                    graph_creating_strategy=graph_strategy,
+                                                                                    csd_code=identifier,
+                                                                                    **kwargs
+                                                                                    )
+        else:
+            for identifier, mol in tqdm(iterate_over_json(path=json_, n_max=max_number, show_progress=False),
+                                        desc=f"Build {cls.type} Database", disable=not show_progress):
+                db[identifier] = globals()[f"RCA_{cls.type}"].read_from_mol_dict(
+                                                                                dict_=mol,
+                                                                                graph_creating_strategy=graph_strategy,
+                                                                                csd_code=identifier,
+                                                                                **kwargs
+                                                                                )
+
+        return cls(db)
+
 class LigandDB(MoleculeDB):
+    type = 'Ligand'
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
-        self.type = 'Ligand'
 
     @classmethod
     def load_from_json(cls, path: Union[str, Path], n_max: int=None, show_progress: bool=True, only_core_ligands: bool=False):
@@ -504,9 +493,9 @@ class LigandDB(MoleculeDB):
 
 
 class ComplexDB(MoleculeDB):
+    type = 'Complex'
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
-        self.type = 'Complex'
 
     def check_db_equal(self, db: str):
         db = ComplexDB.from_json(json_=db, type_='Complex')

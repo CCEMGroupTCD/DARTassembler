@@ -136,7 +136,7 @@ class LigandExtraction:
                                 overwrite_atomic_properties: bool = False,
                                 **kwargs):
         """
-        Establish and safe the Database (in our case tmQM) as json for simple loading.
+        Establish and safe the database as json for simple loading.
         """
         db_dict = DataLoader(database_path_=self.database_path, overwrite=overwrite_atomic_properties).data_for_molDB
 
@@ -144,22 +144,13 @@ class LigandExtraction:
         if self.test_complexes:
             db_dict = self.reorder_input_complexes(db_dict=db_dict, first_complexes=self.test_complexes)
 
-        if isinstance(self.testing, list):
-            input_complex_db = ComplexDB.from_json(
-                json_=db_dict,
-                type_="Complex",
-                identifier_list=self.testing,
-                graph_strategy=self.graph_strat,
-                **kwargs
-            )
-        else:
-            input_complex_db = ComplexDB.from_json(
-                                                json_=db_dict,
-                                                type_="Complex",
-                                                max_number=self.testing,
-                                                graph_strategy=self.graph_strat,
-                                                **kwargs
-                                                )
+        input_complex_db = ComplexDB.from_json(
+                                            json_=db_dict,
+                                            type_="Complex",
+                                            max_number=self.testing,
+                                            graph_strategy=self.graph_strat,
+                                            **kwargs
+                                            )
 
         input_complex_db.to_json(path=self.input_complexes_json, json_lines=True)
 
