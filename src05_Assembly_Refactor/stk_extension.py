@@ -6,7 +6,7 @@ from stk.molecular.topology_graphs.metal_complex.vertices import MetalVertex, Un
 from stk.molecular.topology_graphs.topology_graph.vertex import Vertex
 from scipy.spatial.distance import euclidean
 from stk.utilities import get_projection
-from mendeleev import element
+from constants.Periodic_Table import DART_Element as element
 
 
 class TridentateLigandVertex(Vertex):

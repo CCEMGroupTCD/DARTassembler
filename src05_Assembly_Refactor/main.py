@@ -8,6 +8,7 @@ import random
 import stk, os
 import warnings
 from constants.Paths import project_path
+from pathlib import Path
 
 warnings.simplefilter("always")
 
@@ -89,6 +90,8 @@ if __name__ == "__main__":
     # Here the user specifies which input they want
     USER_INPUT = Integration_test
     RCA = PlacementRotation
+    concat_xyz_name = "INTEGRATION_TEST.xyz"
+    concatenate_xyz = True
 
     for i in range(len(USER_INPUT)):
         # We then take our input dictionary and create all the input variables from it
@@ -229,6 +232,8 @@ if __name__ == "__main__":
             #
             #
             # 8. Format Outputs
+            if concatenate_xyz and i == 0:      # Delete the xyz_file from a previous run if it exists
+                concat_path = Path(Assembled_Complex_json, concat_xyz_name).unlink(missing_ok=True)
             RCA.output_controller_(list_of_complexes_wih_isomers=Post_Process_Complex_List,
                                    ligands=ligands,
                                    metal=metal_type,
@@ -236,8 +241,8 @@ if __name__ == "__main__":
                                    output_path=Assembled_Complex_json,
                                    metal_multiplicity=metal_spin,
                                    view_complex=False,
-                                   concatonate_xyz=True,
-                                   concatonate_xyz_name="INTEGRATION_TEST.xyz",
+                                   concatonate_xyz=concatenate_xyz,
+                                   concatonate_xyz_name=concat_xyz_name,
                                    write_gaussian_input_files=False,
                                    output_directory=USER_INPUT[i]['Output_Path'],
                                    frames=1)
@@ -245,3 +250,15 @@ if __name__ == "__main__":
             if j == 138746543956439563475683496736:
                 exit()
             j += 1
+
+
+    #%% Doublecheck if output is same
+    print('Doublechecking if output is same as before.')
+    from src14_Assembly_Unit_Test.Assembly_test import compare_xyz_files, AssemblyIntegrationTest
+
+    benchmark_file = '/Users/timosommer/PhD/projects/RCA/projects/DART/src14_Assembly_Unit_Test/INTEGRATION_TEST_Benchmark_Timo.xyz'
+    test_file = '/Users/timosommer/PhD/projects/RCA/projects/DART/src14_Assembly_Unit_Test/INTEGRATION_TEST.xyz'
+    allowed_differences = 1e-5
+    df_xzy_diff = AssemblyIntegrationTest(benchmark_file, test_file, tol=allowed_differences).compare_xyz_files()
+
+    print('Done!')

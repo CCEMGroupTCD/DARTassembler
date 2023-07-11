@@ -97,10 +97,6 @@ class ChooseRandomLigands:
         ligands_out = self.format_similarity_lists(ligands, self.instruction)
         return ligands_out
 
-        # The goal of this function is to iterate through all the ligand databases
-
-        pass
-
 
 class ChooseIterativeLigands:
 

@@ -1,6 +1,5 @@
 from datetime import date
 import stk
-from mendeleev import element
 from copy import deepcopy
 import networkx as nx
 import hashlib
@@ -10,6 +9,7 @@ from typing import Union
 import json
 import re
 from constants.constants import project_path
+from constants.Periodic_Table import DART_Element as element
 
 from src01.utilities_Molecule import original_metal_ligand
 from src01.Molecule import RCA_Molecule, RCA_Ligand

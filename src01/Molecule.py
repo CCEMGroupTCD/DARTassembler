@@ -12,7 +12,6 @@ from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from pymatgen.core.composition import Composition
 from ase.visualize import view
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
-import mordred
 from sympy import Point3D, Plane
 from typing import Union, Tuple, Any
 import re
@@ -980,10 +979,12 @@ class RCA_Ligand(RCA_Molecule):
         Checks if any of the coordinating atoms are neighbors.
         @return: True if two coordinating atoms are neighbors, False otherwise
         """
-        graph = self.get_reindexed_graph()     # historical issue
         for i in self.ligand_to_metal:
             for j in self.ligand_to_metal:
-                if i != j and graph.has_edge(i, j):
+                # Indices of graph and atomic indices don't match historically
+                graph_index_i = self.atomic_index_to_graph_index[i]
+                graph_index_j = self.atomic_index_to_graph_index[j]
+                if i != j and self.graph.has_edge(graph_index_i, graph_index_j):
                     return True
 
         return False
@@ -1165,6 +1166,7 @@ class RCA_Ligand(RCA_Molecule):
         descriptors.update(coords_descriptors)
 
         # Graph and 3D descriptors
+        import mordred
         mol = Chem.MolFromSmiles(self.get_smiles())
         calc = mordred.Calculator(descriptors, ignore_3D=not get_3D_descriptors)
         mordred_descriptors = calc.pandas(mol).to_dict(orient='records')[0]

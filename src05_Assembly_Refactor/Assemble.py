@@ -113,14 +113,15 @@ class PlacementRotation:
                 #
                 # 2.
                 if concatonate_xyz:
-                    self.touch_file(str(output_path) + f'/{concatonate_xyz_name}')
-                    Assembled_complex.mol.print_to_xyz(str(output_path) + "/tmp_in_xyz.xyz")  # Print to a temporary file
+                    concat_xyz_filename = Path(output_path, concatonate_xyz_name)
+                    self.touch_file(str(concat_xyz_filename))
+                    Assembled_complex.mol.print_to_xyz(str(Path(output_path, 'tmp_in_xyz.xyz')))  # Print to a temporary file
                     for i in range(frames):
                         pass
-                        self.concatenate_files(file1_path=str(output_path) + f'/{concatonate_xyz_name}', file2_path=str(output_path) + "/tmp_in_xyz.xyz", output_path=str(output_path) + "/tmp_out_xyz.xyz")
-                        old_path = Path(str(output_path) + "/tmp_out_xyz.xyz")
-                        old_path.rename(str(output_path) + f'/{concatonate_xyz_name}')
-                    Path(str(output_path) + "/tmp_in_xyz.xyz").unlink()
+                        self.concatenate_files(file1_path=str(concat_xyz_filename), file2_path=str(Path(output_path, 'tmp_in_xyz.xyz')), output_path=str(Path(output_path, 'tmp_out_xyz.xyz')))
+                        old_path = Path(output_path, 'tmp_out_xyz.xyz')
+                        old_path.rename(str(concat_xyz_filename))
+                    Path(output_path, 'tmp_in_xyz.xyz').unlink()
                 #
                 #
                 # 3.

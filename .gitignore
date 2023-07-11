@@ -1,6 +1,7 @@
 *.idea
 *.pyc
 .DS_Store
+*.swp
 
 /data/**
 /database/**
