@@ -30,8 +30,8 @@ from constants.testing import CHARGE_BENCHMARKED_COMPLEXES
 from constants.constants import odd_n_electrons_warning, unconfident_charge_warning, similar_molecule_with_diff_n_hydrogens_warning
 from collections import defaultdict
 # from memory_profiler import profile as mem_profile
-from test.profiling import profile as line_profile
-from test.profiling import print_stats
+# from test.profiling import profile as line_profile
+# from test.profiling import print_stats
 
 class LigandExtraction:
 

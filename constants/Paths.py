@@ -7,7 +7,7 @@ class project_path:
         self.files_marking_origin_of_project = ['.git', 'constants', 'data']
         self.project_path = self.get_project_origin()
 
-    def extend(self, *relpaths: object) -> object:
+    def extend(self, *relpaths: object) -> Path:
         return Path(self.project_path, *relpaths)
 
     def get_project_origin(self) -> Path:

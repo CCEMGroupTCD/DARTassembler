@@ -1,4 +1,5 @@
 *.idea
+*.py.pclprof
 *.pyc
 .DS_Store
 *.swp

@@ -25,20 +25,20 @@ class PlacementRotation:
         self.ligand_dict = database.get_lig_db_in_old_format()
         self.store_path = store_path
 
-    @staticmethod
-    def visualize(input_complex):
-        # This method allows mw to visualize in a blocking way during debug but is not essential at all
-        print("initializing visualization")
-        stk.MolWriter().write(input_complex, 'input_complex.mol')
-        os.system('obabel .mol input_complex.mol .xyz -O  output_complex.xyz')
-        os.system("ase gui output_complex.xyz")
-        os.system("rm -f input_complex.mol")
-        os.system("rm -f output_complex.xyz")
-        print("visualization complete")
+    @classmethod
+    def global_settings_input_controller(cls, global_settings: dict):
+        # Global settings
+        cls.verbose = global_settings["verbose"]
+        cls.optimization_movie = global_settings["optimization_movie"]
+        cls.optimization_movie_name = global_settings["optimization_movie_name"]
+        cls.concatenate_xyz = global_settings["concatenate_xyz"]
+        cls.concat_xyz_name = global_settings["concat_xyz_name"]
+
+
 
     @staticmethod
-    def input_controller(batch_input):
-        # Here we take the inputs and format them
+    def input_controller(batch_input: list[dict]):
+        # Here we take the batch inputs and format them
         Batch_name = str(batch_input["Name"])
         Ligand_json = str(batch_input["Input_Path"])
         Assembled_Complex_json = str(batch_input["Output_Path"])
@@ -56,7 +56,19 @@ class PlacementRotation:
                 topology_list.append(batch_input[key])
             else:
                 pass
+
         return Batch_name, Ligand_json, Assembled_Complex_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_list
+
+    @staticmethod
+    def visualize(input_complex):
+        # This method allows mw to visualize in a blocking way during debug but is not essential at all
+        print("initializing visualization")
+        stk.MolWriter().write(input_complex, 'input_complex.mol')
+        os.system('obabel .mol input_complex.mol .xyz -O  output_complex.xyz')
+        os.system("ase gui output_complex.xyz")
+        os.system("rm -f input_complex.mol")
+        os.system("rm -f output_complex.xyz")
+        print("visualization complete")
 
     def touch_file(self, file_path: str):
         # Convert the file path to a Path object

@@ -117,7 +117,7 @@ class AssemblyIntegrationTest(object):
             df_mol_results.append(mol_results)
         df_mol_results = pd.DataFrame(df_mol_results)
 
-        print('\n=================    Summary:    =================')
+        print('=================    Summary:    =================')
         n_changed_atom_numbers = (df_mol_results['n_diff_atom_types'] != 0).sum()
         print(f"Number of molecules with changed atom numbers: {n_changed_atom_numbers}")
         if n_changed_atom_numbers > 0:

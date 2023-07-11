@@ -90,10 +90,19 @@ if __name__ == "__main__":
     # Here the user specifies which input they want
     USER_INPUT = Integration_test
     RCA = PlacementRotation
-    concat_xyz_name = "INTEGRATION_TEST.xyz"
-    concatenate_xyz = True
+
+    global_settings = {
+                        "verbose": 3,   # 1 = only final output, 2 = final and progress output, 3 = debug output  --> TODO: implement this
+                        "optimization_movie": 'opt_movie.xyz',  # if None then no movie is generated
+                        "concatenate_xyz": True,
+                        "concat_xyz_name": "INTEGRATION_TEST.xyz"
+                        }
 
     for i in range(len(USER_INPUT)):
+        if i == 0 and global_settings['optimization_movie'] != None:        # This deletes the previous optimization movie if it exists
+            optimization_movie = project_path().extend('tmp', global_settings['optimization_movie'])
+            optimization_movie.unlink(missing_ok=True)
+
         # We then take our input dictionary and create all the input variables from it
         Batch_name, Ligand_json, Assembled_Complex_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_list = RCA.input_controller(
             USER_INPUT[i])
@@ -232,8 +241,8 @@ if __name__ == "__main__":
             #
             #
             # 8. Format Outputs
-            if concatenate_xyz and i == 0:      # Delete the xyz_file from a previous run if it exists
-                concat_path = Path(Assembled_Complex_json, concat_xyz_name).unlink(missing_ok=True)
+            if global_settings['concatenate_xyz'] and i == 0:      # Delete the xyz_file from a previous run if it exists
+                concat_path = Path(Assembled_Complex_json, global_settings['concat_xyz_name']).unlink(missing_ok=True)
             RCA.output_controller_(list_of_complexes_wih_isomers=Post_Process_Complex_List,
                                    ligands=ligands,
                                    metal=metal_type,
@@ -241,8 +250,8 @@ if __name__ == "__main__":
                                    output_path=Assembled_Complex_json,
                                    metal_multiplicity=metal_spin,
                                    view_complex=False,
-                                   concatonate_xyz=concatenate_xyz,
-                                   concatonate_xyz_name=concat_xyz_name,
+                                   concatonate_xyz=global_settings['concatenate_xyz'],
+                                   concatonate_xyz_name=global_settings['concat_xyz_name'],
                                    write_gaussian_input_files=False,
                                    output_directory=USER_INPUT[i]['Output_Path'],
                                    frames=1)
@@ -253,10 +262,18 @@ if __name__ == "__main__":
 
 
     #%% Doublecheck if output is same
-    print('Doublechecking if output is same as before.')
+    print('\nDoublechecking if output is same as before:')
     from src14_Assembly_Unit_Test.Assembly_test import compare_xyz_files, AssemblyIntegrationTest
 
-    benchmark_file = '/Users/timosommer/PhD/projects/RCA/projects/DART/src14_Assembly_Unit_Test/INTEGRATION_TEST_Benchmark_Timo.xyz'
+    # Check that the output movie is the same
+    if global_settings['optimization_movie'] is not None:
+        print('Checking if movie is the same...')
+        benchmark_movie_path = project_path().extend("tmp", "opt_movie_after_concat_refactoring.xyz")
+        test_movie_path = project_path().extend("tmp", global_settings['optimization_movie'])
+        df_movie_diff = AssemblyIntegrationTest(benchmark_movie_path, test_movie_path).compare_xyz_files()
+
+    print('Checking if output xyz files are the same...')
+    benchmark_file = '/Users/timosommer/PhD/projects/RCA/projects/DART/src14_Assembly_Unit_Test/INTEGRATION_TEST_Timo_Timo_before_ff_refactor_debug=False_nsteps=50.xyz'
     test_file = '/Users/timosommer/PhD/projects/RCA/projects/DART/src14_Assembly_Unit_Test/INTEGRATION_TEST.xyz'
     allowed_differences = 1e-5
     df_xzy_diff = AssemblyIntegrationTest(benchmark_file, test_file, tol=allowed_differences).compare_xyz_files()
