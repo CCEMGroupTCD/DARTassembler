@@ -491,3 +491,6 @@ class Bidentate_coordinating_distance:
 
     def Bottom(self):
         return [0, 0, -1*self.calculate_mean_distance()]
+
+
+

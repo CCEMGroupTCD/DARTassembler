@@ -21,7 +21,7 @@ from rdkit import Chem
 
 
 class PlacementRotation:
-    def __init__(self, database: LigandDB = None, store_path: str = "../data/Assembled_Molecules"):
+    def __init__(self, database: LigandDB = None, store_path: str = Path('..', 'data', 'Assembled_Molecules')):
         self.ligand_dict = database.get_lig_db_in_old_format()
         self.store_path = store_path
 

@@ -117,9 +117,6 @@ class OPTIMISE:
             forcefield.GetCoordinates(mol)
 
 
-
-
-
             # # Do a 50 steps conjugate gradient minimization
             # # and save the coordinates to mol.
             # # The below function is very slow -> better off just setting i = 200 if you are not debugging
