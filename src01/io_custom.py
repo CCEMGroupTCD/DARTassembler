@@ -2,12 +2,15 @@
 Utility functions for input and output.
 """
 import json
+
+import yaml
+
 from src01.Molecule import RCA_Ligand, RCA_Complex
 import numpy as np
 from datetime import datetime
 from src01.utilities import get_duration_string
 from typing import Union
-from pathlib import Path
+from pathlib import Path, PurePath
 import jsonlines
 from tqdm import tqdm
 
@@ -181,3 +184,32 @@ def save_unique_ligand_db(db: dict, path: Union[str, Path]):
     print(f"Unique ligand database saved to {path}. Time: {duration}.")
 
     return
+
+def write_yaml(path: Union[str, Path], data: dict) -> None:
+    with open(path, 'w') as file:
+        yaml.dump(data, file)
+
+    return
+
+def read_yaml(path: Union[str, Path]) -> dict:
+    try:
+        with open(path, 'r') as file:
+            data = yaml.load(file, Loader=yaml.FullLoader)
+    except FileNotFoundError:
+        raise FileNotFoundError(f'Could not find file {path}')
+
+    return data
+
+def safe_read_yaml(data: Union[str, Path, list, dict]) -> Union[dict,list]:
+    """
+    Safely read a YAML file or return the data if it is already a dict/list.
+    """
+    try:
+        data = read_yaml(data)
+    except TypeError:
+        # If data is already a dict/list, just return it
+        if not isinstance(data, (dict, list)):
+            raise TypeError(f'Expected data to be a dict or list, but got {type(data)}')
+        data = data
+
+    return data

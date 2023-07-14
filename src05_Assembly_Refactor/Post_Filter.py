@@ -78,7 +78,7 @@ class PostFilter:
         if (self.building_blocks is None) and (self.isomer is None):
             warnings.warn("!!!Warning!!! -> None detect in post-optimisation filter -> Returning None")
             return None
-        elif self.instruction == "False":
+        elif self.instruction == False:
             return self.isomer
         else:
             pass

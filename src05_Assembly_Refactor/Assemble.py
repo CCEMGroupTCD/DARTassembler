@@ -1,22 +1,23 @@
-from pathlib import Path
 import shutil
 from typing import Any
 from stk import BuildingBlock
 import pickle
-import stk
 import numpy as np
-import os
 from src05_Assembly_Refactor.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
     get_optimal_rotation_angle_tridentate, Bidentate_Rotator, nonplanar_tetra_solver
 from src05_Assembly_Refactor.stk_utils import create_placeholder_Hg_bb
 import src05_Assembly_Refactor.stk_extension as stk_e
 from src05_Assembly_Refactor.stk_extension import monodentate_coordinating_distance, Bidentate_coordinating_distance
-from src01.DataBase import LigandDB
 from src01.Molecule import RCA_Ligand
 import ast
-import warnings
 from TransitionMetalComplex import TransitionMetalComplex as TMC
 from rdkit import Chem
+from src01.DataBase import LigandDB
+import stk, os
+import warnings
+from pathlib import Path
+
+warnings.simplefilter("always")
 
 
 
@@ -25,43 +26,11 @@ class PlacementRotation:
         self.ligand_dict = database.get_lig_db_in_old_format()
         self.store_path = store_path
 
-    @classmethod
-    def global_settings_input_controller(cls, global_settings: dict):
-        # Global settings
-        cls.verbose = global_settings["verbose"]
-        cls.optimization_movie = global_settings["optimization_movie"]
-        cls.optimization_movie_name = global_settings["optimization_movie_name"]
-        cls.concatenate_xyz = global_settings["concatenate_xyz"]
-        cls.concat_xyz_name = global_settings["concat_xyz_name"]
-
-
-
-    @staticmethod
-    def input_controller(batch_input: list[dict]):
-        # Here we take the batch inputs and format them
-        Batch_name = str(batch_input["Name"])
-        Ligand_json = str(batch_input["Input_Path"])
-        Assembled_Complex_json = str(batch_input["Output_Path"])
-        Max_Num_Assembled_Complexes = int(batch_input["MAX_num_complexes"])
-        Generate_Isomer_Instruction = str(batch_input["Isomers"])
-        Optimisation_Instruction = str(batch_input["Optimisation_Choice"])
-        Random_Seed = int(batch_input["Random_Seed"])
-        Total_Charge = int(batch_input["Total_Charge"])
-        metal_list = []
-        topology_list = []
-        for key in batch_input.keys():
-            if key.startswith("Metal"):
-                metal_list.append(batch_input[key])
-            elif key.startswith("Topology"):
-                topology_list.append(batch_input[key])
-            else:
-                pass
-
-        return Batch_name, Ligand_json, Assembled_Complex_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_list
-
     @staticmethod
     def visualize(input_complex):
-        # This method allows mw to visualize in a blocking way during debug but is not essential at all
+        """
+        This method allows to visualize in a blocking way during debug but is not essential at all.
+        """
         print("initializing visualization")
         stk.MolWriter().write(input_complex, 'input_complex.mol')
         os.system('obabel .mol input_complex.mol .xyz -O  output_complex.xyz')
@@ -102,10 +71,8 @@ class PlacementRotation:
             ligands: dict = None,
             metal: str = None,
             metal_ox_state: int = None,
-            output_path: str = None,
             metal_multiplicity: int = None,
             view_complex: bool = True,
-            concatonate_xyz: bool = False,
             concatonate_xyz_name: str = None,
             write_gaussian_input_files: bool = False,
             output_directory: str =None,
@@ -124,16 +91,16 @@ class PlacementRotation:
                 #
                 #
                 # 2.
-                if concatonate_xyz:
-                    concat_xyz_filename = Path(output_path, concatonate_xyz_name)
+                if concatonate_xyz_name is not None:
+                    concat_xyz_filename = Path(output_directory, concatonate_xyz_name)
                     self.touch_file(str(concat_xyz_filename))
-                    Assembled_complex.mol.print_to_xyz(str(Path(output_path, 'tmp_in_xyz.xyz')))  # Print to a temporary file
+                    Assembled_complex.mol.print_to_xyz(str(Path(output_directory, 'tmp_in_xyz.xyz')))  # Print to a temporary file
                     for i in range(frames):
                         pass
-                        self.concatenate_files(file1_path=str(concat_xyz_filename), file2_path=str(Path(output_path, 'tmp_in_xyz.xyz')), output_path=str(Path(output_path, 'tmp_out_xyz.xyz')))
-                        old_path = Path(output_path, 'tmp_out_xyz.xyz')
+                        self.concatenate_files(file1_path=str(concat_xyz_filename), file2_path=str(Path(output_directory, 'tmp_in_xyz.xyz')), output_path=str(Path(output_directory, 'tmp_out_xyz.xyz')))
+                        old_path = Path(output_directory, 'tmp_out_xyz.xyz')
                         old_path.rename(str(concat_xyz_filename))
-                    Path(output_path, 'tmp_in_xyz.xyz').unlink()
+                    Path(output_directory, 'tmp_in_xyz.xyz').unlink()
                 #
                 #
                 # 3.
@@ -203,7 +170,7 @@ class PlacementRotation:
         return topology, instruction
 
     @staticmethod
-    def planar_check_(ligands):  # Check if ligands.py are planar or not
+    def planar_check_(ligands):  # Check if ligands are planar or not
         for ligand in ligands.values():
             if ligand.denticity == 3:
                 return ligand.planar_check()
@@ -260,8 +227,8 @@ class PlacementRotation:
         return final_bb
 
     def convert_ligand_to_building_block_for_complex(self, ligands: dict[RCA_Ligand], topology, metal: str = None) -> tuple[dict[int, BuildingBlock], dict[int, Any]]:
-        # Here we pick and choose are ligands.py and rotate and place them based on our topology
-        topology_determining_ligand_planar = self.planar_check_(ligands)  # Check are either the tetra or tri ligands.py planar
+        # Here we pick and choose are ligands and rotate and place them based on our topology
+        topology_determining_ligand_planar = self.planar_check_(ligands)  # Check are either the tetra or tri ligands planar
         topology_list = topology
 
         # This ensures we don't enter the same if statement twice if we have to place a ligand of the same denticity twice
@@ -433,7 +400,7 @@ class PlacementRotation:
                 raise ValueError
 
             #
-            # Here we store all the ligand building blocks and there denticities
+            # Here we store all the ligand building blocks and their denticities
             #
             ligand_buildingblocks[i] = bb_for_complex
             ligand_denticities[i] = ligand.denticity

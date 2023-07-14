@@ -59,7 +59,7 @@ class OPTIMISE:
         if self.isomer is None:
             warnings.warn("!!!Warning!!! -> None detect in optimiser -> Returning None")
             return [None, None]
-        elif self.instruction == "False":
+        elif self.instruction == False:
             return [self.isomer, self.building_blocks]
 
         else:
