@@ -3,7 +3,7 @@ from constants.Paths import project_path
 from src05_Assembly_Refactor.utilities_assembly import visualize
 
 def main(assembly_input_path: str):
-    assembly = DARTAssembly(assembly_input_path=USER_INPUT)
+    assembly = DARTAssembly(assembly_input_path=assembly_input_path)
     assembly.run_all_batches()
 
     return assembly
