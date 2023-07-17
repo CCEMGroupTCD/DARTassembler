@@ -2,6 +2,8 @@
 This file contains functions and a classes for the input of the assembly. They doublecheck that the input is correct and convert it to the correct format.
 """
 import ast
+import shutil
+
 from constants.Paths import project_path, default_ligand_db_path
 from constants.Periodic_Table import all_atomic_symbols
 from pathlib import Path, PurePath
@@ -12,6 +14,7 @@ from src01.io_custom import read_yaml
 _verbose = 'verbose'
 _optimization_movie = 'optimization_movie'
 _concatenate_xyz = 'concatenate_xyz'
+_overwrite_output_path = 'overwrite_output_path'
 _output_path = 'Output_Path'
 _batches = 'Batches'
 _name = 'Name'
@@ -61,25 +64,40 @@ class AssemblyInput(object):
                         _spin: [int, str],
                         }
 
-    def __init__(self, path: Union[str, Path] = 'assembly_input.yml'):
+    def __init__(self, path: Union[str, Path] = 'assembly_input.yml', ensure_empty_output_dir: bool = False):
         """
         Reads the global settings file and stores the settings in the class.
         """
-        # Check if the file exists and make to Path
-        self.path = self.ensure_assembly_input_file_present(path)
+        # Read into dict
+        self.global_settings = self.get_global_settings_from_input_file(path=path)
+        self.path = path
 
         # Set the batch name to None. It will be set later to the respective batch name when iterating over the batches so that the error messages can be more specific.
         self.batch_name = None
 
-        # Read into dict
-        self.global_settings = read_yaml(self.path)
-
         # Check the input and set the class variables
-        self.verbose, self.optimization_movie, self.concatenate_xyz, self.Output_Path, self.Batches = self.check_and_return_global_settings()
+        self.verbose = None
+        self.optimization_movie = None
+        self.concatenate_xyz = None
+        self.overwrite_output_path = None
+        self.Output_Path = None
+        self.Batches = None
+        self.check_and_set_global_settings()
+        if ensure_empty_output_dir:
+            self.ensure_output_directory_empty(self.Output_Path)
 
-    def check_and_return_global_settings(self) -> tuple[int, bool, bool, Path, list]:
+    @classmethod
+    def get_global_settings_from_input_file(cls, path: Union[str, Path] = 'assembly_input.yml'):
         """
-        Checks the global settings and returns them.
+        Alternative constructor that reads the input from a file.
+        """
+        path = cls.ensure_assembly_input_file_present(path)
+        global_settings = read_yaml(path)
+        return global_settings
+
+    def check_and_set_global_settings(self):
+        """
+        Checks the global settings and sets them as attributes.
         """
         for key, types in self.valid_keys.items():
             if key not in self.global_settings.keys():
@@ -87,15 +105,16 @@ class AssemblyInput(object):
 
             self.check_correct_input_type(input=self.global_settings[key], types=types, varname=key)
 
-        # Check if the output path exists and is a directory
-        Output_Path = self.ensure_output_directory_present(self.global_settings[_output_path], varname=_output_path)
+        self.verbose = self.get_int_from_input(self.global_settings[_verbose], varname=_verbose)
+        self.overwrite_output_path = self.get_bool_from_input(self.global_settings[_overwrite_output_path], varname=_overwrite_output_path)
+        self.optimization_movie = self.get_bool_from_input(self.global_settings[_optimization_movie], varname=_optimization_movie)
+        self.concatenate_xyz = self.get_bool_from_input(self.global_settings[_concatenate_xyz], varname=_concatenate_xyz)
+        self.Batches =  self.get_batches_from_input(self.global_settings[_batches])
 
-        verbose = self.get_int_from_input(self.global_settings[_verbose], varname=_verbose)
-        optimization_movie = self.get_bool_from_input(self.global_settings[_optimization_movie], varname=_optimization_movie)
-        concatenate_xyz = self.get_bool_from_input(self.global_settings[_concatenate_xyz], varname=_concatenate_xyz)
-        Batches =  self.get_batches_from_input(self.global_settings[_batches])
+        # Check if the output path exists and is a directory. Must come after self.overwrite_output_path is set.
+        self.Output_Path = self.ensure_output_directory_valid(self.global_settings[_output_path], varname=_output_path)
 
-        return verbose, optimization_movie, concatenate_xyz, Output_Path, Batches
+        return
 
     def get_batches_from_input(self, batches: Union[list, tuple, dict]):
         """
@@ -275,9 +294,9 @@ class AssemblyInput(object):
 
         return input
     
-    def ensure_output_directory_present(self, path: Union[str, Path], varname: str) -> Path:
+    def ensure_output_directory_valid(self, path: Union[str, Path], varname: str) -> Path:
         """
-        Checks if the output directory exists and creates it if it does not.
+        Checks if the output directory is valid.
         """
         try:
             path = Path(path)
@@ -285,14 +304,25 @@ class AssemblyInput(object):
             self.raise_error(message=f"Output directory '{path}' is not a valid string.", varname=varname)
 
         path = path.resolve()   # get absolute path
-        if not path.is_dir():
-            print(f"Output directory '{path}' does not exist. Creating it now.")
-            path.mkdir(parents=True, exist_ok=True)
 
         return path
+
+    def ensure_output_directory_empty(self, varname) -> None:
+        """
+        Checks if the output directory is valid.
+        """
+        # Check if the output directory exists and optionally delete it before recreating it
+        if self.Output_Path.is_dir():
+            if self.overwrite_output_path:
+                shutil.rmtree(self.Output_Path) # remove the output directory if it already exists
+            else:
+                self.raise_error(message=f"Provided output directory '{self.Output_Path}' already exists and '{_overwrite_output_path}' is set to 'False'. Please set it to 'True' or provide a not yet existing output directory.", varname=varname)
+        self.Output_Path.mkdir(parents=True)
+
+        return
     
-    
-    def ensure_assembly_input_file_present(self, path: Union[str, Path]) -> Path:
+    @classmethod
+    def ensure_assembly_input_file_present(cls, path: Union[str, Path]) -> Path:
         """
         Checks if the path to the input file exist and the path is a file. Raises an error if not.
         """

@@ -1,8 +1,10 @@
 import shutil
-from typing import Any
+from typing import Any, Union, List, Tuple, Dict
 from stk import BuildingBlock
 import pickle
 import numpy as np
+
+from src05_Assembly_Refactor.Assembly_Output import append_global_concatenated_xyz
 from src05_Assembly_Refactor.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
     get_optimal_rotation_angle_tridentate, Bidentate_Rotator, nonplanar_tetra_solver
 from src05_Assembly_Refactor.stk_utils import create_placeholder_Hg_bb
@@ -16,7 +18,7 @@ from src01.DataBase import LigandDB
 import stk, os
 import warnings
 from pathlib import Path
-
+from src05_Assembly_Refactor.Assembly_Output import _gbl_concatenated_xyz
 warnings.simplefilter("always")
 
 
@@ -73,10 +75,9 @@ class PlacementRotation:
             metal_ox_state: int = None,
             metal_multiplicity: int = None,
             view_complex: bool = True,
-            concatonate_xyz_name: str = None,
             write_gaussian_input_files: bool = False,
-            output_directory: str =None,
-            frames: int = None):
+            output_directory: Union[str,Path,None] =None,
+            ):
 
         #todo: in order to check for duplicates we may need to append a list here
         for complex_ in list_of_complexes_wih_isomers:  # We loop through all the created isomers
@@ -91,16 +92,12 @@ class PlacementRotation:
                 #
                 #
                 # 2.
-                if concatonate_xyz_name is not None:
-                    concat_xyz_filename = Path(output_directory, concatonate_xyz_name)
-                    self.touch_file(str(concat_xyz_filename))
-                    Assembled_complex.mol.print_to_xyz(str(Path(output_directory, 'tmp_in_xyz.xyz')))  # Print to a temporary file
-                    for i in range(frames):
-                        pass
-                        self.concatenate_files(file1_path=str(concat_xyz_filename), file2_path=str(Path(output_directory, 'tmp_in_xyz.xyz')), output_path=str(Path(output_directory, 'tmp_out_xyz.xyz')))
-                        old_path = Path(output_directory, 'tmp_out_xyz.xyz')
-                        old_path.rename(str(concat_xyz_filename))
-                    Path(output_directory, 'tmp_in_xyz.xyz').unlink()
+                # Save concatenated xyz file of all complexes made in this batch
+
+
+                # Todo: Remove global concatenation of xyz files when done
+                xyz_string = Assembled_complex.mol.get_xyz_file_format_string()
+                append_global_concatenated_xyz(xyz_string, outdir=output_directory.parent)
                 #
                 #
                 # 3.

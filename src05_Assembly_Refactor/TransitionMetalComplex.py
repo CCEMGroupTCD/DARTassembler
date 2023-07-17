@@ -196,10 +196,7 @@ class TransitionMetalComplex:
 
         return f"{df.loc[name_row, gender]} {df.loc[surname_row, 'Surname']}"
 
-    def to_json(self,
-                path: Union[Path, str]
-                ):
-
+    def to_data_dict(self):
         complex_properties = deepcopy(self.__dict__)
 
         complex_properties["mol"] = complex_properties["mol"].write_to_mol_dict()
@@ -208,6 +205,12 @@ class TransitionMetalComplex:
 
         complex_properties["date_of_creation"] = str(complex_properties["date_of_creation"])
 
+        return complex_properties
+
+    def to_json(self,
+                path: Union[Path, str]
+                ):
+        complex_properties = self.to_data_dict()
         with open(path, "w") as file:
             json.dump(complex_properties, file)
 
