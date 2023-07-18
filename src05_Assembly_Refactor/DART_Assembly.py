@@ -323,6 +323,7 @@ class DARTAssembly(object):
         ligand_stoichiometries = tuple(ligand.stoichiometry for ligand in ligands.values())
         topology = f'({self.topology_similarity.split("--")[0].strip("[]")})'
         similarity = f'({self.topology_similarity.split("--")[1].strip("[]")})'
+        
         data = {
             "success": success,
             "complex idx": complex_idx,
