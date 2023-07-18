@@ -50,7 +50,6 @@ class DARTAssembly(object):
         Runs the whole assembly for all batches specified in the assembly input file.
         """
         self.df_info = []
-        self.sum_assembled_complexes = 0
         self.assembled_complex_names = []
 
         for idx, batch_settings in enumerate(self.batches):
@@ -179,7 +178,7 @@ class DARTAssembly(object):
                             spin=self.metal_spin
                             )
                 if complex_is_good:               # New complex successfully built.
-                    self.save_successfully_assembled_complex(tmc, ff_movie, complex_idx=self.sum_assembled_complexes, ligands=ligands, note=note)
+                    self.save_successfully_assembled_complex(tmc, ff_movie, ligands=ligands, note=note)
                     Post_Process_Complex_List.append(complex)
                     batch_sum_assembled_complexes += 1
                 else:
@@ -242,7 +241,7 @@ class DARTAssembly(object):
 
         return complex, complex_is_good, ff_movie, note
 
-    def save_successfully_assembled_complex(self, complex: TMC, ff_movie: str, complex_idx: int, ligands: dict, note: str):
+    def save_successfully_assembled_complex(self, complex: TMC, ff_movie: str, ligands: dict, note: str):
         """
         Save the successfully assembled complex to the output files.
         """
@@ -260,13 +259,14 @@ class DARTAssembly(object):
         xyz_string = complex.mol.get_xyz_file_format_string()
         self.batch_outcontrol.save_passed_xyz(xyz_string, append=True)
 
-        # Todo: Remove: This is the old way of saving the concatenated xyz file to the global file.
+        # This is the old way of saving the concatenated xyz file to the global file. Todo: Remove this once it is not needed anymore
         append_global_concatenated_xyz(xyz_string, outdir=self.output_path)
 
         # Save to complex directory
         complex_name = self.get_complex_name(complex)
         complex_dir = Path(self.batch_outcontrol.complex_dir, complex_name)
         complex_outcontrol = ComplexAssemblyOutput(complex_dir)
+        complex_idx = len(self.assembled_complex_names)
         complex_outcontrol.save_all_complex_data(
                                                 complex=complex,
                                                 complex_idx=complex_idx,
