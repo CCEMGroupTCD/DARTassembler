@@ -2,14 +2,16 @@ import shutil
 from pathlib import Path
 from typing import Union
 import json
+import pandas as pd
 from src05_Assembly_Refactor.Assembly_Input import AssemblyInput
 
-_gbl_optimization_movie = 'opt_movie.xyz'
+_gbl_optimization_movie = 'ffmovie.xyz'
 _gbl_concatenated_xyz = 'INTEGRATION_TEST.xyz'
+_gbl_run_info_table = 'info_table.csv'
 
 # Batch output files
-_batch_passed_ff_movie = 'concat_passed_optimization_movie.xyz'     # All xyz movies of the forcefield optimization of passed complexes
-_batch_failed_ff_movie = 'concat_failed_optimization_movie.xyz'     # All xyz movies of the forcefield optimization of failed complexes
+_batch_passed_ff_movie = 'concat_passed_ffmovie.xyz'     # All xyz movies of the forcefield optimization of passed complexes
+_batch_failed_ff_movie = 'concat_failed_ffmovie.xyz'     # All xyz movies of the forcefield optimization of failed complexes
 _batch_passed_xyz = 'concat_passed_complexes.xyz'                   # All xyz files of passed complexes
 _batch_failed_xyz = 'concat_failed_complexes.xyz'                   # All xyz files of failed complexes
 _batch_output = 'batch_output.txt'                                  # The batch output file with all stdout output
@@ -24,7 +26,7 @@ _complex_info = 'info.txt'
 _complex_settings = 'settings.yml'
 _complex_ligandfilters = 'ligandfilters.yml'
 _complex_warnings = 'warnings.txt'
-_complex_ff_movie = 'optimization_movie.xyz'
+_complex_ff_movie = 'ffmovie.xyz'
 
 
 def save_file(string: str, outpath: Union[str,Path]):
@@ -50,14 +52,31 @@ def save_batch_optimization_movie(xyz_string, outdir: [str,Path]):
 
 class AssemblyOutput(object):
 
-    def __init__(self, outdir: [str,Path]):
+    def __init__(self, outdir: [str,Path], ensure_empty_output_dir: bool = False):
         self.outdir = outdir
+        self.run_info_table = Path(self.outdir, _gbl_run_info_table)
+        if ensure_empty_output_dir:
+            self.ensure_output_directory_empty()
 
     def save_global_optimization_movie(self, xyz_string):
         append_global_optimization_movie(xyz_string, self.outdir)
 
     def save_global_concatenated_xyz(self, xyz_string):
         append_global_concatenated_xyz(xyz_string, self.outdir)
+
+    def save_run_info_table(self, df_info: pd.DataFrame):
+        df_info.to_csv(self.run_info_table, index=False)
+
+    def ensure_output_directory_empty(self) -> None:
+        """
+        Checks if the output directory is valid.
+        """
+        # Delete and recreate directory
+        if self.outdir.is_dir():
+            shutil.rmtree(self.outdir)
+        self.outdir.mkdir(parents=True)
+
+        return
 
 
 class BatchAssemblyOutput(object):

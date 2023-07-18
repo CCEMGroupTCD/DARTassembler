@@ -35,7 +35,7 @@ class OPTIMISE:
         conv.ReadString(mol, xyz_string)
 
         # Define constraints
-        # OPEN BABEL INDEXING SARTS AT ONE !!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # OPEN BABEL INDEXING STARTS AT ONE !!!!!!!!!!!!!!!!!!!!!!!!!!!
         constraints = ob.OBFFConstraints()
         constraints.AddAtomConstraint(1)  # Here we lock the metal
 

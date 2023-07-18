@@ -11,11 +11,14 @@ from typing import Union, Any, Optional, Tuple, List, Dict
 from src01.io_custom import read_yaml
 
 # Define the key names in the assembly input file
+# Global settings
 _verbose = 'verbose'
 _optimization_movie = 'optimization_movie'
 _concatenate_xyz = 'concatenate_xyz'
 _overwrite_output_path = 'overwrite_output_path'
 _output_path = 'Output_Path'
+_complex_name_length = 'complex_name_length'
+# Batch settings
 _batches = 'Batches'
 _name = 'Name'
 _input_path = 'Input_Path'
@@ -29,6 +32,7 @@ _metal = 'Metal'
 _element = 'element'
 _oxidation_state = 'oxidation_state'
 _spin = 'spin'
+_complex_name_appendix = 'complex_name_appendix'
 
 
 class AssemblyInput(object):
@@ -43,7 +47,9 @@ class AssemblyInput(object):
                         _optimization_movie: [bool, str],
                         _concatenate_xyz: [bool, str],
                         _output_path: [str, Path],
-                        _batches: [list, tuple, dict]
+                        _batches: [list, tuple, dict],
+                        _overwrite_output_path: [bool, str],
+                        _complex_name_length: [int, str],
                         }
     # Batch settings
     batches_valid_keys = {
@@ -56,6 +62,7 @@ class AssemblyInput(object):
                         _total_charge: [int, str],
                         _topology: [str, list, tuple],
                         _metal: [dict],
+                        _complex_name_appendix: [str,type(None)],
                         }
     # Metal settings in the batch settings
     metal_valid_keys = {
@@ -64,7 +71,7 @@ class AssemblyInput(object):
                         _spin: [int, str],
                         }
 
-    def __init__(self, path: Union[str, Path] = 'assembly_input.yml', ensure_empty_output_dir: bool = False):
+    def __init__(self, path: Union[str, Path] = 'assembly_input.yml'):
         """
         Reads the global settings file and stores the settings in the class.
         """
@@ -82,9 +89,8 @@ class AssemblyInput(object):
         self.overwrite_output_path = None
         self.Output_Path = None
         self.Batches = None
+        self.complex_name_length = None
         self.check_and_set_global_settings()
-        if ensure_empty_output_dir:
-            self.ensure_output_directory_empty(self.Output_Path)
 
     @classmethod
     def get_global_settings_from_input_file(cls, path: Union[str, Path] = 'assembly_input.yml'):
@@ -110,6 +116,7 @@ class AssemblyInput(object):
         self.optimization_movie = self.get_bool_from_input(self.global_settings[_optimization_movie], varname=_optimization_movie)
         self.concatenate_xyz = self.get_bool_from_input(self.global_settings[_concatenate_xyz], varname=_concatenate_xyz)
         self.Batches =  self.get_batches_from_input(self.global_settings[_batches])
+        self.complex_name_length = self.get_int_from_input(self.global_settings[_complex_name_length], varname=_complex_name_length)
 
         # Check if the output path exists and is a directory. Must come after self.overwrite_output_path is set.
         self.Output_Path = self.ensure_output_directory_valid(self.global_settings[_output_path], varname=_output_path)
@@ -178,8 +185,9 @@ class AssemblyInput(object):
         Total_Charge = self.get_int_from_input(batch_settings[_total_charge], varname=f'{_batches}->{_total_charge}')
         metal_list = self.get_metal_from_input(batch_settings[_metal])
         topology_similarity = self.get_topology_from_input(batch_settings[_topology])
+        complex_name_appendix = batch_settings[_complex_name_appendix] or ''
 
-        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity
+        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix
 
     def get_ligand_db_path_from_input(self, ligand_db_path):
         """
@@ -306,20 +314,6 @@ class AssemblyInput(object):
         path = path.resolve()   # get absolute path
 
         return path
-
-    def ensure_output_directory_empty(self, varname) -> None:
-        """
-        Checks if the output directory is valid.
-        """
-        # Check if the output directory exists and optionally delete it before recreating it
-        if self.Output_Path.is_dir():
-            if self.overwrite_output_path:
-                shutil.rmtree(self.Output_Path) # remove the output directory if it already exists
-            else:
-                self.raise_error(message=f"Provided output directory '{self.Output_Path}' already exists and '{_overwrite_output_path}' is set to 'False'. Please set it to 'True' or provide a not yet existing output directory.", varname=varname)
-        self.Output_Path.mkdir(parents=True)
-
-        return
     
     @classmethod
     def ensure_assembly_input_file_present(cls, path: Union[str, Path]) -> Path:

@@ -561,6 +561,12 @@ class RCA_Molecule(object):
 
         return str_
 
+    def get_xyz_as_array(self) -> np.ndarray:
+        """
+        returns a numpy array of the xyz coordinates. Shape: (n_atoms, 3)
+        """
+        return np.array([self.atomic_props['x'], self.atomic_props['y'], self.atomic_props['z']]).T
+
     def print_to_xyz(self, path: str):
         if not path.endswith(".xyz"):
             print("No valid filename")

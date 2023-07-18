@@ -3,6 +3,7 @@ from copy import deepcopy
 import random
 import itertools
 from src05_Assembly_Refactor.Assemble import PlacementRotation
+from typing import Union, List, Dict, Tuple
 
 
 class ChooseRandomLigands:
@@ -81,7 +82,7 @@ class ChooseRandomLigands:
             f"!!!Fatal Error!!! -> The total charge condition [{self.total_charge}] and metal oxidation state [{self.metal_ox}] assigned to the complex [{self.topology} -- {self.instruction}] is not solvable in a realistic time frame -> Exiting Program")
         return None
 
-    def choose_ligands(self):
+    def choose_ligands(self) -> Union[dict,None]:
         charge_list = self.charge_list_process()
         dic_1, dic_2 = self.get_charge_dic(deepcopy_ligands=False)
         ligand_dic = self.get_ligand_dic(dic_1=dic_1, dic_2=dic_2, deepcopy_ligands=False)

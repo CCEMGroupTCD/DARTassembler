@@ -89,18 +89,10 @@ class PlacementRotation:
                 if view_complex:
                     Assembled_complex.mol.view_3d()
                     input("Press Enter to Continue")
+
                 #
                 #
                 # 2.
-                # Save concatenated xyz file of all complexes made in this batch
-
-
-                # Todo: Remove global concatenation of xyz files when done
-                xyz_string = Assembled_complex.mol.get_xyz_file_format_string()
-                append_global_concatenated_xyz(xyz_string, outdir=output_directory.parent)
-                #
-                #
-                # 3.
                 if write_gaussian_input_files:
                     ###---NAME---###
                     bidentate_ligand = None
