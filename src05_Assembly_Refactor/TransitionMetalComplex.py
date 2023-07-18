@@ -497,3 +497,5 @@ SDD\n
 """
         gaussian_string = header + coordinates + "\n" + metal_basis_set + basis_set_string + "\n" +  final_lines
         return gaussian_string
+
+

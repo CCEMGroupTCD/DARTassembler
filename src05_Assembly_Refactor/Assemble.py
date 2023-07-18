@@ -17,6 +17,8 @@ import ast
 import warnings
 from TransitionMetalComplex import TransitionMetalComplex as TMC
 from rdkit import Chem
+from Guassian_com import Generate_Gaussian_input_file
+import yaml
 
 
 
@@ -102,7 +104,11 @@ class PlacementRotation:
         #todo: in order to check for duplicates we may need to append a list here
         for complex_ in list_of_complexes_wih_isomers:  # We loop through all the created isomers
             if (complex_ is not None) and (complex_ != (None, None)):
+
                 Assembled_complex = TMC(compl=complex_, ligands=ligands, metal=metal, metal_charge=metal_ox_state, spin=metal_multiplicity)
+                Generate_Gaussian_input_file(compl=complex_, ligands=ligands, metal=metal, metal_charge=metal_ox_state, spin=metal_multiplicity,
+                                             path_to_Gaussian_input_file='Gaussian_config.yml',
+                                             filename="test_filename_123")
                 #
                 #
                 # 1.
