@@ -1,5 +1,6 @@
 import functools
 import json
+from collections import Counter
 from copy import deepcopy
 from tqdm import tqdm
 import pandas as pd
@@ -9,12 +10,17 @@ from src01.utilities_graph import remove_node_features_from_graph, make_multigra
 from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
-from src01.io_custom import save_json, NumpyEncoder, load_json
+from pymatgen.core.periodic_table import Element as Pymatgen_Element
+from src01.io_custom import save_json, NumpyEncoder, load_json, load_unique_ligand_db, load_complex_db, iterate_over_json
+from scipy.special import comb
 from typing import Union
 from datetime import datetime
 from pathlib import Path
 import jsonlines
 from memory_profiler import profile
+import itertools
+
+from src11_machine_learning.dataset_preparation.descriptors import SOAP_3D
 
 
 class BaselineDB:
@@ -27,12 +33,28 @@ class BaselineDB:
         """
         self.db = dict_
         self.names = list(self.db.keys())
+        self.reduced_df = self.get_reduced_df()
 
     def __len__(self):
         return len(self.db)
 
     def __eq__(self, other):
         return self.db == other.db
+
+    def get_reduced_df(self):
+        important_columns = ['name', 'stoichiometry', 'denticity', 'graph_hash_with_metal', 'unique_name', 'pred_charge', 'pred_charge_is_confident']
+        data = []
+        for name, mol in self.db.items():
+            props = {}
+            for prop in important_columns:
+                try:
+                    props[prop] = getattr(mol, prop)
+                except AttributeError:
+                    pass
+            data.append(props)
+        df = pd.DataFrame(data)
+
+        return df
 
     def get_first_entry(self):
         first_key = list(self.db.keys())[0]
@@ -63,64 +85,6 @@ class BaselineDB:
             save_json(d, path=path, indent=4)
 
         return
-
-    @classmethod
-    def from_json(cls,
-                  json_,
-                  type_: str = "Molecule",
-                  graph_strategy: Union[str,None] = None,
-                  max_number = None,
-                  identifier_list: list = None,
-                  **kwargs
-                  ):
-        """
-        :param json_: Either the dict itself or the path to a json file
-        :param type_: If we want either a molecule or a Ligand DB
-        :param graph_strategy: How we want the graphs to be created (this is only important for molecules,
-            because ligand graphs are created by the molecule graphs. For Ligands this will just be dumped as a kwarg)
-        :param kwargs: additional arguments for the graph creation (only, if no graphs are present in the .json)
-        """
-        if isinstance(json_, dict):
-            json_dict = json_
-        else:
-            json_dict = load_json(json_)
-
-        new_dict_ = {}
-
-        if type_ not in ["Ligand", "Molecule", "Complex"]:
-            print("Wrong type chosen, will be set to Molecule")
-            type_ = "Molecule"
-
-        # print("Start Establishing DB from .json")
-
-        #
-        #
-        #
-        if (max_number == False) or (max_number is None):
-            max_number = len(json_dict)
-
-        for i, (identifier, mol_dict) in tqdm(enumerate(json_dict.items()), desc=f"Build {type_}Database"):
-
-            # For testing by identifier list
-            if identifier_list is not None:
-                if identifier not in identifier_list:
-                    continue
-
-            # For testing by Max number
-            if i >= max_number:
-                break
-
-            new_dict_[identifier] = globals()[f"RCA_{type_}"].read_from_mol_dict(dict_=mol_dict,
-                                                                                 graph_creating_strategy=graph_strategy,
-                                                                                 csd_code=identifier,
-                                                                                 **kwargs
-                                                                                 )
-
-        return cls(new_dict_)
-
-
-
-
 
     def filter_not_fully_connected_molecules(self):
         deleted_identifiers = []
@@ -177,24 +141,122 @@ class BaselineDB:
 
         return
 
-
 class MoleculeDB(BaselineDB):
+    type = 'Molecule'
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
-        self.type = 'Molecule'
 
     def check_db_equal(self, db: str):
         db = MoleculeDB.from_json(json_=db, type_='Molecule')
         return self == db
 
+    @classmethod
+    def from_json(cls,
+                  json_,
+                  type_: str = "Molecule",
+                  graph_strategy: Union[str, None] = None,
+                  max_number: Union[int, list[str], None] = None,
+                  show_progress: bool = True,
+                  **kwargs
+                  ):
+        """
+        :param json_: path to json file
+        :param type_: ignored. Only for historical reasons
+        :param graph_strategy: strategy to create the graph
+        :param max_number: maximum number of molecules to read in
+        :param show_progress: show progress bar
+        :param kwargs: kwargs for the graph creation
+        """
+        db = {}
+        if isinstance(json_, dict):
+            for n, (identifier, mol) in tqdm(enumerate(json_.items()), desc=f"Build {cls.type} Database", disable=not show_progress):
+                if isinstance(max_number, int):
+                    if n >= max_number:
+                        break
+                elif isinstance(max_number, (list, tuple, set)):
+                    if identifier not in max_number:
+                        continue
+                db[identifier] = globals()[f"RCA_{cls.type}"].read_from_mol_dict(
+                                                                                    dict_=mol,
+                                                                                    graph_creating_strategy=graph_strategy,
+                                                                                    csd_code=identifier,
+                                                                                    **kwargs
+                                                                                    )
+        else:
+            for identifier, mol in tqdm(iterate_over_json(path=json_, n_max=max_number, show_progress=False),
+                                        desc=f"Build {cls.type} Database", disable=not show_progress):
+                db[identifier] = globals()[f"RCA_{cls.type}"].read_from_mol_dict(
+                                                                                dict_=mol,
+                                                                                graph_creating_strategy=graph_strategy,
+                                                                                csd_code=identifier,
+                                                                                **kwargs
+                                                                                )
+
+        return cls(db)
+
 class LigandDB(MoleculeDB):
+    type = 'Ligand'
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
-        self.type = 'Ligand'
+
+    @classmethod
+    def load_from_json(cls, path: Union[str, Path], n_max: int=None, show_progress: bool=True, only_core_ligands: bool=False):
+        """
+        Load a JSON or JSON Lines file.
+        :param path: Path to the JSON or JSON Lines file
+        :return: A LigandDB object
+        """
+        db = load_unique_ligand_db(path=path, n_max=n_max, show_progress=show_progress, molecule='class')
+        if only_core_ligands:
+            # Remove all free ligands which were not connected to the metal.
+            db = {identifier: lig for identifier, lig in db.items() if lig.denticity > 0}
+
+        return cls(db)
+
 
     def check_db_equal(self, db: str) -> bool:
-        db = LigandDB.from_json(json_=db, type_='Ligand')
+        """
+        Checks if two ligand databases are equal.
+        :param db: Either the LigandDB itself or the path to a json file
+        """
+        try:
+            db = LigandDB.from_json(json_=db, type_='Ligand')
+        except ValueError:
+            pass
         return self == db
+
+    def get_SOAP_descriptors(self, r_cut=50.0, n_max=2, l_max=1, crossover=False, average='inner', weighting=None, only_from_donors: bool=False):
+        """
+        Adds SOAP features to all molecules in the database.
+        :return: SOAP descriptors.
+        """
+        ase_ligands = [lig.mol for lig in self.db.values()]
+        soap = SOAP_3D(
+            ase_molecules=ase_ligands,
+            r_cut=r_cut,
+            n_max=n_max,
+            l_max=l_max,
+            crossover=crossover,
+            average=average,
+            weighting=weighting
+        )
+
+        if only_from_donors:
+            positions = [lig.get_atomic_positions(atomic_indices=lig.ligand_to_metal) for lig in self.db.values()]
+        else:
+            positions = None
+
+        soap_desc = soap.calculate_descriptors(positions=positions)
+
+        # Add SOAP descriptors to molecules
+        for i, lig in enumerate(self.db.values()):
+            lig.soap = soap_desc[i]
+
+        # Create dataframe with SOAP descriptors
+        soap_labels, mol_names = soap.get_descriptor_names(), list(self.db.keys())
+        df = pd.DataFrame(data=soap_desc, columns=soap_labels, index=mol_names)
+
+        return df
 
     @classmethod
     def from_MoleculeDB(cls,
@@ -360,12 +422,102 @@ class LigandDB(MoleculeDB):
         df = pd.DataFrame(ligand_props)
         return df
 
+    def calc_number_of_possible_complexes(self, metals: list[str] = None) -> pd.DataFrame:
+        if metals is None:
+            metals = ['Cr', 'Mn', 'Fe', 'Ru', 'Co', 'Ni']
+
+        df = []
+        for metal in metals:
+            df_n_metal_combs = self.calc_number_of_possible_complexes_for_metal(metal)
+            df.append(df_n_metal_combs)
+        df = pd.concat(df, ignore_index=True)
+
+        return df
+
+
+
+    def calc_number_of_possible_complexes_for_metal(self, metal: str, geometries: dict = None) -> pd.DataFrame:
+        metal_oxi_states = Pymatgen_Element(metal).common_oxidation_states
+        results = []
+
+        # possible geometries for octahedral and square-planar complexes. This list needs to be expanded when adding new geometries.
+        if geometries is None:
+            geometries = {
+                'octahedral': [(3, 2, 1), (4, 1, 1), (5, 1), (3, 3)],
+                'square_planar': [(2, 2), (2, 1, 1)]
+            }
+
+        for oxi_state in metal_oxi_states:
+            target_charge = -oxi_state
+            for geometry_name, geometry_list in geometries.items():
+                for geometry in geometry_list:
+                    count = self.calc_number_of_combinations_of_ligands_for_topology(target_charge=target_charge, geometry=geometry)
+                    results.append(
+                        {'metal': metal, 'oxi_state': oxi_state, 'geometry': geometry_name, 'denticities': geometry,
+                         'count': count})
+
+        return pd.DataFrame(results)
+
+    def calc_number_of_combinations_of_ligands_for_topology(self, target_charge: int, geometry: tuple) -> int:
+        """
+        Calculates the number of possible ligand combinations for a given target charge and geometry.
+        @target_charge: The targeted sum of charges of the ligands.
+        @geometry: The topology of the complex, e.g. (3, 2, 1) for a octahedral complex with 3 bidentate, 2 monodentate and 1 tridentate ligand.
+        """
+        n_ligands = len(geometry)
+        geometry = sorted(geometry)
+
+        df = self.reduced_df.query('denticity in @geometry and not pred_charge.isnull()')[['denticity', 'pred_charge']].astype(int)
+
+        df = df.groupby(['denticity', 'pred_charge']).size().reset_index().rename(columns={0: 'count'})
+        count = 0
+        for ligs in itertools.combinations_with_replacement(list(df.itertuples()), n_ligands):
+            correct_denticities = sorted(lig.denticity for lig in ligs) == geometry
+            correct_charges = sum(lig.pred_charge for lig in ligs) == target_charge
+            if correct_charges and correct_denticities:
+                # Group ligands which have the same charge and denticity.
+                groups = pd.DataFrame(ligs).groupby(['denticity', 'pred_charge'])['count']
+                # Calculate the number of possible combinations for this combination of ligands. If there are multiple ligands with the same charge and denticity, we need to pay attention that we don't count the same combination twice, e.g (lig1, lig2) and (lig2, lig1). That is because we define a complex here just in terms of its set of ligands, without caring about the order of the ligands.
+                comb_count = 1
+                for _, group in groups:
+                    n_same_ligands = len(group)
+                    lig_count = group.values[0]
+                    if n_same_ligands == 1:
+                        comb_count *= lig_count
+                    else:
+                        # Multiple ligands with same charge and denticity: Avoid double counting.
+                        comb_count *= comb(lig_count + n_same_ligands - 1, n_same_ligands, exact=True)
+                count += comb_count
+
+        return count
+
 
 class ComplexDB(MoleculeDB):
+    type = 'Complex'
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
-        self.type = 'Complex'
 
     def check_db_equal(self, db: str):
         db = ComplexDB.from_json(json_=db, type_='Complex')
         return self == db
+
+    @classmethod
+    def load_from_json(cls, path: Union[str, Path], n_max: int=None, show_progress: bool=True):
+        """
+        Load a JSON or JSON Lines file.
+        :param path: Path to the JSON or JSON Lines file
+        :return: A ComplexDB object
+        """
+        db = load_complex_db(path=path, n_max=n_max, show_progress=show_progress, molecule='class')
+        return cls(db)
+
+
+if __name__ == '__main__':
+
+    db_version = '1.7'
+    db_path = f'../data/final_db_versions/unique_ligand_db_v{db_version}.json'
+    n_max = None
+
+    db = LigandDB.from_json(json_=db_path, type_='Ligand', max_number=n_max)
+    df_metals = db.calc_number_of_possible_complexes()
+    print(df_metals)

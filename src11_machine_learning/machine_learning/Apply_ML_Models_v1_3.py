@@ -40,7 +40,7 @@ import time
 from src11_machine_learning.machine_learning.own_libraries.analysis.Experiments.Run import MLRun, get_hparams
 # from src11_machine_learning.machine_learning.own_libraries.models.GNN.MEGNet_tf import MEGNet_tf, read_json_file
 # from contextlib import redirect_stdout
-# from src11_machine_learning.machine_learning.own_libraries.utils import Refactoring
+from src11_machine_learning.machine_learning.own_libraries.utils import Refactoring
 # from src11_machine_learning.machine_learning.own_libraries.models.GPflow_GP import GPflow_GP
 # from src11_machine_learning.machine_learning.own_libraries.own_functions import movecol
 from src11_machine_learning.utils.projectpaths import projectpath
@@ -434,7 +434,11 @@ def get_all_models(hparams, n_features, n_targets, use_models, n_domains=1, doma
     # XGBoost
     #########
     if 'XGB' in use_models:
-        XGBoost = XGBRegressor()
+        XGBoost = XGBRegressor(
+                                n_estimators=hparams["XGB_n_estimators"],
+                                max_depth=hparams["XGB_max_depth"],
+                                learning_rate=hparams["XGB_learning_rate"]
+                               )
         all_models['XGB'] = XGBoost
     
         
@@ -445,12 +449,17 @@ def get_all_models(hparams, n_features, n_targets, use_models, n_domains=1, doma
     epochs = 1000
     learning_rate = 0.1
     n_inducing_points = 100
-    lengthscales = np.full(n_features, hparams['GP_lengthscale'])
+    length_scales = np.full(n_features, hparams['GP_length_scale'])
     noise = hparams["GP_alpha"]
 
     if 'GPsk' in use_models:
-        kernel = ConstantKernel() * RBF(length_scale=lengthscales)
-        Gaussian_Process = GaussianProcessRegressor(kernel=kernel, alpha=noise**2, normalize_y=True)
+        kernel = ConstantKernel() * RBF(length_scale=length_scales)
+        Gaussian_Process = GaussianProcessRegressor(
+                                                        kernel=kernel,
+                                                        alpha=noise,
+                                                        normalize_y=True,
+                                                        n_restarts_optimizer=hparams['GP_n_restarts_optimizer']
+                                                    )
         all_models['GPsk'] = Gaussian_Process
     
     # kernel = gpflow.kernels.Constant() * gpflow.kernels.RBF(lengthscales=lengthscales)
@@ -661,18 +670,21 @@ def train_with_args(args):
     if args.use_data_frac != None:
         warnings.warn(f'Using only a fraction of {args.use_data_frac} of data for debugging purposes.')
         df_data = df_data.sample(frac=args.use_data_frac).reset_index()
-    
 
-    
+    # Reduce to only train and validation set
+    df_data = df_data.query(f'not is_test_set')
 
-    
-    targets = ['metal_oxi_state']
+    targets = ['Electronic_E', 'Dispersion_E', 'Dipole_M', 'Metal_q', 'HL_Gap', 'HOMO_Energy', 'LUMO_Energy', 'Polarizability']
+    logarithmic_targets = ['Electronic_E', 'Dispersion_E', 'Dipole_M', 'Polarizability']
     soap_features = [col for col in df_data.columns if col.startswith('soap')]
-    features = ['total_q', 'metal_atomic_number'] + soap_features
+    coord_features = [col for col in df_data.columns if col.startswith('coord')]
+    own_graph_features = [col for col in df_data.columns if col.startswith('own_graph')]
+    features = ['charge', 'num_atoms', 'n_ligands', 'metal_Z', 'metal_row', 'metal_group', 'metal_atomic_mass', 'metal_atomic_radius', 'metal_electron_affinity', 'metal_electronegativity', 'metal_min_oxidation_state', 'metal_max_oxidation_state', 'metal_ionization_energy']
+    features += coord_features + own_graph_features + soap_features
     # Define scaling/ transformation of features and targets.
     log_transform = FunctionTransformer(
-                                        func=restricted_arcsinh,
-                                        inverse_func=restricted_sinh,
+                                        func=np.arcsinh,
+                                        inverse_func=np.sinh,
                                         check_inverse=False
                                         )
     Column_Transformer = {}
@@ -680,6 +692,7 @@ def train_with_args(args):
         Column_Transformer[feat] = StandardScaler()
     for target in targets:
         Column_Transformer[target] = StandardScaler()
+
     assert len(Column_Transformer) == len(features + targets)
     
     output_layers = None    # None or any from get_activation_fn()
@@ -752,7 +765,7 @@ def train_with_args(args):
     run.final_plots(plot_dir, plot_models, df_data, domain_colname, features, targets, use_models, outdir)
     
     # Check if refactoring was successful and everything has stayed the same as in comparison_dir.
-    # comparison_dir = '/home/timo/superconductors_3D/analysis/results/testing/results_202_'
+    # comparison_dir = projectpath('test', 'machine_learning', 'complex_property_prediction', 'output_data', 'analysis', 'results', 'testing', 'results_2_')
     # refactoring = Refactoring.Refactoring(comparison_dir)
     # refactoring.check(outdir)
        
@@ -766,12 +779,11 @@ def main(args_from_fn):
     # =============================================================================
 
     # use_models = ['1NN', 'LR', 'XGB', 'SVGP', 'NNsk', 'NN', 'RGM']
-    use_models = ['XGB', 'NNsk']
+    use_models = ['XGB']
     experiment = ''
-    add_params =  {
-  }
+    add_params =  {}
     output_note = ''
-    outdirname = '../../data/machine_learning/analysis/results'
+    outdirname = projectpath('test', 'machine_learning', 'complex_property_prediction', 'output_data', 'analysis', 'results', 'testing')
     calcdir = os.getcwd()
     # Cross validation
     CV = 'Random'    # `KFold`, `LOGO`, `Random` or None
@@ -779,13 +791,13 @@ def main(args_from_fn):
     n_repeats = 1   # for KFold
     CV_keep_groups = None     # for KFold, Random
     n_reps = 1      # for Random
-    train_frac = 0.8 # for Random
-    domain_colname = 'metal'  # for LOGO
+    train_frac = 0.89 # for Random
+    domain_colname = None  # for LOGO
     # Weights
     sample_weights = None
     metrics_sample_weights = None
     # Dataset
-    dataset = projectpath('database', 'machine_learning', 'descriptors_complex_db_v1.3_only=1.csv')
+    dataset = projectpath('test', 'machine_learning', 'complex_property_prediction', 'input_data', 'complexes_with_descriptors_v1.7.csv')
     # Hyperparameters
     hparams_file = 'hparams.yml'
     n_jobs = 1

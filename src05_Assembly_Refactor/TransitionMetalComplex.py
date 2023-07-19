@@ -1,19 +1,21 @@
 from datetime import date
 import stk
-from mendeleev import element
 from copy import deepcopy
 import networkx as nx
 import hashlib
 import pandas as pd
+import numpy as np
 from pathlib import Path
 from typing import Union
 import json
 import re
 from constants.constants import project_path
+from constants.Periodic_Table import DART_Element as element
 
 from src01.utilities_Molecule import original_metal_ligand
 from src01.Molecule import RCA_Molecule, RCA_Ligand
 from src01.utilities_graph import graphs_are_equal
+from src05_Assembly_Refactor.utilities_assembly import generate_pronounceable_word
 
 atomic_number_Hg = 80
 
@@ -175,31 +177,41 @@ class TransitionMetalComplex:
         # outputs graph of assembled complex
         return U
 
-    def create_random_name(self):
+    def create_random_name(self, length=8, decimals=6):
+        # Generate a hash of the molecule. This is based on the xyz coordinates here. This is not perfect, since the molecule might be rotated, but should be good enough.
+        xyz = self.mol.get_xyz_as_array()
+        sorted_indices = np.lexsort((xyz[:, 2], xyz[:, 1], xyz[:, 0]), axis=0)
+        xyz = np.round(xyz, decimals=decimals)  # round to 6 decimals to get rid of numerical noise
+        xyz = xyz[sorted_indices]
+        elements = [el for _, el in sorted(zip(sorted_indices, self.mol.get_elements_list()))] # sort elements according to xyz
+        hash_string = str(elements) + str(xyz)  # make hash string
+        seed = int(hashlib.md5(hash_string.encode(encoding='UTF-8', errors='strict')).hexdigest(), 16)
 
-        # we first generate the reconstructable hash:
-        name_hash = int(hashlib.md5(self.name.encode(encoding='UTF-8', errors='strict')).hexdigest(), 16)
+        # Generate a pronounceable word from the hash
+        name = generate_pronounceable_word(length=length, seed=seed)
 
-        # this is reproducable and 32 digits long
-        if int(str(name_hash)[:10]) % 2 == 1:
-            gender = "Male"
-        else:
-            gender = "Female"
+        # # we first generate the reconstructable hash:
+        # name_hash = int(hashlib.md5(self.name.encode(encoding='UTF-8', errors='strict')).hexdigest(), 16)
+        #
+        # # this is reproducable and 32 digits long
+        # if int(str(name_hash)[:10]) % 2 == 1:
+        #     gender = "Male"
+        # else:
+        #     gender = "Female"
+        #
+        # name_row = int(str(name_hash)[10:20]) % 200
+        # # because we have currently 200 names implemented
+        #
+        # surname_row = int(str(name_hash)[20:30]) % 1000
+        #
+        # # pick the name
+        # df = pd.read_csv(Path(project_path, "constants", "names", "names.csv"))
+        #
+        # name = f"{df.loc[name_row, gender]} {df.loc[surname_row, 'Surname']}"
 
-        name_row = int(str(name_hash)[10:20]) % 200
-        # because we have currently 200 names implemented
+        return name
 
-        surname_row = int(str(name_hash)[20:30]) % 1000
-
-        # pick the name
-        df = pd.read_csv(Path(project_path, "constants", "names", "names.csv"))
-
-        return f"{df.loc[name_row, gender]} {df.loc[surname_row, 'Surname']}"
-
-    def to_json(self,
-                path: Union[Path, str]
-                ):
-
+    def to_data_dict(self):
         complex_properties = deepcopy(self.__dict__)
 
         complex_properties["mol"] = complex_properties["mol"].write_to_mol_dict()
@@ -208,6 +220,12 @@ class TransitionMetalComplex:
 
         complex_properties["date_of_creation"] = str(complex_properties["date_of_creation"])
 
+        return complex_properties
+
+    def to_json(self,
+                path: Union[Path, str]
+                ):
+        complex_properties = self.to_data_dict()
         with open(path, "w") as file:
             json.dump(complex_properties, file)
 

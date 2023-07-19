@@ -20,7 +20,7 @@ from molSimplify.Classes.mol3D import mol3D
 import warnings
 #warnings.filterwarnings("ignore")
 
-from constants.Serverpath.serverpath import serverpath
+from constants.Paths import serverpath
 from src01.io_custom import load_json
 from src01.utilities_graph import graph_from_graph_dict
 

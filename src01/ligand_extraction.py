@@ -30,8 +30,8 @@ from constants.testing import CHARGE_BENCHMARKED_COMPLEXES
 from constants.constants import odd_n_electrons_warning, unconfident_charge_warning, similar_molecule_with_diff_n_hydrogens_warning
 from collections import defaultdict
 # from memory_profiler import profile as mem_profile
-from test.profiling import profile as line_profile
-from test.profiling import print_stats
+# from test.profiling import profile as line_profile
+# from test.profiling import print_stats
 
 class LigandExtraction:
 
@@ -136,7 +136,7 @@ class LigandExtraction:
                                 overwrite_atomic_properties: bool = False,
                                 **kwargs):
         """
-        Establish and safe the Database (in our case tmQM) as json for simple loading.
+        Establish and safe the database as json for simple loading.
         """
         db_dict = DataLoader(database_path_=self.database_path, overwrite=overwrite_atomic_properties).data_for_molDB
 
@@ -144,22 +144,13 @@ class LigandExtraction:
         if self.test_complexes:
             db_dict = self.reorder_input_complexes(db_dict=db_dict, first_complexes=self.test_complexes)
 
-        if isinstance(self.testing, list):
-            input_complex_db = ComplexDB.from_json(
-                json_=db_dict,
-                type_="Complex",
-                identifier_list=self.testing,
-                graph_strategy=self.graph_strat,
-                **kwargs
-            )
-        else:
-            input_complex_db = ComplexDB.from_json(
-                                                json_=db_dict,
-                                                type_="Complex",
-                                                max_number=self.testing,
-                                                graph_strategy=self.graph_strat,
-                                                **kwargs
-                                                )
+        input_complex_db = ComplexDB.from_json(
+                                            json_=db_dict,
+                                            type_="Complex",
+                                            max_number=self.testing,
+                                            graph_strategy=self.graph_strat,
+                                            **kwargs
+                                            )
 
         input_complex_db.to_json(path=self.input_complexes_json, json_lines=True)
 
@@ -341,7 +332,7 @@ class LigandExtraction:
         self.n_input_complexes_before_filtering = 0
 
         with jsonlines.open(self.tmp_output_complexes_json, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as complex_writer:
-            for idx, (csd_code, comp_dict) in tqdm(enumerate(iterate_over_json(self.input_complexes_json)), desc='Extracting ligands from complexes'):
+            for idx, (csd_code, comp_dict) in tqdm(enumerate(iterate_over_json(self.input_complexes_json, show_progress=False)), desc='Extracting ligands from complexes'):
                 if self.testing is False or idx < self.testing:
                     self.n_input_complexes_before_filtering += 1
 

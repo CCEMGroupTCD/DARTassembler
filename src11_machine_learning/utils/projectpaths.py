@@ -10,8 +10,9 @@ Contains the path to the source directory of this paper.
 import os 
 import inspect
 import src11_machine_learning
+from pathlib import Path
 
-source_dir = '../..'
+source_dir = '/Users/timosommer/PhD/projects/RCA/projects/DART/'
 
 def projectpath(*relpaths):
-    return os.path.join(source_dir, *relpaths)
+    return Path(source_dir, *relpaths)

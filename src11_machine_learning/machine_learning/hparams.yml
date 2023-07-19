@@ -23,7 +23,20 @@ learning_rate: 0.0005
 coeff_lr_classifier: 3
 lr_power_t: 0.5
 nn_l2: 0.000001
+
 RF_n_estimators: 200
 GB_n_estimators: 200
-GP_alpha: 0.3
-GP_lengthscale: 1
+
+# Gaussian Process (GP)
+# Critical:
+GP_alpha: 0.3                     # Expected noise/variance of the data. *Bal. (0.0000000001, 1)
+# Important:
+GP_length_scale: 1                # Length scale of the kernel. *Bal. (0.1, 10)
+GP_n_restarts_optimizer: 0        # Number of restarts of the optimizer for finding the kernel's parameters. *High. (0, 10)
+
+# Extreme Gradient Boosting (XGB)
+# Important:
+XGB_n_estimators: 100             # Number of trees in the forest. *High. Rec: 100 (10, 500)
+XGB_learning_rate: 0.15           # Boosting learning rate. *Bal. Rec: 0.1 (0.01, 0.5)
+# Optional:
+XGB_max_depth: 6                  # Maximum tree depth for base learners. *Bal. Rec: 6 (3, 10)

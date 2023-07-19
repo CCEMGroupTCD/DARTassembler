@@ -73,6 +73,7 @@ class ChargeBenchmark:
 
     def calculate_scores_of_charge_benchmark(self, full_ligand_db: Union[str, Path], expected_charge_interval=(-4, 1)):
 
+        full_ligand_db = Path(full_ligand_db)
         self.merge_benchmark_datasets(latest_full_ligand_db_path=full_ligand_db)
 
         delimiter = '============================'
@@ -119,6 +120,11 @@ class ChargeBenchmark:
 #       - if ligand has C but no H (or maybe if ligand has only C)
 #       - more than one metal from d or f block
 #   - add properties:
+#       - uligs:
+#           - has_warnings
+#           - warning if ligand has bad bonds
+#           - is_planar
+#           - has_neighboring_coordinating_atoms
 #   - charges:
 #
 # TODO in pipeline
@@ -128,6 +134,8 @@ class ChargeBenchmark:
 #           - minimum sphere
 #           - min/ max interatomic distances
 #           - graph_origin = graph_creation_method  ???
+#           - names of originating ligands
+#           - IUPAC name of ligand based on complex names
 #   - rename
 #   - unique_ligand filter:
 #   - unique ligand db
@@ -147,7 +155,7 @@ if __name__ == '__main__':
 
     overwrite_atomic_properties = False     # if atomic properties json should be overwritten. Only necessary after changing input files.
     use_existing_input_json = True          # if the existing input json should be used. For speeding up test runs. Not critical
-    store_database_in_memory = False         # if the database should be stored in memory. Only use if you have enough RAM, but can speed up the pipeline by maybe 30%.
+    store_database_in_memory = True         # if the database should be stored in memory. Only use if you have enough RAM, but can speed up the pipeline by maybe 30%.
 
     # Input complex filters
     exclude_not_fully_connected_complexes = False   # only keep complexes which are fully connected
@@ -186,7 +194,7 @@ if __name__ == '__main__':
         #%%
         charge_benchmark = ChargeBenchmark(true_charge_name='charge')
         charge_benchmark.calculate_scores_of_charge_benchmark(db.output_complexes_json)
-        # charge_benchmark.calculate_scores_of_charge_benchmark('/Users/timosommer/PhD/projects/RCA/projects/CreateTMC/data/final_db_versions/full_ligand_db_v1.6.json')
+        # charge_benchmark.calculate_scores_of_charge_benchmark('/Users/timosommer/PhD/projects/RCA/projects/DART/data/final_db_versions/complex_db_v1.7.json')
         #%%
 
         print('Read in output to look at it.')
@@ -262,11 +270,11 @@ if __name__ == '__main__':
         # else:
         #     print('  Unique ligand db: good')
         #
-        # same_full_lig_db = db.full_ligand_db.check_db_equal(db=db.full_ligands_json)
-        # if not same_full_lig_db:
-        #     print('  Full ligand db: not the same!')
-        # else:
-        #     print('  Full ligand db: good')
+        # # same_full_lig_db = db.full_ligand_db.check_db_equal(db=db.full_ligands_json)
+        # # if not same_full_lig_db:
+        # #     print('  Full ligand db: not the same!')
+        # # else:
+        # #     print('  Full ligand db: good')
         #
         # same_complex_db = db.complex_db.check_db_equal(db=db.output_complexes_json)
         # if not same_complex_db:

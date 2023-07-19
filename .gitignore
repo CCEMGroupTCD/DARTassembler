@@ -1,6 +1,8 @@
 *.idea
+*.py.pclprof
 *.pyc
 .DS_Store
+*.swp
 
 /data/**
 /database/**
@@ -84,3 +86,6 @@
 /data_output/tmQM_Jsons/Assembled_Moleculesall.xyz
 /data_output/tmQM_Jsons/Assembled_Moleculestmp_output_test_cian.xyz
 /test/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/
+
+/test/ML_detect_missing_H/data/**
+/test/machine_learning/**

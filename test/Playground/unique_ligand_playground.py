@@ -9,9 +9,11 @@ from src01.utilities import unroll_dict_into_columns
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from src01.io_custom import load_unique_ligand_db
+from src01.DataBase import LigandDB
 from pathlib import Path
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 sns.set_theme()
+import itertools
 
 
 
@@ -53,18 +55,19 @@ if __name__ == '__main__':
     db_version = '1.7'
     db_path = f'../../data/final_db_versions/unique_ligand_db_v{db_version}.json'
     exclude_unconnected_ligands = True
-    exclude_uncertain_charges = True
+    exclude_uncertain_charges = False
 
-    ligands = load_unique_ligand_db(path=db_path, molecule='class')
-    #%%
-    df = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path), orient='index')
-
-    if exclude_unconnected_ligands:
-        df = df[df['denticity'] > 0]
-    if exclude_uncertain_charges:
-        df = df[df['pred_charge_is_confident']]
-    df = unroll_dict_into_columns(df, dict_col='global_props', prefix='gbl_', delete_dict=True)
-    df = unroll_dict_into_columns(df, dict_col='stats', prefix='stats_', delete_dict=True)
+    ligands = LigandDB.from_json(db_path, max_number=10_000)
+    # ligands = load_unique_ligand_db(path=db_path, molecule='class')
+    # #%%
+    # df = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path), orient='index')
+    #
+    # if exclude_unconnected_ligands:
+    #     df = df[df['denticity'] > 0]
+    # if exclude_uncertain_charges:
+    #     df = df[df['pred_charge_is_confident']]
+    # df = unroll_dict_into_columns(df, dict_col='global_props', prefix='gbl_', delete_dict=True)
+    # df = unroll_dict_into_columns(df, dict_col='stats', prefix='stats_', delete_dict=True)
 
     #%%
     # add_props = pd.DataFrame.from_dict({name: {'has_BetaH': lig.has_betaH, 'only_CHNO': len(set(['C', 'H', 'N', 'O'] + lig.atomic_props['atoms'])) <= 4, 'only_ON_donors': len(set(['N', 'O']+lig.local_elements))<=2} for name, lig in ligands.items()}, orient='index')
@@ -74,7 +77,7 @@ if __name__ == '__main__':
     # df = df.query('not has_BetaH and only_CHNO and only_ON_donors')
     # df = df[((df['denticity'] > 1) & (df['denticity'] < 6)) | df['mono_and_small']]
     #
-    # groups = df.groupby(['denticity', 'pred_charge']).size().reset_index()
+    # groups = df.groupby(['denticity', 'pred_charge']).size().reset_index().rename(columns={0: 'count'})
 
 
     #%% Start playing here

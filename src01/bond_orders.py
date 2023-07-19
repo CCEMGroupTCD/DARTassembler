@@ -36,26 +36,30 @@ def graph_to_smiles(graph, element_label='node_label', bond_label='bond_type'):
             return
         edge['order'] = bond_order_rdkit_to_pysmiles[bo]
 
-    # workaround bug in pysmiles:
-    # add zero edges between fragments, otherwise pysmiles will not work
-    fragments_connectors = [list(frag)[0] for frag in nx.connected_components(graph)]
-    central_node = fragments_connectors.pop(0)
-    for idx in fragments_connectors:
-        graph.add_edge(central_node, idx, order=0)
-
     # convert element labels to pysmiles format
     for _, atom in graph.nodes(data=True):
         atom['element'] = atom[element_label]
 
     # convert graph to smiles
-    smiles = pysmiles.write_smiles(graph)
+    all_smiles = []
+    for nodes in nx.connected_components(graph):
+        # workaround bug in pysmiles:
+        # works only for individual fragments, therefore convert each fragment separately
+        single_graph = graph.subgraph(nodes)
+        smiles = pysmiles.write_smiles(single_graph)
+        all_smiles.append(smiles)
+    smiles = '.'.join(sorted(all_smiles))
+
+    # Bugfix of pysmiles: add brackets if smiles is not organic and a single atom
+    n_atoms = len(graph)
+    organic = 'H B C N O P S F Cl Br I'.split()
+    if n_atoms == 1 and not smiles in organic:
+        if not smiles.startswith('['):
+            smiles = '[' + smiles + ']'  # add brackets if smiles is not organic
+
 
     # Doublecheck assumptions
     smiles_graph = pysmiles.read_smiles(smiles, explicit_hydrogen=True)
-    # Check that number of fragments in graph matches number of fragments in smiles
-    n_fragments = len(fragments_connectors) +1
-    n_smiles_fragments = len(smiles.split('.'))
-    assert n_fragments == n_smiles_fragments, f'Number of molecule fragments ({n_fragments}) does not match number of smiles fragments ({n_smiles_fragments}).'
     # Check that number of heavy atoms in graph matches number of heavy atoms in smiles
     heavy_atoms = sorted(atom[element_label] for _, atom in graph.nodes(data=True) if atom[element_label] != 'H')
     heavy_atoms_smiles = sorted(atom['element'] for _, atom in smiles_graph.nodes(data=True) if atom['element'] != 'H')

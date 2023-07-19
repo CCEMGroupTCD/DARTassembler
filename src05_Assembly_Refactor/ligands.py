@@ -3,6 +3,7 @@ from copy import deepcopy
 import random
 import itertools
 from src05_Assembly_Refactor.Assemble import PlacementRotation
+from typing import Union, List, Dict, Tuple
 
 
 class ChooseRandomLigands:
@@ -29,7 +30,7 @@ class ChooseRandomLigands:
                 input_list[index_list[i + 1]] = input_list[index_list[0]]
         return input_list
 
-    def get_charge_dic(self):
+    def get_charge_dic(self, deepcopy_ligands: bool = True):
         tmp_dic_1 = {}  # dictionary with keys (denticty) and values(list of all charges)
         tmp_dic_2 = {}  # dictionary with keys (denticty) and values(list of all ligands in the same order as their charges in tmp_dic_1)
         for denticity in self.ligand_dict.keys():
@@ -43,10 +44,10 @@ class ChooseRandomLigands:
                 tmp_charge_list.append(charge)
                 tmp_ligand_list.append(ligand)
             tmp_dic_1.update({f"{denticity}": deepcopy(tmp_charge_list)})
-            tmp_dic_2.update({f"{denticity}": deepcopy(tmp_ligand_list)})
+            tmp_dic_2.update({f"{denticity}": deepcopy(tmp_ligand_list) if deepcopy_ligands else tmp_ligand_list})
         return tmp_dic_1, tmp_dic_2
 
-    def get_ligand_dic(self, dic_1, dic_2):
+    def get_ligand_dic(self, dic_1, dic_2, deepcopy_ligands: bool = True):
         tmp_dic_3 = {}  # tmp_dic_3 is a dictionary with keys (denticity) and  value (dictionary). This dictionary has keys (unique charge) and values(ligand building blocks))
         for denticity, charge_list, ligand_list in zip(dic_1.keys(), dic_1.values(), dic_2.values()):
             tmp_dic_charge = {}
@@ -58,13 +59,13 @@ class ChooseRandomLigands:
                     else:
                         pass
                 tmp_dic_charge.update({f"{unq_charge}": tmp_list})
-            tmp_dic_3.update({f"{denticity}": deepcopy(tmp_dic_charge)})
+            tmp_dic_3.update({f"{denticity}": deepcopy(tmp_dic_charge) if deepcopy_ligands else tmp_dic_charge})
         return tmp_dic_3
 
     def charge_list_process(self):
         print("\nStarting Charge Loop")
         m = 0
-        charge_dic, ligand_dic = self.get_charge_dic()
+        charge_dic, _ = self.get_charge_dic(deepcopy_ligands=False)     # No deepcopy for speedup since we don't need the ligands
         while m < self.max_loop:
             charge_list = []
             for dent in self.topology:
@@ -81,10 +82,10 @@ class ChooseRandomLigands:
             f"!!!Fatal Error!!! -> The total charge condition [{self.total_charge}] and metal oxidation state [{self.metal_ox}] assigned to the complex [{self.topology} -- {self.instruction}] is not solvable in a realistic time frame -> Exiting Program")
         return None
 
-    def choose_ligands(self):
+    def choose_ligands(self) -> Union[dict,None]:
         charge_list = self.charge_list_process()
-        dic_1, dic_2 = self.get_charge_dic()
-        ligand_dic = self.get_ligand_dic(dic_1=dic_1, dic_2=dic_2)
+        dic_1, dic_2 = self.get_charge_dic(deepcopy_ligands=False)
+        ligand_dic = self.get_ligand_dic(dic_1=dic_1, dic_2=dic_2, deepcopy_ligands=False)
         ligands = {}
         i = 0
         if charge_list is None:
@@ -95,11 +96,9 @@ class ChooseRandomLigands:
             ligands.update({i: random.choice(ligand_dic[str(denticity)][str(charge)])})
             i = i + 1
         ligands_out = self.format_similarity_lists(ligands, self.instruction)
+        # Deepcopy all chosen ligands. Only doing this here at the end instead of at each intermediate step makes for a huge speedup
+        ligands_out = {idx: deepcopy(ligand) for idx, ligand in ligands_out.items()}
         return ligands_out
-
-        # The goal of this function is to iterate through all the ligand databases
-
-        pass
 
 
 class ChooseIterativeLigands:

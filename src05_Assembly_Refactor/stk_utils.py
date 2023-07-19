@@ -1,6 +1,6 @@
 import numpy as np
 import stk
-from mendeleev import element
+from pymatgen.core.periodic_table import Element as Pymatgen_Element
 
 
 def create_placeholder_Hg_bb() -> stk.BuildingBlock:
@@ -20,7 +20,7 @@ def convert_RCA_to_stk_Molecule(mol):
     """
 
     # create a list of atoms
-    atom_list = [stk.Atom(id=i, atomic_number=element(atom).atomic_number) for i, atom in enumerate(mol.atomic_props["atoms"])]
+    atom_list = [stk.Atom(id=i, atomic_number=Pymatgen_Element(atom).Z) for i, atom in enumerate(mol.atomic_props["atoms"])]
 
     # Now we need the bonds from the graph
     # in fact this is good as we have full control that the stk molecules look according to the graphs

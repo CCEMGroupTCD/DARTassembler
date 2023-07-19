@@ -4,14 +4,14 @@ import stk
 from building_block_utility import get_energy_stk, mercury_remover
 
 class BuildIsomers:
-    def __init__(self, topology, building_blocks_list, metal_input, charge_input, denticity_list, return_all_isomers, opt_choice, ligand_list):
+    def __init__(self, topology, building_blocks_list, metal_input, charge_input, denticity_list, return_all_isomers, opt_choice: bool, ligand_list):
         self.topology = topology
         self.building_blocks_list = building_blocks_list
         self.metal_input = metal_input
         self.charge_input = charge_input
         self.denticity_list = denticity_list
         self.return_all_isomers = return_all_isomers
-        self.opt_choice = opt_choice
+        self.opt_choice = opt_choice    # todo: not used atm, what should happen here?
         self.ligand_list = ligand_list
         self.ALL_building_blocks = []
         self.ALL_Assembled_complexes = []

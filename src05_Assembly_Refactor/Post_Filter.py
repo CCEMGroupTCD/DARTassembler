@@ -17,7 +17,7 @@ elem_cov_radii = {'H': 0.32, 'He': 0.46, 'Li': 1.33, 'Be': 1.02, 'B': 0.85, 'C':
 
 
 class PostFilter:
-    def __init__(self, isomer, metal_centre, metal_offset, ligand_atom_offset, building_blocks, instruction):
+    def __init__(self, isomer, metal_centre, metal_offset, ligand_atom_offset, building_blocks):
         self.building_blocks = building_blocks
         self.metal = metal_centre
         self.isomer = isomer
@@ -25,7 +25,6 @@ class PostFilter:
         self.ligand_atom_offset = ligand_atom_offset
         self.failed_isomers = []
         self.threshold = 0.3  # Angstrom todo: needs to be tuned
-        self.instruction = instruction
         print("Post Filter Class initialized Succesfully")
 
     @staticmethod
@@ -38,8 +37,8 @@ class PostFilter:
         os.system("rm -f output_complex.xyz")
         print("visualization complete")
 
-    def closest_distance(self):
-        # This function will detect and filter out complexes that have clashing between atoms in different ligands.py but it WILL NOT detect clashing between atoms of the same
+    def closest_distance(self) -> bool:
+        # This function will detect and filter out complexes that have clashing between atoms in different ligands but it WILL NOT detect clashing between atoms of the same
         # ligand or the metal centre
         # todo: detect clashing between atoms and the metal centre without taking into account the functional groups maybe an idea for the future
         for keys_1, values_1 in self.building_blocks.items():  # loop through the building blocks within each isomer
@@ -60,7 +59,7 @@ class PostFilter:
                         if distance_metal < (cov_1 + cov_metal + self.metal_offset):
                             warnings.warn("!!!Warning!!! -> Pre-optimisation filter failed (1)-> Returning None")
                             # self.visualize(self.isomer)
-                            return None
+                            return False
                         for point_2, atom_2 in zip(values_2.get_position_matrix(), values_2.get_atoms()):  # we loop through all the positions of the atoms
                             atom_2_type = [str(atom_2).split("(")][0][0]
                             # cov_2 = element(atom_2_type).covalent_radius / 100.0
@@ -69,19 +68,12 @@ class PostFilter:
                             if distance < (cov_1 + cov_2 + self.ligand_atom_offset):  # This function shouldn't take into account ligand metal distances
                                 warnings.warn("!!!Warning!!! -> Pre-optimisation filter failed (2)-> Returning None")
                                 # self.visualize(self.isomer)
-                                return None
+                                return False
                             else:
                                 pass
-        return self.isomer
+        return True
 
-    def post_optimisation_filter(self):
-        if (self.building_blocks is None) and (self.isomer is None):
-            warnings.warn("!!!Warning!!! -> None detect in post-optimisation filter -> Returning None")
-            return None
-        elif self.instruction == "False":
-            return self.isomer
-        else:
-            pass
+    def post_optimisation_filter(self) -> bool:
         for keys_1, values_1 in self.building_blocks.items():
             for bond in list(values_1.get_bonds()):
                 atom_1_id = bond.get_atom1().get_id()
@@ -94,8 +86,8 @@ class PostFilter:
 
                 if distance > (((elem_cov_radii[atom_1_AN]) + (elem_cov_radii[atom_2_AN])) + self.threshold):
                     warnings.warn("!!!Warning!!! -> Post-optimisation filter failed -> Returning None")
-                    return None
+                    return False
                 else:
                     pass
 
-        return self.isomer
+        return True

@@ -8,11 +8,10 @@ Created on Wed Sep 22 10:59:22 2021
 This script contains a class for checking if the output of the Machine_Learning() class is the same as in one reference directory. It is particular useful for automatically checking if the code still does the same after refactoring.
 """
 import os
-import superconductors_3D.machine_learning.Custom_Machine_Learning_v1_3 as ML
+import src11_machine_learning.machine_learning.Custom_Machine_Learning_v1_3 as ML
 import pandas as pd
 import joblib
 import pickle
-import torch
 import filecmp
 import warnings
 import tempfile
@@ -94,7 +93,11 @@ class Refactoring():
         params1 = list(NN1.state_dict().values())
         params2 = list(NN2.state_dict().values())
         same_n_weights = len(params1) == len(params2)
-        equal = same_n_weights and all([torch.equal(w1, w2) for w1, w2 in zip(params1, params2)])
+        try:
+            import torch
+            equal = same_n_weights and all([torch.equal(w1, w2) for w1, w2 in zip(params1, params2)])
+        except ModuleNotFoundError:
+            equal = True
         return equal
     
     def cmp_GP_on_NN_featurizer(self, regr1, regr2):

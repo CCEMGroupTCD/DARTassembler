@@ -1,13 +1,17 @@
 import collections
-
+from typing import List, Tuple, Dict, Union, Optional
 import networkx as nx
 from rdkit import Chem
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 import numpy as np
+from openbabel import openbabel as ob
+
 from pymatgen.core.composition import Composition
 
 # Removed this due to circular import error, and this was only used for type hinting.
 # from src01.Molecule import RCA_Ligand
+
+
 
 unknown_rdkit_bond_orders = [0, 20, 21]
 
@@ -204,3 +208,63 @@ def get_standardized_stoichiometry_from_atoms_list(atoms: list) -> str:
     # formula = [f"{el}{(c[el]) if c[el] != 1 else ''}" for el in elements] # drop the 1 if an element occurs only once
     formula = [f"{el}{(c[el])}" for el in elements]
     return "".join(formula)
+
+def get_coordinates_and_elements_from_OpenBabel_mol(mol: ob.OBMol) -> Tuple[np.ndarray, List[str]]:
+    """
+    Returns the 3D coordinates of each atom in the molecule and the corresponding list of chemical elements.
+
+    Args:
+        mol (ob.OBMol): An Open Babel molecule object.
+
+    Returns:
+        Tuple[np.ndarray, List[str]]: A tuple containing a N x 3 numpy array of xyz coordinates and a list of chemical elements for each atom.
+    """
+    n_atoms = mol.NumAtoms()
+    coords = np.empty((n_atoms, 3))
+    elements = []
+
+    for idx, atom in enumerate(ob.OBMolAtomIter(mol)):
+        coords[idx, 0] = atom.GetX()
+        coords[idx, 1] = atom.GetY()
+        coords[idx, 2] = atom.GetZ()
+        atomic_number = atom.GetAtomicNum()
+        elements.append(Pymatgen_Element.from_Z(atomic_number).symbol)
+
+    return coords, elements
+
+def get_concatenated_xyz_string_from_coordinates(coord_list: list[np.array], element_list: list[list[str]], comment: str = "") -> str:
+    """
+    Returns a string in xyz format from a list of numpy arrays of coordinates and a list of lists of chemical elements.
+    @param coord_list: A list of numpy arrays of coordinates.
+    @param element_list: A list of lists of chemical elements.
+    @param comment: A comment to be added to the xyz file.
+    @return: A string in xyz format.
+    """
+    if isinstance(coord_list, np.ndarray) and coord_list.ndim == 2: # If only one set of coordinates is given
+        coord_list = [coord_list]
+    if isinstance(element_list[0], str):
+        element_list = [element_list]
+
+    xyz = ''
+    for coord, elements in zip(coord_list, element_list):
+        xyz += xyz_string_from_coordinates(coord=coord, elements=elements, comment=comment)
+
+    return xyz
+
+def xyz_string_from_coordinates(coord: np.ndarray, elements: list[str], comment: str = "") -> str:
+    """
+    Returns a string in xyz format from a numpy array of coordinates and a list of chemical elements.
+    """
+    if coord.shape[1] != 3:
+        raise ValueError(f"The coordinates do not have the correct shape: {coord.shape}")
+    if len(elements) != coord.shape[0]:
+        raise ValueError(
+            f"The number of elements does not match the number of coordinates: {len(elements)} != {coord.shape[0]}")
+
+    n_atoms = coord.shape[0]
+    xyz = f"{n_atoms}\n"
+    xyz += comment + '\n'
+    for el, (x, y, z) in zip(elements, coord):
+        xyz += f"{el} {x} {y} {z}\n"
+
+    return xyz

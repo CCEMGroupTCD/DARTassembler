@@ -87,13 +87,15 @@ def smiles2nx(smiles_str: str, explicit_H: bool = True):
     return G
 
 
-def view_graph(G, node_label='node_label', node_size=150):
+def view_graph(G, node_label='node_label', node_size=150, save_path=None):
     nx.draw_networkx(
         G,
         node_size=node_size,  # 500,
         with_labels=True,
         labels={node: G.nodes[node][node_label] for node in G.nodes}
     )
+    if not save_path is None:
+        plt.savefig(save_path)
     plt.show()
 
 def get_graph_fragments(graph, atom_label: Union[str, None]=None) -> list:

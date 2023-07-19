@@ -6,6 +6,7 @@ import networkx as nx
 import numpy as np
 from copy import deepcopy
 
+import pysmiles
 # some special functions which are required
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from pymatgen.core.composition import Composition
@@ -25,6 +26,7 @@ from pysmiles import read_smiles, write_smiles
 
 from constants.constants import metals_in_pse
 from src01.bond_orders import graph_to_smiles, bond_order_rdkit_to_pysmiles
+from src01.utilities_ML import get_element_descriptors, get_xtb_descriptors
 # importing own scripts
 from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
     unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label, \
@@ -35,7 +37,7 @@ from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, graph_to_rdkit_mol, \
     unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center
 from src05_Assembly_Refactor.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
-
+from src11_machine_learning.dataset_preparation.descriptors import RDKit_2D, RAC
 
 class RCA_Molecule(object):
     """
@@ -212,6 +214,37 @@ class RCA_Molecule(object):
 
         return mol
 
+    def get_ase_molecule(self, remove_elements: list=[], add_atoms: list=[]) -> Atoms:
+        """
+        Get ASE molecule from atomic properties.
+        :param remove_elements: list of elements to remove from the molecule
+        :param add_atoms: list of tuples of the form [(element, (x,y,z))] to add to the returned ase molecule
+        """
+        # Check input add_atoms:
+        for el, coords in add_atoms:
+            assert len(coords) == 3, f"Coordinates for element {el} are not of length 3: {coords}"
+            assert isinstance(el, str), f"Element {el} is not a string"
+
+        coord_list_3D = [[self.atomic_props[key_][i] for key_ in ["x", "y", "z"]] for i, _ in
+                         enumerate(self.atomic_props["x"])]
+        atom_list = self.atomic_props["atoms"]
+
+        # Remove specified elements
+        if remove_elements:
+            for i, (el, coords) in enumerate(zip(atom_list, coord_list_3D)):
+                if el in remove_elements:
+                    del atom_list[i]
+                    del coord_list_3D[i]
+
+        # Add specified elements
+        for el, coords in add_atoms:
+            atom_list.append(el)
+            coord_list_3D.append(coords)
+
+        mol = Atoms(atom_list, positions=coord_list_3D)
+
+        return mol
+
     def set_other_props_as_properties(self, other_props):
         for prop, value in other_props.items():
             differing_prop_already_exists = hasattr(self, prop) and self.__getattribute__(prop) != value
@@ -380,6 +413,25 @@ class RCA_Molecule(object):
                    **kwargs
                    )
 
+    def get_graph_fragments(self, atom_label='node_label') -> tuple[list, list]:
+        """
+        Returns a list of the fragment indices (unconnected components) and their elements of the molecular graph.
+        """
+        indices_fragments, element_fragments = get_graph_fragments(graph=self.graph, atom_label=atom_label)
+
+        return indices_fragments, element_fragments
+
+    def get_atomic_positions(self, atomic_indices) -> list:
+        """
+        Returns the atomic positions of the atoms with the given indices.
+        """
+        positions = []
+        for i in atomic_indices:
+            x, y, z = self.atomic_props['x'][i], self.atomic_props['y'][i], self.atomic_props['z'][i]
+            positions.append([x, y, z])
+
+        return positions
+
     # basic view 3D function
     def view_3d(self):
         """
@@ -508,6 +560,12 @@ class RCA_Molecule(object):
             str_ += f"{self.atomic_props['atoms'][i]}  {self.atomic_props['x'][i]}  {self.atomic_props['y'][i]}  {self.atomic_props['z'][i]} \n"
 
         return str_
+
+    def get_xyz_as_array(self) -> np.ndarray:
+        """
+        returns a numpy array of the xyz coordinates. Shape: (n_atoms, 3)
+        """
+        return np.array([self.atomic_props['x'], self.atomic_props['y'], self.atomic_props['z']]).T
 
     def print_to_xyz(self, path: str):
         if not path.endswith(".xyz"):
@@ -672,6 +730,8 @@ class RCA_Molecule(object):
         return PyMatMol(species=self.atomic_props["atoms"],
                         coords=[[self.atomic_props[key_][i] for key_ in ["x", "y", "z"]] for i, _ in
                                 enumerate(self.atomic_props["x"])])
+
+
 
 
 class RCA_Ligand(RCA_Molecule):
@@ -925,10 +985,12 @@ class RCA_Ligand(RCA_Molecule):
         Checks if any of the coordinating atoms are neighbors.
         @return: True if two coordinating atoms are neighbors, False otherwise
         """
-        graph = self.get_reindexed_graph()     # historical issue
         for i in self.ligand_to_metal:
             for j in self.ligand_to_metal:
-                if i != j and graph.has_edge(i, j):
+                # Indices of graph and atomic indices don't match historically
+                graph_index_i = self.atomic_index_to_graph_index[i]
+                graph_index_j = self.atomic_index_to_graph_index[j]
+                if i != j and self.graph.has_edge(graph_index_i, graph_index_j):
                     return True
 
         return False
@@ -1056,6 +1118,69 @@ class RCA_Ligand(RCA_Molecule):
         this is really only designed for ligands as a normal RCA_Molecule doesn't have the required properties
         """
         return RCA_Mol_to_stkBB(self)
+
+    def get_ase_molecule_with_metal(self, metal: str=None) -> Atoms:
+        """
+        Get ASE molecule with metal at original metal location. If no metal is specified, the original metal is used.
+        """
+        if metal is None:
+            metal = self.original_metal_symbol
+
+        # Get ASE molecule
+        ase_mol = self.get_ase_molecule(add_atoms=[(metal, self.original_metal_position)])
+
+        return ase_mol
+
+    def get_xtb_descriptors(self):
+        """
+        Return xtb descriptors for the molecule.
+        """
+        try:
+            charge = self.pred_charge
+            self.xtb_descriptors = get_xtb_descriptors(self.get_xyz_file_format_string(), charge=charge,
+                                                       n_unpaired=None)
+        except AttributeError:
+            self.xtb_descriptors = {
+                                'ionization_potential': np.nan,
+                                'electron_affinity': np.nan,
+                                'HOMO': np.nan,
+                                'LUMO': np.nan,
+                                'Dipole_x': np.nan,
+                                'Dipole_y': np.nan,
+                                'Dipole_z': np.nan
+                                }
+
+        return self.xtb_descriptors
+
+    def generate_descriptors(self, get_3D_descriptors: bool = True) -> dict:
+        """
+        Generates descriptors for the ligand.
+        """
+        descriptors = {}
+
+        # Global descriptors
+        descriptors['denticiy'] = self.denticity
+        descriptors['planar'] = self.planar_check()
+        descriptors['molecular_weight'] = self.global_props['molecular_weight']
+        descriptors['n_atoms'] = self.n_atoms
+        descriptors['n_bonds'] = self.n_bonds
+
+        # Coordinated atoms descriptors
+        coords_descriptors = [get_element_descriptors(el) for el in self.local_elements]
+        coords_descriptors = {key: np.mean([d[key] for d in coords_descriptors]) for key in
+                              coords_descriptors[0].keys()}
+        descriptors.update(coords_descriptors)
+
+        # Graph and 3D descriptors
+        import mordred
+        mol = Chem.MolFromSmiles(self.get_smiles())
+        calc = mordred.Calculator(descriptors, ignore_3D=not get_3D_descriptors)
+        mordred_descriptors = calc.pandas(mol).to_dict(orient='records')[0]
+        descriptors.update(mordred_descriptors)
+
+        return descriptors
+
+
 
 class RCA_Complex(RCA_Molecule):
 
@@ -1223,19 +1348,11 @@ class RCA_Complex(RCA_Molecule):
 
         return n
 
-    def get_graph_fragments(self, atom_label='node_label') -> tuple[list, list]:
-        """
-        Returns a list of the fragment indices (unconnected components) and their elements of the molecular graph.
-        """
-        indices_fragments, element_fragments = get_graph_fragments(graph=self.graph, atom_label=atom_label)
-
-        return indices_fragments, element_fragments
-
-    def get_only_complex_graph_connected_to_metal(self, atom_label='node_label') -> nx.Graph:
+    def get_only_complex_graph_connected_to_metal(self, atom_label: object = 'node_label') -> nx.Graph:
         """
         Returns the graph of only the metal complex without unconnected ligands.
         """
-        complex_graph = get_only_complex_graph_connected_to_metal(graph=self.graph, atom_label=atom_label)
+        complex_graph = get_only_complex_graph_connected_to_metal(graph=self.graph, atom_label=atom_label, metal=self.metal)
         return complex_graph
 
     def has_fragment(self, frag: Union[str, list]) -> bool:
@@ -1544,6 +1661,77 @@ class RCA_Complex(RCA_Molecule):
 
         if not self.ligands:
             print(f'WARNING: Complex {self.global_props["CSD_code"]} has no ligands extracted.')
+
+    def get_smiles(self, only_core_complex: bool=False) -> str:
+        full_smiles = super().get_smiles()
+        smiles = full_smiles
+        if only_core_complex:
+            smiles = [sm for sm in smiles.split('.') if self.metal in sm]
+            assert len(smiles) == 1, 'There should be exactly one SMILES string containing the metal.'
+            smiles = smiles[0]
+
+        # Assert
+        smiles_graph = pysmiles.read_smiles(smiles, explicit_hydrogen=True)
+        smiles_hash = get_graph_hash(smiles_graph, node_attr='element')
+        core_graph = self.get_only_complex_graph_connected_to_metal()
+        core_graph_hash = get_graph_hash(core_graph)
+        if not smiles_hash == core_graph_hash and len(core_graph.nodes) < 9999999999:
+            view_graph(core_graph, save_path='/Users/timosommer/Downloads/core_graph.png')
+            view_graph(smiles_graph, save_path='/Users/timosommer/Downloads/smiles_graph.png', node_label='element')
+
+            a = 1
+
+        # assert smiles_hash == core_graph_hash, 'SMILES and graph hash do not match.'
+
+        return smiles
+
+    def generate_descriptors_of_complex_graph(self, only_core_complex: bool=True, xtb=False):
+        """
+        Generates descriptors for the complex and its ligands.
+        """
+        descriptors = {}
+
+        # Complex descriptors
+        descriptors['n_ligands'] = sum(1 for lig in self.ligands if lig.denticity > 0 or not only_core_complex)
+
+        # Metal center descriptors
+        metal_descriptors = get_element_descriptors(self.metal)
+        metal_descriptors = {f'metal_{key}': val for key, val in metal_descriptors.items()}
+        descriptors.update(metal_descriptors)
+
+        # Coordinating_atom descriptors
+        coords_descriptors = [get_element_descriptors(el) for el in self.donor_elements]
+        coords_descriptors = {key: np.mean([d[key] for d in coords_descriptors]) for key in coords_descriptors[0].keys()}
+        coords_descriptors = {f'coord_{key}': val for key, val in coords_descriptors.items()}
+        descriptors.update(coords_descriptors)
+
+        # Graph descriptors
+        # RDKit descriptors
+        # smiles = self.get_smiles(only_core_complex=only_core_complex)
+        # rdkit_descriptors = RDKit_2D([smiles]).compute_2Drdkit().to_dict(orient='records')[0]
+        # descriptors.update(rdkit_descriptors)
+        # Own RAC descriptors
+        graph = self.get_only_complex_graph_connected_to_metal() if only_core_complex else self.graph
+        graph_descriptors, labels = RAC().molecule_autocorrelation(mol=graph, return_labels=True)
+        graph_descriptors = {f'own_graph_{key}': val for key, val in zip(labels, graph_descriptors)}
+        descriptors.update(graph_descriptors)
+
+
+        # XTB descriptors of ligands
+        if xtb:
+            xtb_descriptors = []
+            for lig in self.ligands:
+                if lig.denticity > 0 or not only_core_complex:
+                    xtb_descriptors.append(lig.get_xtb_descriptors())
+
+
+        return descriptors
+
+
+
+
+
+
 
 
     def write_to_mol_dict(self, include_graph_dict: bool=True, include_ligands: bool=True) -> dict:

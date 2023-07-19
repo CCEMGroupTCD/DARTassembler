@@ -431,7 +431,7 @@ class MLRun():
         
         # Plot dotted line of perfect fit.
         x_min = min(data[true_target])
-        x_max = 200#max(data[true_target])
+        x_max = max(data[true_target])
         line = np.linspace(x_min, x_max, 300)
         ax.plot(line, line, '--k', label='perfect fit')
         
@@ -1175,7 +1175,7 @@ class MLRun():
         # Parity plot for all test data.
         plot_models = use_models.keys()
         duplicate_col = 'formula_sc' if 'formula_sc' in df_data.columns else None
-        log_log = True
+        log_log = False
         for target, model in product(targets, plot_models):
             self.parity_plot_all_test_data(target, model, repetitions, domain_colname, duplicate_col=duplicate_col, log_log=log_log)
             
@@ -1187,34 +1187,34 @@ class MLRun():
         for target, model in product(targets, plot_models):
             self.parity_plot_uncertainty_all_test_data(target, model, repetitions, domain_colname, duplicate_col=duplicate_col, log_log=log_log)
         
-        # Plot error over target distribution.
-        ylim = (0, 1)
-        duplicate_col = 'formula_sc' if 'formula_sc' in df_data.columns else None
-        for target, model in product(targets, plot_models):
-            x = target
-            log_bars = True if target == 'tc' else False
-            self.hist_error_over_x(x, target, model, repetitions, domain_colname, duplicate_col=duplicate_col, log_bars=log_bars, ylim=ylim, errortype='SMAPE', uncertainty='sem')
-        
-        # Plot quality plot with totreldiff.
-        x = 'totreldiff'
-        ylim = (0, None)
-        duplicate_col = 'formula_sc' if 'formula_sc' in df_data.columns else None
-        if x in df_data: 
-            varying_quality = sum(df_data[x].unique()) > 1
-            if varying_quality:
-                for target, model in product(targets, plot_models):
-                    self.hist_error_over_x(x, target, model, repetitions, domain_colname, duplicate_col=duplicate_col, ylim=ylim, errortype='SMAPE', uncertainty='sem')
-        else:
-            print('Can\'t plot dataset quality plot.')
-        
-        # Plot prediction error over elemental prevalence.
-        score = 'SMAPE'
-        chem_formula = 'formula_sc'
-        duplicate_col = 'formula_sc' if 'formula_sc' in df_data.columns else None
-        log = True
-        if chem_formula in df_data.columns:
-            for target, modelname in product(targets, plot_models):
-                self.score_over_elemental_prevalence(model, target, score, repetitions, domain_colname, chem_formula, duplicate_col, log)
+        # # Plot error over target distribution.
+        # ylim = (0, 1)
+        # duplicate_col = 'formula_sc' if 'formula_sc' in df_data.columns else None
+        # for target, model in product(targets, plot_models):
+        #     x = target
+        #     log_bars = True if target == 'tc' else False
+        #     self.hist_error_over_x(x, target, model, repetitions, domain_colname, duplicate_col=duplicate_col, log_bars=log_bars, ylim=ylim, errortype='SMAPE', uncertainty='sem')
+        #
+        # # Plot quality plot with totreldiff.
+        # x = 'totreldiff'
+        # ylim = (0, None)
+        # duplicate_col = 'formula_sc' if 'formula_sc' in df_data.columns else None
+        # if x in df_data:
+        #     varying_quality = sum(df_data[x].unique()) > 1
+        #     if varying_quality:
+        #         for target, model in product(targets, plot_models):
+        #             self.hist_error_over_x(x, target, model, repetitions, domain_colname, duplicate_col=duplicate_col, ylim=ylim, errortype='SMAPE', uncertainty='sem')
+        # else:
+        #     print('Can\'t plot dataset quality plot.')
+        #
+        # # Plot prediction error over elemental prevalence.
+        # score = 'SMAPE'
+        # chem_formula = 'formula_sc'
+        # duplicate_col = 'formula_sc' if 'formula_sc' in df_data.columns else None
+        # log = True
+        # if chem_formula in df_data.columns:
+        #     for target, modelname in product(targets, plot_models):
+        #         self.score_over_elemental_prevalence(model, target, score, repetitions, domain_colname, chem_formula, duplicate_col, log)
         
         # Plot feature importances.
         for target, modelname in product(targets, plot_models):
