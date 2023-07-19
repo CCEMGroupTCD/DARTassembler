@@ -8,15 +8,16 @@ from src05_Assembly_Refactor.Assembly_Input import AssemblyInput
 _gbl_optimization_movie = 'ffmovie.xyz'
 _gbl_concatenated_xyz = 'INTEGRATION_TEST.xyz'
 _gbl_run_info_table = 'info_table.csv'
+_gbl_batch_dir = 'batches'
 
 # Batch output files
 _batch_passed_ff_movie = 'concat_passed_ffmovie.xyz'     # All xyz movies of the forcefield optimization of passed complexes
 _batch_failed_ff_movie = 'concat_failed_ffmovie.xyz'     # All xyz movies of the forcefield optimization of failed complexes
-_batch_passed_xyz = 'concat_passed_complexes.xyz'                   # All xyz files of passed complexes
-_batch_failed_xyz = 'concat_failed_complexes.xyz'                   # All xyz files of failed complexes
-_batch_output = 'batch_output.txt'                                  # The batch output file with all stdout output
-_batch_errors = 'batch_errors.txt'                                  # The batch errors file with all stderr output
-_batch_complex_dir = 'output_complexes'                             # The directory where all the complex output files are stored
+_batch_passed_xyz = 'concat_passed_complexes.xyz'        # All xyz files of passed complexes
+_batch_failed_xyz = 'concat_failed_complexes.xyz'        # All xyz files of failed complexes
+_batch_output = 'batch_output.txt'                       # The batch output file with all stdout output
+_batch_errors = 'batch_errors.txt'                       # The batch errors file with all stderr output
+_batch_complex_dir = 'complexes'                         # The directory where all the complex output files are stored
 
 # Complex output files
 _complex_data = 'data.json'
@@ -55,6 +56,7 @@ class AssemblyOutput(object):
     def __init__(self, outdir: [str,Path], ensure_empty_output_dir: bool = False):
         self.outdir = outdir
         self.run_info_table = Path(self.outdir, _gbl_run_info_table)
+        self.batch_dir = Path(self.outdir, _gbl_batch_dir)
         if ensure_empty_output_dir:
             self.ensure_output_directory_empty()
 

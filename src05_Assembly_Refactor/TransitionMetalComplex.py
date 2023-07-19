@@ -220,6 +220,8 @@ class TransitionMetalComplex:
 
         complex_properties["date_of_creation"] = str(complex_properties["date_of_creation"])
 
+        del complex_properties["date_of_creation"]  # hack to make the json comparable and this is not really needed anyway
+
         return complex_properties
 
     def to_json(self,

@@ -51,13 +51,14 @@ class DARTAssembly(object):
         """
         self.df_info = []
         self.assembled_complex_names = []
+        self.last_ligand_db_path = Path()     # to avoid reloading the same ligand database in the next batch
 
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
             self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction,\
             self.optimisation_instruction, self.random_seed, self.total_charge, metal_list, self.topology_similarity,\
             self.complex_name_appendix = self.settings.check_and_return_batch_settings(batch_settings)
-            self.batch_output_path = Path(self.output_path, self.batch_name)
+            self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
             self.batch_idx = idx
             self.batch_outcontrol = BatchAssemblyOutput(self.batch_output_path)
             self.metal_type = metal_list[0]
@@ -77,10 +78,12 @@ class DARTAssembly(object):
     def run_batch(self):
         print(f"\n\n\n\n**********Batch: {self.batch_name}**********\n\n\n\n")
 
-        # Here we load the ligand database
-        F = LigandDB.from_json(json_=self.ligand_json,
-                               type_="Ligand")  # We initiate the database in the RandomComplexAssembler
-        RCA = PlacementRotation(database=F)
+        # Here we load the ligand database and avoid reloading the same ligand database if it is the same as the last one
+        if self.last_ligand_db_path.resolve() != self.ligand_json.resolve():
+            self.ligand_db = LigandDB.from_json(json_=self.ligand_json,
+                                   type_="Ligand")
+            self.last_ligand_db_path = self.ligand_json
+        RCA = PlacementRotation(database=self.ligand_db)
 
         ########################################################################
         # This section of code needs to be commented out if you do not want to
@@ -250,7 +253,7 @@ class DARTAssembly(object):
             self.batch_outcontrol.save_passed_ff_movie(ff_movie)
 
             # Save to global optimization movie. Todo: Remove this once it is not needed anymore
-            global_optimization_movie_path = Path(self.batch_output_path.parent, _gbl_optimization_movie)
+            global_optimization_movie_path = Path(self.output_path, _gbl_optimization_movie)
             with open(global_optimization_movie_path, "a") as f:
                 f.write(ff_movie)
 
@@ -323,6 +326,7 @@ class DARTAssembly(object):
         ligand_stoichiometries = tuple(ligand.stoichiometry for ligand in ligands.values())
         topology = f'({self.topology_similarity.split("--")[0].strip("[]")})'
         similarity = f'({self.topology_similarity.split("--")[1].strip("[]")})'
+        
         data = {
             "success": success,
             "complex idx": complex_idx,
