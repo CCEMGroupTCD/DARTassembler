@@ -89,3 +89,6 @@
 
 /test/ML_detect_missing_H/data/**
 /test/machine_learning/**
+
+/src14_Assembly_Unit_Test/**
+!/src14_Assembly_Unit_Test/output_benchmark/**
