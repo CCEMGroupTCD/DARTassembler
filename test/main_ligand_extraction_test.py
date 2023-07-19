@@ -123,7 +123,7 @@ class ChargeBenchmark:
 #       - uligs:
 #           - has_warnings
 #           - warning if ligand has bad bonds
-#           - is_planar
+#           - is_planar!!!
 #           - has_neighboring_coordinating_atoms
 #   - charges:
 #

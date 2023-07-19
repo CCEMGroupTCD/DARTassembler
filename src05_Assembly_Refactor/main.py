@@ -8,6 +8,8 @@ def main(assembly_input_path: str):
 
     return assembly
 
+
+
 if __name__ == "__main__":
 
     USER_INPUT = 'assembly_input.yml'   # In this file the user specifies which input they want
