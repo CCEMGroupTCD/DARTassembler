@@ -51,6 +51,7 @@ class DARTAssembly(object):
         """
         self.df_info = []
         self.assembled_complex_names = []
+        self.last_ligand_db_path = Path()     # to avoid reloading the same ligand database in the next batch
 
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
@@ -77,10 +78,12 @@ class DARTAssembly(object):
     def run_batch(self):
         print(f"\n\n\n\n**********Batch: {self.batch_name}**********\n\n\n\n")
 
-        # Here we load the ligand database
-        F = LigandDB.from_json(json_=self.ligand_json,
-                               type_="Ligand")  # We initiate the database in the RandomComplexAssembler
-        RCA = PlacementRotation(database=F)
+        # Here we load the ligand database and avoid reloading the same ligand database if it is the same as the last one
+        if self.last_ligand_db_path.resolve() != self.ligand_json.resolve():
+            self.ligand_db = LigandDB.from_json(json_=self.ligand_json,
+                                   type_="Ligand")
+            self.last_ligand_db_path = self.ligand_json
+        RCA = PlacementRotation(database=self.ligand_db)
 
         ########################################################################
         # This section of code needs to be commented out if you do not want to
