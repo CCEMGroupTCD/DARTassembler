@@ -922,6 +922,7 @@
         "Batches": [
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "ligand_filters_path": "../src05_Assembly_Refactor/ligandfilters.yml",
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 1,
                 "Metal": {
@@ -938,6 +939,7 @@
             },
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "ligand_filters_path": "../src05_Assembly_Refactor/ligandfilters.yml",
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 1,
                 "Metal": {
@@ -954,6 +956,7 @@
             },
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "ligand_filters_path": "../src05_Assembly_Refactor/ligandfilters.yml",
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 1,
                 "Metal": {
@@ -970,6 +973,7 @@
             },
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "ligand_filters_path": "../src05_Assembly_Refactor/ligandfilters.yml",
                 "Isomers": "Generate All",
                 "MAX_num_complexes": 10,
                 "Metal": {
@@ -986,6 +990,7 @@
             },
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "ligand_filters_path": "../src05_Assembly_Refactor/ligandfilters.yml",
                 "Isomers": "Generate All",
                 "MAX_num_complexes": 5,
                 "Metal": {
@@ -994,7 +999,7 @@
                     "spin": 0
                 },
                 "Name": "Integration_test_4",
-                "Optimisation_Choice": true,
+                "Optimisation_Choice": false,
                 "Random_Seed": 0,
                 "Topology": "(4, 1, 1)",
                 "Total_Charge": 0,
@@ -1002,6 +1007,7 @@
             },
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "ligand_filters_path": "../src05_Assembly_Refactor/ligandfilters.yml",
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 2,
                 "Metal": {
@@ -1010,7 +1016,7 @@
                     "spin": 0
                 },
                 "Name": "Integration_test_5",
-                "Optimisation_Choice": true,
+                "Optimisation_Choice": false,
                 "Random_Seed": 23,
                 "Topology": "(5, 1)",
                 "Total_Charge": 0,

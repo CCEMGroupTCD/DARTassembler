@@ -197,6 +197,8 @@ def read_yaml(path: Union[str, Path]) -> dict:
             data = yaml.load(file, Loader=yaml.FullLoader)
     except FileNotFoundError:
         raise FileNotFoundError(f'Could not find file {path}')
+    except Exception as e:
+        raise Exception(f'There was an error while reading the YAML file {path}. Please make sure the file is a proper yaml file. For example, a common error is that the indentation might be wrong. This is the error message from yaml, please google it if you don\'t know how to fix it: {e}')
 
     return data
 

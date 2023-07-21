@@ -1,0 +1,34 @@
+ligand_db_path: "../src14_Assembly_Unit_Test/ligandfilters/filtered_ligand_db_v1.7.json"
+denticities_of_interest: [1, 2, 3, 4, 5]
+remove_ligands_with_neighboring_coordinating_atoms: True
+only_confident_charges: True
+remove_ligands_with_beta_hydrogens: True
+strict_box_filter: False
+remove_even_odd_electron_count: 'even'
+denticity_dependent_filters:
+  1:
+    atom_count:
+      min: 1
+      max: 10
+  2:
+    ligand_charges: [0]
+  3:
+    metals_of_interest: ["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
+    coordinating_atoms_composition:
+        atoms_of_interest: ["N", "N", "N"]
+        instruction: "must_contain_and_only_contain"
+    molecular_weight:
+      min: 30.1
+      max: 300.2
+    ligand_charges: [0]
+    atom_count:
+      min: 10
+      max: 100
+  4:
+    molecular_weight:
+        min: 80.1
+        max: 300.2
+  5:
+    molecular_weight:
+        min: 80.1
+        max: 300.2

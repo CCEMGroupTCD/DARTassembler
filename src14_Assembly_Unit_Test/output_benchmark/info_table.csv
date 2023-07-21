@@ -67,18 +67,18 @@ attempt,success,complex idx,complex name,note,ligand names,ligand stoichiometrie
 65,True,10.0,MONOBAFI,no optimization,"('unq_CSD-PAGXOK-03-a', 'unq_CSD-OZIYUT-02-b', 'unq_CSD-PAFKOY-01-a')","('C12H12N3O1', 'C11H8N1', 'C2H3N1')",3,Integration_test_3,Fe,+2,0,"(3, 2, 1)","(1, 2, 3)",0,False,Generate All,0
 66,True,11.0,ARISEWEF,no optimization,"('unq_CSD-PAGXOK-03-a', 'unq_CSD-OZIYUT-02-b', 'unq_CSD-PAFKOY-01-a')","('C12H12N3O1', 'C11H8N1', 'C2H3N1')",3,Integration_test_3,Fe,+2,0,"(3, 2, 1)","(1, 2, 3)",0,False,Generate All,0
 67,True,12.0,ECUREGUL,no optimization,"('unq_CSD-PAGXOK-03-a', 'unq_CSD-OZIYUT-02-b', 'unq_CSD-PAFKOY-01-a')","('C12H12N3O1', 'C11H8N1', 'C2H3N1')",3,Integration_test_3,Fe,+2,0,"(3, 2, 1)","(1, 2, 3)",0,False,Generate All,0
-68,True,13.0,OGOGETAL,optimized,"('unq_CSD-PARFIZ-04-a', 'unq_CSD-PEDXEB-01-f', 'unq_CSD-OZUZIT-01-a')","('C42H66N2O8', 'H2P1', 'C2H5')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,True,Generate All,0
-69,True,14.0,LUKUCOQO,optimized,"('unq_CSD-PARFIZ-04-a', 'unq_CSD-PEDXEB-01-f', 'unq_CSD-OZUZIT-01-a')","('C42H66N2O8', 'H2P1', 'C2H5')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,True,Generate All,0
-70,True,15.0,AFISOWAY,optimized,"('unq_CSD-PERGEA-04-a', 'unq_CSD-PAGBOP-01-a', 'unq_CSD-PEKZEN-01-a')","('C44H37N4O1', 'F6P1', 'H4N2')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,True,Generate All,0
-71,True,16.0,IVAHAVEQ,optimized,"('unq_CSD-PERGEA-04-a', 'unq_CSD-PAGBOP-01-a', 'unq_CSD-PEKZEN-01-a')","('C44H37N4O1', 'F6P1', 'H4N2')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,True,Generate All,0
-72,False,,,clashing ligands,"('unq_CSD-PAHYAY-04-a', 'unq_CSD-PAXDOI-01-b', 'unq_CSD-PATBAP-01-d')","('C16H14N2O2', 'C2H5O1', 'B1F4')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,True,Generate All,0
-73,True,17.0,AYEBOQOW,optimized,"('unq_CSD-PAHYAY-04-a', 'unq_CSD-PAXDOI-01-b', 'unq_CSD-PATBAP-01-d')","('C16H14N2O2', 'C2H5O1', 'B1F4')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,True,Generate All,0
-74,False,,,clashing ligands,"('unq_CSD-PACHAC-05-a', 'unq_CSD-PEBNIT-01-d')","('C11H27N5', 'C1H3N1')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,True,Generate Lowest Energy,23
-75,True,18.0,UQOROGAZ,optimized,"('unq_CSD-PEKYUC-05-a', 'unq_CSD-PEKZEN-01-a')","('C35H47N1S4', 'H4N2')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,True,Generate Lowest Energy,23
-76,False,,,clashing ligands,"('unq_CSD-PASREH-05-a', 'unq_CSD-PAHWIF-01-a')","('C23H21N5', 'C4O4')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,True,Generate Lowest Energy,23
-77,False,,,clashing ligands,"('unq_CSD-OZUWEM-05-a', 'unq_CSD-OZUJEZ-01-c')","('C23H31N5O4', 'P4S3')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,True,Generate Lowest Energy,23
-78,False,,,clashing ligands,"('unq_CSD-PAPFIV-05-a', 'unq_CSD-OZULIF-01-a')","('C16H20N2O1S2', 'O1')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,True,Generate Lowest Energy,23
-79,False,,,clashing ligands,"('unq_CSD-PABNOW-05-a', 'unq_CSD-PAFJAH-01-b')","('C30H35N6O3', 'C2H5O1')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,True,Generate Lowest Energy,23
-80,False,,,clashing ligands,"('unq_CSD-PABNOW-05-a', 'unq_CSD-PATBAP-01-d')","('C30H35N6O3', 'B1F4')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,True,Generate Lowest Energy,23
-81,False,,,clashing ligands,"('unq_CSD-PABNOW-05-a', 'unq_CSD-PALKET-01-a')","('C30H35N6O3', 'C1N1O1')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,True,Generate Lowest Energy,23
-82,True,19.0,OMUNAZOV,optimized,"('unq_CSD-OZUWEM-05-a', 'unq_CSD-PAFCIJ-01-b')","('C23H31N5O4', 'C2H3N1')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,True,Generate Lowest Energy,23
+68,True,13.0,ECOHIHEK,no optimization,"('unq_CSD-PARFIZ-04-a', 'unq_CSD-PEDXEB-01-f', 'unq_CSD-OZUZIT-01-a')","('C42H66N2O8', 'H2P1', 'C2H5')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,False,Generate All,0
+69,True,14.0,UGISAXAZ,no optimization,"('unq_CSD-PARFIZ-04-a', 'unq_CSD-PEDXEB-01-f', 'unq_CSD-OZUZIT-01-a')","('C42H66N2O8', 'H2P1', 'C2H5')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,False,Generate All,0
+70,True,15.0,LAQIWUZU,no optimization,"('unq_CSD-PERGEA-04-a', 'unq_CSD-PAGBOP-01-a', 'unq_CSD-PEKZEN-01-a')","('C44H37N4O1', 'F6P1', 'H4N2')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,False,Generate All,0
+71,True,16.0,ALOGIVOC,no optimization,"('unq_CSD-PERGEA-04-a', 'unq_CSD-PAGBOP-01-a', 'unq_CSD-PEKZEN-01-a')","('C44H37N4O1', 'F6P1', 'H4N2')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,False,Generate All,0
+72,False,,,clashing ligands,"('unq_CSD-PAHYAY-04-a', 'unq_CSD-PAXDOI-01-b', 'unq_CSD-PATBAP-01-d')","('C16H14N2O2', 'C2H5O1', 'B1F4')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,False,Generate All,0
+73,True,17.0,VIRITUTO,no optimization,"('unq_CSD-PAHYAY-04-a', 'unq_CSD-PAXDOI-01-b', 'unq_CSD-PATBAP-01-d')","('C16H14N2O2', 'C2H5O1', 'B1F4')",4,Integration_test_4,Fe,+4,0,"(4, 1, 1)","(1, 2, 3)",0,False,Generate All,0
+74,False,,,clashing ligands,"('unq_CSD-PACHAC-05-a', 'unq_CSD-PEBNIT-01-d')","('C11H27N5', 'C1H3N1')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,False,Generate Lowest Energy,23
+75,True,18.0,ZUJEFATI,no optimization,"('unq_CSD-PEKYUC-05-a', 'unq_CSD-PEKZEN-01-a')","('C35H47N1S4', 'H4N2')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,False,Generate Lowest Energy,23
+76,False,,,clashing ligands,"('unq_CSD-PASREH-05-a', 'unq_CSD-PAHWIF-01-a')","('C23H21N5', 'C4O4')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,False,Generate Lowest Energy,23
+77,False,,,clashing ligands,"('unq_CSD-OZUWEM-05-a', 'unq_CSD-OZUJEZ-01-c')","('C23H31N5O4', 'P4S3')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,False,Generate Lowest Energy,23
+78,False,,,clashing ligands,"('unq_CSD-PAPFIV-05-a', 'unq_CSD-OZULIF-01-a')","('C16H20N2O1S2', 'O1')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,False,Generate Lowest Energy,23
+79,False,,,clashing ligands,"('unq_CSD-PABNOW-05-a', 'unq_CSD-PAFJAH-01-b')","('C30H35N6O3', 'C2H5O1')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,False,Generate Lowest Energy,23
+80,False,,,clashing ligands,"('unq_CSD-PABNOW-05-a', 'unq_CSD-PATBAP-01-d')","('C30H35N6O3', 'B1F4')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,False,Generate Lowest Energy,23
+81,False,,,clashing ligands,"('unq_CSD-PABNOW-05-a', 'unq_CSD-PALKET-01-a')","('C30H35N6O3', 'C1N1O1')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,False,Generate Lowest Energy,23
+82,True,19.0,IRAVIVIH,no optimization,"('unq_CSD-OZUWEM-05-a', 'unq_CSD-PAFCIJ-01-b')","('C23H31N5O4', 'C2H3N1')",5,Integration_test_5,Fe,+2,0,"(5, 1)","(1, 2)",0,False,Generate Lowest Energy,23

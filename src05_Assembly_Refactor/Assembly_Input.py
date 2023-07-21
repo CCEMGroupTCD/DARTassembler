@@ -3,6 +3,7 @@ This file contains functions and a classes for the input of the assembly. They d
 """
 import ast
 import shutil
+import warnings
 
 from constants.Paths import project_path, default_ligand_db_path
 from constants.Periodic_Table import all_atomic_symbols
@@ -35,7 +36,552 @@ _spin = 'spin'
 _complex_name_appendix = 'complex_name_appendix'
 
 
-class AssemblyInput(object):
+# Define names for the settings in the ligand filters file:
+# Global
+_ligand_db_path = 'ligand_db_path'
+_denticities_of_interest = 'denticities_of_interest'
+_remove_ligands_with_neighboring_coordinating_atoms = 'remove_ligands_with_neighboring_coordinating_atoms'
+_only_confident_charges = 'only_confident_charges'
+_remove_ligands_with_beta_hydrogens = 'remove_ligands_with_beta_hydrogens'
+_strict_box_filter= 'strict_box_filter'
+_filter_even_odd_electron_count = 'remove_even_odd_electron_count'
+_dentfilters = 'denticity_dependent_filters'
+# Denticity dependent filters
+_acount = 'atom_count'
+_acount_min = 'min'
+_acount_max = 'max'
+
+_ligcomp = 'ligand_composition'
+_ligcomp_atoms_of_interest = 'atoms_of_interest'
+_ligcomp_instruction = 'instruction'
+
+_ligand_charges = 'ligand_charges'
+
+_metals_of_interest = 'metals_of_interest'
+
+_coords = 'coordinating_atoms_composition'
+_coords_atoms_of_interest = 'atoms_of_interest'
+_coords_instruction = 'instruction'
+
+_mw = 'molecular_weight'
+_mw_min = 'min'
+_mw_max = 'max'
+
+
+class BaseInput(object):
+
+    def __init__(self, path: Union[str, Path]):
+        self.path = path
+
+    @classmethod
+    def get_settings_from_input_file(cls, path: Union[str, Path]):
+        """
+        Alternative constructor that reads the input from a file.
+        """
+        path = cls.ensure_assembly_input_file_present(path)
+        global_settings = read_yaml(path)
+
+        return global_settings
+
+    def check_correct_input_type(self, input, types: list, varname: str) -> Any:
+        """
+        Checks if the input is of the correct type and raises an error if not.
+        """
+        if not any(isinstance(input, type) for type in types):
+            input_type = type(input).__name__
+            types = tuple([type.__name__ for type in types])
+            self.raise_error(f"Input '{input}' is not any the allowed types {types} but of type '{input_type}'",
+                             varname=varname)
+
+        return input
+
+    def ensure_output_directory_valid(self, path: Union[str, Path], varname: str) -> Path:
+        """
+        Checks if the output directory is valid.
+        """
+        try:
+            path = Path(path)
+        except TypeError:
+            self.raise_error(message=f"Output directory '{path}' is not a valid string.", varname=varname)
+
+        path = path.resolve()  # get absolute path
+
+        return path
+
+    @classmethod
+    def ensure_assembly_input_file_present(cls, path: Union[str, Path]) -> Path:
+        """
+        Checks if the path to the input file exist and the path is a file. Raises an error if not.
+        """
+        try:
+            path = Path(path)
+        except TypeError:
+            raise TypeError(f"The input filepath '{path}' is not a valid string.")
+
+        if not path.is_file():
+            raise FileNotFoundError(f"The input filepath '{path}' either doesn't exist or is not a file.")
+
+        path = path.resolve()  # get absolute path
+        return path
+
+    def ensure_file_present(self, path: Union[str, Path], varname: str) -> Path:
+        """
+        Checks if the path to the file exist and the path is a file.
+        """
+        try:
+            path = Path(path)
+        except TypeError:
+            self.raise_error(message=f"The input filepath '{path}' is not a valid string.", varname=varname)
+
+        if not path.is_file():
+            self.raise_error(message=f"The input filepath '{path}' either doesn't exist or is not a file.",
+                             varname=varname)
+
+        path = path.resolve()  # get absolute path
+        return path
+
+    def get_bool_from_input(self, input: Union[str, bool], varname: str, allow_none=False) -> Union[bool,None]:
+        """
+        Returns a bool from a string or bool input.
+        """
+        if allow_none and input is None:
+            return None
+
+        meaning = str(input).lower()  # Convert bool/string to lowercase string
+        if meaning == 'true':
+            meaning = True
+        elif meaning == 'false':
+            meaning = False
+        else:
+            self.raise_error(
+                message=f"Input '{input}' can not be recognized as bool. Valid inputs are the words 'True' or 'False' in uppercase/lowercase.",
+                varname=varname)
+
+        return meaning
+
+    def get_int_from_input(self, input: Union[str, int], varname: str, allow_none=False) -> Union[int,None]:
+        """
+        Returns an int from a string or int input.
+        """
+        if allow_none and input is None:
+            return None
+
+        if isinstance(input, int):
+            output = input
+        elif isinstance(input, bool):
+            self.raise_error(message=f"Input '{input}' is of type bool, but int is expected.", varname=varname)
+        else:
+            try:
+                output = int(input)
+            except ValueError:
+                self.raise_error(message=f"Input '{input}' can not be recognized as int.", varname=varname)
+
+        return output
+
+    def get_float_from_input(self, input: Union[str, int], varname: str, allow_none=False) -> Union[float,None]:
+        """
+        Returns an int from a string or int input.
+        """
+        if allow_none and input is None:
+            return None
+
+        if isinstance(input, float):
+            output = input
+        elif isinstance(input, bool):
+            self.raise_error(message=f"Input '{input}' is of type bool, but float is expected.", varname=varname)
+        else:
+            try:
+                output = float(input)
+            except ValueError:
+                self.raise_error(message=f"Input '{input}' can not be recognized as float.", varname=varname)
+
+        return output
+
+    def get_list_of_chemical_elements_from_input(self, input: Union[str, list, tuple], varname: str, allow_none=False) -> Union[list,None]:
+        """
+        Returns a list of elements from a string, list or tuple input.
+        """
+        if allow_none and input is None:
+            return None
+
+        if isinstance(input, str):
+            input = [input]
+
+        input = list(input)
+        for i in range(len(input)):
+            el = input[i]
+            if not is_chemical_element(str(el)):
+                self.raise_error(message=f"Input '{el}' can not be recognized as chemical element.", varname=varname)
+            input[i] = str(el)
+
+        return input
+
+    def get_list_of_ints_from_input(self, input: Union[str, list, tuple], varname: str, allow_none=False) -> Union[list,None]:
+        """
+        Returns a list of ints from a string, list or tuple input.
+        """
+        if allow_none and input is None:
+            return None
+
+        if isinstance(input, (str,int)):
+            input = [input]
+
+        input = list(input)
+        for i in range(len(input)):
+            input[i] = self.get_int_from_input(input=input[i], varname=varname)
+
+        return input
+
+    def get_instruction_from_input(self, input: Union[str, list, tuple], varname: str, valid_instructions: Union[list,None] = None, allow_none=False) -> Union[str,None]:
+        if allow_none and input is None:
+            return None
+
+        default_valid_instructions = ['must_contain_and_only_contain', 'must_at_least_contain', 'must_exclude', 'must_only_contain_in_any_amount']
+        if valid_instructions is None:
+            valid_instructions = default_valid_instructions
+
+        input = str(input).lower()
+        if input not in valid_instructions:
+            self.raise_error(message=f"Input '{input}' is not a valid instruction. Valid instructions are {valid_instructions}.", varname=varname)
+
+        return input
+
+    def check_input_types(self, valid_keys: dict, settings: dict):
+        for key, types in valid_keys.items():
+            if key not in settings.keys():  # Check if key is present in input file
+                self.raise_error(f"Key '{key}' not found in input file. Please add it.")
+            self.check_correct_input_type(input=settings[key], types=types, varname=key)
+
+        return
+
+    def check_dict_is_fully_specified(self, d: dict, varname: str):
+        """
+        Checks that all values in the dict are either all None or all not None.
+        """
+        n_none = len([value for value in d.values() if value is None])
+        n_total = len(d)
+        if n_none != 0 and n_none != n_total:
+            self.raise_error(message=f"Unspecified values in dict '{varname}' even though some other values are specified. Please specify either all values to use the filter or none to disable it.", varname=varname)
+
+    def check_if_settings_not_recognized(self, actual_settings, valid_settings: dict):
+        """
+        Check if there are any unrecognized settings and raises a warning if so.
+        """
+        actual_keys = get_dict_tree_as_string(d=actual_settings)
+        valid_keys = get_dict_tree_as_string(d=valid_settings)
+        for key in actual_keys:
+            if key not in valid_keys:
+                self.raise_warning(message=f"Setting '{key}' is not recognized and will be skipped.", varname=key)
+
+        return
+
+    def raise_warning(self, message: str, varname: str = '', file=None):
+        """
+        Raises a warning with the given message and the path to the input file.
+        """
+        if file is None:
+            file = self.path
+        batch_name = self.batch_name if hasattr(self, 'batch_name') and self.batch_name is not None else ''
+
+        if varname != '':
+            varname = f" for key '{varname}'"
+        if batch_name != '':
+            batch_name = f" in batch '{batch_name}'"
+        if file != '':
+            file = f" in input file '{file}'"
+        total_message = f"Invalid input{varname}{batch_name}{file}: {message}"
+        warnings.warn(total_message, UserWarning)
+
+    def raise_error(self, message: str, varname: str = '', file=None):
+        """
+        Raises an AssemblyInputError with the given message and the path to the input file.
+        """
+        if file is None:
+            file = self.path
+
+        if hasattr(self, 'batch_name') and self.batch_name is not None:
+            batch_name = f" in batch '{self.batch_name}'"
+        elif hasattr(self, 'current_denticity') and self.current_denticity is not None:
+            batch_name = f" in denticity '{self.current_denticity}'"
+        else:
+            batch_name = ''
+
+        raise AssemblyInputError(message=message, varname=varname, file=file, batch_name=batch_name)
+
+
+class LigandFilterInput(BaseInput):
+
+    # Allowed keys and types for the input file.
+    # Every list of allowed types must either be [dict] or include type(None).
+    valid_keys = {
+        _ligand_db_path: [str, Path, type(None)],
+        _denticities_of_interest: [list, tuple, type(None)],
+        _remove_ligands_with_neighboring_coordinating_atoms: [bool, str, type(None)],
+        _only_confident_charges: [bool, str, type(None)],
+        _remove_ligands_with_beta_hydrogens: [bool, str, type(None)],
+        _strict_box_filter: [bool, str, type(None)],
+        _filter_even_odd_electron_count: [str, type(None)],
+        _dentfilters: [dict],
+        }
+    dentfilters_keys = {
+        _acount: [dict],
+        _ligcomp: [dict],
+        _ligand_charges: [list, tuple, type(None)],
+        _metals_of_interest: [list, tuple, type(None)],
+        _coords: [dict],
+        _mw: [dict],
+        }
+    acount_keys = {
+        _acount_min: [int, str, type(None)],
+        _acount_max: [int, str, type(None)],
+        }
+    ligcomp_keys = {
+        _ligcomp_atoms_of_interest: [list, tuple, type(None)],
+        _ligcomp_instruction: [str, type(None)],
+        }
+    coords_keys = {
+        _coords_atoms_of_interest: [list, tuple, type(None)],
+        _coords_instruction: [str, type(None)],
+        }
+    mw_keys = {
+        _mw_min: [float, str, type(None)],
+        _mw_max: [float, str, type(None)],
+        }
+    dict_dentfilters = [_acount, _ligcomp, _coords, _mw]
+
+    def __init__(self, path: Union[str, Path]):
+        """
+        Class for reading and checking the input file for the ligand filter. The input file should be a yaml file.
+        todo: Add that missing filter keys are added with value None so that one doesn't have to specify everything.
+        """
+        super().__init__(path)
+        self.raw_input_settings = self.get_settings_from_input_file(path)
+        self.add_missing_filter_keys()
+        self.check_if_settings_not_recognized() # Check if there are any unrecognized settings and raises a warning if so.
+
+        self.ligand_db_path = None
+        self.denticities_of_interest = None
+        self.remove_ligands_with_neighboring_coordinating_atoms = None
+        self.only_confident_charges = None
+        self.remove_ligands_with_beta_hydrogens = None
+        self.strict_box_filter = None
+        self.filter_even_odd_electron_count = None
+        self.dentfilters = None
+
+        self.current_denticity = None # Used for making error messages more informative when iterating over denticities
+
+        self.settings = self.set_and_check_settings()    # Set all settings and check if they are valid
+
+    def _get_null_value_of_filter(self, allowed_types: list):
+        """
+        Returns the null value of a filter depending on the allowed types. There are only two cases: If the filter is a dict containing other filters, the null value must be set to an empty dicts, so that one can iterate over this filter. If the filter is not a dict, the null value must be None, so that one can check if the filter is set or not.
+        """
+        if allowed_types == [dict]:
+            default = {}
+        elif type(None) in allowed_types:
+            default = None
+        else:
+            raise Warning(
+                f"Implementation Error: Allowed types must either be [dict] or include type(None).")
+
+        return default
+
+    def add_missing_filter_keys(self):
+        """
+        Adds missing filter keys to `self.raw_input_settings` with value None so that one doesn't have to specify everything.
+        """
+
+        for global_key in self.valid_keys:
+            if global_key not in self.raw_input_settings:
+                allowed_types = self.valid_keys[global_key]
+                self.raw_input_settings[global_key] = self._get_null_value_of_filter(allowed_types)  # Add missing global key with value None
+
+        if self.raw_input_settings[_dentfilters] is None:   # Dentfilters is a special case, if it is None it must be an empty dict to iterate over it.
+            self.raw_input_settings[_dentfilters] = {}
+
+        for dent in self.raw_input_settings[_dentfilters].keys():
+            # Add keys on dentfilter level
+            for key in self.dentfilters_keys:
+                if key not in self.raw_input_settings[_dentfilters][dent]:
+                    allowed_types = self.dentfilters_keys[key]
+                    self.raw_input_settings[_dentfilters][dent][key] = self._get_null_value_of_filter(allowed_types)
+
+            # Add keys on acount, ligcomp, coords and mw level, i.e. the dicts of dentfilters
+            for key in self.acount_keys:
+                if key not in self.raw_input_settings[_dentfilters][dent][_acount]:
+                    self.raw_input_settings[_dentfilters][dent][_acount][key] = None
+            for key in self.ligcomp_keys:
+                if key not in self.raw_input_settings[_dentfilters][dent][_ligcomp]:
+                    self.raw_input_settings[_dentfilters][dent][_ligcomp][key] = None
+            for key in self.coords_keys:
+                if key not in self.raw_input_settings[_dentfilters][dent][_coords]:
+                    self.raw_input_settings[_dentfilters][dent][_coords][key] = None
+            for key in self.mw_keys:
+                if key not in self.raw_input_settings[_dentfilters][dent][_mw]:
+                    self.raw_input_settings[_dentfilters][dent][_mw][key] = None
+
+        return
+
+    def set_and_check_settings(self) -> dict:
+        settings = self.raw_input_settings
+
+        # Check all input types
+        self.check_input_types(valid_keys=self.valid_keys, settings=settings)
+        for dent, dentfilters in settings[_dentfilters].items():
+            self.current_denticity = dent   # make error messages more informative
+            self.check_input_types(valid_keys=self.dentfilters_keys, settings=dentfilters)
+            self.check_input_types(valid_keys=self.acount_keys, settings=settings[_dentfilters][dent][_acount])
+            self.check_input_types(valid_keys=self.ligcomp_keys, settings=settings[_dentfilters][dent][_ligcomp])
+            self.check_input_types(valid_keys=self.coords_keys, settings=settings[_dentfilters][dent][_coords])
+            self.check_input_types(valid_keys=self.mw_keys, settings=settings[_dentfilters][dent][_mw])
+            self.current_denticity = None
+
+        self.ligand_db_path = self.check_ligand_db_path(settings)
+        self.denticities_of_interest = self.check_denticities_of_interest(settings)
+        self.remove_ligands_with_neighboring_coordinating_atoms = self.get_bool_from_input(input=settings[_remove_ligands_with_neighboring_coordinating_atoms], varname=_remove_ligands_with_neighboring_coordinating_atoms, allow_none=True)
+        self.only_confident_charges = self.get_bool_from_input(input=settings[_only_confident_charges], varname=_only_confident_charges, allow_none=True)
+        self.remove_ligands_with_beta_hydrogens = self.get_bool_from_input(input=settings[_remove_ligands_with_beta_hydrogens], varname=_remove_ligands_with_beta_hydrogens, allow_none=True)
+        self.strict_box_filter = self.get_bool_from_input(input=settings[_strict_box_filter], varname=_strict_box_filter, allow_none=True)
+        self.filter_even_odd_electron_count = self.check_even_odd_electron_count_input(settings)
+        self.dentfilters = self.check_denticity_dependent_filters()
+        self.denticities_mentioned_in_filters = sorted(list(self.dentfilters.keys()))
+
+        out_settings = {
+            _ligand_db_path: self.ligand_db_path,
+            _denticities_of_interest: self.denticities_of_interest,
+            _remove_ligands_with_neighboring_coordinating_atoms: self.remove_ligands_with_neighboring_coordinating_atoms,
+            _only_confident_charges: self.only_confident_charges,
+            _remove_ligands_with_beta_hydrogens: self.remove_ligands_with_beta_hydrogens,
+            _strict_box_filter: self.strict_box_filter,
+            _filter_even_odd_electron_count: self.filter_even_odd_electron_count,
+            _dentfilters: self.dentfilters,
+            }
+
+        return out_settings
+
+    def check_ligand_db_path(self, settings) -> Path:
+        path = settings[_ligand_db_path]
+        if path is None:
+            path = default_ligand_db_path
+        self.ensure_file_present(path=path, varname=_ligand_db_path)
+
+        return Path(path)
+
+    def check_if_settings_not_recognized(self):
+        """
+        Check if there are any unrecognized settings and raises a warning if so.
+        """
+        actual_keys = get_dict_tree_as_string(d=self.raw_input_settings)
+        denticities = list(self.raw_input_settings[_dentfilters].keys())
+
+        # Set up valid settings with all possible denticities
+        valid_settings = {
+            **self.valid_keys,
+            _dentfilters: {dent: {
+                _acount: self.acount_keys,
+                _ligcomp: self.ligcomp_keys,
+                _coords: self.coords_keys,
+                _mw: self.mw_keys,
+                _metals_of_interest: None,
+                _ligand_charges: None,
+                } for dent in denticities
+            }
+        }
+
+        valid_keys = get_dict_tree_as_string(d=valid_settings)
+        for key in actual_keys:
+            if key not in valid_keys:
+                self.raise_warning(message=f"Setting '{key}' is not recognized and will be skipped.", varname=key)
+
+        return
+
+    def check_denticity_dependent_filters(self) -> dict:
+        output = {}
+        input = self.raw_input_settings[_dentfilters]
+        for dent in input.keys():
+            self.check_correct_input_type(input=dent, types=[int], varname=f'denticity in {_dentfilters}')
+            output[dent] = self.check_and_return_denticity_dependent_filter_settings(denticity=dent, asdict=True)
+
+        return output
+
+
+
+    def check_and_return_denticity_dependent_filter_settings(self, denticity, asdict: bool=False) -> Union[tuple, dict]:
+        self.current_denticity = denticity  # make error messages more informative
+        settings = self.raw_input_settings[_dentfilters][denticity]
+
+        # Ligand charges and metals of interest
+        ligand_charges = self.get_list_of_ints_from_input(input=settings[_ligand_charges], varname=_ligand_charges, allow_none=True)
+        metals_of_interest = self.get_list_of_chemical_elements_from_input(input=settings[_metals_of_interest], varname=_metals_of_interest, allow_none=True)
+
+        # Atom count
+        acount = settings[_acount]
+        acount_min = self.get_int_from_input(input=acount[_acount_min], varname=f'{_acount}:{_acount_min}', allow_none=True)
+        acount_max = self.get_int_from_input(input=acount[_acount_max], varname=f'{_acount}:{_acount_max}', allow_none=True)
+
+        # Ligand composition
+        ligcomp = settings[_ligcomp]
+        self.check_dict_is_fully_specified(d=ligcomp, varname=_ligcomp)
+        ligcomp_atoms_of_interest = self.get_list_of_chemical_elements_from_input(input=ligcomp[_ligcomp_atoms_of_interest], varname=f'{_ligcomp}:{_ligcomp_atoms_of_interest}', allow_none=True)
+        ligcomp_instruction = self.get_instruction_from_input(input=ligcomp[_ligcomp_instruction], varname=f'{_ligcomp}:{_ligcomp_instruction}', allow_none=True)
+
+        # Coordinating atoms
+        coords = settings[_coords]
+        self.check_dict_is_fully_specified(d=coords, varname=_coords)
+        coords_atoms_of_interest = self.get_list_of_chemical_elements_from_input(input=coords[_coords_atoms_of_interest], varname=f'{_coords}:{_coords_atoms_of_interest}', allow_none=True)
+        coords_instruction = self.get_instruction_from_input(input=coords[_coords_instruction], varname=f'{_coords}:{_coords_instruction}', allow_none=True)
+
+        # Molecular weight
+        mw = settings[_mw]
+        mw_min = self.get_float_from_input(input=mw[_mw_min], varname=f'{_mw}:{_mw_min}', allow_none=True)
+        mw_max = self.get_float_from_input(input=mw[_mw_max], varname=f'{_mw}:{_mw_max}', allow_none=True)
+
+        self.current_denticity = None   # reset current denticity
+
+        if not asdict:
+            return acount_min, acount_max, ligcomp_atoms_of_interest, ligcomp_instruction, ligand_charges, metals_of_interest, coords_atoms_of_interest, coords_instruction, mw_min, mw_max
+        else:
+            dict = {
+                _acount: {
+                    _acount_min: acount_min,
+                    _acount_max: acount_max,
+                },
+                _ligcomp: {
+                    _ligcomp_atoms_of_interest: ligcomp_atoms_of_interest,
+                    _ligcomp_instruction: ligcomp_instruction,
+                },
+                _coords: {
+                    _coords_atoms_of_interest: coords_atoms_of_interest,
+                    _coords_instruction: coords_instruction,
+                },
+                _mw: {
+                    _mw_min: mw_min,
+                    _mw_max: mw_max,
+                },
+            }
+            return dict
+
+    def check_denticities_of_interest(self, settings) -> Union[list, None]:
+        input = settings[_denticities_of_interest]
+        if isinstance(input, (tuple, list)):
+            input = self.get_list_of_ints_from_input(input=input, varname=f'denticity in {_denticities_of_interest}')
+
+        return input
+
+    def check_even_odd_electron_count_input(self, settings) -> Union[str, None]:
+        input = settings[_filter_even_odd_electron_count]
+        if isinstance(input, str):
+            input = input.lower()
+
+        if not (input is None or input in ['even', 'odd']):
+            self.raise_error(message=f"Input '{input}' can not be recognized as (None, even, odd).", varname=_filter_even_odd_electron_count)
+
+        return input
+
+
+
+
+class AssemblyInput(BaseInput):
     """
     Class that contains the settings for the assembly.
     """
@@ -70,14 +616,19 @@ class AssemblyInput(object):
                         _oxidation_state: [int, str],
                         _spin: [int, str],
                         }
+    total_keys = {
+        **valid_keys,
+        _batches: batches_valid_keys,
+        _metal: metal_valid_keys,
+        }
 
     def __init__(self, path: Union[str, Path] = 'assembly_input.yml'):
         """
         Reads the global settings file and stores the settings in the class.
         """
         # Read into dict
-        self.global_settings = self.get_global_settings_from_input_file(path=path)
-        self.path = path
+        super().__init__(path)
+        self.global_settings = self.get_settings_from_input_file(path=self.path)
 
         # Set the batch name to None. It will be set later to the respective batch name when iterating over the batches so that the error messages can be more specific.
         self.batch_name = None
@@ -91,15 +642,7 @@ class AssemblyInput(object):
         self.Batches = None
         self.complex_name_length = None
         self.check_and_set_global_settings()
-
-    @classmethod
-    def get_global_settings_from_input_file(cls, path: Union[str, Path] = 'assembly_input.yml'):
-        """
-        Alternative constructor that reads the input from a file.
-        """
-        path = cls.ensure_assembly_input_file_present(path)
-        global_settings = read_yaml(path)
-        return global_settings
+        self.check_if_settings_not_recognized(actual_settings=self.global_settings, valid_settings=self.total_keys)
 
     def check_and_set_global_settings(self):
         """
@@ -290,102 +833,7 @@ class AssemblyInput(object):
             self.raise_error(f" Input value '{isomers}' not recognized. It must be one of {possible_values} (case sensitive).", varname=f'{_batches}->{_isomers}')
 
         return isomers
-    
-    def check_correct_input_type(self, input, types: list, varname: str) -> Any:
-        """
-        Checks if the input is of the correct type and raises an error if not.
-        """
-        if not any(isinstance(input, type) for type in types):
-            input_type = type(input).__name__
-            types = tuple([type.__name__ for type in types])
-            self.raise_error(f"Input '{input}' is not any the allowed types {types} but of type '{input_type}'", varname=varname)
 
-        return input
-    
-    def ensure_output_directory_valid(self, path: Union[str, Path], varname: str) -> Path:
-        """
-        Checks if the output directory is valid.
-        """
-        try:
-            path = Path(path)
-        except TypeError:
-            self.raise_error(message=f"Output directory '{path}' is not a valid string.", varname=varname)
-
-        path = path.resolve()   # get absolute path
-
-        return path
-    
-    @classmethod
-    def ensure_assembly_input_file_present(cls, path: Union[str, Path]) -> Path:
-        """
-        Checks if the path to the input file exist and the path is a file. Raises an error if not.
-        """
-        try:
-            path = Path(path)
-        except TypeError:
-            raise TypeError(f"The input filepath '{path}' is not a valid string.")
-
-        if not path.is_file():
-            raise FileNotFoundError(f"The input filepath '{path}' either doesn't exist or is not a file.")
-
-        path = path.resolve()   # get absolute path
-        return path
-
-    def ensure_file_present(self, path: Union[str, Path], varname: str) -> Path:
-        """
-        Checks if the path to the file exist and the path is a file.
-        """
-        try:
-            path = Path(path)
-        except TypeError:
-            self.raise_error(message=f"The input filepath '{path}' is not a valid string.", varname=varname)
-
-        if not path.is_file():
-            self.raise_error(message=f"The input filepath '{path}' either doesn't exist or is not a file.", varname=varname)
-
-        path = path.resolve()  # get absolute path
-        return path
-    
-    
-    def get_bool_from_input(self, input: Union[str, bool], varname: str) -> bool:
-        """
-        Returns a bool from a string or bool input.
-        """
-        meaning = str(input).lower()  # Convert bool/string to lowercase string
-        if meaning == 'true':
-            meaning = True
-        elif meaning == 'false':
-            meaning = False
-        else:
-            self.raise_error(message=f"Input '{input}' can not be recognized as bool. Valid inputs are the words 'True' or 'False' in uppercase/lowercase.", varname=varname)
-
-        return meaning
-    
-    def get_int_from_input(self, input: Union[str, int], varname: str) -> int:
-        """
-        Returns an int from a string or int input.
-        """
-        if isinstance(input, int):
-            output = input
-        elif isinstance(input, bool):
-            self.raise_error(message=f"Input '{input}' is of type bool, but int is expected.", varname=varname)
-        else:
-            try:
-                output = int(input)
-            except ValueError:
-                self.raise_error(message=f"Input '{input}' can not be recognized as int.", varname=varname)
-
-        return output
-    
-    def raise_error(self, message: str, varname: str='', file=None):
-        """
-        Raises an AssemblyInputError with the given message and the path to the input file.
-        """
-        if file is None:
-            file = self.path
-        batch_name = self.batch_name or ''  # If batch_name is None, set it to empty string. Otherwise enrich the error message with the batch name.
-
-        raise AssemblyInputError(message=message, varname=varname, file=file, batch_name=batch_name)
 
 
 def is_chemical_element(element: str) -> bool:
@@ -393,6 +841,25 @@ def is_chemical_element(element: str) -> bool:
     Checks if the input is a valid chemical element.
     """
     return element in all_atomic_symbols
+
+def get_dict_tree_as_string(d: dict, sep: str = ':') -> list[str]:
+    """
+    Returns a list of all keys in the dict where the item is a string of the dictpath to the element in the format 'key1:key2:key3'
+    """
+    dict_tree = []
+    for key, value in d.items():
+        if isinstance(value, dict):
+            dict_tree += [f'{key}{sep}{subkey}' for subkey in get_dict_tree_as_string(d=value, sep=sep)]
+        else:
+            dict_tree += [f'{key}']
+    return dict_tree
+
+def find_element_in_dict_from_key_path(d: dict, key_path: str, sep: str = ':') -> Any:
+    keys = key_path.split(sep)
+    rv = d
+    for key in keys:
+        rv = rv[key]
+    return rv
 
 
 class AssemblyInputError(Exception):
@@ -402,8 +869,7 @@ class AssemblyInputError(Exception):
     def __init__(self, message: str, varname: str='', file: str='', batch_name:str =''):
         if varname != '':
             varname = f" for key '{varname}'"
-        if batch_name != '':
-            batch_name = f" in batch '{batch_name}'"
+        file = Path(file).name
         if file != '':
             file = f" in input file '{file}'"
         total_message = f"Invalid input{varname}{batch_name}{file}: {message}"

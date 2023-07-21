@@ -3,7 +3,7 @@ from pathlib import Path
 from copy import deepcopy
 import numpy as np
 from src01.DataBase import MoleculeDB, LigandDB
-
+from typing import List, Dict, Union
 from src02_Pre_Assembly_Filtering.Box_Excluder_Filter import box_filter
 from src02_Pre_Assembly_Filtering.constant_Ligands import get_monodentate_list, get_reactant
 from pymatgen.core.periodic_table import Element
@@ -111,7 +111,7 @@ class FilterStage:
         # instruction = must_only_contain_in_any_amount   ,this means that if all coordinating atoms specified by the user are contained to some degree in the ligand and no other coordinating atoms are conatined then the ligand can pass
         # This filter only applies to ligands.py of the specified denticities. ligands.py with other denticities are allowed to pass
         """
-        Only leave in ligands.py where we have functional atoms equal to specified atoms
+        Only leave in ligands where we have functional atoms equal to specified atoms
         """
         print("Functional Group Filter running")
 
@@ -258,19 +258,21 @@ class FilterStage:
 
         new_db = deepcopy(self.database.db)
 
-        if (denticity is None) or (atomic_weight_min is None) or (atomic_weight_max is None):
-            print("!!!Warning!!! -> All arguments not specified  -> Proceeding to next filter")
+        # If the user doesn't specify min or max this is set to infinity or -infinity respectively to be ignored
+        if atomic_weight_min is None:
+            atomic_weight_min = -np.nan
+        if atomic_weight_max is None:
+            atomic_weight_max = np.nan
 
         else:
             for unq_name, ligand in self.database.db.items():
+                if denticity is not None and ligand.denticity != denticity:
+                    continue
                 # print(unq_name)
                 molecular_range_condition_satisified = False
                 MW = ligand.global_props["molecular_weight"]
-                print(MW)
-                if (atomic_weight_min <= MW < atomic_weight_max) and (ligand.denticity == denticity):
-                    pass
-                    # print("Molecular Weight Pass")
-                else:
+                # print(MW)
+                if not (atomic_weight_min <= MW < atomic_weight_max):
                     del new_db[unq_name]
                     # print("Molecular Weight Fail")
                 # print("\n")
@@ -389,17 +391,21 @@ class FilterStage:
             self.database.db = new_db
             self.filter_tracking[len(self.filter_tracking)] = f"even_odd_electron_filter: {filter_for}"
 
-    def filter_ligand_charges(self, denticity: int = None, charge: int = None):
-        new_db = deepcopy(self.database.db)
-        for unq_name, ligand in self.database.db.items():
-            ligand_charge = ligand.pred_charge
-            if ligand.denticity == denticity:
-                if ligand_charge != charge:
-                    del new_db[unq_name]
+    def filter_ligand_charges(self, denticity: int = None, charge: Union[list,None]=None):
+        if not charge is None:
+            if not isinstance(charge, (list,tuple)):
+                charge = [charge]
+
+            new_db = deepcopy(self.database.db)
+            for unq_name, ligand in self.database.db.items():
+                ligand_charge = ligand.pred_charge
+                if ligand.denticity == denticity:
+                    if ligand_charge not in charge:
+                        del new_db[unq_name]
+                    else:
+                        pass
                 else:
                     pass
-            else:
-                pass
         self.database.db = new_db
         self.filter_tracking[len(self.filter_tracking)] = f"Ligand Charge Filter: [{denticity}] [{charge}]"
 
@@ -508,7 +514,7 @@ class FilterStage:
                 if ligand.denticity == denticity:
                     if (num_atoms < number) and (instruction == "greater_than"):
                         del new_db[unq_name]
-                    elif (num_atoms > number) and (instruction == "less_than"):
+                    elif (num_atoms >= number) and (instruction == "less_than"):
                         del new_db[unq_name]
                     else:
                         #ligand.view_3d()

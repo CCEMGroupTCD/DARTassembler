@@ -24,6 +24,7 @@ class IntegrationTest(object):
         """
         Compares two directories and prints the differences.
         """
+        print('\nIntegration test: check if the new output is the same as the old output.')
         self._only_in_one(self.dcmp)
         self._check_file_changes(self.dcmp)
         self.only_in_new.sort()
@@ -34,6 +35,20 @@ class IntegrationTest(object):
         self.dirs_only_in_old = [item for item in self.only_in_old if Path(self.old_dir, item).is_dir()]
         self.files_only_in_old = [item for item in self.only_in_old if Path(self.old_dir, item).is_file()]
         self._print_results()
+        # self.compare_all_csv_files()
+
+    def compare_all_csv_files(self):
+        for file in self.changed:
+            if file.endswith('.csv'):
+                self._compare_csv_files(Path(self.new_dir, file), Path(self.old_dir, file))
+    def _compare_csv_files(self, new_file, old_file):
+        """
+        Compares two csv files and prints the differences.
+        """
+        df_new = pd.read_csv(new_file)
+        df_old = pd.read_csv(old_file)
+        pd.testing.assert_frame_equal(df_new, df_old, check_like=True)
+
 
     def _only_in_one(self, dcmp):
         self.only_in_new += [str(Path(dcmp.left) / file).replace(str(self.new_dir), '.', 1) for file in dcmp.left_only]
@@ -111,6 +126,7 @@ class XYZIntegrationTest(object):
             if np.any(dist > self.tol):
                 mols_with_different_interatomic_distances.append(idx)
         return mols_with_different_interatomic_distances
+
     def compare_xyz_files(self):
         if len(self.old_mols) != len(self.new_mols):
             warnings.warn(f"Number of molecules is not the same in the two files. old: {len(self.old_mols)}, new {len(self.new_mols)}. Try to compare anyway.")
@@ -143,9 +159,9 @@ class XYZIntegrationTest(object):
         if n_changed_atom_numbers > 0:
             print(f"\t--> Indices of molecules: {df_mol_results[df_mol_results['n_diff_atom_types'] != 0]['Index'].values}")
         n_changed_positions = (df_mol_results['n_diff_xyz_coordinates'] != 0).sum()
+        print(f"Number of molecules with changed positions: {n_changed_positions}")
         if n_changed_positions > 0:
             print(f"\t--> Indices of molecules: {df_mol_results[df_mol_results['n_diff_xyz_coordinates'] != 0]['Index'].values}")
-        print(f"Number of molecules with changed positions: {n_changed_positions}")
         n_changed_interatomic_distances = (df_mol_results['n_diff_interatomic_distances'] != 0).sum()
         print(f"Number of molecules with changed interatomic distances: {n_changed_interatomic_distances}")
         if n_changed_interatomic_distances > 0:
@@ -167,7 +183,9 @@ if __name__ == '__main__':
     # # df_xyz_diff = compare_xyz_files(file1name, file2name, allowed_differences)
     # df_mol_diff = XYZIntegrationTest(file1name, file2name, tol=allowed_differences).compare_xyz_files()
     path = project_path().extend('src14_Assembly_Unit_Test')
-    test = IntegrationTest(new_dir=Path(path, '../src14_Assembly_Unit_Test/output'), old_dir=Path(path,
-                                                                                                  '../src14_Assembly_Unit_Test/output_benchmark'))
+    test = IntegrationTest(new_dir=Path(path, '../src14_Assembly_Unit_Test/output'), old_dir=Path(path, '../src14_Assembly_Unit_Test/output_benchmark'))
     test.compare_all()
+
+    xyz_test = XYZIntegrationTest(Path(path, 'output/INTEGRATION_TEST.xyz'), Path(path, 'output_benchmark/INTEGRATION_TEST.xyz'), tol=1e-2)
+    xyz_test.compare_xyz_files()
     print('Done!')

@@ -206,7 +206,7 @@ class ComplexAssemblyOutput(object):
                 'complex_idx': complex_idx,
                 'xyz_structure': xyz_structure,
                 'assemby_input_path': assembly_input_path,
-                'assembly_input_settings': AssemblyInput.get_global_settings_from_input_file(assembly_input_path),
+                'assembly_input_settings': AssemblyInput.get_settings_from_input_file(assembly_input_path),
                 'batch_idx': batch_idx,
                 'ff_movie': ff_movie,
                 }
