@@ -116,7 +116,7 @@ def iterate_complex_db(path: Union[str, Path], molecule: str='dict', n_max=None,
     for name, mol in tqdm(iterate_over_json(path, n_max=n_max, show_progress=False), disable=not show_progress, desc='Load complex db'):
         if molecule == 'class':
             mol = RCA_Complex.read_from_mol_dict(mol)
-            yield name, mol
+        yield name, mol
 
 
 def load_complex_db(path: Union[str, Path], molecule: str='dict', n_max=None, show_progress: bool=True) -> dict:
@@ -144,15 +144,15 @@ def load_full_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
     print(f'Loaded full ligand db. Time: {duration}. ')
     return db
 
-def load_unique_ligand_db_iteratively(path: Union[str, Path], molecule: str='dict', n_max=None, show_progress: bool=False) -> dict:
+def iterate_unique_ligand_db(path: Union[str, Path], molecule: str= 'dict', n_max=None, show_progress: bool=False) -> dict:
     check_molecule_value(molecule)  # Check if the molecule value is valid
     for name, mol in tqdm(iterate_over_json(path, n_max=n_max, show_progress=False), disable=not show_progress, desc='Load unique ligand db'):
         if molecule == 'class':
             mol = RCA_Ligand.read_from_mol_dict(mol)
-            yield name, mol
+        yield name, mol
 
 def load_unique_ligand_db(path: Union[str, Path], molecule: str='dict', n_max=None, show_progress: bool=True) -> dict:
-    db = {name: mol for name, mol in load_unique_ligand_db_iteratively(path=path, molecule=molecule, n_max=n_max, show_progress=show_progress)}
+    db = {name: mol for name, mol in iterate_unique_ligand_db(path=path, molecule=molecule, n_max=n_max, show_progress=show_progress)}
     return db
 
 def save_complex_db(db: dict, path: Union[str, Path]):

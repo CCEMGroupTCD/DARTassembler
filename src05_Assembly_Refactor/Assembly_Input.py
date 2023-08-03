@@ -4,6 +4,7 @@ This file contains functions and a classes for the input of the assembly. They d
 import ast
 import shutil
 import warnings
+from copy import deepcopy
 
 from constants.Paths import project_path, default_ligand_db_path
 from constants.Periodic_Table import all_atomic_symbols
@@ -34,11 +35,13 @@ _element = 'element'
 _oxidation_state = 'oxidation_state'
 _spin = 'spin'
 _complex_name_appendix = 'complex_name_appendix'
+# _ligand_filters_path = 'ligand_filters_path'
 
 
 # Define names for the settings in the ligand filters file:
 # Global
-_ligand_db_path = 'ligand_db_path'
+_ligand_db_path = 'input_ligand_db_path'
+_output_ligand_db_path = 'output_ligand_db_path'
 _denticities_of_interest = 'denticities_of_interest'
 _remove_ligands_with_neighboring_coordinating_atoms = 'remove_ligands_with_neighboring_coordinating_atoms'
 _only_confident_charges = 'only_confident_charges'
@@ -124,20 +127,32 @@ class BaseInput(object):
         path = path.resolve()  # get absolute path
         return path
 
-    def ensure_file_present(self, path: Union[str, Path], varname: str) -> Path:
+    def get_path_from_input(self, path: Union[str, Path], varname: str, allow_none=False) -> Union[Path,None]:
         """
         Checks if the path to the file exist and the path is a file.
         """
+        if allow_none and path is None:
+            return None
+
         try:
             path = Path(path)
         except TypeError:
             self.raise_error(message=f"The input filepath '{path}' is not a valid string.", varname=varname)
 
+        path = path.resolve()   # get absolute path
+
+        return path
+
+    def ensure_file_present(self, path: Union[str, Path], varname: str, allow_none:bool= False) -> Path:
+        """
+        Checks if the path to the file exist and the path is a file.
+        """
+        path = self.get_path_from_input(path, varname=varname, allow_none=allow_none)
+
         if not path.is_file():
             self.raise_error(message=f"The input filepath '{path}' either doesn't exist or is not a file.",
                              varname=varname)
 
-        path = path.resolve()  # get absolute path
         return path
 
     def get_bool_from_input(self, input: Union[str, bool], varname: str, allow_none=False) -> Union[bool,None]:
@@ -265,7 +280,7 @@ class BaseInput(object):
 
     def check_if_settings_not_recognized(self, actual_settings, valid_settings: dict):
         """
-        Check if there are any unrecognized settings and raises a warning if so.
+        Check if there are any unrecognized settings and raises a warning if so. TODO: not working well, '_batches_' is not recognized because it is a list in the actual settings but a dict in the valid settings.
         """
         actual_keys = get_dict_tree_as_string(d=actual_settings)
         valid_keys = get_dict_tree_as_string(d=valid_settings)
@@ -315,6 +330,7 @@ class LigandFilterInput(BaseInput):
     # Every list of allowed types must either be [dict] or include type(None).
     valid_keys = {
         _ligand_db_path: [str, Path, type(None)],
+        _output_ligand_db_path: [str, Path, type(None)],
         _denticities_of_interest: [list, tuple, type(None)],
         _remove_ligands_with_neighboring_coordinating_atoms: [bool, str, type(None)],
         _only_confident_charges: [bool, str, type(None)],
@@ -437,6 +453,7 @@ class LigandFilterInput(BaseInput):
             self.current_denticity = None
 
         self.ligand_db_path = self.check_ligand_db_path(settings)
+        self.output_ligand_db_path = self.get_path_from_input(path=settings[_output_ligand_db_path], varname=_output_ligand_db_path, allow_none=True)
         self.denticities_of_interest = self.check_denticities_of_interest(settings)
         self.remove_ligands_with_neighboring_coordinating_atoms = self.get_bool_from_input(input=settings[_remove_ligands_with_neighboring_coordinating_atoms], varname=_remove_ligands_with_neighboring_coordinating_atoms, allow_none=True)
         self.only_confident_charges = self.get_bool_from_input(input=settings[_only_confident_charges], varname=_only_confident_charges, allow_none=True)
@@ -609,6 +626,7 @@ class AssemblyInput(BaseInput):
                         _topology: [str, list, tuple],
                         _metal: [dict],
                         _complex_name_appendix: [str,type(None)],
+                        # _ligand_filters_path: [str, Path, type(None)],
                         }
     # Metal settings in the batch settings
     metal_valid_keys = {
@@ -616,11 +634,11 @@ class AssemblyInput(BaseInput):
                         _oxidation_state: [int, str],
                         _spin: [int, str],
                         }
-    total_keys = {
-        **valid_keys,
+    total_keys = deepcopy(valid_keys)
+    total_keys.update({
         _batches: batches_valid_keys,
         _metal: metal_valid_keys,
-        }
+        })
 
     def __init__(self, path: Union[str, Path] = 'assembly_input.yml'):
         """
@@ -665,6 +683,17 @@ class AssemblyInput(BaseInput):
         self.Output_Path = self.ensure_output_directory_valid(self.global_settings[_output_path], varname=_output_path)
 
         return
+
+    def get_ligandfilters_from_input(self, ligandfilters_path: Union[str, Path, None]) -> Union[None, dict]:
+        """
+        Reads the ligand filters from the ligand filters input file.
+        """
+        if ligandfilters_path is None:
+            return None
+
+        ligandfilters = LigandFilterInput(path=ligandfilters_path).get
+
+        return ligandfilters
 
     def get_batches_from_input(self, batches: Union[list, tuple, dict]):
         """
@@ -729,6 +758,7 @@ class AssemblyInput(BaseInput):
         metal_list = self.get_metal_from_input(batch_settings[_metal])
         topology_similarity = self.get_topology_from_input(batch_settings[_topology])
         complex_name_appendix = batch_settings[_complex_name_appendix] or ''
+
 
         return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix
 

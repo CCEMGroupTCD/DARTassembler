@@ -1042,12 +1042,15 @@ class RCA_Ligand(RCA_Molecule):
     # todo: unittests!!
     def planar_check(self, eps=2):
         """
+        Checks if the ligand has planar donor atoms. Check is done only for denticity 3 and 4, otherwise False is returned.
         :param eps: durch try'n'error obtained
         eps für (d=4) -> 1
         :return:
         """
-        functional_coords = [[self.atomic_props[key][i] for key in ["x", "y", "z"]] for i in self.ligand_to_metal]
+        if not self.denticity in [3, 4]:
+            return False
 
+        functional_coords = [[self.atomic_props[key][i] for key in ["x", "y", "z"]] for i in self.ligand_to_metal]
         assert len(functional_coords) == self.denticity, f"Error in Planar Check for ligand {self.name}"
 
         if self.denticity == 3:

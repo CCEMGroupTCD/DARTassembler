@@ -49,8 +49,8 @@ class FilterStage:
             return
         elif isinstance(metals_of_interest, str):
             metals_of_interest = [metals_of_interest]
-        new_db = deepcopy(self.database.db)
 
+        to_delete = []
         for unq_name, ligand in self.database.db.items():
             # Iterate through each ligand. If the denticity matches
             # the one specified by the user {denticity: int}, but it was never part of
@@ -69,12 +69,13 @@ class FilterStage:
                     pass
                     # print("Metal of Interest Pass")
                 else:
-                    del new_db[unq_name]
+                    to_delete.append(unq_name)
                     # print("Metal of Interest Fail -> Deleting ligand")
             else:
                 pass
 
-        self.database.db = new_db
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+
         # self.db = {identifier: ligand for identifier, ligand in self.db.items() if om in metals_of_interest or om is None}
         self.filter_tracking[len(self.filter_tracking)] = f"Metals of interest filter with {metals_of_interest}"
         # self.safe_and_document_after_filterstep(filtering_step_name="Metal_of_Interest")
@@ -90,13 +91,12 @@ class FilterStage:
         elif isinstance(denticity_of_interest, int):
             denticity_of_interest = [denticity_of_interest]
 
-        new_db = deepcopy(self.database.db)
-
+        to_delete = []
         for identifier, ligand in self.database.db.items():
             if not ligand.denticity in denticity_of_interest:
-                del new_db[identifier]
+                to_delete.append(identifier)
 
-        self.database.db = new_db
+        self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items() if identifier not in to_delete}
 
         # old: self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items() if ligand.denticity in denticity_of_interest}
 
@@ -125,8 +125,8 @@ class FilterStage:
         elif isinstance(atoms_of_interest, str):
             atoms_of_interest = [atoms_of_interest]
 
-        new_db = deepcopy(self.database.db)
 
+        to_delete = []
         for unq_name, ligand in self.database.db.items():
             # print("\n")
             # print(unq_name)
@@ -146,11 +146,11 @@ class FilterStage:
                     pass
                 else:
                     # print("Matching Coordinating groups Fail")
-                    del new_db[unq_name]
+                    to_delete.append(unq_name)
             else:
                 # If the denticities don't match then we don't apply the filter and just skip
                 pass
-        self.database.db = new_db
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Functional Atom filter with {atoms_of_interest}"
 
         # self.safe_and_document_after_filterstep(filtering_step_name="FunctionalAtoms_of_Interest")
@@ -174,8 +174,7 @@ class FilterStage:
         elif isinstance(atoms_of_interest, str):
             atoms_of_interest = [atoms_of_interest]
 
-        new_db = deepcopy(self.database.db)
-
+        to_delete = []
         for unq_name, ligand in self.database.db.items():
             # print("\n")
             # print(unq_name)
@@ -195,11 +194,12 @@ class FilterStage:
                     pass
                 else:
                     # print("Matching Coordinating groups Fail")
-                    del new_db[unq_name]
+                    to_delete.append(unq_name)
             else:
                 # If the denticities don't match then we don't apply the filter and just skip
                 pass
-        self.database.db = new_db
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+
         self.filter_tracking[len(self.filter_tracking)] = f"Functional Atom filter with {atoms_of_interest}"
 
     # self.safe_and_document_after_filterstep(filtering_step_name="FunctionalAtoms_of_Interest")
@@ -220,7 +220,8 @@ class FilterStage:
 
     def filter_neighbouring_coordinating_atoms(self):
         # The goal of this filter is to remove ligands.py that have coordinating atoms close to each other
-        new_db = deepcopy(self.database.db)
+
+        to_delete = []
         for unq_name, ligand in self.database.db.items():
             # print("######")
             # print(ligand.atomic_props["atoms"])
@@ -242,7 +243,7 @@ class FilterStage:
                                     break_condition = True
                                     # RCA_Ligand.view_3d(ligand)
                                     # print("FAIL")
-                                    del new_db[unq_name]
+                                    to_delete.append(unq_name)
                                     break
                                 else:
                                     pass
@@ -250,13 +251,13 @@ class FilterStage:
             if not break_condition:
                 pass
                 # print("PASS")
-        self.database.db = new_db
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Neighbouring Atom Filter: {0.2}"
         print("finished")
 
     def filter_molecular_weight(self, denticity: int = None, atomic_weight_min: float = None, atomic_weight_max: float = None):
 
-        new_db = deepcopy(self.database.db)
+        to_delete = []
 
         # If the user doesn't specify min or max this is set to infinity or -infinity respectively to be ignored
         if atomic_weight_min is None:
@@ -273,16 +274,16 @@ class FilterStage:
                 MW = ligand.global_props["molecular_weight"]
                 # print(MW)
                 if not (atomic_weight_min <= MW < atomic_weight_max):
-                    del new_db[unq_name]
+                    to_delete.append(unq_name)
                     # print("Molecular Weight Fail")
                 # print("\n")
-        self.database.db = new_db
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Molecular Weight Filter with MW_MIN_{atomic_weight_min} and MW_MAX_{atomic_weight_max}"
 
     def filter_denticity_fraction(self, denticity: int = None, fraction: float = None):
         # This filter will filter out ligands.py whose dominating denticity does not account for greater than the proportion
         # specified by the user {fraction: float = None} of the total occurences of the complex
-        new_db = deepcopy(self.database.db)
+        to_delete = []
         if (denticity is None) or (fraction is None):
             print("!!!Warning!!! -> All arguments not specified  -> Proceeding to next filter")
 
@@ -304,17 +305,17 @@ class FilterStage:
                     pass
                     # print("PASS")
                 else:
-                    del new_db[unq_name]
+                    to_delete.append(unq_name)
                     # print("FAIL")
                 # print("\n")
-            self.database.db = new_db
+            self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
             self.filter_tracking[len(self.filter_tracking)] = f"Denticity Fraction: {fraction}"
 
     def filter_charge_confidence(self, filter_for: str = None):
         # filter_for = "confident"
         # filter_for = "not_confident"
 
-        new_db = deepcopy(self.database.db)
+        to_delete = []
         if (filter_for is None) or (filter_for != ("confident" or "not_confident")):
             print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
 
@@ -328,12 +329,12 @@ class FilterStage:
                     confident += 1
                 elif not confidence:
                     not_confident += 1
-                    del new_db[unq_name]
+                    to_delete.append(unq_name)
                 else:
                     print("!!!Fatal Error!!! -> Charge Confidence Incorrectly Specified  -> Aborting Program")
             print("Charge Assignment Confident:" + str(confident))
             print("Charge Assignment Not Confident:" + str(not_confident))
-            self.database.db = new_db
+            self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
             self.filter_tracking[len(self.filter_tracking)] = f"Charge Filter: {filter_for}"
 
     def box_excluder_filter(self):
@@ -363,7 +364,7 @@ class FilterStage:
     def filter_even_odd_electron(self, filter_for: str = None):
         # filter_for = even --> This will extract all ligands.py with an even number of electrons
         # filter_for = odd  --> This will extract all ligands.py with an odd number of electrons
-        new_db = deepcopy(self.database.db)
+        to_delete = []
         if (filter_for != "even") and (filter_for != "odd"):
             print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
 
@@ -386,27 +387,27 @@ class FilterStage:
                     # print("Fail")
                     RCA_Ligand.view_3d(ligand)
                     print("")
-                    del new_db[unq_name]
+                    to_delete.append(unq_name)
 
-            self.database.db = new_db
+            self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
             self.filter_tracking[len(self.filter_tracking)] = f"even_odd_electron_filter: {filter_for}"
 
-    def filter_ligand_charges(self, denticity: int = None, charge: Union[list,None]=None):
+    def filter_ligand_charges(self, denticity: int = None, charge: Union[list,None,int]=None):
         if not charge is None:
             if not isinstance(charge, (list,tuple)):
                 charge = [charge]
 
-            new_db = deepcopy(self.database.db)
-            for unq_name, ligand in self.database.db.items():
-                ligand_charge = ligand.pred_charge
-                if ligand.denticity == denticity:
-                    if ligand_charge not in charge:
-                        del new_db[unq_name]
-                    else:
-                        pass
+        to_delete = []
+        for unq_name, ligand in self.database.db.items():
+            ligand_charge = ligand.pred_charge
+            if ligand.denticity == denticity:
+                if ligand_charge not in charge:
+                    to_delete.append(unq_name)
                 else:
                     pass
-        self.database.db = new_db
+            else:
+                pass
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Ligand Charge Filter: [{denticity}] [{charge}]"
 
     def filter_sub_structure_search(self, denticity: int = None, SMARTS: str = None, instruction: str = None):
@@ -442,7 +443,7 @@ class FilterStage:
                     print("done")
 
     def filter_symmetric_monodentate_ligands(self, instruction: str = None, threshold: float = None):
-        new_db = deepcopy(self.database.db)
+        to_delete = []
         if (instruction != "Add") and (instruction != "Remove"):
             print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
 
@@ -495,16 +496,16 @@ class FilterStage:
                         pass
                     else:
                         # print("failure")
-                        del new_db[unq_name]
+                        to_delete.append(unq_name)
                         # ligand.view_3d()
 
                 else:
                     pass
-        self.database.db = new_db
+        self.database.db = {uname: ligand for uname, ligand in self.database.db.items() if uname not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"monodentate_filter: {threshold}"
 
     def filter_atom_count(self, denticity: int = None, number: int = None, instruction: str = None):
-        new_db = deepcopy(self.database.db)
+        to_delete = []
         if (instruction != "greater_than") and (instruction != "less_than"):
             print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
 
@@ -513,13 +514,13 @@ class FilterStage:
                 num_atoms = ligand.global_props['n_atoms']
                 if ligand.denticity == denticity:
                     if (num_atoms < number) and (instruction == "greater_than"):
-                        del new_db[unq_name]
+                        to_delete.append(unq_name)
                     elif (num_atoms >= number) and (instruction == "less_than"):
-                        del new_db[unq_name]
+                        to_delete.append(unq_name)
                     else:
                         #ligand.view_3d()
                         pass
                 else:
                     pass
-        self.database.db = new_db
+        self.database.db = {uname: ligand for uname, ligand in self.database.db.items() if uname not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Atom Number Filter: [{number}] [{instruction}]"

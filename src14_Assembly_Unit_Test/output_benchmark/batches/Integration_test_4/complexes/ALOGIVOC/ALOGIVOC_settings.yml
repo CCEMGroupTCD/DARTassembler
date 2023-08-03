@@ -7,7 +7,6 @@ complex_name_length: 8
 
 Batches:
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    ligand_filters_path: '../src05_Assembly_Refactor/ligandfilters.yml'
     Isomers: Generate Lowest Energy
     MAX_num_complexes: 1
     Metal:
@@ -23,7 +22,6 @@ Batches:
 
 
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    ligand_filters_path: '../src05_Assembly_Refactor/ligandfilters.yml'
     Isomers: Generate Lowest Energy
     MAX_num_complexes: 1
     Metal:
@@ -39,7 +37,6 @@ Batches:
 
 
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    ligand_filters_path: '../src05_Assembly_Refactor/ligandfilters.yml'
     Isomers: Generate Lowest Energy
     MAX_num_complexes: 1
     Metal:
@@ -55,7 +52,6 @@ Batches:
 
 
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    ligand_filters_path: '../src05_Assembly_Refactor/ligandfilters.yml'
     Isomers: Generate All
     MAX_num_complexes: 10
     Metal:
@@ -71,7 +67,6 @@ Batches:
 
 
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    ligand_filters_path: '../src05_Assembly_Refactor/ligandfilters.yml'
     Isomers: Generate All
     MAX_num_complexes: 5
     Metal:
@@ -87,7 +82,6 @@ Batches:
 
 
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    ligand_filters_path: '../src05_Assembly_Refactor/ligandfilters.yml'
     Isomers: Generate Lowest Energy
     MAX_num_complexes: 2
     Metal:

@@ -11,6 +11,9 @@ import matplotlib.pyplot as plt
 from src01.io_custom import load_unique_ligand_db
 from pathlib import Path
 sns.set_theme()
+plt.rcParams['svg.fonttype'] = 'none' # for correct text rendering in some programs
+import pysmiles
+
 
 def flatten(l):
     return [item for sublist in l for item in sublist]
@@ -21,13 +24,15 @@ if __name__ == '__main__':
     save_plots_dir = f'../../data/db_statistics/unique_ligand_statistics/v{db_version}'
     db_path = f'../../data/final_db_versions/unique_ligand_db_v{db_version}.json'
     exclude_unconnected_ligands = True
-    exclude_uncertain_charges = True
+    exclude_uncertain_charges = False
 
 
 
     save_plots_dir = Path(save_plots_dir)
     save_plots_dir.mkdir(parents=True, exist_ok=True)
-    data_raw = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path), orient='index')
+    data_dict = load_unique_ligand_db(path=db_path)
+    data_raw = pd.DataFrame.from_dict(data_dict, orient='index')
+
 
     data = data_raw.copy()
     if exclude_unconnected_ligands:

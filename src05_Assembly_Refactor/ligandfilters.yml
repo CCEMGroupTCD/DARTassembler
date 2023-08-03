@@ -1,10 +1,20 @@
-ligand_db_path: "../src14_Assembly_Unit_Test/ligandfilters/filtered_ligand_db_v1.7.json"
+input_ligand_db_path:           # path or nothing
+output_ligand_db_path: '../src14_Assembly_Unit_Test/ligandfilters/filtered_ligand_db_v1.7.json'   # path or nothing
+
+# Filters:
 denticities_of_interest: [1, 2, 3, 4, 5]
 remove_ligands_with_neighboring_coordinating_atoms: True
 only_confident_charges: True
 remove_ligands_with_beta_hydrogens: True
 strict_box_filter: False
 remove_even_odd_electron_count: 'even'
+
+
+
+
+
+
+
 denticity_dependent_filters:
   1:
     atom_count:

@@ -543,6 +543,9 @@ class LigandExtraction:
         identical_ligand_info['original_complex_id'] = df_same_ligands['original_complex_id'].tolist()
         ulig.identical_ligand_info = identical_ligand_info
 
+        # Add information which is costly to calculate and therefore calculated only for unique ligands instead of all ligands
+        # ulig.has_planar_donor_atoms = ulig.planar_check()
+
         # Set unique ligand stats information
         props = self.df_unique_ligand_db.loc[uname, self.unique_ligand_info_props].to_dict()
         for prop, val in props.items():

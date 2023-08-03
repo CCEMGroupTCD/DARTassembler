@@ -5,7 +5,7 @@ from test.Integration_Test import IntegrationTest
 from pathlib import Path
 from typing import Union
 from src05_Assembly_Refactor.Assembly_Input import LigandFilterInput
-
+from src01.io_custom import load_unique_ligand_db
 
 class LigandFilters(object):
 
@@ -15,6 +15,7 @@ class LigandFilters(object):
         self.input = LigandFilterInput(path=self.filepath)
 
         self.ligand_db_path = self.input.ligand_db_path if self.input.ligand_db_path is not None else default_ligand_db_path
+        self.output_ligand_db_path = self.input.output_ligand_db_path if self.input.output_ligand_db_path is not None else self.get_output_ligand_db_path()
         self.denticities_of_interest = self.input.denticities_of_interest
         self.remove_ligands_with_neighboring_coordinating_atoms = self.input.remove_ligands_with_neighboring_coordinating_atoms if self.input.remove_ligands_with_neighboring_coordinating_atoms is not None else False
         self.only_confident_charges = self.input.only_confident_charges if self.input.only_confident_charges is not None else False
@@ -23,6 +24,19 @@ class LigandFilters(object):
         self.filter_even_odd_electron_count = self.input.filter_even_odd_electron_count
         self.denticity_dependent_filters = self.input.dentfilters
 
+
+    def get_output_ligand_db_path(self):
+        """
+        Returns a path to the output ligand database. If the path already exists, it will be renamed to avoid overwriting.
+        """
+        path = Path('filtered_ligand_db.json').resolve()
+
+        idx = 1
+        while path.exists():
+            path = Path(f'{path}_{idx}')
+            idx += 1
+
+        return path
 
     def get_filtered_db(self) -> LigandDB:
         db = LigandDB.from_json(
@@ -74,9 +88,13 @@ class LigandFilters(object):
 
         return Filter.database
 
-    def save_filtered_ligand_db(self, outpath: Union[str, Path]):
+    def save_filtered_ligand_db(self):
         filtered_db = self.get_filtered_db()
-        filtered_db.to_json(outpath, json_lines=True)
+
+
+        if not self.output_ligand_db_path.parent.exists():
+            self.output_ligand_db_path.parent.mkdir(parents=True)
+        filtered_db.to_json(self.output_ligand_db_path, json_lines=True)
 
         return
 
@@ -85,9 +103,10 @@ if __name__ == "__main__":
 
     ligand_filter_path = project_path().extend('src05_Assembly_Refactor', 'ligandfilters.yml')
     save_db_path = project_path().extend("src14_Assembly_Unit_Test", "ligandfilters", "filtered_ligand_db_v1.7.json")
+    max_number = 5000
 
-    filter = LigandFilters(filepath=ligand_filter_path)
-    filter.save_filtered_ligand_db(outpath=save_db_path)
+    filter = LigandFilters(filepath=ligand_filter_path, max_number=max_number)
+    filter.save_filtered_ligand_db()
 
     test = IntegrationTest(new_dir=save_db_path.parent, old_dir=Path(save_db_path.parent.parent, 'ligandfilters_benchmark'))
     test.compare_all()
