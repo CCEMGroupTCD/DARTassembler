@@ -151,7 +151,7 @@ class LigandFilters(object):
 if __name__ == "__main__":
 
     ligand_filter_path = project_path().extend('src05_Assembly_Refactor', 'ligandfilters.yml')
-    max_number = None
+    max_number = 5000
 
     filter = LigandFilters(filepath=ligand_filter_path, max_number=max_number)
     filter.save_filtered_ligand_db()

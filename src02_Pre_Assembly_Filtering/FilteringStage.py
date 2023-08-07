@@ -43,7 +43,7 @@ class FilterStage:
         """
         This function has been updated by Cian to work with the updated .mol file
         """
-        print(f"Filtering: Metal of Interest -> Denticity: {denticity}")
+        # print(f"Filtering: Metal of Interest -> Denticity: {denticity}")
         denticity = self.ensure_denticities_is_list(denticity)
 
         if isinstance(metals_of_interest, str):
@@ -75,7 +75,7 @@ class FilterStage:
     def denticity_of_interest_filter(self, denticity_of_interest: [int, list[int]]):
         """
         """
-        print("Denticity Filter running")
+        # print("Denticity Filter running")
         if isinstance(denticity_of_interest, int):
             denticity_of_interest = [denticity_of_interest]
 
@@ -92,18 +92,18 @@ class FilterStage:
 
         # self.safe_and_document_after_filterstep(filtering_step_name="Denticity_of_Interest")
 
-    def filter_coordinating_group_atoms(self, denticity: int = None, atoms_of_interest: [str, list[str]] = None, instruction: str = None):
+    def filter_coordinating_group_atoms(self, atoms_of_interest: [str, list[str]], instruction: str, denticity: int = None, ):
         # instruction = must_contain_and_only_contain,this means that if the coordinating atoms specified by the user are exactly the same as the coordinating groups of the ligand then the ligand can pass
         # instruction = must_at_least_contain        ,this means that if the coordinating atoms specified by the user are a subset of that of the ligand then the ligand can pass
         # instruction = must_exclude                 ,this means that if the coordinating atoms specified by the user are not contained in any amount in the ligand then the ligand can pass
         # instruction = must_only_contain_in_any_amount   ,this means that if all coordinating atoms specified by the user are contained to some degree in the ligand and no other coordinating atoms are conatined then the ligand can pass
-        # This filter only applies to ligands.py of the specified denticities. ligands.py with other denticities are allowed to pass
+        # This filter only applies to ligands of the specified denticities. ligands with other denticities are allowed to pass
         """
         Only leave in ligands where we have functional atoms equal to specified atoms
         """
-        print("Functional Group Filter running")
+        # print("Functional Group Filter running")
 
-        print(f"Filtering: Coordinating_atom_type -> Denticity: {denticity}")
+        # print(f"Filtering: Coordinating_atom_type -> Denticity: {denticity}")
         denticity = self.ensure_denticities_is_list(denticity)
 
         if isinstance(atoms_of_interest, str):
@@ -123,15 +123,10 @@ class FilterStage:
                         ((all(elem in atoms_of_interest for elem in list(ligand.local_elements))) and instruction == "must_only_contain_in_any_amount"):
                     coordinating_atoms_present = True
 
-                if coordinating_atoms_present:
-                    # print("Matching Coordinating groups PASS")
-                    pass
-                else:
+                if not coordinating_atoms_present:
                     # print("Matching Coordinating groups Fail")
                     to_delete.append(unq_name)
-            else:
-                # If the denticities don't match then we don't apply the filter and just skip
-                pass
+
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Functional Atom filter with {atoms_of_interest}"
 
@@ -142,15 +137,15 @@ class FilterStage:
         # instruction = must_at_least_contain, this means that if the coordinating atoms specified by the user are a subset of that of the ligand then the ligand can pass
         # instruction = must_exclude, this means that if the coordinating atoms specified by the user are not contained in any amount in the ligand then the ligand can pass
         # instruction = must_only_contain_in_any_amount   ,this means that if all coordinating atoms specified by the user are contained to some degree in the ligand and no other coordinating atoms are conatined then the ligand can pass
-        # This filter only applies to ligands.py of the specified denticities. ligands.py with other denticities are allowed to pass
+        # This filter only applies to ligands of the specified denticities. ligands with other denticities are allowed to pass
         """
         Only leave in ligands where we have functional atoms equal to specified atoms
         """
         denticity = self.ensure_denticities_is_list(denticity)
 
-        print("FunctionalGroup Filter running")
+        # print("FunctionalGroup Filter running")
 
-        print(f"Filtering: ligand_atom_type")
+        # print(f"Filtering: ligand_atom_type")
 
         if isinstance(atoms_of_interest, str):
             atoms_of_interest = [atoms_of_interest]
@@ -168,17 +163,10 @@ class FilterStage:
                         ((any(elem in list(ligand.atomic_props["atoms"]) for elem in atoms_of_interest) == False) and instruction == "must_exclude") or \
                         ((all(elem in atoms_of_interest for elem in list(ligand.atomic_props["atoms"]))) and instruction == "must_only_contain_in_any_amount"):
                     coordinating_atoms_present = True
-                else:
-                    pass
-                if coordinating_atoms_present:
-                    # print("Matching Coordinating groups PASS")
-                    pass
-                else:
-                    # print("Matching Coordinating groups Fail")
+
+                if not coordinating_atoms_present:
                     to_delete.append(unq_name)
-            else:
-                # If the denticities don't match then we don't apply the filter and just skip
-                pass
+
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
 
         self.filter_tracking[len(self.filter_tracking)] = f"Functional Atom filter with {atoms_of_interest}"
@@ -187,7 +175,7 @@ class FilterStage:
 
     def filter_betaHs(self):
         """
-        Filter out all ligands.py with beta Hydrogen in it
+        Filter out all ligands with beta Hydrogen in it
         """
 
         # print("betaH Filter running")
@@ -200,43 +188,48 @@ class FilterStage:
         # self.safe_and_document_after_filterstep(filtering_step_name="betaH Filter")
 
     def filter_neighbouring_coordinating_atoms(self):
-        # The goal of this filter is to remove ligands.py that have coordinating atoms close to each other
+        # The goal of this filter is to remove ligands that have coordinating atoms close to each other
 
         to_delete = []
         for unq_name, ligand in self.database.db.items():
             # print("######")
             # print(ligand.atomic_props["atoms"])
             # print(ligand.denticity)
-            break_condition = False
-            if ligand.denticity != 1:
-                if not break_condition:
-                    for index_1 in ligand.ligand_to_metal:
-                        for index_2 in ligand.ligand_to_metal:
-                            if index_1 == index_2:
-                                pass
-                            elif (index_1 != index_2) and not break_condition:
-                                position_1 = np.array(ligand.coordinates[index_1][1])
-                                position_2 = np.array(ligand.coordinates[index_2][1])
-                                cov_1 = Element(ligand.coordinates[index_1][0]).atomic_radius
-                                cov_2 = Element(ligand.coordinates[index_2][0]).atomic_radius
-                                distance = np.linalg.norm(position_1 - position_2)
-                                if distance < (cov_1 + cov_2 + 0.2):
-                                    break_condition = True
-                                    # RCA_Ligand.view_3d(ligand)
-                                    # print("FAIL")
-                                    to_delete.append(unq_name)
-                                    break
-                                else:
-                                    pass
+            if ligand.check_for_neighboring_coordinating_atoms():
+                to_delete.append(unq_name)
 
-            if not break_condition:
-                pass
-                # print("PASS")
+            # ========= Old code, based on atomic distances instead of purely on graph: =========
+            # break_condition = False
+            # if ligand.denticity != 1:
+            #     if not break_condition:
+            #         for index_1 in ligand.ligand_to_metal:
+            #             for index_2 in ligand.ligand_to_metal:
+            #                 if index_1 == index_2:
+            #                     pass
+            #                 elif (index_1 != index_2) and not break_condition:
+            #                     position_1 = np.array(ligand.coordinates[index_1][1])
+            #                     position_2 = np.array(ligand.coordinates[index_2][1])
+            #                     cov_1 = Element(ligand.coordinates[index_1][0]).atomic_radius
+            #                     cov_2 = Element(ligand.coordinates[index_2][0]).atomic_radius
+            #                     distance = np.linalg.norm(position_1 - position_2)
+            #                     if distance < (cov_1 + cov_2 + 0.2):
+            #                         break_condition = True
+            #                         # RCA_Ligand.view_3d(ligand)
+            #                         # print("FAIL")
+            #                         to_delete.append(unq_name)
+            #                         break
+            #                     else:
+            #                         pass
+            #
+            # if not break_condition:
+            #     pass
+            #     print("PASS")
+
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Neighbouring Atom Filter: {0.2}"
         print("finished")
 
-    def filter_molecular_weight(self, denticity: int = None, atomic_weight_min: float = None, atomic_weight_max: float = None):
+    def filter_molecular_weight(self, atomic_weight_min: float = None, atomic_weight_max: float = None, denticity: int = None):
         to_delete = []
         denticity = self.ensure_denticities_is_list(denticity)
 
@@ -246,51 +239,25 @@ class FilterStage:
         if atomic_weight_max is None:
             atomic_weight_max = np.nan
 
-        else:   # todo wtf is this else doing here
-            for unq_name, ligand in self.database.db.items():
-                if ligand.denticity not in denticity:
-                    continue
-                # print(unq_name)
-                molecular_range_condition_satisified = False
-                MW = ligand.global_props["molecular_weight"]
-                # print(MW)
-                if not (atomic_weight_min <= MW < atomic_weight_max):
-                    to_delete.append(unq_name)
-                    # print("Molecular Weight Fail")
-                # print("\n")
+        for unq_name, ligand in self.database.db.items():
+            if ligand.denticity not in denticity:
+                continue
+            # print(unq_name)
+            molecular_range_condition_satisified = False
+            mw = ligand.global_props["molecular_weight"]
+            # print(MW)
+            if not (atomic_weight_min <= mw < atomic_weight_max):
+                to_delete.append(unq_name)
+                # print("Molecular Weight Fail")
+            # print("\n")
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Molecular Weight Filter with MW_MIN_{atomic_weight_min} and MW_MAX_{atomic_weight_max}"
 
-    def filter_denticity_fraction(self, fraction: float):
-        # This filter will filter out ligands.py whose dominating denticity does not account for greater than the proportion
-        # specified by the user {fraction: float = None} of the total occurences of the complex
-        to_delete = []
-        for unq_name, ligand in self.database.db.items():
-            # print(unq_name)
-            occurence = float(ligand.occurrences)
-            # print(occurence)
-            current_highest_occurrence = 0
-            # print(ligand.count_denticities)
-            for key, value in ligand.count_denticities.items():
-                if value > current_highest_occurrence:
-                    current_highest_occurrence = value
-                else:
-                    pass
-            occurence_fraction = float(current_highest_occurrence / occurence)
-            # print(occurence_fraction)
-            if occurence_fraction > fraction:
-                pass
-                # print("PASS")
-            else:
-                to_delete.append(unq_name)
-                # print("FAIL")
-            # print("\n")
-        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
-        self.filter_tracking[len(self.filter_tracking)] = f"Denticity Fraction: {fraction}"
-
-    def filter_charge_confidence(self, filter_for: str = None):
-        # filter_for = "confident"
-        # filter_for = "not_confident"
+    def filter_charge_confidence(self, filter_for: str):
+        """
+        Filter out all ligands with a charge assignment that is not confident or confident.
+        :param filter_for: "confident" or "not_confident"
+        """
 
         to_delete = []
         if (filter_for is None) or (filter_for != ("confident" or "not_confident")):
@@ -309,14 +276,14 @@ class FilterStage:
                     to_delete.append(unq_name)
                 else:
                     print("!!!Fatal Error!!! -> Charge Confidence Incorrectly Specified  -> Aborting Program")
-            print("Charge Assignment Confident:" + str(confident))
-            print("Charge Assignment Not Confident:" + str(not_confident))
+            # print("Charge Assignment Confident:" + str(confident))
+            # print("Charge Assignment Not Confident:" + str(not_confident))
             self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
             self.filter_tracking[len(self.filter_tracking)] = f"Charge Filter: {filter_for}"
 
     def box_excluder_filter(self):
         """
-        Filter out all ligands.py that violate the box Filter
+        Filter out all ligands that violate the box Filter
         """
         print("Box Excluder Filter running")
         self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items() if box_filter(ligand) is True}
@@ -332,15 +299,13 @@ class FilterStage:
 
         # for lig in get_monodentate_list() + get_reactant():
         for lig in get_monodentate_list():
-            pass
             self.database.db[lig.name] = lig
-            pass
 
         # self.db.to_json(path=f"{self.safe_path}/DB_after_Adding_Const_Ligands.json")
 
-    def filter_even_odd_electron(self, filter_for: str = None):
-        # filter_for = even --> This will extract all ligands.py with an even number of electrons
-        # filter_for = odd  --> This will extract all ligands.py with an odd number of electrons
+    def filter_even_odd_electron(self, filter_for: str):
+        # filter_for = even --> This will extract all ligands with an even number of electrons
+        # filter_for = odd  --> This will extract all ligands with an odd number of electrons
         to_delete = []
         if (filter_for != "even") and (filter_for != "odd"):
             print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
@@ -362,14 +327,14 @@ class FilterStage:
                     # print("")
                 else:
                     # print("Fail")
-                    RCA_Ligand.view_3d(ligand)
-                    print("")
+                    # RCA_Ligand.view_3d(ligand)
+                    # print("")
                     to_delete.append(unq_name)
 
             self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
             self.filter_tracking[len(self.filter_tracking)] = f"even_odd_electron_filter: {filter_for}"
 
-    def filter_ligand_charges(self, denticity: int = None, charge: Union[list,None,int]=None):
+    def filter_ligand_charges(self,  charge: Union[list, int], denticity: int = None):
         denticity = self.ensure_denticities_is_list(denticity)
 
         if not charge is None:
@@ -382,18 +347,15 @@ class FilterStage:
             if ligand.denticity in denticity:
                 if ligand_charge not in charge:
                     to_delete.append(unq_name)
-                else:
-                    pass
-            else:
-                pass
+
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Ligand Charge Filter: [{denticity}] [{charge}]"
 
     def filter_sub_structure_search(self, denticity: int = None, SMARTS: str = None, instruction: str = None):
         warnings.warn("This Filter is still under active developement please do not use")
         raise NotImplementedError
-        # filter_for = even --> This will extract all ligands.py with an even number of electrons
-        # filter_for = odd  --> This will extract all ligands.py with an odd number of electrons
+        # filter_for = even --> This will extract all ligands with an even number of electrons
+        # filter_for = odd  --> This will extract all ligands with an odd number of electrons
         new_db = deepcopy(self.database.db)
         if ((instruction != "must_include") and (instruction != "must_exclude")) or (denticity is None) or (SMARTS is None):
             print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
@@ -483,7 +445,7 @@ class FilterStage:
         self.database.db = {uname: ligand for uname, ligand in self.database.db.items() if uname not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"monodentate_filter: {threshold}"
 
-    def filter_atom_count(self, denticity: list, number: int = None, instruction: str = None):
+    def filter_atom_count(self, number: int, instruction: str, denticity: list=None):
         denticity = self.ensure_denticities_is_list(denticity)
 
         to_delete = []
@@ -498,11 +460,7 @@ class FilterStage:
                         to_delete.append(unq_name)
                     elif (num_atoms >= number) and (instruction == "less_than"):
                         to_delete.append(unq_name)
-                    else:
-                        #ligand.view_3d()
-                        pass
-                else:
-                    pass
+
         self.database.db = {uname: ligand for uname, ligand in self.database.db.items() if uname not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Atom Number Filter: [{number}] [{instruction}]"
 

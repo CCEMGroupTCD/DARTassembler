@@ -346,25 +346,25 @@ class LigandFilterInput(BaseInput):
 
     filter_keys = {
         _denticities_of_interest: {
-            _denticities_of_interest: [list, tuple, type(None)]},
+            _denticities_of_interest: [list, tuple]},
         _remove_ligands_with_neighboring_coordinating_atoms: {
-            _remove_ligands_with_neighboring_coordinating_atoms: [bool, str, type(None)]},
+            _remove_ligands_with_neighboring_coordinating_atoms: [bool, str]},
         _only_confident_charges: {
-            _only_confident_charges: [bool, str, type(None)]},
+            _only_confident_charges: [bool, str]},
         _remove_ligands_with_beta_hydrogens: {
-            _remove_ligands_with_beta_hydrogens: [bool, str, type(None)]},
+            _remove_ligands_with_beta_hydrogens: [bool, str]},
         _strict_box_filter: {
-            _strict_box_filter: [bool, str, type(None)]},
+            _strict_box_filter: [bool, str]},
         _filter_even_odd_electron_count: {
-            _filter_even_odd_electron_count: [str, type(None)]},
+            _filter_even_odd_electron_count: [str]},
         _acount: {
             _acount_min: [int, str, type(None)],
             _acount_max: [int, str, type(None)],
             _denticities: [list, tuple, type(None)],
             },
         _ligcomp: {
-            _ligcomp_atoms_of_interest: [list, tuple, type(None)],
-            _ligcomp_instruction: [str, type(None)],
+            _ligcomp_atoms_of_interest: [list, tuple],
+            _ligcomp_instruction: [str],
             _denticities: [list, tuple, type(None)],
             },
         _ligand_charges: {
