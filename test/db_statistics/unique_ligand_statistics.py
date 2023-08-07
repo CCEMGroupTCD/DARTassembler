@@ -24,7 +24,7 @@ if __name__ == '__main__':
     save_plots_dir = f'../../data/db_statistics/unique_ligand_statistics/v{db_version}'
     db_path = f'../../data/final_db_versions/unique_ligand_db_v{db_version}.json'
     exclude_unconnected_ligands = True
-    exclude_uncertain_charges = False
+    exclude_uncertain_charges = True
 
 
 

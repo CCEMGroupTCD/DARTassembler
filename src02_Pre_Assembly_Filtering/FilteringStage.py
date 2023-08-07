@@ -39,15 +39,14 @@ class FilterStage:
         # safe to desired folder
         self.database.to_json(path=f"{self.safe_path}/DB_after_{filtering_step_name}.json")
 
-    def metals_of_interest_filter(self, denticity: int = None, metals_of_interest: [str, list[str]] = None):
+    def metals_of_interest_filter(self, metals_of_interest: [str, list[str]], denticity: int = None):
         """
         This function has been updated by Cian to work with the updated .mol file
         """
         print(f"Filtering: Metal of Interest -> Denticity: {denticity}")
-        if (metals_of_interest is None) or (denticity is None):
-            print("!!!Warning!!! -> No metal of interest or denticity selected -> Proceeding to next filter")
-            return
-        elif isinstance(metals_of_interest, str):
+        denticity = self.ensure_denticities_is_list(denticity)
+
+        if isinstance(metals_of_interest, str):
             metals_of_interest = [metals_of_interest]
 
         to_delete = []
@@ -56,23 +55,16 @@ class FilterStage:
             # the one specified by the user {denticity: int}, but it was never part of
             # complex with a metal specified by the user {metals_of_interest: [str, list[str]]} then it is
             # removed
-            if int(ligand.denticity) == int(denticity):
+            if ligand.denticity in denticity:
                 # print(list(ligand.count_metals))
                 metal_of_interest_present = False
                 for metal in metals_of_interest:
                     if metal in list(ligand.count_metals):
                         # print("Matching Metal: " + str(metal))
                         metal_of_interest_present = True
-                    else:
-                        pass
-                if metal_of_interest_present:
-                    pass
-                    # print("Metal of Interest Pass")
-                else:
+                if not metal_of_interest_present:
                     to_delete.append(unq_name)
                     # print("Metal of Interest Fail -> Deleting ligand")
-            else:
-                pass
 
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
 
@@ -80,15 +72,11 @@ class FilterStage:
         self.filter_tracking[len(self.filter_tracking)] = f"Metals of interest filter with {metals_of_interest}"
         # self.safe_and_document_after_filterstep(filtering_step_name="Metal_of_Interest")
 
-    def denticity_of_interest_filter(self, denticity_of_interest: [int, list[int]] = None):
+    def denticity_of_interest_filter(self, denticity_of_interest: [int, list[int]]):
         """
-
         """
         print("Denticity Filter running")
-
-        if denticity_of_interest is None:
-            print("No denticities of interest selected, no filtering at all")
-        elif isinstance(denticity_of_interest, int):
+        if isinstance(denticity_of_interest, int):
             denticity_of_interest = [denticity_of_interest]
 
         to_delete = []
@@ -116,22 +104,17 @@ class FilterStage:
         print("Functional Group Filter running")
 
         print(f"Filtering: Coordinating_atom_type -> Denticity: {denticity}")
-        if (atoms_of_interest is None) or (denticity is None) or (instruction is None):
-            print("!!!Warning!!! -> All arguments not specified  -> Proceeding to next filter")
-            return
-        if ((denticity != len(atoms_of_interest)) and instruction == True) or ((denticity < len(atoms_of_interest)) and instruction == False):
-            print("!!!Warning!!! -> The specified denticity is not consistent with specified coordinating atoms -> Proceeding to next filter ")
+        denticity = self.ensure_denticities_is_list(denticity)
 
-        elif isinstance(atoms_of_interest, str):
+        if isinstance(atoms_of_interest, str):
             atoms_of_interest = [atoms_of_interest]
-
 
         to_delete = []
         for unq_name, ligand in self.database.db.items():
             # print("\n")
             # print(unq_name)
             # print(sorted(list(ligand.local_elements)))
-            if int(ligand.denticity) == int(denticity):
+            if ligand.denticity in denticity:
                 coordinating_atoms_present = False
                 # If the denticity of the ligand matches that specified by the user
                 if ((sorted(list(ligand.local_elements)) == sorted(atoms_of_interest)) and instruction == "must_contain_and_only_contain") or \
@@ -139,8 +122,7 @@ class FilterStage:
                         ((any(elem in list(ligand.local_elements) for elem in atoms_of_interest) == False) and instruction == "must_exclude") or \
                         ((all(elem in atoms_of_interest for elem in list(ligand.local_elements))) and instruction == "must_only_contain_in_any_amount"):
                     coordinating_atoms_present = True
-                else:
-                    pass
+
                 if coordinating_atoms_present:
                     # print("Matching Coordinating groups PASS")
                     pass
@@ -155,23 +137,22 @@ class FilterStage:
 
         # self.safe_and_document_after_filterstep(filtering_step_name="FunctionalAtoms_of_Interest")
 
-    def filter_ligand_atoms(self, denticity: int = None, atoms_of_interest: [str, list[str]] = None, instruction: str = None):
+    def filter_ligand_atoms(self, atoms_of_interest: Union[str, list[str]], instruction: str, denticity: int = None):
         # instruction = must_contain_and_only_contain,this means that if the coordinating atoms specified by the user are exactly the same as the coordinating groups of the ligand then the ligand can pass
         # instruction = must_at_least_contain, this means that if the coordinating atoms specified by the user are a subset of that of the ligand then the ligand can pass
         # instruction = must_exclude, this means that if the coordinating atoms specified by the user are not contained in any amount in the ligand then the ligand can pass
         # instruction = must_only_contain_in_any_amount   ,this means that if all coordinating atoms specified by the user are contained to some degree in the ligand and no other coordinating atoms are conatined then the ligand can pass
         # This filter only applies to ligands.py of the specified denticities. ligands.py with other denticities are allowed to pass
         """
-        Only leave in ligands.py where we have functional atoms equal to specified atoms
+        Only leave in ligands where we have functional atoms equal to specified atoms
         """
+        denticity = self.ensure_denticities_is_list(denticity)
+
         print("FunctionalGroup Filter running")
 
         print(f"Filtering: ligand_atom_type")
-        if (atoms_of_interest is None) or (instruction is None) or (denticity is None):
-            print("!!!Warning!!! -> All arguments not specified  -> Proceeding to next filter")
-            return
 
-        elif isinstance(atoms_of_interest, str):
+        if isinstance(atoms_of_interest, str):
             atoms_of_interest = [atoms_of_interest]
 
         to_delete = []
@@ -179,7 +160,7 @@ class FilterStage:
             # print("\n")
             # print(unq_name)
             # print(sorted(list(ligand.atomic_props["atoms"])))
-            if int(ligand.denticity) == int(denticity):
+            if ligand.denticity in denticity:
                 coordinating_atoms_present = False
                 # If the denticity of the ligand matches that specified by the user
                 if ((sorted(list(ligand.atomic_props["atoms"])) == sorted(atoms_of_interest)) and instruction == "must_contain_and_only_contain") or \
@@ -256,8 +237,8 @@ class FilterStage:
         print("finished")
 
     def filter_molecular_weight(self, denticity: int = None, atomic_weight_min: float = None, atomic_weight_max: float = None):
-
         to_delete = []
+        denticity = self.ensure_denticities_is_list(denticity)
 
         # If the user doesn't specify min or max this is set to infinity or -infinity respectively to be ignored
         if atomic_weight_min is None:
@@ -265,9 +246,9 @@ class FilterStage:
         if atomic_weight_max is None:
             atomic_weight_max = np.nan
 
-        else:
+        else:   # todo wtf is this else doing here
             for unq_name, ligand in self.database.db.items():
-                if denticity is not None and ligand.denticity != denticity:
+                if ligand.denticity not in denticity:
                     continue
                 # print(unq_name)
                 molecular_range_condition_satisified = False
@@ -280,36 +261,32 @@ class FilterStage:
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Molecular Weight Filter with MW_MIN_{atomic_weight_min} and MW_MAX_{atomic_weight_max}"
 
-    def filter_denticity_fraction(self, denticity: int = None, fraction: float = None):
+    def filter_denticity_fraction(self, fraction: float):
         # This filter will filter out ligands.py whose dominating denticity does not account for greater than the proportion
         # specified by the user {fraction: float = None} of the total occurences of the complex
         to_delete = []
-        if (denticity is None) or (fraction is None):
-            print("!!!Warning!!! -> All arguments not specified  -> Proceeding to next filter")
-
-        else:
-            for unq_name, ligand in self.database.db.items():
-                # print(unq_name)
-                occurence = float(ligand.occurrences)
-                # print(occurence)
-                current_highest_occurrence = 0
-                # print(ligand.count_denticities)
-                for key, value in ligand.count_denticities.items():
-                    if value > current_highest_occurrence:
-                        current_highest_occurrence = value
-                    else:
-                        pass
-                occurence_fraction = float(current_highest_occurrence / occurence)
-                # print(occurence_fraction)
-                if occurence_fraction > fraction:
-                    pass
-                    # print("PASS")
+        for unq_name, ligand in self.database.db.items():
+            # print(unq_name)
+            occurence = float(ligand.occurrences)
+            # print(occurence)
+            current_highest_occurrence = 0
+            # print(ligand.count_denticities)
+            for key, value in ligand.count_denticities.items():
+                if value > current_highest_occurrence:
+                    current_highest_occurrence = value
                 else:
-                    to_delete.append(unq_name)
-                    # print("FAIL")
-                # print("\n")
-            self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
-            self.filter_tracking[len(self.filter_tracking)] = f"Denticity Fraction: {fraction}"
+                    pass
+            occurence_fraction = float(current_highest_occurrence / occurence)
+            # print(occurence_fraction)
+            if occurence_fraction > fraction:
+                pass
+                # print("PASS")
+            else:
+                to_delete.append(unq_name)
+                # print("FAIL")
+            # print("\n")
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+        self.filter_tracking[len(self.filter_tracking)] = f"Denticity Fraction: {fraction}"
 
     def filter_charge_confidence(self, filter_for: str = None):
         # filter_for = "confident"
@@ -393,6 +370,8 @@ class FilterStage:
             self.filter_tracking[len(self.filter_tracking)] = f"even_odd_electron_filter: {filter_for}"
 
     def filter_ligand_charges(self, denticity: int = None, charge: Union[list,None,int]=None):
+        denticity = self.ensure_denticities_is_list(denticity)
+
         if not charge is None:
             if not isinstance(charge, (list,tuple)):
                 charge = [charge]
@@ -400,7 +379,7 @@ class FilterStage:
         to_delete = []
         for unq_name, ligand in self.database.db.items():
             ligand_charge = ligand.pred_charge
-            if ligand.denticity == denticity:
+            if ligand.denticity in denticity:
                 if ligand_charge not in charge:
                     to_delete.append(unq_name)
                 else:
@@ -504,7 +483,9 @@ class FilterStage:
         self.database.db = {uname: ligand for uname, ligand in self.database.db.items() if uname not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"monodentate_filter: {threshold}"
 
-    def filter_atom_count(self, denticity: int = None, number: int = None, instruction: str = None):
+    def filter_atom_count(self, denticity: list, number: int = None, instruction: str = None):
+        denticity = self.ensure_denticities_is_list(denticity)
+
         to_delete = []
         if (instruction != "greater_than") and (instruction != "less_than"):
             print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
@@ -512,7 +493,7 @@ class FilterStage:
         else:
             for unq_name, ligand in self.database.db.items():
                 num_atoms = ligand.global_props['n_atoms']
-                if ligand.denticity == denticity:
+                if ligand.denticity in denticity:
                     if (num_atoms < number) and (instruction == "greater_than"):
                         to_delete.append(unq_name)
                     elif (num_atoms >= number) and (instruction == "less_than"):
@@ -524,3 +505,11 @@ class FilterStage:
                     pass
         self.database.db = {uname: ligand for uname, ligand in self.database.db.items() if uname not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Atom Number Filter: [{number}] [{instruction}]"
+
+    def ensure_denticities_is_list(self, denticities):
+        if isinstance(denticities, int):
+            denticities = [denticities]
+        elif denticities is None:
+            denticities = list(range(-10, 100))
+
+        return denticities

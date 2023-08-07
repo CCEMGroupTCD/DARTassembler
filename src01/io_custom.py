@@ -192,13 +192,36 @@ def write_yaml(path: Union[str, Path], data: dict) -> None:
     return
 
 def read_yaml(path: Union[str, Path]) -> dict:
-    try:
-        with open(path, 'r') as file:
-            data = yaml.load(file, Loader=yaml.FullLoader)
-    except FileNotFoundError:
-        raise FileNotFoundError(f'Could not find file {path}')
-    except Exception as e:
-        raise Exception(f'There was an error while reading the YAML file {path}. Please make sure the file is a proper yaml file. For example, a common error is that the indentation might be wrong. This is the error message from yaml, please google it if you don\'t know how to fix it: {e}')
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f'Filepath does not exist: {path}.')
+
+    with open(path, 'r') as f:
+        txt = f.read()
+
+        try:
+            data = yaml.load(txt, yaml.SafeLoader)
+
+        except yaml.YAMLError as exc:
+            # Print a nice error message pointing to the line where the error is
+            error_start = f"\n\n-->Error while parsing the input YAML file '{path}':"
+            error_end = 'The error probably is either on this line or the line before. A common error is wrong indentation. Please correct input file and retry.'
+            if hasattr(exc, 'problem_mark'):
+                if exc.context != None:
+                    raise Exception(f'{error_start}\n\tThe issue seems to be here:\n\t{exc.problem_mark}\n\tYAML error message: {exc.problem}{exc.context}\n\t{error_end}')
+                else:
+                    raise Exception(f'{error_start}\n\tThe issue seems to be here:\n\t{exc.problem_mark}\n\tYAML error message: {exc.problem}\n\t{error_end}')
+
+            else:
+                raise Exception(f'There was an error while reading the YAML file {path}. Please make sure the file is a proper yaml file. For example, a common error is that the indentation might be wrong. This is the error message from yaml, please google it if you don\'t know how to fix it: {exc}')
+
+    # try:
+    #     with open(path, 'r') as file:
+    #         data = yaml.load(file, Loader=yaml.FullLoader)
+    # except FileNotFoundError:
+    #     raise FileNotFoundError(f'Could not find file {path}')
+    # except Exception as e:
+    #     raise Exception(f'There was an error while reading the YAML file {path}. Please make sure the file is a proper yaml file. For example, a common error is that the indentation might be wrong. This is the error message from yaml, please google it if you don\'t know how to fix it: {e}')
 
     return data
 

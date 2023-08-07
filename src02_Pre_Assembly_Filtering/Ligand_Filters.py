@@ -4,8 +4,13 @@ from src02_Pre_Assembly_Filtering.FilteringStage import FilterStage
 from test.Integration_Test import IntegrationTest
 from pathlib import Path
 from typing import Union
-from src05_Assembly_Refactor.Assembly_Input import LigandFilterInput
+from src05_Assembly_Refactor.Assembly_Input import LigandFilterInput, _mw, _filter, _ligand_charges, _ligcomp, _coords, \
+    _metals_of_interest, _denticities_of_interest, _remove_ligands_with_neighboring_coordinating_atoms, \
+    _remove_ligands_with_beta_hydrogens, _only_confident_charges, _strict_box_filter, _filter_even_odd_electron_count, \
+    _acount, _acount_min, _acount_max, _denticities, _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max
 from src01.io_custom import load_unique_ligand_db
+
+# todo: add mandatory filter which checks if a charge is present
 
 class LigandFilters(object):
 
@@ -14,29 +19,11 @@ class LigandFilters(object):
         self.max_number = max_number
         self.input = LigandFilterInput(path=self.filepath)
 
-        self.ligand_db_path = self.input.ligand_db_path if self.input.ligand_db_path is not None else default_ligand_db_path
-        self.output_ligand_db_path = self.input.output_ligand_db_path if self.input.output_ligand_db_path is not None else self.get_output_ligand_db_path()
-        self.denticities_of_interest = self.input.denticities_of_interest
-        self.remove_ligands_with_neighboring_coordinating_atoms = self.input.remove_ligands_with_neighboring_coordinating_atoms if self.input.remove_ligands_with_neighboring_coordinating_atoms is not None else False
-        self.only_confident_charges = self.input.only_confident_charges if self.input.only_confident_charges is not None else False
-        self.remove_ligands_with_beta_hydrogens = self.input.remove_ligands_with_beta_hydrogens if self.input.remove_ligands_with_beta_hydrogens is not None else False
-        self.strict_box_filter = self.input.strict_box_filter if self.input.strict_box_filter is not None else False
-        self.filter_even_odd_electron_count = self.input.filter_even_odd_electron_count
-        self.denticity_dependent_filters = self.input.dentfilters
+        self.ligand_db_path = self.input.ligand_db_path
+        self.output_ligand_db_path = self.input.output_ligand_db_path
+        self.filters = self.input.filters
 
-
-    def get_output_ligand_db_path(self):
-        """
-        Returns a path to the output ligand database. If the path already exists, it will be renamed to avoid overwriting.
-        """
-        path = Path('filtered_ligand_db.json').resolve()
-
-        idx = 1
-        while path.exists():
-            path = Path(f'{path}_{idx}')
-            idx += 1
-
-        return path
+        self.filter_tracking = []
 
     def get_filtered_db(self) -> LigandDB:
         db = LigandDB.from_json(
@@ -45,48 +32,110 @@ class LigandFilters(object):
                                 max_number=self.max_number
                                 )
 
-        Filter = FilterStage(db)
-        if self.denticities_of_interest is not None:
-            Filter.denticity_of_interest_filter(denticity_of_interest=self.denticities_of_interest)
-        if self.remove_ligands_with_neighboring_coordinating_atoms:
-            Filter.filter_neighbouring_coordinating_atoms()
-        if self.only_confident_charges:
-            Filter.filter_charge_confidence(filter_for="confident")
-        if self.remove_ligands_with_beta_hydrogens:
-            Filter.filter_betaHs()
-        if self.strict_box_filter:
-            Filter.box_excluder_filter()
-        if self.filter_even_odd_electron_count is not None:
-            Filter.filter_even_odd_electron(filter_for=self.filter_even_odd_electron_count)
+        self.Filter = FilterStage(db)
+        self.n_ligands_before = len(self.Filter.database.db)
 
-        # Denticity dependent filters
-        for dent, settings in self.denticity_dependent_filters.items():
+        for filter in self.filters:
+            filtername = filter[_filter]
+            n_ligands_before = len(self.Filter.database.db)
 
-            # Get settings for this denticity
-            acount_min, acount_max, ligcomp_atoms_of_interest, ligcomp_instruction, \
-            ligand_charges, metals_of_interest, coords_atoms_of_interest, coords_instruction, \
-            mw_min, mw_max = self.input.check_and_return_denticity_dependent_filter_settings(denticity=dent)
+            if filtername == _denticities_of_interest:
+                self.Filter.denticity_of_interest_filter(denticity_of_interest=filter[_denticities_of_interest])
 
-            if metals_of_interest is not None:
-                Filter.metals_of_interest_filter(denticity=dent, metals_of_interest=metals_of_interest)
-            if coords_atoms_of_interest is not None:
-                Filter.filter_coordinating_group_atoms(denticity=dent, atoms_of_interest=coords_atoms_of_interest,
-                                                       instruction=coords_instruction)
-            if ligcomp_atoms_of_interest is not None:
-                Filter.filter_ligand_atoms(denticity=dent, atoms_of_interest=ligcomp_atoms_of_interest,
-                                           instruction=ligcomp_instruction)
-            if mw_max is not None or mw_min is not None:
-                Filter.filter_molecular_weight(denticity=dent, atomic_weight_min=mw_min, atomic_weight_max=mw_max)
-            if ligand_charges is not None:
-                Filter.filter_ligand_charges(denticity=dent, charge=ligand_charges)
-            if acount_min is not None:
-                Filter.filter_atom_count(denticity=dent, number=acount_min, instruction="greater_than")
-            if acount_max is not None:
-                Filter.filter_atom_count(denticity=dent, number=acount_max, instruction="less_than")
+            elif filtername == _remove_ligands_with_neighboring_coordinating_atoms:
+                if filter[_remove_ligands_with_neighboring_coordinating_atoms]:
+                    self.Filter.filter_neighbouring_coordinating_atoms()
+
+            elif filtername == _only_confident_charges:
+                if filter[_only_confident_charges]:
+                    self.Filter.filter_charge_confidence(filter_for="confident")
+
+            elif filtername == _remove_ligands_with_beta_hydrogens:
+                if filter[_remove_ligands_with_beta_hydrogens]:
+                    self.Filter.filter_betaHs()
+
+            elif filtername == _strict_box_filter:
+                if filter[_strict_box_filter]:
+                    self.Filter.box_excluder_filter()
+
+            elif filtername == _filter_even_odd_electron_count:
+                self.Filter.filter_even_odd_electron(filter_for=filter[_filter_even_odd_electron_count])
+
+            # Denticity dependent filters
+            elif filtername == _acount:
+                min_atom_count = filter[_acount_min]
+                max_atom_count = filter[_acount_max]
+                denticities = filter[_denticities]
+                if min_atom_count is not None:
+                    self.Filter.filter_atom_count(denticity=denticities, number=min_atom_count, instruction="greater_than")
+                if max_atom_count is not None:
+                    self.Filter.filter_atom_count(denticity=denticities, number=max_atom_count, instruction="less_than")
+
+            elif filtername == _ligcomp:
+                self.Filter.filter_ligand_atoms(
+                                            denticity=filter[_denticities],
+                                            atoms_of_interest=filter[_ligcomp_atoms_of_interest],
+                                            instruction=filter[_ligcomp_instruction])
+
+            elif filtername == _metals_of_interest:
+                self.Filter.metals_of_interest_filter(
+                                                    denticity=filter[_denticities],
+                                                    metals_of_interest=filter[_metals_of_interest])
+
+            elif filtername == _ligand_charges:
+                self.Filter.filter_ligand_charges(
+                                                denticity=filter[_denticities],
+                                                charge=filter[_ligand_charges])
+
+            elif filtername == _coords:
+                self.Filter.filter_coordinating_group_atoms(
+                                                        denticity=filter[_denticities],
+                                                        atoms_of_interest=filter[_ligcomp_atoms_of_interest],
+                                                        instruction=filter[_ligcomp_instruction])
+
+            elif filtername == _mw:
+                self.Filter.filter_molecular_weight(
+                                                denticity=filter[_denticities],
+                                                atomic_weight_min=filter[_mw_min],
+                                                atomic_weight_max=filter[_mw_max]
+                                                )
+
+            n_ligands_after = len(self.Filter.database.db)
+            self.filter_tracking.append({
+                "filter": filtername,
+                "n_ligands_before": n_ligands_before,
+                "n_ligands_after": n_ligands_after,
+                "n_ligands_removed": n_ligands_before - n_ligands_after,
+                "full_filter_options": {name: option for name, option in filter.items() if name != _filter}
+                })
 
             # todo: subgraph match
+        self.n_ligands_after = len(self.Filter.database.db)
 
-        return Filter.database
+        return self.Filter.database
+
+    def get_filter_tracking_string(self) -> str:
+        output= "===================== FILTER TRACKING =====================\n"
+        output += f"An overview of filters applied to '{self.ligand_db_path}'. The new ligand database is saved as '{self.output_ligand_db_path}'.\nRemoved ligands:\n"
+        for filter in self.filter_tracking:
+            output += f"  - {filter['filter']}: {filter['n_ligands_removed']}\n"
+            options = ', '.join([f"{name}: {option}" for name, option in filter['full_filter_options'].items()])
+            output += f"        options --> {options}\n"
+        output += f"\nNumber of ligands before filtering: {self.n_ligands_before}\n"
+        output += f"Number of ligands filtered out: {self.n_ligands_before - self.n_ligands_after}\n"
+        output += f"Number of ligands after filtering: {self.n_ligands_after}\n"
+
+        return output
+
+    def print_filter_tracking(self):
+        print(self.get_filter_tracking_string())
+        return
+
+    def save_filter_tracking(self):
+        outpath = Path(self.output_ligand_db_path.parent, "filter_tracking.txt")
+        with open(outpath, 'w') as f:
+            f.write(self.get_filter_tracking_string())
+        return
 
     def save_filtered_ligand_db(self):
         filtered_db = self.get_filtered_db()
@@ -102,11 +151,17 @@ class LigandFilters(object):
 if __name__ == "__main__":
 
     ligand_filter_path = project_path().extend('src05_Assembly_Refactor', 'ligandfilters.yml')
-    save_db_path = project_path().extend("src14_Assembly_Unit_Test", "ligandfilters", "filtered_ligand_db_v1.7.json")
-    max_number = 5000
+    max_number = None
 
     filter = LigandFilters(filepath=ligand_filter_path, max_number=max_number)
     filter.save_filtered_ligand_db()
+    filter.save_filter_tracking()
+    filter.print_filter_tracking()
 
-    test = IntegrationTest(new_dir=save_db_path.parent, old_dir=Path(save_db_path.parent.parent, 'ligandfilters_benchmark'))
-    test.compare_all()
+    # Check if the new filtered db is the same as the old one
+    benchmark_dir = project_path().extend("src14_Assembly_Unit_Test", 'ligandfilters_benchmark')
+    if benchmark_dir.exists():
+        test = IntegrationTest(new_dir=filter.output_ligand_db_path.parent, old_dir=benchmark_dir)
+        test.compare_all()
+    else:
+        print("No benchmark directory found. Could not perform integration test.")
