@@ -8,7 +8,7 @@ functional: "rwb97xd"                         #The functional that is to be used
 basis_set_instruction: "gen"                  #This tells the program to use the basis sets provided in the class
 pseudo_potential_instruction: "pseudo=read"   #Instruction on how to handle the pseudo potentials
 
-spacer_message: "This Gaussian Input files was generated using the exceptionally brilliant DART program"  #This is mandatory
+spacer_message: "This Gaussian Input files was generated using the DART program"  #This is mandatory
 
 basis_sets:
             "Au": "-Au 0\nlanl2dz\nF 1 1.0\n1.050 1.0"

@@ -1,5 +1,3 @@
-from TransitionMetalComplex import TransitionMetalComplex
-import stk
 from src01.Molecule import RCA_Ligand
 import re
 import datetime
@@ -10,18 +8,14 @@ date = now.date()  # Extract the date from the datetime object
 time = now.time()  # Extract the time from the datetime object
 
 
-class Generate_Gaussian_input_file(TransitionMetalComplex):
-    def __init__(self,
-                 compl: stk.ConstructedMolecule,
-                 ligands: dict[RCA_Ligand],
-                 metal_charge: int,
-                 metal: str,
-                 spin: int,
+class Generate_Gaussian_input_file:
+    def __init__(self, xyz: str = None,
+                 complex_charge: int = None,
+                 spin: int = None,
                  path_to_Gaussian_input_file: str = 'Gaussian_config.yml',
-                 filename: str = "test_filename"):
-
-        super().__init__(compl=compl, ligands=ligands, metal_charge=metal_charge, metal=metal, spin=spin)
-
+                 filename: str = None,
+                 ligands: dict[RCA_Ligand] = None,
+                 metal_type: str = None):
         #
         #
         # Open the yml file for the inputs
@@ -32,15 +26,19 @@ class Generate_Gaussian_input_file(TransitionMetalComplex):
         #
         # Input parameters
         self.filename = filename
+        self.xyz = xyz
+        self.metal = metal_type
+        self.ligands = ligands
         self.num_processors = config_data["num_processors"]
         self.memory_GB = config_data["memory_GB"]
-        self.charge = self.get_total_charge(metal_charge, ligands)
+        self.charge = complex_charge
         self.multiplicity = spin
         self.calc_instruction = config_data["calc_instruction"]
-        self.functional = config_data["functional"]                                         # rwb97xd
-        self.basis_set_instruction = config_data["basis_set_instruction"]                   # gen This could also be, for example 6-31G(d)
-        self.pseudo_potential_instruction = config_data["pseudo_potential_instruction"]     # pseudo/read
-        self.spacer_message = str(config_data["spacer_message"]) + ". This file was generated on the " + str(date) + " at " + str(time).split(".")[0]    # f"This Gaussian Input files was generated using the exceptionally Brilliant DART program at {now.date()} /// {now.time()}"
+        self.functional = config_data["functional"]  # rwb97xd
+        self.basis_set_instruction = config_data["basis_set_instruction"]  # gen This could also be, for example 6-31G(d)
+        self.pseudo_potential_instruction = config_data["pseudo_potential_instruction"]  # pseudo/read
+        self.spacer_message = str(config_data["spacer_message"]) + ". This file was generated on the " + str(date) + " at " + str(time).split(".")[
+            0]  # f"This Gaussian Input files was generated using the exceptionally Brilliant DART program at {now.date()} /// {now.time()}"
         self.basis_sets_dict = config_data["basis_sets"]
         self.basis_set_seperator = "\n****\n"
 
@@ -48,7 +46,6 @@ class Generate_Gaussian_input_file(TransitionMetalComplex):
         #
         # Generate Gaussian Input file
         self.Generate_Gaussian_com()
-
 
         #
         #
@@ -58,7 +55,7 @@ class Generate_Gaussian_input_file(TransitionMetalComplex):
 
     def _gen_chk_name_(self):
         # This will ultimately be the first line in the input file
-        # Its purpose is to specify the name of the checkpointfile
+        # Its purpose is to specify the name of the checkpoint file
         line1 = f"%chk={self.filename}.chk\n"
         return str(line1)
 
@@ -88,15 +85,13 @@ class Generate_Gaussian_input_file(TransitionMetalComplex):
         return str(line6)
 
     def _gen_atomic_coords(self):
-        # todo: Hey Timo, this method should interface directly and perfectly with the TMC molecule class
-        # just delete the self.mol = None that I have up above please.
-        coordinates = self.mol.get_xyz_file_format_string().split("\n\n")[1]
+        coordinates = self.xyz.split("\n\n")[1]
         return "\n" + str(coordinates) + "\n"
 
     def _gen_basi_sets(self):
         full_atom_str = ""
-        for ligand in self.ligand_props.values():
-            for character in ligand["stoichiometry"]:
+        for ligand in self.ligands.values():
+            for character in ligand.stoichiometry:
                 if character.isnumeric():
                     # C2H4O3 --> we want to skip the numbers
                     pass
@@ -113,13 +108,12 @@ class Generate_Gaussian_input_file(TransitionMetalComplex):
         reduced_atom_list.insert(0, str(self.metal))
         basis_set_string = ""
         for atom in reduced_atom_list:
+
             try:
                 basis_set_string_tmp = str(self.basis_sets_dict[str(atom)])
-            except:
+            except KeyError:
                 basis_set_string_tmp = self.basis_sets_dict["other"]
                 str(basis_set_string_tmp).replace("x", atom)
-
-
             basis_set_string = basis_set_string + basis_set_string_tmp + self.basis_set_seperator
         return basis_set_string
 
@@ -133,7 +127,8 @@ class Generate_Gaussian_input_file(TransitionMetalComplex):
                 pass
         return line8
 
-    def _gen_link1(self):
+    @staticmethod
+    def _gen_link1():
         line9 = "\n__Link1__\n"
         return line9
 
@@ -141,7 +136,8 @@ class Generate_Gaussian_input_file(TransitionMetalComplex):
         line10 = f"#p Geom=AllCheck pseudo=read guess=read {self.functional}/{self.basis_set_instruction} pop=nbo7read\n\n"
         return line10
 
-    def _gen_footer(self):
+    @staticmethod
+    def _gen_footer():
         line11 = "\n$nbo aonbo=c $end\n"
         return line11
 
@@ -149,4 +145,4 @@ class Generate_Gaussian_input_file(TransitionMetalComplex):
         file_string = self._gen_chk_name_() + self._gen_num_proc() + self._gen_mem() + self._gen_calc_type_and_theory() + self._gen_spacer_message() \
                       + self._gen_multiplicity_charge() + self._gen_atomic_coords() + self._gen_basi_sets() + self._gen_ecp() + self._gen_link1() \
                       + self._gen_link1_header() + self._gen_basi_sets() + self._gen_ecp() + self._gen_footer()
-        print(file_string)
+        return file_string

@@ -93,18 +93,3 @@ Batches:
     Topology: '(5, 1)'
     Total_Charge: 0
     complex_name_appendix:
-
-  - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    Isomers: Generate Lowest Energy
-    MAX_num_complexes: 40
-    Metal:
-      element: Co
-      oxidation_state: 3
-      spin: 0
-    Name: Cians_demo_complex
-    Optimisation_Choice: false
-    Random_Seed: 93167
-    Topology: [3,2,1]
-    Total_Charge: 0
-    complex_name_appendix:
-

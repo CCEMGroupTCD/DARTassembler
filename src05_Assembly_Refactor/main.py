@@ -19,7 +19,7 @@ if __name__ == "__main__":
 
 
     #%% ==============    Doublecheck refactoring    ==================
-    print('\nDoublechecking if output is same as before:')
+    print('\nDouble checking if output is same as before:')
     from test.Integration_Test import IntegrationTest
     test = IntegrationTest(new_dir=assembly.output_path, old_dir=Path(assembly.output_path.parent, 'output_benchmark'))
     test.compare_all()

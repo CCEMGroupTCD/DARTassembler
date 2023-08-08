@@ -189,7 +189,7 @@ def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None):
         dict_[angle] = float(total_atoms_in_box)
 
     minimum_angle = min(dict_, key=dict_.get)
-    print("minimum angle = " + str(minimum_angle) + "boxes entered " + str(dict_box[str(minimum_angle)]))
+    print("minimum angle = " + str(minimum_angle) + " boxes entered " + str(dict_box[str(minimum_angle)]))
     # print(dict_box)
 
     #

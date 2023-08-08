@@ -85,9 +85,6 @@ class PlacementRotation:
             if (complex_ is not None) and (complex_ != (None, None)):
 
                 Assembled_complex = TMC(compl=complex_, ligands=ligands, metal=metal, metal_charge=metal_ox_state, spin=metal_multiplicity)
-                Generate_Gaussian_input_file(compl=complex_, ligands=ligands, metal=metal, metal_charge=metal_ox_state, spin=metal_multiplicity,
-                                             path_to_Gaussian_input_file='Gaussian_config.yml',
-                                             filename="test_filename_123")
                 #
                 #
                 # 1.

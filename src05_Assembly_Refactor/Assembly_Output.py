@@ -226,6 +226,9 @@ class ComplexAssemblyOutput(object):
         """
         self.save_file(xyz_string, self.ff_movie_path)
 
+    def save_gaussian(self, gaussian_string):
+        self.save_file(gaussian_string, self.gaussian_path)
+
     def save_settings(self, assembly_input_filepath: Union[str,Path]) -> None:
         shutil.copy(str(assembly_input_filepath), str(self.settings_path))
 

@@ -17,6 +17,7 @@ from typing import Union
 from src05_Assembly_Refactor.Assembly_Input import AssemblyInput
 from src05_Assembly_Refactor.Assembly_Output import AssemblyOutput, BatchAssemblyOutput, _gbl_optimization_movie, \
     ComplexAssemblyOutput, append_global_concatenated_xyz
+from Guassian_com import Generate_Gaussian_input_file
 
 warnings.simplefilter("always")
 
@@ -51,12 +52,12 @@ class DARTAssembly(object):
         """
         self.df_info = []
         self.assembled_complex_names = []
-        self.last_ligand_db_path = Path()     # to avoid reloading the same ligand database in the next batch
+        self.last_ligand_db_path = Path()  # to avoid reloading the same ligand database in the next batch
 
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
-            self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction,\
-            self.optimisation_instruction, self.random_seed, self.total_charge, metal_list, self.topology_similarity,\
+            self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction, \
+            self.optimisation_instruction, self.random_seed, self.total_charge, metal_list, self.topology_similarity, \
             self.complex_name_appendix = self.settings.check_and_return_batch_settings(batch_settings)
             self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
             self.batch_idx = idx
@@ -65,12 +66,12 @@ class DARTAssembly(object):
             self.metal_ox_state = metal_list[1]
             self.metal_spin = metal_list[2]
 
-            self.run_batch()    # run the batch assembly
+            self.run_batch()  # run the batch assembly
 
         # Save output info csv of all attempts
         self.df_info = pd.DataFrame(self.df_info)
         self.df_info['attempt'] = self.df_info.index
-        self.df_info = self.df_info[['attempt'] + [col for col in self.df_info.columns if col != 'attempt']] # Move attempt column to front
+        self.df_info = self.df_info[['attempt'] + [col for col in self.df_info.columns if col != 'attempt']]  # Move attempt column to front
         self.gbl_outcontrol.save_run_info_table(self.df_info)
 
         return
@@ -81,7 +82,7 @@ class DARTAssembly(object):
         # Here we load the ligand database and avoid reloading the same ligand database if it is the same as the last one
         if self.last_ligand_db_path.resolve() != self.ligand_json.resolve():
             self.ligand_db = LigandDB.from_json(json_=self.ligand_json,
-                                   type_="Ligand")
+                                                type_="Ligand")
             self.last_ligand_db_path = self.ligand_json
         RCA = PlacementRotation(database=self.ligand_db)
 
@@ -143,12 +144,12 @@ class DARTAssembly(object):
             # 5. Obtain rotated building blocks
             # Here we pass in our ligands and get out our stk building blocks
             # The first line is a monkey patch to fix an inconvenience in stk where every molecule is sanitized with rdkit, which throws errors for some of our molecules
-            with patch('stk.SmartsFunctionalGroupFactory', new=MONKEYPATCH_STK_SmartsFunctionalGroupFactory):   # Monkey patch to fix rdkit sanitization error
+            with patch('stk.SmartsFunctionalGroupFactory', new=MONKEYPATCH_STK_SmartsFunctionalGroupFactory):  # Monkey patch to fix rdkit sanitization error
                 stk_ligand_building_blocks_list, denticities = RCA.convert_ligand_to_building_block_for_complex(
-                                                                                                                ligands=ligands,
-                                                                                                                topology=Topology,
-                                                                                                                metal=self.metal_type
-                                                                                                                )
+                    ligands=ligands,
+                    topology=Topology,
+                    metal=self.metal_type
+                )
 
             #
             #
@@ -174,14 +175,14 @@ class DARTAssembly(object):
                 complex, complex_is_good, ff_movie, note = self.relax_and_check_structure(complex, building_blocks, ligands)
 
                 tmc = TMC(
-                            compl=complex,
-                            ligands=ligands,
-                            metal=self.metal_type,
-                            metal_charge=int(self.metal_ox_state),
-                            spin=self.metal_spin
-                            )
-                if complex_is_good:               # New complex successfully built.
-                    self.save_successfully_assembled_complex(tmc, ff_movie, ligands=ligands, note=note)
+                    compl=complex,
+                    ligands=ligands,
+                    metal=self.metal_type,
+                    metal_charge=int(self.metal_ox_state),
+                    spin=self.metal_spin
+                )
+                if complex_is_good:  # New complex successfully built.
+                    self.save_successfully_assembled_complex(tmc, ff_movie, metal_charge=int(self.metal_ox_state), ligands=ligands, note=note)
                     Post_Process_Complex_List.append(complex)
                     batch_sum_assembled_complexes += 1
                 else:
@@ -226,7 +227,7 @@ class DARTAssembly(object):
         elif self.optimisation_instruction == False:
             ff_movie = None
             note = 'no optimization'
-        else:   # Optimise via forcefield and re-check structure
+        else:  # Optimise via forcefield and re-check structure
             complex, building_blocks, ff_movie = OPTIMISE(
                 isomer=complex,
                 ligand_list=ligands,
@@ -244,7 +245,7 @@ class DARTAssembly(object):
 
         return complex, complex_is_good, ff_movie, note
 
-    def save_successfully_assembled_complex(self, complex: TMC, ff_movie: str, ligands: dict, note: str):
+    def save_successfully_assembled_complex(self, complex: TMC, ff_movie: str, ligands: dict, note: str, metal_charge: int):
         """
         Save the successfully assembled complex to the output files.
         """
@@ -257,9 +258,9 @@ class DARTAssembly(object):
             with open(global_optimization_movie_path, "a") as f:
                 f.write(ff_movie)
 
-
         # Save to concatenated xyz file of this batch
         xyz_string = complex.mol.get_xyz_file_format_string()
+        complex_total_charge = complex.get_total_charge(metal_charge, ligands)
         self.batch_outcontrol.save_passed_xyz(xyz_string, append=True)
 
         # This is the old way of saving the concatenated xyz file to the global file. Todo: Remove this once it is not needed anymore
@@ -269,15 +270,22 @@ class DARTAssembly(object):
         complex_name = self.get_complex_name(complex)
         complex_dir = Path(self.batch_outcontrol.complex_dir, complex_name)
         complex_outcontrol = ComplexAssemblyOutput(complex_dir)
+        complex_outcontrol.save_gaussian(Generate_Gaussian_input_file(xyz=xyz_string,
+                                                                      ligands=ligands,
+                                                                      complex_charge=complex_total_charge,
+                                                                      spin=self.metal_spin,
+                                                                      filename=complex_name,
+                                                                      path_to_Gaussian_input_file='Gaussian_config.yml',
+                                                                      metal_type=self.metal_type).Generate_Gaussian_com())
         complex_idx = len(self.assembled_complex_names)
         complex_outcontrol.save_all_complex_data(
-                                                complex=complex,
-                                                complex_idx=complex_idx,
-                                                xyz_structure=xyz_string,
-                                                ff_movie=ff_movie,
-                                                assembly_input_path=self.assembly_input_path,
-                                                batch_idx=self.batch_idx,
-                                                )
+            complex=complex,
+            complex_idx=complex_idx,
+            xyz_structure=xyz_string,
+            ff_movie=ff_movie,
+            assembly_input_path=self.assembly_input_path,
+            batch_idx=self.batch_idx,
+        )
 
         self.add_batch_info(success=True, reason=note, ligands=ligands, complex_idx=complex_idx, complex_name=complex_name)
         self.assembled_complex_names.append(complex_name)
@@ -304,7 +312,8 @@ class DARTAssembly(object):
         Returns the name of the complex.
         """
         # Get a random name for the complex
-        name = complex.create_random_name(length=self.complex_name_length)
+        # name = complex.create_random_name(length=self.complex_name_length)
+        name = 'complex_'
 
         # If the name is already used, add a number to the end of the name
         i = 1
@@ -318,7 +327,7 @@ class DARTAssembly(object):
 
         return total_name
 
-    def add_batch_info(self, success, ligands, reason: str='', complex_idx=None, complex_name=None):
+    def add_batch_info(self, success, ligands, reason: str = '', complex_idx=None, complex_name=None):
         """
         Add information about the batch to the batch info variable which will be saved to the batch info file.
         """
@@ -326,7 +335,7 @@ class DARTAssembly(object):
         ligand_stoichiometries = tuple(ligand.stoichiometry for ligand in ligands.values())
         topology = f'({self.topology_similarity.split("--")[0].strip("[]")})'
         similarity = f'({self.topology_similarity.split("--")[1].strip("[]")})'
-        
+
         data = {
             "success": success,
             "complex idx": complex_idx,
@@ -345,7 +354,7 @@ class DARTAssembly(object):
             "optimization": self.optimisation_instruction,
             "isomers": self.generate_isomer_instruction,
             "random seed": self.random_seed,
-            }
+        }
         self.df_info.append(data)
 
         return
