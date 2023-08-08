@@ -35,6 +35,9 @@ class LigandFilters(object):
         self.Filter = FilterStage(db)
         self.n_ligands_before = len(self.Filter.database.db)
 
+        # mandatory filters
+        self.Filter.filter_charge_confidence(filter_for="confident")
+
         for filter in self.filters:
             filtername = filter[_filter]
             n_ligands_before = len(self.Filter.database.db)
@@ -46,10 +49,6 @@ class LigandFilters(object):
                 if filter[_remove_ligands_with_neighboring_coordinating_atoms]:
                     self.Filter.filter_neighbouring_coordinating_atoms()
 
-            elif filtername == _only_confident_charges:
-                if filter[_only_confident_charges]:
-                    self.Filter.filter_charge_confidence(filter_for="confident")
-
             elif filtername == _remove_ligands_with_beta_hydrogens:
                 if filter[_remove_ligands_with_beta_hydrogens]:
                     self.Filter.filter_betaHs()
@@ -57,9 +56,6 @@ class LigandFilters(object):
             elif filtername == _strict_box_filter:
                 if filter[_strict_box_filter]:
                     self.Filter.box_excluder_filter()
-
-            elif filtername == _filter_even_odd_electron_count:
-                self.Filter.filter_even_odd_electron(filter_for=filter[_filter_even_odd_electron_count])
 
             # Denticity dependent filters
             elif filtername == _acount:

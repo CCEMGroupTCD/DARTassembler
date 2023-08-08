@@ -8,17 +8,11 @@ filters:
   - filter: 'remove_ligands_with_neighboring_coordinating_atoms'
     remove_ligands_with_neighboring_coordinating_atoms: True
 
-  - filter: 'only_confident_charges'
-    only_confident_charges: True
-
   - filter: 'remove_ligands_with_beta_hydrogens'
     remove_ligands_with_beta_hydrogens: True
 
   - filter: 'strict_box_filter'
     strict_box_filter: False
-
-  - filter: 'remove_even_odd_electron_count'
-    remove_even_odd_electron_count: 'even'    # 'even' or 'odd''
 
   - filter: 'atom_count'
     min: 1

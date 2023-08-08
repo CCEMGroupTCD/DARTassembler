@@ -270,9 +270,9 @@ class BaseInput(object):
             real_keys = tuple(settings.keys())
             if key not in real_keys:
                 similar_word = get_closest_word(word=key, words=real_keys)
-                similar_string = f"The closest key provided is '{similar_word}'. " if similar_word is not None else ''
+                similar_string = f"The closest key provided is '{similar_word}'. " if similar_word != '' else ''
                 # Check if key is present in input file
-                self.raise_error(f"Key '{key}' not found in input file, please add it. {similar_string}Otherwise, all keys found are {real_keys}.")
+                self.raise_error(f"Key '{key}' not found in input file, please add it. {similar_string}All keys found are {real_keys}.")
             self.check_correct_input_type(input=settings[key], types=types, varname=key)
 
         return
@@ -349,14 +349,14 @@ class LigandFilterInput(BaseInput):
             _denticities_of_interest: [list, tuple]},
         _remove_ligands_with_neighboring_coordinating_atoms: {
             _remove_ligands_with_neighboring_coordinating_atoms: [bool, str]},
-        _only_confident_charges: {
-            _only_confident_charges: [bool, str]},
+        # _only_confident_charges: {                    # filter removed from options and made mandatory
+        #     _only_confident_charges: [bool, str]},
         _remove_ligands_with_beta_hydrogens: {
             _remove_ligands_with_beta_hydrogens: [bool, str]},
         _strict_box_filter: {
             _strict_box_filter: [bool, str]},
-        _filter_even_odd_electron_count: {
-            _filter_even_odd_electron_count: [str]},
+        # _filter_even_odd_electron_count: {            # filter removed from options because all ligands with confident charges have even electron count
+        #     _filter_even_odd_electron_count: [str]},
         _acount: {
             _acount_min: [int, str, type(None)],
             _acount_max: [int, str, type(None)],
@@ -448,8 +448,9 @@ class LigandFilterInput(BaseInput):
             # Check for valid filter name
             valid_filter_names = tuple(self.filter_keys.keys())
             if not self.filtername in valid_filter_names:
-                similar_word = difflib.get_close_matches(self.filtername, valid_filter_names, n=1)[0]
-                self.raise_error(f"Filter '{self.filtername}' is not a valid filter. Did you mean '{similar_word}'? Otherwise, valid filter names are {valid_filter_names}.", varname=_filter)
+                similar_word = get_closest_word(word=self.filtername, words=valid_filter_names)
+                similar_string = f"Did you mean '{similar_word}'? " if similar_word != '' else ''
+                self.raise_error(f"Filter '{self.filtername}' is not a valid filter. {similar_string}Valid filter names are {valid_filter_names}.", varname=_filter)
 
             filter_values = {key: value for key, value in full_filter.items() if key != _filter}
             self.check_input_types(valid_keys=self.filter_keys[self.filtername], settings=filter_values)

@@ -198,33 +198,6 @@ class FilterStage:
             if ligand.check_for_neighboring_coordinating_atoms():
                 to_delete.append(unq_name)
 
-            # ========= Old code, based on atomic distances instead of purely on graph: =========
-            # break_condition = False
-            # if ligand.denticity != 1:
-            #     if not break_condition:
-            #         for index_1 in ligand.ligand_to_metal:
-            #             for index_2 in ligand.ligand_to_metal:
-            #                 if index_1 == index_2:
-            #                     pass
-            #                 elif (index_1 != index_2) and not break_condition:
-            #                     position_1 = np.array(ligand.coordinates[index_1][1])
-            #                     position_2 = np.array(ligand.coordinates[index_2][1])
-            #                     cov_1 = Element(ligand.coordinates[index_1][0]).atomic_radius
-            #                     cov_2 = Element(ligand.coordinates[index_2][0]).atomic_radius
-            #                     distance = np.linalg.norm(position_1 - position_2)
-            #                     if distance < (cov_1 + cov_2 + 0.2):
-            #                         break_condition = True
-            #                         # RCA_Ligand.view_3d(ligand)
-            #                         # print("FAIL")
-            #                         to_delete.append(unq_name)
-            #                         break
-            #                     else:
-            #                         pass
-            #
-            # if not break_condition:
-            #     pass
-            #     print("PASS")
-
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Neighbouring Atom Filter: {0.2}"
         print("finished")
