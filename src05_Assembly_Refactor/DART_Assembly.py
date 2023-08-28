@@ -1,5 +1,7 @@
 import shutil
 from unittest.mock import patch
+
+from constants.Periodic_Table import DART_Element
 from src05_Assembly_Refactor.Monkeypatch_stk import MONKEYPATCH_STK_SmartsFunctionalGroupFactory
 from src01.DataBase import LigandDB
 from src05_Assembly_Refactor.Assemble import PlacementRotation
@@ -149,6 +151,10 @@ class DARTAssembly(object):
                                                                                                                 topology=Topology,
                                                                                                                 metal=self.metal_type
                                                                                                                 )
+            # Optionally modify the exact 3D coordinates of the ligands.
+            geometry_modifier_path = '/Users/timosommer/Downloads/changed_atoms_only.xyz'
+            stk_ligand_building_blocks_list = self.modify_ligand_geometry(geometry_modifier_path=geometry_modifier_path, building_blocks=stk_ligand_building_blocks_list)
+
 
             #
             #
@@ -207,6 +213,36 @@ class DARTAssembly(object):
             j += 1
 
         return
+
+    def modify_ligand_geometry(self, geometry_modifier_path: Union[str, Path], building_blocks: dict):
+        import ase
+        from copy import deepcopy
+        import numpy as np
+        old_mol, new_mol = ase.io.read(geometry_modifier_path, index=':', format='xyz')
+        coordinates_for_matching = old_mol.get_positions()
+        new_coordinates = new_mol.get_positions()
+        match_atoms = old_mol.get_chemical_symbols()
+
+        new_stk_ligand_building_blocks_list = {}
+        for idx, ligand in building_blocks.items():
+            coordinates_of_ligand = ligand.get_position_matrix()
+            ligand_atoms = [DART_Element(atom.get_atomic_number()).symbol for atom in ligand.get_atoms()]
+
+            new_ligand_coordinates = deepcopy(coordinates_of_ligand)
+            for lig_coord_idx, (lig_coord, lig_atom) in enumerate(zip(coordinates_of_ligand, ligand_atoms)):
+                if lig_atom == 'Hg':
+                    continue
+
+                for match_coord_idx, (match_coord, match_atom) in enumerate(zip(coordinates_for_matching, match_atoms)):
+                    if lig_atom == match_atom and np.allclose(lig_coord, match_coord, atol=1e-5):
+                        # Match of coordinates and elements found. Replace coordinates with new ones.
+                        new_ligand_coordinates[lig_coord_idx] = new_coordinates[match_coord_idx]
+                        break
+
+            new_ligand = ligand.with_position_matrix(new_ligand_coordinates)
+            new_stk_ligand_building_blocks_list[idx] = new_ligand
+
+        return new_stk_ligand_building_blocks_list
 
     def relax_and_check_structure(self, complex, building_blocks, ligands):
         """

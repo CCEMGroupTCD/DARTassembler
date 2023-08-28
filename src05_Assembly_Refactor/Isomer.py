@@ -12,7 +12,7 @@ class BuildIsomers:
         self.denticity_list = denticity_list
         self.return_all_isomers = return_all_isomers
         self.opt_choice = opt_choice    # todo: not used atm, what should happen here?
-        self.ligand_list = ligand_list
+        self.ligand_list = ligand_list  # todo: not used atm, what should happen here?
         self.ALL_building_blocks = []
         self.ALL_Assembled_complexes = []
 

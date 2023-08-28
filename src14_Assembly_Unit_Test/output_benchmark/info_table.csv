@@ -1,5 +1,5 @@
 attempt,success,complex idx,complex name,note,ligand names,ligand stoichiometries,batch idx,batch name,metal,oxi state,spin,topology,similarity,total charge,optimization,isomers,random seed
-0,True,0.0,KUYUFAFU,no optimization,"('unq_CSD-PASQOS-02-a', 'unq_CSD-OZUSIM-02-a')","('C10H9N2O2S1', 'C5H1F6O2')",0,Integration_test_1,Fe,+2,0,"(2, 2)","(1, 2)",0,False,Generate Lowest Energy,0
+0,True,0.0,ZADIMOMU,no optimization,"('unq_CSD-PASQOS-02-a', 'unq_CSD-OZUSIM-02-a')","('C10H9N2O2S1', 'C5H1F6O2')",0,Integration_test_1,Fe,+2,0,"(2, 2)","(1, 2)",0,False,Generate Lowest Energy,0
 1,False,,,clashing ligands,"('unq_CSD-PASQOS-02-a', 'unq_CSD-PASQOS-02-a')","('C10H9N2O2S1', 'C10H9N2O2S1')",1,Integration_test_6,Fe,+2,0,"(2, 2)","(1, 1)",0,False,Generate Lowest Energy,0
 2,True,1.0,PAMOMOYO,no optimization,"('unq_CSD-PEQCUK-02-a', 'unq_CSD-PEQCUK-02-a')","('C10H11N2', 'C10H11N2')",1,Integration_test_6,Fe,+2,0,"(2, 2)","(1, 1)",0,False,Generate Lowest Energy,0
 3,True,2.0,NOJAQITE,no optimization,"('unq_CSD-PASZUH-02-a', 'unq_CSD-PATBAP-01-d', 'unq_CSD-PAGFIQ-01-b')","('C23H27N3O2', 'B1F4', 'F1')",2,Integration_test_2,Fe,+2,0,"(2, 1, 1)","(1, 2, 3)",0,False,Generate Lowest Energy,0
