@@ -6,6 +6,7 @@ import difflib
 import shutil
 import warnings
 from copy import deepcopy
+import ase
 
 from constants.Paths import project_path, default_ligand_db_path
 from constants.Periodic_Table import all_atomic_symbols
@@ -36,6 +37,7 @@ _element = 'element'
 _oxidation_state = 'oxidation_state'
 _spin = 'spin'
 _complex_name_appendix = 'complex_name_appendix'
+_geometry_modifier_filepath = 'geometry_modifier_filepath'
 # _ligand_filters_path = 'ligand_filters_path'
 
 
@@ -565,6 +567,7 @@ class AssemblyInput(BaseInput):
                         _topology: [str, list, tuple],
                         _metal: [dict],
                         _complex_name_appendix: [str,type(None)],
+                        _geometry_modifier_filepath: [str, type(None)],
                         # _ligand_filters_path: [str, Path, type(None)],
                         }
     # Metal settings in the batch settings
@@ -697,9 +700,35 @@ class AssemblyInput(BaseInput):
         metal_list = self.get_metal_from_input(batch_settings[_metal])
         topology_similarity = self.get_topology_from_input(batch_settings[_topology])
         complex_name_appendix = batch_settings[_complex_name_appendix] or ''
+        geometry_modifier_filepath = self.get_geometry_modifier_from_input(batch_settings[_geometry_modifier_filepath])
 
 
-        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix
+        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath
+
+    def get_geometry_modifier_from_input(self, path):
+        if path is None:
+            return None
+
+        path = self.ensure_file_present(path, varname=f'{_batches}->{_geometry_modifier_filepath}')
+
+        try:
+            mols = ase.io.read(path, index=':', format='xyz')
+        except Exception as e:
+            self.raise_error(f"Error reading geometry modifier file '{path}': {e}")
+
+        if not len(mols) == 2:
+            self.raise_error(f"Geometry modifier file '{path}' must contain exactly two concatenated geometries, but contains {len(mols)} geometries.")
+
+        old_geometry, new_geometry = mols
+        if len(old_geometry) != len(new_geometry):
+            self.raise_error(f"Geometry modifier file '{path}' must contain two geometries with the same number of atoms, but the two geometries have {len(old_geometry)} and {len(new_geometry)} atoms, respectively.")
+
+        old_atoms = list(old_geometry.get_chemical_symbols())
+        new_atoms = list(new_geometry.get_chemical_symbols())
+        if not old_atoms == new_atoms:
+            self.raise_error(f"Geometry modifier file '{path}' must contain two geometries with the same elements in the same order, but the elements differ: {old_atoms} and {new_atoms}.")
+
+        return path
 
     def get_ligand_db_path_from_input(self, ligand_db_path):
         """

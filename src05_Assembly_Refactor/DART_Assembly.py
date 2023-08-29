@@ -19,7 +19,9 @@ from typing import Union
 from src05_Assembly_Refactor.Assembly_Input import AssemblyInput
 from src05_Assembly_Refactor.Assembly_Output import AssemblyOutput, BatchAssemblyOutput, _gbl_optimization_movie, \
     ComplexAssemblyOutput, append_global_concatenated_xyz
-
+import ase
+from copy import deepcopy
+import numpy as np
 warnings.simplefilter("always")
 
 
@@ -59,7 +61,7 @@ class DARTAssembly(object):
             # Set batch settings for the batch run
             self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction,\
             self.optimisation_instruction, self.random_seed, self.total_charge, metal_list, self.topology_similarity,\
-            self.complex_name_appendix = self.settings.check_and_return_batch_settings(batch_settings)
+            self.complex_name_appendix, self.geometry_modifier_filepath = self.settings.check_and_return_batch_settings(batch_settings)
             self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
             self.batch_idx = idx
             self.batch_outcontrol = BatchAssemblyOutput(self.batch_output_path)
@@ -152,8 +154,8 @@ class DARTAssembly(object):
                                                                                                                 metal=self.metal_type
                                                                                                                 )
             # Optionally modify the exact 3D coordinates of the ligands.
-            geometry_modifier_path = '/Users/timosommer/Downloads/changed_atoms_only.xyz'
-            stk_ligand_building_blocks_list = self.modify_ligand_geometry(geometry_modifier_path=geometry_modifier_path, building_blocks=stk_ligand_building_blocks_list)
+            if self.geometry_modifier_filepath is not None:
+                stk_ligand_building_blocks_list = self.modify_ligand_geometry(geometry_modifier_path=self.geometry_modifier_filepath, building_blocks=stk_ligand_building_blocks_list)
 
 
             #
@@ -215,9 +217,6 @@ class DARTAssembly(object):
         return
 
     def modify_ligand_geometry(self, geometry_modifier_path: Union[str, Path], building_blocks: dict):
-        import ase
-        from copy import deepcopy
-        import numpy as np
         old_mol, new_mol = ase.io.read(geometry_modifier_path, index=':', format='xyz')
         coordinates_for_matching = old_mol.get_positions()
         new_coordinates = new_mol.get_positions()

@@ -934,7 +934,8 @@
                 "Random_Seed": 0,
                 "Topology": "(2, 2)",
                 "Total_Charge": 0,
-                "complex_name_appendix": null
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": "../src05_Assembly_Refactor/geometry_modifier.xyz"
             },
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
@@ -950,7 +951,8 @@
                 "Random_Seed": 0,
                 "Topology": "(2, 2)--(1, 1)",
                 "Total_Charge": 0,
-                "complex_name_appendix": null
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null
             },
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
@@ -966,7 +968,8 @@
                 "Random_Seed": 0,
                 "Topology": "(2, 1, 1)",
                 "Total_Charge": 0,
-                "complex_name_appendix": null
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null
             },
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
@@ -982,7 +985,8 @@
                 "Random_Seed": 0,
                 "Topology": "(3, 2, 1)",
                 "Total_Charge": 0,
-                "complex_name_appendix": null
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null
             },
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
@@ -998,7 +1002,8 @@
                 "Random_Seed": 0,
                 "Topology": "(4, 1, 1)",
                 "Total_Charge": 0,
-                "complex_name_appendix": null
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null
             },
             {
                 "Input_Path": "../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
@@ -1014,7 +1019,8 @@
                 "Random_Seed": 23,
                 "Topology": "(5, 1)",
                 "Total_Charge": 0,
-                "complex_name_appendix": null
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null
             }
         ]
     },

@@ -19,6 +19,7 @@ Batches:
     Topology: '(2, 2)'
     Total_Charge: 0
     complex_name_appendix:
+    geometry_modifier_filepath: '../src05_Assembly_Refactor/geometry_modifier.xyz'
 
 
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -34,6 +35,7 @@ Batches:
     Topology: '(2, 2)--(1, 1)'
     Total_Charge: 0
     complex_name_appendix:
+    geometry_modifier_filepath:
 
 
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -49,6 +51,7 @@ Batches:
     Topology: '(2, 1, 1)'
     Total_Charge: 0
     complex_name_appendix:
+    geometry_modifier_filepath:
 
 
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -64,6 +67,7 @@ Batches:
     Topology: '(3, 2, 1)'
     Total_Charge: 0
     complex_name_appendix:
+    geometry_modifier_filepath:
 
 
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -79,6 +83,7 @@ Batches:
     Topology: '(4, 1, 1)'
     Total_Charge: 0
     complex_name_appendix:
+    geometry_modifier_filepath:
 
 
   - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -94,3 +99,4 @@ Batches:
     Topology: '(5, 1)'
     Total_Charge: 0
     complex_name_appendix:
+    geometry_modifier_filepath:
