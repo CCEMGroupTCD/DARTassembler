@@ -2,16 +2,9 @@ import collections
 from typing import List, Tuple, Dict, Union, Optional
 import networkx as nx
 from rdkit import Chem
-from pymatgen.core.periodic_table import Element as Pymatgen_Element
 import numpy as np
 from openbabel import openbabel as ob
-
-from pymatgen.core.composition import Composition
-
-# Removed this due to circular import error, and this was only used for type hinting.
-# from src01.Molecule import RCA_Ligand
-
-
+from constants.Periodic_Table import DART_Element
 
 unknown_rdkit_bond_orders = [0, 20, 21]
 
@@ -107,7 +100,7 @@ def calculate_angular_deviation_of_bond_axis_from_ligand_center(atomic_props: di
     # Calculate centroid
     if use_center_of_mass:
         atoms_list = atomic_props['atoms']
-        masses = np.array([Pymatgen_Element(atom).atomic_mass for atom in atoms_list])
+        masses = np.array([DART_Element(atom).atomic_mass for atom in atoms_list])
         x_centroid = np.sum(masses * x_centroid_list) / np.sum(masses)
         y_centroid = np.sum(masses * y_centroid_list) / np.sum(masses)
         z_centroid = np.sum(masses * z_centroid_list) / np.sum(masses)
@@ -228,7 +221,7 @@ def get_coordinates_and_elements_from_OpenBabel_mol(mol: ob.OBMol) -> Tuple[np.n
         coords[idx, 1] = atom.GetY()
         coords[idx, 2] = atom.GetZ()
         atomic_number = atom.GetAtomicNum()
-        elements.append(Pymatgen_Element.from_Z(atomic_number).symbol)
+        elements.append(DART_Element(atomic_number).symbol)
 
     return coords, elements
 

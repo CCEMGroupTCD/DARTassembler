@@ -66,7 +66,7 @@ if __name__ == '__main__':
     database = "CSD_MM_G"
 
     testing = 50_000           # if we would like to only do a test run. Set to False for full run
-    graph_strategy = "default"  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
+    graph_strategy = "default"  # the desired graph strategy: default, ase_cutoff, CSD
 
     overwrite_atomic_properties = True  # if atomic properties json should be overwritten. Only necessary after changing input files.
     use_existing_input_json = False  # if the existing input json should be used or the process started from the xzy files

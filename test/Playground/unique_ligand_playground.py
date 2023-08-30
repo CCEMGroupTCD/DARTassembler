@@ -5,15 +5,12 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib
+
+from constants.Periodic_Table import DART_Element
 from src01.utilities import unroll_dict_into_columns
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
-from src01.io_custom import load_unique_ligand_db
 from src01.DataBase import LigandDB
-from pathlib import Path
-from pymatgen.core.periodic_table import Element as Pymatgen_Element
 sns.set_theme()
-import itertools
 
 
 
@@ -40,7 +37,7 @@ def calculate_n_321_complexes_with_OH_fixed(charges_2: np.array, charges_3: np.a
     print('Calculate number of possible complexes for 321 topology with one OH fixed:')
     n_complexes = 0
     for metal in metals:
-        for os in Pymatgen_Element(metal).common_oxidation_states:
+        for os in DART_Element(metal).common_oxidation_states:
             n_possible_complexes = (charge_combinations == - os).sum()
             n_complexes += n_possible_complexes
             print(f'\t{metal} {os}+: {n_possible_complexes:e}')

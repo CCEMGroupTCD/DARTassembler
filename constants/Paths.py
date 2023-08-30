@@ -38,6 +38,7 @@ class project_path:
 # Default paths, to use if not user specified
 serverpath = Path(project_path().extend('ccem_server'))
 default_ligand_db_path = project_path().extend("data", "final_db_versions", "unique_ligand_db_v1.7.json")
+element_data_path = project_path().extend('constants', 'element_data_table.csv')
 
 # Fixed paths in project
 

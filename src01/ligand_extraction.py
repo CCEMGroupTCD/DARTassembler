@@ -42,7 +42,6 @@ class LigandExtraction:
                  graph_strat: str = "default",
                  exclude_charged_complexes: bool = False,
                  only_complexes_with_os: bool = False,
-                 only_real_transition_metals: bool = False,
                  unique_ligand_id: str = 'graph_hash_with_metal',
                  store_database_in_memory: bool = False,
                  ):
@@ -64,7 +63,6 @@ class LigandExtraction:
         self.store_database_in_memory = store_database_in_memory
         self.exclude_charged_complexes = exclude_charged_complexes
         self.only_complexes_with_os = only_complexes_with_os
-        self.only_real_transition_metals = only_real_transition_metals
         self.test_complexes = CHARGE_BENCHMARKED_COMPLEXES if not testing == False else []
         self.unique_ligand_id = unique_ligand_id
 
@@ -233,10 +231,6 @@ class LigandExtraction:
 
         if self.only_complexes_with_os and not c.has_metal_os():
             self.excluded_complex_ids['No metal OS'].append(c_id)
-            return False
-
-        if self.only_real_transition_metals and not c.metal_center_is_transition_metal():
-            self.excluded_complex_ids['Metal center not transition metal'].append(c_id)
             return False
 
         if self.exclude_not_fully_connected_complexes and not c.fully_connected:

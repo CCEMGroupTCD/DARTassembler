@@ -3,7 +3,7 @@ import numpy as np
 import warnings
 import os
 import stk
-from pymatgen.core.periodic_table import Element
+from constants.Periodic_Table import DART_Element
 
 elem_cov_radii = {'H': 0.32, 'He': 0.46, 'Li': 1.33, 'Be': 1.02, 'B': 0.85, 'C': 0.75, 'N': 0.71, 'O': 0.63, 'F': 0.64, 'Ne': 0.67, 'Na': 1.55, 'Mg': 1.39, 'Al': 1.26, 'Si': 1.16, 'P': 1.11,
                   'S': 1.03, 'Cl': 0.99, 'Ar': 0.96, 'K': 1.96, 'Ca': 1.71, 'Sc': 1.48, 'Ti': 1.36, 'V': 1.34, 'Cr': 1.22, 'Mn': 1.19, 'Fe': 1.16, 'Co': 1.11, 'Ni': 1.1, 'Cu': 1.12, 'Zn': 1.18,
@@ -80,8 +80,8 @@ class PostFilter:
                 atom_2_id = bond.get_atom2().get_id()
                 atom_1_pos = list(values_1.get_atomic_positions(atom_1_id))
                 atom_2_pos = list(values_1.get_atomic_positions(atom_2_id))
-                atom_1_AN = Element.from_Z(bond.get_atom1()._atomic_number).symbol
-                atom_2_AN = Element.from_Z(bond.get_atom2()._atomic_number).symbol
+                atom_1_AN = DART_Element(bond.get_atom1()._atomic_number).symbol
+                atom_2_AN = DART_Element(bond.get_atom2()._atomic_number).symbol
                 distance = np.linalg.norm(atom_1_pos[0] - atom_2_pos[0])
 
                 if distance > (((elem_cov_radii[atom_1_AN]) + (elem_cov_radii[atom_2_AN])) + self.threshold):

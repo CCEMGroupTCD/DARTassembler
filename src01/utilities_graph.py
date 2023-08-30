@@ -1,13 +1,14 @@
 import networkx as nx
 import pandas as pd
 from copy import deepcopy
-from networkx import weisfeiler_lehman_graph_hash as graph_hash
-from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from rdkit import Chem
 from pysmiles import read_smiles
 import warnings
 
 import matplotlib
+
+from constants.Periodic_Table import DART_Element
+
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from typing import Union
@@ -378,7 +379,7 @@ def rdchem_mol_to_nx(mol: Chem.rdchem.Mol) -> nx.Graph:
 
     for atom in mol.GetAtoms():
         G.add_node(atom.GetIdx(),
-                   node_label=Pymatgen_Element.from_Z(
+                   node_label=DART_Element(
                        atom.GetAtomicNum()).symbol,
                    atomic_num=atom.GetAtomicNum(),
                    # formal_charge=atom.GetFormalCharge(),  #is always set to 0

@@ -16,8 +16,6 @@ from pymatgen.core.periodic_table import Element as Pymatgen_Element
 import sys
 from io import StringIO
 from tqdm import tqdm
-from molSimplify.Informatics.autocorrelation import generate_full_complex_autocorrelations
-from molSimplify.Classes.mol3D import mol3D
 # import RACS
 from src01.utilities import flatten_list, identify_metal_in_atoms_list
 from src01.utilities_graph import get_reindexed_graph, get_sorted_atoms_and_indices_from_graph

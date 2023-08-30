@@ -2,11 +2,12 @@ import warnings
 from pathlib import Path
 from copy import deepcopy
 import numpy as np
+
+from constants.Periodic_Table import DART_Element
 from src01.DataBase import MoleculeDB, LigandDB
 from typing import List, Dict, Union
 from src02_Pre_Assembly_Filtering.Box_Excluder_Filter import box_filter
 from src02_Pre_Assembly_Filtering.constant_Ligands import get_monodentate_list, get_reactant
-from pymatgen.core.periodic_table import Element
 from src01.Molecule import RCA_Ligand
 from rdkit.Chem import rdmolfiles
 from src05_Assembly_Refactor.building_block_utility import ligand_to_mol
@@ -288,7 +289,7 @@ class FilterStage:
                 # print(ligand)
                 electrons = 0
                 for atom in ligand.atomic_props['atoms']:
-                    Z = Element(atom).data["Atomic no"]
+                    Z = DART_Element(atom).atomic_number
                     electrons += Z
                 electrons = electrons * (-1)
                 num_electrons = electrons + ligand.pred_charge
@@ -377,17 +378,17 @@ class FilterStage:
 
                         x = atom_pos[1][0]
                         x_centroid_list.append(x)
-                        x_COM_list.append(x * Element(atom_type).atomic_mass)
+                        x_COM_list.append(x * DART_Element(atom_type).atomic_mass)
 
                         y = atom_pos[1][1]
                         y_centroid_list.append(y)
-                        y_COM_list.append(y * Element(atom_type).atomic_mass)
+                        y_COM_list.append(y * DART_Element(atom_type).atomic_mass)
 
                         z = atom_pos[1][2]
                         z_centroid_list.append(z)
-                        z_COM_list.append(z * Element(atom_type).atomic_mass)
+                        z_COM_list.append(z * DART_Element(atom_type).atomic_mass)
 
-                        all_atomic_masses.append(Element(atom_type).atomic_mass)
+                        all_atomic_masses.append(DART_Element(atom_type).atomic_mass)
 
                     # [coord_atom_pos,  centre_of_points, centre_of_mass]
                     coord_atom_pos = np.array(ligand.coordinates[ligand.ligand_to_metal[0]][1])

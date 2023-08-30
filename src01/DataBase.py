@@ -5,12 +5,13 @@ from copy import deepcopy
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
+
+from constants.Periodic_Table import DART_Element
 from src01.Molecule import RCA_Molecule, RCA_Complex, RCA_Ligand    # important, don't delete, read in by string that's why they appear grey
 from src01.utilities_graph import remove_node_features_from_graph, make_multigraph_to_graph, remove_edge_features_from_graph
 from src01.utilities import identify_metal_in_ase_mol
 from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
-from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from src01.io_custom import save_json, NumpyEncoder, load_json, load_unique_ligand_db, load_complex_db, iterate_over_json
 from scipy.special import comb
 from typing import Union
@@ -437,7 +438,7 @@ class LigandDB(MoleculeDB):
 
 
     def calc_number_of_possible_complexes_for_metal(self, metal: str, geometries: dict = None) -> pd.DataFrame:
-        metal_oxi_states = Pymatgen_Element(metal).common_oxidation_states
+        metal_oxi_states = DART_Element(metal).common_oxidation_states
         results = []
 
         # possible geometries for octahedral and square-planar complexes. This list needs to be expanded when adding new geometries.
@@ -516,7 +517,7 @@ if __name__ == '__main__':
 
     db_version = '1.7'
     db_path = f'../data/final_db_versions/unique_ligand_db_v{db_version}.json'
-    n_max = None
+    n_max = 1000
 
     db = LigandDB.from_json(json_=db_path, type_='Ligand', max_number=n_max)
     df_metals = db.calc_number_of_possible_complexes()

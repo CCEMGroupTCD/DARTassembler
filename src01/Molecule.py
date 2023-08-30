@@ -5,28 +5,24 @@ import warnings
 import networkx as nx
 import numpy as np
 from copy import deepcopy
-
+import re
+from typing import Union, List
 import pysmiles
 # some special functions which are required
-from pymatgen.core.periodic_table import Element as Pymatgen_Element
-from pymatgen.core.composition import Composition
+from src01.composition import Composition
 from ase.visualize import view
-from networkx import weisfeiler_lehman_graph_hash as graph_hash
 from sympy import Point3D, Plane
-from typing import Union, Tuple, Any
 import re
 
 # collection of molecule objects of other packages
 from ase import io, Atoms
-from pymatgen.core.structure import Molecule as PyMatMol
 from rdkit import Chem
-from rdkit.Chem.rdMolDescriptors import CalcMolFormula
-from rdkit.Chem import Descriptors
-from pysmiles import read_smiles, write_smiles
+from pysmiles import read_smiles
 
+from constants.Periodic_Table import DART_Element
 from constants.constants import metals_in_pse
-from src01.bond_orders import graph_to_smiles, bond_order_rdkit_to_pysmiles
-from src01.utilities_ML import get_element_descriptors, get_xtb_descriptors
+from src01.bond_orders import graph_to_smiles
+from src11_machine_learning.utils.utilities_ML import get_element_descriptors, get_xtb_descriptors
 # importing own scripts
 from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
     unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label, \
@@ -34,10 +30,9 @@ from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node
     get_only_complex_graph_connected_to_metal, get_adjacency_matrix, assert_graph_and_coordinates_are_consistent, \
     remove_node_features_from_graph, make_multigraph_to_graph
 from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between
-from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, graph_to_rdkit_mol, \
-    unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center
+from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center
 from src05_Assembly_Refactor.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
-from src11_machine_learning.dataset_preparation.descriptors import RDKit_2D, RAC
+from src11_machine_learning.dataset_preparation.descriptors import RAC
 
 class RCA_Molecule(object):
     """
@@ -60,7 +55,6 @@ class RCA_Molecule(object):
         :param kwargs: additional parameters which are specified for the graph creation, such as
             skin: float
             cutoff_corrections_for_metals
-            strategy: (pymatgen strategy)
         """
         self.warnings = warnings
         self.node_label = 'node_label'  # node label specifying the atom type
@@ -296,7 +290,7 @@ class RCA_Molecule(object):
         return n_bonds
 
     def get_n_protons(self) -> int:
-        n_protons = sum([Pymatgen_Element(el).Z for el in self.atomic_props['atoms']])
+        n_protons = sum([DART_Element(el).atomic_number for el in self.atomic_props['atoms']])
         return n_protons
 
     def has_bond_type(self, bond_types: list, bond_type_name: str='bond_type') -> bool:
@@ -398,7 +392,7 @@ class RCA_Molecule(object):
                                     ):
         """
         A more convenient creation method, as in general the atomic properties already imply the information for
-        the ase mol (and the pymatgen mol)
+        the ase mol
         """
 
         coord_list_3D = [[atomic_props_mol[key_][i] for key_ in ["x", "y", "z"]] for i, _ in
@@ -727,6 +721,7 @@ class RCA_Molecule(object):
         return convert_RCA_to_stk_Molecule(self)
 
     def to_pymatMol(self):
+        from pymatgen.core.structure import Molecule as PyMatMol
         return PyMatMol(species=self.atomic_props["atoms"],
                         coords=[[self.atomic_props[key_][i] for key_ in ["x", "y", "z"]] for i, _ in
                                 enumerate(self.atomic_props["x"])])
@@ -791,7 +786,7 @@ class RCA_Ligand(RCA_Molecule):
         if 'original_metal_position' in kwargs.keys():
             self.original_metal_position = kwargs['original_metal_position']
         try:
-            self.original_metal_symbol = Pymatgen_Element.from_Z(self.original_metal).symbol
+            self.original_metal_symbol = DART_Element(self.original_metal).symbol
         except (ValueError, AttributeError):
             pass
 
@@ -1157,7 +1152,7 @@ class RCA_Ligand(RCA_Molecule):
 
     def generate_descriptors(self, get_3D_descriptors: bool = True) -> dict:
         """
-        Generates descriptors for the ligand.
+        Generates descriptors for the ligand. Needs pymatgen, xtb and mordred installed.
         """
         descriptors = {}
 
@@ -1215,8 +1210,7 @@ class RCA_Complex(RCA_Molecule):
             self.shift_metal_to_origin()
 
             self.metal = identify_metal_in_ase_mol(self.mol)
-            self.pmg_metal = Pymatgen_Element(self.metal)
-            self.metal_atomic_number = self.pmg_metal.Z
+            self.metal_atomic_number = DART_Element(self.metal).atomic_number
             self.metal_oxi_state = make_None_to_NaN(self.global_props['metal_oxi_state'])
             self.charge = make_None_to_NaN(self.global_props['charge'])
             self.metal_idx = self.atomic_props['atoms'].index(self.metal)
@@ -1430,12 +1424,12 @@ class RCA_Complex(RCA_Molecule):
         consistent = csd_comp.almost_equals(xyz_comp)
 
         if not consistent and print_different_elements:
-            xyz_elements = [el.symbol for el in xyz_comp.elements]
-            csd_elements = [el.symbol for el in csd_comp.elements]
+            xyz_elements = [DART_Element(el).symbol for el in xyz_comp.elements]
+            csd_elements = [DART_Element(el).symbol for el in csd_comp.elements]
             different_elements = set(xyz_elements).symmetric_difference(csd_elements)
             if different_elements:
                 print(f'Differing elements in stoichiometries of xyz and CSD in complex {self.mol_id}: {list(different_elements)}')
-            diff_dict = {el: int(xyz_comp[el]-csd_comp[el]) for el in set(csd_elements+xyz_elements)}
+            diff_dict = {el: int(xyz_comp.elements[el]-csd_comp.elements[el]) for el in set(csd_elements+xyz_elements)}
             diff_dict = {key: val for key, val in diff_dict.items() if val != 0}
             print(f'Different elements counts for complex {self.mol_id}: {diff_dict}')
 
@@ -1470,15 +1464,14 @@ class RCA_Complex(RCA_Molecule):
 
         if ignore_element_count:
             # Check only if the same elements occur, not if the elements have the same count.
-            xyz_elements = [el.symbol for el in xyz_comp.elements]
-            csd_elements = [el.symbol for el in comp.elements]
+            xyz_elements = [DART_Element(el).symbol for el in xyz_comp.elements]
+            csd_elements = [DART_Element(el).symbol for el in comp.elements]
             different_elements = set(xyz_elements).symmetric_difference(csd_elements)
             consistent = len(different_elements) == 0
         else:
             consistent = comp.almost_equals(xyz_comp)
 
         return consistent
-
 
 
     def complex_is_biggest_fragment(self, allow_complexes_greater_than: int = np.nan) -> bool:
@@ -1491,7 +1484,7 @@ class RCA_Complex(RCA_Molecule):
         max_n_other_atoms = 0
         n_complex_atoms = 0
         for atoms in el_fragments:
-            is_complex = any([Pymatgen_Element(atom).Z in metals_in_pse for atom in atoms])
+            is_complex = any([DART_Element(atom).atomic_number in metals_in_pse for atom in atoms])
             if is_complex:
                 assert n_complex_atoms == 0, f'There seem to be complexes with more than one transition metal in complex {self.mol_id}.'
                 n_complex_atoms = len(atoms)
@@ -1507,9 +1500,6 @@ class RCA_Complex(RCA_Molecule):
             is_biggest_fragment = True
 
         return is_biggest_fragment
-
-    def metal_center_is_transition_metal(self):
-        return Pymatgen_Element(self.metal).is_transition_metal
 
     def add_additional_complex_information_to_global_props(self):
         info = {}
@@ -1655,7 +1645,7 @@ class RCA_Complex(RCA_Molecule):
                                  name=ligand_name,
                                  graph=ligand_graph,
                                  global_props=ligand_global_props,
-                                 original_metal=Pymatgen_Element(metal_in_complex).Z,
+                                 original_metal=DART_Element(metal_in_complex).atomic_number,
                                  original_metal_position=self.metal_position,
                                  original_metal_os=self.metal_oxi_state
                                  )
@@ -1746,7 +1736,7 @@ class RCA_Complex(RCA_Molecule):
         d['ligands'] = [lig.write_to_mol_dict() for lig in self.ligands]
 
         # Do not output write these fields to the output dictionary, mostly because they are not json serializable
-        do_not_output_automatically = ['ligands', 'node_label', 'mol', 'pmg_metal', 'smiles', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
+        do_not_output_automatically = ['ligands', 'node_label', 'mol', 'smiles', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
 
         for prop, val in vars(self).items():
             if not prop in do_not_output_automatically:
@@ -1789,3 +1779,8 @@ class RCA_Complex(RCA_Molecule):
             other_props=other_props,
             **kwargs
         )
+
+
+
+
+

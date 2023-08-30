@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import numpy as np
-from pymatgen.core.periodic_table import Element as Pymatgen_Element
+from constants.Periodic_Table import DART_Element
 from constants.constants import metals_in_pse
 from ase import Atoms
 import warnings
@@ -118,11 +118,11 @@ def identify_metal_in_ase_mol(mol: Atoms):
 
     assert len(metals) == 1, "Molecule seems to be not a single metal complex, metal identification failed"
 
-    return Pymatgen_Element.from_Z(metals.pop()).symbol
+    return DART_Element(metals.pop()).symbol
 
 
 def identify_metal_in_atoms_list(atoms: list):
-    metals = [el for el in atoms if Pymatgen_Element(el).is_metal]
+    metals = [el for el in atoms if DART_Element(el).is_metal]
     assert len(metals) == 1, "Molecule seems to be not a single metal complex, metal identification failed"
 
     return metals[0]
@@ -171,7 +171,7 @@ def original_xyz_indices_to_indices_wo_metal(orig_coordinates: dict) -> list:
     counter = 0
     for orig_idx, el in orig_indices:
         
-        is_metal = Pymatgen_Element(el).is_metal
+        is_metal = DART_Element(el).is_metal
         if is_metal:
             metal_idx = orig_idx
             continue
@@ -208,7 +208,7 @@ def convert_atomic_props_from_original_xyz_indices_to_indices_wo_metal(atomic_pr
             atomic_props_new_idc[new_idx] = prop
     
     all_new_elements = [props[0] for props in atomic_props_new_idc.values()]
-    assert not any([Pymatgen_Element(el).is_metal for el in all_new_elements]), 'Found metal in ligand? Or Index Error.'
+    assert not any([DART_Element(el).is_metal for el in all_new_elements]), 'Found metal in ligand? Or Index Error.'
     return atomic_props_new_idc
 
 
@@ -224,7 +224,7 @@ def get_all_atomic_properties_in_long_array(atoms: list, coords: list, atomic_pr
 
 
 def get_all_atomic_properties_with_modified_coordinates_wo_metal_in_long_array(atoms, coords, atomic_props, modified_coordinates):
-    not_metal_idx = [not Pymatgen_Element(el).is_metal for el in atoms]
+    not_metal_idx = [not DART_Element(el).is_metal for el in atoms]
     
     all_atomic_props = get_all_atomic_properties_in_long_array(atoms, coords, atomic_props)
     all_atomic_props_wo_metal = all_atomic_props[not_metal_idx, :]

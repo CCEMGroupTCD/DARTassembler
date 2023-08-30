@@ -16,6 +16,8 @@ import pandas as pd
 from src02_ChargeAssignment.charge_benchmark.merge_benchmark_charges import \
     update_ligands_with_information_from_ligand_db
 from test.Charge_Benchmark import ChargeBenchmark
+6
+
 
 # TODO in preprocessing CSD:
 #   - filters:
@@ -55,8 +57,8 @@ if __name__ == '__main__':
     database_path = '../data_input/CSD_MM_G'  # in github
     data_store_path = '../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
-    testing = 1000  # if we would like to only do a test run. Set to False for full run
-    graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD, pymatgen_NN, molsimplifyGraphs
+    testing = 5000  # if we would like to only do a test run. Set to False for full run
+    graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD
 
     overwrite_atomic_properties = False     # if atomic properties json should be overwritten. Only necessary after changing input files.
     use_existing_input_json = True          # if the existing input json should be used. For speeding up test runs. Not critical
@@ -68,7 +70,7 @@ if __name__ == '__main__':
 
 
 
-    # Just for safety, in case I forget
+    # Just for safety
     if testing == False:
         store_database_in_memory = False
     db = main(
@@ -120,7 +122,7 @@ if __name__ == '__main__':
         print('Double checking if all data is still the same after refactoring:')
         check_db = {
             'tmQM_Ligands_unique': df_unique_ligands,
-            'tmQM_Ligands_full': df_full_ligands,
+            # 'tmQM_Ligands_full': df_full_ligands,
             'complex_db': df_complexes,
         }
         for db_name, df_new in check_db.items():
