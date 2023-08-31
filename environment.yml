@@ -16,4 +16,4 @@ dependencies:
   - molsimplify
   - pip
   - pbr
-prefix: /Users/cianclarke/opt/anaconda3/envs/CreateTMC
+prefix: /Users/cianclarke/opt/anaconda3/envs/DART

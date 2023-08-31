@@ -1,0 +1,26 @@
+name: DART
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - ase
+  - jsonlines
+  - networkx
+  - numpy
+  - openbabel=3.1.1=py39hb4f85b1_3
+  - pandas
+  - pip
+  - python=3.9.5
+  - pyyaml
+  - rdkit
+  - scipy
+  - scikit-learn
+  - sympy
+  - tqdm
+  - pip:
+      - mchammer==1.0.4
+      - pysmiles==1.0.2
+      - spindry==0.0.91
+      - stk==2022.6.17.0
+      - vabene==0.0.5
+prefix: /Users/timosommer/opt/anaconda3/envs/DART

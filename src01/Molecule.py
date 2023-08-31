@@ -22,7 +22,6 @@ from pysmiles import read_smiles
 from constants.Periodic_Table import DART_Element
 from constants.constants import metals_in_pse
 from src01.bond_orders import graph_to_smiles
-from src11_machine_learning.utils.utilities_ML import get_element_descriptors, get_xtb_descriptors
 # importing own scripts
 from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
     unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label, \
@@ -32,7 +31,6 @@ from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node
 from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between
 from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center
 from src05_Assembly_Refactor.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
-from src11_machine_learning.dataset_preparation.descriptors import RAC
 
 class RCA_Molecule(object):
     """
@@ -1131,8 +1129,10 @@ class RCA_Ligand(RCA_Molecule):
 
     def get_xtb_descriptors(self):
         """
-        Return xtb descriptors for the molecule.
+        Return xtb descriptors for the molecule. Needs xtb installed.
         """
+        from src11_machine_learning.utils.utilities_ML import get_xtb_descriptors
+
         try:
             charge = self.pred_charge
             self.xtb_descriptors = get_xtb_descriptors(self.get_xyz_file_format_string(), charge=charge,
@@ -1152,8 +1152,9 @@ class RCA_Ligand(RCA_Molecule):
 
     def generate_descriptors(self, get_3D_descriptors: bool = True) -> dict:
         """
-        Generates descriptors for the ligand. Needs pymatgen, xtb and mordred installed.
+        Generates descriptors for the ligand. Needs pymatgen and mordred installed.
         """
+        from src11_machine_learning.utils.utilities_ML import get_element_descriptors
         descriptors = {}
 
         # Global descriptors
@@ -1682,6 +1683,8 @@ class RCA_Complex(RCA_Molecule):
         """
         Generates descriptors for the complex and its ligands.
         """
+        from src11_machine_learning.utils.utilities_ML import get_element_descriptors
+        from src11_machine_learning.dataset_preparation.descriptors import RAC
         descriptors = {}
 
         # Complex descriptors

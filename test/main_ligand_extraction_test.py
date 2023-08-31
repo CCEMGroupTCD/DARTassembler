@@ -1,22 +1,13 @@
 """
 This is the main script for the extraction of ligands.py from a database.
 """
-from copy import deepcopy
-from typing import Union
-
-import numpy as np
-from sklearn.metrics import accuracy_score, r2_score
-
-from src01.DataBase import LigandDB, ComplexDB
 from src01.io_custom import load_json, load_full_ligand_db
 from src01.main_ligand_extraction import main
 from src01.utilities import unroll_dict_into_columns, sort_dict_recursively_inplace
 from pathlib import Path
 import pandas as pd
-from src02_ChargeAssignment.charge_benchmark.merge_benchmark_charges import \
-    update_ligands_with_information_from_ligand_db
 from test.Charge_Benchmark import ChargeBenchmark
-6
+
 
 
 # TODO in preprocessing CSD:

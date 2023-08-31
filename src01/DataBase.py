@@ -1,6 +1,5 @@
 import functools
 import json
-from collections import Counter
 from copy import deepcopy
 from tqdm import tqdm
 import pandas as pd
@@ -15,13 +14,10 @@ import networkx as nx
 from src01.io_custom import save_json, NumpyEncoder, load_json, load_unique_ligand_db, load_complex_db, iterate_over_json
 from scipy.special import comb
 from typing import Union
-from datetime import datetime
 from pathlib import Path
 import jsonlines
-from memory_profiler import profile
 import itertools
 
-from src11_machine_learning.dataset_preparation.descriptors import SOAP_3D
 
 
 class BaselineDB:
@@ -231,6 +227,7 @@ class LigandDB(MoleculeDB):
         Adds SOAP features to all molecules in the database.
         :return: SOAP descriptors.
         """
+        from src11_machine_learning.dataset_preparation.descriptors import SOAP_3D
         ase_ligands = [lig.mol for lig in self.db.values()]
         soap = SOAP_3D(
             ase_molecules=ase_ligands,

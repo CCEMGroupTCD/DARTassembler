@@ -8,7 +8,6 @@ from src01.DataBase import MoleculeDB, LigandDB
 from typing import List, Dict, Union
 from src02_Pre_Assembly_Filtering.Box_Excluder_Filter import box_filter
 from src02_Pre_Assembly_Filtering.constant_Ligands import get_monodentate_list, get_reactant
-from src01.Molecule import RCA_Ligand
 from rdkit.Chem import rdmolfiles
 from src05_Assembly_Refactor.building_block_utility import ligand_to_mol
 from rdkit.Chem.Draw import rdMolDraw2D
