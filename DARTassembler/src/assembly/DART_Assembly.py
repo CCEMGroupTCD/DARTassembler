@@ -1,21 +1,21 @@
 from unittest.mock import patch
 
 from DARTassembler.src.constants.Periodic_Table import DART_Element
-from src05_Assembly_Refactor.Monkeypatch_stk import MONKEYPATCH_STK_SmartsFunctionalGroupFactory
+from DARTassembler.src.assembly.Monkeypatch_stk import MONKEYPATCH_STK_SmartsFunctionalGroupFactory
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
-from src05_Assembly_Refactor.Assemble import PlacementRotation
-from src05_Assembly_Refactor.ligands import ChooseRandomLigands
-from src05_Assembly_Refactor.Isomer import BuildIsomers
-from src05_Assembly_Refactor.Optimise import OPTIMISE
-from src05_Assembly_Refactor.Post_Filter import PostFilter
+from DARTassembler.src.assembly.Assemble import PlacementRotation
+from DARTassembler.src.assembly.ligands import ChooseRandomLigands
+from DARTassembler.src.assembly.Isomer import BuildIsomers
+from DARTassembler.src.assembly.Optimise import OPTIMISE
+from DARTassembler.src.assembly.Post_Filter import PostFilter
 import random
 import warnings
 import pandas as pd
-from src05_Assembly_Refactor.TransitionMetalComplex import TransitionMetalComplex as TMC
+from DARTassembler.src.assembly.TransitionMetalComplex import TransitionMetalComplex as TMC
 from pathlib import Path
 from typing import Union
-from src05_Assembly_Refactor.Assembly_Input import AssemblyInput
-from src05_Assembly_Refactor.Assembly_Output import AssemblyOutput, BatchAssemblyOutput, _gbl_optimization_movie, \
+from DARTassembler.src.assembly.Assembly_Input import AssemblyInput
+from DARTassembler.src.assembly.Assembly_Output import AssemblyOutput, BatchAssemblyOutput, _gbl_optimization_movie, \
     ComplexAssemblyOutput, append_global_concatenated_xyz
 import ase
 from copy import deepcopy

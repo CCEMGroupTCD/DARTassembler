@@ -1,7 +1,7 @@
 """
 This module is a wrapper for the ligand filtering code. It takes in a filter input file and returns a ligand filter object.
 """
-from src02_Pre_Assembly_Filtering.Ligand_Filters import LigandFilters
+from DARTassembler.src.ligand_filters.Ligand_Filters import LigandFilters
 from typing import Union
 from pathlib import Path
 
@@ -24,8 +24,8 @@ def filter_ligands(filter_input_path: Union[str, Path], nmax: Union[int, None] =
 
 # Integration test, to check if everything is working and the same as before.
 if __name__ == "__main__":
-    from constants.Paths import project_path
-    from test.Integration_Test import IntegrationTest
+    from DARTassembler.src.constants.Paths import project_path
+    from dev.test.Integration_Test import IntegrationTest
 
     ligand_filter_path = project_path().extend('src05_Assembly_Refactor', 'ligandfilters.yml')
     max_number = 5000

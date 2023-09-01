@@ -5,7 +5,7 @@ in the RCA_Molecule and RCA_Ligand format respecitvely
 and here it is
 """
 from DARTassembler.src.ligand_extraction.DataBase import MoleculeDB
-from src01.DataLoader import DataLoader
+from DARTassembler.src.ligand_extraction.DataLoader import DataLoader
 
 
 def csd_graphs_not_usable_yet():

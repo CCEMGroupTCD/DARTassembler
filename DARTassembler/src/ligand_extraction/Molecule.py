@@ -8,7 +8,7 @@ from copy import deepcopy
 from typing import Union
 import pysmiles
 # some special functions which are required
-from src01.composition import Composition
+from DARTassembler.src.ligand_extraction.composition import Composition
 from ase.visualize import view
 from sympy import Point3D, Plane
 import re
@@ -20,16 +20,16 @@ from pysmiles import read_smiles
 
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.constants.constants import metals_in_pse
-from src01.bond_orders import graph_to_smiles
+from DARTassembler.src.ligand_extraction.bond_orders import graph_to_smiles
 # importing own scripts
-from src01.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
+from DARTassembler.src.ligand_extraction.utilities_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, graphs_are_equal, \
     unify_graph, get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, find_node_in_graph_by_label, \
     get_graph_fragments, count_atoms_with_n_bonds, get_graph_hash, get_heavy_atoms_graph, \
     get_only_complex_graph_connected_to_metal, get_adjacency_matrix, assert_graph_and_coordinates_are_consistent, \
     remove_node_features_from_graph, make_multigraph_to_graph
-from src01.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between
-from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center
-from src05_Assembly_Refactor.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
+from DARTassembler.src.ligand_extraction.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center
+from DARTassembler.src.assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
 class RCA_Molecule(object):
     """
@@ -437,7 +437,7 @@ class RCA_Molecule(object):
         self.graph = self.make_graph(...)
         which will set self.graph to the newly created graph
         """
-        from src01.GraphCreation import GraphCreation
+        from DARTassembler.src.ligand_extraction.GraphCreation import GraphCreation
 
         return GraphCreation(
             graph_creating_strategy=graph_creating_strategy,

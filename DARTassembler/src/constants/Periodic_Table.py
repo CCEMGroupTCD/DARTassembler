@@ -2,7 +2,7 @@
 This file contains the periodic table with data as provided by mendeleev, but much faster than using mendeleev.element().
 """
 import pandas as pd
-from constants.Paths import element_data_path
+from DARTassembler.src.constants.Paths import element_data_path
 from typing import Union
 
 # Load periodic table data from mendeleev and store it in dictionaries for fast access

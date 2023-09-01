@@ -1,4 +1,4 @@
-# from src01.io_custom import load_unique_ligand_db, load_complex_db     # circular import error
+# from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_complex_db     # circular import error
 from copy import deepcopy
 
 import pandas as pd

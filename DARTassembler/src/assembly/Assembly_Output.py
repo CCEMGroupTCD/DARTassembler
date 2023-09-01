@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Union
 import json
 import pandas as pd
-from src05_Assembly_Refactor.Assembly_Input import AssemblyInput
+from DARTassembler.src.assembly.Assembly_Input import AssemblyInput
 
 _gbl_optimization_movie = 'ffmovie.xyz'
 _gbl_concatenated_xyz = 'INTEGRATION_TEST.xyz'

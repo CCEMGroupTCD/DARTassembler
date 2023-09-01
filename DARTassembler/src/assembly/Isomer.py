@@ -1,7 +1,7 @@
-import src05_Assembly_Refactor.stk_extension as stk_e
+import DARTassembler.src.assembly.stk_extension as stk_e
 import numpy as np
 import stk
-from src05_Assembly_Refactor.building_block_utility import get_energy_stk, mercury_remover
+from DARTassembler.src.assembly.building_block_utility import get_energy_stk, mercury_remover
 
 class BuildIsomers:
     def __init__(self, topology, building_blocks_list, metal_input, charge_input, denticity_list, return_all_isomers, opt_choice: bool, ligand_list):

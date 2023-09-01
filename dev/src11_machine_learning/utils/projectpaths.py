@@ -12,7 +12,7 @@ import inspect
 import src11_machine_learning
 from pathlib import Path
 
-source_dir = '/Users/timosommer/PhD/projects/RCA/projects/DART/'
+source_dir = '//'
 
 def projectpath(*relpaths):
     return Path(source_dir, *relpaths)

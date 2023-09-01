@@ -1,7 +1,7 @@
 """
 This is the main script for the extraction of ligands.py from a database.
 """
-from src01.ligand_extraction import LigandExtraction
+from DARTassembler.src.ligand_extraction.ligand_extraction import LigandExtraction
 from typing import Union
 from DARTassembler.src.constants.constants import project_path
 

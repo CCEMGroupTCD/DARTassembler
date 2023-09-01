@@ -1,7 +1,7 @@
 import pandas as pd
 from pathlib import Path
 import numpy as np
-from src01.io_custom import load_full_ligand_db
+from DARTassembler.src.ligand_extraction.io_custom import load_full_ligand_db
 
 def set_dict_keys_to_csd_code_and_stoichiometry(d: dict) -> dict:
     """
@@ -68,7 +68,7 @@ def update_ligands_with_information_from_ligand_db(df_benchmark: pd.DataFrame, l
 
 if __name__ == '__main__':
 
-    benchmark_charge_dir = '../../test/debug/databases/charge_benchmark'
+    benchmark_charge_dir = '../../../../dev/test/debug/databases/charge_benchmark'
     benchmark_charge_filenames = {
                                     'Cian1': 'Cian_already_assigned_ligand_charges.csv',
                                     'Cian2': 'Cian_BenchMark_corrected_170223.csv',

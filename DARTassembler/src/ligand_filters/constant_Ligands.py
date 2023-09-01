@@ -1,4 +1,4 @@
-from src01.Molecule import RCA_Ligand
+from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
 
 
 def get_reactant():

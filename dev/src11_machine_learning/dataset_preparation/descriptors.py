@@ -17,9 +17,9 @@ import sys
 from io import StringIO
 from tqdm import tqdm
 # import RACS
-from src01.utilities import flatten_list, identify_metal_in_atoms_list
-from src01.utilities_graph import get_reindexed_graph, get_sorted_atoms_and_indices_from_graph
-from src01.bond_orders import graph_to_smiles
+from DARTassembler.src.ligand_extraction.utilities import flatten_list, identify_metal_in_atoms_list
+from DARTassembler.src.ligand_extraction.utilities_graph import get_reindexed_graph, get_sorted_atoms_and_indices_from_graph
+from DARTassembler.src.ligand_extraction.bond_orders import graph_to_smiles
 
 def warn_if_nan_values(df):
     nan_columns = df.columns[df.isna().any()].tolist()

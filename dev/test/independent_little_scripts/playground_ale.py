@@ -1,6 +1,6 @@
 import pandas as pd
-from src01.io_custom import load_json
-from src01.utilities_graph import graph_from_graph_dict
+from DARTassembler.src.ligand_extraction.io_custom import load_json
+from DARTassembler.src.ligand_extraction.utilities_graph import graph_from_graph_dict
 
 if __name__ == '__main__':
 

@@ -10,10 +10,10 @@ import json
 import re
 from DARTassembler.src.constants.Periodic_Table import DART_Element as element
 
-from src01.utilities_Molecule import original_metal_ligand
-from src01.Molecule import RCA_Molecule, RCA_Ligand
-from src01.utilities_graph import graphs_are_equal
-from src05_Assembly_Refactor.utilities_assembly import generate_pronounceable_word
+from DARTassembler.src.ligand_extraction.utilities_Molecule import original_metal_ligand
+from DARTassembler.src.ligand_extraction.Molecule import RCA_Molecule, RCA_Ligand
+from DARTassembler.src.ligand_extraction.utilities_graph import graphs_are_equal
+from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word
 
 atomic_number_Hg = 80
 

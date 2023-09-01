@@ -1,0 +1,16 @@
+ase
+jsonlines
+networkx
+numpy
+pandas
+pyyaml
+rdkit
+scipy
+scikit-learn
+sympy
+tqdm
+mchammer==1.0.4
+pysmiles==1.0.2
+spindry==0.0.91
+stk==2022.6.17.0
+vabene==0.0.5

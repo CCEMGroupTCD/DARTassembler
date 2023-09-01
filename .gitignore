@@ -16,10 +16,10 @@
 
 /src02_LigandCharge/test.json
 
-!/test/tmQMG_Jsons_test/
-!/test/tmQMG_Jsons_test/complex_db_original.json
-!/test/tmQMG_Jsons_test/tmQM_Ligands_unique_original.json
-!/test/tmQMG_Jsons_test/tmQM_Ligands_full_original.json
+!/dev/test/tmQMG_Jsons_test/
+!/dev/test/tmQMG_Jsons_test/complex_db_original.json
+!/dev/test/tmQMG_Jsons_test/tmQM_Ligands_unique_original.json
+!/dev/test/tmQMG_Jsons_test/tmQM_Ligands_full_original.json
 
 !/database/ligand_charges/
 !/database/ligand_charges/charge_benchmark/
@@ -40,14 +40,14 @@
 !database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/3_atomic_properties.xyz
 
 
-/constants/CSD/CSD_Smiles_full.csv
+/DARTassembler/src/constants/CSD/CSD_Smiles_full.csv
 
-/test/machine_learning
+/dev/test/machine_learning
 /ccem_server
 
-/constants/CSD/mol2s/
+/DARTassembler/src/constants/CSD/mol2s/
 /.conda_config
-/constants/CSD/graphs/tmqm_graphs_from_csd.json
+/DARTassembler/src/constants/CSD/graphs/tmqm_graphs_from_csd.json
 /data_input/CSD_MM_G/atomic_properties/atomic_properties.json
 /data_input/tmQMG/atomic_properties/atomic_properties.json
 /data_input/tmQM/atomic_properties/atomic_properties.json
@@ -85,10 +85,13 @@
 
 /data_output/tmQM_Jsons/Assembled_Moleculesall.xyz
 /data_output/tmQM_Jsons/Assembled_Moleculestmp_output_test_cian.xyz
-/test/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/
+/dev/test/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/
 
-/test/ML_detect_missing_H/data/**
-/test/machine_learning/**
+/dev/test/ML_detect_missing_H/data/**
+/dev/test/machine_learning/**
 
 /src14_Assembly_Unit_Test/*
 !/src14_Assembly_Unit_Test/output_benchmark/
+
+complex_db*json
+tmQMG.json

@@ -19,7 +19,7 @@ from collections import Counter
 from typing import Union
 from itertools import product
 
-from src01.io_custom import load_json
+from DARTassembler.src.ligand_extraction.io_custom import load_json
 
 pd.options.mode.chained_assignment = None
 from scipy.sparse import dok_array
@@ -625,7 +625,7 @@ if __name__ == '__main__':
     db_version = '1.4_all'
     all_complexes_path = f'../../data/final_db_versions/complex_db_v{db_version}.json'
     all_unique_ligands_path = [f'../../test/debug/databases/charge_benchmark/all_ligand_charges_with_high_confidence_v{db_version}.csv']
-    save_dir = '../../data/linear_charge_solver/output/'
+    save_dir = '../../../../data/linear_charge_solver/output/'
     plot_dir = Path(save_dir, 'plots')
     
     solver = LinearChargeSolver(all_complexes=all_complexes_path, save_dir=save_dir, n_test=n_test, ligand_data=all_unique_ligands_path, true_charge_name='charge')

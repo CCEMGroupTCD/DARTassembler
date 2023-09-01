@@ -1,4 +1,4 @@
-from src05_Assembly_Refactor.building_block_utility import mercury_remover
+from DARTassembler.src.assembly.building_block_utility import mercury_remover
 import numpy as np
 import warnings
 import os

@@ -5,10 +5,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib
-from src01.utilities import unroll_dict_into_columns
+from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from src01.io_custom import load_unique_ligand_db
+from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
 from pathlib import Path
 sns.set_theme()
 plt.rcParams['svg.fonttype'] = 'none' # for correct text rendering in some programs

@@ -5,8 +5,8 @@ import stk
 import os
 from openbabel import pybel
 import itertools
-from src05_Assembly_Refactor.stk_extension import *
-from src01.Molecule import RCA_Ligand
+from DARTassembler.src.assembly.stk_extension import *
+from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
 from copy import deepcopy
 
 

@@ -1,7 +1,7 @@
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 from DARTassembler.src.constants.Paths import project_path, default_ligand_db_path
-from src02_Pre_Assembly_Filtering.FilteringStage import FilterStage
-from DARTassembler.src.test.Integration_Test import IntegrationTest
+from DARTassembler.src.ligand_filters.FilteringStage import FilterStage
+from dev.test.Integration_Test import IntegrationTest
 from pathlib import Path
 
 # ["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]

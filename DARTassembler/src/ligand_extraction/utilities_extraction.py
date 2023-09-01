@@ -8,10 +8,10 @@ import numpy as np
 from pathlib import Path
 
 from DARTassembler.src.constants.Paths import project_path
-from src01.Molecule import RCA_Ligand
-from src01.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
-from src01.io_custom import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_full_ligand_db
-from src02_ChargeAssignment.linear_charge_solver.linear_charge_solver import LinearChargeSolver
+from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
+from DARTassembler.src.ligand_extraction.io_custom import load_complex_db, load_full_ligand_db, load_unique_ligand_db, save_unique_ligand_db, save_complex_db, save_full_ligand_db
+from DARTassembler.src.linear_charge_solver.linear_charge_solver.linear_charge_solver import LinearChargeSolver
 from typing import Union
 
 def get_charges_of_unique_ligands(all_complexes: Union[str, Path, dict], max_iterations=None) -> pd.DataFrame:

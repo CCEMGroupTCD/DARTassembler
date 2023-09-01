@@ -334,7 +334,7 @@ if __name__ == '__main__':
                               x[0] != x[1]]
 
         import collections
-        from src01.constants import mini_alphabet
+        from DARTassembler.src.ligand_extraction.constants import mini_alphabet
 
         new_list = []
         for key, value in dict(collections.Counter(ligands_to_view_3d)).items():

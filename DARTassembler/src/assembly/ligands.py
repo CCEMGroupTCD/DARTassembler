@@ -2,8 +2,8 @@ import warnings
 from copy import deepcopy
 import random
 import itertools
-from src05_Assembly_Refactor.Assemble import PlacementRotation
-from typing import Union, List, Dict, Tuple
+from DARTassembler.src.assembly.Assemble import PlacementRotation
+from typing import Union
 
 
 class ChooseRandomLigands:

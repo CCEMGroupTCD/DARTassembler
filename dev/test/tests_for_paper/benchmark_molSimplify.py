@@ -3,7 +3,7 @@ from pathlib import Path
 from sklearn.metrics import accuracy_score
 from pysmiles import read_smiles
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
-from src01.utilities_graph import smiles2nx
+from DARTassembler.src.ligand_extraction.utilities_graph import smiles2nx
 from pymatgen.core.composition import Composition
 
 

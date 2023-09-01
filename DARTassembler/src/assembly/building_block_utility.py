@@ -5,9 +5,9 @@ from openbabel import pybel
 import itertools
 from rdkit import Chem
 from rdkit.Chem import rdmolfiles
-from src02_Pre_Assembly_Filtering.constants_BoxExcluder import get_boxes, intensity, sharpness
-from src05_Assembly_Refactor.stk_extension import *
-from src01.Molecule import RCA_Ligand
+from DARTassembler.src.ligand_filters.constants_BoxExcluder import get_boxes, intensity, sharpness
+from DARTassembler.src.assembly.stk_extension import *
+from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
 from copy import deepcopy
 
 

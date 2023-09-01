@@ -1,7 +1,7 @@
 """
 All kinds of utitily functions specifically for testing.
 """
-from src01.utilities import atomic_props_dict_to_lists
+from DARTassembler.src.ligand_extraction.utilities import atomic_props_dict_to_lists
 import numpy as np
 from mendeleev import element
 

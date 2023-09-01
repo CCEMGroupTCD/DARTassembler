@@ -4,14 +4,14 @@ from stk import BuildingBlock
 import pickle
 import numpy as np
 
-from src05_Assembly_Refactor.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
+from DARTassembler.src.assembly.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
     get_optimal_rotation_angle_tridentate, Bidentate_Rotator, nonplanar_tetra_solver
-from src05_Assembly_Refactor.stk_utils import create_placeholder_Hg_bb
-import src05_Assembly_Refactor.stk_extension as stk_e
-from src05_Assembly_Refactor.stk_extension import monodentate_coordinating_distance, Bidentate_coordinating_distance
-from src01.Molecule import RCA_Ligand
+from DARTassembler.src.assembly.stk_utils import create_placeholder_Hg_bb
+import DARTassembler.src.assembly.stk_extension as stk_e
+from DARTassembler.src.assembly.stk_extension import monodentate_coordinating_distance, Bidentate_coordinating_distance
+from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
 import ast
-from src05_Assembly_Refactor.TransitionMetalComplex import TransitionMetalComplex as TMC
+from DARTassembler.src.assembly.TransitionMetalComplex import TransitionMetalComplex as TMC
 from rdkit import Chem
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 import stk, os
@@ -23,7 +23,7 @@ warnings.simplefilter("always")
 
 
 class PlacementRotation:
-    def __init__(self, database: LigandDB = None, store_path: str = Path('..', 'data', 'Assembled_Molecules')):
+    def __init__(self, database: LigandDB = None, store_path: str = Path('../../..', 'data', 'Assembled_Molecules')):
         self.ligand_dict = database.get_lig_db_in_old_format()
         self.store_path = store_path
 

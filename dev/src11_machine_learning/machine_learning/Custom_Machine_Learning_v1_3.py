@@ -27,16 +27,16 @@ import copy
 import yaml
 import datetime
 from shutil import copyfile
-from src11_machine_learning.machine_learning.own_libraries.own_functions import movecol, isfloat
+from dev.src11_machine_learning.machine_learning.own_libraries import movecol, isfloat
 # import torch.optim
 import itertools
-import src11_machine_learning.machine_learning.own_libraries.data.All_Data as All_Data
-import src11_machine_learning.machine_learning.own_libraries.data.All_scores as All_Scores
-from src11_machine_learning.machine_learning.own_libraries.data.Domain_statistics import save_Domain_statistics
-from src11_machine_learning.machine_learning.own_libraries.data import Feature_Importances as FI
+import dev.src11_machine_learning.machine_learning.own_libraries.data.All_Data as All_Data
+import dev.src11_machine_learning.machine_learning.own_libraries.data.All_scores as All_Scores
+from dev.src11_machine_learning.machine_learning.own_libraries import save_Domain_statistics
+from dev.src11_machine_learning.machine_learning.own_libraries import Feature_Importances as FI
 from contextlib import redirect_stdout
 import json
-from src11_machine_learning.machine_learning.own_libraries.utils.Models import Models, get_modelpath
+from dev.src11_machine_learning.machine_learning.own_libraries import Models, get_modelpath
 
 
 

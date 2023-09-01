@@ -1,11 +1,9 @@
-from src05_Assembly_Refactor.building_block_utility import mercury_remover
+from DARTassembler.src.assembly.building_block_utility import mercury_remover
 from openbabel import openbabel as ob
 from rdkit.Chem import rdmolfiles
-from pathlib import Path
 import numpy as np
-import warnings
 import re
-from src01.utilities_Molecule import get_coordinates_and_elements_from_OpenBabel_mol, get_concatenated_xyz_string_from_coordinates
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_coordinates_and_elements_from_OpenBabel_mol, get_concatenated_xyz_string_from_coordinates
 
 class OPTIMISE:
     def __init__(self, isomer, ligand_list, building_blocks, nsteps: int=50):

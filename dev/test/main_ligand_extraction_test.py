@@ -1,12 +1,12 @@
 """
 This is the main script for the extraction of ligands from a database.
 """
-from src01.io_custom import load_json, load_full_ligand_db
+from DARTassembler.src.ligand_extraction.io_custom import load_json, load_full_ligand_db
 from DARTassembler.src.ligand_extraction.main_ligand_extraction import main
-from src01.utilities import unroll_dict_into_columns, sort_dict_recursively_inplace
+from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns, sort_dict_recursively_inplace
 from pathlib import Path
 import pandas as pd
-from DARTassembler.src.test.Charge_Benchmark import ChargeBenchmark
+from dev.test.Charge_Benchmark import ChargeBenchmark
 
 # issue to upload:
 # - scikit-learn not compatible with scipy 1.11 for sparse X matrices when using Lasso fit
@@ -46,8 +46,8 @@ from DARTassembler.src.test.Charge_Benchmark import ChargeBenchmark
 
 if __name__ == '__main__':
     # example databases, choose between: tmqm, tmqmG, CSD_MM_G
-    database_path = '../../../data_input/CSD_MM_G'  # in github
-    data_store_path = '../../../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
+    database_path = '../../data_input/CSD_MM_G'  # in github
+    data_store_path = '../../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
     testing = 1000  # if we would like to only do a test run. Set to False for full run
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD

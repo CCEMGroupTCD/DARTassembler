@@ -6,11 +6,12 @@ import pandas as pd
 import numpy as np
 
 from DARTassembler.src.constants.Periodic_Table import DART_Element
-from src01.utilities_graph import remove_node_features_from_graph, make_multigraph_to_graph, remove_edge_features_from_graph
-from src01.utilities import identify_metal_in_ase_mol
-from src01.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
+from DARTassembler.src.ligand_extraction.utilities_graph import remove_node_features_from_graph, make_multigraph_to_graph, remove_edge_features_from_graph
+from DARTassembler.src.ligand_extraction.utilities import identify_metal_in_ase_mol
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
 import networkx as nx
-from src01.io_custom import save_json, NumpyEncoder, load_unique_ligand_db, load_complex_db, iterate_over_json
+from DARTassembler.src.ligand_extraction.Molecule import RCA_Molecule, RCA_Ligand, RCA_Complex
+from DARTassembler.src.ligand_extraction.io_custom import save_json, NumpyEncoder, load_unique_ligand_db, load_complex_db, iterate_over_json
 from scipy.special import comb
 from typing import Union
 from pathlib import Path
@@ -145,6 +146,17 @@ class MoleculeDB(BaselineDB):
     def check_db_equal(self, db: str):
         db = MoleculeDB.from_json(json_=db, type_='Molecule')
         return self == db
+    @classmethod
+    def get_class(cls):
+        if cls.type == 'Molecule':
+            return RCA_Molecule
+        elif cls.type == 'Ligand':
+            return RCA_Ligand
+        elif cls.type == 'Complex':
+            return RCA_Complex
+        else:
+            raise NotImplementedError(f'Unknown type: {cls.type}')
+
 
     @classmethod
     def from_json(cls,
@@ -172,7 +184,7 @@ class MoleculeDB(BaselineDB):
                 elif isinstance(max_number, (list, tuple, set)):
                     if identifier not in max_number:
                         continue
-                db[identifier] = globals()[f"RCA_{cls.type}"].read_from_mol_dict(
+                db[identifier] = cls.get_class().read_from_mol_dict(
                                                                                     dict_=mol,
                                                                                     graph_creating_strategy=graph_strategy,
                                                                                     csd_code=identifier,
@@ -181,7 +193,7 @@ class MoleculeDB(BaselineDB):
         else:
             for identifier, mol in tqdm(iterate_over_json(path=json_, n_max=max_number, show_progress=False),
                                         desc=f"Build {cls.type} Database", disable=not show_progress):
-                db[identifier] = globals()[f"RCA_{cls.type}"].read_from_mol_dict(
+                db[identifier] = cls.get_class().read_from_mol_dict(
                                                                                 dict_=mol,
                                                                                 graph_creating_strategy=graph_strategy,
                                                                                 csd_code=identifier,

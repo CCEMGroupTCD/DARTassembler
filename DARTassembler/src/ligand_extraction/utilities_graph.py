@@ -172,7 +172,7 @@ def graph_to_dict_with_node_labels(G, sort_dicts=True):
     Problem: nx.to_dict_of_dicts doesnt preserve node labels
     """
 
-    from src01.utilities import sorted_dict_of_dicts
+    from DARTassembler.src.ligand_extraction.utilities import sorted_dict_of_dicts
 
     graph_dict = nx.to_dict_of_dicts(G)
     node_attributes = {node: G.nodes[node] for node in G.nodes}

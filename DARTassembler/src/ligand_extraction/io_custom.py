@@ -3,10 +3,10 @@ Utility functions for input and output.
 """
 import json
 import yaml
-from src01.Molecule import RCA_Ligand, RCA_Complex
+from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand, RCA_Complex
 import numpy as np
 from datetime import datetime
-from src01.utilities import get_duration_string
+from DARTassembler.src.ligand_extraction.utilities import get_duration_string
 from typing import Union
 from pathlib import Path, PurePath
 import jsonlines

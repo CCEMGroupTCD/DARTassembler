@@ -1,7 +1,7 @@
-from src01.io_custom import load_unique_ligand_db
+from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
 from pathlib import Path
 import pandas as pd
-from src01.utilities import unroll_dict_into_columns
+from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns
 
 if __name__ == '__main__':
 

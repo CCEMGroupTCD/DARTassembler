@@ -4,7 +4,7 @@ import os
 class project_path:
     def __init__(self):
         # This is the file or folder that marks the origin of the project. It is used to find the origin of the project.
-        self.files_marking_origin_of_project = ['.git', 'constants', 'data']
+        self.files_marking_origin_of_project = ['.git', 'DARTassembler', 'data']
         self.project_path = self.get_project_origin()
 
     def extend(self, *relpaths: object) -> Path:
@@ -38,7 +38,8 @@ class project_path:
 # Default paths, to use if not user specified
 serverpath = Path(project_path().extend('ccem_server'))
 default_ligand_db_path = project_path().extend("data", "final_db_versions", "unique_ligand_db_v1.7.json")
-element_data_path = project_path().extend('constants', 'element_data_table.csv')
+element_data_path = project_path().extend(*'DARTassembler/src/constants/element_data_table.csv'.split('/'))
+charge_benchmark_dir = project_path().extend('dev', 'test', 'debug', 'databases', 'charge_benchmark')
 
 # Fixed paths in project
 

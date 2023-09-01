@@ -1,10 +1,10 @@
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 from DARTassembler.src.constants.Paths import project_path
-from src02_Pre_Assembly_Filtering.FilteringStage import FilterStage
-from DARTassembler.src.test.Integration_Test import IntegrationTest
+from DARTassembler.src.ligand_filters.FilteringStage import FilterStage
+from dev.test.Integration_Test import IntegrationTest
 from pathlib import Path
 from typing import Union
-from src05_Assembly_Refactor.Assembly_Input import LigandFilterInput, _mw, _filter, _ligand_charges, _ligcomp, _coords, \
+from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _filter, _ligand_charges, _ligcomp, _coords, \
     _metals_of_interest, _denticities_of_interest, _remove_ligands_with_neighboring_coordinating_atoms, \
     _remove_ligands_with_beta_hydrogens, _strict_box_filter, _acount, _acount_min, _acount_max, _denticities, _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max
 

@@ -8,7 +8,7 @@ import numpy as np
 import io
 import networkx as nx
 
-from src01.io_custom import load_json
+from DARTassembler.src.ligand_extraction.io_custom import load_json
 
 
 class DataLoader:

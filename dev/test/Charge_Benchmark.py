@@ -4,7 +4,7 @@ from typing import Union
 import numpy as np
 from sklearn.metrics import accuracy_score
 from copy import  deepcopy
-from DARTassembler.src.constants.Paths import project_path
+from DARTassembler.src.constants.Paths import project_path, charge_benchmark_dir
 from DARTassembler.src.linear_charge_solver.charge_benchmark.merge_benchmark_charges import \
     update_ligands_with_information_from_ligand_db
 
@@ -14,7 +14,7 @@ class ChargeBenchmark:
     def __init__(self, true_charge_name: str):
         self.true_charge_name = true_charge_name
 
-        self.benchmark_charge_dir = project_path().extend('test', 'debug', 'databases', 'charge_benchmark')
+        self.benchmark_charge_dir = charge_benchmark_dir
         self.benchmark_charge_filenames = {
             'Cian1': 'Cian_already_assigned_ligand_charges.csv',
             'Cian2': 'Cian_BenchMark_corrected_170223.csv',

@@ -7,23 +7,20 @@ Created on Tue Apr 20 17:24:04 2021
 This script contains my wrapper of the RGM of 2020 Jin to go with the standard sklearn API.
 """
 
-import os
 import numpy as np
-from src11_machine_learning.machine_learning.Algorithms.RGM_Jin import RGM as RGM_Jin
+from dev.src11_machine_learning.machine_learning.Algorithms.RGM_Jin import RGM as RGM_Jin
 import torch
 import torch.nn as nn
-from torch.utils.tensorboard import SummaryWriter
 import random
 import warnings
 from torch.utils.data import Dataset, DataLoader
 from chemprop.nn_utils import initialize_weights
-from collections import namedtuple
 from sklearn.model_selection import StratifiedShuffleSplit
 from copy import deepcopy
 import mlflow
 import time
 # import torchviz
-from src11_machine_learning.machine_learning.own_libraries.own_functions import enforce_types
+from dev.src11_machine_learning.machine_learning.own_libraries import enforce_types
 
 
 def log_metrics(metrics: dict, step: float = None, max_tries: float = 10, if_log_metrics: bool = True) -> None:

@@ -14,7 +14,7 @@ from pandas.api.types import is_string_dtype
 from pandas.api.types import is_numeric_dtype
 import numpy as np
 import matplotlib.pyplot as plt
-from src11_machine_learning.machine_learning.own_libraries.utils.Scalers import Arcsinh_Scaler
+from dev.src11_machine_learning.machine_learning.own_libraries import Arcsinh_Scaler
 import matplotlib.colors
 import sklearn
 from scipy import stats
@@ -22,18 +22,18 @@ from matplotlib.lines import Line2D
 from matplotlib.ticker import ScalarFormatter, LogLocator, NullFormatter, FormatStrFormatter
 import seaborn as sns
 import src11_machine_learning.machine_learning.Custom_Machine_Learning_v1_3 as ML
-from src11_machine_learning.machine_learning.own_libraries.data import All_Data
+from dev.src11_machine_learning.machine_learning.own_libraries import All_Data
 from itertools import product
 import warnings
 import yaml
 import copy
-from src11_machine_learning.machine_learning.own_libraries.data.All_scores import All_scores
-from src11_machine_learning.machine_learning.own_libraries.data.Domain_statistics import Domain_statistics
+from dev.src11_machine_learning.machine_learning.own_libraries import All_scores
+from dev.src11_machine_learning.machine_learning.own_libraries import Domain_statistics
 from typing import Union
-from src11_machine_learning.machine_learning.own_libraries.data import Feature_Importances
+from dev.src11_machine_learning.machine_learning.own_libraries import Feature_Importances
 # from src11_machine_learning.dataset_preparation.utils.check_dataset import get_chem_dict
 sns.set_theme()
-from src11_machine_learning.machine_learning.own_libraries.utils.Scores import SMAPE
+from dev.src11_machine_learning.machine_learning.own_libraries import SMAPE
 
 
 def unroll_dictionaries(dictionary, sep='__'):

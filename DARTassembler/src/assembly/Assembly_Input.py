@@ -11,7 +11,7 @@ from DARTassembler.src.constants.Paths import default_ligand_db_path
 from DARTassembler.src.constants.Periodic_Table import all_atomic_symbols
 from pathlib import Path
 from typing import Union, Any
-from src01.io_custom import read_yaml
+from DARTassembler.src.ligand_extraction.io_custom import read_yaml
 
 # Define the key names in the assembly input file
 # Global settings

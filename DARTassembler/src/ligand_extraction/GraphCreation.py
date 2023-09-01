@@ -7,8 +7,8 @@ from ase.data import covalent_radii  # THE basic covalent radii data
 import warnings
 from DARTassembler.src.constants.Paths import serverpath
 from DARTassembler.src.constants.Periodic_Table import DART_Element
-from src01.io_custom import load_json
-from src01.utilities_graph import graph_from_graph_dict
+from DARTassembler.src.ligand_extraction.io_custom import load_json
+from DARTassembler.src.ligand_extraction.utilities_graph import graph_from_graph_dict
 
 
 class GraphCreation:
