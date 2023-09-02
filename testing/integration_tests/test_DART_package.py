@@ -8,15 +8,15 @@ from testing.integration_tests.test_filter_ligands import test_filter_ligands
 
 
 if __name__ == '__main__':
-    sleeptime = 3
+    sleeptime = 5
 
-    test_ligand_extraction()
+    c, ulig, lig, df_unique_ligands, df_complexes = test_ligand_extraction()
     sleep(sleeptime)
 
-    test_filter_ligands()
+    filters = test_filter_ligands()
     sleep(sleeptime)
 
-    test_assemble_complexes()
+    assembly = test_assemble_complexes()
     sleep(sleeptime)
 
     print('All tests passed!')

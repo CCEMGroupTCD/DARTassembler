@@ -291,11 +291,28 @@ class BaseInput(object):
         """
         Check if there are any unrecognized settings and raises a warning if so. TODO: not working well, '_batches_' is not recognized because it is a list in the actual settings but a dict in the valid settings.
         """
-        actual_keys = get_dict_tree_as_string(d=actual_settings)
-        valid_keys = get_dict_tree_as_string(d=valid_settings)
-        for key in actual_keys:
-            if key not in valid_keys:
-                self.raise_warning(message=f"Setting '{key}' is not recognized and will be skipped.", varname=key)
+        for actual_key in actual_settings:
+            if not actual_key in valid_settings:
+                self.raise_warning(message=f"Setting '{actual_key}' is not recognized and will be skipped.", varname=actual_key)
+
+        for batch in actual_settings[_batches]:
+            for actual_key in batch:
+                if not actual_key in valid_settings[_batches]:
+                    self.raise_warning(message=f"Setting '{actual_key}' is not recognized and will be skipped.",
+                                       varname=actual_key)
+
+                if actual_key == _metal:
+                    for metal_key in batch[_metal]:
+                        if not metal_key in valid_settings[_metal]:
+                            self.raise_warning(message=f"Setting '{metal_key}' is not recognized and will be skipped.",
+                                               varname=actual_key)
+
+
+        # actual_keys = get_dict_tree_as_string(d=actual_settings)
+        # valid_keys = get_dict_tree_as_string(d=valid_settings)
+        # for key in actual_keys:
+        #     if key not in valid_keys:
+        #         self.raise_warning(message=f"Setting '{key}' is not recognized and will be skipped.", varname=key)
 
         return
 
@@ -512,8 +529,10 @@ class LigandFilterInput(BaseInput):
 
     def check_ligand_db_path(self, settings) -> Path:
         path = settings[_ligand_db_path]
-        if path is None:
+        if path is None and default_ligand_db_path.exists():
             path = default_ligand_db_path
+        else:
+            self.raise_error(f'Input ligand db path is not specified and no db found at default location. Please specify a valid path to the input ligand db.', varname=_ligand_db_path)
         self.ensure_file_present(path=path, varname=_ligand_db_path)
 
         return Path(path)

@@ -9,6 +9,8 @@
 /tmp/**
 /Bin_(Old)
 /figures
+/data_input/CSD_MM_G/graphs
+/data_input/Raw_CSD_MM_G
 
 
 /src04_Assembly/Z-test.py
@@ -95,3 +97,7 @@
 
 complex_db*json
 tmQMG.json
+
+
+
+

@@ -19,6 +19,8 @@ def test_assemble_complexes():
     else:
         print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
 
+    return assembly
+
 
 if __name__ == "__main__":
-    test_assemble_complexes()
+    assembly = test_assemble_complexes()

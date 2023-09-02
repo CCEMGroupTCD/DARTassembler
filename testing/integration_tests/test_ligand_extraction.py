@@ -54,7 +54,7 @@ def test_ligand_extraction(nmax=500):
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD
 
     overwrite_atomic_properties = False     # if atomic properties json should be overwritten. Only necessary after changing input files.
-    use_existing_input_json = True          # if the existing input json should be used. For speeding up test runs. Not critical
+    use_existing_input_json = False          # if the existing input json should be used. For speeding up test runs. Not critical
     store_database_in_memory = True         # if the database should be stored in memory. Only use if you have enough RAM, but can speed up the pipeline by maybe 30%.
 
     # Input complex filters
@@ -182,8 +182,10 @@ def test_ligand_extraction(nmax=500):
         # else:
         #     print('  Complex db: good')
 
+        return c, ulig, lig, df_unique_ligands, df_complexes
 
     print('Test for ligand extraction passed!')
+
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@ import networkx as nx
 from ase import Atoms, neighborlist
 from ase.data import covalent_radii  # THE basic covalent radii data
 import warnings
-from DARTassembler.src.constants.Paths import serverpath
+from DARTassembler.src.constants.Paths import csd_graph_path
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.ligand_extraction.io_custom import load_json
 from DARTassembler.src.ligand_extraction.utilities_graph import graph_from_graph_dict
@@ -195,11 +195,8 @@ class GraphCreation:
         if not, we shall use the default graphs, by setting self.G = None,
         because then the main programm will take care of it
         """
-
-        graph_file_path = f"{serverpath}/Raw_CSD_MM_G/Graphs"
-
         try:
-            self.G = graph_from_graph_dict(load_json(f"{graph_file_path}/{identifier}_g.json"))
+            self.G = graph_from_graph_dict(load_json(f"{csd_graph_path}/{identifier}_g.json"))
 
         except FileNotFoundError:
             warnings.warn("Graph directory not found, standard graphs are getting created", UserWarning)
