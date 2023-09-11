@@ -8,6 +8,69 @@ from DARTassembler.src.constants.Periodic_Table import DART_Element
 
 unknown_rdkit_bond_orders = [0, 20, 21]
 
+from sympy import Point3D, Plane
+
+
+def find_smallest_ring_with_specified_nodes(graph, nodes):
+    """
+    Returns the indices of nodes in the smallest ring of a networkx graph containing the specified nodes.
+
+    :param graph: networkx graph object
+    :param nodes: List of node indices. We're looking for rings containing these nodes.
+    :return: The smallest ring represented as a list of node indices, or None if no such ring is found.
+    """
+
+    # Get the list of all cycles in the graph
+    cycles = nx.cycle_basis(graph)
+
+    # Filter the cycles to include only those containing the specified nodes
+    valid_rings = [cycle for cycle in cycles if set(nodes).issubset(set(cycle))]
+
+    # If there are no valid rings, return None
+    if not valid_rings:
+        return None
+
+    # Sort the valid rings based on their length and return the smallest one
+    return sorted(valid_rings, key=len)[0]
+
+def get_max_deviation_from_coplanarity(points: list[tuple]) -> float:
+    """
+    Check if a list of 3D coordinates are approximately coplanar based on a specified cutoff.
+
+    :param points: List of tuples, each tuple being a 3D point (x, y, z).
+    :return: deviation from coplanarity. 0 if perfectly coplanar and > 0 otherwise.
+    """
+    # We need at least 3 points to define a plane
+    if len(points) < 3:
+        raise ValueError("At least 3 points are needed to define a plane")
+    elif len(points) == 3:
+        return 0
+
+    # Center the points
+    points_np = np.array(points)
+    centroid = np.mean(points_np, axis=0)
+    centered_points = points_np - centroid
+
+    # Compute the SVD
+    _, s, _ = np.linalg.svd(centered_points)
+
+    # The smallest singular value is the maximum distance from the plane
+    max_dist = s[-1]
+
+    return max_dist
+
+def are_points_coplanar(points, dist=0.1):
+    """
+    Check if a list of 3D coordinates are approximately coplanar based on a specified cutoff.
+
+    :param points: List of tuples, each tuple being a 3D point (x, y, z).
+    :param cutoff: Maximum allowed distance of a point from the plane to be considered coplanar.
+    :return: True if points are approximately coplanar, False otherwise.
+    """
+    max_dist = get_max_deviation_from_coplanarity(points)
+
+    return max_dist <= dist
+
 def graph_to_rdkit_mol(graph: nx.Graph, element_label: str='node_label', bond_label: str='bond_type') -> Chem.Mol:
     """
     Create an rdkit mol object from a graph. Note that the bond type must be specified in the graph under the attribute called `edge_label`.

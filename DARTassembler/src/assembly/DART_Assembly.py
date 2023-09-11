@@ -59,13 +59,14 @@ class DARTAssembly(object):
             # Set batch settings for the batch run
             self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction,\
             self.optimisation_instruction, self.random_seed, self.total_charge, metal_list, self.topology_similarity,\
-            self.complex_name_appendix, self.geometry_modifier_filepath = self.settings.check_and_return_batch_settings(batch_settings)
+            self.complex_name_appendix, self.geometry_modifier_filepath, bidentate_rotator = self.settings.check_and_return_batch_settings(batch_settings)
             self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
             self.batch_idx = idx
             self.batch_outcontrol = BatchAssemblyOutput(self.batch_output_path)
             self.metal_type = metal_list[0]
             self.metal_ox_state = metal_list[1]
             self.metal_spin = metal_list[2]
+            self.build_options = {'bidentate_rotator': bidentate_rotator}
 
             self.run_batch()    # run the batch assembly
 
@@ -149,7 +150,8 @@ class DARTAssembly(object):
                 stk_ligand_building_blocks_list, denticities = RCA.convert_ligand_to_building_block_for_complex(
                                                                                                                 ligands=ligands,
                                                                                                                 topology=Topology,
-                                                                                                                metal=self.metal_type
+                                                                                                                metal=self.metal_type,
+                                                                                                                build_options=self.build_options,
                                                                                                                 )
             # Optionally modify the exact 3D coordinates of the ligands.
             if self.geometry_modifier_filepath is not None:

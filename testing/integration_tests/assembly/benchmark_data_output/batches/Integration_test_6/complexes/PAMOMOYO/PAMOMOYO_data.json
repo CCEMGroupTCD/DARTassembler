@@ -702,7 +702,8 @@
                 "Topology": "(2, 2)",
                 "Total_Charge": 0,
                 "complex_name_appendix": null,
-                "geometry_modifier_filepath": "./assembly/data_input/geometry_modifier.xyz"
+                "geometry_modifier_filepath": "./assembly/data_input/geometry_modifier.xyz",
+                "bidentate_rotator": "horseshoe"
             },
             {
                 "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
@@ -719,7 +720,8 @@
                 "Topology": "(2, 2)--(1, 1)",
                 "Total_Charge": 0,
                 "complex_name_appendix": null,
-                "geometry_modifier_filepath": null
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
             },
             {
                 "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
@@ -736,7 +738,8 @@
                 "Topology": "(2, 1, 1)",
                 "Total_Charge": 0,
                 "complex_name_appendix": null,
-                "geometry_modifier_filepath": null
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
             },
             {
                 "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
@@ -753,7 +756,8 @@
                 "Topology": "(3, 2, 1)",
                 "Total_Charge": 0,
                 "complex_name_appendix": null,
-                "geometry_modifier_filepath": null
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
             },
             {
                 "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
@@ -770,7 +774,8 @@
                 "Topology": "(4, 1, 1)",
                 "Total_Charge": 0,
                 "complex_name_appendix": null,
-                "geometry_modifier_filepath": null
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
             },
             {
                 "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
@@ -787,7 +792,8 @@
                 "Topology": "(5, 1)",
                 "Total_Charge": 0,
                 "complex_name_appendix": null,
-                "geometry_modifier_filepath": null
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
             }
         ]
     },

@@ -20,6 +20,7 @@ Batches:
     Total_Charge: 0
     complex_name_appendix:
     geometry_modifier_filepath: './assembly/data_input/geometry_modifier.xyz'
+    bidentate_rotator: 'horseshoe'
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -36,6 +37,7 @@ Batches:
     Total_Charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
+    bidentate_rotator: 'horseshoe'
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -52,6 +54,7 @@ Batches:
     Total_Charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
+    bidentate_rotator: 'horseshoe'
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -68,6 +71,7 @@ Batches:
     Total_Charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
+    bidentate_rotator: 'horseshoe'
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -84,6 +88,7 @@ Batches:
     Total_Charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
+    bidentate_rotator: 'horseshoe'
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -100,3 +105,4 @@ Batches:
     Total_Charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
+    bidentate_rotator: 'horseshoe'

@@ -37,6 +37,7 @@ _oxidation_state = 'oxidation_state'
 _spin = 'spin'
 _complex_name_appendix = 'complex_name_appendix'
 _geometry_modifier_filepath = 'geometry_modifier_filepath'
+_bidentate_rotator = 'bidentate_rotator'
 # _ligand_filters_path = 'ligand_filters_path'
 
 
@@ -579,6 +580,7 @@ class AssemblyInput(BaseInput):
                         _metal: [dict],
                         _complex_name_appendix: [str,type(None)],
                         _geometry_modifier_filepath: [str, type(None)],
+                        _bidentate_rotator: [str],
                         # _ligand_filters_path: [str, Path, type(None)],
                         }
     # Metal settings in the batch settings
@@ -712,9 +714,18 @@ class AssemblyInput(BaseInput):
         topology_similarity = self.get_topology_from_input(batch_settings[_topology])
         complex_name_appendix = batch_settings[_complex_name_appendix] or ''
         geometry_modifier_filepath = self.get_geometry_modifier_from_input(batch_settings[_geometry_modifier_filepath])
+        bidentate_rotator = self.get_bidentate_rotator_from_input(batch_settings[_bidentate_rotator], varname=f'{_batches}->{_bidentate_rotator}')
 
+        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator
 
-        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath
+    def get_bidentate_rotator_from_input(self, bidentate_rotator: str, varname: str):
+        """
+        Checks the input for the bidentate rotator.
+        """
+        if not bidentate_rotator in ['auto', 'slab', 'horseshoe']:
+            self.raise_error(f"Input '{bidentate_rotator}' for '{varname}' is not valid. Valid inputs are 'auto', 'slab' and 'horseshoe'.")
+
+        return bidentate_rotator
 
     def get_geometry_modifier_from_input(self, path):
         if path is None:

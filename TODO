@@ -1,15 +1,17 @@
 TODO:
 
 Must:
-- add non-random generation of complexes fromm ligands
-- fix issue with openbabel import dependent on version by adding missing registration in __init__ file in directory
+- add non-random generation of complexes from ligands
 - input
     - make dicts to yaml
 - paths:
     - change default paths in Paths.py
 
 Should:
+- input:
+    - talk about random/combinatorial input and input checks, especially with multiple ligand databases specified.
 - fix bidentate rotator
+    - add 'auto' setting based on function 'check_bidentate_rotator()' in Molecule.py
 - add ligand overview csv output to ligand filters
 - add ligand overview csv to assembly output, especially with CSD codes
 

@@ -22,10 +22,11 @@ class Box:
 
 
 # this is a method decoding the boxes for any of the ligand size
-def get_boxes(denticity, planar: bool = True, input_topology=None, bool_placed_boxes=None):
+def get_boxes(denticity, planar: bool = True, input_topology=None, bool_placed_boxes=None, build_options = {}):
     """
     planar only important for tetradentates
     """
+    # TODO Cian: Use the string in `build_options['bidentate_rotator']` which is either 'horseshoe' or 'slab' to determine which boxes to use for bidentates. The automatic option does not need to be considered here, if the user chose is as 'auto' it is already handled in the function convert_ligand_to_building_block_for_complex().
 
     box_list = list()
     if input_topology is None:

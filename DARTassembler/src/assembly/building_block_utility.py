@@ -149,8 +149,8 @@ def penta_as_tetra(ligand: RCA_Ligand):
     return penta_bb_temp.with_centroid(np.array((0, 0, 0)), atom_ids=modified_atom_ids), ligand.get_assembly_dict()["index"][index_with_min_variance]
 
 
-def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None):
-    # TODO: rewrite this so it doesn't wrie to disk
+def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, build_options = {}):
+    # TODO: rewrite this so it doesn't write to disk
     stk_Building_Block = mercury_remover(ligand_bb)
 
     index_list = ligand.get_assembly_dict()["index"]
@@ -162,7 +162,7 @@ def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None):
     x2, y2, z2 = functional_group_2[0][0], functional_group_2[0][1], functional_group_2[0][2]
     x1, y1, z1 = vector[0], vector[1], vector[2]
 
-    Boxes = get_boxes(denticity=ligand.denticity, input_topology=top_list, bool_placed_boxes=bool_placed)
+    Boxes = get_boxes(denticity=ligand.denticity, input_topology=top_list, bool_placed_boxes=bool_placed, build_options=build_options)
 
     rotation_increment = 1.0
     dict_box = {}

@@ -7,7 +7,7 @@ dependencies:
   - jsonlines
   - networkx
   - numpy
-  - openbabel=3.1.1=py39hb4f85b1_3
+  - openbabel
   - pandas
   - pip
   - python=3.9.5

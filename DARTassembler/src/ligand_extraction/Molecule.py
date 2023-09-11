@@ -28,7 +28,9 @@ from DARTassembler.src.ligand_extraction.utilities_graph import graph_from_graph
     get_only_complex_graph_connected_to_metal, get_adjacency_matrix, assert_graph_and_coordinates_are_consistent, \
     remove_node_features_from_graph, make_multigraph_to_graph
 from DARTassembler.src.ligand_extraction.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between
-from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, \
+    unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center, \
+    find_smallest_ring_with_specified_nodes, get_max_deviation_from_coplanarity
 from DARTassembler.src.assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
 class RCA_Molecule(object):
@@ -761,7 +763,7 @@ class RCA_Ligand(RCA_Molecule):
 
         # This attribute transforms the indices of atoms in the atomic properties (starting with 0 until n-1) to the corresponding indices of self.graph. This is necessary because self.graph has indices not starting at 0 and going to n-1, but it has kept the original indices from the complex. This is a historic issue that has not been solved yet.
         self.atomic_index_to_graph_index = {atm_idx: graph_idx for atm_idx, graph_idx in enumerate(sorted(self.graph.nodes))}
-        self.graph_index_to_atomic_index = {graph_idx: atm_idx for graph_idx, atm_idx in self.atomic_index_to_graph_index.items()}
+        self.graph_index_to_atomic_index = {graph_idx: atm_idx for atm_idx, graph_idx in self.atomic_index_to_graph_index.items()}
 
         self.denticity = denticity # integer denticity, -1 for unconnected
         self.name = name # str name of ligand
@@ -852,6 +854,38 @@ class RCA_Ligand(RCA_Molecule):
         else:
             return centrosymmetric
 
+    def check_bidentate_planarity(self, tol: bool=0.7, return_deviation: bool=False) -> Union[bool, tuple[bool, float]]:
+        """
+        Checks if the ligand is bidentate planar. Only defined for bidentate ligands.
+        @param tol: Maximum tolerance to be considered planar. Default is 0.7.
+        @param return_deviation: If True, the calculated deviation is returned as well
+        @return: True if the ligand is bidentate planar, False otherwise
+        """
+        if self.denticity != 2:
+            raise ValueError(f'Cannot check for bidentate planarity for ligand with denticity {self.denticity}.')
+
+        graph, metal_idx = self.get_graph_with_metal(metal_symbol='Hg', return_metal_index=True)
+
+        nodes = [metal_idx] + [self.atomic_index_to_graph_index[idx] for idx in self.ligand_to_metal]
+        assert sorted([graph.nodes(data='node_label')[idx] for idx in nodes]) == sorted(['Hg'] + self.local_elements), nodes
+
+        ring_indices = find_smallest_ring_with_specified_nodes(graph=graph, nodes=nodes)
+        if ring_indices is None:
+            is_coplanar, max_dist = False, np.nan
+        else:
+            ring_indices = [self.graph_index_to_atomic_index[idx] for idx in ring_indices if not idx == metal_idx]
+            all_coordinates = {idx: coord for idx, coord in enumerate(self.get_coordinates_list())}
+            coordinates = [self.original_metal_position] + [all_coordinates[idx] for idx in ring_indices]
+
+            deviation = get_max_deviation_from_coplanarity(points=coordinates)
+            is_coplanar = deviation < tol
+
+        if return_deviation:
+            return is_coplanar, deviation
+        else:
+            return is_coplanar
+
+
     def count_atoms_with_n_bonds(self, element: Union[str, None], n_bonds: int, graph_element_label: str='node_label', remember_metal: bool=False) -> int:
         """
         Count the number of occurrences of element `element` with exactly `n_bonds` bonds.
@@ -906,7 +940,24 @@ class RCA_Ligand(RCA_Molecule):
         elif mode == 'all':
             return distances.min(), distances.max(), distances[self.ligand_to_metal].tolist()
 
-    def get_graph_with_metal(self, metal_symbol: Union[str, None]=None):
+    def get_coordinates_with_metal(self):
+        """
+        Returns the coordinates of the ligand with the metal.
+        @return: Coordinates of the ligand with the metal
+        """
+        return [self.original_metal_position] + self.get_coordinates_list()
+
+    def get_coordinates_list(self) -> list:
+        """
+        Returns the coordinates of the ligand without the metal.
+        @return: Coordinates of the ligand without the metal in format [[x1, y1, z1], [x2, y2, z2], ...]
+        """
+        coords = [[self.atomic_props['x'][i], self.atomic_props['y'][i], self.atomic_props['z'][i]] for i in range(len(self.atomic_props['x']))]
+
+        return coords
+
+
+    def get_graph_with_metal(self, metal_symbol: Union[str, None]=None, return_metal_index: bool=False):
         """
         Returns the graph of the ligand but with the original metal connected to the coordinating atoms.
         @return:
@@ -923,7 +974,11 @@ class RCA_Ligand(RCA_Molecule):
             graph_idx = self.atomic_index_to_graph_index[atom_idx]
             graph_with_metal.add_edge(metal_idx, graph_idx)
 
-        return graph_with_metal
+        if return_metal_index:
+            return graph_with_metal, metal_idx
+        else:
+            return graph_with_metal
+
 
     def get_graph_hash_with_metal(self, metal_symbol, graph_atom_label:str= 'node_label') -> str:
         """
@@ -1030,6 +1085,7 @@ class RCA_Ligand(RCA_Molecule):
         elif isinstance(atoms_of_interest, str):
             atoms_of_interest = [atoms_of_interest]
         return set(self.get_assembly_dict()["type"]).issubset(set(atoms_of_interest))
+
 
     # todo: unittests!!
     def planar_check(self, eps=2):
