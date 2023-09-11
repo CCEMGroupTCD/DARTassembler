@@ -289,7 +289,7 @@ class BaseInput(object):
 
     def check_if_settings_not_recognized(self, actual_settings, valid_settings: dict):
         """
-        Check if there are any unrecognized settings and raises a warning if so. TODO: not working well, '_batches_' is not recognized because it is a list in the actual settings but a dict in the valid settings.
+        Check if there are any unrecognized settings and raises a warning if so.
         """
         for actual_key in actual_settings:
             if not actual_key in valid_settings:
@@ -306,13 +306,6 @@ class BaseInput(object):
                         if not metal_key in valid_settings[_metal]:
                             self.raise_warning(message=f"Setting '{metal_key}' is not recognized and will be skipped.",
                                                varname=actual_key)
-
-
-        # actual_keys = get_dict_tree_as_string(d=actual_settings)
-        # valid_keys = get_dict_tree_as_string(d=valid_settings)
-        # for key in actual_keys:
-        #     if key not in valid_keys:
-        #         self.raise_warning(message=f"Setting '{key}' is not recognized and will be skipped.", varname=key)
 
         return
 

@@ -23,4 +23,3 @@ dependencies:
       - spindry==0.0.91
       - stk==2022.6.17.0
       - vabene==0.0.5
-prefix: /Users/timosommer/opt/anaconda3/envs/DART

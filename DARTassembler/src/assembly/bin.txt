@@ -293,7 +293,7 @@ class OPTIMISE:
     def get_energy(input_file):
         mol = next(pybel.readfile("mol", input_file))
         obmol = mol.OBMol
-        ff = ob.OBForceField_FindType("uff")
+        ff = ob._openbabel.OBForceField_FindType("uff")
         assert (ff.Setup(obmol))
         kj_to_kcal = 1.0 / 4.184
         ff.SetCoordinates(mol.OBMol)

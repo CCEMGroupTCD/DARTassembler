@@ -1,9 +1,26 @@
 TODO:
 
-- ligand extraction
-	- 
-- assembly
-    - input
-        - make dicts to yaml
+Must:
+- add non-random generation of complexes fromm ligands
+- fix issue with openbabel import dependent on version by adding missing registration in __init__ file in directory
+- input
+    - make dicts to yaml
 - paths:
     - change default paths in Paths.py
+
+Should:
+- fix bidentate rotator
+- add ligand overview csv output to ligand filters
+- add ligand overview csv to assembly output, especially with CSD codes
+
+Can:
+- remove missing H ligands from dataset
+
+Future developments:
+- bimetallic assembler:
+    - only based on having 2 metals bound to each other, without ligands in between
+    - only based on current mono-metallic ligands
+    -
+- database of non-innocent ligands
+    - look of database:
+        - coordinating atoms: elements, distances to metal, partial charges

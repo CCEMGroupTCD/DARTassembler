@@ -239,7 +239,7 @@ def get_energy(molecule):
     mol_string = ligand_to_mol(molecule)
     mol = pybel.readstring("mol", str(mol_string))
     obmol = mol.OBMol
-    ff = ob.OBForceField_FindType("uff")
+    ff = ob._openbabel.OBForceField_FindType("uff")
     assert (ff.Setup(obmol))
     kj_to_kcal = 1.0 / 4.184
     ff.SetCoordinates(mol.OBMol)
@@ -390,7 +390,7 @@ def get_energy_stk(building_block):
         string = building_block_to_mol(building_block)  # Here there is a dependency on the above ligand_to_mol function.
         mol = pybel.readstring("mol", string)
         obmol = mol.OBMol
-        ff = ob.OBForceField_FindType("uff")
+        ff = ob._openbabel.OBForceField_FindType("uff")
         assert (ff.Setup(obmol))
         kj_to_kcal = 1.0 / 4.184
         ff.SetCoordinates(mol.OBMol)

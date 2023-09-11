@@ -9,8 +9,8 @@
 /tmp/**
 /Bin_(Old)
 /figures
-/data_input/CSD_MM_G/graphs
-/data_input/Raw_CSD_MM_G
+/data_input/CSD/graphs
+/data_input/Raw_CSD
 
 
 /src04_Assembly/Z-test.py
@@ -50,7 +50,7 @@
 /DARTassembler/src/constants/CSD/mol2s/
 /.conda_config
 /DARTassembler/src/constants/CSD/graphs/tmqm_graphs_from_csd.json
-/data_input/CSD_MM_G/atomic_properties/atomic_properties.json
+/data_input/CSD/atomic_properties/atomic_properties.json
 /data_input/tmQMG/atomic_properties/atomic_properties.json
 /data_input/tmQM/atomic_properties/atomic_properties.json
 /data_input/CSD_MM/atomic_properties/atomic_properties.json
@@ -58,13 +58,13 @@
 /data_output/CSD_MM_Jsons/tmQM_Ligands_full.json
 /data_output/CSD_MM_Jsons/tmQM_Ligands_unique.json
 /data_output/CSD_MM_Jsons/tmQMG.json
-/data_output/CSD_MM_G_Jsons/complex_db.json
-/data_output/CSD_MM_G_Jsons/tmQM_Ligands_full.json
-/data_output/CSD_MM_G_Jsons/tmQM_Ligands_unique.json
-/data_output/CSD_MM_G_Jsons/tmQMG.json
-/data_output/CSD_MM_G_Jsons/*_original*.json
-/data_output/CSD_MM_G_Jsons/tmQMG_1000.json
-/data_output/CSD_MM_G_Jsons_test
+/data_output/CSD_Jsons/complex_db.json
+/data_output/CSD_Jsons/tmQM_Ligands_full.json
+/data_output/CSD_Jsons/tmQM_Ligands_unique.json
+/data_output/CSD_Jsons/tmQMG.json
+/data_output/CSD_Jsons/*_original*.json
+/data_output/CSD_Jsons/tmQMG_1000.json
+/data_output/CSD_Jsons_test
 
 /data_output/tmQMG_Jsons/complex_db.json
 /data_output/tmQMG_Jsons/tmQM_Ligands_full.json
@@ -79,7 +79,7 @@
 /data_output/tmQM_Jsons/tmQMG.json
 /data_output/tmQM_Jsons/Assembled_Molecules/
 /src06_fullRun/Co_31a_14_OH_LSb3lyp.com
-/data_output/CSD_MM_G_Jsons/Filtering/
+/data_output/CSD_Jsons/Filtering/
 /data_output/tmQM_Jsons/Filtering/
 /data_output/tmQM_Jsons/Filtering/filteredLigDB.json
 /data_output/tmQM_Jsons/Filtering/filterSetup.json

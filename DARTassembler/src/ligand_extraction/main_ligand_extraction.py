@@ -3,29 +3,7 @@ This is the main script for the extraction of ligands.py from a database.
 """
 from DARTassembler.src.ligand_extraction.ligand_extraction import LigandExtraction
 from typing import Union
-from DARTassembler.src.constants.constants import project_path
-
-
-def select_example_database(DB: str) -> (str, str):
-    """
-    some example database paths
-    returns:
-        directory of the complex database in correct input format with xyz files and global properties
-        directory where we want to store the jsons
-    """
-
-    if DB.lower() == "tmqm":
-        return f"{project_path}/data_input/tmQM", f"{project_path}/data_output/tmQM_Jsons"
-    elif DB.lower() == "tmqmg":
-        return f"{project_path}/data_input/tmQMG", f"{project_path}/data_output/tmQMG_Jsons"
-    elif DB.lower() == "csd_mm":
-        return f"{project_path}/data_input/CSD_MM", f"{project_path}/data_output/CSD_MM_Jsons"
-    elif DB.lower() == "csd_mm_g":
-        return f"{project_path}/data_input/CSD_MM_G", f"{project_path}/data_output/CSD_MM_G_Jsons"
-    else:
-         # unknown DB
-        raise ValueError(f'Database not recognized: {DB}')
-
+from DARTassembler.src.constants.Paths import project_path
 
 def main(database_path_: str,
          data_store_path_: str,
@@ -62,23 +40,22 @@ def main(database_path_: str,
 
 if __name__ == '__main__':
 
-    # example databases, choose between: tmqm, tmqmG, CSD_MM_G
-    database = "CSD_MM_G"
+    # example databases, choose between: tmqm, tmqmG, CSD
+    database_path = project_path().extend(*'data_input/CSD'.split('/'))
+    data_store_path = project_path().extend(*'data_output/CSD'.split('/'))
 
-    testing = 50_000           # if we would like to only do a test run. Set to False for full run
-    graph_strategy = "default"  # the desired graph strategy: default, ase_cutoff, CSD
+    testing = False           # if we would like to only do a test run. Set to False for full run
+    graph_strategy = "CSD"  # the desired graph strategy: default, ase_cutoff, CSD
 
-    overwrite_atomic_properties = True  # if atomic properties json should be overwritten. Only necessary after changing input files.
+    overwrite_atomic_properties = False  # if atomic properties json should be overwritten. Only necessary after changing input files.
     use_existing_input_json = False  # if the existing input json should be used or the process started from the xzy files
     store_database_in_memory = False    # if the database should be stored in memory. Only use if you have enough RAM, but can speed up the pipeline by maybe 30%.
 
     # Input complex filters
-    exclude_not_fully_connected_complexes = True  # only keep complexes which are fully connected
-    exclude_charged_complexes = True   # Keep only input complexes with charge of 0
+    exclude_not_fully_connected_complexes = False  # only keep complexes which are fully connected
+    exclude_charged_complexes = False   # Keep only input complexes with charge of 0
 
 
-
-    database_path, data_store_path = select_example_database(DB=database)
     db = main(
         database_path_=database_path,
         data_store_path_=data_store_path,

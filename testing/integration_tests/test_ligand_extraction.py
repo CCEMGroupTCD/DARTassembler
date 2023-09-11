@@ -47,14 +47,14 @@ def test_ligand_extraction(nmax=500):
     """
     nmax=False for full  run.
     """
-    # example databases, choose between: tmqm, tmqmG, CSD_MM_G
-    database_path = project_path().extend('data_input', 'CSD_MM_G')  # in github
+    # example databases, choose between: tmqm, tmqmG, CSD
+    database_path = project_path().extend('data_input', 'CSD')  # in github
     data_store_path = project_path().extend('testing', 'integration_tests', 'ligand_extraction', 'data_output')  # directory where we want to store the jsons
 
     graph_strategy = 'CSD'  # the desired graph strategy: default, ase_cutoff, CSD
 
     overwrite_atomic_properties = False     # if atomic properties json should be overwritten. Only necessary after changing input files.
-    use_existing_input_json = False          # if the existing input json should be used. For speeding up test runs. Not critical
+    use_existing_input_json = True          # if the existing input json should be used. For speeding up test runs. Not critical
     store_database_in_memory = True         # if the database should be stored in memory. Only use if you have enough RAM, but can speed up the pipeline by maybe 30%.
 
     # Input complex filters

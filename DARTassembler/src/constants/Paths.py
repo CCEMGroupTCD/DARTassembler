@@ -36,7 +36,7 @@ class project_path:
 
 
 # Default paths, to use if not user specified
-csd_graph_path = project_path().extend(*'data_input/CSD_MM_G/graphs'.split('/'))
+csd_graph_path = project_path().extend(*'data_input/CSD/graphs'.split('/'))
 default_ligand_db_path = project_path().extend("data", "final_db_versions", "unique_ligand_db_v1.7.json")
 element_data_path = project_path().extend(*'DARTassembler/src/constants/element_data_table.csv'.split('/'))
 charge_benchmark_dir = project_path().extend('dev', 'test', 'debug', 'databases', 'charge_benchmark')

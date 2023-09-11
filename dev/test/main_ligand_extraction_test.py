@@ -45,8 +45,8 @@ from dev.test.Charge_Benchmark import ChargeBenchmark
 
 
 if __name__ == '__main__':
-    # example databases, choose between: tmqm, tmqmG, CSD_MM_G
-    database_path = '../../data_input/CSD_MM_G'  # in github
+    # example databases, choose between: tmqm, tmqmG, CSD
+    database_path = '../../data_input/CSD'  # in github
     data_store_path = '../../data_output/CSD_MM_G_Jsons_test'  # directory where we want to store the jsons
 
     testing = 1000  # if we would like to only do a test run. Set to False for full run
