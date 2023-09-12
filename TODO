@@ -11,7 +11,7 @@ Should:
 - input:
     - talk about random/combinatorial input and input checks, especially with multiple ligand databases specified.
 - fix bidentate rotator
-    - add 'auto' setting based on function 'check_bidentate_rotator()' in Molecule.py
+    - Cian: integrate the option 'horseshoe' or 'slab' where the boxes are build.
 - add ligand overview csv output to ligand filters
 - add ligand overview csv to assembly output, especially with CSD codes
 

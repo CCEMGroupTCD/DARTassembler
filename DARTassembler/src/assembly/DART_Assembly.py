@@ -53,7 +53,7 @@ class DARTAssembly(object):
         """
         self.df_info = []
         self.assembled_complex_names = []
-        self.last_ligand_db_path = Path()     # to avoid reloading the same ligand database in the next batch
+        self.last_ligand_db_path = None     # to avoid reloading the same ligand database in the next batch
 
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
@@ -67,6 +67,7 @@ class DARTAssembly(object):
             self.metal_ox_state = metal_list[1]
             self.metal_spin = metal_list[2]
             self.build_options = {'bidentate_rotator': bidentate_rotator}
+            self.multiple_db = isinstance(self.ligand_json, list)
 
             self.run_batch()    # run the batch assembly
 
@@ -82,10 +83,8 @@ class DARTAssembly(object):
         print(f"\n\n\n\n**********Batch: {self.batch_name}**********\n\n\n\n")
 
         # Here we load the ligand database and avoid reloading the same ligand database if it is the same as the last one
-        if self.last_ligand_db_path.resolve() != self.ligand_json.resolve():
-            self.ligand_db = LigandDB.from_json(json_=self.ligand_json,
-                                   type_="Ligand")
-            self.last_ligand_db_path = self.ligand_json
+        if self.check_if_reload_database():
+            self.ligand_db = self.get_ligand_db()
         RCA = PlacementRotation(database=self.ligand_db)
 
         ########################################################################
@@ -93,7 +92,7 @@ class DARTAssembly(object):
         # generate every combination of ligands but would rather build in a
         # random manner
 
-        """IterativeLigands = ChooseIterativeLigands(database=RCA.ligand_dict,
+        """IterativeLigands = ChooseIterativeLigands(database=self.ligand_db,
                                                   top_list=topology_list,
                                                   charge=Total_Charge,
                                                   metal=metal_list,
@@ -120,7 +119,7 @@ class DARTAssembly(object):
             #
             # 3a. Choose Ligands Randomly
             # This section of code needs to be uncommented if you want complexes assembled randomly
-            ligands = ChooseRandomLigands(database=RCA.ligand_dict,
+            ligands = ChooseRandomLigands(database=self.ligand_db,
                                           topology=Topology,
                                           instruction=Similarity,
                                           metal_oxidation_state=int(self.metal_ox_state),
@@ -410,3 +409,29 @@ class DARTAssembly(object):
             return False
 
         return True
+
+    def check_if_reload_database(self):
+        """
+        Check if the ligand database needs to be reloaded because any of the ligand json files have changed. Only for performance.
+        """
+        if isinstance(self.ligand_json, Path) and isinstance(self.last_ligand_db_path, Path):
+            reload_database = self.last_ligand_db_path.resolve() != self.ligand_json.resolve()
+        elif isinstance(self.ligand_json, list) and isinstance(self.last_ligand_db_path, list):
+            reload_database = any([last_path.resolve() != path.resolve() for path, last_path in zip(self.ligand_json, self.last_ligand_db_path)])
+        else:
+            reload_database = True
+
+        return reload_database
+
+    def get_ligand_db(self) -> Union[LigandDB, list[LigandDB]]:
+        """
+        Load the ligand database from the json files.
+        @return: ligand database or list of ligand databases. The db are in the format {denticity: {charge: [ligand, ligand, ...]}}
+        """
+        if self.multiple_db:
+            ligand_db = [LigandDB.from_json(json_=path, type_="Ligand").get_lig_db_in_old_format() for path in self.ligand_json]
+        else:
+            ligand_db = LigandDB.from_json(json_=self.ligand_json, type_="Ligand").get_lig_db_in_old_format()
+        self.last_ligand_db_path = self.ligand_json
+
+        return ligand_db

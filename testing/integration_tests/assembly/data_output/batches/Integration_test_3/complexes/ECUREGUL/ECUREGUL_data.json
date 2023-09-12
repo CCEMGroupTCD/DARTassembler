@@ -824,7 +824,9 @@
                 "bidentate_rotator": "horseshoe"
             },
             {
-                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "Input_Path": [
+                    "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json"
+                ],
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 1,
                 "Metal": {
@@ -842,7 +844,11 @@
                 "bidentate_rotator": "horseshoe"
             },
             {
-                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "Input_Path": [
+                    "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                    "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                    "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json"
+                ],
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 1,
                 "Metal": {

@@ -8,6 +8,8 @@ from typing import Union
 
 class ChooseRandomLigands:
     def __init__(self, database, topology, instruction, max_attempts, metal_oxidation_state: int = None, total_complex_charge: int = None):
+        if not isinstance(database, list):
+            database = [database]*len(topology)
         self.ligand_dict = database
         self.topology = topology
         self.instruction = instruction
@@ -31,36 +33,45 @@ class ChooseRandomLigands:
         return input_list
 
     def get_charge_dic(self, deepcopy_ligands: bool = True):
-        tmp_dic_1 = {}  # dictionary with keys (denticty) and values(list of all charges)
-        tmp_dic_2 = {}  # dictionary with keys (denticty) and values(list of all ligands in the same order as their charges in tmp_dic_1)
-        for denticity in self.ligand_dict.keys():
-            tmp_charge_list = []
-            tmp_ligand_list = []
-            for ligand in self.ligand_dict[denticity]:
-                try:
-                    charge = ligand.pred_charge
-                except:
-                    charge = ligand.global_props["LCS_pred_charge"]
-                tmp_charge_list.append(charge)
-                tmp_ligand_list.append(ligand)
-            tmp_dic_1.update({f"{denticity}": deepcopy(tmp_charge_list)})
-            tmp_dic_2.update({f"{denticity}": deepcopy(tmp_ligand_list) if deepcopy_ligands else tmp_ligand_list})
-        return tmp_dic_1, tmp_dic_2
+        dic1 = []
+        dic2 = []
+        for dent, ligands in zip(self.topology, self.ligand_dict):
+            tmp_dic_1 = {}  # dictionary with keys (denticty) and values(list of all charges)
+            tmp_dic_2 = {}  # dictionary with keys (denticty) and values(list of all ligands in the same order as their charges in tmp_dic_1)
+            for denticity in ligands.keys():
+                tmp_charge_list = []
+                tmp_ligand_list = []
+                for ligand in ligands[denticity]:
+                    try:
+                        charge = ligand.pred_charge
+                    except:
+                        charge = ligand.global_props["LCS_pred_charge"]
+                    tmp_charge_list.append(charge)
+                    tmp_ligand_list.append(ligand)
+                tmp_dic_1.update({f"{denticity}": deepcopy(tmp_charge_list)})
+                tmp_dic_2.update({f"{denticity}": deepcopy(tmp_ligand_list) if deepcopy_ligands else tmp_ligand_list})
+                dic1.append(tmp_dic_1)
+                dic2.append(tmp_dic_2)
+        return dic1, dic2
 
-    def get_ligand_dic(self, dic_1, dic_2, deepcopy_ligands: bool = True):
-        tmp_dic_3 = {}  # tmp_dic_3 is a dictionary with keys (denticity) and  value (dictionary). This dictionary has keys (unique charge) and values(ligand building blocks))
-        for denticity, charge_list, ligand_list in zip(dic_1.keys(), dic_1.values(), dic_2.values()):
-            tmp_dic_charge = {}
-            for unq_charge in set(charge_list):
-                tmp_list = []
-                for charge, ligand in zip(charge_list, ligand_list):
-                    if str(unq_charge) == str(charge):
-                        tmp_list.append(ligand)
-                    else:
-                        pass
-                tmp_dic_charge.update({f"{unq_charge}": tmp_list})
-            tmp_dic_3.update({f"{denticity}": deepcopy(tmp_dic_charge) if deepcopy_ligands else tmp_dic_charge})
-        return tmp_dic_3
+    def get_ligand_dic(self, deepcopy_ligands: bool = True):
+        dic_1_list, dic_2_list = self.get_charge_dic(deepcopy_ligands=False)
+        ligands = []
+        for dent, dic_1, dic_2 in zip(self.topology, dic_1_list, dic_2_list):
+            tmp_dic_3 = {}  # tmp_dic_3 is a dictionary with keys (denticity) and  value (dictionary). This dictionary has keys (unique charge) and values(ligand building blocks))
+            for denticity, charge_list, ligand_list in zip(dic_1.keys(), dic_1.values(), dic_2.values()):
+                tmp_dic_charge = {}
+                for unq_charge in set(charge_list):
+                    tmp_list = []
+                    for charge, ligand in zip(charge_list, ligand_list):
+                        if str(unq_charge) == str(charge):
+                            tmp_list.append(ligand)
+                        else:
+                            pass
+                    tmp_dic_charge.update({f"{unq_charge}": tmp_list})
+                tmp_dic_3.update({f"{denticity}": deepcopy(tmp_dic_charge) if deepcopy_ligands else tmp_dic_charge})
+            ligands.append(tmp_dic_3)
+        return ligands
 
     def charge_list_process(self):
         print("\nStarting Charge Loop")
@@ -68,8 +79,8 @@ class ChooseRandomLigands:
         charge_dic, _ = self.get_charge_dic(deepcopy_ligands=False)     # No deepcopy for speedup since we don't need the ligands
         while m < self.max_loop:
             charge_list = []
-            for dent in self.topology:
-                charge_list.append(random.choice(charge_dic[str(dent)]))
+            for dent, charges in zip(self.topology, charge_dic):
+                charge_list.append(random.choice(charges[str(dent)]))
 
             charge_list_out = self.format_similarity_lists(charge_list, self.instruction)
             if sum(charge_list_out) == self.total_charge - self.metal_ox:
@@ -84,15 +95,12 @@ class ChooseRandomLigands:
 
     def choose_ligands(self) -> Union[dict,None]:
         charge_list = self.charge_list_process()
-        dic_1, dic_2 = self.get_charge_dic(deepcopy_ligands=False)
-        ligand_dic = self.get_ligand_dic(dic_1=dic_1, dic_2=dic_2, deepcopy_ligands=False)
+        ligand_dic_list = self.get_ligand_dic(deepcopy_ligands=False)
         ligands = {}
         i = 0
         if charge_list is None:
             return None
-        else:
-            pass
-        for denticity, charge in zip(self.topology, charge_list):
+        for denticity, charge ,ligand_dic in zip(self.topology, charge_list, ligand_dic_list):
             ligands.update({i: random.choice(ligand_dic[str(denticity)][str(charge)])})
             i = i + 1
         ligands_out = self.format_similarity_lists(ligands, self.instruction)

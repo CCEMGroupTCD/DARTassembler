@@ -570,7 +570,7 @@ class AssemblyInput(BaseInput):
     # Batch settings
     batches_valid_keys = {
                         _name: [str],
-                        _input_path: [str, type(None)],
+                        _input_path: [str, list, tuple, type(None)],
                         _max_num_complexes: [int, str],
                         _isomers: [str],
                         _optimisation: [str, bool],
@@ -616,6 +616,7 @@ class AssemblyInput(BaseInput):
         self.complex_name_length = None
         self.check_and_set_global_settings()
         self.check_if_settings_not_recognized(actual_settings=self.global_settings, valid_settings=self.total_keys)
+        self.check_batches_input()
 
     def check_and_set_global_settings(self):
         """
@@ -716,6 +717,12 @@ class AssemblyInput(BaseInput):
         geometry_modifier_filepath = self.get_geometry_modifier_from_input(batch_settings[_geometry_modifier_filepath])
         bidentate_rotator = self.get_bidentate_rotator_from_input(batch_settings[_bidentate_rotator], varname=f'{_batches}->{_bidentate_rotator}')
 
+        if isinstance(Ligand_json, list):
+            similarity = topology_similarity.split('--')[1].lstrip('[').rstrip(']').split(', ')
+            n_diff_ligands = len(set(similarity))
+            if not len(Ligand_json) == n_diff_ligands:
+                self.raise_error(f"Input '{_input_path}' is a list of paths and must have the same length as the number of different denticities specified in the topology. Yet, the topology {topology_similarity} has {n_diff_ligands} different denticities, but {len(Ligand_json)} paths were given.", varname=f'{_batches}->{_input_path}')
+
         return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator
 
     def get_bidentate_rotator_from_input(self, bidentate_rotator: str, varname: str):
@@ -752,19 +759,25 @@ class AssemblyInput(BaseInput):
 
         return path
 
-    def get_ligand_db_path_from_input(self, ligand_db_path):
+    def get_ligand_db_path_from_input(self, ligand_db_path) -> Union[Path, list]:
         """
         Checks the input for the ligand database path.
+        @param: ligand_db_path: Path to the ligand database. If None, the default ligand database will be used. If a list, must be of same length as the topology.
         """
         varname = f'{_batches}->{_input_path}'
         if ligand_db_path is None or ligand_db_path == '' or ligand_db_path == 'default':
             print(f"Ligand database path '{varname}' is not specified in batch {self.batch_name} in file '{self.path}'. Using full default ligand database.")
-            ligand_db_path = default_ligand_db_path
+            ligand_db_path = Path(default_ligand_db_path)
         else:
             # Check if the file exists
-            ligand_db_path = self.ensure_file_present(ligand_db_path, varname=varname)
+            if isinstance(ligand_db_path, str):
+                ligand_db_path = Path(self.ensure_file_present(ligand_db_path, varname=varname))
+            elif isinstance(ligand_db_path, (list, tuple)):
+                ligand_db_path = [Path(self.ensure_file_present(path, varname=varname)) for path in ligand_db_path]
+            else:
+                self.raise_error(f"Input '{varname}' must be a string or a list/tuple of strings, but is {type(ligand_db_path)}.")
 
-        return Path(ligand_db_path)
+        return ligand_db_path
 
     def get_metal_from_input(self, metal: dict):
         """
@@ -801,6 +814,7 @@ class AssemblyInput(BaseInput):
     def get_topology_from_input(self, topology: str):
         """
         Checks the topology input for correct input.
+        @returns: topology: A string of the format '[3, 2, 1]' or '[3, 2, 1]--[3, 2, 1]' for specifying denticities and similarities, respectively.
         """
         topology = str(topology)
         error_message = f"Topology '{topology}' is not in the correct format. It should be of format '(1,1,2,2)' for specifying denticities or of format (1,1,2,2)--(1,1,2,3) for specifying both denticities and similarities."
