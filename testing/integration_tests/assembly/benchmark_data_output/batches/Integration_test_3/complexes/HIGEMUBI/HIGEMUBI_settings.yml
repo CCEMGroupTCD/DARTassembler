@@ -6,6 +6,23 @@ Output_Path: './assembly/data_output'
 complex_name_length: 8
 
 Batches:
+  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines']
+    Isomers: Generate Lowest Energy
+    MAX_num_complexes: 3
+    Metal:
+      element: Fe
+      oxidation_state: 2
+      spin: 0
+    Name: Integration_test_7
+    Optimisation_Choice: true
+    Random_Seed: 0
+    Topology: '(2, 1, 1)--(1, 2, 2)'
+    Total_Charge: -1
+    complex_name_appendix:
+    geometry_modifier_filepath:
+    bidentate_rotator: 'horseshoe'
+
+
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
     Isomers: Generate Lowest Energy
     MAX_num_complexes: 1

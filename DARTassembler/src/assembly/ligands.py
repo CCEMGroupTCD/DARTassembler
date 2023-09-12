@@ -9,8 +9,7 @@ from typing import Union
 class ChooseRandomLigands:
     def __init__(self, database, topology, instruction, max_attempts, metal_oxidation_state: int = None, total_complex_charge: int = None):
 
-        self.database = self.make_database_list_consistent_with_topology_and_similarity_list(self, database=database, topology=topology, instruction=instruction)
-        self.ligand_dict = database
+        self.ligand_dict = self.make_database_list_consistent_with_topology_and_similarity_list(database=database, topology=topology, instruction=instruction)
         self.topology = topology
         self.instruction = instruction
         self.max_loop = max_attempts
@@ -60,6 +59,7 @@ class ChooseRandomLigands:
                 if same_similarities:
                     same_databases = id(database[idx]) == id(database[idx-1])
                     assert same_databases, f"Similarities and databases are not consistent at index {idx}!"
+        assert len(database) == len(topology), f"The number of topologies and the number of ligand databases are not consistent: {len(topology)} != {len(database)}"
 
         return database
 
@@ -140,6 +140,7 @@ class ChooseRandomLigands:
         ligands_out = self.format_similarity_lists(ligands, self.instruction)
         # Deepcopy all chosen ligands. Only doing this here at the end instead of at each intermediate step makes for a huge speedup
         ligands_out = {idx: deepcopy(ligand) for idx, ligand in ligands_out.items()}
+        
         return ligands_out
 
 

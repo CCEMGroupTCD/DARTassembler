@@ -2,6 +2,7 @@ TODO:
 
 Must:
 - add non-random generation of complexes from ligands
+- Do we use the spin of the metal at all???
 - input
     - make dicts to yaml
 - paths:
