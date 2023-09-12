@@ -72,6 +72,18 @@ class FilterStage:
         self.filter_tracking[len(self.filter_tracking)] = f"Metals of interest filter with {metals_of_interest}"
         # self.safe_and_document_after_filterstep(filtering_step_name="Metal_of_Interest")
 
+    def graph_hash_with_metal_filter(self, graph_hashes_with_metal: list):
+        to_delete = []
+        for unq_name, ligand in self.database.db.items():
+            if ligand.graph_hash_with_metal not in graph_hashes_with_metal:
+                to_delete.append(unq_name)
+
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+        self.filter_tracking[len(self.filter_tracking)] = f"Graph IDs: {graph_hashes_with_metal}"
+
+        return
+
+
     def denticity_of_interest_filter(self, denticity_of_interest: [int, list[int]]):
         """
         """

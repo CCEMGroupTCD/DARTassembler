@@ -14,7 +14,7 @@ import pandas as pd
 from DARTassembler.src.assembly.TransitionMetalComplex import TransitionMetalComplex as TMC
 from pathlib import Path
 from typing import Union
-from DARTassembler.src.assembly.Assembly_Input import AssemblyInput
+from DARTassembler.src.assembly.Assembly_Input import AssemblyInput, LigandCombinationError
 from DARTassembler.src.assembly.Assembly_Output import AssemblyOutput, BatchAssemblyOutput, _gbl_optimization_movie, \
     ComplexAssemblyOutput, append_global_concatenated_xyz
 import ase
@@ -124,7 +124,10 @@ class DARTAssembly(object):
                                           instruction=Similarity,
                                           metal_oxidation_state=int(self.metal_ox_state),
                                           total_complex_charge=self.total_charge,
-                                          max_attempts=1000000).choose_ligands()
+                                          max_attempts=1000000
+                                          ).choose_ligands()
+            if ligands is None:
+                raise LigandCombinationError(f'Could not find a valid combination of ligands! Most likely there was no valid combination of ligand charges which fulfills the total charge requirement for the specified metal oxidation state MOS={self.metal_ox_state} and total charge Q={self.total_charge}. Please check your ligand database and/or your assembly input file.')
 
             #
             #
@@ -417,7 +420,7 @@ class DARTAssembly(object):
         if isinstance(self.ligand_json, Path) and isinstance(self.last_ligand_db_path, Path):
             reload_database = self.last_ligand_db_path.resolve() != self.ligand_json.resolve()
         elif isinstance(self.ligand_json, list) and isinstance(self.last_ligand_db_path, list):
-            reload_database = any([last_path.resolve() != path.resolve() for path, last_path in zip(self.ligand_json, self.last_ligand_db_path)])
+            reload_database = len(self.ligand_json) != len(self.last_ligand_db_path) or any([last_path.resolve() != path.resolve() for path, last_path in zip(self.ligand_json, self.last_ligand_db_path)])
         else:
             reload_database = True
 

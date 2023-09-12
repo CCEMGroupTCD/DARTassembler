@@ -8,8 +8,8 @@ from typing import Union
 
 class ChooseRandomLigands:
     def __init__(self, database, topology, instruction, max_attempts, metal_oxidation_state: int = None, total_complex_charge: int = None):
-        if not isinstance(database, list):
-            database = [database]*len(topology)
+
+        self.database = self.make_database_list_consistent_with_topology_and_similarity_list(self, database=database, topology=topology, instruction=instruction)
         self.ligand_dict = database
         self.topology = topology
         self.instruction = instruction
@@ -32,9 +32,41 @@ class ChooseRandomLigands:
                 input_list[index_list[i + 1]] = input_list[index_list[0]]
         return input_list
 
+    def make_database_list_consistent_with_topology_and_similarity_list(self, database: Union[dict, list[dict]], topology: list, instruction: list) -> list[dict]:
+        """
+        This ugly function makes sure that the database list is consistent with the topology and similarity list. The output is a list of databases with the same length as the topology and so that the databases are the same if the similarity is the same.
+        """
+        if not isinstance(database, list):
+            database = [database]*len(topology)
+        elif len(database) < len(topology):
+            # Repeating similarities, therefore we also have to repeat the database
+            db_idx = 0
+            new_database = []
+            for top_idx in range(len(topology)):
+                if top_idx == 0:
+                    new_database.append(database[db_idx])
+                    db_idx += 1
+                else:
+                    same_as_last = instruction[top_idx] == instruction[top_idx-1]
+                    if same_as_last:
+                        new_database.append(new_database[-1])
+                    else:
+                        new_database.append(database[db_idx])
+                        db_idx += 1
+            database = new_database
+        for idx in range(len(instruction)):
+            if idx != 0:
+                same_similarities = instruction[idx] == instruction[idx-1]
+                if same_similarities:
+                    same_databases = id(database[idx]) == id(database[idx-1])
+                    assert same_databases, f"Similarities and databases are not consistent at index {idx}!"
+
+        return database
+
     def get_charge_dic(self, deepcopy_ligands: bool = True):
         dic1 = []
         dic2 = []
+        assert len(self.topology) == len(self.ligand_dict), f"The number of topologies and the number of ligand databases are not consistent: {len(self.topology)} != {len(self.ligand_dict)}"
         for dent, ligands in zip(self.topology, self.ligand_dict):
             tmp_dic_1 = {}  # dictionary with keys (denticty) and values(list of all charges)
             tmp_dic_2 = {}  # dictionary with keys (denticty) and values(list of all ligands in the same order as their charges in tmp_dic_1)
@@ -50,13 +82,15 @@ class ChooseRandomLigands:
                     tmp_ligand_list.append(ligand)
                 tmp_dic_1.update({f"{denticity}": deepcopy(tmp_charge_list)})
                 tmp_dic_2.update({f"{denticity}": deepcopy(tmp_ligand_list) if deepcopy_ligands else tmp_ligand_list})
-                dic1.append(tmp_dic_1)
-                dic2.append(tmp_dic_2)
+            dic1.append(tmp_dic_1)
+            dic2.append(tmp_dic_2)
         return dic1, dic2
 
     def get_ligand_dic(self, deepcopy_ligands: bool = True):
         dic_1_list, dic_2_list = self.get_charge_dic(deepcopy_ligands=False)
         ligands = []
+
+        assert len(self.topology) == len(dic_1_list) == len(dic_2_list), f"The number of topologies and the number of ligand databases are not consistent: {len(self.topology)} != {len(dic_1_list)} != {len(dic_2_list)}"
         for dent, dic_1, dic_2 in zip(self.topology, dic_1_list, dic_2_list):
             tmp_dic_3 = {}  # tmp_dic_3 is a dictionary with keys (denticity) and  value (dictionary). This dictionary has keys (unique charge) and values(ligand building blocks))
             for denticity, charge_list, ligand_list in zip(dic_1.keys(), dic_1.values(), dic_2.values()):
@@ -97,16 +131,18 @@ class ChooseRandomLigands:
         charge_list = self.charge_list_process()
         ligand_dic_list = self.get_ligand_dic(deepcopy_ligands=False)
         ligands = {}
-        i = 0
         if charge_list is None:
             return None
-        for denticity, charge ,ligand_dic in zip(self.topology, charge_list, ligand_dic_list):
+
+        for i, (denticity, charge, ligand_dic) in enumerate(zip(self.topology, charge_list, ligand_dic_list)):
             ligands.update({i: random.choice(ligand_dic[str(denticity)][str(charge)])})
-            i = i + 1
+
         ligands_out = self.format_similarity_lists(ligands, self.instruction)
         # Deepcopy all chosen ligands. Only doing this here at the end instead of at each intermediate step makes for a huge speedup
         ligands_out = {idx: deepcopy(ligand) for idx, ligand in ligands_out.items()}
         return ligands_out
+
+
 
 
 class ChooseIterativeLigands:
@@ -209,3 +245,4 @@ class ChooseIterativeLigands:
             tmp_dic.update({i: ligand})
             i = i + 1
         return tmp_dic
+

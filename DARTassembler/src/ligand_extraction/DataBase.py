@@ -177,7 +177,7 @@ class MoleculeDB(BaselineDB):
         """
         db = {}
         if isinstance(json_, dict):
-            for n, (identifier, mol) in tqdm(enumerate(json_.items()), desc=f"Build {cls.type} Database", disable=not show_progress):
+            for n, (identifier, mol) in tqdm(enumerate(json_.items()), desc=f"Load {cls.type} Database", disable=not show_progress):
                 if isinstance(max_number, int):
                     if n >= max_number:
                         break
@@ -192,7 +192,7 @@ class MoleculeDB(BaselineDB):
                                                                                     )
         else:
             for identifier, mol in tqdm(iterate_over_json(path=json_, n_max=max_number, show_progress=False),
-                                        desc=f"Build {cls.type} Database", disable=not show_progress):
+                                        desc=f"Load {cls.type} Database", disable=not show_progress):
                 db[identifier] = cls.get_class().read_from_mol_dict(
                                                                                 dict_=mol,
                                                                                 graph_creating_strategy=graph_strategy,

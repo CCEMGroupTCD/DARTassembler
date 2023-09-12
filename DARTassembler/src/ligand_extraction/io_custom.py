@@ -67,13 +67,18 @@ def iterate_over_json(path: Union[str, Path], n_max: int=None, show_progress: bo
         # Try to load as normal JSON file first
         with open(path, 'r') as file:
             db = json.load(file)
+
+            if set(db.keys()) == {'key', 'value'}:
+                # If the file is a JSON Lines file, go into correct mode
+                raise UserWarning
+
             for i, (key, value) in enumerate(db.items()):
                 if check_if_return_entry(i, n_max):
                     yield key, value
                 else:
                     return
 
-    except json.JSONDecodeError:
+    except (json.JSONDecodeError, UserWarning):
         # If normal JSON fails, try to load as JSON Lines
         with jsonlines.open(path, 'r') as reader:
             for i, line in tqdm(enumerate(reader), disable=not show_progress, desc='Load json'):

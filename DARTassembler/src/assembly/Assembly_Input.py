@@ -48,6 +48,7 @@ _output_ligand_db_path = 'output_ligand_db_path'
 _filters = 'filters'
 # Filters
 _filter = 'filter'
+_graph_hash_wm = 'graph_IDs'     # graph_hash_with_metal
 _denticities = 'denticities'
 _denticities_of_interest = 'denticities_of_interest'
 _remove_ligands_with_neighboring_coordinating_atoms = 'remove_ligands_with_neighboring_coordinating_atoms'
@@ -253,6 +254,22 @@ class BaseInput(object):
 
         return input
 
+    def get_list_of_str_from_input(self, input: Union[str, list, tuple], allow_none=False) -> Union[list,None]:
+        """
+        Returns a list of str from a string, list or tuple input.
+        """
+        if allow_none and input is None:
+            return None
+
+        if isinstance(input, (str,int)):
+            input = [input]
+
+        input = list(input)
+        for i in range(len(input)):
+            input[i] = str(input[i])
+
+        return input
+
     def get_instruction_from_input(self, input: Union[str, list, tuple], varname: str, valid_instructions: Union[list,None] = None, allow_none=False) -> Union[str,None]:
         if allow_none and input is None:
             return None
@@ -357,6 +374,8 @@ class LigandFilterInput(BaseInput):
     }
 
     filter_keys = {
+        _graph_hash_wm: {
+            _graph_hash_wm: [str, list, tuple]},
         _denticities_of_interest: {
             _denticities_of_interest: [list, tuple]},
         _remove_ligands_with_neighboring_coordinating_atoms: {
@@ -470,6 +489,8 @@ class LigandFilterInput(BaseInput):
             out_filter_settings = {_filter: self.filtername}
             if self.filtername == _denticities_of_interest:
                 out_filter_settings[_denticities_of_interest] = self.check_denticities_of_interest(settings=filter_values)
+            elif self.filtername == _graph_hash_wm:
+                out_filter_settings[_graph_hash_wm] = self.get_list_of_str_from_input(input=filter_values[_graph_hash_wm])
             elif self.filtername == _remove_ligands_with_neighboring_coordinating_atoms:
                 out_filter_settings[_remove_ligands_with_neighboring_coordinating_atoms] = self.get_bool_from_input(input=filter_values[_remove_ligands_with_neighboring_coordinating_atoms], varname=_remove_ligands_with_neighboring_coordinating_atoms)
             elif self.filtername == _only_confident_charges:
@@ -721,7 +742,7 @@ class AssemblyInput(BaseInput):
             similarity = topology_similarity.split('--')[1].lstrip('[').rstrip(']').split(', ')
             n_diff_ligands = len(set(similarity))
             if not len(Ligand_json) == n_diff_ligands:
-                self.raise_error(f"Input '{_input_path}' is a list of paths and must have the same length as the number of different denticities specified in the topology. Yet, the topology {topology_similarity} has {n_diff_ligands} different denticities, but {len(Ligand_json)} paths were given.", varname=f'{_batches}->{_input_path}')
+                self.raise_error(f"Input '{_input_path}' is a list of paths and must have the same length as the number of different ligands specified in the similarity list at the end of the topology. Yet, the topology {topology_similarity} specifies {n_diff_ligands} different ligands, but {len(Ligand_json)} paths were given.", varname=f'{_batches}->{_input_path}')
 
         return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator
 
@@ -916,5 +937,16 @@ class AssemblyInputError(Exception):
         file = Path(file).name
         if file != '':
             file = f" in input file '{file}'"
-        total_message = f"\n\t--> Invalid input{varname}{batch_name}{file}:\n\t\t{message}"
+        total_message = f"\n\t--> Assembly Input Error{varname}{batch_name}{file}:\n\t\t{message}"
+        super().__init__(total_message)
+
+class LigandCombinationError(Exception):
+    """
+    Exception raised for errors in the choice of ligands.
+    """
+    def __init__(self, message: str, file: str='', batch_name:str =''):
+        file = Path(file).name
+        if file != '':
+            file = f" in input file '{file}'"
+        total_message = f"\n\t--> Ligand Combination Error{batch_name}{file}:\n\t\t{message}"
         super().__init__(total_message)

@@ -55,20 +55,20 @@ if __name__ == '__main__':
     db_path = project_path().extend(*f'data/final_db_versions/unique_ligand_db_v{db_version}.json'.split('/'))
     exclude_unconnected_ligands = True
     exclude_uncertain_charges = True
-    nmax = 10000
+    nmax = False
 
-    ligands = LigandDB.from_json(db_path, max_number=nmax)
+    # ligands = LigandDB.from_json(db_path, max_number=nmax)
     df_ligands = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path ,n_max=nmax), orient='index')
-    df_ligands = df_ligands[df_ligands['denticity'] == 2]
-    df_ligands = df_ligands[df_ligands['has_neighboring_coordinating_atoms']]
-
-    planarities = {}
-    for name, lig in ligands.db.items():
-        if lig.denticity == 2 and not lig.has_neighboring_coordinating_atoms:
-            is_planar, max_dist = lig.check_bidentate_planarity(return_tol=True)
-            planarities[name] = {'is_planar': is_planar, 'max_dist': max_dist, 'stoi': lig.stoichiometry}
-    df_planarities = pd.DataFrame.from_dict(planarities, orient='index')
-    df_ligands = df_planarities.join(df_ligands)
+    # df_ligands = df_ligands[df_ligands['denticity'] == 2]
+    # df_ligands = df_ligands[df_ligands['has_neighboring_coordinating_atoms']]
+    #
+    # planarities = {}
+    # for name, lig in ligands.db.items():
+    #     if lig.denticity == 2 and not lig.has_neighboring_coordinating_atoms:
+    #         is_planar, max_dist = lig.check_bidentate_planarity(return_tol=True)
+    #         planarities[name] = {'is_planar': is_planar, 'max_dist': max_dist, 'stoi': lig.stoichiometry}
+    # df_planarities = pd.DataFrame.from_dict(planarities, orient='index')
+    # df_ligands = df_planarities.join(df_ligands)
 
 
     # ligands = load_unique_ligand_db(path=db_path, molecule='class')

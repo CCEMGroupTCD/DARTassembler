@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Union
 from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _filter, _ligand_charges, _ligcomp, _coords, \
     _metals_of_interest, _denticities_of_interest, _remove_ligands_with_neighboring_coordinating_atoms, \
-    _remove_ligands_with_beta_hydrogens, _strict_box_filter, _acount, _acount_min, _acount_max, _denticities, _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max
+    _remove_ligands_with_beta_hydrogens, _strict_box_filter, _acount, _acount_min, _acount_max, _denticities, _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max, _graph_hash_wm
 
 
 # todo: add mandatory filter which checks if a charge is present
@@ -43,6 +43,9 @@ class LigandFilters(object):
 
             if filtername == _denticities_of_interest:
                 self.Filter.denticity_of_interest_filter(denticity_of_interest=filter[_denticities_of_interest])
+
+            elif filtername == _graph_hash_wm:
+                self.Filter.graph_hash_with_metal_filter(graph_hashes_with_metal=filter[_graph_hash_wm])
 
             elif filtername == _remove_ligands_with_neighboring_coordinating_atoms:
                 if filter[_remove_ligands_with_neighboring_coordinating_atoms]:
@@ -111,7 +114,7 @@ class LigandFilters(object):
 
     def get_filter_tracking_string(self) -> str:
         output= "===================== FILTER TRACKING =====================\n"
-        output += f"An overview of filters applied to '{self.ligand_db_path}'. The new ligand database is saved as '{self.output_ligand_db_path}'.\nRemoved ligands:\n"
+        output += f"--> Filtered ligand database was saved as '{self.output_ligand_db_path}'.\nRemoved ligands:\n"
         for filter in self.filter_tracking:
             output += f"  - {filter['filter']}: {filter['n_ligands_removed']}\n"
             options = ', '.join([f"{name}: {option}" for name, option in filter['full_filter_options'].items()])
@@ -145,18 +148,10 @@ class LigandFilters(object):
 
 if __name__ == "__main__":
 
-    ligand_filter_path = project_path().extend('src05_Assembly_Refactor', 'ligandfilters.yml')
-    max_number = 5000
+    ligand_filter_path = project_path().extend(*'dev/test/2-1-1-Cl-example/ligandfilters.yml'.split('/'))
+    max_number = 100
 
     filter = LigandFilters(filepath=ligand_filter_path, max_number=max_number)
     filter.save_filtered_ligand_db()
     filter.save_filter_tracking()
     filter.print_filter_tracking()
-
-    # Check if the new filtered db is the same as the old one
-    benchmark_dir = project_path().extend("src14_Assembly_Unit_Test", 'ligandfilters_benchmark')
-    if benchmark_dir.exists():
-        test = IntegrationTest(new_dir=filter.output_ligand_db_path.parent, old_dir=benchmark_dir)
-        test.compare_all()
-    else:
-        print("No benchmark directory found. Could not perform integration test.")
