@@ -26,6 +26,7 @@ _batches = 'Batches'
 _name = 'Name'
 _input_path = 'Input_Path'
 _max_num_complexes = 'MAX_num_complexes'
+_ligand_choice = 'ligand_choice'
 _isomers = 'Isomers'
 _optimisation = 'Optimisation_Choice'
 _random_seed = 'Random_Seed'
@@ -593,6 +594,7 @@ class AssemblyInput(BaseInput):
                         _name: [str],
                         _input_path: [str, list, tuple, type(None)],
                         _max_num_complexes: [int, str],
+                        _ligand_choice: [str],
                         _isomers: [str],
                         _optimisation: [str, bool],
                         _random_seed: [int, str],
@@ -728,6 +730,7 @@ class AssemblyInput(BaseInput):
         # Here we take the batch inputs and format them correctly
         Ligand_json = self.get_ligand_db_path_from_input(batch_settings[_input_path])
         Max_Num_Assembled_Complexes = self.get_int_from_input(batch_settings[_max_num_complexes], varname=f'{_batches}->{_max_num_complexes}')
+        ligand_choice = self.get_ligand_choice_from_input(batch_settings[_ligand_choice], varname=f'{_batches}->{_ligand_choice}')
         Generate_Isomer_Instruction = self.get_isomers_from_input(batch_settings[_isomers])
         Optimisation_Instruction = self.get_bool_from_input(batch_settings[_optimisation], varname=f'{_batches}->{_optimisation}')
         Random_Seed = self.get_int_from_input(batch_settings[_random_seed], varname=f'{_batches}->{_random_seed}')
@@ -744,7 +747,7 @@ class AssemblyInput(BaseInput):
             if not len(Ligand_json) == n_diff_ligands:
                 self.raise_error(f"Input '{_input_path}' is a list of paths and must have the same length as the number of different ligands specified in the similarity list at the end of the topology. Yet, the topology {topology_similarity} specifies {n_diff_ligands} different ligands, but {len(Ligand_json)} paths were given.", varname=f'{_batches}->{_input_path}')
 
-        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator
+        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator, ligand_choice
 
     def get_bidentate_rotator_from_input(self, bidentate_rotator: str, varname: str):
         """
@@ -754,6 +757,15 @@ class AssemblyInput(BaseInput):
             self.raise_error(f"Input '{bidentate_rotator}' for '{varname}' is not valid. Valid inputs are 'auto', 'slab' and 'horseshoe'.")
 
         return bidentate_rotator
+
+    def get_ligand_choice_from_input(self, ligand_choice: str, varname) -> str:
+        """
+        Checks the input for the ligand choice.
+        """
+        if not ligand_choice in ['random', 'all']:
+            self.raise_error(f"Input '{ligand_choice}' for '{varname}' is not valid. Valid inputs are 'random' and 'all'.")
+
+        return ligand_choice
 
     def get_geometry_modifier_from_input(self, path):
         if path is None:
@@ -848,7 +860,7 @@ class AssemblyInput(BaseInput):
             except (ValueError, SyntaxError):
                 # If the input is not a list of integers, then we raise an error
                 self.raise_error(error_message, varname=varname)
-            similarities = list(range(1, len(denticities) + 1)) # Default similarities are 1, 2, 3, i.e. all are different
+            similarities = list(range(1, len(denticities) + 1)) # Default similarities are (1, 2, 3, ...) i.e. all are different
 
         elif len(splits) == 2:      # both denticities and similarities are given
             try:
@@ -874,6 +886,16 @@ class AssemblyInput(BaseInput):
             self.raise_error(f"Topology '{topology}' has denticities that are not positive integers.", varname=varname)
         if not all(isinstance(similarity, int) and similarity > 0 for similarity in similarities):
             self.raise_error(f"Topology '{topology}' has similarities that are not positive integers.", varname=varname)
+
+        # Check that similarities have same integers in increasing order
+        if sorted(similarities) != similarities:
+            self.raise_error(f"Similarities '{similarities}' has similarities that are not in increasing order. Please edit the input file so that all integers in the similarity list are in increasing order.", varname=varname)
+
+        # Check that the similarities for different denticities are different
+        for dent, sim in zip(denticities, similarities):
+            other_dent_similarities = [similarity for denticity, similarity in zip(denticities, similarities) if denticity != dent]
+            if sim in other_dent_similarities:
+                self.raise_error(f"Topology '{topology}' has the wrong format. Different denticities have the same similarity, but that is not possible. Please edit the input file so that all denticities have different similarities.", varname=varname)
 
         output_topology = str(denticities) + '--' + str(similarities)
         return output_topology

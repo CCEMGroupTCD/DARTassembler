@@ -1405,6 +1405,7 @@
                 ],
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 3,
+                "ligand_choice": "random",
                 "Metal": {
                     "element": "Fe",
                     "oxidation_state": 2,
@@ -1423,6 +1424,7 @@
                 "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 1,
+                "ligand_choice": "random",
                 "Metal": {
                     "element": "Fe",
                     "oxidation_state": 2,
@@ -1438,11 +1440,10 @@
                 "bidentate_rotator": "horseshoe"
             },
             {
-                "Input_Path": [
-                    "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json"
-                ],
+                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 1,
+                "ligand_choice": "random",
                 "Metal": {
                     "element": "Fe",
                     "oxidation_state": 2,
@@ -1458,13 +1459,10 @@
                 "bidentate_rotator": "horseshoe"
             },
             {
-                "Input_Path": [
-                    "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
-                    "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
-                    "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json"
-                ],
+                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 1,
+                "ligand_choice": "random",
                 "Metal": {
                     "element": "Fe",
                     "oxidation_state": 2,
@@ -1483,6 +1481,7 @@
                 "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
                 "Isomers": "Generate All",
                 "MAX_num_complexes": 10,
+                "ligand_choice": "random",
                 "Metal": {
                     "element": "Fe",
                     "oxidation_state": 2,
@@ -1501,6 +1500,7 @@
                 "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
                 "Isomers": "Generate All",
                 "MAX_num_complexes": 5,
+                "ligand_choice": "random",
                 "Metal": {
                     "element": "Fe",
                     "oxidation_state": 4,
@@ -1519,6 +1519,7 @@
                 "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
                 "Isomers": "Generate Lowest Energy",
                 "MAX_num_complexes": 2,
+                "ligand_choice": "random",
                 "Metal": {
                     "element": "Fe",
                     "oxidation_state": 2,
@@ -1528,6 +1529,25 @@
                 "Optimisation_Choice": false,
                 "Random_Seed": 23,
                 "Topology": "(5, 1)",
+                "Total_Charge": 0,
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
+            },
+            {
+                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "Isomers": "Generate Lowest Energy",
+                "MAX_num_complexes": 10,
+                "ligand_choice": "all",
+                "Metal": {
+                    "element": "Fe",
+                    "oxidation_state": 2,
+                    "spin": 0
+                },
+                "Name": "Integration_test_8",
+                "Optimisation_Choice": false,
+                "Random_Seed": 0,
+                "Topology": "(2, 1, 1)--(1, 2, 2)",
                 "Total_Charge": 0,
                 "complex_name_appendix": null,
                 "geometry_modifier_filepath": null,

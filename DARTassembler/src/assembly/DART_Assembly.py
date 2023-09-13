@@ -59,7 +59,7 @@ class DARTAssembly(object):
             # Set batch settings for the batch run
             self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction,\
             self.optimisation_instruction, self.random_seed, self.total_charge, metal_list, self.topology_similarity,\
-            self.complex_name_appendix, self.geometry_modifier_filepath, bidentate_rotator = self.settings.check_and_return_batch_settings(batch_settings)
+            self.complex_name_appendix, self.geometry_modifier_filepath, bidentate_rotator, ligand_choice = self.settings.check_and_return_batch_settings(batch_settings)
             self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
             self.batch_idx = idx
             self.batch_outcontrol = BatchAssemblyOutput(self.batch_output_path)
@@ -67,6 +67,7 @@ class DARTAssembly(object):
             self.metal_ox_state = metal_list[1]
             self.metal_spin = metal_list[2]
             self.build_options = {'bidentate_rotator': bidentate_rotator}
+            self.ligand_choice = ligand_choice
             self.multiple_db = isinstance(self.ligand_json, list)
 
             self.run_batch()    # run the batch assembly
@@ -87,24 +88,25 @@ class DARTAssembly(object):
             self.ligand_db = self.get_ligand_db()
         RCA = PlacementRotation(database=self.ligand_db)
 
-        ########################################################################
-        # This section of code needs to be commented out if you do not want to
-        # generate every combination of ligands but would rather build in a
-        # random manner
+        Topology, Similarity = RCA.format_topologies(self.topology_similarity)
+        choice = ChooseRandomLigands(
+                                        database=self.ligand_db,
+                                        topology=Topology,
+                                        instruction=Similarity,
+                                        metal_oxidation_state=int(self.metal_ox_state),
+                                        total_complex_charge=self.total_charge,
+                                        max_attempts=1000000,
+                                        ligand_choice=self.ligand_choice,
+                                        max_num_assembled_complexes=self.max_num_assembled_complexes,
+                                        )
+        ligand_chooser = choice.choose_ligands()
 
-        """IterativeLigands = ChooseIterativeLigands(database=self.ligand_db,
-                                                  top_list=topology_list,
-                                                  charge=Total_Charge,
-                                                  metal=metal_list,
-                                                  random_seed=Random_Seed)
-        IterativeLigands.obtain_all_combinations()"""
-        ########################################################################
 
         j = 0  # Assembly iteration we are on
         batch_sum_assembled_complexes = 0  # Number of assembled complexes produced
         # Note: j is not always equal to batch_sum_assembled_complexes
-        while batch_sum_assembled_complexes < self.max_num_assembled_complexes:
-            print(f"###############################__Attempting_Assembly_of_Complex_#_{str(self.random_seed + j)}__###############################")
+        while choice.if_make_more_complexes(batch_sum_assembled_complexes):
+            print(f"###############################__Attempting_Assembly_of_Complex_#_{j}__###############################")
             #
             #
             # 1. Choose Random seed
@@ -112,32 +114,14 @@ class DARTAssembly(object):
 
             #
             #
-            # 3. Random Choice of Inputs
-            Topology, Similarity = RCA.format_topologies(self.topology_similarity)
-
-            #
-            #
-            # 3a. Choose Ligands Randomly
-            # This section of code needs to be uncommented if you want complexes assembled randomly
-            ligands = ChooseRandomLigands(database=self.ligand_db,
-                                          topology=Topology,
-                                          instruction=Similarity,
-                                          metal_oxidation_state=int(self.metal_ox_state),
-                                          total_complex_charge=self.total_charge,
-                                          max_attempts=1000000
-                                          ).choose_ligands()
+            # 2. Choose Ligands
+            ligands = next(ligand_chooser)
             if ligands is None:
-                raise LigandCombinationError(f'Could not find a valid combination of ligands! Most likely there was no valid combination of ligand charges which fulfills the total charge requirement for the specified metal oxidation state MOS={self.metal_ox_state} and total charge Q={self.total_charge}. Please check your ligand database and/or your assembly input file.')
+                break
 
             #
             #
-            # 3b. Choose Ligands Iteratively
-            # This section of code needs to be commented if you want complexes assembled randomly
-            """ligands = IterativeLigands.choose_ligands(iteration=Random_Seed + j)"""
-
-            #
-            #
-            # 4. Detect certain conditions which hinder complex assembly, e.g. tridentate non-planar
+            # 3. Detect certain conditions which hinder complex assembly, e.g. tridentate non-planar
             complex_can_be_assembled = self.check_if_complex_can_be_assembled(RCA, ligands)
             if not complex_can_be_assembled:
                 j += 1
@@ -145,7 +129,7 @@ class DARTAssembly(object):
 
             #
             #
-            # 5. Obtain rotated building blocks
+            # 4. Obtain rotated building blocks
             # Here we pass in our ligands and get out our stk building blocks
             # The first line is a monkey patch to fix an inconvenience in stk where every molecule is sanitized with rdkit, which throws errors for some of our molecules
             with patch('stk.SmartsFunctionalGroupFactory', new=MONKEYPATCH_STK_SmartsFunctionalGroupFactory):   # Monkey patch to fix rdkit sanitization error
@@ -155,7 +139,7 @@ class DARTAssembly(object):
                                                                                                                 metal=self.metal_type,
                                                                                                                 build_options=self.build_options,
                                                                                                                 )
-            # Optionally modify the exact 3D coordinates of the ligands.
+            # 5. Optionally modify the exact 3D coordinates of the ligands.
             if self.geometry_modifier_filepath is not None:
                 stk_ligand_building_blocks_list = self.modify_ligand_geometry(geometry_modifier_path=self.geometry_modifier_filepath, building_blocks=stk_ligand_building_blocks_list)
 
@@ -361,6 +345,7 @@ class DARTAssembly(object):
         """
         ligand_names = tuple(ligand.unique_name for ligand in ligands.values())
         ligand_stoichiometries = tuple(ligand.stoichiometry for ligand in ligands.values())
+        ligand_charges = tuple(ligand.pred_charge for ligand in ligands.values())
         topology = f'({self.topology_similarity.split("--")[0].strip("[]")})'
         similarity = f'({self.topology_similarity.split("--")[1].strip("[]")})'
         
@@ -371,6 +356,7 @@ class DARTAssembly(object):
             "note": reason,
             "ligand names": ligand_names,
             "ligand stoichiometries": ligand_stoichiometries,
+            "ligand charges": ligand_charges,
             "batch idx": self.batch_idx,
             "batch name": self.batch_name,
             "metal": self.metal_type,

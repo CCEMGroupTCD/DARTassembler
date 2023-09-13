@@ -1,5 +1,5 @@
 ===================== FILTER TRACKING =====================
-An overview of filters applied to '/Users/timosommer/PhD/projects/RCA/projects/DART/data/final_db_versions/unique_ligand_db_v1.7.json'. The new ligand database is saved as '/Users/timosommer/PhD/projects/RCA/projects/DART/testing/integration_tests/ligand_filters/data_output/filtered_ligand_db_v1.7.json'.
+--> Filtered ligand database was saved as '/Users/timosommer/PhD/projects/RCA/projects/DART/testing/integration_tests/ligand_filters/data_output/filtered_ligand_db_v1.7.json'.
 Removed ligands:
   - denticities_of_interest: 118
         options --> denticities_of_interest: [1, 2, 3, 4, 5]
