@@ -5,8 +5,6 @@ Must:
     - change default paths in Paths.py
 
 Should:
-- input:
-    - talk about random/combinatorial input and input checks, especially with multiple ligand databases specified.
 - fix bidentate rotator
     - Cian: integrate the option 'horseshoe' or 'slab' where the boxes are build.
 - add ligand overview csv output to ligand filters

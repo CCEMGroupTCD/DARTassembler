@@ -12,6 +12,7 @@ from DARTassembler.src.ligand_extraction.composition import Composition
 from ase.visualize import view
 from sympy import Point3D, Plane
 import re
+import pandas as pd
 
 # collection of molecule objects of other packages
 from ase import io, Atoms
@@ -1115,6 +1116,32 @@ class RCA_Ligand(RCA_Molecule):
                 return True
 
         return False
+
+    def get_ligand_output_info(self) -> dict:
+        important_data = ['unique_name', 'stoichiometry', 'denticity', 'local_elements', 'pred_charge', 'pred_charge_is_confident', 'graph_hash_with_metal',  'occurrences', 'count_metals', 'all_ligand_names']
+        info = self.write_to_mol_dict(include_graph_dict=False)
+        info = {key: val for key, val in info.items() if key in important_data}
+
+        info['Ligand ID'] = info['unique_name']
+        info['Stoichiometry'] = info['stoichiometry']
+        info['Denticity'] = info['denticity']
+        info['Donors'] = '-'.join(info['local_elements'])
+        info['Predicted Charge'] = int(info['pred_charge'])
+        info['Confident Charge'] = info['pred_charge_is_confident']
+        info['Graph ID'] = info['graph_hash_with_metal']
+        info['CSD Occurrences'] = info['occurrences']
+        info['CSD Metal Count'] = ' - '.join([f'{el}({count})' for el, count in info['count_metals'].items()])
+        # Currently doesn't work because the ligand doesn't have the attribute 'identical_ligand_info'
+        # csd_mos_counts = [f'{el}+{mos:.0f}' if mos > 0 else f'{el}+{mos:.0f}' for el, mos in zip(self.identical_ligand_info['original_metal_symbol'], self.identical_ligand_info['original_metal_os']) if not np.isnan(mos)]
+        # csd_mos_counts = pd.value_counts(pd.Series(csd_mos_counts)).to_dict()
+        # info['CSD Metal OS Count'] = ', '.join([f'{el}({count})' for el, count in csd_mos_counts.items()])
+        info['CSD Complex IDs'] = ' - '.join([name.replace('CSD-', '').split('-')[0] for name in info['all_ligand_names']])
+
+
+        for key in important_data:
+            del info[key]
+
+        return info
 
     def write_to_mol_dict(self, include_graph_dict: bool=True) -> dict:
         d = {}

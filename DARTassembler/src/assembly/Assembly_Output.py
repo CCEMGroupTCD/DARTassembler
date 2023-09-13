@@ -28,6 +28,7 @@ _complex_settings = 'settings.yml'
 _complex_ligandfilters = 'ligandfilters.yml'
 _complex_warnings = 'warnings.txt'
 _complex_ff_movie = 'ffmovie.xyz'
+_complex_ligand_info = 'ligandinfo.csv'
 
 
 def save_file(string: str, outpath: Union[str,Path]):
@@ -166,6 +167,7 @@ class ComplexAssemblyOutput(object):
         self.ligandfilters_path = Path(complexdir, start + _complex_ligandfilters)
         self.warnings_path = Path(complexdir, start + _complex_warnings)
         self.ff_movie_path = Path(complexdir, start + _complex_ff_movie)
+        self.ligand_output_path = Path(complexdir, start + _complex_ligand_info)
 
     def save_all_complex_data(self,
                               complex,
@@ -173,7 +175,8 @@ class ComplexAssemblyOutput(object):
                               xyz_structure: str,
                               ff_movie: Union[str, None] = None,
                               assembly_input_path: [str, Path, None] = None,
-                              batch_idx: Union[int, None] = None
+                              batch_idx: Union[int, None] = None,
+                              ligands: Union[dict, None] = None,
                               ) -> None:
 
         self.save_structure(xyz_structure)  # Save the structure as xyz
@@ -181,6 +184,8 @@ class ComplexAssemblyOutput(object):
             self.save_ff_movie(ff_movie)  # Save the force field movie
         if assembly_input_path is not None:
             self.save_settings(assembly_input_path)  # Save the assembly input settings
+        if ligands is not None:
+            self.save_ligand_info(ligands)  # Save the ligand info
         self.save_data_json(
                             complex=complex,
                             complex_idx=complex_idx,
@@ -189,6 +194,11 @@ class ComplexAssemblyOutput(object):
                             assembly_input_path=assembly_input_path,
                             batch_idx=batch_idx
                             )
+
+    def save_ligand_info(self, ligands: dict) -> None:
+        ligand_infos = {f'Ligand {i}': lig.get_ligand_output_info() for i, lig in enumerate(ligands.values())}
+        df = pd.DataFrame.from_dict(ligand_infos, orient='index')
+        df.to_csv(self.ligand_output_path)
 
     def save_data_json(self,
                         complex,

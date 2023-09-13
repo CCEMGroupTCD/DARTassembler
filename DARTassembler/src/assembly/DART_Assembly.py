@@ -298,6 +298,7 @@ class DARTAssembly(object):
                                                 ff_movie=ff_movie,
                                                 assembly_input_path=self.assembly_input_path,
                                                 batch_idx=self.batch_idx,
+                                                ligands=ligands,
                                                 )
 
         self.add_batch_info(success=True, reason=note, ligands=ligands, complex_idx=complex_idx, complex_name=complex_name)

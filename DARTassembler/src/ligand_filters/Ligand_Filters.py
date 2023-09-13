@@ -3,6 +3,7 @@ from DARTassembler.src.constants.Paths import project_path
 from DARTassembler.src.ligand_filters.FilteringStage import FilterStage
 from dev.test.Integration_Test import IntegrationTest
 from pathlib import Path
+import pandas as pd
 from typing import Union
 from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _filter, _ligand_charges, _ligcomp, _coords, \
     _metals_of_interest, _denticities_of_interest, _remove_ligands_with_neighboring_coordinating_atoms, \
@@ -133,6 +134,7 @@ class LigandFilters(object):
         outpath = Path(self.output_ligand_db_path.parent, "filter_tracking.txt")
         with open(outpath, 'w') as f:
             f.write(self.get_filter_tracking_string())
+
         return
 
     def save_filtered_ligand_db(self):
@@ -144,6 +146,17 @@ class LigandFilters(object):
         filtered_db.to_json(self.output_ligand_db_path, json_lines=True)
 
         return
+
+    def save_ligand_info_csv(self):
+        db = self.Filter.database
+        ligands = {uname: ligand.get_ligand_output_info() for uname, ligand in db.db.items()}
+        df = pd.DataFrame.from_dict(ligands, orient='index')
+        df = df.drop(columns=['CSD Metal Count', 'CSD Complex IDs'])
+        outpath = Path(self.output_ligand_db_path.parent, "ligand_info.csv")
+        df.to_csv(outpath, index=False)
+
+        return
+
 
 
 if __name__ == "__main__":
