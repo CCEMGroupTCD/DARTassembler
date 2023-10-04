@@ -31,7 +31,7 @@ class Generate_Gaussian_input_file:
         self.ligands = ligands
         self.num_processors = config_data["num_processors"]
         self.memory_GB = config_data["memory_GB"]
-        self.charge = complex_charge
+        self.charge = int(complex_charge)
         self.multiplicity = spin
         self.calc_instruction = config_data["calc_instruction"]
         self.functional = config_data["functional"]  # rwb97xd
@@ -56,7 +56,7 @@ class Generate_Gaussian_input_file:
     def _gen_chk_name_(self):
         # This will ultimately be the first line in the input file
         # Its purpose is to specify the name of the checkpoint file
-        line1 = f"%chk={self.filename}.chk\n"
+        line1 = f"%chk={self.filename}_gaussain.chk\n"
         return str(line1)
 
     def _gen_num_proc(self):
@@ -112,6 +112,8 @@ class Generate_Gaussian_input_file:
             try:
                 basis_set_string_tmp = str(self.basis_sets_dict[str(atom)])
             except KeyError:
+                #todo: remove this error raising event. It is not necessary for the final release
+                raise KeyError
                 basis_set_string_tmp = self.basis_sets_dict["other"]
                 str(basis_set_string_tmp).replace("x", atom)
             basis_set_string = basis_set_string + basis_set_string_tmp + self.basis_set_seperator
@@ -145,4 +147,9 @@ class Generate_Gaussian_input_file:
         file_string = self._gen_chk_name_() + self._gen_num_proc() + self._gen_mem() + self._gen_calc_type_and_theory() + self._gen_spacer_message() \
                       + self._gen_multiplicity_charge() + self._gen_atomic_coords() + self._gen_basi_sets() + self._gen_ecp() + self._gen_link1() \
                       + self._gen_link1_header() + self._gen_basi_sets() + self._gen_ecp() + self._gen_footer()
+        return file_string
+
+    def Generate_Gaussian_com_without_NBO(self):
+        file_string = self._gen_chk_name_() + self._gen_num_proc() + self._gen_mem() + self._gen_calc_type_and_theory() + self._gen_spacer_message() \
+                      + self._gen_multiplicity_charge() + self._gen_atomic_coords() + self._gen_basi_sets() + self._gen_ecp() + "\n" + "\n"
         return file_string

@@ -1,0 +1,21 @@
+verbose: 3
+optimization_movie: true
+concatenate_xyz: true
+overwrite_output_path: true
+Output_Path: '../src14_Assembly_Unit_Test/output'
+complex_name_length: 8
+
+Batches:
+  - Input_Path: '../data/Filtered_Jsons/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
+    Isomers: Generate Lowest Energy
+    MAX_num_complexes: 1
+    Metal:
+      element: Fe
+      oxidation_state: 2
+      spin: 0
+    Name: Integration_test_1
+    Optimisation_Choice: false
+    Random_Seed: 0
+    Topology: '(2, 2)'
+    Total_Charge: 0
+    complex_name_appendix:

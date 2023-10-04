@@ -12,16 +12,15 @@ def main(assembly_input_path: str):
 
 if __name__ == "__main__":
 
-    USER_INPUT = 'assembly_input.yml'   # In this file the user specifies which input they want
+    USER_INPUT = 'EXAMPLE_PN_Pd_Ni.yml'   # In this file the user specifies which input they want
     assembly = main(assembly_input_path=USER_INPUT)
 
 
 
-
     #%% ==============    Doublecheck refactoring    ==================
-    print('\nDouble checking if output is same as before:')
     from test.Integration_Test import IntegrationTest
-    test = IntegrationTest(new_dir=assembly.output_path, old_dir=Path(assembly.output_path.parent, 'output_benchmark'))
+    test = IntegrationTest(new_dir=assembly.output_path, old_dir=Path(assembly.output_path.parent, 'DART_Example_Pd_Ni_Complexes'))
     test.compare_all()
+
 
     print('Done!')

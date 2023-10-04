@@ -70,18 +70,31 @@ def get_boxes(denticity, planar: bool = True, input_topology=None, bool_placed_b
             # place bidentate in the plane to the right
             print("we are extracting boxes for bidentate ligands.py 1")
             #FRANK
-            box_list.append(Box(-4.0, 4.0, -1.4, 1.4, 0.3, 100))  # Top_Plate
-            box_list.append(Box(-4.0, 4.0, -1.4, 1.4, -100.0, -0.3))  # Bottom_Plate
-            box_list.append(Box(-100, 0.5, -1.4, 1.4, -100.0, 100.0))  # Left_Plate_Big
-            box_list.append(Box(-100.0, 100.0, 10.4, 100, -100.0, 100.0))  # Back_Plate
-            box_list.append(Box(-100.0, 100.0, -100, -10.4, -100.0, 100.0))  # Front_Plate
-            #################################################################
-            #CASINI
-            #box_list.append(Box(-4.0, 4.0, -1.4, 1.4, 0.5, 100))  # Top_Plate
-            #box_list.append(Box(-4.0, 4.0, -1.4, 1.4, -100.0, -0.5))  # Bottom_Plate
+            #box_list.append(Box(-4.0, 4.0, -1.4, 1.4, 0.3, 100))  # Top_Plate
+            #box_list.append(Box(-4.0, 4.0, -1.4, 1.4, -100.0, -0.3))  # Bottom_Plate
             #box_list.append(Box(-100, 0.5, -1.4, 1.4, -100.0, 100.0))  # Left_Plate_Big
             #box_list.append(Box(-100.0, 100.0, 10.4, 100, -100.0, 100.0))  # Back_Plate
             #box_list.append(Box(-100.0, 100.0, -100, -10.4, -100.0, 100.0))  # Front_Plate
+            #################################################################
+            #CASINI
+            #box_list.append(Box(-4.0, 4.0, -1.4, 1.4, 0.5, 100))           # Top_Plate
+            #box_list.append(Box(-4.0, 4.0, -1.4, 1.4, -100.0, -0.5))       # Bottom_Plate
+            #box_list.append(Box(-100, 0.5, -1.4, 1.4, -100.0, 100.0))      # Left_Plate_Big
+            #box_list.append(Box(-100.0, 100.0, 10.4, 100, -100.0, 100.0))  # Back_Plate
+            #box_list.append(Box(-100.0, 100.0, -100, -10.4, -100.0, 100.0))# Front_Plate
+            #################################################################
+            # Example 1
+            #box_list.append(Box(-100.0, 100.0, -1.0, 1.0, 0.5, 1.0))      # Top_Plate
+            #box_list.append(Box(-100.0, 100.0, -1.0, 1.0, -1.0, -0.5))    # Bottom_Plate
+            #box_list.append(Box(-100.0, -0.1, -1.0, 1.0, -1.0, 1.0))      # Backplate for horse shoe
+            #################################################################
+            # Example 2
+            box_list.append(Box(-100.0, 100.0, -1.0, 1.0, 0.5, 1.0))    # Top_Plate
+            box_list.append(Box(-100.0, 100.0, -1.0, 1.0, -1.0, -0.5))  # Bottom_Plate
+            box_list.append(Box(-100.0, -0.1, -1.0, 1.0, -1.0, 1.0))    # Backplate for horse shoe
+            #box_list.append(Box(4.0, 7.0, -1.2, 1.2, 0.5, 10.0))    # Top_Plate 2
+            #box_list.append(Box(4.0, 7.0, -1.2, 1.2, -10.0, -0.5))  # Bottom_Plate 2
+            box_list.append(Box(-100.0, -0.5, -100, 100, -100, 100))  # Backplate for horse shoe
             #################################################################
 
         elif (denticity == 2) and (input_topology == [2, 2]) and bool_placed_boxes == True: # place bidentate in the plane to the left

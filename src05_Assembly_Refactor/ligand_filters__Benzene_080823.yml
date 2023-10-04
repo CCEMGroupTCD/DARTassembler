@@ -1,0 +1,29 @@
+input_ligand_db_path:           # path or nothing
+output_ligand_db_path: '/Users/cianclarke/Documents/PhD/Complex_Assembly/DART/data/Filtered_Jsons/Benzene_dir/Benzene.json'   # path or nothing
+
+filters:
+  - filter: 'denticities_of_interest'
+    denticities_of_interest: [1]
+
+  - filter: 'remove_ligands_with_neighboring_coordinating_atoms'
+    remove_ligands_with_neighboring_coordinating_atoms: True
+
+  - filter: 'only_confident_charges'
+    only_confident_charges: True
+
+  - filter: 'remove_even_odd_electron_count'
+    remove_even_odd_electron_count: 'even'    # 'even' or 'odd''
+
+  - filter: 'ligand_charges'
+    ligand_charges: [-1]
+    denticities: [1]
+
+  - filter: 'coordinating_atoms_composition'
+    atoms_of_interest: ["C"]
+    instruction: "must_contain_and_only_contain"
+    denticities: [1]
+
+  - filter: 'ligand_composition'
+    atoms_of_interest: [ "C", "C", "C", "C", "C", "C","H","H","H","H","H"]
+    instruction: "must_contain_and_only_contain"
+    denticities: [1]

@@ -11,6 +11,8 @@ from src01.io_custom import load_complex_db
 from pathlib import Path
 from copy import deepcopy
 sns.set_theme()
+plt.rcParams['svg.fonttype'] = 'none' # for correct text rendering in some programs
+
 
 def unroll_dict_in_df_column(df:pd.DataFrame, column: str, prefix: str):
     df = deepcopy(df)
@@ -22,7 +24,7 @@ def unroll_dict_in_df_column(df:pd.DataFrame, column: str, prefix: str):
 
 if __name__ == '__main__':
 
-    db_version = '1.6'
+    db_version = '1.7'
     save_plots_dir = f'../../data/db_statistics/complex_statistics/v{db_version}'
     db_path = f'../../data/final_db_versions/complex_db_v{db_version}.json'
 
@@ -33,6 +35,8 @@ if __name__ == '__main__':
 
     data = unroll_dict_in_df_column(df=data, column='global_props', prefix='gbl_')
     c = data.iloc[0].to_dict()
+
+    exit()
 
     #%% plot histograms of global props
     props = {

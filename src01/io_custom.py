@@ -116,7 +116,7 @@ def iterate_complex_db(path: Union[str, Path], molecule: str='dict', n_max=None,
     for name, mol in tqdm(iterate_over_json(path, n_max=n_max, show_progress=False), disable=not show_progress, desc='Load complex db'):
         if molecule == 'class':
             mol = RCA_Complex.read_from_mol_dict(mol)
-            yield name, mol
+        yield name, mol
 
 
 def load_complex_db(path: Union[str, Path], molecule: str='dict', n_max=None, show_progress: bool=True) -> dict:
@@ -144,15 +144,15 @@ def load_full_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
     print(f'Loaded full ligand db. Time: {duration}. ')
     return db
 
-def load_unique_ligand_db_iteratively(path: Union[str, Path], molecule: str='dict', n_max=None, show_progress: bool=False) -> dict:
+def iterate_unique_ligand_db(path: Union[str, Path], molecule: str= 'dict', n_max=None, show_progress: bool=False) -> dict:
     check_molecule_value(molecule)  # Check if the molecule value is valid
     for name, mol in tqdm(iterate_over_json(path, n_max=n_max, show_progress=False), disable=not show_progress, desc='Load unique ligand db'):
         if molecule == 'class':
             mol = RCA_Ligand.read_from_mol_dict(mol)
-            yield name, mol
+        yield name, mol
 
 def load_unique_ligand_db(path: Union[str, Path], molecule: str='dict', n_max=None, show_progress: bool=True) -> dict:
-    db = {name: mol for name, mol in load_unique_ligand_db_iteratively(path=path, molecule=molecule, n_max=n_max, show_progress=show_progress)}
+    db = {name: mol for name, mol in iterate_unique_ligand_db(path=path, molecule=molecule, n_max=n_max, show_progress=show_progress)}
     return db
 
 def save_complex_db(db: dict, path: Union[str, Path]):
@@ -192,11 +192,36 @@ def write_yaml(path: Union[str, Path], data: dict) -> None:
     return
 
 def read_yaml(path: Union[str, Path]) -> dict:
-    try:
-        with open(path, 'r') as file:
-            data = yaml.load(file, Loader=yaml.FullLoader)
-    except FileNotFoundError:
-        raise FileNotFoundError(f'Could not find file {path}')
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f'Filepath does not exist: {path}.')
+
+    with open(path, 'r') as f:
+        txt = f.read()
+
+        try:
+            data = yaml.load(txt, yaml.SafeLoader)
+
+        except yaml.YAMLError as exc:
+            # Print a nice error message pointing to the line where the error is
+            error_start = f"\n\n-->Error while parsing the input YAML file '{path}':"
+            error_end = 'The error probably is either on this line or the line before. A common error is wrong indentation. Please correct input file and retry.'
+            if hasattr(exc, 'problem_mark'):
+                if exc.context != None:
+                    raise Exception(f'{error_start}\n\tThe issue seems to be here:\n\t{exc.problem_mark}\n\tYAML error message: {exc.problem}{exc.context}\n\t{error_end}')
+                else:
+                    raise Exception(f'{error_start}\n\tThe issue seems to be here:\n\t{exc.problem_mark}\n\tYAML error message: {exc.problem}\n\t{error_end}')
+
+            else:
+                raise Exception(f'There was an error while reading the YAML file {path}. Please make sure the file is a proper yaml file. For example, a common error is that the indentation might be wrong. This is the error message from yaml, please google it if you don\'t know how to fix it: {exc}')
+
+    # try:
+    #     with open(path, 'r') as file:
+    #         data = yaml.load(file, Loader=yaml.FullLoader)
+    # except FileNotFoundError:
+    #     raise FileNotFoundError(f'Could not find file {path}')
+    # except Exception as e:
+    #     raise Exception(f'There was an error while reading the YAML file {path}. Please make sure the file is a proper yaml file. For example, a common error is that the indentation might be wrong. This is the error message from yaml, please google it if you don\'t know how to fix it: {e}')
 
     return data
 

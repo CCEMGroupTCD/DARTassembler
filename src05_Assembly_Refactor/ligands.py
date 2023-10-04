@@ -65,7 +65,7 @@ class ChooseRandomLigands:
     def charge_list_process(self):
         print("\nStarting Charge Loop")
         m = 0
-        charge_dic, _ = self.get_charge_dic(deepcopy_ligands=False)     # No deepcopy for speedup since we don't need the ligands
+        charge_dic, _ = self.get_charge_dic(deepcopy_ligands=False)  # No deepcopy for speedup since we don't need the ligands
         while m < self.max_loop:
             charge_list = []
             for dent in self.topology:
@@ -82,7 +82,7 @@ class ChooseRandomLigands:
             f"!!!Fatal Error!!! -> The total charge condition [{self.total_charge}] and metal oxidation state [{self.metal_ox}] assigned to the complex [{self.topology} -- {self.instruction}] is not solvable in a realistic time frame -> Exiting Program")
         return None
 
-    def choose_ligands(self) -> Union[dict,None]:
+    def choose_ligands(self) -> Union[dict, None]:
         charge_list = self.charge_list_process()
         dic_1, dic_2 = self.get_charge_dic(deepcopy_ligands=False)
         ligand_dic = self.get_ligand_dic(dic_1=dic_1, dic_2=dic_2, deepcopy_ligands=False)
@@ -201,3 +201,62 @@ class ChooseIterativeLigands:
             tmp_dic.update({i: ligand})
             i = i + 1
         return tmp_dic
+
+
+class ChooseDirtyLigands:
+    def __init__(self, database, top_list, random_seed):
+        # todo: the reason this class is called ChooseDirtyLigands is because this is a cheap and dirty fix to a more serious problem with the code.
+        # we need to to be able to specify seperate databases for each ligand. This means the user can specify certain types of ligands go to specific locations
+        # this class as it stands is going to only work for the exampl and needs to be modified in the future.
+        self.top_list = top_list
+        self.ligand_dict = database
+        self.Random_Seed = random_seed
+        self.batch_complex_ligands_list = []
+        self.monodentate_ligands = []
+        self.bidentate_ligands = []
+        self.gen_ligand_lists()
+        self.finsihed = False
+
+        # Ensure that the inputs are valid
+        self.perform_checks()
+
+    def perform_checks(self):
+        print("!!!Warning!!! -> Use of this class is only advised in the context of the example for the DART PAPER. It will only work with the [2,1,1]--[1,2,3] topology-> Progressing to Assembly")
+        if self.top_list != "[2, 1, 1]--[1, 2, 3]":
+            # Ensures only one topology provided
+            print(f"!!!Fatal Error!!! -> This class is only functional in context of the [[2, 1, 1]--[1, 2, 3]] not [{self.top_list}]-> Exiting Program")
+            raise ValueError
+
+        if self.Random_Seed != 0:
+            print(f"!!!Fatal Error!!! -> The random seed must be set to zero not [{self.Random_Seed}]-> Exiting Program")
+            raise ValueError
+
+        # We assert that there are only two monodentate ligands
+        assert len(self.monodentate_ligands) == 2
+
+        print(f"!!!Success!!! -> ChooseDirtyLigands Checks have been passed, [{len(self.bidentate_ligands)}] bidentate ligands has been identified along with [{len(self.monodentate_ligands)}] monodentate ligands-> Progressing to Assembly")
+
+    def gen_ligand_lists(self):
+        # This function generates a list of lists containing the ligands for each complex that is to be assembled
+        for denticity in self.ligand_dict.keys():
+            assert (denticity == 2) or (denticity == 1)
+            for ligand in self.ligand_dict[denticity]:
+                if ligand.denticity == 1:
+                    self.monodentate_ligands.append(ligand)
+                    assert ligand.pred_charge == -1
+                elif ligand.denticity == 2:
+                    self.bidentate_ligands.append(ligand)
+                    assert ligand.pred_charge == 0
+                else:
+                    print("denticities are present that shouldn't be present")
+                    raise ValueError
+
+    def get_ligands(self, iteration):
+        print(f"Generating Ligand arrangement [{iteration}] of [{len(self.bidentate_ligands)}]")
+        if iteration == len(self.bidentate_ligands) -1:
+            self.finsihed = True
+        assert iteration < len(self.bidentate_ligands)
+        return {0: self.bidentate_ligands[iteration],
+                1: self.monodentate_ligands[0],
+                2: self.monodentate_ligands[1]}
+

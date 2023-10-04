@@ -3,7 +3,7 @@ from unittest.mock import patch
 from src05_Assembly_Refactor.Monkeypatch_stk import MONKEYPATCH_STK_SmartsFunctionalGroupFactory
 from src01.DataBase import LigandDB
 from src05_Assembly_Refactor.Assemble import PlacementRotation
-from src05_Assembly_Refactor.ligands import ChooseRandomLigands, ChooseIterativeLigands
+from src05_Assembly_Refactor.ligands import ChooseRandomLigands, ChooseIterativeLigands, ChooseDirtyLigands
 from src05_Assembly_Refactor.Isomer import BuildIsomers
 from src05_Assembly_Refactor.Optimise import OPTIMISE
 from src05_Assembly_Refactor.Post_Filter import PostFilter
@@ -18,6 +18,7 @@ from src05_Assembly_Refactor.Assembly_Input import AssemblyInput
 from src05_Assembly_Refactor.Assembly_Output import AssemblyOutput, BatchAssemblyOutput, _gbl_optimization_movie, \
     ComplexAssemblyOutput, append_global_concatenated_xyz
 from Guassian_com import Generate_Gaussian_input_file
+from Submission import SumbitCalc
 
 warnings.simplefilter("always")
 
@@ -46,6 +47,11 @@ class DARTAssembly(object):
         self.df_info = None
         self.gbl_outcontrol = AssemblyOutput(outdir=self.output_path, ensure_empty_output_dir=True)
 
+        # initialize some nescessary variables
+        self.random_seed = None
+        self.topology_similarity = None
+        self.metal_list = None
+
     def run_all_batches(self):
         """
         Runs the whole assembly for all batches specified in the assembly input file.
@@ -57,14 +63,14 @@ class DARTAssembly(object):
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
             self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction, \
-            self.optimisation_instruction, self.random_seed, self.total_charge, metal_list, self.topology_similarity, \
+            self.optimisation_instruction, self.random_seed, self.total_charge, self.metal_list, self.topology_similarity, \
             self.complex_name_appendix = self.settings.check_and_return_batch_settings(batch_settings)
             self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
             self.batch_idx = idx
             self.batch_outcontrol = BatchAssemblyOutput(self.batch_output_path)
-            self.metal_type = metal_list[0]
-            self.metal_ox_state = metal_list[1]
-            self.metal_spin = metal_list[2]
+            self.metal_type = self.metal_list[0]
+            self.metal_ox_state = self.metal_list[1]
+            self.metal_spin = self.metal_list[2]
 
             self.run_batch()  # run the batch assembly
 
@@ -90,19 +96,21 @@ class DARTAssembly(object):
         # This section of code needs to be commented out if you do not want to
         # generate every combination of ligands but would rather build in a
         # random manner
-
         """IterativeLigands = ChooseIterativeLigands(database=RCA.ligand_dict,
-                                                  top_list=topology_list,
-                                                  charge=Total_Charge,
-                                                  metal=metal_list,
-                                                  random_seed=Random_Seed)
+                                                  top_list=[self.topology_similarity],
+                                                  charge=self.total_charge,
+                                                  metal=[self.metal_list],
+                                                  random_seed=self.random_seed)
         IterativeLigands.obtain_all_combinations()"""
         ########################################################################
 
+        DirtyLigands = ChooseDirtyLigands(database=RCA.ligand_dict,
+                                          top_list=self.topology_similarity,
+                                          random_seed=self.random_seed)
         j = 0  # Assembly iteration we are on
         batch_sum_assembled_complexes = 0  # Number of assembled complexes produced
         # Note: j is not always equal to batch_sum_assembled_complexes
-        while batch_sum_assembled_complexes < self.max_num_assembled_complexes:
+        while (batch_sum_assembled_complexes < self.max_num_assembled_complexes) and (not DirtyLigands.finsihed):
             print(f"###############################__Attempting_Assembly_of_Complex_#_{str(self.random_seed + j)}__###############################")
             #
             #
@@ -118,18 +126,19 @@ class DARTAssembly(object):
             #
             # 3a. Choose Ligands Randomly
             # This section of code needs to be uncommented if you want complexes assembled randomly
-            ligands = ChooseRandomLigands(database=RCA.ligand_dict,
+            """ligands = ChooseRandomLigands(database=RCA.ligand_dict,
                                           topology=Topology,
                                           instruction=Similarity,
                                           metal_oxidation_state=int(self.metal_ox_state),
                                           total_complex_charge=self.total_charge,
-                                          max_attempts=1000000).choose_ligands()
+                                          max_attempts=1000000).choose_ligands()"""
+            ligands = DirtyLigands.get_ligands(iteration=self.random_seed + j)
 
             #
             #
             # 3b. Choose Ligands Iteratively
             # This section of code needs to be commented if you want complexes assembled randomly
-            """ligands = IterativeLigands.choose_ligands(iteration=Random_Seed + j)"""
+            """ligands = IterativeLigands.choose_ligands(iteration=self.random_seed + j)"""
 
             #
             #
@@ -216,7 +225,7 @@ class DARTAssembly(object):
         complex_is_good = PostFilter(isomer=complex,
                                      metal_centre=self.metal_type,
                                      metal_offset=-0.9,  # The more negative the number the more crap gets through
-                                     ligand_atom_offset=0.5,
+                                     ligand_atom_offset=0.20,  # default is 0.5
                                      building_blocks=building_blocks,
                                      ).closest_distance()
 
@@ -270,13 +279,23 @@ class DARTAssembly(object):
         complex_name = self.get_complex_name(complex)
         complex_dir = Path(self.batch_outcontrol.complex_dir, complex_name)
         complex_outcontrol = ComplexAssemblyOutput(complex_dir)
+
+        # todo This needs to be uncommented to save Guassian input files
+
         complex_outcontrol.save_gaussian(Generate_Gaussian_input_file(xyz=xyz_string,
                                                                       ligands=ligands,
                                                                       complex_charge=complex_total_charge,
                                                                       spin=self.metal_spin,
                                                                       filename=complex_name,
                                                                       path_to_Gaussian_input_file='Gaussian_config.yml',
-                                                                      metal_type=self.metal_type).Generate_Gaussian_com())
+                                                                      metal_type=self.metal_type).Generate_Gaussian_com_without_NBO())
+
+        complex_outcontrol.save_submission_script(SumbitCalc(calc_name=complex_name,
+                                                             queue="amd",
+                                                             num_cores="32",
+                                                             requested_time="72:00:00",
+                                                             node_preference=[6, 7]).gen_submission_string())
+
         complex_idx = len(self.assembled_complex_names)
         complex_outcontrol.save_all_complex_data(
             complex=complex,
@@ -312,8 +331,8 @@ class DARTAssembly(object):
         Returns the name of the complex.
         """
         # Get a random name for the complex
-        # name = complex.create_random_name(length=self.complex_name_length)
-        name = 'complex_'
+        name = complex.create_random_name(length=self.complex_name_length)
+        # name = 'complex_'
 
         # If the name is already used, add a number to the end of the name
         i = 1
