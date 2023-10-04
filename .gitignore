@@ -40,6 +40,9 @@
 !database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/3_atomic_properties.xyz
 
 
+/EXAMPLE/DATA
+
+
 /constants/CSD/CSD_Smiles_full.csv
 
 /test/machine_learning
