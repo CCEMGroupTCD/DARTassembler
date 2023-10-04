@@ -868,5 +868,43 @@
         ]
     },
     "batch_idx": 5,
-    "ff_movie": null
+    "ff_movie": null,
+    "ligand_info": {
+        "Ligand 0": {
+            "Ligand ID": "unq_CSD-PAHYAY-04-a",
+            "Stoichiometry": "C16H14N2O2",
+            "Denticity": 4,
+            "Donors": "O-O-N-N",
+            "Predicted Charge": -2,
+            "Confident Charge": true,
+            "Graph ID": "ae17655661525baa27ac30def04ba306",
+            "CSD Occurrences": 133,
+            "CSD Metal Count": "Co(22) - Mn(17) - Fe(16) - Ni(16) - V(11) - U(9) - Ru(8) - Pu(4) - Np(4) - Ti(4) - Re(3) - Cr(3) - Rh(2) - Os(2) - Zn(2) - Th(2) - Cu(2) - Ce(2) - Tc(1) - Pd(1) - Pt(1) - Au(1)",
+            "CSD Complex IDs": "PAHYAY - SOCKIE01 - SOKSUH - TEHGAQ - BILREU - BOXVAL - BUTYAR - CIFZEX - MEKGIV - MUJXUK - MUQXEB - MUQXOL - MUQYAY - MUYFAN - MUZWIO - MUZWIO01 - TIXLUI - TUBJEH - UBEJOD - UFEKEW - QEZPUJ - QIGPEB - QIHWOT - QIHWOT01 - KAWCIU - COSALS - COXNIN - COXNOT - COXNUZ - CUXVUN - YAGBIR - YAWCIJ - YOCTAL - YOCTAL01 - GAYMAU - UHOWIY - UHOWOE - UMIBAT - UQISAP - VAKSEI - VECQID - VEXLIU - VEYFEL - VEYFIP - VIKFAW - VIPWUP - VOMBAB - WABNIY - HEGDEC - HIBPAJ - ZIBNOQ - ZOPNOH - ZUQYEP - ZZZKTS01 - DEHDAW - DIFKAE - DOKFER - DOKSAA - DORWOW - DURDUP - KOMXUF - LAPNIZ - LAPNIZ10 - LAWBAM - LEGSAU - ECOSAL - EJIWOM - EJIWUS - EJIXAZ - EJIXED - EJIXIH - EJIXUT - EJIYEE - EJIYII - ESACCO01 - ESALCT - HUWBAF - HUWBEJ - IDEHEF01 - ILIPAX - ILOBUJ - ILOBUJ - ILOCAQ - ILOCAQ - ILOCEU - ILOCEU - WIYSII - XIHLOS - XUMFIX - XUMFOD - ISIWOX - JAGMEK - JAGMEK02 - JALRUJ10 - FESGUF - FESYAD - FESYAD01 - FESYAD02 - FESYAD03 - FESYEH - FESYIL - FEYWEM - FEYWEM01 - FEYWEM02 - RIRKEJ - NEXYAS - NIDHAJ - NIPBUK - NIPBUK01 - NORFOR - NPOSAC - NSALFE - NUMYAV - OCIHUE - OHOQOS - OHORAF - ABUZAY - AFAXIO - AGAQAB - ANUJAX - ANUJIF - AWOLOO - RULLOA - SAEDZN11 - SAENNI - SAENNI01 - SAENNI02 - SAENNI03 - SAENNI05 - SAENNI06 - SAENNI07 - SALECI - SAQGEY"
+        },
+        "Ligand 1": {
+            "Ligand ID": "unq_CSD-PAXDOI-01-b",
+            "Stoichiometry": "C2H5O1",
+            "Denticity": 1,
+            "Donors": "C",
+            "Predicted Charge": -1,
+            "Confident Charge": true,
+            "Graph ID": "5c7293c9177d41c0f1de9bfb841aef70",
+            "CSD Occurrences": 9,
+            "CSD Metal Count": "Co(4) - Ru(2) - Mn(2) - Ir(1)",
+            "CSD Complex IDs": "PAXDOI - PAXFAW - JUJSIQ - JUJTOX - CIYJUP - CUQRIQ - WEQGEF - RIBROJ - RIBRUP"
+        },
+        "Ligand 2": {
+            "Ligand ID": "unq_CSD-PATBAP-01-d",
+            "Stoichiometry": "B1F4",
+            "Denticity": 1,
+            "Donors": "F",
+            "Predicted Charge": -1,
+            "Confident Charge": true,
+            "Graph ID": "dba403cf0f3e4c46e54b981deac001d2",
+            "CSD Occurrences": 154,
+            "CSD Metal Count": "Cu(103) - Co(9) - Rh(8) - Pd(5) - Fe(4) - Ni(4) - Mn(4) - Zn(3) - Pt(2) - Cd(2) - Ag(2) - Mo(2) - Au(2) - Ru(2) - Re(1) - W(1)",
+            "CSD Complex IDs": "PATBAP - PEQXAL - PEQXAL - PIJPAB - PIKLAX - PIKPIJ - PIKPIJ - SUYPUX - TAHROM01 - TAHROM01 - LICWID - LICWOJ - LICWOJ - LIJJAP - LIJJAP - LIJJAP01 - LIJJAP01 - LURTIC - LURTIC - LURTOI - LURTOI - BALDOK - BALDUQ - BATWEB - BIBMEH - BIHTOD - BIHTOD - BISPUQ - BOSTOU - MISWAM - MISWAM - NALLAO - TICFEQ - TICFEQ - TIWQAU - TOVXIO - TUDJOR - TUDJOR - PUCYER - PUPFAI - PUPFAI - QIDWOQ - JIVJOO - KACVIT - DABXOV - DAHHAX - DAYXIK - YADDAJ - YADDAJ - YISDIO - GASMES - GECHUR - GECVAO - UJIZAP - UZELOC - UZELOC - VEVROF - VEVROF - VILCIF - VIRJEN - VIRJIR - VIRJIR - VOHSEQ - VOPBAF - VOPBAF - HARDUC - HILGIU - YUVGOM - YUVGOM - YUVRAL - YUVRAL - ZATHOR - ZATHOR - ZIBJOL - ZOWNUX - ZOWNUX - ZOYTOZ - ZUKSOP - ZUKSOP - DEVWAC - DEVWAC - DIPTUU - DUBXUU - KOPTUH - KOPTUH - LADRIT - LADRIT - EDOGEK - HOSCIE - ZZZSWE01 - ZZZSWE01 - ZZZSWE02 - ZZZSWE02 - BAXQIE - CAXTEE - CAXTEE - KAZFUQ - KAZFUQ - PAWJOQ - PECZIK - PECZIK - JAQYAF - PASZUI - WEWXIF - WEWXIF - WOBNOR - WODNUZ - WOPNEU - WOPNEU - WUWZOE - XEFSAF - XEJNOP - XETJAH - XETJAH - XIZYEM - XIZYEM - QEGGIW - QEGGIW - IVAZEM - JASKIX - JELREY - JELRIC - FADLEC - FIJZOP - FIXTEO - FOPFUM - RIQNAG - RIQNAG - NASKIC - NIPSUA - NIPSUA - NIPSUA01 - NIPSUA01 - NIVDIF - NIVGUU - NIVGUU - NIWMUE - NIWMUE - NUNCUV - OGIXOS - OTETUE - OTETUE - OTEVAM - OTEVAM - ABIPUY - AFAVUY - AFAVUY - AFUCUZ - AFUDEK - RUKSUN - SAVFUR - SEVKUZ - SEVKUZ - SILLAC"
+        }
+    }
 }

@@ -59,62 +59,22 @@ if __name__ == '__main__':
 
     # ligands = LigandDB.from_json(db_path, max_number=nmax)
     df_ligands = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path ,n_max=nmax), orient='index')
-    # df_ligands = df_ligands[df_ligands['denticity'] == 2]
-    # df_ligands = df_ligands[df_ligands['has_neighboring_coordinating_atoms']]
-    #
-    # planarities = {}
-    # for name, lig in ligands.db.items():
-    #     if lig.denticity == 2 and not lig.has_neighboring_coordinating_atoms:
-    #         is_planar, max_dist = lig.check_bidentate_planarity(return_tol=True)
-    #         planarities[name] = {'is_planar': is_planar, 'max_dist': max_dist, 'stoi': lig.stoichiometry}
-    # df_planarities = pd.DataFrame.from_dict(planarities, orient='index')
-    # df_ligands = df_planarities.join(df_ligands)
+    df_ligands = df_ligands[(df_ligands['denticity'] > 0) & df_ligands['pred_charge_is_confident']]
+    # df_ligands = df_ligands.groupby(['heavy_atoms_graph_hash_with_metal', 'pred_charge']).agg(lambda subdf: )
+    z = df_ligands[df_ligands['atomic_props'].apply(lambda props: 'C' in props['atoms'] and not 'H' in props['atoms'])]
+    z_all = df_ligands[df_ligands['atomic_props'].apply(lambda props: len(pd.unique(props['atoms'])) == 1) & (df_ligands['n_atoms'] >= 3)]
+    # df = df_ligands[df_ligands['stoichiometry'] == 'C6']
+
+    # # Get number of possible ligands:
+    # ligands.filter_exclude_unconnected_ligands()
+    # ligands.filter_not_charge_confident_ligands()
+    # ligands.filter_ligands_with_neighboring_coordinating_atoms()
+    # ligands.filter_non_centrosymmetric_monodentates()
+    # ligands.filter_n_atoms(max_n_atoms=15, denticities=[1])
+    # df_num_possible_complexes = ligands.calc_number_of_possible_complexes()
+    # df = ligands.get_df_of_all_ligands()
 
 
-    # ligands = load_unique_ligand_db(path=db_path, molecule='class')
-    # #%%
-    # df = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path), orient='index')
-    #
-    # if exclude_unconnected_ligands:
-    #     df = df[df['denticity'] > 0]
-    # if exclude_uncertain_charges:
-    #     df = df[df['pred_charge_is_confident']]
-    # df = unroll_dict_into_columns(df, dict_col='global_props', prefix='gbl_', delete_dict=True)
-    # df = unroll_dict_into_columns(df, dict_col='stats', prefix='stats_', delete_dict=True)
-
-    #%%
-    # add_props = pd.DataFrame.from_dict({name: {'has_BetaH': lig.has_betaH, 'only_CHNO': len(set(['C', 'H', 'N', 'O'] + lig.atomic_props['atoms'])) <= 4, 'only_ON_donors': len(set(['N', 'O']+lig.local_elements))<=2} for name, lig in ligands.items()}, orient='index')
-    # df = df.join(add_props)
-    # df['mono_and_small'] = (df['denticity'] == 1) & (df['gbl_n_atoms'] <= 20)
-    #
-    # df = df.query('not has_BetaH and only_CHNO and only_ON_donors')
-    # df = df[((df['denticity'] > 1) & (df['denticity'] < 6)) | df['mono_and_small']]
-    #
-    # groups = df.groupby(['denticity', 'pred_charge']).size().reset_index().rename(columns={0: 'count'})
 
 
-    #%% Start playing here
-
-    # Count possible complexes by combining denticity and charge
-    # This assumes that we have 10 metals in oxidation state 3, which is already connected to one OH ligand.
-    # The other two ligands are assumed to be a bidentate and a tridentate which account together for a charge of -2.
-    # metals = ['Cr', 'Mn', 'Fe', 'Ru', 'Co', 'Ni']
-    # filter_factor = 0.5         # Factor to account for the pre and post filtering in the assembly
-    # charges_2 = df.query('denticity == 2')['pred_charge'].to_numpy(dtype=int)
-    # charges_3 = df.query('denticity == 3')['pred_charge'].to_numpy(dtype=int)
-    # n_complexes = calculate_n_321_complexes_with_OH_fixed(charges_2, charges_3, metals, filter_factor)
-
-
-    # n_metals = 10               # Each metal of first row of transition metals, assuming os = 3
-    # n_monodentates_1 = 3        # Number of self-defined monodentates with charge = -1
-    # n_monodentates_0 = 3        # Number of self-defined monodentates with charge = 0
-    # N_3_2 = len(df.query('denticity == 3 and pred_charge == -2'))
-    # N_2_0 = len(df.query('denticity == 2 and pred_charge == 0'))
-    # N_3_1 = len(df.query('denticity == 3 and pred_charge == -1'))
-    # N_2_1 = len(df.query('denticity == 2 and pred_charge == -1'))
-    # N_3_0 = len(df.query('denticity == 3 and pred_charge == 0'))
-    # N_2_2 = len(df.query('denticity == 2 and pred_charge == -2'))
-    # N_top321_os3 = N_3_2*N_2_0 + N_3_1*N_2_1 + N_3_0*N_2_2
-    # N_top2211_os3 = N_2_1 * N_2_0 * n_monodentates_1 + N_2_2 * N_2_0 * n_monodentates_0
-    # n_complexes = n_metals * (N_top321_os3 + N_top2211_os3) * filter_factor
-    # print(f'Number of possible complexes: {n_complexes:e}')
+    print('Done')

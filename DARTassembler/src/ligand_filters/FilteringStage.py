@@ -39,6 +39,14 @@ class FilterStage:
         # safe to desired folder
         self.database.to_json(path=f"{self.safe_path}/DB_after_{filtering_step_name}.json")
 
+    def stoichiometry_filter(self, stoichiometry, denticities: Union[list[int], None] = None):
+        to_delete = []
+        for unq_name, ligand in self.database.db.items():
+            if denticities is None or ligand.denticity in denticities:
+                if ligand.stoichiometry != stoichiometry:
+                    to_delete.append(unq_name)
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+
     def metals_of_interest_filter(self, metals_of_interest: [str, list[str]], denticity: int = None):
         """
         This function has been updated by Cian to work with the updated .mol file
@@ -96,13 +104,25 @@ class FilterStage:
             if not ligand.denticity in denticity_of_interest:
                 to_delete.append(identifier)
 
-        self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items() if identifier not in to_delete}
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
 
         # old: self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items() if ligand.denticity in denticity_of_interest}
 
         self.filter_tracking[len(self.filter_tracking)] = f"Metals of interest filter with {denticity_of_interest}"
 
         # self.safe_and_document_after_filterstep(filtering_step_name="Denticity_of_Interest")
+
+    def filter_unconnected_ligands(self):
+        to_delete = []
+        for identifier, ligand in self.database.db.items():
+            if ligand.denticity <= 0:
+                to_delete.append(identifier)
+
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+
+        self.filter_tracking[len(self.filter_tracking)] = f"Unconnected Ligand Filter"
+
+        return
 
     def filter_coordinating_group_atoms(self, atoms_of_interest: [str, list[str]], instruction: str, denticity: int = None, ):
         # instruction = must_contain_and_only_contain,this means that if the coordinating atoms specified by the user are exactly the same as the coordinating groups of the ligand then the ligand can pass
@@ -212,7 +232,7 @@ class FilterStage:
 
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Neighbouring Atom Filter: {0.2}"
-        print("finished")
+        # print("finished")
 
     def filter_molecular_weight(self, atomic_weight_min: float = None, atomic_weight_max: float = None, denticity: int = None):
         to_delete = []
@@ -427,7 +447,7 @@ class FilterStage:
 
                 else:
                     pass
-        self.database.db = {uname: ligand for uname, ligand in self.database.db.items() if uname not in to_delete}
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"monodentate_filter: {threshold}"
 
     def filter_atom_count(self, number: int, instruction: str, denticity: list=None):
@@ -446,7 +466,7 @@ class FilterStage:
                     elif (num_atoms >= number) and (instruction == "less_than"):
                         to_delete.append(unq_name)
 
-        self.database.db = {uname: ligand for uname, ligand in self.database.db.items() if uname not in to_delete}
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Atom Number Filter: [{number}] [{instruction}]"
 
     def ensure_denticities_is_list(self, denticities):

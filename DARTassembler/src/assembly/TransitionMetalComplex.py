@@ -69,6 +69,9 @@ class TransitionMetalComplex:
         self.total_charge = self.get_total_charge(metal_charge, ligands)
 
         self.graph = self.merge_graph_from_ligands(ligands, metal)
+        # assert sorted(self.graph.nodes) == list(range(len(self.graph.nodes))), f"The graphs indices are not in order: {list(self.graph.nodes)}"
+        # graph_elements = [el for _, el in self.graph.nodes(data='node_label')]
+        # assert graph_elements == atomic_props["atoms"]
 
         self.mol = RCA_Molecule.make_from_atomic_properties(
             atomic_props_mol=atomic_props,

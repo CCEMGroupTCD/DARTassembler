@@ -7,10 +7,9 @@ import pandas as pd
 from typing import Union
 from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _filter, _ligand_charges, _ligcomp, _coords, \
     _metals_of_interest, _denticities_of_interest, _remove_ligands_with_neighboring_coordinating_atoms, \
-    _remove_ligands_with_beta_hydrogens, _strict_box_filter, _acount, _acount_min, _acount_max, _denticities, _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max, _graph_hash_wm
+    _remove_ligands_with_beta_hydrogens, _strict_box_filter, _acount, _acount_min, _acount_max, _denticities, _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max, _graph_hash_wm, _stoichiometry
 
 
-# todo: add mandatory filter which checks if a charge is present
 
 class LigandFilters(object):
 
@@ -37,10 +36,14 @@ class LigandFilters(object):
 
         # mandatory filters
         self.Filter.filter_charge_confidence(filter_for="confident")
+        self.Filter.filter_unconnected_ligands()
 
         for filter in self.filters:
             filtername = filter[_filter]
             n_ligands_before = len(self.Filter.database.db)
+
+            if filtername == _stoichiometry:
+                self.Filter.stoichiometry_filter(stoichiometry=filter[_stoichiometry], denticities=filter[_denticities])
 
             if filtername == _denticities_of_interest:
                 self.Filter.denticity_of_interest_filter(denticity_of_interest=filter[_denticities_of_interest])
@@ -123,6 +126,9 @@ class LigandFilters(object):
         output += f"\nNumber of ligands before filtering: {self.n_ligands_before}\n"
         output += f"Number of ligands filtered out: {self.n_ligands_before - self.n_ligands_after}\n"
         output += f"Number of ligands after filtering: {self.n_ligands_after}\n"
+        if self.n_ligands_after <= 10:
+            stoichiometries = ','.join([ligand.stoichiometry for ligand in self.Filter.database.db.values()])
+            output += f'  --> Remaining ligands: {stoichiometries}\n'
 
         return output
 
@@ -150,10 +156,10 @@ class LigandFilters(object):
     def save_ligand_info_csv(self):
         db = self.Filter.database
         ligands = {uname: ligand.get_ligand_output_info() for uname, ligand in db.db.items()}
-        df = pd.DataFrame.from_dict(ligands, orient='index')
-        df = df.drop(columns=['CSD Metal Count', 'CSD Complex IDs'])
+        self.df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
+        self.df_ligand_info = self.df_ligand_info.drop(columns=['CSD Metal Count', 'CSD Complex IDs'])
         outpath = Path(self.output_ligand_db_path.parent, "ligand_info.csv")
-        df.to_csv(outpath, index=False)
+        self.df_ligand_info.to_csv(outpath, index=False)
 
         return
 

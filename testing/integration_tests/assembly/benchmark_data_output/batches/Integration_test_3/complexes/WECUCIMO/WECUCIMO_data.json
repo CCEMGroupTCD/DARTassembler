@@ -1078,5 +1078,43 @@
         ]
     },
     "batch_idx": 4,
-    "ff_movie": null
+    "ff_movie": null,
+    "ligand_info": {
+        "Ligand 0": {
+            "Ligand ID": "unq_CSD-PADDAD-03-a",
+            "Stoichiometry": "C16H14N3",
+            "Denticity": 3,
+            "Donors": "N-N-C",
+            "Predicted Charge": -1,
+            "Confident Charge": true,
+            "Graph ID": "f93d02368a14a5a2265c6dd0c3ebac93",
+            "CSD Occurrences": 1,
+            "CSD Metal Count": "Pt(1)",
+            "CSD Complex IDs": "PADDAD"
+        },
+        "Ligand 1": {
+            "Ligand ID": "unq_CSD-PAGJUG-02-a",
+            "Stoichiometry": "C8H15O1S2",
+            "Denticity": 2,
+            "Donors": "S-S",
+            "Predicted Charge": -1,
+            "Confident Charge": true,
+            "Graph ID": "4b897ae1371b34cbd6871eb89ead62c8",
+            "CSD Occurrences": 4,
+            "CSD Metal Count": "Zn(2) - Ni(2)",
+            "CSD Complex IDs": "PAGJUG - PAGJUG - BELLOW - BELLOW"
+        },
+        "Ligand 2": {
+            "Ligand ID": "unq_CSD-PEDWOK-01-d",
+            "Stoichiometry": "H3P1",
+            "Denticity": 1,
+            "Donors": "P",
+            "Predicted Charge": 0,
+            "Confident Charge": true,
+            "Graph ID": "bc5f48da633f7aabc9f24b331c93b38d",
+            "CSD Occurrences": 12,
+            "CSD Metal Count": "Ir(5) - W(3) - Cr(3) - Fe(1)",
+            "CSD Complex IDs": "PEDWOK - DIRHIX - ILOPUV - XIBVUZ - XIBVUZ01 - JAZBOB - JAZBOB - JAZBOB10 - JAZBOB10 - FOKYEJ - FOKYEJ - FOKYEJ"
+        }
+    }
 }

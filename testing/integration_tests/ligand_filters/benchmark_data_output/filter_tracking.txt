@@ -1,7 +1,7 @@
 ===================== FILTER TRACKING =====================
 --> Filtered ligand database was saved as '/Users/timosommer/PhD/projects/RCA/projects/DART/testing/integration_tests/ligand_filters/data_output/filtered_ligand_db_v1.7.json'.
 Removed ligands:
-  - denticities_of_interest: 118
+  - denticities_of_interest: 19
         options --> denticities_of_interest: [1, 2, 3, 4, 5]
   - remove_ligands_with_neighboring_coordinating_atoms: 28
         options --> remove_ligands_with_neighboring_coordinating_atoms: True

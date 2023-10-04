@@ -202,6 +202,7 @@ class MoleculeDB(BaselineDB):
 
         return cls(db)
 
+
 class LigandDB(MoleculeDB):
     type = 'Ligand'
     def __init__(self, dict_):
@@ -417,15 +418,23 @@ class LigandDB(MoleculeDB):
         ligand_props = []
         for lig in self.db.values():
             ligand_props.append({
-                'name': lig.name,
                 'unique_name': lig.unique_name,
+                'stoichiometry': lig.stoichiometry,
+                'pred_charge': lig.pred_charge,
+                'pred_charge_is_confident': lig.pred_charge_is_confident,
+                'denticity': lig.denticity,
+                'local_elements': lig.local_elements,
+                'n_atoms': lig.n_atoms,
+                'occurrences': lig.occurrences,
                 'csd_code': lig.global_props["CSD_code"] if "CSD_code" in lig.global_props else np.nan,
                 'original_metal_symbol': lig.original_metal_symbol if hasattr(lig, 'original_metal_symbol') else np.nan,
-                'denticity': lig.denticity,
+                'name': lig.name,
                 'graph_hash': lig.graph_hash,
                 'coordinates': str(lig.coordinates),
                 'atomic_props': str(lig.atomic_props),
-                'n_total_unique_ligands': lig.n_total_unique_ligands,
+                'is_centrosymmetric': lig.is_centrosymmetric,
+                'has_neighboring_coordinating_atoms': lig.has_neighboring_coordinating_atoms,
+                # 'n_total_unique_ligands': lig.n_total_unique_ligands,
                 # 'hash': l.hash # makes issues in pd.testing.assert_frame_equal, probably because of overflow
             })
         df = pd.DataFrame(ligand_props)
@@ -452,7 +461,7 @@ class LigandDB(MoleculeDB):
         # possible geometries for octahedral and square-planar complexes. This list needs to be expanded when adding new geometries.
         if geometries is None:
             geometries = {
-                'octahedral': [(3, 2, 1), (4, 1, 1), (5, 1), (3, 3)],
+                'octahedral': [(3, 2, 1), (4, 1, 1), (5, 1)],
                 'square_planar': [(2, 2), (2, 1, 1)]
             }
 
@@ -499,6 +508,104 @@ class LigandDB(MoleculeDB):
                 count += comb_count
 
         return count
+
+    # Filters to filter down the ligands
+    def filter_non_centrosymmetric_monodentates(self, remove='non-centrosymmetric'):
+        """
+        Filters out all ligands which are not centrosymmetric.
+        :param remove: 'non-centrosymmetric' or 'centrosymmetric'
+        """
+        if not remove in ['non-centrosymmetric', 'centrosymmetric']:
+            raise ValueError(f'Unknown value for remove: {remove}. Must be "non-centrosymmetric" or "centrosymmetric"')
+
+        delete_identifiers = []
+        for uname, lig in self.db.items():
+            if lig.denticity == 1:
+                remove_ligand = remove == 'non-centrosymmetric' and not lig.is_centrosymmetric or remove == 'centrosymmetric' and lig.is_centrosymmetric
+                if remove_ligand:
+                    delete_identifiers.append(uname)
+        self.db = {identifier: lig for identifier, lig in self.db.items() if identifier not in delete_identifiers}
+
+        print(f'Deleted {len(delete_identifiers)} {remove} ligands from ligand db.')
+
+        return
+
+    def filter_ligands_with_neighboring_coordinating_atoms(self, remove='neighboring', denticities: list[int]=None):
+        """
+        Filters out all ligands which have neighboring coordinating atoms.
+        :param remove: 'neighboring' or 'not_neighboring'
+        """
+        delete_identifiers = []
+        for uname, lig in self.db.items():
+            if self.check_if_filter_applies_to_this_denticity(lig=lig, denticities=denticities):
+                remove_ligand = remove == 'neighboring' and lig.has_neighboring_coordinating_atoms or remove == 'not_neighboring' and not lig.has_neighboring_coordinating_atoms
+                if remove_ligand:
+                    delete_identifiers.append(uname)
+        self.db = {identifier: lig for identifier, lig in self.db.items() if identifier not in delete_identifiers}
+
+        print(f'Deleted {len(delete_identifiers)} {remove} ligands from ligand db.')
+
+        return
+
+    def filter_exclude_unconnected_ligands(self):
+        """
+        Filters out all ligands which are not connected to the metal.
+        """
+        delete_identifiers = []
+        for uname, mol in self.db.items():
+            if mol.denticity <= 0:  # free ligand
+                delete_identifiers.append(uname)
+        self.db = {identifier: lig for identifier, lig in self.db.items() if identifier not in delete_identifiers}
+
+        print(f'Deleted {len(delete_identifiers)} ligands which are not connected to the metal from ligand db.')
+
+        return
+
+    def filter_not_charge_confident_ligands(self, remove: 'str' = 'not_confident'):
+        """
+        Filters out all ligands which are either not confident or confident in their charge prediction.
+        """
+        if not remove in ['not_confident', 'confident']:
+            raise ValueError(f'Unknown value for remove: {remove}. Must be "not_confident" or "confident"')
+        delete_identifiers = []
+        for uname, mol in self.db.items():
+            delete_ligand = remove == 'not_confident' and not mol.pred_charge_is_confident or remove == 'confident' and mol.pred_charge_is_confident
+            if delete_ligand:
+                delete_identifiers.append(uname)
+        self.db = {identifier: lig for identifier, lig in self.db.items() if identifier not in delete_identifiers}
+
+        print(f'Deleted {len(delete_identifiers)} {remove} ligands in their charge prediction from ligand db.')
+
+        return
+
+    def filter_n_atoms(self, max_n_atoms: int=np.inf, min_n_atoms: int=0, denticities: list[int]=None):
+        """
+        Filters out all molecules with more than max_n_atoms atoms or less than min_n_atoms atoms.
+        :param max_n_atoms: Maximum number of atoms
+        :param min_n_atoms: Minimum number of atoms
+        :param denticities: List of denticities to filter for. If None, all denticities are considered.
+        """
+        delete_identifiers = []
+        for uname, lig in self.db.items():
+            apply = self.check_if_filter_applies_to_this_denticity(lig=lig, denticities=denticities)
+            if apply:
+                if lig.n_atoms > max_n_atoms or lig.n_atoms < min_n_atoms:
+                    delete_identifiers.append(uname)
+        self.db = {identifier: lig for identifier, lig in self.db.items() if identifier not in delete_identifiers}
+
+        print(f'Deleted {len(delete_identifiers)} ligands with more than {max_n_atoms} atoms or less than {min_n_atoms} from ligand db.')
+
+        return
+
+    def check_if_filter_applies_to_this_denticity(self, lig, denticities: list[int]) -> bool:
+        """
+        Checks if the filter applies to this ligand.
+        """
+        apply = denticities is None or lig.denticity in denticities
+        return apply
+
+
+
 
 
 class ComplexDB(MoleculeDB):

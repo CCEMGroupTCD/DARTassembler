@@ -9,6 +9,7 @@ import ase
 
 from DARTassembler.src.constants.Paths import default_ligand_db_path
 from DARTassembler.src.constants.Periodic_Table import all_atomic_symbols
+from DARTassembler.src.ligand_extraction.composition import Composition
 from pathlib import Path
 from typing import Union, Any
 from DARTassembler.src.ligand_extraction.io_custom import read_yaml
@@ -62,6 +63,8 @@ _dentfilters = 'denticity_dependent_filters'
 _acount = 'atom_count'
 _acount_min = 'min'
 _acount_max = 'max'
+
+_stoichiometry = 'stoichiometry'
 
 _ligcomp = 'ligand_composition'
 _ligcomp_atoms_of_interest = 'atoms_of_interest'
@@ -392,30 +395,34 @@ class LigandFilterInput(BaseInput):
         _acount: {
             _acount_min: [int, str, type(None)],
             _acount_max: [int, str, type(None)],
-            _denticities: [list, tuple, type(None)],
+            _denticities: [list, tuple, type(None), int],
+            },
+        _stoichiometry: {
+            _stoichiometry: [str],
+            _denticities: [list, tuple, type(None), int],
             },
         _ligcomp: {
             _ligcomp_atoms_of_interest: [list, tuple],
             _ligcomp_instruction: [str],
-            _denticities: [list, tuple, type(None)],
+            _denticities: [list, tuple, type(None), int],
             },
         _ligand_charges: {
             _ligand_charges: [list, tuple],
-            _denticities: [list, tuple, type(None)],
+            _denticities: [list, tuple, type(None), int],
             },
         _metals_of_interest: {
             _metals_of_interest: [list, tuple],
-            _denticities: [list, tuple, type(None)],
+            _denticities: [list, tuple, type(None), int],
             },
         _coords: {
             _coords_atoms_of_interest: [list, tuple],
             _coords_instruction: [str],
-            _denticities: [list, tuple, type(None)],
+            _denticities: [list, tuple, type(None), int],
             },
         _mw: {
             _mw_min: [float, str, type(None)],
             _mw_max: [float, str, type(None)],
-            _denticities: [list, tuple, type(None)],
+            _denticities: [list, tuple, type(None), int],
             },
         }
 
@@ -503,6 +510,9 @@ class LigandFilterInput(BaseInput):
             elif self.filtername == _filter_even_odd_electron_count:
                 out_filter_settings[_filter_even_odd_electron_count] = self.check_even_odd_electron_count_input(settings=filter_values)
             # Denticity dependent filters
+            elif self.filtername == _stoichiometry:
+                out_filter_settings[_stoichiometry] = self.check_stoichiometry_input(stoichiometry=filter_values[_stoichiometry])
+                out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_stoichiometry}:{_denticities}', allow_none=True)
             elif self.filtername == _acount:
                 out_filter_settings[_acount_min] = self.get_int_from_input(input=filter_values[_acount_min], varname=f'{_acount}:{_acount_min}', allow_none=True)
                 out_filter_settings[_acount_max] = self.get_int_from_input(input=filter_values[_acount_max], varname=f'{_acount}:{_acount_max}', allow_none=True)
@@ -542,6 +552,17 @@ class LigandFilterInput(BaseInput):
             idx += 1
 
         return path
+
+    def check_stoichiometry_input(self, stoichiometry: str) -> str:
+        """
+        Checks the stoichiometry input. Accepts the stoichiometry in format where if an element is present with a quantity of 1, the 1 can optionally be omitted.
+        @return: Stoichiometry in format where if an element is present with a count of 1, the 1 is not omitted.
+        """
+        stoichiometry = str(stoichiometry)
+        stoichiometry = Composition(stoichiometry).get_stoichiometry()
+
+        return stoichiometry
+
 
     def check_ligand_db_path(self, settings) -> Path:
         path = settings[_ligand_db_path]

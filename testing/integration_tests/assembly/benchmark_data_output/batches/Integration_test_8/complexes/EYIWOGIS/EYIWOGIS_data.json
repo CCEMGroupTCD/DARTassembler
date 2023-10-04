@@ -719,5 +719,43 @@
         ]
     },
     "batch_idx": 7,
-    "ff_movie": null
+    "ff_movie": null,
+    "ligand_info": {
+        "Ligand 0": {
+            "Ligand ID": "unq_CSD-OZIYON-02-a",
+            "Stoichiometry": "C10H6F2N2",
+            "Denticity": 2,
+            "Donors": "N-N",
+            "Predicted Charge": 0,
+            "Confident Charge": true,
+            "Graph ID": "9cfe1644c35cf7f9ef3b747b268cd586",
+            "CSD Occurrences": 1,
+            "CSD Metal Count": "Ir(1)",
+            "CSD Complex IDs": "OZIYON"
+        },
+        "Ligand 1": {
+            "Ligand ID": "unq_CSD-PACBEB-01-d",
+            "Stoichiometry": "C3F5",
+            "Denticity": 1,
+            "Donors": "C",
+            "Predicted Charge": -1,
+            "Confident Charge": true,
+            "Graph ID": "a556ad6faad5bde10c5e0c1608bdd654",
+            "CSD Occurrences": 6,
+            "CSD Metal Count": "Pt(3) - Pd(2) - Rh(1)",
+            "CSD Complex IDs": "PACBEB - TEJDIY - TEJDIY - TEJDOE - TEJFEW - BOSTOU"
+        },
+        "Ligand 2": {
+            "Ligand ID": "unq_CSD-PACBEB-01-d",
+            "Stoichiometry": "C3F5",
+            "Denticity": 1,
+            "Donors": "C",
+            "Predicted Charge": -1,
+            "Confident Charge": true,
+            "Graph ID": "a556ad6faad5bde10c5e0c1608bdd654",
+            "CSD Occurrences": 6,
+            "CSD Metal Count": "Pt(3) - Pd(2) - Rh(1)",
+            "CSD Complex IDs": "PACBEB - TEJDIY - TEJDIY - TEJDOE - TEJFEW - BOSTOU"
+        }
+    }
 }

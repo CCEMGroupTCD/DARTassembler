@@ -845,5 +845,31 @@
         ]
     },
     "batch_idx": 2,
-    "ff_movie": null
+    "ff_movie": null,
+    "ligand_info": {
+        "Ligand 0": {
+            "Ligand ID": "unq_CSD-PEQCUK-02-a",
+            "Stoichiometry": "C10H11N2",
+            "Denticity": 2,
+            "Donors": "N-N",
+            "Predicted Charge": -1,
+            "Confident Charge": true,
+            "Graph ID": "e0bc82f6812aeb4d33c98ebf1dafd4aa",
+            "CSD Occurrences": 2,
+            "CSD Metal Count": "Ti(2)",
+            "CSD Complex IDs": "PEQCUK - PEQCUK"
+        },
+        "Ligand 1": {
+            "Ligand ID": "unq_CSD-PEQCUK-02-a",
+            "Stoichiometry": "C10H11N2",
+            "Denticity": 2,
+            "Donors": "N-N",
+            "Predicted Charge": -1,
+            "Confident Charge": true,
+            "Graph ID": "e0bc82f6812aeb4d33c98ebf1dafd4aa",
+            "CSD Occurrences": 2,
+            "CSD Metal Count": "Ti(2)",
+            "CSD Complex IDs": "PEQCUK - PEQCUK"
+        }
+    }
 }

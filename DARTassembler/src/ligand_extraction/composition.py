@@ -100,3 +100,17 @@ class Composition:
             if abs(b - a) > tol:
                 return False
         return True
+
+    def get_stoichiometry(self, omit_1=False) -> str:
+        """
+        Returns the stoichiometry of the composition as a dictionary.
+        """
+        stoichiometry = ''.join([f"{element}{count:.0f}" if count != 1 or not omit_1 else element for element, count in self.elements.items()])
+        return stoichiometry
+
+
+if __name__ == "__main__":
+    comps = ['Cl', 'CH', 'C1Br1', 'C2H5Ir1P']
+    for comp in comps:
+        stoi = Composition(comp).get_stoichiometry(omit_1=False)
+        print(f"{comp} --> {stoi}")

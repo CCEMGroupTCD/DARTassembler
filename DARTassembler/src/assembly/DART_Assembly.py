@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+import datetime
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.assembly.Monkeypatch_stk import MONKEYPATCH_STK_SmartsFunctionalGroupFactory
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
@@ -51,6 +52,7 @@ class DARTAssembly(object):
         """
         Runs the whole assembly for all batches specified in the assembly input file.
         """
+        start = datetime.datetime.now()
         self.df_info = []
         self.assembled_complex_names = []
         self.last_ligand_db_path = None     # to avoid reloading the same ligand database in the next batch
@@ -72,11 +74,40 @@ class DARTAssembly(object):
 
             self.run_batch()    # run the batch assembly
 
+        self.runtime = datetime.datetime.now() - start
+
         # Save output info csv of all attempts
         self.df_info = pd.DataFrame(self.df_info)
         self.df_info['attempt'] = self.df_info.index
         self.df_info = self.df_info[['attempt'] + [col for col in self.df_info.columns if col != 'attempt']] # Move attempt column to front
         self.gbl_outcontrol.save_run_info_table(self.df_info)
+
+        # Print nice summary per batch
+        print("\n\n============  Summary per batch  ============")
+        for batch_idx, batch in enumerate(self.batches):
+            df = self.df_info[self.df_info['batch idx'] == batch_idx]
+            batch_name = df['batch name'].iloc[0]
+            print(f"Batch {batch_idx} ('{batch_name}'):")
+            self.print_success_rate(df)
+
+        # Print total summary of run
+        print("============  Total summary of run  ============")
+        self.print_success_rate(self.df_info)
+        print(f"Total runtime for assembly: {self.runtime}")
+
+
+        return
+
+    def print_success_rate(self, df):
+        n_success = df['success'].sum()
+        n_total = len(df)
+        post_filters = df['note'].value_counts()
+        successful_assembly_notes = ['no optimization', 'optimized']
+        post_filter_notes = '\n'.join([f'    - {filter}: {n}' for filter, n in post_filters.items() if filter not in successful_assembly_notes])
+
+        print(f"  - {n_total} complexes tried, {n_success} complexes successfully assembled.")
+        print(f"  - {n_total - n_success} complexes failed because of post filters:")
+        print(post_filter_notes)
 
         return
 

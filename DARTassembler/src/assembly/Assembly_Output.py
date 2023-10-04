@@ -82,6 +82,7 @@ class AssemblyOutput(object):
         return
 
 
+
 class BatchAssemblyOutput(object):
 
     def __init__(self, batchdir: Union[str,Path]):
@@ -192,11 +193,14 @@ class ComplexAssemblyOutput(object):
                             xyz_structure=xyz_structure,
                             ff_movie=ff_movie,
                             assembly_input_path=assembly_input_path,
-                            batch_idx=batch_idx
+                            batch_idx=batch_idx,
+                            ligands=ligands
                             )
 
+    def get_ligand_info_dict(self, ligands: dict) -> dict:
+        return {f'Ligand {i}': lig.get_ligand_output_info() for i, lig in enumerate(ligands.values())}
     def save_ligand_info(self, ligands: dict) -> None:
-        ligand_infos = {f'Ligand {i}': lig.get_ligand_output_info() for i, lig in enumerate(ligands.values())}
+        ligand_infos = self.get_ligand_info_dict(ligands)
         df = pd.DataFrame.from_dict(ligand_infos, orient='index')
         df.to_csv(self.ligand_output_path)
 
@@ -206,11 +210,13 @@ class ComplexAssemblyOutput(object):
                         xyz_structure: str,
                         ff_movie: Union[str,None] = None,
                         assembly_input_path: [str,Path,None] = None,
-                        batch_idx: Union[int,None] = None
+                        batch_idx: Union[int,None] = None,
+                        ligands: Union[dict,None] = None
                         ) -> None:
         """
         Saves all data in a contained json file.
         """
+        ligand_info = self.get_ligand_info_dict(ligands) if ligands is not None else None
         data = {
                 'complex': complex.to_data_dict(),
                 'complex_idx': complex_idx,
@@ -219,6 +225,7 @@ class ComplexAssemblyOutput(object):
                 'assembly_input_settings': AssemblyInput.get_settings_from_input_file(assembly_input_path),
                 'batch_idx': batch_idx,
                 'ff_movie': ff_movie,
+                'ligand_info': ligand_info,
                 }
         self.save_file(data, self.data_path)
 
