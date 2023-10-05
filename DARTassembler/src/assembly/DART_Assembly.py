@@ -198,10 +198,11 @@ class DARTAssembly(object):
             for complex, building_blocks in zip(Assembled_Complex_list, Building_Block_list):
                 complex, complex_is_good, ff_movie, note = self.relax_and_check_structure(complex, building_blocks, ligands)
 
-                tmc = TMC(
+                tmc = TMC.from_stkBB(
                             compl=complex,
                             ligands=ligands,
                             metal=self.metal_type,
+                            metal_idx=0,
                             metal_charge=int(self.metal_ox_state),
                             spin=self.metal_spin
                             )
@@ -327,7 +328,7 @@ class DARTAssembly(object):
                                                 complex_idx=complex_idx,
                                                 xyz_structure=xyz_string,
                                                 ff_movie=ff_movie,
-                                                assembly_input_path=self.assembly_input_path,
+                                                assembly_input_path=None,   # don't save the assembly input file to the complex directory
                                                 batch_idx=self.batch_idx,
                                                 ligands=ligands,
                                                 )

@@ -192,9 +192,7 @@ class ComplexAssemblyOutput(object):
                             complex_idx=complex_idx,
                             xyz_structure=xyz_structure,
                             ff_movie=ff_movie,
-                            assembly_input_path=assembly_input_path,
                             batch_idx=batch_idx,
-                            ligands=ligands
                             )
 
     def get_ligand_info_dict(self, ligands: dict) -> dict:
@@ -209,23 +207,17 @@ class ComplexAssemblyOutput(object):
                         complex_idx: int,
                         xyz_structure: str,
                         ff_movie: Union[str,None] = None,
-                        assembly_input_path: [str,Path,None] = None,
                         batch_idx: Union[int,None] = None,
-                        ligands: Union[dict,None] = None
                         ) -> None:
         """
         Saves all data in a contained json file.
         """
-        ligand_info = self.get_ligand_info_dict(ligands) if ligands is not None else None
         data = {
                 'complex': complex.to_data_dict(),
                 'complex_idx': complex_idx,
                 'xyz_structure': xyz_structure,
-                'assemby_input_path': str(assembly_input_path),
-                'assembly_input_settings': AssemblyInput.get_settings_from_input_file(assembly_input_path),
                 'batch_idx': batch_idx,
                 'ff_movie': ff_movie,
-                'ligand_info': ligand_info,
                 }
         self.save_file(data, self.data_path)
 

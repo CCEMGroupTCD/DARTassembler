@@ -1,28 +1,21 @@
 TODO:
 
-paper:
-    - add ligand databases 'Realigands' and 'tmqmLig'
-
 
 Must:
 - paths:
     - change default paths in Paths.py
-- example:
-    - fixed: Br, C6H5(q=-1, coord=C)
-    - varying: P-N donors
 - ligand db:
-    - remove ligand with denticity = -1
+    - remove ligand with denticity = -1 and uncertain charges
+- assembly input:
+    - make it so that the input ligand db list accepts keywords to fix ligands to be the same.
+- improve json complex output, especially the 'complex' data by getting rid of TMC class and making RCA_complex class instead
+
 
 Should:
 - ligand filtering
     - add option to output 3D structures as xyz files
     - check if denticity == None gives same results as replacing with list(range(100))
     - add everything mentioned in the paper figure
-- assembly input:
-    - accept (A, B, C) as similarities
-- fix bidentate rotator
-    - Cian: integrate the option 'horseshoe' or 'slab' where the boxes are build.
-- improve json complex output, especially the 'complex' data by getting rid of TMC class and making RCA_complex class instead
 - in ligand information csv, output only first 5 CSD IDs.
     - add complex info such as stoichiometry to complex info csv
 - ligand db:

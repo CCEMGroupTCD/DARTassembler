@@ -1,0 +1,10 @@
+===================== FILTER TRACKING =====================
+--> Filtered ligand database was saved as '/Users/timosommer/PhD/projects/RCA/projects/DART/dev/test/2-1-1-Cl-example/ligand_db_v1.7_only_Cl.jsonlines'.
+Removed ligands:
+  - graph_IDs: 64
+        options --> graph_IDs: ['8756e7780cb7e3fab0b8bcb31598a04d']
+
+Number of ligands before filtering: 100
+Number of ligands filtered out: 99
+Number of ligands after filtering: 1
+  --> Remaining ligands: Cl1

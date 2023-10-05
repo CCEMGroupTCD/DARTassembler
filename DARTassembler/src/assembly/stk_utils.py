@@ -1,7 +1,7 @@
 import numpy as np
 import stk
 from DARTassembler.src.constants.Periodic_Table import DART_Element
-
+import networkx as nx
 
 def create_placeholder_Hg_bb() -> stk.BuildingBlock:
     """
@@ -51,6 +51,30 @@ def RCA_Mol_to_stkBB(mol):
     return stk.BuildingBlock.init_from_molecule(molecule=stk_mol,
                                                 functional_groups=functional_groups_
                                                 )
+
+
+def stkBB_to_networkx_graph(stk_building_block, check_fully_connected=True) -> nx.Graph:
+    """
+    Convert an stk.BuildingBlock to a networkx graph
+    :param stk_building_block: stk.BuildingBlock
+    """
+    # Initialize an empty graph
+    G = nx.Graph()
+
+    # Add atoms as nodes
+    for atom in stk_building_block.get_atoms():
+        G.add_node(atom.get_id(), element=atom.__class__.__name__)
+
+    # Add bonds as edges
+    for bond in stk_building_block.get_bonds():
+        atom1 = bond.get_atom1().get_id()
+        atom2 = bond.get_atom2().get_id()
+        G.add_edge(atom1, atom2)
+
+    if check_fully_connected:
+        assert nx.is_connected(G), "The graph is not fully connected!"
+
+    return G
 
 
 

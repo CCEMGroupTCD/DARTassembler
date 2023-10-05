@@ -8,11 +8,14 @@ from pathlib import Path
 from typing import Union
 import json
 import re
+
+from DARTassembler.src.assembly.stk_utils import stkBB_to_networkx_graph
 from DARTassembler.src.constants.Periodic_Table import DART_Element as element
 
 from DARTassembler.src.ligand_extraction.utilities_Molecule import original_metal_ligand
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Molecule, RCA_Ligand
-from DARTassembler.src.ligand_extraction.utilities_graph import graphs_are_equal
+from DARTassembler.src.ligand_extraction.utilities_graph import graphs_are_equal, \
+    get_sorted_atoms_and_indices_from_graph
 from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word
 
 atomic_number_Hg = 80
@@ -25,68 +28,57 @@ atomic_number_Hg = 80
 
 
 class TransitionMetalComplex:
-    """
-    Here we define how we want the final object to look like
-    to bring us in a good position for the post assembly filtering
-    """
+
     mol: RCA_Molecule
 
     def __init__(self,
-                 compl: stk.ConstructedMolecule = None,
-                 ligands: dict[RCA_Ligand] = None,
-                 metal_charge: int = 2,
-                 metal: str = "Fe",
-                 spin: int = 0
+                 atomic_props: dict,
+                 graph: nx.Graph,
+                 metal_oxi_state: int,
+                 metal_idx: int,
+                 charge: int,
+                 ligand_props: dict,
+                 spin: int = None
                  ):
         """
-        In general, during the creation process we get
-        an stk.ConstructedMolecule with the correct geometries, but with Hg to be remaining
-        a dict of ligands, which contain the ligands with old geometries, but the desireable graphs
+        :param atomic_props: dict
+        :param graph: nx.Graph
+        :param metal_oxi_state: int
+        :param metal_idx: int
+        :param charge: int
+        :param ligand_props: dict
+        :param spin: int
         """
-        if ligands is None or compl is None:
-            # we need a way to create an empty object
-            return
+        self.atomic_props = atomic_props
+        self.graph = graph
+        self.ligand_props = ligand_props
+        self.metal_oxi_state = metal_oxi_state
+        self.metal_idx = metal_idx
+        self.charge = charge
+        self.spin = spin
 
-        # from the stk compl we need to extract the atoms and their 3d positions
-        # i.e. we want the atomic_properties for our new Molecule
-        atomic_props = self.stk_Constructed_Mol_to_atomic_props(compl)
+        self.metal = self.atomic_props["atoms"][self.metal_idx]
 
-        # we will ignore global properties, because this doesnt really make sense.
-        # however, we will add an attribute which we call ligand_properties, where some information on the ligands is stored
-        # I like to store everyhting regarding the ligands in this dict
-        self.ligand_props = {
-            key: {
-                "name": ligand.name,
-                "unique name": ligand.unique_name if hasattr(ligand, "unique_name") else None,
-                "original metal": original_metal_ligand(ligand),
-                "size": len(ligand.atomic_props["x"]),
-                "stoichiometry": ligand.stoichiometry,
-                "Metal Spin:": spin,
-            }
-            for key, ligand in ligands.items()
-        }
+        self.total_charge = self.charge  # deprecated, use self.charge instead
 
-        self.total_charge = self.get_total_charge(metal_charge, ligands)
-
-        self.graph = self.merge_graph_from_ligands(ligands, metal)
-        # assert sorted(self.graph.nodes) == list(range(len(self.graph.nodes))), f"The graphs indices are not in order: {list(self.graph.nodes)}"
-        # graph_elements = [el for _, el in self.graph.nodes(data='node_label')]
-        # assert graph_elements == atomic_props["atoms"]
+        assert sorted(self.graph.nodes) == list(range(len(self.graph.nodes))), f"The graphs indices are not in order: {list(self.graph.nodes)}"
+        graph_elements, indices = atoms, _ = get_sorted_atoms_and_indices_from_graph(self.graph)
+        assert graph_elements == self.atomic_props["atoms"]
 
         self.mol = RCA_Molecule.make_from_atomic_properties(
-            atomic_props_mol=atomic_props,
-            global_props_mol={},
-            graph=self.graph
+                                                            atomic_props_mol=self.atomic_props,
+                                                            global_props_mol={},
+                                                            graph=self.graph
         )
 
-        self.date_of_creation = date.today()
-        self.name = self.assemble_name(metal=metal, ligands=ligands)
+        self.functional_groups = {key: lig['donors'] for key, lig in ligand_props.items()}
+        self.donor_elements = [el for elements in self.functional_groups.values() for el in elements]
 
-        self.functional_groups = {key_: lig.get_assembly_dict()["type"] for key_, lig in ligands.items()}
+        self.mol_id = self.create_random_name()
 
-        self.working_name = self.create_random_name()
 
-        self.metal = metal
+
+
 
     @staticmethod
     def get_total_charge(metal_charge_, ligands_):
@@ -129,12 +121,13 @@ class TransitionMetalComplex:
         }
 
         # to this end we first obtain the indices of interest
-        indices_for_non_Hg = [i for i, atom in enumerate(compl._atoms) if atom.get_atomic_number() != atomic_number_Hg]
+        # indices_for_non_Hg = [i for i, atom in enumerate(compl._atoms) if atom.get_atomic_number() != atomic_number_Hg]
+        indices = list(range(len(compl._atoms)))
 
         # Now we can extract the types of atoms
-        atomic_props["atoms"] = [element(compl._atoms[i].get_atomic_number()).symbol for i in indices_for_non_Hg]
+        atomic_props["atoms"] = [element(compl._atoms[i].get_atomic_number()).symbol for i in indices]
 
-        for (x, y, z) in compl.get_atomic_positions(indices_for_non_Hg):
+        for (x, y, z) in compl.get_atomic_positions(indices):
             atomic_props["x"].append(x)
             atomic_props["y"].append(y)
             atomic_props["z"].append(z)
@@ -175,11 +168,12 @@ class TransitionMetalComplex:
             for i in lig.ligand_to_metal:
                 U.add_edge(0, sorted(Gr.nodes)[i])
 
-        # outputs graph of assembled complex
         return U
 
     def create_random_name(self, length=8, decimals=6):
-        # Generate a hash of the molecule. This is based on the xyz coordinates here. This is not perfect, since the molecule might be rotated, but should be good enough.
+        """
+        Generate a hash name of the molecule based on its xyz coordinates and elements. If coordinates or elements change, the name will change.
+        """
         xyz = self.mol.get_xyz_as_array()
         sorted_indices = np.lexsort((xyz[:, 2], xyz[:, 1], xyz[:, 0]), axis=0)
         xyz = np.round(xyz, decimals=decimals)  # round to 6 decimals to get rid of numerical noise
@@ -191,37 +185,23 @@ class TransitionMetalComplex:
         # Generate a pronounceable word from the hash
         name = generate_pronounceable_word(length=length, seed=seed)
 
-        # # we first generate the reconstructable hash:
-        # name_hash = int(hashlib.md5(self.name.encode(encoding='UTF-8', errors='strict')).hexdigest(), 16)
-        #
-        # # this is reproducable and 32 digits long
-        # if int(str(name_hash)[:10]) % 2 == 1:
-        #     gender = "Male"
-        # else:
-        #     gender = "Female"
-        #
-        # name_row = int(str(name_hash)[10:20]) % 200
-        # # because we have currently 200 names implemented
-        #
-        # surname_row = int(str(name_hash)[20:30]) % 1000
-        #
-        # # pick the name
-        # df = pd.read_csv(Path(project_path, "constants", "names", "names.csv"))
-        #
-        # name = f"{df.loc[name_row, gender]} {df.loc[surname_row, 'Surname']}"
-
         return name
 
     def to_data_dict(self):
-        complex_properties = deepcopy(self.__dict__)
+        props = deepcopy(self.__dict__)
+        complex_properties = {}
 
-        complex_properties["mol"] = complex_properties["mol"].write_to_mol_dict()
-        # However, the graph dicts are already contained in the above entry of the dict
-        del complex_properties["graph"]
+        mol = props["mol"].write_to_mol_dict()
+        complex_properties['atomic_props'] = mol['atomic_props']
+        complex_properties['global_props'] = mol['global_props']
+        complex_properties['graph_dict'] = mol['graph_dict']
 
-        complex_properties["date_of_creation"] = str(complex_properties["date_of_creation"])
-
-        del complex_properties["date_of_creation"]  # hack to make the json comparable and this is not really needed anyway
+        complex_properties['ligand_props'] = props['ligand_props']
+        complex_properties['metal_oxi_state'] = props['metal_oxi_state']
+        complex_properties['spin'] = props['spin']
+        complex_properties['metal'] = props['metal']
+        complex_properties['charge'] = props['charge']
+        complex_properties['mol_id'] = props['mol_id']
 
         return complex_properties
 
@@ -231,6 +211,50 @@ class TransitionMetalComplex:
         complex_properties = self.to_data_dict()
         with open(path, "w") as file:
             json.dump(complex_properties, file)
+
+    @classmethod
+    def from_stkBB(cls,
+                 compl: stk.ConstructedMolecule = None,
+                 ligands: dict[RCA_Ligand] = None,
+                 metal_charge: int = 2,
+                 metal: str = "Fe",
+                 metal_idx: int = 0,
+                 spin: int = 0
+                 ):
+        """
+        :param compl: stk.ConstructedMolecule
+        :param ligands: dict[RCA_Ligand]
+        :param metal: str
+        :param spin: int
+        :param metal_charge: int
+        """
+        atomic_props = cls.stk_Constructed_Mol_to_atomic_props(compl)
+        ligand_props = {
+            key: {
+                "unique name": ligand.unique_name if hasattr(ligand, "unique_name") else None,
+                "original metal": original_metal_ligand(ligand),
+                "n_atoms": len(ligand.atomic_props["x"]),
+                "stoichiometry": ligand.stoichiometry,
+                'donors': ligand.local_elements,
+            }
+            for key, ligand in ligands.items()
+        }
+
+        charge = cls.get_total_charge(metal_charge, ligands)
+
+        graph = cls.merge_graph_from_ligands(ligands, metal)
+
+        complex = cls(
+            atomic_props=atomic_props,
+            graph=graph,
+            ligand_props=ligand_props,
+            metal_oxi_state=metal_charge,
+            metal_idx=metal_idx,
+            charge=charge,
+            spin=spin
+        )
+
+        return complex
 
     @classmethod
     def from_json(cls,
@@ -246,8 +270,8 @@ class TransitionMetalComplex:
         with open(path, "r") as file:
             properties = json.load(file)
 
-        if not {'ligand_props', 'total_charge', 'mol', 'date_of_creation', 'name', 'functional_groups',
-                'working_name'}.issubset(set(properties.keys())):
+        if not {'ligand_props', 'total_charge', 'mol', 'name', 'functional_groups',
+                'mol_id'}.issubset(set(properties.keys())):
             raise KeyError("Missing keys in input json for TMC generation")
 
         a.mol = RCA_Molecule.read_from_mol_dict(properties["mol"])
@@ -259,81 +283,6 @@ class TransitionMetalComplex:
             a.__setattr__(k, v)
 
         return a
-
-    def is_equal(self, other):
-        """
-        other: also an object of type TMC,
-        by checking if all attributes are the same
-        """
-
-        for key in self.__dict__:
-
-            # comparison for the string valued stuff
-            if key in ["total_charge", "name", "working_name", "metal"]:
-                try:
-                    if self.__dict__[key] == other.__dict__[key]:
-                        continue
-                    else:
-                        return False
-                except KeyError:
-                    # because then the attribute is missing in the other
-                    # and hence they can't be equal
-                    return False
-            elif key == "date_of_creation":
-                try:
-                    if str(self.__dict__[key]) == str(other.__dict__[key]):
-                        continue
-                    else:
-                        return False
-                except KeyError:
-                    # because then the attribute is missing in the other
-                    # and hence they can't be equal
-                    return False
-            elif key in ["ligand_props", "functional_groups"]:
-                for k, v in self.__dict__[key].items():
-                    try:
-                        if other.__dict__[key][k] == v:
-                            pass
-                        else:
-                            return False
-                    except KeyError:
-                        try:
-                            if other.__dict__[key][str(k)] == v:
-                                pass
-                            else:
-                                return False
-                        except KeyError:
-                            return False
-            elif key == "graph":
-                try:
-                    if graphs_are_equal(other.__dict__[key], self.__dict__[key]):
-                        continue
-                    else:
-                        return False
-                except KeyError:
-                    return False
-            elif key == "mol":
-                try:
-                    if self.__dict__[key].get_graph_hash() == other.__dict__[key].get_graph_hash():
-                        continue
-                    else:
-                        return False
-                except KeyError:
-                    return False
-            else:
-                continue
-
-        return True
-
-    def equal_graphs(self, other):
-        try:
-            if self.__dict__["mol"].get_graph_hash() == other.__dict__["mol"].get_graph_hash():
-                return True
-            else:
-                return False
-        except KeyError:
-            print("Warning: One of the TMCs has no .mol attribute")
-            return False
 
     def get_com_format_string(self,
                               basis_set_dict: dict,
