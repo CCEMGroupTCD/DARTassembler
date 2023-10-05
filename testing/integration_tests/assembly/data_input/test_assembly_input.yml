@@ -6,7 +6,7 @@ Output_Path: './assembly/data_output'
 complex_name_length: 8
 
 Batches:
-  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines']
+  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines', 'same_as_ligand_#2']
     Isomers: Generate Lowest Energy
     MAX_num_complexes: 3
     ligand_choice: 'random'

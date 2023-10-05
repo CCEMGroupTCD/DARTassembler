@@ -8,7 +8,7 @@ Must:
     - remove ligand with denticity = -1 and uncertain charges
 - assembly input:
     - make it so that the input ligand db list accepts keywords to fix ligands to be the same.
-- improve json complex output, especially the 'complex' data by getting rid of TMC class and making RCA_complex class instead
+- fix that some ligands don't have an 'identical_ligands' attribute
 
 
 Should:
