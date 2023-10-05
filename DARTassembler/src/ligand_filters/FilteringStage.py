@@ -6,7 +6,6 @@ import numpy as np
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.ligand_extraction.DataBase import MoleculeDB, LigandDB
 from typing import Union
-from DARTassembler.src.ligand_filters.Box_Excluder_Filter import box_filter
 from DARTassembler.src.ligand_filters.constant_Ligands import get_monodentate_list
 from rdkit.Chem import rdmolfiles
 from DARTassembler.src.assembly.building_block_utility import ligand_to_mol
@@ -286,15 +285,7 @@ class FilterStage:
             self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
             self.filter_tracking[len(self.filter_tracking)] = f"Charge Filter: {filter_for}"
 
-    def box_excluder_filter(self):
-        """
-        Filter out all ligands that violate the box Filter
-        """
-        print("Box Excluder Filter running")
-        self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items() if box_filter(ligand) is True}
-        self.filter_tracking[len(self.filter_tracking)] = f"Box Filter"
 
-        # self.safe_and_document_after_filterstep(filtering_step_name="Box Filter")
 
     def add_constant_ligands(self):
         """

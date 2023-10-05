@@ -45,7 +45,9 @@
 !database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/3_atomic_properties.xyz
 
 
+
 /DARTassembler/src/constants/CSD/CSD_Smiles_full.csv
+
 
 /dev/test/machine_learning
 /ccem_server
@@ -104,3 +106,5 @@ tmQMG.json
 
 
 
+/examples/Pd_Ni_Cross_Coupling/output/data_before_restarts/DART_Example_Pd_Ni_Complexes/
+/examples/Pd_Ni_Cross_Coupling/output/data_before_restarts_copy/DART_Example_Pd_Ni_Complexes/

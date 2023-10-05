@@ -13,7 +13,9 @@ from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
 import ast
 from DARTassembler.src.assembly.TransitionMetalComplex import TransitionMetalComplex as TMC
 from rdkit import Chem
+
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
+
 import stk, os
 import warnings
 from pathlib import Path
@@ -81,6 +83,7 @@ class PlacementRotation:
         #todo: in order to check for duplicates we may need to append a list here
         for complex_ in list_of_complexes_wih_isomers:  # We loop through all the created isomers
             if (complex_ is not None) and (complex_ != (None, None)):
+
                 Assembled_complex = TMC.from_stkBB(compl=complex_, ligands=ligands, metal=metal,metal_idx=0, metal_charge=metal_ox_state, spin=metal_multiplicity)
                 #
                 #
@@ -186,15 +189,29 @@ class PlacementRotation:
             return bb_for_complex
         else:
             ligand_bb = ligand.to_stk_bb()
+
+
             monodentate_topology = stk_e.Monodentate(metals=create_placeholder_Hg_bb(), ligands=ligand_bb)
             bb_for_complex = stk.BuildingBlock.init_from_molecule(stk.ConstructedMolecule(
                 topology_graph=monodentate_topology),
                 functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())]
             )
+
+            #todo: this is a bit of a bad fix that we need to be aware of. For the example we need to rotate the 6 membered ring so that it is perpendicular with the xy-plane
+            if ligand.stoichiometry == "C6H5":
+                print("!!!Warning!!! --> We are entering a section of the code that is only used in the example --> This needs to be addressed with Timo")
+                #This is a highly specialised if statement
+                #Here we orientate the phenyl ligand vertical
+                bb_for_complex = bb_for_complex.with_rotation_about_axis(angle=65 * (np.pi / 180.0), axis=bb_for_complex.get_centroid(), origin=np.array((0, 0, 0)))
+
+                #And rotate it about the z-axis to leave some more room for the large bidentate ligand
+                bb_for_complex = bb_for_complex.with_rotation_about_axis(angle=-25 * (np.pi / 180.0), axis=np.array((0, 0, 1)), origin=np.array((0, 0, 0)))
+
+
             return bb_for_complex
 
     @staticmethod
-    def Process_Bidentate(ligand: RCA_Ligand = None, coordinates: list = None, bidentate_placed: bool = None, top_list: list = None, direction: str = None, build_options: dict = {}):
+    def Process_Bidentate(ligand: RCA_Ligand = None, coordinates: list = None, bidentate_placed: bool = None, top_list: list = None, direction: str = None, build_options: str = None):
         if direction == "Right":
             stk_e.Bidentate_Planar_Right._ligand_vertex_prototypes[0]._position = np.array(coordinates)
             bidentate_topology = stk_e.Bidentate_Planar_Right(metals=create_placeholder_Hg_bb(), ligands=ligand.to_stk_bb())
@@ -219,7 +236,6 @@ class PlacementRotation:
         # Here we pick and choose are ligands and rotate and place them based on our topology
         topology_determining_ligand_planar = self.planar_check_(ligands)  # Check are either the tetra or tri ligands planar
         topology_list = topology
-
         # This ensures we don't enter the same if statement twice if we have to place a ligand of the same denticity twice
         first_lig0_placed = False
         first_lig1_placed = False
@@ -337,26 +353,29 @@ class PlacementRotation:
                 #
                 # If our ligand has denticity of 2 we enter this if statement
                 #
-
+                bidentate_box_choice_instruction = build_options['bidentate_rotator']
                 # If this option is `auto`, choose the box shape based on the planarity of the ligand
+                print("rot123:" + str(build_options['bidentate_rotator']))
                 if build_options['bidentate_rotator'] == 'auto':
                     if ligand.check_bidentate_planarity():
-                        build_options['bidentate_rotator'] = 'horseshoe'
+                        print("h chosen")
+                        bidentate_box_choice_instruction = 'horseshoe'
                     else:
-                        build_options['bidentate_rotator'] = 'slab'
+                        bidentate_box_choice_instruction = 'slab'
+                        print("s chosen")
 
                 if topology_list == [3, 2, 0] or topology_list == [3, 2, 1]:
                     coord = Bidentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Bottom()
-                    bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Bottom", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=build_options)
+                    bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Bottom", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=bidentate_box_choice_instruction)
 
                 elif (topology_list == [2, 2] or [2, 1, 1] or [2, 1, 0] or [2, 0]) and (first_lig2_placed == False):
                     coord = Bidentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Right()
-                    bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Right", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=build_options)
+                    bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Right", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=bidentate_box_choice_instruction)
                     first_lig2_placed = True
 
                 elif (topology_list == [2, 2] or [2, 1, 1] or [2, 1, 0]) and (first_lig2_placed == True):
                     coord = Bidentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Left()
-                    bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Left", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=build_options)
+                    bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Left", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=bidentate_box_choice_instruction)
 
                 else:
                     print("!!!Fatal_Error!!! -> Topology not accounted for in the context of bidentate ligands.py -> Exiting Program")

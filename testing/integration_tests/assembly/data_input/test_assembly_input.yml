@@ -6,7 +6,7 @@ Output_Path: './assembly/data_output'
 complex_name_length: 8
 
 Batches:
-  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines', 'same_as_ligand_#2']
+  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines']
     Isomers: Generate Lowest Energy
     MAX_num_complexes: 3
     ligand_choice: 'random'
@@ -22,6 +22,7 @@ Batches:
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
+    gaussian_input_filepath: #'../../examples/Pd_Ni_Cross_Coupling/input/Input_files/Gaussian_config.yml'
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -40,6 +41,7 @@ Batches:
     complex_name_appendix:
     geometry_modifier_filepath: './assembly/data_input/geometry_modifier.xyz'
     bidentate_rotator: 'horseshoe'
+    gaussian_input_filepath:
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -58,6 +60,7 @@ Batches:
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
+    gaussian_input_filepath:
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -76,6 +79,7 @@ Batches:
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
+    gaussian_input_filepath:
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -94,6 +98,7 @@ Batches:
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
+    gaussian_input_filepath:
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -112,6 +117,7 @@ Batches:
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
+    gaussian_input_filepath:
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
@@ -130,6 +136,7 @@ Batches:
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
+    gaussian_input_filepath:
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
     Isomers: Generate Lowest Energy
@@ -147,3 +154,4 @@ Batches:
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
+    gaussian_input_filepath:

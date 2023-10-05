@@ -163,6 +163,7 @@ class ComplexAssemblyOutput(object):
         self.data_path = Path(complexdir, start + _complex_data)
         self.structure_path = Path(complexdir, start + _complex_structure)
         self.gaussian_path = Path(complexdir, start + _complex_gaussian)
+        self.submission_script_path = Path(complexdir, "run.sh")
         self.info_path = Path(complexdir, start + _complex_info)
         self.settings_path = Path(complexdir, start + _complex_settings)
         self.ligandfilters_path = Path(complexdir, start + _complex_ligandfilters)
@@ -234,6 +235,12 @@ class ComplexAssemblyOutput(object):
         @param xyz_string: The concatenated .xyz string.
         """
         self.save_file(xyz_string, self.ff_movie_path)
+
+    def save_gaussian(self, gaussian_string):
+        self.save_file(gaussian_string, self.gaussian_path)
+
+    def save_submission_script(self, submission_script_string):
+        self.save_file(submission_script_string, self.submission_script_path)
 
     def save_settings(self, assembly_input_filepath: Union[str,Path]) -> None:
         shutil.copy(str(assembly_input_filepath), str(self.settings_path))

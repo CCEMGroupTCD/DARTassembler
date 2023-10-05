@@ -41,6 +41,7 @@ _complex_name_appendix = 'complex_name_appendix'
 _geometry_modifier_filepath = 'geometry_modifier_filepath'
 _bidentate_rotator = 'bidentate_rotator'
 # _ligand_filters_path = 'ligand_filters_path'
+_gaussian_path = 'gaussian_input_filepath'
 
 
 # Define names for the settings in the ligand filters file:
@@ -625,6 +626,7 @@ class AssemblyInput(BaseInput):
                         _complex_name_appendix: [str,type(None)],
                         _geometry_modifier_filepath: [str, type(None)],
                         _bidentate_rotator: [str],
+                        _gaussian_path: [str, type(None)],
                         # _ligand_filters_path: [str, Path, type(None)],
                         }
     # Metal settings in the batch settings
@@ -761,6 +763,7 @@ class AssemblyInput(BaseInput):
         complex_name_appendix = batch_settings[_complex_name_appendix] or ''
         geometry_modifier_filepath = self.get_geometry_modifier_from_input(batch_settings[_geometry_modifier_filepath])
         bidentate_rotator = self.get_bidentate_rotator_from_input(batch_settings[_bidentate_rotator], varname=f'{_batches}->{_bidentate_rotator}')
+        gaussian_path = self.get_path_from_input(path=batch_settings[_gaussian_path], varname=f'{_batches}->{_gaussian_path}', allow_none=True)
 
         if isinstance(Ligand_json, list):
             similarity = topology_similarity.split('--')[1].lstrip('[').rstrip(']').split(', ')
@@ -768,7 +771,7 @@ class AssemblyInput(BaseInput):
             if not len(Ligand_json) == n_diff_ligands:
                 self.raise_error(f"Input '{_input_path}' is a list of paths and must have the same length as the number of different ligands specified in the similarity list at the end of the topology. Yet, the topology {topology_similarity} specifies {n_diff_ligands} different ligands, but {len(Ligand_json)} paths were given.", varname=f'{_batches}->{_input_path}')
 
-        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator, ligand_choice
+        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator, ligand_choice, gaussian_path
 
     def get_bidentate_rotator_from_input(self, bidentate_rotator: str, varname: str):
         """

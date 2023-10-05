@@ -6,6 +6,7 @@ from copy import deepcopy
 import pandas as pd
 
 
+
 class TEST:
 
     def __init__(self,
@@ -99,20 +100,18 @@ class TEST:
                 pass
             print(f"Counter: {i}")
             i = i + 1
+
     def loop_standard(self):
-        NUM_LIGS = 0
+        stoic_string = ""
         for unq_name, ligand in self.database.db.items():
-            print(ligand.denticity)
-            if int(ligand.denticity) == int(3):
-                NUM_LIGS += 1
-                #ligand.view_3d()
-                pass
-            else:
-                pass
-        print(NUM_LIGS)
-        print("done")
+            stoic_string = stoic_string + str(ligand.stoichiometry)
 
-
+        print(list(set(stoic_string)))
+        for character in list(set(stoic_string)):
+            try:
+                int(character)
+            except:
+                print(character)
 
 
 if __name__ == "__main__":
@@ -121,13 +120,10 @@ if __name__ == "__main__":
     filtered_db = {unique_lig_name: RCA_Ligand} dict-type, which can then be employed for the ligandAssembly
     """
 
-    tmQM_unique_Ligands = LigandDB.from_json(json_=project_path().extend("data", "Filtered_Jsons", "INTEGRATION_TEST_LIGAND_DATABASE_270623.json"),
+    tmQM_unique_Ligands = LigandDB.from_json(json_=project_path().extend("data", "Filtered_Jsons", "P_N_with_Benzene_Br", "P_N_080823.json"),
                                              type_="Ligand",
-                                             max_number=63053649734659453576395
-                                             )
-
+                                             max_number=63053649734659453576395)
     TEST(database=tmQM_unique_Ligands).loop_standard()
     # Filter = TEST(tmQM_unique_Ligands)
-
     # Filter.test(denticity=2, bonds=["C-C", "C-H"], instruction="must_exclude")
     print("done")

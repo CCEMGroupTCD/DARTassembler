@@ -11,9 +11,11 @@ from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _f
 
 
 
+
+
 class LigandFilters(object):
 
-    def __init__(self, filepath: Union[str,Path], max_number: Union[int, None] = None):
+    def __init__(self, filepath: Union[str, Path], max_number: Union[int, None] = None):
         self.filepath = Path(filepath)
         self.max_number = max_number
         self.input = LigandFilterInput(path=self.filepath)
@@ -26,10 +28,10 @@ class LigandFilters(object):
 
     def get_filtered_db(self) -> LigandDB:
         db = LigandDB.from_json(
-                                json_=self.ligand_db_path,
-                                type_="Ligand",
-                                max_number=self.max_number
-                                )
+            json_=self.ligand_db_path,
+            type_="Ligand",
+            max_number=self.max_number
+        )
 
         self.Filter = FilterStage(db)
         self.n_ligands_before = len(self.Filter.database.db)
@@ -75,32 +77,32 @@ class LigandFilters(object):
 
             elif filtername == _ligcomp:
                 self.Filter.filter_ligand_atoms(
-                                            denticity=filter[_denticities],
-                                            atoms_of_interest=filter[_ligcomp_atoms_of_interest],
-                                            instruction=filter[_ligcomp_instruction])
+                    denticity=filter[_denticities],
+                    atoms_of_interest=filter[_ligcomp_atoms_of_interest],
+                    instruction=filter[_ligcomp_instruction])
 
             elif filtername == _metals_of_interest:
                 self.Filter.metals_of_interest_filter(
-                                                    denticity=filter[_denticities],
-                                                    metals_of_interest=filter[_metals_of_interest])
+                    denticity=filter[_denticities],
+                    metals_of_interest=filter[_metals_of_interest])
 
             elif filtername == _ligand_charges:
                 self.Filter.filter_ligand_charges(
-                                                denticity=filter[_denticities],
-                                                charge=filter[_ligand_charges])
+                    denticity=filter[_denticities],
+                    charge=filter[_ligand_charges])
 
             elif filtername == _coords:
                 self.Filter.filter_coordinating_group_atoms(
-                                                        denticity=filter[_denticities],
-                                                        atoms_of_interest=filter[_ligcomp_atoms_of_interest],
-                                                        instruction=filter[_ligcomp_instruction])
+                    denticity=filter[_denticities],
+                    atoms_of_interest=filter[_ligcomp_atoms_of_interest],
+                    instruction=filter[_ligcomp_instruction])
 
             elif filtername == _mw:
                 self.Filter.filter_molecular_weight(
-                                                denticity=filter[_denticities],
-                                                atomic_weight_min=filter[_mw_min],
-                                                atomic_weight_max=filter[_mw_max]
-                                                )
+                    denticity=filter[_denticities],
+                    atomic_weight_min=filter[_mw_min],
+                    atomic_weight_max=filter[_mw_max]
+                )
 
             n_ligands_after = len(self.Filter.database.db)
             self.filter_tracking.append({
@@ -109,7 +111,7 @@ class LigandFilters(object):
                 "n_ligands_after": n_ligands_after,
                 "n_ligands_removed": n_ligands_before - n_ligands_after,
                 "full_filter_options": {name: option for name, option in filter.items() if name != _filter}
-                })
+            })
 
             # todo: subgraph match
         self.n_ligands_after = len(self.Filter.database.db)
@@ -119,6 +121,7 @@ class LigandFilters(object):
     def get_filter_tracking_string(self) -> str:
         output= "===================== FILTER TRACKING =====================\n"
         output += f"--> Filtered ligand database was saved as '{self.output_ligand_db_path}'.\nRemoved ligands:\n"
+
         for filter in self.filter_tracking:
             output += f"  - {filter['filter']}: {filter['n_ligands_removed']}\n"
             options = ', '.join([f"{name}: {option}" for name, option in filter['full_filter_options'].items()])
@@ -146,7 +149,6 @@ class LigandFilters(object):
     def save_filtered_ligand_db(self):
         filtered_db = self.get_filtered_db()
 
-
         if not self.output_ligand_db_path.parent.exists():
             self.output_ligand_db_path.parent.mkdir(parents=True)
         filtered_db.to_json(self.output_ligand_db_path, json_lines=True)
@@ -166,11 +168,12 @@ class LigandFilters(object):
 
 
 if __name__ == "__main__":
-
     ligand_filter_path = project_path().extend(*'dev/test/2-1-1-Cl-example/ligandfilters.yml'.split('/'))
     max_number = 100
+
 
     filter = LigandFilters(filepath=ligand_filter_path, max_number=max_number)
     filter.save_filtered_ligand_db()
     filter.save_filter_tracking()
     filter.print_filter_tracking()
+

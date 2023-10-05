@@ -41,5 +41,4 @@ default_ligand_db_path = project_path().extend("data", "final_db_versions", "uni
 element_data_path = project_path().extend(*'DARTassembler/src/constants/element_data_table.csv'.split('/'))
 charge_benchmark_dir = project_path().extend('dev', 'test', 'debug', 'databases', 'charge_benchmark')
 
-# Fixed paths in project
 

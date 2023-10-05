@@ -1,0 +1,21 @@
+
+
+num_processors: 32                            #Number or processors to be used per calculation
+memory_GB: 64                                 #Memory allocation for the calculation
+
+calc_instruction: "opt"                       #instruction for the calculation
+functional: "rwb97xd"                         #The functional that is to be used
+basis_set_instruction: "gen"                  #This tells the program to use the basis sets provided in the class
+pseudo_potential_instruction: "pseudo=read"   #Instruction on how to handle the pseudo potentials
+
+spacer_message: "This Gaussian input file was generated using the DART python program"  #This is mandatory
+
+basis_sets:
+            "Pd": "-Pd 0\nlanl2dz\nF 1 1.0\n1.472 1.0"
+            "Ni": "-Ni 0\nlanl2dz\nF 1 1.0\n3.130 1.0"
+            "H":  "-H 0\n6-31g(d,p)"
+            "C":  "-C 0\n6-31g(d)"
+            "N":  "-N 0\n6-31+g(d)"
+            "P":  "-P 0\n6-31+g(d)"
+            "Br":  "-Br 0\n6-31+g(d)"
+            "other": "-x 0\n6-31+g(d)"

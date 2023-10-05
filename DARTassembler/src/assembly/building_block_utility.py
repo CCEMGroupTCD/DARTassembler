@@ -149,7 +149,7 @@ def penta_as_tetra(ligand: RCA_Ligand):
     return penta_bb_temp.with_centroid(np.array((0, 0, 0)), atom_ids=modified_atom_ids), ligand.get_assembly_dict()["index"][index_with_min_variance]
 
 
-def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, build_options = {}):
+def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, build_options: str = None):
     # TODO: rewrite this so it doesn't write to disk
     stk_Building_Block = mercury_remover(ligand_bb)
 
@@ -189,7 +189,7 @@ def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, build_
         dict_[angle] = float(total_atoms_in_box)
 
     minimum_angle = min(dict_, key=dict_.get)
-    print("minimum angle = " + str(minimum_angle) + "boxes entered " + str(dict_box[str(minimum_angle)]))
+    print("minimum angle = " + str(minimum_angle) + " boxes entered " + str(dict_box[str(minimum_angle)]))
     # print(dict_box)
 
     #
