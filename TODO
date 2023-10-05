@@ -23,6 +23,7 @@ Should:
     - make unique IDs of ligands like Zotrux02 and in case this points to more than one ligand, add a letter to all of them like a, b, c etc.
     - add molecule planarity with 1.0 being perfectly planar and 0.0 being perfectly non-planar.
         - change the bidentate planarity checker to adhere to this convention, I think now it's the other way round.
+- write input class for gaussian input file, especially make sure that there is an 'others' specified in the basis sets
 
 Can:
 - remove ligands with missing H from database

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Metal Count,CSD Complex IDs
+Ligand 0,unq_CSD-PEJJOE-03-a,C15H10N3O1,3,N-N-N,-1,True,9b12e1f146fb8ed5f69aa323e0b7b0f1,8,Co(3) - Ni(3) - Cu(2),PEJJOE - PEJJOE - CAPYOI - CAPYOI - KAYJAW - VEXHUC - FAGHEC - OGIMAV
+Ligand 1,unq_CSD-PARRUW-02-a,C5H14N2,2,N-N,0,True,19d0c1817e51fcb5ad66476cef3009ea,17,Ni(7) - Co(4) - Zn(2) - Ru(2) - Ti(1) - Pt(1),PARRUW - PARRUW - PARSAD - PARSAD - BEVHAM - DAPHEL - DUVZIG - DUVZIG - EDOYIF - EDOYIF - WEWYIG - XALNAZ - FAGXIV - FOZGOR - FOZGUX - AVICUF - ROXFER
+Ligand 2,unq_CSD-PEDXEB-01-f,H2P1,1,P,-1,True,da0a13a38a6b8866c0389fe26e3700b1,3,Ir(1) - U(1) - Zr(1),PEDXEB - POGNEG - BAZFIU

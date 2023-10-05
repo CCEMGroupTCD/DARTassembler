@@ -22,7 +22,7 @@ Batches:
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
-    gaussian_input_filepath: #'../../examples/Pd_Ni_Cross_Coupling/input/Input_files/Gaussian_config.yml'
+    gaussian_input_filepath: '../../examples/Pd_Ni_Cross_Coupling/input/Input_files/Gaussian_config.yml'
 
 
   - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'

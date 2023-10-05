@@ -2,6 +2,7 @@ from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
 import re
 import datetime
 import yaml
+import pandas as pd
 
 now = datetime.datetime.now()  # Get the current date and time
 date = now.date()  # Extract the date from the datetime object
@@ -37,8 +38,7 @@ class Generate_Gaussian_input_file:
         self.functional = config_data["functional"]  # rwb97xd
         self.basis_set_instruction = config_data["basis_set_instruction"]  # gen This could also be, for example 6-31G(d)
         self.pseudo_potential_instruction = config_data["pseudo_potential_instruction"]  # pseudo/read
-        self.spacer_message = str(config_data["spacer_message"]) + ". This file was generated on the " + str(date) + " at " + str(time).split(".")[
-            0]  # f"This Gaussian Input files was generated using the exceptionally Brilliant DART program at {now.date()} /// {now.time()}"
+        self.spacer_message = str(config_data["spacer_message"])  # f"This Gaussian Input files was generated using the exceptionally Brilliant DART program"
         self.basis_sets_dict = config_data["basis_sets"]
         self.basis_set_seperator = "\n****\n"
 
@@ -89,31 +89,12 @@ class Generate_Gaussian_input_file:
         return "\n" + str(coordinates) + "\n"
 
     def _gen_basi_sets(self):
-        full_atom_str = ""
-        for ligand in self.ligands.values():
-            for character in ligand.stoichiometry:
-                if character.isnumeric():
-                    # C2H4O3 --> we want to skip the numbers
-                    pass
-                else:
-                    # we append all the atoms to a string
-                    full_atom_str = full_atom_str + character
-
-            pass
-        # Now we use regex to split the string up everytime it encounters a capital letter to yield a list of elements
-        full_atom_list = re.split('(?<=.)(?=[A-Z])', full_atom_str)
-        # Now we get the unique list of all elements
-        # However this list will not contain our metal
-        reduced_atom_list = list(set(full_atom_list))
-        reduced_atom_list.insert(0, str(self.metal))
+        reduced_atom_list = [self.metal] + list(pd.unique([el for lig in self.ligands.values() for el in lig.atomic_props['atoms']]))
         basis_set_string = ""
         for atom in reduced_atom_list:
-
             try:
                 basis_set_string_tmp = str(self.basis_sets_dict[str(atom)])
             except KeyError:
-                #todo: remove this error raising event. It is not necessary for the final release
-                raise KeyError
                 basis_set_string_tmp = self.basis_sets_dict["other"]
                 str(basis_set_string_tmp).replace("x", atom)
             basis_set_string = basis_set_string + basis_set_string_tmp + self.basis_set_seperator
