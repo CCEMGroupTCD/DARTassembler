@@ -1,0 +1,574 @@
+class Optimise:
+    def __init__(self, complex_, ligands_, metal_, bb):
+        self.complex = complex_
+        self.ligands = ligands_  # todo need to switch from using ligands to using the correctly rotated stk_building blocks
+        self.metal = metal_
+        self.stk_building_blocks = bb
+
+    def optimiser_test(self):
+        ligand_total_num_atoms = []  # Contains the total number of atoms for each ligand
+        list_of_ligand_mol_objects = []  # List of rdkit mol representations of each ligand
+        for i in range(len(self.ligands.keys())):  # Loop through all ligands
+            RCA_Molecule_instance = RCA_Molecule(atomic_props=self.ligands[i].atomic_props)  # rdkit instance of the ligand
+            ligand_total_num_atoms.append(len(self.ligands[i].atomic_props["atoms"]))
+            string = RCA_Molecule_instance.get_xyz_file_format_string()  # Extract xyz string of each ligand
+            conv = ob.OBConversion()  # Openbabel functionality to convert xyz to mol
+            conv.SetInAndOutFormats("xyz", "mol")  # Set conversion settings
+            mol_ = ob.OBMol()  # Initiate a rdkit mol object
+            conv.ReadString(mol_, string)  # Read in xyz string
+            string_ouput = conv.WriteString(mol_)  # Output mol string
+            mol = rdmolfiles.MolFromMolBlock(string_ouput, removeHs=False, sanitize=False, strictParsing=False)  # Generate mol object from mol string with all sanitization turned completely off
+            list_of_ligand_mol_objects.append(mol)  # append the list with the mol object
+
+        combo = Chem.RWMol()  # Initiate editable rdkit mol object
+        for ligand_mol_object in list_of_ligand_mol_objects:  # Combine all ligand mol objects
+            combo = Chem.CombineMols(combo, ligand_mol_object)
+        metal_xyz = f'1\n \n{self.metal} 0 0 0'  # xyz string of just metal
+        mol_b = ob.OBMol()
+        conv = ob.OBConversion()
+        conv.SetInAndOutFormats("xyz", "mol")
+        conv.ReadString(mol_b, metal_xyz)
+        metal_string_output = conv.WriteString(mol_b)
+        mol_metal = rdmolfiles.MolFromMolBlock(metal_string_output, removeHs=False, sanitize=False, strictParsing=False)  # Created rdkit object of just metal atom
+        combo = Chem.CombineMols(mol_metal, combo)  # Add metal with the rest of the ligands
+        assembled_complex_mol = Chem.RWMol()  # create a new editable mol object
+        assembled_complex_mol.InsertMol(combo)  # add comboned ligands and metal mols
+
+        # Now we need to iterate through each coordinating atom and add a dative bond to the metal
+        previous_num_atoms = 0  # This variable is updated with the sum of all atoms from all previous ligands
+        for i in range(len(self.ligands.keys())):  # we iterate through all the ligands in the complex
+            indexes = self.ligands[i].ligand_to_metal  # These are the indexes at which each coordinating atom occurs
+            for index in indexes:
+                assembled_complex_mol.AddBond(0, int(1 + int(index) + int(previous_num_atoms)), Chem.BondType.DATIVE)  # we add a bond between the metal and the coordinating groups
+            previous_num_atoms += ligand_total_num_atoms[i]
+        # useful functions:
+        # Draw.MolToFile(assembled_complex_mol, "image.png", size=(600, 600))
+        mol_string = rdmolfiles.MolToMolBlock(assembled_complex_mol)
+        # optimisation
+        loops = 10
+        for i in range(loops):
+            mol = pybel.readstring(format="mol", string=mol_string)
+            mol.localopt(forcefield='uff', steps=1)
+            mol.write("mol", "/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/opt_out.mol", overwrite="True")
+            movie(input_file="opt_out.mol", working_directory="/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/{}")
+
+            pass
+        print("done")
+
+########################################################################################################################################################################################################
+class Optimise:
+    def __init__(self, complex_, ligands_, metal_, bb):
+        self.complex = complex_
+        self.ligands = ligands_  # todo need to switch from using ligands to using the correctly rotated stk_building blocks
+        self.metal = metal_
+        self.stk_building_blocks = bb
+
+    def optimiser_test(self):
+        ligand_total_num_atoms = []  # Contains the total number of atoms for each ligand
+        list_of_ligand_mol_objects = []  # List of rdkit mol representations of each ligand
+        for i in range(len(self.ligands.keys())):  # Loop through all ligands
+            RCA_Molecule_instance = RCA_Molecule(atomic_props=self.ligands[i].atomic_props)  # rdkit instance of the ligand
+            ligand_total_num_atoms.append(len(self.ligands[i].atomic_props["atoms"]))
+            #####HERE I MAKE A VERY DANGEROUS ASSUMPTION THAT THE ORDER OF THE LIGANDS IN THE LIGAND FILE IS THE SAME AS THE ORDER OF THE LIGANDS IN THE BB LOST######
+            self.stk_building_blocks[0][i].write("/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/tmp_stk_mol.xyz")
+            conv = ob.OBConversion()  # Openbabel functionality to convert xyz to mol
+            conv.SetInAndOutFormats("xyz", "mol")  # Set conversion settings
+            mol_ = ob.OBMol()  # Initiate a rdkit mol object
+            conv.ReadFile(mol_,"/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/tmp_stk_mol.xyz")  # Read in xyz string
+            string_ouput = conv.WriteString(mol_)  # Output mol string
+            stk_mol = rdmolfiles.MolFromMolBlock(string_ouput, removeHs=False, sanitize=False, strictParsing=False)  # Generate mol object from mol string with all sanitization turned completely off
+            stk_mol_without_Hg = Chem.RWMol()  # initialise mol object
+            stk_mol_without_Hg.InsertMol(stk_mol)
+            idx = []
+            for atom in stk_mol_without_Hg.GetAtoms():
+                if atom.GetAtomicNum() == 80:
+                    print("here")
+                    idx.append(int(atom.GetIdx()))
+                else:
+                    print("passing")
+                    pass
+            for item in idx:
+                stk_mol_without_Hg.RemoveAtom(item)
+            assert len(self.ligands[i].atomic_props["atoms"]) == stk_mol_without_Hg.GetNumAtoms()
+            Draw.MolToFile(stk_mol_without_Hg, "image.png", size=(600, 600))
+            list_of_ligand_mol_objects.append(stk_mol_without_Hg)  # append the list with the mol object
+
+        combo = Chem.RWMol()  # Initiate editable rdkit mol object
+        for ligand_mol_object in list_of_ligand_mol_objects:  # Combine all ligand mol objects
+            combo = Chem.CombineMols(combo, ligand_mol_object)
+        metal_xyz = f'1\n \n{self.metal} 0 0 0'  # xyz string of just metal
+        mol_b = ob.OBMol()
+        conv = ob.OBConversion()
+        conv.SetInAndOutFormats("xyz", "mol")
+        conv.ReadString(mol_b, metal_xyz)
+        metal_string_output = conv.WriteString(mol_b)
+        mol_metal = rdmolfiles.MolFromMolBlock(metal_string_output, removeHs=False, sanitize=False, strictParsing=False)  # Created rdkit object of just metal atom
+        combo = Chem.CombineMols(mol_metal, combo)  # Add metal with the rest of the ligands
+        assembled_complex_mol = Chem.RWMol()  # create a new editable mol object
+        assembled_complex_mol.InsertMol(combo)  # add comboned ligands and metal mols
+
+        # Now we need to iterate through each coordinating atom and add a dative bond to the metal
+        previous_num_atoms = 0  # This variable is updated with the sum of all atoms from all previous ligands
+        for i in range(len(self.ligands.keys())):  # we iterate through all the ligands in the complex
+            indexes = self.ligands[i].ligand_to_metal  # These are the indexes at which each coordinating atom occurs
+            for index in indexes:
+                assembled_complex_mol.AddBond(0, int(1 + int(index) + int(previous_num_atoms)), Chem.BondType.DATIVE)  # we add a bond between the metal and the coordinating groups
+            previous_num_atoms += ligand_total_num_atoms[i]
+        # useful functions:
+        # Draw.MolToFile(assembled_complex_mol, "image.png", size=(600, 600))
+        mol_string = rdmolfiles.MolToMolBlock(assembled_complex_mol)
+        #
+        #
+        # optimisation
+        loops = 10
+        for i in range(loops):
+            mol = pybel.readstring(format="mol", string=mol_string)
+            mol.localopt(forcefield='uff', steps=1)
+            mol.write("mol", "/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/opt_out.mol", overwrite="True")
+            movie(input_file="opt_out.mol", working_directory="/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/{}")
+
+            pass
+        Draw.MolToFile(assembled_complex_mol, "image.png", size=(600, 600))
+        print("done")
+
+########################################################################################################################################################################################################
+import networkx as nx
+import stk
+
+
+def nx_to_mol(complex):
+    RCA_graph = complex.graph
+    mol = Chem.RWMol()
+    atomic_nums = nx.get_node_attributes(RCA_graph, 'node_label')
+    node_to_idx = {}
+    for node in RCA_graph.nodes():
+        a = Chem.Atom(atomic_nums[node])
+        idx = mol.AddAtom(a)
+        node_to_idx[node] = idx
+
+    for edge in RCA_graph.edges():
+        first, second = edge
+        ifirst = node_to_idx[first]
+        isecond = node_to_idx[second]
+        mol.AddBond(ifirst, isecond, Chem.BondType.SINGLE)
+    mol_block = Chem.MolToMolBlock(mol)
+    #stk_bb = stk.BuildingBlock.init_from_file("test.mol")
+    #for i in range(len(complex.atomic_props["atoms"])):
+        #coords.app end([str(complex.atomic_props["x"][i]), str(complex.atomic_props["y"][i]), str(complex.atomic_props["z"][i])])
+
+    return mol
+
+
+if __name__ == "__main__":
+
+    database_path = '../database/tmQMG'
+    tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
+                                   type_="Molecule",
+                                   max_number=100,
+                                   graph_strategy="smiles"
+                                   )
+    database = tmQM_DB.db
+    for name, complex in database.items():
+        pass
+        RCA_graph = complex.graph
+        rdkit_mol = nx_to_mol(complex)
+
+########################################################################################################################################################################################################
+
+import random
+import time
+import mendeleev as atom
+
+random.seed(time.time())
+# input total ligand charge
+# output metal ox_state and multiplicity
+# Temp Reference for allowed oxidation states: https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Supplemental_Modules_and_Websites_(Inorganic_Chemistry)/Descriptive_Chemistry/Elements_Organized_by_Block/3_d-Block_Elements/1b_Properties_of_Transition_Metals/Oxidation_States_of_Transition_Metals#:~:text=The%20oxidation%20state%20of%20an,electrons)%20other%20atoms%20or%20species.
+# used to check some results V.Rough: https://homework.study.com/explanation/calculate-the-spin-multiplicity-for-each-of-the-following-octahedral-complex-ions-and-give-the-ground-state-term-symbol-for-the-complex-ion-a-co-nh-3-6-3-plus-b-fe-cn-6-3-c-cr-nh-3-6-3-plus.html
+# Multiplicity is 2S+1
+metals_of_interest = {"Sc": [3],
+                      "Ti": [4],
+                      "V": [2, 3, 4, 5],
+                      "Cr": [2, 3, 6],
+                      "Mn": [2, 3, 4, 6, 7],
+                      "Fe": [2, 3],
+                      "Co": [2, 3],
+                      "Ni": [2],
+                      "Cu": [1, 2],
+                      "Zn": [2]}  # Nickel 2+ generally only adopts a square planar configuration.
+
+spins = {0: [1],
+         1: [2],
+         2: [3],
+         3: [4],
+         4: [3, 5],
+         5: [2, 6],
+         6: [1, 5],
+         7: [2, 4],
+         8: [3],
+         9: [2],
+         10: [1]}
+
+
+def ox_spin(lig_charge, Dict, spin):
+    tmp_metal_ox_storage = []
+    for item in Dict:
+        metal = item
+        ox_list = Dict[item]
+        for ox in ox_list:
+            if int(ox) + int(lig_charge) == 0:
+                tmp_metal_ox_storage.append([metal, ox])
+            else:
+                pass
+    index = random.randint(0, len(tmp_metal_ox_storage) - 1)
+    output_metal = tmp_metal_ox_storage[index][0]
+    output_oxidation_state = tmp_metal_ox_storage[index][1]
+    d_electron = int(atom.element(output_metal).group_id) - output_oxidation_state
+    multiplicity = spin[d_electron][random.randint(0, len(spins[d_electron]) - 1)]
+    print("The output metal is:         " + str(output_metal))
+    print("The oxidation state is:      " + str(output_oxidation_state))
+    print("The period:                  " + str(atom.element(output_metal).group_id))
+    print("The d-electron count is:     " + str(d_electron))
+    print("The Multiplicity is:         "+str(multiplicity))
+    return output_metal, output_oxidation_state, multiplicity
+
+
+if __name__ == "__main__":
+    for i in range(10):
+        total_ligand_charge = input("What is the total charge of your ligands")
+        ox_spin(total_ligand_charge, metals_of_interest, spins)
+
+
+
+
+
+
+########################################################################################################################################################################################################
+import stk
+from openbabel import openbabel as ob
+from openbabel import pybel
+import ast
+import os
+
+
+class OPTIMISE:
+    @staticmethod
+    def movie(input_file, working_directory):
+        # This function takes in an input of a
+        movie_input_file = working_directory.format("movie_input.xyz")
+        movie_ouput_file = working_directory.format("movie.xyz")
+        input_file_ = working_directory.format(input_file)
+        #os.system('obabel .mol {} .xyz -O  {}'.format(input_file_, movie_input_file))
+        os.system(f"obabel .mol {input_file_} .xyz -O  {movie_input_file}")
+        os.system('touch  {}'.format(movie_ouput_file))
+        os.system('cat {} >> {}'.format(movie_input_file, movie_ouput_file))
+
+    @staticmethod
+    def reset_coords(file_read, file_write, indexes, working_directory):
+        # file_read is the original_unoptimised_file and file_write is the file that is being optimised these are .mol files
+        with open(file_read, "r") as f1, open(file_write, "r+") as f2:
+            #print(indexes)
+            i = 0
+            data = []
+            for line_read1, line_read2 in zip(f1.readlines(), f2.readlines()):
+                if (indexes.count(i - 2) == 1) or (i == 4):                         # i == 4 corresponds to fixing the metal in place
+                    data.append(line_read1)
+                    #print(i)
+                    #print(line_read1)
+                else:
+                    data.append(line_read2)
+                i = i + 1
+        temp_file = "tmp_uff_tmp.mol".format(working_directory)
+        os.system('touch  {}'.format(temp_file))
+        with open(temp_file, "w") as f3:
+            for item in data:
+                f3.write(item)
+        f1.close()
+        f2.close()
+        f3.close()
+        output_file = working_directory.format("tmp_uff.mol")
+        os.system('mv {} {}'.format(temp_file, output_file))
+        return None
+
+    @staticmethod
+    def get_energy(input_file):
+        mol = next(pybel.readfile("mol", input_file))
+        obmol = mol.OBMol
+        ff = ob._openbabel.OBForceField_FindType("uff")
+        assert (ff.Setup(obmol))
+        kj_to_kcal = 1.0 / 4.184
+        ff.SetCoordinates(mol.OBMol)
+        uffE = ff.Energy(False) * kj_to_kcal
+        return uffE
+
+    @staticmethod
+    def optimiser(input_file, output_file, n, working_directory):
+        #print("The input directory: " + str(input_file))
+        #print("The output directory: " + str(output_file))
+        mol = next(pybel.readfile("mol", str(input_file)))
+        mol.localopt(forcefield='uff', steps=n)
+        mol.write("mol", output_file, overwrite="True")
+
+    @staticmethod
+    def optimise_complex_step1(directory, func_group_lines, setting):
+        if setting == "lock":
+            i = 0
+            for i in range(100):
+                #print(i)
+                if i == 0:
+                    OPTIMISE.optimiser(directory.format("tmp_unoptimised.mol"), directory.format("tmp_uff.mol"), n=1, working_directory=directory)
+                    OPTIMISE.reset_coords(directory.format("tmp_unoptimised.mol"), directory.format("tmp_uff.mol"), func_group_lines, directory)
+
+                else:
+                    OPTIMISE.optimiser(directory.format("tmp_uff.mol"), directory.format("tmp_uff.mol"), n=1, working_directory=directory)
+                    OPTIMISE.reset_coords(directory.format("tmp_unoptimised.mol"), directory.format("tmp_uff.mol"), func_group_lines, directory)
+
+                #OPTIMISE.movie(input_file="tmp_uff.mol", working_directory=directory)
+            #OPTIMISE.optimiser(directory.format("tmp_uff.mol"), directory.format("tmp_uff_2.mol"), n=300, working_directory=directory)
+            #OPTIMISE.movie(input_file="tmp_uff_2.mol", working_directory=directory)
+            # Now we want to move tmp_uff_2.mol back to tmp_uff.mol
+            directory_and_input_file = directory.format("tmp_uff.mol")
+            directory_and_output_file = directory.format("tmp_optimisation_complete.mol")
+            os.system("mv " + directory_and_input_file + " " + directory_and_output_file)
+            del_file = directory.format("tmp_uff.mol")
+            #os.system("rm {}".format(del_file))
+        else:
+            print("quickly all you need to do is fix up this bit of code with the correct directories")
+            exit()
+            OPTIMISE.optimiser("tmp.mol", "tmp_uff.mol", n=1000, working_directory=directory)
+
+    @staticmethod
+    def Optimise_STK_Constructed_Molecule(constructed_molecule, func_groups_str_input, func_groups_index_input, func_groups_type_input):
+        working_directory = "../tmp/{}"
+        constructed_molecule.write(working_directory.format("tmp_unoptimised_.mol"))
+        os.system('obabel .mol {} .xyz -O  {}'.format(working_directory.format("tmp_unoptimised_.mol"), working_directory.format("tmp_unoptimised.mol")))
+        os.system("rm {}".format(working_directory.format("tmp_unoptimised_.mol")))
+        lines_to_be_saved = OPTIMISE.process_functional_groups(func_groups_index_input, func_groups_str_input, working_directory.format("tmp_unoptimised_.mol"), working_directory.format("tmp_unoptimised_.xyz"))
+        OPTIMISE.optimise_complex_step1(working_directory, lines_to_be_saved, "lock")
+        return stk.BuildingBlock.init_from_file(working_directory.format("tmp_optimisation_complete.mol"))
+
+    @staticmethod
+    def process_functional_groups(func_indexes, func_str, mol_file, xyz_file):
+        os.system('obabel .mol {} .xyz -O  {}'.format(mol_file, xyz_file))
+        # This function should take some input and return the lines in the line numbers file that need to be kept
+        total_num_atoms_line = 1
+        space = 1
+        metal = 1  # assuming mono-metallic
+        total_atoms = []  # each entry corresponds to a ligand
+        for key in func_str.keys():
+            #print(func_str[key])
+            atom_counter = 0
+            for line in str(func_str[key]).split("\n"):
+                if str(line) != "":
+                    if str(line)[0].isalpha():
+                        atom_counter += 1
+                    else:
+                        pass
+                else:
+                    pass
+            total_atoms.append(atom_counter)
+        ligand_num = 0
+        all_line_numbers = []
+        for key in func_indexes.keys():
+            index_list = ast.literal_eval(str(func_indexes[key]))
+            #print(index_list)
+            for selected_index in index_list:
+                line_number = total_num_atoms_line + space + metal + int(selected_index)
+                if ligand_num != 0:
+                    i = 1
+                    while (ligand_num - i) >= 0:
+                        line_number = line_number + total_atoms[ligand_num - i]
+                        i = i + 1
+                else:
+                    pass
+                all_line_numbers.append(line_number)
+            ligand_num += 1
+
+        #print("This is all the lines to be saved")
+        #print(all_line_numbers)
+        return all_line_numbers  # THIS IS SUCCESSFULL!!!!
+
+
+
+import networkx as nx
+import matplotlib.pyplot as plt
+from src03_Assembly_Cian.TransitionMetalComplex import TransitionMetalComplex as TMC
+
+########################################################################################################################################################################################################
+class OPTIMISE:
+
+    def __init__(self):
+        pass
+    @staticmethod
+    def graph(ligands):
+        all_ligand_graphs = []
+        for index, ligand in ligands.items():
+            ligand_graph = ligand.graph
+            nx_graph = nx.Graph(ligand_graph)
+            nx.draw(nx_graph)
+            plt.show()
+            input("eneter")
+
+    @staticmethod
+    def Optimise_STK_Constructed_Molecule(constructed_molecule, func_groups_str_input, func_groups_index_input, func_groups_type_input, all_ligands):
+
+        print(all_ligands)
+        #OPTIMISE.graph(all_ligands)
+
+"""
+
+if __name__ == "__main__":
+    a = OPTIMISE()
+
+    database_path = '../database/tmQMG'
+    tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
+                                   type_="Molecule",
+                                   max_number=100,
+                                   graph_strategy="smiles"
+                                   )
+
+    a.graph()
+"""
+########################################################################################################################################################################################################
+
+class Optimise:
+    def __init__(self, complex_, ligands_, metal_, bb, metal_ox):
+        self.complex = complex_
+        self.ligands = ligands_  # todo need to switch from using ligands to using the correctly rotated stk_building blocks
+        self.metal = metal_
+        self.stk_building_blocks = bb
+        self.metal_ox =metal_ox
+
+    def optimiser_experimental(self):
+        ligand_total_num_atoms = []  # Contains the total number of atoms for each ligand
+        list_of_ligand_mol_objects = []  # List of rdkit mol representations of each ligand
+        for i in range(len(self.ligands.keys())):  # Loop through all ligands
+            RCA_Molecule_instance = RCA_Molecule(atomic_props=self.ligands[i].atomic_props)  # rdkit instance of the ligand
+            ligand_total_num_atoms.append(len(self.ligands[i].atomic_props["atoms"]))
+            #####HERE I MAKE A VERY DANGEROUS ASSUMPTION THAT THE ORDER OF THE LIGANDS IN THE LIGAND FILE IS THE SAME AS THE ORDER OF THE LIGANDS IN THE BB LOST######
+            tmp_lig_mol = self.stk_building_blocks[0][i].to_rdkit_mol()
+            tmp_xyz_string = rdmolfiles.MolToXYZBlock(tmp_lig_mol)
+            conv = ob.OBConversion()  # Openbabel functionality to convert xyz to mol
+            conv.SetInAndOutFormats("xyz", "mol")  # Set conversion settings
+            mol_ = ob.OBMol()  # Initiate a rdkit mol object
+            conv.ReadString(mol_, tmp_xyz_string)  # Read in xyz string
+            string_ouput = conv.WriteString(mol_)  # Output mol string
+            stk_mol = rdmolfiles.MolFromMolBlock(string_ouput, removeHs=False, sanitize=False, strictParsing=False)  # Generate mol object from mol string with all sanitization turned completely off
+            stk_mol_without_Hg = Chem.RWMol()  # initialise mol object
+            stk_mol_without_Hg.InsertMol(stk_mol)
+            idx = []
+            for atom in stk_mol_without_Hg.GetAtoms():
+                if atom.GetAtomicNum() == 80:
+                    print("here")
+                    idx.append(int(atom.GetIdx()))
+                else:
+                    print("passing")
+                    pass
+            for item in idx:
+                stk_mol_without_Hg.RemoveAtom(item)
+            assert len(self.ligands[i].atomic_props["atoms"]) == stk_mol_without_Hg.GetNumAtoms()
+            Draw.MolToFile(stk_mol_without_Hg, "image.png", size=(600, 600))
+            list_of_ligand_mol_objects.append(stk_mol_without_Hg)  # append the list with the mol object
+
+        combo = Chem.RWMol()  # Initiate editable rdkit mol object
+        for ligand_mol_object in list_of_ligand_mol_objects:  # Combine all ligand mol objects
+            combo = Chem.CombineMols(combo, ligand_mol_object)
+        metal_xyz = f'1\n \n{self.metal} 0 0 0 '  # xyz string of just metal
+        mol_b = ob.OBMol()
+        conv = ob.OBConversion()
+        conv.SetInAndOutFormats("xyz", "mol")
+        conv.ReadString(mol_b, metal_xyz)
+        metal_string_output = conv.WriteString(mol_b)
+        mol_metal = rdmolfiles.MolFromMolBlock(metal_string_output, removeHs=False, sanitize=False, strictParsing=False)  # Created rdkit object of just metal atom
+        combo = Chem.CombineMols(mol_metal, combo)  # Add metal with the rest of the ligands
+        assembled_complex_mol = Chem.RWMol()  # create a new editable mol object
+        assembled_complex_mol.InsertMol(combo)  # add comboned ligands and metal mols
+        # Now we need to iterate through each coordinating atom and add a dative bond to the metal
+        previous_num_atoms = 0  # This variable is updated with the sum of all atoms from all previous ligands
+        for i in range(len(self.ligands.keys())):  # we iterate through all the ligands in the complex
+            indexes = self.ligands[i].ligand_to_metal  # These are the indexes at which each coordinating atom occurs
+            for index in indexes:
+                assembled_complex_mol.AddBond(0, int(1 + int(index) + int(previous_num_atoms)), Chem.BondType.DATIVE)  # we add a bond between the metal and the coordinating groups
+            previous_num_atoms += ligand_total_num_atoms[i]
+        #
+        #
+        # optimisation
+        loops = 100
+        assembled_complex_mol.GetAtomWithIdx(0).SetFormalCharge(int(self.metal_ox))
+        Chem.SanitizeMol(assembled_complex_mol, Chem.SANITIZE_ALL)
+        for i in range(loops):
+            AllChem.UFFOptimizeMolecule(assembled_complex_mol, 1)
+            rdmolfiles.MolToXYZFile(assembled_complex_mol, "/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/movie_frame.xyz")
+            os.system(
+                'cat {} >> {}'.format("/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/movie_frame.xyz", "/Users/cianclarke/Documents/PhD/Complex_Assembly/CreateTMC/tmp/movie.xyz"))
+
+            pass
+        Draw.MolToFile(assembled_complex_mol, "image.png", size=(600, 600))
+        print("done")
+
+
+
+
+########################################################################################################################################################################################################
+
+
+import random
+import time
+import mendeleev as atom
+
+random.seed(time.time())
+# input total ligand charge
+# output metal ox_state and multiplicity
+# Temp Reference for allowed oxidation states: https://chem.libretexts.org/Bookshelves/Inorganic_Chemistry/Supplemental_Modules_and_Websites_(Inorganic_Chemistry)/Descriptive_Chemistry/Elements_Organized_by_Block/3_d-Block_Elements/1b_Properties_of_Transition_Metals/Oxidation_States_of_Transition_Metals#:~:text=The%20oxidation%20state%20of%20an,electrons)%20other%20atoms%20or%20species.
+# used to check some results V.Rough: https://homework.study.com/explanation/calculate-the-spin-multiplicity-for-each-of-the-following-octahedral-complex-ions-and-give-the-ground-state-term-symbol-for-the-complex-ion-a-co-nh-3-6-3-plus-b-fe-cn-6-3-c-cr-nh-3-6-3-plus.html
+# Multiplicity is 2S+1
+metals_of_interest = {"Sc": [3],
+                      "Ti": [4],
+                      "V": [2, 3, 4, 5],
+                      "Cr": [2, 3, 6],
+                      "Mn": [2, 3, 4, 6, 7],
+                      "Fe": [2, 3],
+                      "Co": [2, 3],
+                      "Ni": [2],
+                      "Cu": [1, 2],
+                      "Zn": [2]}  # Nickel 2+ generally only adopts a square planar configuration.
+
+spins = {0: [1],
+         1: [2],
+         2: [3],
+         3: [4],
+         4: [3, 5],
+         5: [2, 6],
+         6: [1, 5],
+         7: [2, 4],
+         8: [3],
+         9: [2],
+         10: [1]}
+
+
+def ox_spin(lig_charge, Dict, spin):
+    tmp_metal_ox_storage = []
+    for item in Dict:
+        metal = item
+        ox_list = Dict[item]
+        for ox in ox_list:
+            if int(ox) + int(lig_charge) == 0:
+                tmp_metal_ox_storage.append([metal, ox])
+            else:
+                pass
+    index = random.randint(0, len(tmp_metal_ox_storage) - 1)
+    output_metal = tmp_metal_ox_storage[index][0]
+    output_oxidation_state = tmp_metal_ox_storage[index][1]
+    d_electron = int(atom.element(output_metal).group_id) - output_oxidation_state
+    multiplicity = spin[d_electron][random.randint(0, len(spins[d_electron]) - 1)]
+    print("The output metal is:         " + str(output_metal))
+    print("The oxidation state is:      " + str(output_oxidation_state))
+    print("The period:                  " + str(atom.element(output_metal).group_id))
+    print("The d-electron count is:     " + str(d_electron))
+    print("The Multiplicity is:         "+str(multiplicity))
+    return output_metal, output_oxidation_state, multiplicity
+
+
+if __name__ == "__main__":
+    for i in range(10):
+        total_ligand_charge = input("What is the total charge of your ligands")
+        ox_spin(total_ligand_charge, metals_of_interest, spins)

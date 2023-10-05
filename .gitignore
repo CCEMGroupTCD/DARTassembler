@@ -9,6 +9,11 @@
 /tmp/**
 /Bin_(Old)
 /figures
+/data_input/CSD/graphs
+/data_input/Raw_CSD
+/examples/Pd_cross_coupling/data_from_Cian
+/examples/Pd_cross_coupling/data
+/examples/Pd_cross_coupling/stats
 
 
 /src04_Assembly/Z-test.py
@@ -16,10 +21,10 @@
 
 /src02_LigandCharge/test.json
 
-!/test/tmQMG_Jsons_test/
-!/test/tmQMG_Jsons_test/complex_db_original.json
-!/test/tmQMG_Jsons_test/tmQM_Ligands_unique_original.json
-!/test/tmQMG_Jsons_test/tmQM_Ligands_full_original.json
+!/dev/test/tmQMG_Jsons_test/
+!/dev/test/tmQMG_Jsons_test/complex_db_original.json
+!/dev/test/tmQMG_Jsons_test/tmQM_Ligands_unique_original.json
+!/dev/test/tmQMG_Jsons_test/tmQM_Ligands_full_original.json
 
 !/database/ligand_charges/
 !/database/ligand_charges/charge_benchmark/
@@ -40,18 +45,17 @@
 !database/tmQMg_fixed_gbl_props_cutoffs/atomic_properties/3_atomic_properties.xyz
 
 
-/EXAMPLE/DATA
+
+/DARTassembler/src/constants/CSD/CSD_Smiles_full.csv
 
 
-/constants/CSD/CSD_Smiles_full.csv
-
-/test/machine_learning
+/dev/test/machine_learning
 /ccem_server
 
-/constants/CSD/mol2s/
+/DARTassembler/src/constants/CSD/mol2s/
 /.conda_config
-/constants/CSD/graphs/tmqm_graphs_from_csd.json
-/data_input/CSD_MM_G/atomic_properties/atomic_properties.json
+/DARTassembler/src/constants/CSD/graphs/tmqm_graphs_from_csd.json
+/data_input/CSD/atomic_properties/atomic_properties.json
 /data_input/tmQMG/atomic_properties/atomic_properties.json
 /data_input/tmQM/atomic_properties/atomic_properties.json
 /data_input/CSD_MM/atomic_properties/atomic_properties.json
@@ -59,13 +63,13 @@
 /data_output/CSD_MM_Jsons/tmQM_Ligands_full.json
 /data_output/CSD_MM_Jsons/tmQM_Ligands_unique.json
 /data_output/CSD_MM_Jsons/tmQMG.json
-/data_output/CSD_MM_G_Jsons/complex_db.json
-/data_output/CSD_MM_G_Jsons/tmQM_Ligands_full.json
-/data_output/CSD_MM_G_Jsons/tmQM_Ligands_unique.json
-/data_output/CSD_MM_G_Jsons/tmQMG.json
-/data_output/CSD_MM_G_Jsons/*_original*.json
-/data_output/CSD_MM_G_Jsons/tmQMG_1000.json
-/data_output/CSD_MM_G_Jsons_test
+/data_output/CSD_Jsons/complex_db.json
+/data_output/CSD_Jsons/tmQM_Ligands_full.json
+/data_output/CSD_Jsons/tmQM_Ligands_unique.json
+/data_output/CSD_Jsons/tmQMG.json
+/data_output/CSD_Jsons/*_original*.json
+/data_output/CSD_Jsons/tmQMG_1000.json
+/data_output/CSD_Jsons_test
 
 /data_output/tmQMG_Jsons/complex_db.json
 /data_output/tmQMG_Jsons/tmQM_Ligands_full.json
@@ -80,7 +84,7 @@
 /data_output/tmQM_Jsons/tmQMG.json
 /data_output/tmQM_Jsons/Assembled_Molecules/
 /src06_fullRun/Co_31a_14_OH_LSb3lyp.com
-/data_output/CSD_MM_G_Jsons/Filtering/
+/data_output/CSD_Jsons/Filtering/
 /data_output/tmQM_Jsons/Filtering/
 /data_output/tmQM_Jsons/Filtering/filteredLigDB.json
 /data_output/tmQM_Jsons/Filtering/filterSetup.json
@@ -88,10 +92,19 @@
 
 /data_output/tmQM_Jsons/Assembled_Moleculesall.xyz
 /data_output/tmQM_Jsons/Assembled_Moleculestmp_output_test_cian.xyz
-/test/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/
+/dev/test/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/
 
-/test/ML_detect_missing_H/data/**
-/test/machine_learning/**
+/dev/test/ML_detect_missing_H/data/**
+/dev/test/machine_learning/**
 
 /src14_Assembly_Unit_Test/*
 !/src14_Assembly_Unit_Test/output_benchmark/
+
+complex_db*json
+tmQMG.json
+
+
+
+
+/examples/Pd_Ni_Cross_Coupling/output/data_before_restarts/DART_Example_Pd_Ni_Complexes/
+/examples/Pd_Ni_Cross_Coupling/output/data_before_restarts_copy/DART_Example_Pd_Ni_Complexes/

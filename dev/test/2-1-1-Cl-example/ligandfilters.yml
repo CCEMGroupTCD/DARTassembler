@@ -1,0 +1,7 @@
+input_ligand_db_path:           # path or nothing
+output_ligand_db_path: '../../.././dev/test/2-1-1-Cl-example/ligand_db_v1.7_only_Cl.jsonlines'   # path or nothing
+
+filters:
+  - filter: 'graph_IDs'
+    graph_IDs:
+      - '8756e7780cb7e3fab0b8bcb31598a04d'

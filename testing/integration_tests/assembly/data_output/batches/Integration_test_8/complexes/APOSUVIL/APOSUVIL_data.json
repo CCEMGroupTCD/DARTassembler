@@ -1,0 +1,657 @@
+{
+    "complex": {
+        "ligand_props": {
+            "0": {
+                "name": "CSD-OZIYON-02-a",
+                "unique name": "unq_CSD-OZIYON-02-a",
+                "original metal": null,
+                "size": 20,
+                "stoichiometry": "C10H6F2N2",
+                "Metal Spin:": "0"
+            },
+            "1": {
+                "name": "CSD-PABQAL-01-a",
+                "unique name": "unq_CSD-PABQAL-01-a",
+                "original metal": null,
+                "size": 4,
+                "stoichiometry": "Cl3Sn1",
+                "Metal Spin:": "0"
+            },
+            "2": {
+                "name": "CSD-PABQAL-01-a",
+                "unique name": "unq_CSD-PABQAL-01-a",
+                "original metal": null,
+                "size": 4,
+                "stoichiometry": "Cl3Sn1",
+                "Metal Spin:": "0"
+            }
+        },
+        "total_charge": 0,
+        "mol": {
+            "atomic_props": {
+                "x": [
+                    0.0,
+                    4.723182714401348,
+                    4.654593904715234,
+                    1.3208647678698977,
+                    1.3208647678698977,
+                    1.2662579636186477,
+                    0.43198046135723933,
+                    2.3865965023412516,
+                    2.3206769291060465,
+                    3.577641547811164,
+                    3.6784825663554472,
+                    4.510509157377543,
+                    2.5364846689248424,
+                    2.535771668462732,
+                    3.6701936654138376,
+                    4.512322908588484,
+                    3.5483813136359426,
+                    2.3348117443329857,
+                    2.2569286809639664,
+                    1.2258403271598681,
+                    0.3833975914306492,
+                    -3.379892415293355,
+                    -1.810193359837561,
+                    -3.2751158976059873,
+                    -1.2317679558457895,
+                    -1.1638899269383096,
+                    -1.8101933598375612,
+                    -3.5565729125096794,
+                    -3.1663134292971433
+                ],
+                "y": [
+                    0.0,
+                    -3.573414071543275,
+                    3.61516825655025,
+                    -1.323713059918954,
+                    1.323713059918954,
+                    -2.639983362567986,
+                    -3.044367591452737,
+                    -3.441662043644815,
+                    -4.367773447331545,
+                    -2.8274565827953326,
+                    -1.4665054034587026,
+                    -1.0576396935191639,
+                    -0.7161215286778524,
+                    0.7226258121670018,
+                    1.5065709558853362,
+                    1.1145490776455222,
+                    2.8566443170331204,
+                    3.451803603327564,
+                    4.377607780310628,
+                    2.6544162450245308,
+                    3.0481388846061837,
+                    1.8315377141597176,
+                    1.810193359837561,
+                    1.948017376785594,
+                    4.10722117779982,
+                    -4.047540202514764,
+                    -1.810193359837561,
+                    -1.6665603618819018,
+                    -2.172675704348466
+                ],
+                "z": [
+                    0.0,
+                    0.052260109134861295,
+                    -0.08831740474020588,
+                    1.6210809618192955e-16,
+                    -1.6210809618192955e-16,
+                    -0.08688139785757712,
+                    -0.15449932927934867,
+                    -0.08203671419114535,
+                    -0.13880208942887934,
+                    0.006331897455169328,
+                    0.08413823679319718,
+                    0.14612947059128997,
+                    0.07065555408670283,
+                    0.03221806142391281,
+                    0.023325116245248998,
+                    0.07001381692799591,
+                    -0.05646467303549857,
+                    -0.09059082721904615,
+                    -0.1393971210854105,
+                    -0.05166748317483821,
+                    -0.06383547799463324,
+                    -1.7557662440768596,
+                    8.425449591418785e-17,
+                    1.8252292236019085,
+                    -0.06946297952504893,
+                    0.3517055418741619,
+                    1.2822894560154351e-17,
+                    1.557556817553377,
+                    -1.9092623594275384
+                ],
+                "atoms": [
+                    "Fe",
+                    "F",
+                    "F",
+                    "N",
+                    "N",
+                    "C",
+                    "H",
+                    "C",
+                    "H",
+                    "C",
+                    "C",
+                    "H",
+                    "C",
+                    "C",
+                    "C",
+                    "H",
+                    "C",
+                    "C",
+                    "H",
+                    "C",
+                    "H",
+                    "Cl",
+                    "Sn",
+                    "Cl",
+                    "Cl",
+                    "Cl",
+                    "Sn",
+                    "Cl",
+                    "Cl"
+                ]
+            },
+            "global_props": {
+                "n_atoms": 29,
+                "n_elements": 7,
+                "molecular_weight": 698.133806326,
+                "n_C_H_bonds": 6
+            },
+            "graph_dict": {
+                "graph": {
+                    "0": {
+                        "3": {},
+                        "4": {},
+                        "22": {},
+                        "26": {}
+                    },
+                    "1": {
+                        "9": {}
+                    },
+                    "2": {
+                        "16": {}
+                    },
+                    "3": {
+                        "0": {},
+                        "5": {},
+                        "12": {}
+                    },
+                    "4": {
+                        "0": {},
+                        "13": {},
+                        "19": {}
+                    },
+                    "5": {
+                        "3": {},
+                        "6": {},
+                        "7": {}
+                    },
+                    "6": {
+                        "5": {}
+                    },
+                    "7": {
+                        "5": {},
+                        "8": {},
+                        "9": {}
+                    },
+                    "8": {
+                        "7": {}
+                    },
+                    "9": {
+                        "1": {},
+                        "7": {},
+                        "10": {}
+                    },
+                    "10": {
+                        "9": {},
+                        "11": {},
+                        "12": {}
+                    },
+                    "11": {
+                        "10": {}
+                    },
+                    "12": {
+                        "3": {},
+                        "10": {},
+                        "13": {}
+                    },
+                    "13": {
+                        "4": {},
+                        "12": {},
+                        "14": {}
+                    },
+                    "14": {
+                        "13": {},
+                        "15": {},
+                        "16": {}
+                    },
+                    "15": {
+                        "14": {}
+                    },
+                    "16": {
+                        "2": {},
+                        "14": {},
+                        "17": {}
+                    },
+                    "17": {
+                        "16": {},
+                        "18": {},
+                        "19": {}
+                    },
+                    "18": {
+                        "17": {}
+                    },
+                    "19": {
+                        "4": {},
+                        "17": {},
+                        "20": {}
+                    },
+                    "20": {
+                        "19": {}
+                    },
+                    "21": {
+                        "22": {}
+                    },
+                    "22": {
+                        "0": {},
+                        "21": {},
+                        "23": {},
+                        "24": {}
+                    },
+                    "23": {
+                        "22": {}
+                    },
+                    "24": {
+                        "22": {}
+                    },
+                    "25": {
+                        "26": {}
+                    },
+                    "26": {
+                        "0": {},
+                        "25": {},
+                        "27": {},
+                        "28": {}
+                    },
+                    "27": {
+                        "26": {}
+                    },
+                    "28": {
+                        "26": {}
+                    }
+                },
+                "node_attributes": {
+                    "0": {
+                        "node_label": "Fe"
+                    },
+                    "1": {
+                        "metal_neighbor": false,
+                        "node_label": "F",
+                        "orig_idx": 1
+                    },
+                    "2": {
+                        "metal_neighbor": false,
+                        "node_label": "F",
+                        "orig_idx": 2
+                    },
+                    "3": {
+                        "metal_neighbor": true,
+                        "node_label": "N",
+                        "orig_idx": 7
+                    },
+                    "4": {
+                        "metal_neighbor": true,
+                        "node_label": "N",
+                        "orig_idx": 8
+                    },
+                    "5": {
+                        "metal_neighbor": false,
+                        "node_label": "C",
+                        "orig_idx": 11
+                    },
+                    "6": {
+                        "metal_neighbor": false,
+                        "node_label": "H",
+                        "orig_idx": 12
+                    },
+                    "7": {
+                        "metal_neighbor": false,
+                        "node_label": "C",
+                        "orig_idx": 13
+                    },
+                    "8": {
+                        "metal_neighbor": false,
+                        "node_label": "H",
+                        "orig_idx": 14
+                    },
+                    "9": {
+                        "metal_neighbor": false,
+                        "node_label": "C",
+                        "orig_idx": 15
+                    },
+                    "10": {
+                        "metal_neighbor": false,
+                        "node_label": "C",
+                        "orig_idx": 16
+                    },
+                    "11": {
+                        "metal_neighbor": false,
+                        "node_label": "H",
+                        "orig_idx": 17
+                    },
+                    "12": {
+                        "metal_neighbor": false,
+                        "node_label": "C",
+                        "orig_idx": 18
+                    },
+                    "13": {
+                        "metal_neighbor": false,
+                        "node_label": "C",
+                        "orig_idx": 19
+                    },
+                    "14": {
+                        "metal_neighbor": false,
+                        "node_label": "C",
+                        "orig_idx": 20
+                    },
+                    "15": {
+                        "metal_neighbor": false,
+                        "node_label": "H",
+                        "orig_idx": 21
+                    },
+                    "16": {
+                        "metal_neighbor": false,
+                        "node_label": "C",
+                        "orig_idx": 22
+                    },
+                    "17": {
+                        "metal_neighbor": false,
+                        "node_label": "C",
+                        "orig_idx": 23
+                    },
+                    "18": {
+                        "metal_neighbor": false,
+                        "node_label": "H",
+                        "orig_idx": 24
+                    },
+                    "19": {
+                        "metal_neighbor": false,
+                        "node_label": "C",
+                        "orig_idx": 25
+                    },
+                    "20": {
+                        "metal_neighbor": false,
+                        "node_label": "H",
+                        "orig_idx": 26
+                    },
+                    "21": {
+                        "metal_neighbor": false,
+                        "node_label": "Cl",
+                        "orig_idx": 0
+                    },
+                    "22": {
+                        "metal_neighbor": true,
+                        "node_label": "Sn",
+                        "orig_idx": 86
+                    },
+                    "23": {
+                        "metal_neighbor": false,
+                        "node_label": "Cl",
+                        "orig_idx": 91
+                    },
+                    "24": {
+                        "metal_neighbor": false,
+                        "node_label": "Cl",
+                        "orig_idx": 92
+                    },
+                    "25": {
+                        "metal_neighbor": false,
+                        "node_label": "Cl",
+                        "orig_idx": 0
+                    },
+                    "26": {
+                        "metal_neighbor": true,
+                        "node_label": "Sn",
+                        "orig_idx": 86
+                    },
+                    "27": {
+                        "metal_neighbor": false,
+                        "node_label": "Cl",
+                        "orig_idx": 91
+                    },
+                    "28": {
+                        "metal_neighbor": false,
+                        "node_label": "Cl",
+                        "orig_idx": 92
+                    }
+                }
+            }
+        },
+        "name": "Fe_CSD-OZIYON-02-a_CSD-PABQAL-01-a_CSD-PABQAL-01-a",
+        "functional_groups": {
+            "0": [
+                "N",
+                "N"
+            ],
+            "1": [
+                "Sn"
+            ],
+            "2": [
+                "Sn"
+            ]
+        },
+        "working_name": "APOSUVIL",
+        "metal": "Fe"
+    },
+    "complex_idx": 31,
+    "xyz_structure": "29\n\nFe  0.0  0.0  0.0 \nF  4.723182714401348  -3.573414071543275  0.052260109134861295 \nF  4.654593904715234  3.61516825655025  -0.08831740474020588 \nN  1.3208647678698977  -1.323713059918954  1.6210809618192955e-16 \nN  1.3208647678698977  1.323713059918954  -1.6210809618192955e-16 \nC  1.2662579636186477  -2.639983362567986  -0.08688139785757712 \nH  0.43198046135723933  -3.044367591452737  -0.15449932927934867 \nC  2.3865965023412516  -3.441662043644815  -0.08203671419114535 \nH  2.3206769291060465  -4.367773447331545  -0.13880208942887934 \nC  3.577641547811164  -2.8274565827953326  0.006331897455169328 \nC  3.6784825663554472  -1.4665054034587026  0.08413823679319718 \nH  4.510509157377543  -1.0576396935191639  0.14612947059128997 \nC  2.5364846689248424  -0.7161215286778524  0.07065555408670283 \nC  2.535771668462732  0.7226258121670018  0.03221806142391281 \nC  3.6701936654138376  1.5065709558853362  0.023325116245248998 \nH  4.512322908588484  1.1145490776455222  0.07001381692799591 \nC  3.5483813136359426  2.8566443170331204  -0.05646467303549857 \nC  2.3348117443329857  3.451803603327564  -0.09059082721904615 \nH  2.2569286809639664  4.377607780310628  -0.1393971210854105 \nC  1.2258403271598681  2.6544162450245308  -0.05166748317483821 \nH  0.3833975914306492  3.0481388846061837  -0.06383547799463324 \nCl  -3.379892415293355  1.8315377141597176  -1.7557662440768596 \nSn  -1.810193359837561  1.810193359837561  8.425449591418785e-17 \nCl  -3.2751158976059873  1.948017376785594  1.8252292236019085 \nCl  -1.2317679558457895  4.10722117779982  -0.06946297952504893 \nCl  -1.1638899269383096  -4.047540202514764  0.3517055418741619 \nSn  -1.8101933598375612  -1.810193359837561  1.2822894560154351e-17 \nCl  -3.5565729125096794  -1.6665603618819018  1.557556817553377 \nCl  -3.1663134292971433  -2.172675704348466  -1.9092623594275384 \n",
+    "assemby_input_path": "/Users/timosommer/PhD/projects/RCA/projects/DART/testing/integration_tests/assembly/data_input/test_assembly_input.yml",
+    "assembly_input_settings": {
+        "verbose": 3,
+        "optimization_movie": true,
+        "concatenate_xyz": true,
+        "overwrite_output_path": true,
+        "Output_Path": "./assembly/data_output",
+        "complex_name_length": 8,
+        "Batches": [
+            {
+                "Input_Path": [
+                    "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                    "./assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines"
+                ],
+                "Isomers": "Generate Lowest Energy",
+                "MAX_num_complexes": 3,
+                "ligand_choice": "random",
+                "Metal": {
+                    "element": "Fe",
+                    "oxidation_state": 2,
+                    "spin": 0
+                },
+                "Name": "Integration_test_7",
+                "Optimisation_Choice": true,
+                "Random_Seed": 0,
+                "Topology": "(2, 1, 1)--(1, 2, 2)",
+                "Total_Charge": -1,
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
+            },
+            {
+                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "Isomers": "Generate Lowest Energy",
+                "MAX_num_complexes": 1,
+                "ligand_choice": "random",
+                "Metal": {
+                    "element": "Fe",
+                    "oxidation_state": 2,
+                    "spin": 0
+                },
+                "Name": "Integration_test_1",
+                "Optimisation_Choice": false,
+                "Random_Seed": 0,
+                "Topology": "(2, 2)",
+                "Total_Charge": 0,
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": "./assembly/data_input/geometry_modifier.xyz",
+                "bidentate_rotator": "horseshoe"
+            },
+            {
+                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "Isomers": "Generate Lowest Energy",
+                "MAX_num_complexes": 1,
+                "ligand_choice": "random",
+                "Metal": {
+                    "element": "Fe",
+                    "oxidation_state": 2,
+                    "spin": 0
+                },
+                "Name": "Integration_test_6",
+                "Optimisation_Choice": false,
+                "Random_Seed": 0,
+                "Topology": "(2, 2)--(1, 1)",
+                "Total_Charge": 0,
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
+            },
+            {
+                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "Isomers": "Generate Lowest Energy",
+                "MAX_num_complexes": 1,
+                "ligand_choice": "random",
+                "Metal": {
+                    "element": "Fe",
+                    "oxidation_state": 2,
+                    "spin": 0
+                },
+                "Name": "Integration_test_2",
+                "Optimisation_Choice": false,
+                "Random_Seed": 0,
+                "Topology": "(2, 1, 1)",
+                "Total_Charge": 0,
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
+            },
+            {
+                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "Isomers": "Generate All",
+                "MAX_num_complexes": 10,
+                "ligand_choice": "random",
+                "Metal": {
+                    "element": "Fe",
+                    "oxidation_state": 2,
+                    "spin": 0
+                },
+                "Name": "Integration_test_3",
+                "Optimisation_Choice": false,
+                "Random_Seed": 0,
+                "Topology": "(3, 2, 1)",
+                "Total_Charge": 0,
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
+            },
+            {
+                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "Isomers": "Generate All",
+                "MAX_num_complexes": 5,
+                "ligand_choice": "random",
+                "Metal": {
+                    "element": "Fe",
+                    "oxidation_state": 4,
+                    "spin": 0
+                },
+                "Name": "Integration_test_4",
+                "Optimisation_Choice": false,
+                "Random_Seed": 0,
+                "Topology": "(4, 1, 1)",
+                "Total_Charge": 0,
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
+            },
+            {
+                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "Isomers": "Generate Lowest Energy",
+                "MAX_num_complexes": 2,
+                "ligand_choice": "random",
+                "Metal": {
+                    "element": "Fe",
+                    "oxidation_state": 2,
+                    "spin": 0
+                },
+                "Name": "Integration_test_5",
+                "Optimisation_Choice": false,
+                "Random_Seed": 23,
+                "Topology": "(5, 1)",
+                "Total_Charge": 0,
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
+            },
+            {
+                "Input_Path": "./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json",
+                "Isomers": "Generate Lowest Energy",
+                "MAX_num_complexes": 10,
+                "ligand_choice": "all",
+                "Metal": {
+                    "element": "Fe",
+                    "oxidation_state": 2,
+                    "spin": 0
+                },
+                "Name": "Integration_test_8",
+                "Optimisation_Choice": false,
+                "Random_Seed": 0,
+                "Topology": "(2, 1, 1)--(1, 2, 2)",
+                "Total_Charge": 0,
+                "complex_name_appendix": null,
+                "geometry_modifier_filepath": null,
+                "bidentate_rotator": "horseshoe"
+            }
+        ]
+    },
+    "batch_idx": 7,
+    "ff_movie": null,
+    "ligand_info": {
+        "Ligand 0": {
+            "Ligand ID": "unq_CSD-OZIYON-02-a",
+            "Stoichiometry": "C10H6F2N2",
+            "Denticity": 2,
+            "Donors": "N-N",
+            "Predicted Charge": 0,
+            "Confident Charge": true,
+            "Graph ID": "9cfe1644c35cf7f9ef3b747b268cd586",
+            "CSD Occurrences": 1,
+            "CSD Metal Count": "Ir(1)",
+            "CSD Complex IDs": "OZIYON"
+        },
+        "Ligand 1": {
+            "Ligand ID": "unq_CSD-PABQAL-01-a",
+            "Stoichiometry": "Cl3Sn1",
+            "Denticity": 1,
+            "Donors": "Sn",
+            "Predicted Charge": -1,
+            "Confident Charge": true,
+            "Graph ID": "17fc683776618ed7dd2270e532126688",
+            "CSD Occurrences": 81,
+            "CSD Metal Count": "Pt(26) - Ru(17) - Pd(7) - Rh(6) - Au(4) - W(4) - Ir(4) - Mo(3) - Os(3) - Fe(3) - Co(2) - Mn(1) - Cr(1)",
+            "CSD Complex IDs": "PABQAL - PILHAT - PILHAT01 - SNISMO - LUXTAZ - BEFXOZ - BENLUB - BENLUB - BENLUB - BENLUB - BENLUB - BULDES - BULDIW - BULDOC - BULDOC - BULDUI - BULDUI - CEJVIY - PUFWET - PUFWET - QAVZOF - QAVZOF - QAWROY - QEWPAK - JUQQUJ - JUWZIM - JUWZIM - JUXXAD - JUXXAD - KAKNAO - KAKNAO - KAKNAO - KAKNAO - KEDBEC - CURVAN - CURVAN - YADNIA - YIQKEQ - YIQKOA - YIQKUG - YOWJID - GEJVEY - GIJMAP - GIJMAP - GIJMET - GIJMET - GIRCEP - GIRCIT - UJEHOH - UZAWOI - VUMVEE - GOZPIU - GOZPIU - HEFKOU - YUMWIM - DIVPEF - DIVPIJ - KOVJOX - ECELIJ - EKAKUX - HUCPIH - IMOKUR - GASHUH - FIPTEF - NBMPIR - NEZNIQ - OFIMIZ - OLAGIT - OLAGIT - OLAGIT - OROXIE - AJIBAW - AJIRES - RIZMIZ - RIZMOF - RODLUR - RUMDIM - SASCEU - SASCIY - SEZQET - SEZQIX"
+        },
+        "Ligand 2": {
+            "Ligand ID": "unq_CSD-PABQAL-01-a",
+            "Stoichiometry": "Cl3Sn1",
+            "Denticity": 1,
+            "Donors": "Sn",
+            "Predicted Charge": -1,
+            "Confident Charge": true,
+            "Graph ID": "17fc683776618ed7dd2270e532126688",
+            "CSD Occurrences": 81,
+            "CSD Metal Count": "Pt(26) - Ru(17) - Pd(7) - Rh(6) - Au(4) - W(4) - Ir(4) - Mo(3) - Os(3) - Fe(3) - Co(2) - Mn(1) - Cr(1)",
+            "CSD Complex IDs": "PABQAL - PILHAT - PILHAT01 - SNISMO - LUXTAZ - BEFXOZ - BENLUB - BENLUB - BENLUB - BENLUB - BENLUB - BULDES - BULDIW - BULDOC - BULDOC - BULDUI - BULDUI - CEJVIY - PUFWET - PUFWET - QAVZOF - QAVZOF - QAWROY - QEWPAK - JUQQUJ - JUWZIM - JUWZIM - JUXXAD - JUXXAD - KAKNAO - KAKNAO - KAKNAO - KAKNAO - KEDBEC - CURVAN - CURVAN - YADNIA - YIQKEQ - YIQKOA - YIQKUG - YOWJID - GEJVEY - GIJMAP - GIJMAP - GIJMET - GIJMET - GIRCEP - GIRCIT - UJEHOH - UZAWOI - VUMVEE - GOZPIU - GOZPIU - HEFKOU - YUMWIM - DIVPEF - DIVPIJ - KOVJOX - ECELIJ - EKAKUX - HUCPIH - IMOKUR - GASHUH - FIPTEF - NBMPIR - NEZNIQ - OFIMIZ - OLAGIT - OLAGIT - OLAGIT - OROXIE - AJIBAW - AJIRES - RIZMIZ - RIZMOF - RODLUR - RUMDIM - SASCEU - SASCIY - SEZQET - SEZQIX"
+        }
+    }
+}

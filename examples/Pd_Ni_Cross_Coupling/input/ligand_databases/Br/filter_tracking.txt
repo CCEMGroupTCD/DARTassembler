@@ -1,0 +1,12 @@
+===================== FILTER TRACKING =====================
+--> Filtered ligand database was saved as '/Users/timosommer/PhD/projects/RCA/projects/DART/examples/Pd_cross_coupling/generate_complexes/ligand_databases/Br/ligand_db_Br.jsonlines'.
+Removed ligands:
+  - denticities_of_interest: 42
+        options --> denticities_of_interest: [1]
+  - stoichiometry: 36
+        options --> stoichiometry: Br1, denticities: None
+
+Number of ligands before filtering: 100
+Number of ligands filtered out: 99
+Number of ligands after filtering: 1
+  --> Remaining ligands: Br1

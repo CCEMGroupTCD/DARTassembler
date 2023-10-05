@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Metal Count,CSD Complex IDs
+Ligand 0,unq_CSD-PEQCUK-02-a,C10H11N2,2,N-N,-1,True,e0bc82f6812aeb4d33c98ebf1dafd4aa,2,Ti(2),PEQCUK - PEQCUK
+Ligand 1,unq_CSD-PEQCUK-02-a,C10H11N2,2,N-N,-1,True,e0bc82f6812aeb4d33c98ebf1dafd4aa,2,Ti(2),PEQCUK - PEQCUK

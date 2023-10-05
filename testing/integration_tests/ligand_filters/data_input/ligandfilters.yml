@@ -1,0 +1,48 @@
+input_ligand_db_path:           # path or nothing
+output_ligand_db_path: './ligand_filters/data_output/filtered_ligand_db_v1.7.json'   # path or nothing
+
+filters:
+  - filter: 'denticities_of_interest'
+    denticities_of_interest: [1, 2, 3, 4, 5]
+
+  - filter: 'remove_ligands_with_neighboring_coordinating_atoms'
+    remove_ligands_with_neighboring_coordinating_atoms: True
+
+  - filter: 'remove_ligands_with_beta_hydrogens'
+    remove_ligands_with_beta_hydrogens: True
+
+  - filter: 'strict_box_filter'
+    strict_box_filter: False
+
+  - filter: 'atom_count'
+    min: 1
+    max: 10
+    denticities: [1]
+
+  - filter: 'ligand_charges'
+    ligand_charges: [0]
+    denticities: [2, 3]
+
+  - filter: 'metals_of_interest'
+    metals_of_interest: ["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
+    denticities: [3]
+
+  - filter: 'coordinating_atoms_composition'
+    atoms_of_interest: ["N", "N", "N"]
+    instruction: "must_contain_and_only_contain"
+    denticities: [3]
+
+  - filter: 'molecular_weight'
+    min: 30.1
+    max: 300.2
+    denticities: [3]
+
+  - filter: 'atom_count'
+    min: 10
+    max: 100
+    denticities: [3]
+
+  - filter: 'molecular_weight'
+    min: 80.1
+    max: 300.2
+    denticities: [4, 5]
