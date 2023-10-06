@@ -283,14 +283,41 @@
         "ligand_props": {
             "0": {
                 "unique_name": "unq_CSD-PACVAU-02-a",
-                "stoichiometry": "C6H3N4O4",
-                "donors": [
+                "ligand_indices_in_complex": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17
+                ],
+                "donor_indices": [
+                    1,
+                    2
+                ],
+                "donor_elements": [
                     "O",
                     "N"
                 ],
+                "donor_bond_lengths": [
+                    2.108551716226092,
+                    2.018239515022933
+                ],
+                "stoichiometry": "C6H3N4O4",
+                "denticity": 2,
                 "pred_charge": -1,
                 "pred_charge_is_confident": true,
-                "denticity": 2,
                 "graph_hash_with_metal": "caef6a6c6e95b06639e903d18881a088",
                 "has_good_bond_orders": true,
                 "warnings": [],
@@ -299,13 +326,22 @@
             },
             "1": {
                 "unique_name": "unq_CSD-OZOCUD-01-a",
-                "stoichiometry": "Cl1",
-                "donors": [
+                "ligand_indices_in_complex": [
+                    18
+                ],
+                "donor_indices": [
+                    18
+                ],
+                "donor_elements": [
                     "Cl"
                 ],
+                "donor_bond_lengths": [
+                    2.327796359220454
+                ],
+                "stoichiometry": "Cl1",
+                "denticity": 1,
                 "pred_charge": -1.0,
                 "pred_charge_is_confident": true,
-                "denticity": 1,
                 "graph_hash_with_metal": "8756e7780cb7e3fab0b8bcb31598a04d",
                 "has_good_bond_orders": true,
                 "warnings": [],
@@ -314,13 +350,22 @@
             },
             "2": {
                 "unique_name": "unq_CSD-OZOCUD-01-a",
-                "stoichiometry": "Cl1",
-                "donors": [
+                "ligand_indices_in_complex": [
+                    19
+                ],
+                "donor_indices": [
+                    19
+                ],
+                "donor_elements": [
                     "Cl"
                 ],
+                "donor_bond_lengths": [
+                    2.327796359220454
+                ],
+                "stoichiometry": "Cl1",
+                "denticity": 1,
                 "pred_charge": -1.0,
                 "pred_charge_is_confident": true,
-                "denticity": 1,
                 "graph_hash_with_metal": "8756e7780cb7e3fab0b8bcb31598a04d",
                 "has_good_bond_orders": true,
                 "warnings": [],

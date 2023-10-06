@@ -6,13 +6,16 @@ import difflib
 import warnings
 from copy import deepcopy
 import ase
+import pandas as pd
 
 from DARTassembler.src.constants.Paths import default_ligand_db_path
 from DARTassembler.src.constants.Periodic_Table import all_atomic_symbols
 from DARTassembler.src.ligand_extraction.composition import Composition
 from pathlib import Path
-from typing import Union, Any
+from typing import Union, Any, Tuple, List, Dict, Optional
 from DARTassembler.src.ligand_extraction.io_custom import read_yaml
+
+allowed_topologies = [(2, 1, 1), (2, 2), (3, 2, 1), (4, 1, 1), (5, 1)]      # list all allowed topologies, others will be rejected
 
 # Define the key names in the assembly input file
 # Global settings
@@ -42,6 +45,8 @@ _geometry_modifier_filepath = 'geometry_modifier_filepath'
 _bidentate_rotator = 'bidentate_rotator'
 # _ligand_filters_path = 'ligand_filters_path'
 _gaussian_path = 'gaussian_input_filepath'
+# Others
+_same_ligand_keyword = 'same_ligand_as_previous'
 
 
 # Define names for the settings in the ligand filters file:
@@ -751,7 +756,7 @@ class AssemblyInput(BaseInput):
             self.check_correct_input_type(input=batch_settings[key], types=types, varname=varname)
 
         # Here we take the batch inputs and format them correctly
-        Ligand_json = self.get_ligand_db_path_from_input(batch_settings[_input_path])
+        Ligand_json, topology_similarity = self.get_ligand_db_path_and_topologies_from_input(batch_settings[_input_path], topology=batch_settings[_topology])
         Max_Num_Assembled_Complexes = self.get_int_from_input(batch_settings[_max_num_complexes], varname=f'{_batches}->{_max_num_complexes}')
         ligand_choice = self.get_ligand_choice_from_input(batch_settings[_ligand_choice], varname=f'{_batches}->{_ligand_choice}')
         Generate_Isomer_Instruction = self.get_isomers_from_input(batch_settings[_isomers])
@@ -759,7 +764,7 @@ class AssemblyInput(BaseInput):
         Random_Seed = self.get_int_from_input(batch_settings[_random_seed], varname=f'{_batches}->{_random_seed}')
         Total_Charge = self.get_int_from_input(batch_settings[_total_charge], varname=f'{_batches}->{_total_charge}')
         metal_list = self.get_metal_from_input(batch_settings[_metal])
-        topology_similarity = self.get_topology_from_input(batch_settings[_topology])
+        # topology_similarity, _ = self.get_topology_from_input(batch_settings[_topology])
         complex_name_appendix = batch_settings[_complex_name_appendix] or ''
         geometry_modifier_filepath = self.get_geometry_modifier_from_input(batch_settings[_geometry_modifier_filepath])
         bidentate_rotator = self.get_bidentate_rotator_from_input(batch_settings[_bidentate_rotator], varname=f'{_batches}->{_bidentate_rotator}')
@@ -816,25 +821,88 @@ class AssemblyInput(BaseInput):
 
         return path
 
-    def get_ligand_db_path_from_input(self, ligand_db_path) -> Union[Path, list]:
+    def get_ligand_db_path_and_topologies_from_input(self, ligand_db_path, topology) -> Tuple[Union[Path, list], str]:
         """
-        Checks the input for the ligand database path.
+        Checks the input for the ligand database path and the topology.
         @param: ligand_db_path: Path to the ligand database. If None, the default ligand database will be used. If a list, must be of same length as the topology.
         """
+        _, topology_list = self.get_topology_from_input(topology)
+        n_ligands = len(topology_list)
+
         varname = f'{_batches}->{_input_path}'
         if ligand_db_path is None or ligand_db_path == '' or ligand_db_path == 'default':
+            # No input given, use default ligand database and all different ligands in similarity list
             print(f"Ligand database path '{varname}' is not specified in batch {self.batch_name} in file '{self.path}'. Using full default ligand database.")
-            ligand_db_path = Path(default_ligand_db_path)
-        else:
-            # Check if the file exists
-            if isinstance(ligand_db_path, str):
-                ligand_db_path = Path(self.ensure_file_present(ligand_db_path, varname=varname))
-            elif isinstance(ligand_db_path, (list, tuple)):
-                ligand_db_path = [Path(self.ensure_file_present(path, varname=varname)) for path in ligand_db_path]
-            else:
-                self.raise_error(f"Input '{varname}' must be a string or a list/tuple of strings, but is {type(ligand_db_path)}.")
+            output_ligand_db_path = Path(default_ligand_db_path)
+            similarity_list = list(range(1, n_ligands + 1))
 
-        return ligand_db_path
+        else:   # input given, check it
+            # Check if the file exists
+            if isinstance(ligand_db_path, str):     # single path is given, take for all ligands
+                output_ligand_db_path = Path(self.ensure_file_present(ligand_db_path, varname=varname))
+                similarity_list = list(range(1, n_ligands + 1))
+
+            elif isinstance(ligand_db_path, (list, tuple)): # list of paths and keywords is given
+                # If the input is a list, it can be a list of either ligand db paths or same_ligand_keywords. Here we map the ligand db input to the historical way, in which we have a similarity list specifying same ligands and the ligand db list has the reduced length of how many different similarities there are.
+
+                if len(ligand_db_path) != n_ligands: # new format: ligand db list must be same length as topology
+                    self.raise_error(f"Inconsistent number of denticities and ligand databases. Input is a list of ligand db paths of length {len(ligand_db_path)} while the number of specified denticities in the topology is {n_ligands}. Please provide input where the number of ligand database paths is the same as the number of denticities in the topology.")
+
+                # Reduce ligand db list to old format, in which there are no keywords and the number of elements is the number of different similarities
+                output_ligand_db_path = [Path(self.ensure_file_present(path, varname=varname)) for path in ligand_db_path if path != _same_ligand_keyword]
+
+                # The first entry cannot be a keyword since the keywords always reference to the previous ligand db path.
+                if ligand_db_path[0] == _same_ligand_keyword:
+                    self.raise_error(f"Invalid first entry '{_same_ligand_keyword}' in ligand database path list. Please provide a list where the first entry is a ligand database path. Only later elements can be this keyword since it always refers to the previous element in the list.")
+
+                # Build the similarity list such that it maps to the historic format, i.e. [1, 2, 2] for one different and two same ligands
+                similarity = 0
+                similarity_list = []
+                for path in  ligand_db_path:
+                    if path != _same_ligand_keyword:
+                        similarity += 1
+                    similarity_list.append(similarity)
+
+        full_topology_str = str(topology_list) + '--' + str(similarity_list)
+        return output_ligand_db_path, full_topology_str
+
+    def get_topology_from_input(self, topology: str) -> tuple[str, list]:
+        """
+        Checks the topology input for correct input.
+        @returns: Tuple(topology, topology_list): A tuple of a string of the format '[3, 2, 1]' for specifying denticities and the same thing as list.
+        """
+        topology = str(topology)
+        error_message = f"Topology '{topology}' is not in the correct format. It must be a list of denticities, e.g. '[3, 2, 1]'."
+        varname = f'{_batches}->{_topology}'
+
+        try:
+            denticities = ast.literal_eval(topology)
+        except (ValueError, SyntaxError):
+            # If the input is weird, then we raise an error
+            self.raise_error(error_message, varname=varname)
+
+        # Check that denticities are either lists or tuples and make them to lists for the rest of the code
+        if not isinstance(denticities, (list, tuple)):
+            self.raise_error(error_message, varname=varname)
+        denticities = list(self.get_list_of_ints_from_input(input=denticities, varname=varname))
+
+        if not any(sorted(denticities) == sorted(top) for top in allowed_topologies):
+            self.raise_error(f"Invalid topology '{topology}'. This topology is not supported. Supported topologies are {allowed_topologies}.", varname=varname)
+
+        # Validity checks
+        # - Check that denticities are positive integers
+        if not all(isinstance(denticity, int) and denticity > 0 for denticity in denticities):
+            self.raise_error(f"Invalid topology '{topology}'. Please provide a list of positive integers.", varname=varname)
+        # - Check that same integers are clustered together in the list.
+        occurrences = pd.value_counts(denticities)
+        for dent, occ in occurrences.items():
+            dent_indices = [i for i, d in enumerate(denticities) if d == dent]
+            min_index, max_index = min(dent_indices), max(dent_indices)
+            if not max_index - min_index + 1 == occ:
+                self.raise_error(f"Invalid topology '{topology}'. Please provide a list of integers where same integers are clustered together. For example, the topology (2, 2, 1) is good, while (2, 1, 2) is bad because not all '2' appear in series.", varname=varname)
+
+        output_topology = str(denticities)
+        return output_topology, denticities
 
     def get_metal_from_input(self, metal: dict):
         """
@@ -867,62 +935,6 @@ class AssemblyInput(BaseInput):
         spin = str(spin)
 
         return [element, oxidation_state, spin]
-
-    def get_topology_from_input(self, topology: str):
-        """
-        Checks the topology input for correct input.
-        @returns: topology: A string of the format '[3, 2, 1]' or '[3, 2, 1]--[3, 2, 1]' for specifying denticities and similarities, respectively.
-        """
-        topology = str(topology)
-        error_message = f"Topology '{topology}' is not in the correct format. It should be of format '(1,1,2,2)' for specifying denticities or of format (1,1,2,2)--(1,1,2,3) for specifying both denticities and similarities."
-        varname = f'{_batches}->{_topology}'
-
-        splits = topology.split('--')
-        if len(splits) == 1:    # only denticities given
-            try:
-                denticities = ast.literal_eval(topology)
-            except (ValueError, SyntaxError):
-                # If the input is not a list of integers, then we raise an error
-                self.raise_error(error_message, varname=varname)
-            similarities = list(range(1, len(denticities) + 1)) # Default similarities are (1, 2, 3, ...) i.e. all are different
-
-        elif len(splits) == 2:      # both denticities and similarities are given
-            try:
-                denticities, similarities = splits[0], splits[1]
-                denticities, similarities = ast.literal_eval(denticities), ast.literal_eval(similarities)
-            except (ValueError, SyntaxError):  # If the input is not a list of integers, then we raise an error
-                self.raise_error(error_message, varname=varname)
-
-        else:        # more than one '--' in the input
-            self.raise_error(error_message, varname=varname)
-
-        # Check that denticities and similarities are either lists or tuples and make them to lists for the rest of the code
-        if not isinstance(denticities, (list, tuple)):
-            self.raise_error(error_message, varname=varname)
-        if not isinstance(similarities, (list ,tuple)):
-            self.raise_error(error_message, varname=varname)
-        denticities, similarities = list(denticities), list(similarities)
-
-        # Check that denticities and similarities have the same length and that they are positive integers
-        if len(denticities) != len(similarities):
-            self.raise_error(f"Topology '{topology}' has different number of denticities and similarities.", varname=varname)
-        if not all(isinstance(denticity, int) and denticity > 0 for denticity in denticities):
-            self.raise_error(f"Topology '{topology}' has denticities that are not positive integers.", varname=varname)
-        if not all(isinstance(similarity, int) and similarity > 0 for similarity in similarities):
-            self.raise_error(f"Topology '{topology}' has similarities that are not positive integers.", varname=varname)
-
-        # Check that similarities have same integers in increasing order
-        if sorted(similarities) != similarities:
-            self.raise_error(f"Similarities '{similarities}' has similarities that are not in increasing order. Please edit the input file so that all integers in the similarity list are in increasing order.", varname=varname)
-
-        # Check that the similarities for different denticities are different
-        for dent, sim in zip(denticities, similarities):
-            other_dent_similarities = [similarity for denticity, similarity in zip(denticities, similarities) if denticity != dent]
-            if sim in other_dent_similarities:
-                self.raise_error(f"Topology '{topology}' has the wrong format. Different denticities have the same similarity, but that is not possible. Please edit the input file so that all denticities have different similarities.", varname=varname)
-
-        output_topology = str(denticities) + '--' + str(similarities)
-        return output_topology
 
     def get_isomers_from_input(self, isomers):
         """

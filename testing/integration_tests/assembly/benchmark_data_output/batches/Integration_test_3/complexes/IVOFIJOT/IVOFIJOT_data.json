@@ -735,15 +735,56 @@
         "ligand_props": {
             "0": {
                 "unique_name": "unq_CSD-PEJJOE-03-a",
-                "stoichiometry": "C15H10N3O1",
-                "donors": [
+                "ligand_indices_in_complex": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
+                    24,
+                    25,
+                    26,
+                    27,
+                    28,
+                    29
+                ],
+                "donor_indices": [
+                    1,
+                    2,
+                    9
+                ],
+                "donor_elements": [
                     "N",
                     "N",
                     "N"
                 ],
+                "donor_bond_lengths": [
+                    2.1574083758064906,
+                    2.0386035710750634,
+                    2.1798181781974386
+                ],
+                "stoichiometry": "C15H10N3O1",
+                "denticity": 3,
                 "pred_charge": -1,
                 "pred_charge_is_confident": true,
-                "denticity": 3,
                 "graph_hash_with_metal": "9b12e1f146fb8ed5f69aa323e0b7b0f1",
                 "has_good_bond_orders": true,
                 "warnings": [],
@@ -752,14 +793,45 @@
             },
             "1": {
                 "unique_name": "unq_CSD-PARRUW-02-a",
-                "stoichiometry": "C5H14N2",
-                "donors": [
+                "ligand_indices_in_complex": [
+                    30,
+                    31,
+                    32,
+                    33,
+                    34,
+                    35,
+                    36,
+                    37,
+                    38,
+                    39,
+                    40,
+                    41,
+                    42,
+                    43,
+                    44,
+                    45,
+                    46,
+                    47,
+                    48,
+                    49,
+                    50
+                ],
+                "donor_indices": [
+                    30,
+                    31
+                ],
+                "donor_elements": [
                     "N",
                     "N"
                 ],
+                "donor_bond_lengths": [
+                    2.1750117103133033,
+                    2.2958662983719234
+                ],
+                "stoichiometry": "C5H14N2",
+                "denticity": 2,
                 "pred_charge": 0,
                 "pred_charge_is_confident": true,
-                "denticity": 2,
                 "graph_hash_with_metal": "19d0c1817e51fcb5ad66476cef3009ea",
                 "has_good_bond_orders": true,
                 "warnings": [],
@@ -768,13 +840,24 @@
             },
             "2": {
                 "unique_name": "unq_CSD-PEDXEB-01-f",
-                "stoichiometry": "H2P1",
-                "donors": [
+                "ligand_indices_in_complex": [
+                    51,
+                    52,
+                    53
+                ],
+                "donor_indices": [
+                    51
+                ],
+                "donor_elements": [
                     "P"
                 ],
+                "donor_bond_lengths": [
+                    2.439452850538415
+                ],
+                "stoichiometry": "H2P1",
+                "denticity": 1,
                 "pred_charge": -1,
                 "pred_charge_is_confident": true,
-                "denticity": 1,
                 "graph_hash_with_metal": "da0a13a38a6b8866c0389fe26e3700b1",
                 "has_good_bond_orders": true,
                 "warnings": [],

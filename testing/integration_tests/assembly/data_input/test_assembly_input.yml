@@ -6,7 +6,7 @@ Output_Path: './assembly/data_output'
 complex_name_length: 8
 
 Batches:
-  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines']
+  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines', 'same_ligand_as_previous']
     Isomers: Generate Lowest Energy
     MAX_num_complexes: 3
     ligand_choice: 'random'
@@ -17,7 +17,7 @@ Batches:
     Name: Integration_test_7
     Optimisation_Choice: true
     Random_Seed: 0
-    Topology: '(2, 1, 1)--(1, 2, 2)'
+    Topology: '(2, 1, 1)'
     Total_Charge: -1
     complex_name_appendix:
     geometry_modifier_filepath:
@@ -44,7 +44,7 @@ Batches:
     gaussian_input_filepath:
 
 
-  - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
+  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', 'same_ligand_as_previous']
     Isomers: Generate Lowest Energy
     MAX_num_complexes: 1
     ligand_choice: 'random'
@@ -55,7 +55,7 @@ Batches:
     Name: Integration_test_6
     Optimisation_Choice: false
     Random_Seed: 0
-    Topology: '(2, 2)--(1, 1)'
+    Topology: '(2, 2)'
     Total_Charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
@@ -138,7 +138,7 @@ Batches:
     bidentate_rotator: 'horseshoe'
     gaussian_input_filepath:
 
-  - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
+  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', 'same_ligand_as_previous']
     Isomers: Generate Lowest Energy
     MAX_num_complexes: 10
     ligand_choice: 'all'
@@ -149,7 +149,7 @@ Batches:
     Name: Integration_test_8
     Optimisation_Choice: False
     Random_Seed: 0
-    Topology: '(2, 1, 1)--(1, 2, 2)'
+    Topology: '(2, 1, 1)'
     Total_Charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
