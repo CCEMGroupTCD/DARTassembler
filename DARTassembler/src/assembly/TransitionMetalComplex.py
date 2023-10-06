@@ -5,7 +5,7 @@ import networkx as nx
 import hashlib
 import numpy as np
 from pathlib import Path
-from typing import Union
+from typing import Union, List, Tuple
 import json
 import re
 
@@ -15,7 +15,7 @@ from DARTassembler.src.constants.Periodic_Table import DART_Element as element
 from DARTassembler.src.ligand_extraction.utilities_Molecule import original_metal_ligand
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Molecule, RCA_Ligand
 from DARTassembler.src.ligand_extraction.utilities_graph import graphs_are_equal, \
-    get_sorted_atoms_and_indices_from_graph
+    get_sorted_atoms_and_indices_from_graph, view_graph
 from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word
 
 atomic_number_Hg = 80
@@ -58,20 +58,20 @@ class TransitionMetalComplex:
         self.spin = spin
 
         self.metal = self.atomic_props["atoms"][self.metal_idx]
-
         self.total_charge = self.charge  # deprecated, use self.charge instead
 
         assert sorted(self.graph.nodes) == list(range(len(self.graph.nodes))), f"The graphs indices are not in order: {list(self.graph.nodes)}"
         graph_elements, indices = atoms, _ = get_sorted_atoms_and_indices_from_graph(self.graph)
         assert graph_elements == self.atomic_props["atoms"]
+        assert nx.is_connected(self.graph), "The graph is not fully connected!"
 
         self.mol = RCA_Molecule.make_from_atomic_properties(
                                                             atomic_props_mol=self.atomic_props,
                                                             global_props_mol={},
                                                             graph=self.graph
-        )
+                                                            )
 
-        self.functional_groups = {key: lig['donors'] for key, lig in ligand_props.items()}
+        self.functional_groups = {key: lig['donor_elements'] for key, lig in ligand_props.items()}
         self.donor_elements = [el for elements in self.functional_groups.values() for el in elements]
 
         self.mol_id = self.create_random_name()
@@ -135,40 +135,51 @@ class TransitionMetalComplex:
         return atomic_props
 
     @staticmethod
-    def merge_graph_from_ligands(ligands, metal):
+    def merge_graph_from_ligands(ligands, metal) -> Tuple[nx.Graph, List, List]:
         """
-        We now have to carefully assemble the graph
+        Merges the graphs from the ligands into one graph. The metal is added as a node with index 0 and connected to the donor atoms of the ligands.
+        :param ligands: dict[RCA_Ligand]
+        :param metal: str
+        :return: Tuple of the merged graph of the complex, the indices of the ligand atoms and the indices of the ligand donor atoms
         """
+        ligand_indices = []
+        ligand_donor_indices = []
+        old_graphs = [deepcopy(lig.graph) for lig in ligands.values()]
 
-        Gs = [deepcopy(lig.graph) for lig in ligands.values()]
-
-        # first thing is that we have to relabel the nodes, so that we have no repititions
-        # otherwise the merging wont work
-        G = nx.Graph()
-        G.add_nodes_from([
-            (0, {"node_label": metal}),
-        ])
-
-        # relabel all graphs
-        i = 1
-        for H in Gs:
-            node_mapping = {node: i + k for k, node in enumerate(H.nodes)}
-            nx.relabel_nodes(H, mapping=node_mapping, copy=False)
-            i += len(H.nodes)
+        # relabel the nodes of the old graphs, otherwise merging won't work
+        i = 1   # start at 1 because 0 is the metal
+        for old_graph in old_graphs:
+            node_mapping = {node: i + k for k, node in enumerate(sorted(old_graph.nodes))}
+            nx.relabel_nodes(old_graph, mapping=node_mapping, copy=False)
+            ligand_indices.append(list(node_mapping.values()))
+            i += len(old_graph.nodes)
 
         # now we create the new graph by merging everything
-        U = nx.Graph()
-        U.add_nodes_from(G.nodes(data=True))
-        for H in Gs:
-            U.add_edges_from(H.edges())
-            U.add_nodes_from(H.nodes(data=True))
+        graph = nx.Graph()
+        graph.add_nodes_from([(0, {"node_label": metal}),])     # add metal node
+        for H in old_graphs:
+            graph.add_nodes_from(H.nodes(data=True))            # add ligand nodes
+            graph.add_edges_from(H.edges())                     # add ligand edges
 
-        # finally we have to bring in the new edges
-        for Gr, lig in zip(Gs, ligands.values()):
+        # Add bonds to metal
+        for old_graph, lig in zip(old_graphs, ligands.values()):
+            ligand_donor_indices.append([])
             for i in lig.ligand_to_metal:
-                U.add_edge(0, sorted(Gr.nodes)[i])
+                assert lig.atomic_props['atoms'][i] in lig.local_elements, f"Atom {lig.atomic_props['atoms'][i]} is not a donor atom of ligand {lig.name}!"
+                donor_idx = sorted(old_graph.nodes)[i]  # The index in ligand_to_metal is the index of the donor in the atomic_properties, so taking the ith node of the sorted graph node gives the donor index.
+                graph.add_edge(0, donor_idx)
+                ligand_donor_indices[-1].append(donor_idx)
 
-        return U
+        # Check if everything is valid
+        all_donor_elements = [el for lig in ligands.values() for el in lig.local_elements]
+        coordinated_elements = [graph.nodes[node]['node_label'] for node in nx.all_neighbors(graph, 0)]
+        assert sorted(all_donor_elements) == sorted(coordinated_elements), f"Coordinated elements {coordinated_elements} do not match donor elements {all_donor_elements}!"
+        assert nx.is_connected(graph), "The graph is not fully connected!"
+        assert all([set(ligand_donor_indices[i]).issubset(set(ligand_indices[i])) for i in range(len(ligand_indices))]), "The ligand donor indices are not subset of the ligand indices!"
+        assert sorted(graph.nodes) == list(range(len(graph.nodes))), f"The graphs indices are not in order: {list(graph.nodes)}"
+        assert sorted(nx.all_neighbors(graph, 0)) == sorted(i for lig in ligand_donor_indices for i in lig), "The metal is not connected to all donor atoms!"
+
+        return graph, ligand_indices, ligand_donor_indices
 
     def create_random_name(self, length=8, decimals=6):
         """
@@ -229,20 +240,29 @@ class TransitionMetalComplex:
         :param metal_charge: int
         """
         atomic_props = cls.stk_Constructed_Mol_to_atomic_props(compl)
+        graph, ligand_indices, ligand_donor_indices = cls.merge_graph_from_ligands(ligands, metal)
+        charge = cls.get_total_charge(metal_charge, ligands)
+
         ligand_props = {
             key: {
-                "unique name": ligand.unique_name if hasattr(ligand, "unique_name") else None,
-                "original metal": original_metal_ligand(ligand),
-                "n_atoms": len(ligand.atomic_props["x"]),
+                "unique_name": ligand.unique_name,
+                'ligand_indices_in_complex': ligand_indices[key],
+                'donor_indices': ligand_donor_indices[key],
+                'donor_elements': ligand.local_elements,
+                'donor_bond_lengths': ligand.stats['coordinating_atom_distances_to_metal'],
                 "stoichiometry": ligand.stoichiometry,
-                'donors': ligand.local_elements,
+                'denticity': ligand.denticity,
+                'pred_charge': ligand.pred_charge,
+                'pred_charge_is_confident': ligand.pred_charge_is_confident,
+                'graph_hash_with_metal': ligand.graph_hash_with_metal,
+                'has_good_bond_orders': ligand.has_good_bond_orders,
+                'warnings': ligand.warnings,
+                'occurrences': ligand.occurrences,
+                "n_atoms": ligand.n_atoms,
             }
             for key, ligand in ligands.items()
         }
 
-        charge = cls.get_total_charge(metal_charge, ligands)
-
-        graph = cls.merge_graph_from_ligands(ligands, metal)
 
         complex = cls(
             atomic_props=atomic_props,

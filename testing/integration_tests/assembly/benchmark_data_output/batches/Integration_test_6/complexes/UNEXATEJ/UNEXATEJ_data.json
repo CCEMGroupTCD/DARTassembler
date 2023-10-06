@@ -669,24 +669,36 @@
         },
         "ligand_props": {
             "0": {
-                "unique name": "unq_CSD-PASQOS-02-a",
-                "original metal": null,
-                "n_atoms": 24,
+                "unique_name": "unq_CSD-PASQOS-02-a",
                 "stoichiometry": "C10H9N2O2S1",
                 "donors": [
                     "N",
                     "N"
-                ]
+                ],
+                "pred_charge": -1,
+                "pred_charge_is_confident": true,
+                "denticity": 2,
+                "graph_hash_with_metal": "bb8450165025fe9bde2716e4e5a5b99d",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 1,
+                "n_atoms": 24
             },
             "1": {
-                "unique name": "unq_CSD-PASQOS-02-a",
-                "original metal": null,
-                "n_atoms": 24,
+                "unique_name": "unq_CSD-PASQOS-02-a",
                 "stoichiometry": "C10H9N2O2S1",
                 "donors": [
                     "N",
                     "N"
-                ]
+                ],
+                "pred_charge": -1,
+                "pred_charge_is_confident": true,
+                "denticity": 2,
+                "graph_hash_with_metal": "bb8450165025fe9bde2716e4e5a5b99d",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 1,
+                "n_atoms": 24
             }
         },
         "metal_oxi_state": 2,

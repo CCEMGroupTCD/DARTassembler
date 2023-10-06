@@ -41,6 +41,7 @@ class Generate_Gaussian_input_file:
         self.spacer_message = str(config_data["spacer_message"])  # f"This Gaussian Input files was generated using the exceptionally Brilliant DART program"
         self.basis_sets_dict = config_data["basis_sets"]
         self.basis_set_seperator = "\n****\n"
+        self.all_elements = [self.metal] + list(pd.unique([el for lig in self.ligands.values() for el in lig.atomic_props['atoms']]))  # list of all elements in the complex
 
         #
         #
@@ -89,9 +90,8 @@ class Generate_Gaussian_input_file:
         return "\n" + str(coordinates) + "\n"
 
     def _gen_basi_sets(self):
-        reduced_atom_list = [self.metal] + list(pd.unique([el for lig in self.ligands.values() for el in lig.atomic_props['atoms']]))
         basis_set_string = ""
-        for atom in reduced_atom_list:
+        for atom in self.all_elements:
             try:
                 basis_set_string_tmp = str(self.basis_sets_dict[str(atom)])
             except KeyError:

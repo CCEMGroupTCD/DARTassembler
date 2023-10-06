@@ -1256,9 +1256,7 @@
         },
         "ligand_props": {
             "0": {
-                "unique name": "unq_CSD-PEKYUC-05-a",
-                "original metal": null,
-                "n_atoms": 87,
+                "unique_name": "unq_CSD-PEKYUC-05-a",
                 "stoichiometry": "C35H47N1S4",
                 "donors": [
                     "S",
@@ -1266,16 +1264,30 @@
                     "S",
                     "S",
                     "N"
-                ]
+                ],
+                "pred_charge": -2,
+                "pred_charge_is_confident": true,
+                "denticity": 5,
+                "graph_hash_with_metal": "a7bea4441a506d29047a463cda43ea8b",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 8,
+                "n_atoms": 87
             },
             "1": {
-                "unique name": "unq_CSD-PEKZEN-01-a",
-                "original metal": null,
-                "n_atoms": 6,
+                "unique_name": "unq_CSD-PEKZEN-01-a",
                 "stoichiometry": "H4N2",
                 "donors": [
                     "N"
-                ]
+                ],
+                "pred_charge": 0,
+                "pred_charge_is_confident": true,
+                "denticity": 1,
+                "graph_hash_with_metal": "ec9de9be3da64220d8d2ff10d584c01f",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 41,
+                "n_atoms": 6
             }
         },
         "metal_oxi_state": 2,

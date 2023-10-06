@@ -792,9 +792,7 @@
         },
         "ligand_props": {
             "0": {
-                "unique name": "unq_CSD-PASREH-05-a",
-                "original metal": null,
-                "n_atoms": 49,
+                "unique_name": "unq_CSD-PASREH-05-a",
                 "stoichiometry": "C23H21N5",
                 "donors": [
                     "N",
@@ -802,16 +800,30 @@
                     "N",
                     "N",
                     "N"
-                ]
+                ],
+                "pred_charge": 0,
+                "pred_charge_is_confident": true,
+                "denticity": 5,
+                "graph_hash_with_metal": "9614fcac9ff6d1b7c25c5105e3cc882a",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 20,
+                "n_atoms": 49
             },
             "1": {
-                "unique name": "unq_CSD-PAHWIF-01-a",
-                "original metal": null,
-                "n_atoms": 8,
+                "unique_name": "unq_CSD-PAHWIF-01-a",
                 "stoichiometry": "C4O4",
                 "donors": [
                     "O"
-                ]
+                ],
+                "pred_charge": -2,
+                "pred_charge_is_confident": true,
+                "denticity": 1,
+                "graph_hash_with_metal": "7b182d14e6b499355fa496a4dd288d16",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 11,
+                "n_atoms": 8
             }
         },
         "metal_oxi_state": 2,

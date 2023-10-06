@@ -429,32 +429,106 @@
         },
         "ligand_props": {
             "0": {
-                "unique name": "unq_CSD-OZIYON-02-a",
-                "original metal": null,
-                "n_atoms": 20,
-                "stoichiometry": "C10H6F2N2",
-                "donors": [
+                "unique_name": "unq_CSD-OZIYON-02-a",
+                "ligand_indices_in_complex": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20
+                ],
+                "donor_indices": [
+                    3,
+                    4
+                ],
+                "donor_elements": [
                     "N",
                     "N"
-                ]
+                ],
+                "donor_bond_lengths": [
+                    2.1315960991707597,
+                    2.150892472905143
+                ],
+                "stoichiometry": "C10H6F2N2",
+                "denticity": 2,
+                "pred_charge": 0,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "9cfe1644c35cf7f9ef3b747b268cd586",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 1,
+                "n_atoms": 20
             },
             "1": {
-                "unique name": "unq_CSD-OZUTEL-01-a",
-                "original metal": null,
-                "n_atoms": 5,
-                "stoichiometry": "C1H3O1",
-                "donors": [
+                "unique_name": "unq_CSD-OZUTEL-01-a",
+                "ligand_indices_in_complex": [
+                    21,
+                    22,
+                    23,
+                    24,
+                    25
+                ],
+                "donor_indices": [
+                    21
+                ],
+                "donor_elements": [
                     "O"
-                ]
+                ],
+                "donor_bond_lengths": [
+                    1.8282635614155838
+                ],
+                "stoichiometry": "C1H3O1",
+                "denticity": 1,
+                "pred_charge": -1,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "ef776a7fbd2f0e4398d061c40124c4c3",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 548,
+                "n_atoms": 5
             },
             "2": {
-                "unique name": "unq_CSD-OZUTEL-01-a",
-                "original metal": null,
-                "n_atoms": 5,
-                "stoichiometry": "C1H3O1",
-                "donors": [
+                "unique_name": "unq_CSD-OZUTEL-01-a",
+                "ligand_indices_in_complex": [
+                    26,
+                    27,
+                    28,
+                    29,
+                    30
+                ],
+                "donor_indices": [
+                    26
+                ],
+                "donor_elements": [
                     "O"
-                ]
+                ],
+                "donor_bond_lengths": [
+                    1.8282635614155838
+                ],
+                "stoichiometry": "C1H3O1",
+                "denticity": 1,
+                "pred_charge": -1,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "ef776a7fbd2f0e4398d061c40124c4c3",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 548,
+                "n_atoms": 5
             }
         },
         "metal_oxi_state": 2,

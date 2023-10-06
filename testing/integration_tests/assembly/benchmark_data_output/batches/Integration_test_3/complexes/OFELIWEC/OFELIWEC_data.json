@@ -1210,34 +1210,52 @@
         },
         "ligand_props": {
             "0": {
-                "unique name": "unq_CSD-PAMYIO-03-a",
-                "original metal": null,
-                "n_atoms": 45,
+                "unique_name": "unq_CSD-PAMYIO-03-a",
                 "stoichiometry": "C24H18N1P1S1",
                 "donors": [
                     "S",
                     "N",
                     "C"
-                ]
+                ],
+                "pred_charge": -2,
+                "pred_charge_is_confident": true,
+                "denticity": 3,
+                "graph_hash_with_metal": "61134593d28f4d48f34e91c24a7e1fa4",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 1,
+                "n_atoms": 45
             },
             "1": {
-                "unique name": "unq_CSD-PAXMEH-02-a",
-                "original metal": null,
-                "n_atoms": 38,
+                "unique_name": "unq_CSD-PAXMEH-02-a",
                 "stoichiometry": "C19H17P1S1",
                 "donors": [
                     "P",
                     "S"
-                ]
+                ],
+                "pred_charge": 0,
+                "pred_charge_is_confident": true,
+                "denticity": 2,
+                "graph_hash_with_metal": "e348ffda7a33af076004d5c8014c8fe6",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 17,
+                "n_atoms": 38
             },
             "2": {
-                "unique name": "unq_CSD-PAFCIJ-01-b",
-                "original metal": null,
-                "n_atoms": 6,
+                "unique_name": "unq_CSD-PAFCIJ-01-b",
                 "stoichiometry": "C2H3N1",
                 "donors": [
                     "N"
-                ]
+                ],
+                "pred_charge": 0,
+                "pred_charge_is_confident": true,
+                "denticity": 1,
+                "graph_hash_with_metal": "2d7dc351d5610f51ec03c0d8c43d387b",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 4934,
+                "n_atoms": 6
             }
         },
         "metal_oxi_state": 2,
