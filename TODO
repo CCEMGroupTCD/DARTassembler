@@ -3,9 +3,11 @@ TODO:
 
 Must:
 - paths:
-    - change default paths in Paths.py
+    - check default paths in Paths.py
 - work on example
 - work on documentation
+- assembly:
+    - fix that hydrides can't be assembled
 
 Should:
 - ligand filtering
@@ -24,8 +26,7 @@ input:
     - write input class for gaussian input file, especially make sure that there is an 'others' specified in the basis sets
     - make sure in input that the indentation is fixed in the yaml file
     - Remove spin from metal input and add it to gaussian module?
-- assembly:
-    - fix that hydrides can't be assembled
+
 
 
 
