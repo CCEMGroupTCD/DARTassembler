@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZIYON-02-a,C10H6F2N2,2,N-N,0,True,9cfe1644c35cf7f9ef3b747b268cd586,1,OZIYON,Ir(1)
+Ligand 1,unq_CSD-OZUTEL-01-a,C1H3O1,1,O,-1,True,ef776a7fbd2f0e4398d061c40124c4c3,548,"OZUTEL, OZUTEL, PADQOC, PAFFEI, PANZAH, ... (543 more)","V(160), Re(40), Fe(36), Mn(30), Mo(29), ... (36 more)"
+Ligand 2,unq_CSD-OZUTEL-01-a,C1H3O1,1,O,-1,True,ef776a7fbd2f0e4398d061c40124c4c3,548,"OZUTEL, OZUTEL, PADQOC, PAFFEI, PANZAH, ... (543 more)","V(160), Re(40), Fe(36), Mn(30), Mo(29), ... (36 more)"

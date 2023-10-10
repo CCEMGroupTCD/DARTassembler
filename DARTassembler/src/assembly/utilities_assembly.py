@@ -1,7 +1,7 @@
 import stk
 import os
 import random
-
+import hashlib
 def visualize(input_complex):
     # This method allows to visualize in a blocking way during debug but is not essential at all
     print("initializing visualization")
@@ -25,6 +25,9 @@ def generate_pronounceable_word(length=5, seed=None, start_with_vowel=None) -> s
     Returns:
     str: The generated word, in uppercase.
     """
+    if not isinstance(seed, int):
+        seed = int(hashlib.md5(str(seed).encode(encoding='UTF-8', errors='strict')).hexdigest(), 16)
+
     # Create a new random number generator and seed it if a seed is provided
     rng = random.Random(seed)
 

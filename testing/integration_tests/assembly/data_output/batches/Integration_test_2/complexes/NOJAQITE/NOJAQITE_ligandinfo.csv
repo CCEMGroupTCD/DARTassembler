@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PASZUH-02-a,C23H27N3O2,2,N-N,0,True,9a9e9fe986e1f1d41ea3c4d52d48c8d3,1,PASZUH,Pt(1)
+Ligand 1,unq_CSD-PATBAP-01-d,B1F4,1,F,-1,True,dba403cf0f3e4c46e54b981deac001d2,154,"PATBAP, PEQXAL, PEQXAL, PIJPAB, PIKLAX, ... (149 more)","Cu(103), Co(9), Rh(8), Pd(5), Fe(4), ... (11 more)"
+Ligand 2,unq_CSD-PAGFIQ-01-b,F1,1,F,-1,True,863df8eac131c790b7c49ff759330253,2046,"PAGFIQ, PAGGAJ, PAGGAJ, PAGGEN, PAGGOX, ... (2041 more)","Ta(337), Ti(247), W(225), Nb(172), V(98), ... (33 more)"

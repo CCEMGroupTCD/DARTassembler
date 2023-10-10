@@ -23,6 +23,9 @@ from DARTassembler.src.assembly.Assembly_Output import AssemblyOutput, BatchAsse
 import ase
 from copy import deepcopy
 import numpy as np
+
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
+
 warnings.simplefilter("always")
 
 
@@ -45,12 +48,13 @@ class DARTAssembly(object):
         self.concatenate_xyz = self.settings.concatenate_xyz
         self.output_path = self.settings.Output_Path
         self.complex_name_length = self.settings.complex_name_length
+        self.overwrite_existing_output = self.settings.overwrite_output_path
         self.batches = self.settings.Batches
 
         self.df_info = None
-        self.gbl_outcontrol = AssemblyOutput(outdir=self.output_path, ensure_empty_output_dir=True)
+        self.gbl_outcontrol = AssemblyOutput(outdir=self.output_path, ensure_empty_output_dir=self.overwrite_existing_output)
 
-        # initialize some nescessary variables
+        # initialize some necessary variables
         self.random_seed = None
         self.topology_similarity = None
         self.metal_list = None
@@ -404,11 +408,14 @@ class DARTAssembly(object):
         ligand_charges = tuple(ligand.pred_charge for ligand in ligands.values())
         topology = f'({self.topology_similarity.split("--")[0].strip("[]")})'
         similarity = f'({self.topology_similarity.split("--")[1].strip("[]")})'
+        atoms = [self.metal_type] + [atom for ligand in ligands.values() for atom in ligand.atomic_props['atoms']]
+        stoichiometry = get_standardized_stoichiometry_from_atoms_list(atoms)
 
         data = {
             "success": success,
             "complex idx": complex_idx,
             'complex name': complex_name,
+            "stoichiometry": stoichiometry,
             "note": reason,
             "ligand names": ligand_names,
             "ligand stoichiometries": ligand_stoichiometries,

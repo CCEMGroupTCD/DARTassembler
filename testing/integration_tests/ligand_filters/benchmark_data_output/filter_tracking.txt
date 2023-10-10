@@ -1,29 +1,37 @@
 ===================== FILTER TRACKING =====================
 --> Filtered ligand database was saved as '/Users/timosommer/PhD/projects/RCA/projects/DART/testing/integration_tests/ligand_filters/data_output/filtered_ligand_db_v1.7.json'.
 Removed ligands:
-  - denticities_of_interest: 69
+  - denticities_of_interest: 100
         options --> denticities_of_interest: [1, 2, 3, 4, 5]
-  - remove_ligands_with_neighboring_coordinating_atoms: 63
+  - remove_ligands_with_neighboring_coordinating_atoms: 97
         options --> remove_ligands_with_neighboring_coordinating_atoms: True
-  - remove_ligands_with_beta_hydrogens: 1122
+  - remove_ligands_with_beta_hydrogens: 1687
         options --> remove_ligands_with_beta_hydrogens: True
   - strict_box_filter: 0
         options --> strict_box_filter: False
-  - atom_count: 257
+  - atom_count: 385
         options --> min: 1.0, max: 15.0, denticities: [1]
-  - ligand_charges: 59
+  - ligand_charges: 92
         options --> ligand_charges: [-1, 0], denticities: [2, 3]
-  - metals_of_interest: 89
+  - metals_of_interest: 138
         options --> metals_of_interest: ['Fe', 'Mn', 'Cr', 'Ru', 'Co', 'Ni', 'Cu', 'Ir', 'Mo'], denticities: None
-  - coordinating_atoms_composition: 14
+  - coordinating_atoms_composition: 20
         options --> atoms_of_interest: ['N', 'N', 'N'], instruction: must_contain_and_only_contain, denticities: [3]
-  - molecular_weight: 16
+  - molecular_weight: 21
         options --> min: 30.1, max: 300.2, denticities: [3]
   - atom_count: 0
         options --> min: 10.0, max: 100.0, denticities: [3]
-  - molecular_weight: 136
+  - molecular_weight: 203
         options --> min: 10.1, max: 300.2, denticities: None
+  - interatomic_distances: 0
+        options --> min: 0.5, max: 40.0, denticities: [3]
+  - planarity: 30
+        options --> min: 0.2, max: 1.0, denticities: [1]
+  - occurrences: 1
+        options --> min: 3.0, max: None, denticities: [4]
+  - metal_donor_bond_lengths: 10
+        options --> min: 1.0, max: 2.5, denticities: [2]
 
 Number of ligands before filtering: 3000
-Number of ligands filtered out: 2818
-Number of ligands after filtering: 182
+Number of ligands filtered out: 2784
+Number of ligands after filtering: 216

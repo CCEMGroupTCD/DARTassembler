@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZIYON-02-a,C10H6F2N2,2,N-N,0,True,9cfe1644c35cf7f9ef3b747b268cd586,1,OZIYON,Ir(1)
+Ligand 1,unq_CSD-OZOJUJ-01-b,C1H3,1,C,-1,True,a2b7bbb6ca4ce36dc3147760335e7374,4034,"OZOJUJ, OZOKAQ, OZOKIY, OZOZIN, OZOZOT, ... (4029 more)","Pt(1514), Pd(765), Ni(198), Co(160), Ti(146), ... (32 more)"
+Ligand 2,unq_CSD-OZOJUJ-01-b,C1H3,1,C,-1,True,a2b7bbb6ca4ce36dc3147760335e7374,4034,"OZOJUJ, OZOKAQ, OZOKIY, OZOZIN, OZOZOT, ... (4029 more)","Pt(1514), Pd(765), Ni(198), Co(160), Ti(146), ... (32 more)"

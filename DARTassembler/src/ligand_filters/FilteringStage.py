@@ -233,29 +233,50 @@ class FilterStage:
         self.filter_tracking[len(self.filter_tracking)] = f"Neighbouring Atom Filter: {0.2}"
         # print("finished")
 
-    def filter_molecular_weight(self, atomic_weight_min: float = None, atomic_weight_max: float = None, denticity: int = None):
+    def filter_min_max_value(self, get_value_from_ligand, min: float = None, max: float = None, denticities: list = None):
         to_delete = []
-        denticity = self.ensure_denticities_is_list(denticity)
+        denticities = self.ensure_denticities_is_list(denticities)
 
         # If the user doesn't specify min or max this is set to infinity or -infinity respectively to be ignored
-        if atomic_weight_min is None:
-            atomic_weight_min = -np.nan
-        if atomic_weight_max is None:
-            atomic_weight_max = np.nan
+        if min is None or np.isnan(min):
+            min = -np.inf
+        if max is None or np.isnan(max):
+            max = np.inf
 
         for unq_name, ligand in self.database.db.items():
-            if ligand.denticity not in denticity:
+            if ligand.denticity not in denticities:
                 continue
-            # print(unq_name)
-            molecular_range_condition_satisified = False
-            mw = ligand.global_props["molecular_weight"]
-            # print(MW)
-            if not (atomic_weight_min <= mw < atomic_weight_max):
-                to_delete.append(unq_name)
-                # print("Molecular Weight Fail")
-            # print("\n")
-        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
-        self.filter_tracking[len(self.filter_tracking)] = f"Molecular Weight Filter with MW_MIN_{atomic_weight_min} and MW_MAX_{atomic_weight_max}"
+
+            value = get_value_from_ligand(ligand)
+            try:
+                if not (min <= value < max):    # todo: include right boundary
+                    to_delete.append(unq_name)
+            except TypeError:
+                if not all(min <= v < max for v in value): # todo: include right boundary
+                    to_delete.append(unq_name)
+
+        for unq_name in to_delete:
+            del self.database.db[unq_name]
+
+    def filter_occurrences(self, min: int = None, max: int = None, denticities: list = None):
+        self.filter_min_max_value(lambda ligand: ligand.occurrences, min, max, denticities)
+
+    def filter_atom_count(self, min: int = None, max: int = None, denticities: list = None):
+        self.filter_min_max_value(lambda ligand: ligand.n_atoms, min, max, denticities)
+
+    def filter_molecular_weight(self, min: float = None, max: float = None, denticities: list = None):
+        self.filter_min_max_value(lambda ligand: ligand.global_props['molecular_weight'], min, max, denticities)
+
+    def filter_planarity(self, min: float = None, max: float = None, denticities: list = None):
+        self.filter_min_max_value(lambda ligand: ligand.calculate_planarity(), min, max, denticities)
+
+    def filter_metal_donor_bond_lengths(self, min: float = None, max: float = None, denticities: list = None):
+        self.filter_min_max_value(lambda ligand: list(ligand.stats['coordinating_atom_distances_to_metal']), min, max, denticities)
+
+    def filter_interatomic_distances(self, min: float = None, max: float = None, denticities: list = None):
+        self.filter_min_max_value(lambda ligand: ligand.get_all_inter_atomic_distances_as_list(), min, max, denticities)
+
+
 
     def filter_charge_confidence(self, filter_for: str):
         """
@@ -441,24 +462,24 @@ class FilterStage:
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"monodentate_filter: {threshold}"
 
-    def filter_atom_count(self, number: int, instruction: str, denticity: list=None):
-        denticity = self.ensure_denticities_is_list(denticity)
-
-        to_delete = []
-        if (instruction != "greater_than") and (instruction != "less_than"):
-            print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
-
-        else:
-            for unq_name, ligand in self.database.db.items():
-                num_atoms = ligand.global_props['n_atoms']
-                if ligand.denticity in denticity:
-                    if (num_atoms < number) and (instruction == "greater_than"):
-                        to_delete.append(unq_name)
-                    elif (num_atoms >= number) and (instruction == "less_than"):
-                        to_delete.append(unq_name)
-
-        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
-        self.filter_tracking[len(self.filter_tracking)] = f"Atom Number Filter: [{number}] [{instruction}]"
+    # def filter_atom_count(self, number: int, instruction: str, denticity: list=None):
+    #     denticity = self.ensure_denticities_is_list(denticity)
+    #
+    #     to_delete = []
+    #     if (instruction != "greater_than") and (instruction != "less_than"):
+    #         print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
+    #
+    #     else:
+    #         for unq_name, ligand in self.database.db.items():
+    #             num_atoms = ligand.global_props['n_atoms']
+    #             if ligand.denticity in denticity:
+    #                 if (num_atoms < number) and (instruction == "greater_than"):
+    #                     to_delete.append(unq_name)
+    #                 elif (num_atoms >= number) and (instruction == "less_than"):
+    #                     to_delete.append(unq_name)
+    #
+    #     self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+    #     self.filter_tracking[len(self.filter_tracking)] = f"Atom Number Filter: [{number}] [{instruction}]"
 
     def ensure_denticities_is_list(self, denticities):
         if isinstance(denticities, int):

@@ -178,13 +178,6 @@ if __name__ == "__main__":
 
     print(f"After symmetric filter: {len(Filter.database.db)}")
 
-    #
-    #
-    # Filter: Atom_Count
-
-    Filter.filter_atom_count(denticity=1, number=10, instruction="less_than")
-
-    print(f"After monodentate size filter: {len(Filter.database.db)}")
 
     #
     #

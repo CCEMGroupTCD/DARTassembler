@@ -47,24 +47,24 @@ filters:
     max: 300.2
     denticities:
 
-#  - filter: 'interatomic_distances'
-#    min:
-#    max: 2.0
-#    denticities: [3]
-#
-#  - filter: 'planarity'
-#    min: 0.2
-#    max: 1.0
-#    denticities: [1]
-#
-#  - filter: 'occurrences'
-#    min: 3
-#    max:
-#    denticities: [4]
-#
-#  - filter: 'average_metal_donor_bond_length'
-#    min: 1.0
-#    max: 2.0
-#    denticities: [2]
+  - filter: 'interatomic_distances'
+    min: 0.5
+    max: 40.0
+    denticities: [3]
+
+  - filter: 'planarity'
+    min: 0.2
+    max: 1.0
+    denticities: [1]
+
+  - filter: 'occurrences'
+    min: 3
+    max:
+    denticities: [4]
+
+  - filter: 'metal_donor_bond_lengths'
+    min: 1.0
+    max: 2.5
+    denticities: [2]
 
 

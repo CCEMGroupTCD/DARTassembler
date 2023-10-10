@@ -191,10 +191,9 @@ class TransitionMetalComplex:
         xyz = xyz[sorted_indices]
         elements = [el for _, el in sorted(zip(sorted_indices, self.mol.get_elements_list()))] # sort elements according to xyz
         hash_string = str(elements) + str(xyz)  # make hash string
-        seed = int(hashlib.md5(hash_string.encode(encoding='UTF-8', errors='strict')).hexdigest(), 16)
 
         # Generate a pronounceable word from the hash
-        name = generate_pronounceable_word(length=length, seed=seed)
+        name = generate_pronounceable_word(length=length, seed=hash_string)
 
         return name
 

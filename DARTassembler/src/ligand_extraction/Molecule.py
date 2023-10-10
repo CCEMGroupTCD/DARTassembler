@@ -557,6 +557,19 @@ class RCA_Molecule(object):
 
         return min_dist, max_dist, distances
 
+    def get_all_inter_atomic_distances_as_list(self):
+        """
+        Returns the distances between all atoms in the molecule.
+        @return: list of distances between all atoms in the molecule
+        """
+        distances = self.get_atomic_distances_between_atoms()[2]
+        unique_distances = []
+        for i in range(len(distances)):
+            for j in range(i+1, len(distances)):
+                unique_distances.append(distances[i,j])
+
+        return unique_distances
+
     def __eq__(self, other):
         if not self.stoichiometry == other.stoichiometry:
             return False
@@ -851,6 +864,7 @@ class RCA_Ligand(RCA_Molecule):
                 }
 
         return stats
+
 
     def calculate_angular_deviation_from_centrosymmetry(self) -> float:
         """

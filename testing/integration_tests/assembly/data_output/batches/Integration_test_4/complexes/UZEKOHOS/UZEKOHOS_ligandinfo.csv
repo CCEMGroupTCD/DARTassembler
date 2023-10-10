@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAHYAY-04-a,C16H14N2O2,4,O-O-N-N,-2,True,ae17655661525baa27ac30def04ba306,133,"PAHYAY, SOCKIE01, SOKSUH, TEHGAQ, BILREU, ... (128 more)","Co(22), Mn(17), Fe(16), Ni(16), V(11), ... (17 more)"
+Ligand 1,unq_CSD-PAXDOI-01-b,C2H5O1,1,C,-1,True,5c7293c9177d41c0f1de9bfb841aef70,9,"PAXDOI, PAXFAW, JUJSIQ, JUJTOX, CIYJUP, ... (4 more)","Co(4), Ru(2), Mn(2), Ir(1)"
+Ligand 2,unq_CSD-PATBAP-01-d,B1F4,1,F,-1,True,dba403cf0f3e4c46e54b981deac001d2,154,"PATBAP, PEQXAL, PEQXAL, PIJPAB, PIKLAX, ... (149 more)","Cu(103), Co(9), Rh(8), Pd(5), Fe(4), ... (11 more)"

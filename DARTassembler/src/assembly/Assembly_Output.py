@@ -62,6 +62,7 @@ class AssemblyOutput(object):
         if ensure_empty_output_dir:
             self.ensure_output_directory_empty()
 
+
     def save_global_optimization_movie(self, xyz_string):
         append_global_optimization_movie(xyz_string, self.outdir)
 

@@ -7,7 +7,9 @@ import pandas as pd
 from typing import Union
 from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _filter, _ligand_charges, _ligcomp, _coords, \
     _metals_of_interest, _denticities_of_interest, _remove_ligands_with_neighboring_coordinating_atoms, \
-    _remove_ligands_with_beta_hydrogens, _strict_box_filter, _acount, _acount_min, _acount_max, _denticities, _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max, _graph_hash_wm, _stoichiometry
+    _remove_ligands_with_beta_hydrogens, _strict_box_filter, _acount, _acount_min, _acount_max, _denticities, \
+    _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max, _graph_hash_wm, _stoichiometry, _min, _max, \
+    _md_bond_length, _interatomic_distances, _occurrences, _planarity
 
 
 
@@ -67,13 +69,7 @@ class LigandFilters(object):
 
             # Denticity dependent filters
             elif filtername == _acount:
-                min_atom_count = filter[_acount_min]
-                max_atom_count = filter[_acount_max]
-                denticities = filter[_denticities]
-                if min_atom_count is not None:
-                    self.Filter.filter_atom_count(denticity=denticities, number=min_atom_count, instruction="greater_than")
-                if max_atom_count is not None:
-                    self.Filter.filter_atom_count(denticity=denticities, number=max_atom_count, instruction="less_than")
+                self.Filter.filter_atom_count(min=filter[_acount_min], max=filter[_acount_max], denticities=filter[_denticities])
 
             elif filtername == _ligcomp:
                 self.Filter.filter_ligand_atoms(
@@ -99,10 +95,37 @@ class LigandFilters(object):
 
             elif filtername == _mw:
                 self.Filter.filter_molecular_weight(
-                    denticity=filter[_denticities],
-                    atomic_weight_min=filter[_mw_min],
-                    atomic_weight_max=filter[_mw_max]
+                    min=filter[_mw_min],
+                    max=filter[_mw_max],
+                    denticities=filter[_denticities]
                 )
+            elif filtername == _occurrences:
+                self.Filter.filter_occurrences(
+                    min=filter[_min],
+                    max=filter[_max],
+                    denticities=filter[_denticities]
+                )
+            elif filtername == _md_bond_length:
+                self.Filter.filter_metal_donor_bond_lengths(
+                    min=filter[_min],
+                    max=filter[_max],
+                    denticities=filter[_denticities]
+                )
+            elif filtername == _interatomic_distances:
+                self.Filter.filter_interatomic_distances(
+                    min=filter[_min],
+                    max=filter[_max],
+                    denticities=filter[_denticities]
+                )
+            elif filtername == _planarity:
+                self.Filter.filter_planarity(
+                    min=filter[_min],
+                    max=filter[_max],
+                    denticities=filter[_denticities]
+                )
+            else:
+                raise ValueError(f"Unknown filter: {filtername}")
+
 
             n_ligands_after = len(self.Filter.database.db)
             self.filter_tracking.append({
@@ -114,9 +137,11 @@ class LigandFilters(object):
             })
 
             # todo: subgraph matching filter
+
         self.n_ligands_after = len(self.Filter.database.db)
 
         return self.Filter.database
+
 
     def get_filter_tracking_string(self) -> str:
         output= "===================== FILTER TRACKING =====================\n"

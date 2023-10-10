@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZIYON-02-a,C10H6F2N2,2,N-N,0,True,9cfe1644c35cf7f9ef3b747b268cd586,1,OZIYON,Ir(1)
+Ligand 1,unq_CSD-PABQAL-01-a,Cl3Sn1,1,Sn,-1,True,17fc683776618ed7dd2270e532126688,81,"PABQAL, PILHAT, PILHAT01, SNISMO, LUXTAZ, ... (76 more)","Pt(26), Ru(17), Pd(7), Rh(6), Au(4), ... (8 more)"
+Ligand 2,unq_CSD-PABQAL-01-a,Cl3Sn1,1,Sn,-1,True,17fc683776618ed7dd2270e532126688,81,"PABQAL, PILHAT, PILHAT01, SNISMO, LUXTAZ, ... (76 more)","Pt(26), Ru(17), Pd(7), Rh(6), Au(4), ... (8 more)"

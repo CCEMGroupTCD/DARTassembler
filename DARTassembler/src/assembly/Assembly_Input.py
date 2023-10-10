@@ -90,7 +90,7 @@ _mw_max = 'max'
 _interatomic_distances = 'interatomic_distances'
 _planarity = 'planarity'
 _occurrences = 'occurrences'
-_md_bond_length = 'average_metal_donor_bond_length'
+_md_bond_length = 'metal_donor_bond_lengths'
 _min = 'min'
 _max = 'max'
 
@@ -145,6 +145,10 @@ class BaseInput(object):
             self.raise_error(message=f"Output directory '{path}' is not a valid string.", varname=varname)
 
         path = path.resolve()  # get absolute path
+
+        if path.exists() and not self.overwrite_output_path:
+            self.raise_error(message=f"Output directory '{path}' already exists. Please delete it or set parameter `overwrite_output_path` to True.", varname=varname)
+
 
         return path
 
