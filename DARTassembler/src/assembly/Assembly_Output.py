@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Union
 import json
 import pandas as pd
+import numpy as np
 from DARTassembler.src.assembly.Assembly_Input import AssemblyInput
 
 _gbl_optimization_movie = 'ffmovie.xyz'
@@ -181,25 +182,25 @@ class ComplexAssemblyOutput(object):
                               ligands: Union[dict, None] = None,
                               ) -> None:
 
-        self.save_structure(xyz_structure)  # Save the structure as xyz
+        self.save_structure(xyz_structure)      # Save the structure as xyz
         if ff_movie is not None:
-            self.save_ff_movie(ff_movie)  # Save the force field movie
+            self.save_ff_movie(ff_movie)        # Save the force field movie
         if assembly_input_path is not None:
-            self.save_settings(assembly_input_path)  # Save the assembly input settings
+            self.save_settings(assembly_input_path)     # Save the assembly input settings
         if ligands is not None:
-            self.save_ligand_info(ligands)  # Save the ligand info
+            self.save_ligand_info(ligands)      # Save the ligand info
         self.save_data_json(
                             complex=complex,
                             complex_idx=complex_idx,
                             xyz_structure=xyz_structure,
-                            ff_movie=ff_movie,
                             batch_idx=batch_idx,
                             )
 
-    def get_ligand_info_dict(self, ligands: dict) -> dict:
-        return {f'Ligand {i}': lig.get_ligand_output_info() for i, lig in enumerate(ligands.values())}
+    def get_ligand_info_dict(self, ligands: dict, max_entries: int=np.inf) -> dict:
+        return {f'Ligand {i}': lig.get_ligand_output_info(max_entries=max_entries) for i, lig in enumerate(ligands.values())}
+
     def save_ligand_info(self, ligands: dict) -> None:
-        ligand_infos = self.get_ligand_info_dict(ligands)
+        ligand_infos = self.get_ligand_info_dict(ligands, max_entries=5)
         df = pd.DataFrame.from_dict(ligand_infos, orient='index')
         df.to_csv(self.ligand_output_path)
 
@@ -207,7 +208,6 @@ class ComplexAssemblyOutput(object):
                         complex,
                         complex_idx: int,
                         xyz_structure: str,
-                        ff_movie: Union[str,None] = None,
                         batch_idx: Union[int,None] = None,
                         ) -> None:
         """
@@ -218,7 +218,6 @@ class ComplexAssemblyOutput(object):
                 'complex_idx': complex_idx,
                 'xyz_structure': xyz_structure,
                 'batch_idx': batch_idx,
-                'ff_movie': ff_movie,
                 }
         self.save_file(data, self.data_path)
 

@@ -4,7 +4,7 @@ Integration test for the filtering of ligands.
 from DARTassembler.filter_ligands import filter_ligands
 from DARTassembler.src.constants.Paths import project_path
 
-def test_filter_ligands(nmax=1000):
+def test_filter_ligands(nmax=3000):
     filter_ligands_path = project_path().extend('testing', 'integration_tests', 'ligand_filters', 'data_input', 'ligandfilters.yml')   # In this file the user specifies which input they want
     filters = filter_ligands(filter_input_path=filter_ligands_path, nmax=nmax)
 

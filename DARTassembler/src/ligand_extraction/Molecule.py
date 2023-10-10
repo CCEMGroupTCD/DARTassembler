@@ -512,6 +512,27 @@ class RCA_Molecule(object):
         """
         return self.atomic_props['atoms']
 
+
+    def calculate_planarity(self) -> float:
+        """
+        Calculates the planarity of the molecule.
+        @return: Planarity of the molecule as a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
+        """
+        coordinates = self.get_coordinates_list()
+        deviation = get_max_deviation_from_coplanarity(points=coordinates)  # deviation is a float that is 0 if the molecule is perfectly planar and > 0 if it is not. The higher the value, the less planar the molecule is.
+        planarity = 1/ (1+ deviation)   # planarity is a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
+
+        return planarity
+
+    def get_coordinates_list(self) -> list:
+        """
+        Returns the coordinates of the ligand without the metal.
+        @return: Coordinates of the ligand without the metal in format [[x1, y1, z1], [x2, y2, z2], ...]
+        """
+        coords = [[self.atomic_props['x'][i], self.atomic_props['y'][i], self.atomic_props['z'][i]] for i in range(len(self.atomic_props['x']))]
+
+        return coords
+
     def get_atomic_distances_between_atoms(self, skip_elements: Union[str, list]=[]) -> float:
         """
         Returns the minimum, maximum and all distances between two atoms in the molecule.
@@ -953,15 +974,6 @@ class RCA_Ligand(RCA_Molecule):
         """
         return [self.original_metal_position] + self.get_coordinates_list()
 
-    def get_coordinates_list(self) -> list:
-        """
-        Returns the coordinates of the ligand without the metal.
-        @return: Coordinates of the ligand without the metal in format [[x1, y1, z1], [x2, y2, z2], ...]
-        """
-        coords = [[self.atomic_props['x'][i], self.atomic_props['y'][i], self.atomic_props['z'][i]] for i in range(len(self.atomic_props['x']))]
-
-        return coords
-
 
     def get_graph_with_metal(self, metal_symbol: Union[str, None]=None, return_metal_index: bool=False):
         """
@@ -1122,7 +1134,7 @@ class RCA_Ligand(RCA_Molecule):
 
         return False
 
-    def get_ligand_output_info(self, max_complex_IDs=np.inf) -> dict:
+    def get_ligand_output_info(self, max_entries=np.inf) -> dict:
         important_data = ['unique_name', 'stoichiometry', 'denticity', 'local_elements', 'pred_charge', 'pred_charge_is_confident', 'graph_hash_with_metal',  'occurrences', 'count_metals', 'all_ligand_names']
         info = self.write_to_mol_dict(include_graph_dict=False)
         info = {key: val for key, val in info.items() if key in important_data}
@@ -1135,18 +1147,23 @@ class RCA_Ligand(RCA_Molecule):
         info['Confident Charge'] = info['pred_charge_is_confident']
         info['Graph ID'] = info['graph_hash_with_metal']
         info['CSD Occurrences'] = info['occurrences']
-        info['CSD Metal Count'] = ' - '.join([f'{el}({count})' for el, count in info['count_metals'].items()])
         # Currently doesn't work because the ligand doesn't have the attribute 'identical_ligand_info'
         # csd_mos_counts = [f'{el}+{mos:.0f}' if mos > 0 else f'{el}+{mos:.0f}' for el, mos in zip(self.identical_ligand_info['original_metal_symbol'], self.identical_ligand_info['original_metal_os']) if not np.isnan(mos)]
         # csd_mos_counts = pd.value_counts(pd.Series(csd_mos_counts)).to_dict()
         # info['CSD Metal OS Count'] = ', '.join([f'{el}({count})' for el, count in csd_mos_counts.items()])
 
         # Get CSD complex IDs, but truncate if there are too many
-        complex_ids = [name.replace('CSD-', '').split('-')[0] for i, name in enumerate(info['all_ligand_names']) if i < max_complex_IDs]
-        info['CSD Complex IDs'] = ' - '.join(complex_ids)
-        n_complex_ids = len(info['all_ligand_names'])
-        if n_complex_ids > max_complex_IDs:
-            info['CSD Complex IDs'] += f' - ... ({n_complex_ids - max_complex_IDs} more)'
+        truncate_data = {
+                            'CSD Complex IDs': [name.replace('CSD-', '').split('-')[0] for i, name in enumerate(info['all_ligand_names'])],
+                            'CSD Metal Count': [f'{el}({count})' for el, count in info['count_metals'].items()]
+                        }
+        for key, data in truncate_data.items():
+            n_data = len(data)
+            data = data[:max_entries]
+            data = ', '.join(data)
+            if n_data > max_entries:
+                data += f', ... ({n_data - max_entries} more)'
+            info[key] = data
 
 
         for key in important_data:

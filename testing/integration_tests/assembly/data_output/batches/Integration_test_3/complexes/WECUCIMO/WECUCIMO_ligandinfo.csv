@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Metal Count,CSD Complex IDs
-Ligand 0,unq_CSD-PADDAD-03-a,C16H14N3,3,N-N-C,-1,True,f93d02368a14a5a2265c6dd0c3ebac93,1,Pt(1),PADDAD
-Ligand 1,unq_CSD-PAGJUG-02-a,C8H15O1S2,2,S-S,-1,True,4b897ae1371b34cbd6871eb89ead62c8,4,Zn(2) - Ni(2),PAGJUG - PAGJUG - BELLOW - BELLOW
-Ligand 2,unq_CSD-PEDWOK-01-d,H3P1,1,P,0,True,bc5f48da633f7aabc9f24b331c93b38d,12,Ir(5) - W(3) - Cr(3) - Fe(1),PEDWOK - DIRHIX - ILOPUV - XIBVUZ - XIBVUZ01 - JAZBOB - JAZBOB - JAZBOB10 - JAZBOB10 - FOKYEJ - FOKYEJ - FOKYEJ

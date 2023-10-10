@@ -87,6 +87,13 @@ _coords_instruction = 'instruction'
 _mw = 'molecular_weight'
 _mw_min = 'min'
 _mw_max = 'max'
+_interatomic_distances = 'interatomic_distances'
+_planarity = 'planarity'
+_occurrences = 'occurrences'
+_md_bond_length = 'average_metal_donor_bond_length'
+_min = 'min'
+_max = 'max'
+
 
 
 class BaseInput(object):
@@ -103,6 +110,18 @@ class BaseInput(object):
         global_settings = read_yaml(path)
 
         return global_settings
+
+    def read_yaml_and_fix_indentation_issues(self, path, indentations: dict = {}) -> dict:
+        """
+        Reads a yaml file and fixes indentation issues.
+        """
+        with open(path, 'r') as file:
+            text = file.read()
+
+        for key, value in indentations.items():
+            text = text.replace(key, value)
+
+        return yaml.safe_load(text)
 
     def check_correct_input_type(self, input, types: list, varname: str) -> Any:
         """
@@ -430,6 +449,26 @@ class LigandFilterInput(BaseInput):
             _mw_max: [float, str, type(None)],
             _denticities: [list, tuple, type(None), int],
             },
+        _interatomic_distances: {
+            _min: [float, str, type(None)],
+            _max: [float, str, type(None)],
+            _denticities: [list, tuple, type(None), int],
+            },
+        _planarity: {
+            _min: [float, str, type(None)],
+            _max: [float, str, type(None)],
+            _denticities: [list, tuple, type(None), int],
+            },
+        _occurrences: {
+            _min: [int, str, type(None)],
+            _max: [int, str, type(None)],
+            _denticities: [list, tuple, type(None), int],
+            },
+        _md_bond_length: {
+            _min: [float, str, type(None)],
+            _max: [float, str, type(None)],
+            _denticities: [list, tuple, type(None), int],
+            },
         }
 
 
@@ -515,14 +554,11 @@ class LigandFilterInput(BaseInput):
                 out_filter_settings[_strict_box_filter] = self.get_bool_from_input(input=filter_values[_strict_box_filter], varname=_strict_box_filter)
             elif self.filtername == _filter_even_odd_electron_count:
                 out_filter_settings[_filter_even_odd_electron_count] = self.check_even_odd_electron_count_input(settings=filter_values)
+
             # Denticity dependent filters
             elif self.filtername == _stoichiometry:
                 out_filter_settings[_stoichiometry] = self.check_stoichiometry_input(stoichiometry=filter_values[_stoichiometry])
                 out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_stoichiometry}:{_denticities}', allow_none=True)
-            elif self.filtername == _acount:
-                out_filter_settings[_acount_min] = self.get_int_from_input(input=filter_values[_acount_min], varname=f'{_acount}:{_acount_min}', allow_none=True)
-                out_filter_settings[_acount_max] = self.get_int_from_input(input=filter_values[_acount_max], varname=f'{_acount}:{_acount_max}', allow_none=True)
-                out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_acount}:{_denticities}', allow_none=True)
             elif self.filtername == _ligcomp:
                 out_filter_settings[_ligcomp_atoms_of_interest] = self.get_list_of_chemical_elements_from_input(input=filter_values[_ligcomp_atoms_of_interest], varname=f'{_ligcomp}:{_ligcomp_atoms_of_interest}')
                 out_filter_settings[_ligcomp_instruction] = self.get_instruction_from_input(input=filter_values[_ligcomp_instruction], varname=f'{_ligcomp}:{_ligcomp_instruction}')
@@ -538,9 +574,19 @@ class LigandFilterInput(BaseInput):
                 out_filter_settings[_coords_instruction] = self.get_instruction_from_input(input=filter_values[_coords_instruction], varname=f'{_coords}:{_coords_instruction}')
                 out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_coords}:{_denticities}', allow_none=True)
             elif self.filtername == _mw:
-                out_filter_settings[_mw_min] = self.get_float_from_input(input=filter_values[_mw_min], varname=f'{_mw}:{_mw_min}', allow_none=True)
-                out_filter_settings[_mw_max] = self.get_float_from_input(input=filter_values[_mw_max], varname=f'{_mw}:{_mw_max}', allow_none=True)
-                out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_mw}:{_denticities}', allow_none=True)
+                out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_mw))
+            elif self.filtername == _acount:
+                out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_acount))
+            elif self.filtername == _interatomic_distances:
+                out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_interatomic_distances))
+            elif self.filtername == _planarity:
+                out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_planarity))
+            elif self.filtername == _occurrences:
+                out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_occurrences))
+            elif self.filtername == _md_bond_length:
+                out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_md_bond_length))
+            else:
+                self.raise_error(f"Filter '{self.filtername}' is not a valid filter.", varname=_filter)
 
             out_settings.append(out_filter_settings)
 
@@ -558,6 +604,15 @@ class LigandFilterInput(BaseInput):
             idx += 1
 
         return path
+
+    def check_min_max_input(self, filter_values: dict, filter_name: str) -> dict:
+        outsettings = {
+            _min: self.get_float_from_input(input=filter_values[_min], varname=f'{filter_name}:{_min}', allow_none=True),
+            _max: self.get_float_from_input(input=filter_values[_max], varname=f'{filter_name}:{_max}', allow_none=True),
+            _denticities: self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{filter_name}:{_denticities}', allow_none=True)
+            }
+
+        return outsettings
 
     def check_stoichiometry_input(self, stoichiometry: str) -> str:
         """

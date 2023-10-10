@@ -96,6 +96,7 @@
 
 /dev/test/ML_detect_missing_H/data/**
 /dev/test/machine_learning/**
+dev/test/data/CH_ligands_for_Ana/
 
 /src14_Assembly_Unit_Test/*
 !/src14_Assembly_Unit_Test/output_benchmark/

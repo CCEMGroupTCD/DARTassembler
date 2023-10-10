@@ -55,11 +55,14 @@ if __name__ == '__main__':
     db_path = project_path().extend(*f'data/final_db_versions/unique_ligand_db_v{db_version}.json'.split('/'))
     exclude_unconnected_ligands = True
     exclude_uncertain_charges = True
-    nmax = 1000
+    nmax = 100
 
     ligands = LigandDB.from_json(db_path, max_number=nmax)
     df_ligands = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path ,n_max=nmax), orient='index')
-    df_ligands['has_metal_neighbors'] = df_ligands['graph_dict'].apply(lambda graph_dict: 'metal_neighbor' in str(graph_dict))
+    # df_ligands['has_metal_neighbors'] = df_ligands['graph_dict'].apply(lambda graph_dict: 'metal_neighbor' in str(graph_dict))
+
+    planarity = [ligand.calculate_planarity() for ligand in ligands.db.values()]
+    df_ligands['planarity'] = planarity
 
     # has_identical_ligand_info = [hasattr(ligand, 'identical_ligand_info') for ligand in ligands.db.values()]
     # df_ligands['has_identical_ligand_info'] = has_identical_ligand_info

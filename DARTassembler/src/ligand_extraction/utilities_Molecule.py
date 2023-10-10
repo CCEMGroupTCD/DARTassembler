@@ -40,10 +40,8 @@ def get_max_deviation_from_coplanarity(points: list[tuple]) -> float:
     :param points: List of tuples, each tuple being a 3D point (x, y, z).
     :return: deviation from coplanarity. 0 if perfectly coplanar and > 0 otherwise.
     """
-    # We need at least 3 points to define a plane
-    if len(points) < 3:
-        raise ValueError("At least 3 points are needed to define a plane")
-    elif len(points) == 3:
+    # We need at least 3 points to define a plane, everything else is per definition coplanar
+    if len(points) <= 3:
         return 0
 
     # Center the points

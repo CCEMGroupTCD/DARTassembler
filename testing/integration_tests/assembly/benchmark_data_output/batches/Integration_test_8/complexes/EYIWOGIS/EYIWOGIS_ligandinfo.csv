@@ -1,4 +1,4 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Metal Count,CSD Complex IDs
-Ligand 0,unq_CSD-OZIYON-02-a,C10H6F2N2,2,N-N,0,True,9cfe1644c35cf7f9ef3b747b268cd586,1,Ir(1),OZIYON
-Ligand 1,unq_CSD-PACBEB-01-d,C3F5,1,C,-1,True,a556ad6faad5bde10c5e0c1608bdd654,6,Pt(3) - Pd(2) - Rh(1),PACBEB - TEJDIY - TEJDIY - TEJDOE - TEJFEW - BOSTOU
-Ligand 2,unq_CSD-PACBEB-01-d,C3F5,1,C,-1,True,a556ad6faad5bde10c5e0c1608bdd654,6,Pt(3) - Pd(2) - Rh(1),PACBEB - TEJDIY - TEJDIY - TEJDOE - TEJFEW - BOSTOU
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZIYON-02-a,C10H6F2N2,2,N-N,0,True,9cfe1644c35cf7f9ef3b747b268cd586,1,OZIYON,Ir(1)
+Ligand 1,unq_CSD-PACBEB-01-d,C3F5,1,C,-1,True,a556ad6faad5bde10c5e0c1608bdd654,6,"PACBEB, TEJDIY, TEJDIY, TEJDOE, TEJFEW, ... (1 more)","Pt(3), Pd(2), Rh(1)"
+Ligand 2,unq_CSD-PACBEB-01-d,C3F5,1,C,-1,True,a556ad6faad5bde10c5e0c1608bdd654,6,"PACBEB, TEJDIY, TEJDIY, TEJDOE, TEJFEW, ... (1 more)","Pt(3), Pd(2), Rh(1)"

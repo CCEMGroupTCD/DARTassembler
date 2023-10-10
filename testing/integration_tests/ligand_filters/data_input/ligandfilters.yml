@@ -16,16 +16,16 @@ filters:
 
   - filter: 'atom_count'
     min: 1
-    max: 10
+    max: 15
     denticities: [1]
 
   - filter: 'ligand_charges'
-    ligand_charges: [0]
+    ligand_charges: [-1, 0]
     denticities: [2, 3]
 
   - filter: 'metals_of_interest'
     metals_of_interest: ["Fe", "Mn", "Cr", "Ru", "Co", "Ni", "Cu", "Ir", "Mo"]
-    denticities: [3]
+    denticities:
 
   - filter: 'coordinating_atoms_composition'
     atoms_of_interest: ["N", "N", "N"]
@@ -43,6 +43,28 @@ filters:
     denticities: [3]
 
   - filter: 'molecular_weight'
-    min: 80.1
+    min: 10.1
     max: 300.2
-    denticities: [4, 5]
+    denticities:
+
+#  - filter: 'interatomic_distances'
+#    min:
+#    max: 2.0
+#    denticities: [3]
+#
+#  - filter: 'planarity'
+#    min: 0.2
+#    max: 1.0
+#    denticities: [1]
+#
+#  - filter: 'occurrences'
+#    min: 3
+#    max:
+#    denticities: [4]
+#
+#  - filter: 'average_metal_donor_bond_length'
+#    min: 1.0
+#    max: 2.0
+#    denticities: [2]
+
+

@@ -113,7 +113,7 @@ class LigandFilters(object):
                 "full_filter_options": {name: option for name, option in filter.items() if name != _filter}
             })
 
-            # todo: subgraph match
+            # todo: subgraph matching filter
         self.n_ligands_after = len(self.Filter.database.db)
 
         return self.Filter.database
@@ -157,9 +157,8 @@ class LigandFilters(object):
 
     def save_ligand_info_csv(self):
         db = self.Filter.database
-        ligands = {uname: ligand.get_ligand_output_info() for uname, ligand in db.db.items()}
+        ligands = {uname: ligand.get_ligand_output_info(max_entries=5) for uname, ligand in db.db.items()}
         self.df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
-        self.df_ligand_info = self.df_ligand_info.drop(columns=['CSD Metal Count', 'CSD Complex IDs'])
         outpath = Path(self.output_ligand_db_path.parent, "ligand_info.csv")
         self.df_ligand_info.to_csv(outpath, index=False)
 

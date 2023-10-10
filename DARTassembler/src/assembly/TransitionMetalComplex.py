@@ -281,7 +281,7 @@ class TransitionMetalComplex:
                   path: Union[Path, str]
                   ):
         """
-        The inverse method of "to_json"
+        Read TransitionMetalComplex from json file and return it.
         """
 
         a = cls()

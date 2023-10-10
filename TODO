@@ -4,33 +4,37 @@ TODO:
 Must:
 - paths:
     - change default paths in Paths.py
-- ligand db:
-    - remove ligand with denticity = -1 and uncertain charges
-- assembly input:
-    - make it so that the input ligand db list accepts keywords to fix ligands to be the same.
-- fix that some ligands don't have an 'identical_ligands' attribute
-
+- work on example
+- work on documentation
 
 Should:
 - ligand filtering
     - add option to output 3D structures as xyz files
     - check if denticity == None gives same results as replacing with list(range(100))
     - add everything mentioned in the paper figure
-- in ligand information csv, output only first 5 CSD IDs.
+    - refactor output ligand db path to not overwrite and to only take the folder name, not the whole path
+    - add subgraph matching filter
+output
     - add complex info such as stoichiometry to complex info csv
+    - remove option to overwrite folder
 - ligand db:
-    - remove non-buildable ligands
+    - remove non-buildable ligands (ligand with denticity = -1 and uncertain charges and hydride)
     - make unique IDs of ligands like Zotrux02 and in case this points to more than one ligand, add a letter to all of them like a, b, c etc.
     - add molecule planarity with 1.0 being perfectly planar and 0.0 being perfectly non-planar.
         - change the bidentate planarity checker to adhere to this convention, I think now it's the other way round.
     - check why some ligands have a 'metal_neighbor' attribute in the graph and some don't and remove or add it for all of them.
     - reindex ligand graphs
-- write input class for gaussian input file, especially make sure that there is an 'others' specified in the basis sets
+input:
+    - write input class for gaussian input file, especially make sure that there is an 'others' specified in the basis sets
+    - make sure in input that the indentation is fixed in the yaml file
+    - Remove spin from metal input and add it to gaussian module?
+- assembly:
+    - fix that hydrides can't be assembled
 
-Can:
-- remove ligands with missing H from database
+
 
 Future developments:
+- remove ligands with missing H from database
 - bimetallic assembler:
     - only based on having 2 metals bound to each other, without ligands in between
     - only based on current mono-metallic ligands
