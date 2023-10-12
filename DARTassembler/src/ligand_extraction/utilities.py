@@ -7,7 +7,50 @@ from ase import Atoms
 import warnings
 import pandas as pd
 from collections import namedtuple
+from typing import Tuple, Union, List, Dict
 
+
+def angle_between_points(a: list, b: list, c: list, degrees: bool=True) -> float:
+    """
+    Calculate the angle at point 'a' formed by line segments 'ab' and 'ac'.
+
+    Parameters:
+    - a, b, c: numpy arrays representing the coordinates of the points
+
+    Returns:
+    - angle: Angle at point 'a' in radians
+    """
+    a, b, c = np.array(a), np.array(b), np.array(c)
+    if a.shape != b.shape or b.shape != c.shape:
+        raise ValueError("All points must have the same dimensions.")
+
+    ab = b - a
+    ac = c - a
+    cosine_angle = np.dot(ab, ac) / (np.linalg.norm(ab) * np.linalg.norm(ac))
+    cosine_angle = np.clip(cosine_angle, -1.0, 1.0)  # clip for numerical stability
+    angle = np.arccos(cosine_angle)
+
+    if degrees:
+        angle = np.degrees(angle)
+    return angle
+
+
+def angles_of_triangle(point1: list, point2: list, point3: list, degrees: bool=True) -> Tuple[float, float, float]:
+    """
+    Calculate the angles of a triangle formed by three points.
+
+    Parameters:
+    - point1, point2, point3: numpy arrays representing the coordinates of the points
+    - degrees: Whether to return the angles in degrees (True) or radians (False)
+
+    Returns:
+    - angle1, angle2, angle3: Angles at point1, point2, and point3, respectively, in degrees
+    """
+    angle1 = np.degrees(angle_between_points(point1, point2, point3, degrees))
+    angle2 = np.degrees(angle_between_points(point2, point1, point3, degrees))
+    angle3 = np.degrees(angle_between_points(point3, point1, point2, degrees))
+
+    return angle1, angle2, angle3
 
 def series2namedtuple(s, name='S'):
     return namedtuple(name, s.index)(*s)

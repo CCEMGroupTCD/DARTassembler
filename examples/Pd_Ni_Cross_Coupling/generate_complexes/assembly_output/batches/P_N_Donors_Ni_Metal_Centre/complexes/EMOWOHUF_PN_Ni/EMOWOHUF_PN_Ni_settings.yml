@@ -1,0 +1,42 @@
+verbose: 3
+optimization_movie: true          # (true, false): if true, will generate a movie of the forcefield optimization of each complex
+concatenate_xyz: true             # (true, false): if true, will save a file with all xzy files of all complexes concatenated
+overwrite_output_path: true       # (true, false): if true, will overwrite the output path if it already exists
+Output_Path: 'assembly_output'    # (str): path to the output directory
+complex_name_length: 8
+
+Batches:
+  - Input_Path: ['ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines', 'ligand_databases/Br/ligand_db_Br.jsonlines', 'ligand_databases/phenyl/ligand_db_phenyl.jsonlines']
+    Isomers: Generate All
+    MAX_num_complexes: 10000
+    ligand_choice: 'all'
+    geometry_modifier_filepath:
+    bidentate_rotator: 'slab'   # doesn't work yet since Cian hasn't implemented it yet
+    Metal:
+      element: Pd
+      oxidation_state: 2
+      spin: 1
+    Name: P_N_Donors_Pd_Metal_Centre
+    Optimisation_Choice: false
+    Random_Seed: 0
+    Topology: '(2, 1, 1)'
+    Total_Charge: 0
+    complex_name_appendix: _PN_Pd
+
+
+  - Input_Path: ['ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines', 'ligand_databases/Br/ligand_db_Br.jsonlines', 'ligand_databases/phenyl/ligand_db_phenyl.jsonlines']
+    Isomers: Generate All
+    MAX_num_complexes: 10000
+    ligand_choice: 'all'
+    geometry_modifier_filepath:
+    bidentate_rotator: 'slab'   # doesn't work yet since Cian hasn't implemented it yet
+    Metal:
+      element: Ni
+      oxidation_state: 2
+      spin: 1
+    Name: P_N_Donors_Ni_Metal_Centre
+    Optimisation_Choice: false
+    Random_Seed: 0
+    Topology: '(2, 1, 1)'
+    Total_Charge: 0
+    complex_name_appendix: _PN_Ni

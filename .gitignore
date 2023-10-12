@@ -13,7 +13,9 @@
 /data_input/Raw_CSD
 /examples/Pd_cross_coupling/data_from_Cian
 /examples/Pd_cross_coupling/data
-/examples/Pd_cross_coupling/stats
+/examples/Pd_Ni_Cross_Coupling/stats
+/examples/Pd_Ni_Cross_Coupling/output/**
+/examples/Pd_Ni_Cross_Coupling/dev/output/**
 
 
 /src04_Assembly/Z-test.py
