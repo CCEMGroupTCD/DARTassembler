@@ -159,7 +159,7 @@ class ChooseRandomLigands:
         while True:
             charge_list = self.charge_list_process()
             if charge_list is None:
-                raise LigandCombinationError(f'Could not find a valid combination of ligands! Most likely there was no valid combination of ligand charges which fulfills the total charge requirement for the specified metal oxidation state MOS={self.metal_ox_state} and total charge Q={self.total_charge}. Please check your ligand database and/or your assembly input file.')
+                raise LigandCombinationError(f'No valid ligand combinations found which fulfills the metal oxidation state MOS={self.metal_ox} and total charge Q={self.total_charge} requirement! This can happen when the provided metal oxidation state or total charge are too high/low. Please check your ligand database and/or your assembly input file.')
 
             # Choose ligands randomly
             ligands = {}
@@ -175,14 +175,20 @@ class ChooseRandomLigands:
 
     def choose_ligands_iteratively(self) -> dict:
         concat_ligand_dic_list = []
-        for dent, ligand_dic in zip(self.topology, self.ligand_dic_list):
+        for idx, (dent, ligand_dic) in enumerate(zip(self.topology, self.ligand_dic_list)):
             dent = str(dent)
             all_ligands = []
-            ligand_dic = ligand_dic[dent]
-            for charge in ligand_dic.keys():
-                all_ligands.extend(ligand_dic[charge])
+            try:
+                ligand_dic = ligand_dic[dent]
+                for charge in ligand_dic.keys():
+                    all_ligands.extend(ligand_dic[charge])
+            except KeyError:
+                raise LigandCombinationError(f'The provided ligand database doesn\'t contain the denticity {dent} in the topology {self.topology} at the {idx+1}th site! Please check your ligand database and/or your assembly input file')
             concat_ligand_dic_list.append(all_ligands)
         all_combs = list(itertools.product(*concat_ligand_dic_list))
+
+        if len(all_combs) == 0:
+            raise LigandCombinationError(f'No valid ligand combinations found which fulfills the metal oxidation state MOS={self.metal_ox} and total charge Q={self.total_charge} requirement! This can happen when the provided metal oxidation state or total charge are too high/low. Please check your ligand database and/or your assembly input file.')
 
         i = -1
         chosen_ligand_combinations = set()

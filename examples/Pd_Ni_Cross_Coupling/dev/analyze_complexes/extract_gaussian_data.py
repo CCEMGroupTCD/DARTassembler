@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import cclib
 
-from DARTassembler.src.ligand_extraction.utilities import angle_between_points
+from DARTassembler.src.ligand_extraction.utilities import angle_between_ab_ac_vectors
 
 
 class Calculation:
@@ -99,7 +99,7 @@ class Calculation:
         positions = [self.metal_position] + [self.coordinates[idx] for idx in donor_idc]
 
         # Calculate the angle between the three points, where the returned angle is the one at the first point (the metal)
-        angle = angle_between_points(*positions, degrees=True)
+        angle = angle_between_ab_ac_vectors(*positions, degrees=True)
 
         return angle
 
@@ -534,14 +534,14 @@ class Calculation:
 
     def get_homo_lumo(self) -> Tuple[float, float, float]:
         """
-        Returns the HOMO, LUMO and HOMO-LUMO gap.
+        Returns the HOMO, LUMO and HOMO-LUMO gap in eV.
         """
         try:
             # Get HOMO and LUMO energies
             homo_index = self.fchk_parser.homos[0]
             lumo_index = homo_index + 1  # The orbital just above the HOMO
-            homo_energy = self.fchk_parser.moenergies[0][homo_index]
-            lumo_energy = self.fchk_parser.moenergies[0][lumo_index]
+            homo_energy = self.fchk_parser.moenergies[0][homo_index] # in eV
+            lumo_energy = self.fchk_parser.moenergies[0][lumo_index] # in eV
 
             # Calculate HOMO-LUMO gap
             gap = lumo_energy - homo_energy

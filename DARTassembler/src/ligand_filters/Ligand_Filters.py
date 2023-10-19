@@ -18,7 +18,7 @@ from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _f
 class LigandFilters(object):
 
     def __init__(self, filepath: Union[str, Path], max_number: Union[int, None] = None):
-        self.filepath = Path(filepath)
+        self.filepath = filepath
         self.max_number = max_number
         self.input = LigandFilterInput(path=self.filepath)
 
@@ -29,10 +29,11 @@ class LigandFilters(object):
         self.filter_tracking = []
 
     def get_filtered_db(self) -> LigandDB:
+        print(f"Filtering ligand database: {self.ligand_db_path} --> {self.output_ligand_db_path}...")
         db = LigandDB.from_json(
             json_=self.ligand_db_path,
             type_="Ligand",
-            max_number=self.max_number
+            max_number=self.max_number,
         )
 
         self.Filter = FilterStage(db)
@@ -121,6 +122,11 @@ class LigandFilters(object):
                 self.Filter.filter_planarity(
                     min=filter[_min],
                     max=filter[_max],
+                    denticities=filter[_denticities]
+                )
+            elif filtername == _stoichiometry:
+                self.Filter.stoichiometry_filter(
+                    stoichiometry=filter[_stoichiometry],
                     denticities=filter[_denticities]
                 )
             else:

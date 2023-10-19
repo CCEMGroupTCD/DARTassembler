@@ -10,7 +10,7 @@ from collections import namedtuple
 from typing import Tuple, Union, List, Dict
 
 
-def angle_between_points(a: list, b: list, c: list, degrees: bool=True) -> float:
+def angle_between_ab_ac_vectors(a: list, b: list, c: list, degrees: bool=True) -> float:
     """
     Calculate the angle at point 'a' formed by line segments 'ab' and 'ac'.
 
@@ -46,9 +46,9 @@ def angles_of_triangle(point1: list, point2: list, point3: list, degrees: bool=T
     Returns:
     - angle1, angle2, angle3: Angles at point1, point2, and point3, respectively, in degrees
     """
-    angle1 = np.degrees(angle_between_points(point1, point2, point3, degrees))
-    angle2 = np.degrees(angle_between_points(point2, point1, point3, degrees))
-    angle3 = np.degrees(angle_between_points(point3, point1, point2, degrees))
+    angle1 = np.degrees(angle_between_ab_ac_vectors(point1, point2, point3, degrees))
+    angle2 = np.degrees(angle_between_ab_ac_vectors(point2, point1, point3, degrees))
+    angle3 = np.degrees(angle_between_ab_ac_vectors(point3, point1, point2, degrees))
 
     return angle1, angle2, angle3
 

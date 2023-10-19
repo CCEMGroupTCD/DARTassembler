@@ -4,6 +4,7 @@ This file contains functions and a classes for the input of the assembly. They d
 import ast
 import difflib
 import warnings
+import os
 from copy import deepcopy
 import ase
 import pandas as pd
@@ -481,13 +482,14 @@ class LigandFilterInput(BaseInput):
         Class for reading and checking the input file for the ligand filter. The input file should be a yaml file.
         todo: Add that missing filter keys are added with value None so that one doesn't have to specify everything.
         """
+        self.path = None
         super().__init__(path)
+
         self.raw_input_settings = self.get_settings_from_input_file(path)
 
         self.ligand_db_path = None
         self.output_ligand_db_path = None
         self.filters = None
-
         self.settings = self.set_and_check_settings()    # Set all settings and check if they are valid
 
     def _get_null_value_of_filter(self, allowed_types: list):

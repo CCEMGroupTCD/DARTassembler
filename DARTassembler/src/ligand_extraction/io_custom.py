@@ -11,6 +11,7 @@ from typing import Union
 from pathlib import Path, PurePath
 import jsonlines
 from tqdm import tqdm
+import ase
 
 class NumpyEncoder(json.JSONEncoder):
     """Special json encoder. This is important to use in json.dump so that if json encounters a np.array, it converts it to a list automatically, otherwise errors arise. Use like this:
@@ -243,3 +244,14 @@ def safe_read_yaml(data: Union[str, Path, list, dict]) -> Union[dict,list]:
         data = data
 
     return data
+
+def read_xyz(path: str):
+    """
+    Read an xyz file and return the atoms and coordinates.
+    :param path: Path to the xyz file
+    :return: Atoms and coordinates
+    """
+    atoms = ase.io.read(path)
+    coords = atoms.get_positions()
+    elements = atoms.get_chemical_symbols()
+    return elements, coords

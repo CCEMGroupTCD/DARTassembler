@@ -1,6 +1,10 @@
 from pathlib import Path
 import os
 #todo rename path or Dart or something
+
+def split_paths_on_unix_and_windows(relpaths: str) -> tuple:
+    return tuple(p for paths in relpaths.split('\\') for p in paths.split('/'))
+
 class project_path:
     def __init__(self):
         # This is the file or folder that marks the origin of the project. It is used to find the origin of the project.
@@ -8,6 +12,8 @@ class project_path:
         self.project_path = self.get_project_origin()
 
     def extend(self, *relpaths: object) -> Path:
+        if len(relpaths) == 1:
+            relpaths = split_paths_on_unix_and_windows(relpaths[0])
         return Path(self.project_path, *relpaths)
 
     def get_project_origin(self) -> Path:

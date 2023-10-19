@@ -1,11 +1,9 @@
 TODO:
 
-
 Must:
 - paths:
     - check default paths in Paths.py
 - work on example
-    - refactor and doublecheck the data extraction class
 - work on documentation
 - assembly:
     - fix that hydrides can't be assembled
@@ -15,6 +13,7 @@ Must:
 
 Should:
 - ligand filtering
+    - add option to filter several ligand db at once so that the full ligand db has to be read in only once
     - add option to output 3D structures as xyz files
     - check if denticity == None gives same results as replacing with list(range(100))
     - refactor output ligand db path to not overwrite and to only take the folder name, not the whole path
@@ -30,6 +29,13 @@ input:
     - write input class for gaussian input file, especially make sure that there is an 'others' specified in the basis sets
     - make sure in input that the indentation is fixed in the yaml file
     - Remove spin from metal input and add it to gaussian module?
+    - make gaussian input filepath an own module instead of an argument in the assembly input file
+    - make input paths os independent
+example:
+    - refactor and doublecheck the data extraction class
+assembly:
+    - get logging module and implement verbosity levels. Have a tmqm bar if verbosity is not printing something every iteration.
+    - always output ff optimized structures together with original structure
 
 
 

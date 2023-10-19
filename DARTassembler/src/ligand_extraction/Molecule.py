@@ -1255,7 +1255,7 @@ class RCA_Ligand(RCA_Molecule):
         """
         Return xtb descriptors for the molecule. Needs xtb installed.
         """
-        from src11_machine_learning.utils.utilities_ML import get_xtb_descriptors
+        from dev.src11_machine_learning.utils.utilities_ML import get_xtb_descriptors
 
         try:
             charge = self.pred_charge

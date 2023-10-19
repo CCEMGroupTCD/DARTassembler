@@ -8,14 +8,17 @@ from pathlib import Path
 from typing import Union, List, Tuple
 import json
 import re
+import tempfile
 
 from DARTassembler.src.assembly.stk_utils import stkBB_to_networkx_graph
 from DARTassembler.src.constants.Periodic_Table import DART_Element as element
+from DARTassembler.src.ligand_extraction.io_custom import read_xyz
+from DARTassembler.src.ligand_extraction.utilities import angle_between_ab_ac_vectors
 
 from DARTassembler.src.ligand_extraction.utilities_Molecule import original_metal_ligand
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Molecule, RCA_Ligand
 from DARTassembler.src.ligand_extraction.utilities_graph import graphs_are_equal, \
-    get_sorted_atoms_and_indices_from_graph, view_graph
+    get_sorted_atoms_and_indices_from_graph, view_graph, graph_from_graph_dict
 from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word
 
 atomic_number_Hg = 80
@@ -58,6 +61,7 @@ class TransitionMetalComplex:
         self.spin = spin
 
         self.metal = self.atomic_props["atoms"][self.metal_idx]
+        self.metal_position = [self.atomic_props['x'][self.metal_idx], self.atomic_props['y'][self.metal_idx], self.atomic_props['z'][self.metal_idx]]
         self.total_charge = self.charge  # deprecated, use self.charge instead
 
         assert sorted(self.graph.nodes) == list(range(len(self.graph.nodes))), f"The graphs indices are not in order: {list(self.graph.nodes)}"
@@ -71,13 +75,14 @@ class TransitionMetalComplex:
                                                             graph=self.graph
                                                             )
 
+        self.donor_indices = sorted(self.graph.neighbors(self.metal_idx))
+        self.donor_elements = [self.atomic_props['atoms'][idx] for idx in self.donor_indices]
+        self.donor_positions = [[self.atomic_props['x'][idx], self.atomic_props['y'][idx], self.atomic_props['z'][idx]] for idx in self.donor_indices]
+
         self.functional_groups = {key: lig['donor_elements'] for key, lig in ligand_props.items()}
-        self.donor_elements = [el for elements in self.functional_groups.values() for el in elements]
+        assert sorted(self.donor_elements) == sorted([el for elements in self.functional_groups.values() for el in elements]), f"The donor indices {self.donor_indices} do not match the donor elements {self.donor_elements}!"
 
         self.mol_id = self.create_random_name()
-
-
-
 
 
     @staticmethod
@@ -208,8 +213,9 @@ class TransitionMetalComplex:
 
         complex_properties['ligand_props'] = props['ligand_props']
         complex_properties['metal_oxi_state'] = props['metal_oxi_state']
-        complex_properties['spin'] = props['spin']
+        complex_properties['spin'] = int(props['spin'])
         complex_properties['metal'] = props['metal']
+        complex_properties['metal_idx'] = props['metal_idx']
         complex_properties['charge'] = props['charge']
         complex_properties['mol_id'] = props['mol_id']
 
@@ -277,31 +283,95 @@ class TransitionMetalComplex:
 
     @classmethod
     def from_json(cls,
-                  path: Union[Path, str]
+                    path: Union[Path, str],
+                    xyz: Union[Path, str] = None
                   ):
         """
         Read TransitionMetalComplex from json file and return it.
+        :param path: Union[Path, str]
+        :param xyz: Union[Path, str] = None. If given, the xyz file will be used for the coordinates instead of the one in the json file.
         """
+        try:
+            with open(path, "r") as file:
+                properties = json.load(file)
+        except:
+            raise ValueError(f"Could not read json file {path}!")
 
-        a = cls()
-        # vielleicht mit: in der init: if complex is None: pass -> leeres objekt und dann hier fuellen
+        try:
+            is_old_example_json = 'mol' in properties['complex'].keys()
+        except:
+            is_old_example_json = False
 
-        with open(path, "r") as file:
-            properties = json.load(file)
+        if is_old_example_json:
+            init_dict = cls.get_init_dict_from_old_json_which_works_for_the_Pd_Ni_example(properties)
+        else:
+            init_dict = cls.get_init_dict_from_json(properties)
 
-        if not {'ligand_props', 'total_charge', 'mol', 'name', 'functional_groups',
-                'mol_id'}.issubset(set(properties.keys())):
-            raise KeyError("Missing keys in input json for TMC generation")
+        if xyz is not None:
+            xyz = Path(xyz).resolve()
+            if not xyz.exists():
+                raise ValueError(f"The provided xyz file {xyz} does not exist!")
 
-        a.mol = RCA_Molecule.read_from_mol_dict(properties["mol"])
-        a.graph = a.mol.graph
+            elements, coords = read_xyz(xyz)
+            same_elements = elements == init_dict['atomic_props']['atoms']
+            if not same_elements:
+                raise ValueError(f"The elements in the xyz file {xyz} do not match the elements in the json file {path}!")
 
-        del properties["mol"]
+            # Replace coordinates
+            init_dict['atomic_props']['x'] = coords[:, 0].tolist()
+            init_dict['atomic_props']['y'] = coords[:, 1].tolist()
+            init_dict['atomic_props']['z'] = coords[:, 2].tolist()
 
-        for k, v in properties.items():
-            a.__setattr__(k, v)
+        return cls(**init_dict)
 
-        return a
+    @staticmethod
+    def get_init_dict_from_json(properties: dict) -> dict:
+        comp = properties['complex']
+
+        metal_idx = [idx for idx, el in enumerate(comp['atomic_props']['atoms']) if el == comp['metal']]
+        assert len(metal_idx) == 1, f"Expected 1 metal centre, found {len(metal_idx)}."
+        metal_idx = metal_idx[0]
+
+        spin = int(comp['spin'])
+
+        return dict(
+                atomic_props=comp['atomic_props'],
+                graph=graph_from_graph_dict(comp['graph_dict']),
+                metal_oxi_state=comp['metal_oxi_state'],
+                metal_idx=metal_idx,
+                charge=comp['charge'],
+                ligand_props=comp['ligand_props'],
+                spin=spin,
+                )
+
+    @staticmethod
+    def get_init_dict_from_old_json_which_works_for_the_Pd_Ni_example(properties: dict) -> dict:
+        """
+        Read TransitionMetalComplex from json file and return it. This is the old version which works for jsons in the old format for the Pd_Ni cross coupling example.
+        """
+        is_example_json = [str(prop['Metal']) for prop in properties['assembly_input_settings']['Batches']] == ["{'element': 'Pd', 'oxidation_state': 2, 'spin': 1}", "{'element': 'Ni', 'oxidation_state': 2, 'spin': 1}"]
+        assert is_example_json, "This method is only for the old example jsons!"
+
+        comp = properties['complex']
+        mol = comp['mol']
+        spin = int([prop for prop in comp['ligand_props'].values()][0]['Metal Spin:'])  # get spin from ligand props
+        charge = comp['total_charge']
+        metal_idx = [idx for idx, el in enumerate(mol['atomic_props']['atoms']) if el in ['Pd', 'Ni']][0]
+        metal_os = 2  # hard coded because this is only for the old example run where this always was 2 for both Pd and Ni
+        ligand_props = comp['ligand_props']
+        for idx, lig in ligand_props.items():
+            lig['donor_elements'] = comp['functional_groups'][idx]
+        return dict(
+            atomic_props=mol['atomic_props'],
+            graph=graph_from_graph_dict(mol['graph_dict']),
+            metal_oxi_state=metal_os,
+            metal_idx=metal_idx,
+            charge=charge,
+            ligand_props=ligand_props,
+            spin=spin,
+            )
+
+
 
     def get_com_format_string(self,
                               basis_set_dict: dict,
@@ -486,5 +556,84 @@ SDD\n
 """
         gaussian_string = header + coordinates + "\n" + metal_basis_set + basis_set_string + "\n" +  final_lines
         return gaussian_string
+
+    def get_donor_indices_from_indices_or_elements(self, atoms: List[Union[str,int]]) -> Union[int, List[int]]:
+        """
+        Convert atom symbols to indices if unique, otherwise raise error.
+        :param atoms: List of atom symbols or indices
+        :return: List of atom indices or single atom index if only one atom was provided
+        """
+        if isinstance(atoms, str) or isinstance(atoms, int):
+            list_provided = False
+            atoms = [atoms]
+        else:
+            list_provided = True
+
+        atom_indices = []
+        for idx, atom in enumerate(atoms):
+            if isinstance(atom, int):
+                atom_indices.append(atom)
+            elif isinstance(atom, str):
+                if atom not in self.donor_elements:
+                    raise ValueError(f"Element {atom} is not in donor elements {self.donor_elements}!")
+                elif self.donor_elements.count(atom) > 1:
+                    raise ValueError(f"Element {atom} is not unique in donor elements {self.donor_elements}!")
+                else:
+                    idx = [idx for idx, el in zip(self.donor_indices, self.donor_elements) if el == atom][0]
+                    atom_indices.append(idx)
+            else:
+                raise ValueError(f"Expected atom index or symbol, got {type(atom)}!")
+
+        if not list_provided:
+            atom_indices = atom_indices[0]
+
+        return atom_indices
+
+    def get_bite_angle(self, atoms: Union[int, str, List[Union[str, int]]]) -> float:
+        """
+        Calculates the bite angle between two coordinating atoms with the metal atom as the vertex.
+        """
+        if not len(atoms) == 2:
+            raise ValueError(f"Expected 2 atom indices, got {len(atoms)}!")
+
+        atom_indices = self.get_donor_indices_from_indices_or_elements(atoms)
+
+        if not all(idx in self.donor_indices for idx in atom_indices):
+            raise ValueError(f"Atom indices {atom_indices} are not in the donor indices {self.donor_indices}!")
+
+        positions = [self.metal_position] + [[self.atomic_props['x'][idx], self.atomic_props['y'][idx], self.atomic_props['z'][idx]] for idx in atom_indices]
+
+        # Calculate the angle between the three points, where the returned angle is the one at the first point (the metal)
+        angle = angle_between_ab_ac_vectors(*positions, degrees=True)
+
+        return angle
+
+    def get_donor_metal_bond_length(self, atom: Union[str, int]) -> float:
+        idx = self.get_donor_indices_from_indices_or_elements(atom)
+        pos1 = self.metal_position
+        pos2 = [self.atomic_props['x'][idx], self.atomic_props['y'][idx], self.atomic_props['z'][idx]]
+
+        return np.linalg.norm(np.array(pos1) - np.array(pos2))
+
+    def get_xtb_descriptors(self, n_unpaired: int = None):
+        from dev.src11_machine_learning.utils.utilities_ML import get_xtb_descriptors
+        elements, coordinates = self.mol.get_elements_list(), self.mol.get_xyz_as_array()
+        desc = get_xtb_descriptors(xyz=(elements, coordinates), charge=self.charge, n_unpaired=n_unpaired)
+
+        return desc
+
+
+if __name__ == '__main__':
+
+    # old_complex_path = '/Users/timosommer/PhD/projects/RCA/projects/DART/examples/Pd_Ni_Cross_Coupling/dev/output/data_before_restarts/DART_Example_Pd_Ni_Complexes/batches/P_N_Donors_Ni_Metal_Centre/complexes/ABADEZIX_PN_Ni/ABADEZIX_PN_Ni_data.json'
+    # new_complex_path = '/Users/timosommer/PhD/projects/RCA/projects/DART/testing/integration_tests/assembly/data_output/batches/Integration_test_1/complexes/AZEPOBOB/AZEPOBOB_data.json'
+    # old_complex = TransitionMetalComplex.from_json(old_complex_path)
+    # new_complex = TransitionMetalComplex.from_json(new_complex_path)
+    # bite_angle2 = old_complex.get_bite_angle(['P', 'N'])
+
+    xtb_comp_path = '/Users/timosommer/PhD/projects/RCA/projects/DART/examples/Pd_Ni_Cross_Coupling/dev/xtb_calculations/relaxations_new_8e-4/complexes/ORIYEBOD_PN_Pd/ORIYEBOD_PN_Pd_data.json'
+    xtb_complex = TransitionMetalComplex.from_json(xtb_comp_path)
+    xtb = xtb_complex.get_xtb_descriptors()
+
 
 

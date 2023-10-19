@@ -486,4 +486,7 @@ class DARTAssembly(object):
             ligand_db = LigandDB.from_json(json_=self.ligand_json, type_="Ligand").get_lig_db_in_old_format()
         self.last_ligand_db_path = self.ligand_json
 
+        if len(ligand_db) == 0:
+            raise LigandCombinationError(f"No ligands found in the ligand database {self.ligand_json}. Please check your ligand database files.")
+
         return ligand_db

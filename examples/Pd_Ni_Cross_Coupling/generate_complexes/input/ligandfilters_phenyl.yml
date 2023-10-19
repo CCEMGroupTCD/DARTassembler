@@ -1,0 +1,10 @@
+input_ligand_db_path:           # path or nothing
+output_ligand_db_path: 'output/ligand_databases/phenyl/ligand_db_phenyl.jsonlines'   # path or nothing
+
+filters:
+  - filter: 'denticities_of_interest'
+    denticities_of_interest: [1]
+
+  - filter: 'stoichiometry'
+    stoichiometry: C6H5
+    denticities:

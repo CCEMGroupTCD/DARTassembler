@@ -197,17 +197,6 @@ class PlacementRotation:
                 functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())]
             )
 
-            #todo: this is a bit of a bad fix that we need to be aware of. For the example we need to rotate the 6 membered ring so that it is perpendicular with the xy-plane
-            if ligand.stoichiometry == "C6H5":
-                print("!!!Warning!!! --> We are entering a section of the code that is only used in the example --> This needs to be addressed with Timo")
-                #This is a highly specialised if statement
-                #Here we orientate the phenyl ligand vertical
-                bb_for_complex = bb_for_complex.with_rotation_about_axis(angle=65 * (np.pi / 180.0), axis=bb_for_complex.get_centroid(), origin=np.array((0, 0, 0)))
-
-                #And rotate it about the z-axis to leave some more room for the large bidentate ligand
-                bb_for_complex = bb_for_complex.with_rotation_about_axis(angle=-25 * (np.pi / 180.0), axis=np.array((0, 0, 1)), origin=np.array((0, 0, 0)))
-
-
             return bb_for_complex
 
     @staticmethod
