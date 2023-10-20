@@ -11,6 +11,7 @@ from DARTassembler.src.assembly.ligands import ChooseRandomLigands
 from DARTassembler.src.assembly.Isomer import BuildIsomers
 from DARTassembler.src.assembly.Optimise import OPTIMISE
 from DARTassembler.src.assembly.Post_Filter import PostFilter
+from tqdm import tqdm
 import random
 import warnings
 import pandas as pd
@@ -23,10 +24,11 @@ from DARTassembler.src.assembly.Assembly_Output import AssemblyOutput, BatchAsse
 import ase
 from copy import deepcopy
 import numpy as np
-
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
-
 warnings.simplefilter("always")
+import logging
+from rdkit import RDLogger
+RDLogger.DisableLog('rdApp.*') # Disable rdkit warnings
 
 
 class DARTAssembly(object):
@@ -50,6 +52,7 @@ class DARTAssembly(object):
         self.complex_name_length = self.settings.complex_name_length
         self.overwrite_existing_output = self.settings.overwrite_output_path
         self.batches = self.settings.Batches
+        self.n_batches = len(self.batches)
 
         self.df_info = None
         self.gbl_outcontrol = AssemblyOutput(outdir=self.output_path, ensure_empty_output_dir=self.overwrite_existing_output)
@@ -58,6 +61,11 @@ class DARTAssembly(object):
         self.random_seed = None
         self.topology_similarity = None
         self.metal_list = None
+
+        # Set up logging
+        verbosity2logging = {0: logging.ERROR, 1: logging.WARNING, 2: logging.INFO, 3: logging.DEBUG}
+        logging.basicConfig(level=verbosity2logging[self.verbose], format='%(message)s')
+
 
     def run_all_batches(self):
         """
@@ -68,6 +76,8 @@ class DARTAssembly(object):
         self.assembled_complex_names = []
         self.last_ligand_db_path = None     # to avoid reloading the same ligand database in the next batch
 
+        logging.info(f"Starting DART Assembler. Output will be saved to {self.output_path}.")
+        logging.info(f"Running {self.n_batches} batches...")
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
             self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction,\
@@ -95,18 +105,20 @@ class DARTAssembly(object):
         self.gbl_outcontrol.save_run_info_table(self.df_info)
 
         # Print nice summary per batch
-        print("\n\n============  Summary per batch  ============")
+        logging.info("\n============  Summary per batch  ============")
         for batch_idx, batch in enumerate(self.batches):
             df = self.df_info[self.df_info['batch idx'] == batch_idx]
             batch_name = df['batch name'].iloc[0]
-            print(f"Batch {batch_idx} ('{batch_name}'):")
+            logging.info(f"Batch {batch_idx} ('{batch_name}'):")
             self.print_success_rate(df)
 
         # Print total summary of run
-        print("============  Total summary of run  ============")
+        logging.info("\n============  Total summary of DART assembly  ============")
         self.print_success_rate(self.df_info)
-        print(f"Total runtime for assembly: {self.runtime}")
-
+        n_success = self.df_info['success'].sum()
+        logging.info(f"Output files saved to {self.output_path}")
+        logging.info(f"Total runtime for assembling {n_success} complexes: {self.runtime}")
+        logging.info('Exiting DART Assembler.')
 
         return
 
@@ -117,14 +129,15 @@ class DARTAssembly(object):
         successful_assembly_notes = ['no optimization', 'optimized']
         post_filter_notes = '\n'.join([f'    - {filter}: {n}' for filter, n in post_filters.items() if filter not in successful_assembly_notes])
 
-        print(f"  - {n_total} complexes tried, {n_success} complexes successfully assembled.")
-        print(f"  - {n_total - n_success} complexes failed because of post filters:")
-        print(post_filter_notes)
+        logging.info(f"  - {n_total} complexes tried, {n_success} complexes successfully assembled.")
+        if post_filter_notes != '':
+            logging.info(f"  - {n_total - n_success} complexes failed because of post-filters:")
+            logging.info(post_filter_notes)
 
         return
 
     def run_batch(self):
-        print(f"\n\n\n\n**********Batch: {self.batch_name}**********\n\n\n\n")
+        logging.info(f"====================      Batch {self.batch_idx}: {self.batch_name}      ====================")
 
         # Here we load the ligand database and avoid reloading the same ligand database if it is the same as the last one
         if self.check_if_reload_database():
@@ -144,11 +157,19 @@ class DARTAssembly(object):
                                         )
         ligand_chooser = choice.choose_ligands()
 
+
+        if self.ligand_choice == 'random':
+            progressbar = tqdm(total=self.max_num_assembled_complexes, desc='Assembling complexes', unit=' complexes')
+        elif self.ligand_choice == 'all':
+            progressbar = tqdm(desc='Assembling complexes', unit=' complexes')
+        else:
+            raise ValueError(f"Unknown ligand choice '{self.ligand_choice}'")
+
         j = 0  # Assembly iteration we are on
         batch_sum_assembled_complexes = 0  # Number of assembled complexes produced
         # Note: j is not always equal to batch_sum_assembled_complexes
         while choice.if_make_more_complexes(batch_sum_assembled_complexes):
-            print(f"###############################__Attempting_Assembly_of_Complex_#_{j}__###############################")
+            logging.debug(f"###############################__Attempting_Assembly_of_Complex_#_{j}__###############################")
             #
             #
             # 1. Choose Random seed
@@ -204,7 +225,7 @@ class DARTAssembly(object):
             # 7. Post-Process
             # Post process includes error detection and optimization
             Post_Process_Complex_List = []
-            print("entering post process")
+            logging.debug("entering post process")
             for complex, building_blocks in zip(Assembled_Complex_list, Building_Block_list):
                 complex, complex_is_good, ff_movie, note = self.relax_and_check_structure(complex, building_blocks, ligands)
 
@@ -220,9 +241,10 @@ class DARTAssembly(object):
                     self.save_successfully_assembled_complex(tmc, ff_movie, metal_charge=int(self.metal_ox_state), ligands=ligands, note=note)
                     Post_Process_Complex_List.append(complex)
                     batch_sum_assembled_complexes += 1
+                    progressbar.update(1)
                 else:
                     self.save_failed_assembled_complex(complex=tmc, ff_movie=ff_movie, ligands=ligands, note=note)
-            print("Leaving post process")
+            logging.debug("Leaving post process")
 
             #
             #
@@ -241,6 +263,9 @@ class DARTAssembly(object):
             if j == 138746543956439563475683496736:
                 exit()
             j += 1
+
+        progressbar.close()
+        logging.info('')
 
         return
 
@@ -283,7 +308,7 @@ class DARTAssembly(object):
                                      ).closest_distance()
 
         if not complex_is_good:
-            warnings.warn("!!!Warning!!! -> None detect in optimiser -> Returning None")
+            logging.debug("!!!Warning!!! -> None detect in optimiser -> Returning None")
             ff_movie = None
             note = 'clashing ligands'
         elif self.optimisation_instruction == False:
@@ -441,8 +466,8 @@ class DARTAssembly(object):
         Check if the complex can be assembled based on certain conditions to avoid errors.
         """
         if not RCA.planar_check_(ligands):
-            warnings.warn(
-                "!!!Warning!!! -> The program has encountered a non_planar tridentate ligand, The program as of yet can not assemble with this ligand, skipping to next assembly")
+            logging.warning(
+                "Skipping complex: non-planar tridentate ligand (not yet supported)")
             self.add_batch_info(success=False, reason='non-planar tridentate', ligands=ligands)
             return False
 
@@ -455,8 +480,8 @@ class DARTAssembly(object):
                 pass
 
         if hydride_found:
-            warnings.warn(
-                "!!!Warning!!! -> The program has encountered a hydride. The program as of yet can not assemble with this ligand, skipping to next assembly.")
+            logging.warning(
+                "Skipping complex: hydride (not yet supported)")
             self.add_batch_info(success=False, reason='hydride', ligands=ligands)
             return False
 

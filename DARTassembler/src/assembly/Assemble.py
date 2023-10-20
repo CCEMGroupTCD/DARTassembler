@@ -19,6 +19,7 @@ from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 import stk, os
 import warnings
 from pathlib import Path
+import logging
 
 warnings.simplefilter("always")
 
@@ -34,13 +35,13 @@ class PlacementRotation:
         """
         This method allows to visualize in a blocking way during debug but is not essential at all.
         """
-        print("initializing visualization")
+        logging.debug("initializing visualization")
         stk.MolWriter().write(input_complex, 'input_complex.mol')
         os.system('obabel .mol input_complex.mol .xyz -O  output_complex.xyz')
         os.system("ase gui output_complex.xyz")
         os.system("rm -f input_complex.mol")
         os.system("rm -f output_complex.xyz")
-        print("visualization complete")
+        logging.debug("visualization complete")
 
     def touch_file(self, file_path: str):
         # Convert the file path to a Path object
@@ -130,7 +131,7 @@ class PlacementRotation:
                 else:
                     pass
             else:
-                warnings.warn("!!!Warning!!! -> None type complex detected in list -> skipping to next complex")
+                logging.debug("!!!Warning!!! -> None type complex detected in list -> skipping to next complex")
 
     @staticmethod
     def process_single_atom(bb_for_complex):
@@ -141,7 +142,7 @@ class PlacementRotation:
         for atom in stk_mol.GetAtoms():
             pass
             if atom.GetSymbol() == "H":
-                #print(atom.GetIdx())
+                #logging.debug(atom.GetIdx())
                 edit_mol.RemoveAtom(atom.GetIdx() - len(num_removed_atoms))
                 num_removed_atoms.append(1)
             else:
@@ -252,8 +253,7 @@ class PlacementRotation:
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Middle_Left()
 
                 else:
-                    print(f"!!!Fatal Error!!! -> Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 0) -> Exiting Program ...")
-                    raise ValueError
+                    raise ValueError(f"!!!Fatal Error!!! -> Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 0) -> Exiting Program ...")
                 bb_for_complex = self.Process_Monodentate(ligand=ligand, coordinates=coords)
 
 
@@ -276,8 +276,7 @@ class PlacementRotation:
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Bottom()
 
                 else:
-                    print(f"!!!Fatal Error!!! -> Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 1) -> Exiting Program ...")
-                    raise ValueError
+                    raise ValueError(f"!!!Fatal Error!!! -> Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 1) -> Exiting Program ...")
 
                 bb_for_complex = self.Process_Monodentate(ligand=ligand, coordinates=coords)
 
@@ -301,8 +300,7 @@ class PlacementRotation:
                     bb_for_complex = nonplanar_tetra_solver(stk_bb=building_block, ligand=ligand)
                     bb_for_complex = stk.BuildingBlock.init_from_molecule(bb_for_complex, functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg]', bonders=(0,), deleters=(), ), ], )
                 else:
-                    print("!!!Fatal Error!!! -> Program unable to determine if the tetradentate ligand is planar or not -> Exiting program")
-                    raise ValueError
+                    raise ValueError("!!!Fatal Error!!! -> Program unable to determine if the tetradentate ligand is planar or not -> Exiting program")
 
 
             elif ligand.denticity == 3:
@@ -330,11 +328,9 @@ class PlacementRotation:
                     if topology_list == [3, 2, 0] or [3, 2, 1]:
                         bb_for_complex = stk.BuildingBlock.init_from_molecule(compl_constructed_mol, functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())])
                     else:
-                        print(f"!!!Fatal Error!!! -> Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 1) -> Exiting Program ...")
-                        raise ValueError
+                        raise ValueError(f"!!!Fatal Error!!! -> Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 1) -> Exiting Program ...")
                 else:
-                    print("!!!Fatal Error!!! -> the geometry of the tridentate ligand is unresolved -> Exiting Program")
-                    raise ValueError
+                    raise ValueError("!!!Fatal Error!!! -> the geometry of the tridentate ligand is unresolved -> Exiting Program")
 
 
 
@@ -344,14 +340,14 @@ class PlacementRotation:
                 #
                 bidentate_box_choice_instruction = build_options['bidentate_rotator']
                 # If this option is `auto`, choose the box shape based on the planarity of the ligand
-                print("rot123:" + str(build_options['bidentate_rotator']))
+                logging.debug("rot123:" + str(build_options['bidentate_rotator']))
                 if build_options['bidentate_rotator'] == 'auto':
                     if ligand.check_bidentate_planarity():
-                        print("h chosen")
+                        logging.debug("h chosen")
                         bidentate_box_choice_instruction = 'horseshoe'
                     else:
                         bidentate_box_choice_instruction = 'slab'
-                        print("s chosen")
+                        logging.debug("s chosen")
 
                 if topology_list == [3, 2, 0] or topology_list == [3, 2, 1]:
                     coord = Bidentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Bottom()
@@ -367,8 +363,7 @@ class PlacementRotation:
                     bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Left", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=bidentate_box_choice_instruction)
 
                 else:
-                    print("!!!Fatal_Error!!! -> Topology not accounted for in the context of bidentate ligands.py -> Exiting Program")
-                    raise ValueError
+                    raise ValueError("!!!Fatal_Error!!! -> Topology not accounted for in the context of bidentate ligands.py -> Exiting Program")
 
 
 
@@ -391,8 +386,7 @@ class PlacementRotation:
                     # No rotation is required
                     pass
                 else:
-                    print("!!!Fatal_Error!!! -> Error involving the orientation of the pentadenate ligand-> Exiting Program")
-                    raise ValueError
+                    raise ValueError("!!!Fatal_Error!!! -> Error involving the orientation of the pentadenate ligand-> Exiting Program")
 
                 penta_topology = stk.metal_complex.Porphyrin(metals=create_placeholder_Hg_bb(), ligands=tetra_bb_for_penta)
 
@@ -401,8 +395,7 @@ class PlacementRotation:
                     functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), ), ])
 
             else:
-                print("!!!Fatal Error!!! -> Unknown Ligand Denticity -> Exiting Program")
-                raise ValueError
+                raise ValueError("!!!Fatal Error!!! -> Unknown Ligand Denticity -> Exiting Program")
 
             #
             # Here we store all the ligand building blocks and their denticities

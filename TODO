@@ -36,6 +36,7 @@ example:
 assembly:
     - get logging module and implement verbosity levels. Have a tmqm bar if verbosity is not printing something every iteration.
     - always output ff optimized structures together with original structure
+    - refactor the ligand choice, this seems a little unstable
 
 
 

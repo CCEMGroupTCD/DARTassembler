@@ -4,6 +4,7 @@ from rdkit.Chem import rdmolfiles
 import numpy as np
 import re
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_coordinates_and_elements_from_OpenBabel_mol, get_concatenated_xyz_string_from_coordinates
+import logging
 
 class OPTIMISE:
     def __init__(self, isomer, ligand_list, building_blocks, nsteps: int=50):
@@ -13,10 +14,10 @@ class OPTIMISE:
         self.nsteps = nsteps
 
     def Optimise_STK_Constructed_Molecule(self, return_ff_movie: bool = False):
-        # print("1 " + str(type(self.isomer)))
+        # logging.debug("1 " + str(type(self.isomer)))
 
-        print("Beginning Optimisation")
-        # print("2 " + str(type(self.isomer)))
+        logging.debug("Beginning Optimisation")
+        # logging.debug("2 " + str(type(self.isomer)))
         # todo: Return the rotated stk building blocks as well, they may still be of use to someone
         # REFERENCE: https://github.com/hjkgrp/molSimplify/blob/c3776d0309b5757d5d593e42db411a251b558e59/molSimplify/Scripts/structgen.py#L658
         # REFERENCE: https://gist.github.com/andersx/7784817
@@ -77,7 +78,7 @@ class OPTIMISE:
             i += 3
         new_position_matrix = np.array(new_position_matrix)
         self.isomer = self.isomer.with_position_matrix(new_position_matrix)
-        # print("3 "+str(type(self.isomer)))
+        # logging.debug("3 "+str(type(self.isomer)))
         #
         #
         # UPDATE THE COORDINATES OF THE STK BUILDING BLOCK WITH THE NEW COORDINATES
@@ -86,7 +87,7 @@ class OPTIMISE:
         for bb in self.building_blocks.values():
             bb = mercury_remover(bb)
             pos_matrix = bb.get_position_matrix()
-            # print(pos_matrix)
+            # logging.debug(pos_matrix)
             for atom in range(bb.get_num_atoms()):
                 pos_matrix[atom] = new_position_matrix[atom + 1 + sum(num_of_lig_atoms)]
             num_of_lig_atoms.append(bb.get_num_atoms())

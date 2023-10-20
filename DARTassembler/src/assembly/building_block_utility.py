@@ -1,7 +1,6 @@
 import os
 from openbabel import openbabel as ob
 import stk
-from openbabel import pybel
 import itertools
 from rdkit import Chem
 from rdkit.Chem import rdmolfiles
@@ -9,6 +8,9 @@ from DARTassembler.src.ligand_filters.constants_BoxExcluder import get_boxes, in
 from DARTassembler.src.assembly.stk_extension import *
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
 from copy import deepcopy
+import logging
+from openbabel import pybel
+pybel.ob.obErrorLog.StopLogging()   # Remove Openbabel warnings
 
 
 def rotate_tetradentate_bb(tetradentate_bb, ligand_):
@@ -189,8 +191,8 @@ def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, build_
         dict_[angle] = float(total_atoms_in_box)
 
     minimum_angle = min(dict_, key=dict_.get)
-    print("minimum angle = " + str(minimum_angle) + " boxes entered " + str(dict_box[str(minimum_angle)]))
-    # print(dict_box)
+    logging.debug("minimum angle = " + str(minimum_angle) + " boxes entered " + str(dict_box[str(minimum_angle)]))
+    # logging.debug(dict_box)
 
     #
     #
@@ -203,7 +205,7 @@ def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, build_
     centroid = stk_Building_Block.get_centroid()
     # if the angle between the centroid of a bidentate ligand and the xy plane is less than 10 degree then the ligand probably needs to sit planar so we rotate it like that
     if (np.arcsin(list(centroid)[2] / np.linalg.norm(centroid)) * (180 / np.pi)) < 2 and (top_list != [3, 2, 0]):
-        print("forcing bidentate planar")
+        logging.debug("forcing bidentate planar")
         if not bool_placed:
             stk_Building_Block = stk_Building_Block.with_rotation_to_minimize_angle(start=centroid,
                                                                                     target=np.array([10, 0, 0]),
@@ -215,7 +217,7 @@ def Bidentate_Rotator(ligand_bb, ligand, top_list=None, bool_placed=None, build_
                                                                                     axis=np.array([0, 1, 0]),
                                                                                     origin=np.array((x2, y2, z2)))
     else:
-        print("Not forcing bidentate planar")
+        logging.debug("Not forcing bidentate planar")
         pass
     """
 
@@ -279,7 +281,7 @@ def nonplanar_tetra_solver(stk_bb, ligand):
         all_Energies.append(Energy)  # list of all the energies of pacing dummy metal at each midpoint
         all_midpoints.append(mid_points)
         del ligand_copy
-        print("iteration done")
+        logging.debug("iteration done")
     minimum_energy = min(all_Energies)
     minimum_energy_index = all_Energies.index(minimum_energy)
     ligand.add_atom(symbol="Hg", coordinates=[all_midpoints[minimum_energy_index][0], all_midpoints[minimum_energy_index][1],
@@ -384,7 +386,7 @@ def building_block_to_mol(bb):
 
 def get_energy_stk(building_block):
     if building_block is None:
-        print("in get energy function returning none")
+        logging.debug("in get energy function returning none")
         return None
     else:
         string = building_block_to_mol(building_block)  # Here there is a dependency on the above ligand_to_mol function.

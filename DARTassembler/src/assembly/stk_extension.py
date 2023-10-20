@@ -7,7 +7,7 @@ from stk.molecular.topology_graphs.topology_graph.vertex import Vertex
 from scipy.spatial.distance import euclidean
 from stk.utilities import get_projection
 from DARTassembler.src.constants.Periodic_Table import DART_Element as element
-
+import logging
 
 class TridentateLigandVertex(Vertex):
     """
@@ -429,15 +429,15 @@ class Monodentate_Back_Right(MetalComplex):
 
 class monodentate_coordinating_distance:
     def __init__(self, metal, ligand, offset: float = 0):
-        # todo: it is super important that we site the source of the covallent radii
+        # todo: it is super important that we cite the source of the covalent radii
         self.metal = metal
         self.ligand = ligand
         self.offset = offset
         self.metal_covalent_radius = float(element(self.metal).covalent_radius) / 100.0
         self.ligand_covalent_radius = float(element(ligand.local_elements[0]).covalent_radius) / 100.0
-        print(f"Monodentate: The metal atomic radius is:{self.metal_covalent_radius}")
-        print(f"Monodentate: The ligand atomic radius is:{self.ligand_covalent_radius}")
-        print("#####")
+        logging.debug(f"Monodentate: The metal atomic radius is:{self.metal_covalent_radius}")
+        logging.debug(f"Monodentate: The ligand atomic radius is:{self.ligand_covalent_radius}")
+        logging.debug("#####")
 
     def Top(self):
         return [0, 0, abs(self.metal_covalent_radius + self.ligand_covalent_radius + self.offset)]
@@ -471,14 +471,14 @@ class Bidentate_coordinating_distance:
         self.coord_atom_dist = np.linalg.norm(np.array(self.ligand_coord_0) - np.array(self.ligand_coord_1))
         self.median = 0.5 * np.sqrt((2 * (self.ligand_covalent_radius_0 + self.metal_covalent_radius) ** 2) + (2 * (self.ligand_covalent_radius_1 + self.metal_covalent_radius) ** 2) - self.coord_atom_dist ** 2)
 
-        print(f"Bidentate: The metal atomic radius is:{self.metal_covalent_radius}")
-        print(f"Bidentate: The ligand atomic radius is:{self.ligand_covalent_radius_0}")
-        print(f"Bidentate: The ligand atomic radius is:{self.ligand_covalent_radius_1}")
-        print("#####")
+        logging.debug(f"Bidentate: The metal atomic radius is:{self.metal_covalent_radius}")
+        logging.debug(f"Bidentate: The ligand atomic radius is:{self.ligand_covalent_radius_0}")
+        logging.debug(f"Bidentate: The ligand atomic radius is:{self.ligand_covalent_radius_1}")
+        logging.debug("#####")
 
     def calculate_mean_distance(self):
         if np.isnan(self.median):
-            warnings.warn("!!!Warning!!! -> nan encountered in Bidentate placer -> Returning default value")
+            logging.debug("!!!Warning!!! -> nan encountered in Bidentate placer -> Returning default value")
             return 1.6
         else:
             return self.median

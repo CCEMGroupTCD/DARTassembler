@@ -2,6 +2,7 @@ import DARTassembler.src.assembly.stk_extension as stk_e
 import numpy as np
 import stk
 from DARTassembler.src.assembly.building_block_utility import get_energy_stk, mercury_remover
+import logging
 
 class BuildIsomers:
     def __init__(self, topology, building_blocks_list, metal_input, charge_input, denticity_list, return_all_isomers, opt_choice: bool, ligand_list):
@@ -88,11 +89,11 @@ class BuildIsomers:
             for j in range(len(self.building_blocks_list)):
                 if self.denticity_list[j] == 4:
 
-                    # print(building_blocks_list[j].get_position_matrix())
+                    # logging.debug(building_blocks_list[j].get_position_matrix())
                     building_blocks_rotated_tetra[j] = self.building_blocks_list[j].with_rotation_about_axis(angle=180.0 * (np.pi / 180.0), axis=np.array((1, 0, 0)), origin=np.array((0, 0, 0)), )
                 else:
-                    # print(building_blocks_list[j].get_position_matrix())
-                    # print(list(building_blocks_list[j].get_atoms()))
+                    # logging.debug(building_blocks_list[j].get_position_matrix())
+                    # logging.debug(list(building_blocks_list[j].get_atoms()))
 
                     building_blocks_rotated_tetra[j] = self.building_blocks_list[j]
             self.ALL_building_blocks.extend([self.building_blocks_list, building_blocks_rotated_tetra])

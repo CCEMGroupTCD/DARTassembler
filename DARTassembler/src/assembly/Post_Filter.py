@@ -4,6 +4,7 @@ import warnings
 import os
 import stk
 from DARTassembler.src.constants.Periodic_Table import DART_Element
+import logging
 
 elem_cov_radii = {'H': 0.32, 'He': 0.46, 'Li': 1.33, 'Be': 1.02, 'B': 0.85, 'C': 0.75, 'N': 0.71, 'O': 0.63, 'F': 0.64, 'Ne': 0.67, 'Na': 1.55, 'Mg': 1.39, 'Al': 1.26, 'Si': 1.16, 'P': 1.11,
                   'S': 1.03, 'Cl': 0.99, 'Ar': 0.96, 'K': 1.96, 'Ca': 1.71, 'Sc': 1.48, 'Ti': 1.36, 'V': 1.34, 'Cr': 1.22, 'Mn': 1.19, 'Fe': 1.16, 'Co': 1.11, 'Ni': 1.1, 'Cu': 1.12, 'Zn': 1.18,
@@ -25,17 +26,17 @@ class PostFilter:
         self.ligand_atom_offset = ligand_atom_offset
         self.failed_isomers = []
         self.threshold = 0.3  # Angstrom todo: needs to be tuned
-        print("Post Filter Class initialized Succesfully")
+        logging.debug("Post Filter Class initialized Succesfully")
 
     @staticmethod
     def visualize(input_complex):
-        print("initializing visualization")
+        logging.debug("initializing visualization")
         stk.MolWriter().write(input_complex, 'input_complex.mol')
         os.system('obabel .mol input_complex.mol .xyz -O  output_complex.xyz')
         os.system("ase gui output_complex.xyz")
         os.system("rm -f input_complex.mol")
         os.system("rm -f output_complex.xyz")
-        print("visualization complete")
+        logging.debug("visualization complete")
 
     def closest_distance(self) -> bool:
         # This function will detect and filter out complexes that have clashing between atoms in different ligands but it WILL NOT detect clashing between atoms of the same
@@ -57,7 +58,7 @@ class PostFilter:
                         metal_position = [0, 0, 0]
                         distance_metal = np.linalg.norm(point_1 - metal_position)
                         if distance_metal < (cov_1 + cov_metal + self.metal_offset):
-                            warnings.warn("!!!Warning!!! -> Pre-optimisation filter failed (1)-> Returning None")
+                            logging.debug("!!!Warning!!! -> Pre-optimisation filter failed (1)-> Returning None")
                             # self.visualize(self.isomer)
                             return False
                         for point_2, atom_2 in zip(values_2.get_position_matrix(), values_2.get_atoms()):  # we loop through all the positions of the atoms
@@ -66,7 +67,7 @@ class PostFilter:
                             cov_2 = elem_cov_radii[atom_2_type]
                             distance = np.linalg.norm(point_1 - point_2)  # Calculate distance
                             if distance < (cov_1 + cov_2 + self.ligand_atom_offset):  # This function shouldn't take into account ligand metal distances
-                                warnings.warn("!!!Warning!!! -> Pre-optimisation filter failed (2)-> Returning None")
+                                logging.debug("!!!Warning!!! -> Pre-optimisation filter failed (2)-> Returning None")
                                 # self.visualize(self.isomer)
                                 return False
                             else:
@@ -85,7 +86,7 @@ class PostFilter:
                 distance = np.linalg.norm(atom_1_pos[0] - atom_2_pos[0])
 
                 if distance > (((elem_cov_radii[atom_1_AN]) + (elem_cov_radii[atom_2_AN])) + self.threshold):
-                    warnings.warn("!!!Warning!!! -> Post-optimisation filter failed -> Returning None")
+                    logging.debug("!!!Warning!!! -> Post-optimisation filter failed -> Returning None")
                     return False
                 else:
                     pass

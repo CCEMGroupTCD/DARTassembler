@@ -1,3 +1,4 @@
+import logging
 intensity = 20
 sharpness = 0.5
 
@@ -16,7 +17,7 @@ class Box:
 
     def point_in_box(self, point: list):
         if len(point) != 3:
-            print("No valid point")
+            logging.debug("No valid point")
             return False
         return (self.x1 <= point[0] <= self.x2) and (self.y1 <= point[1] <= self.y2) and (self.z1 <= point[2] <= self.z2)
 
@@ -29,18 +30,18 @@ def get_boxes(denticity, planar: bool = True, input_topology=None, bool_placed_b
     # TODO Cian: Use the string in `build_options['bidentate_rotator']` which is either 'horseshoe' or 'slab' to determine which boxes to use for bidentates. The automatic option does not need to be considered here, if the user chose is as 'auto' it is already handled in the function convert_ligand_to_building_block_for_complex().
 
     box_list = list()
-    print("the type of input is: "+str(type(input_topology)))
-    print("The input topology is: "+str(input_topology))
-    print("we are in the box list section of the code")
+    logging.debug("the type of input is: "+str(type(input_topology)))
+    logging.debug("The input topology is: "+str(input_topology))
+    logging.debug("we are in the box list section of the code")
     if (denticity == 2) and ((input_topology == [2, 2]) or (input_topology == [2, 1, 1] or input_topology == [2, 1, 0]) or (input_topology == [2, 0])) and bool_placed_boxes == False:
         if build_options == 'slab':
-            print("Bidenatate Rotator: Right --> slab chosen")
+            logging.debug("Bidenatate Rotator: Right --> slab chosen")
             box_list.append(Box(-100.0, 100.0, -1.0, 1.0, 0.5, 1.0))        # Top_Plate
             box_list.append(Box(-100.0, 100.0, -1.0, 1.0, -1.0, -0.5))      # Bottom_Plate
             box_list.append(Box(-100.0, -0.1, -1.0, 1.0, -1.0, 1.0))
             box_list.append(Box(-100.0, -0.5, -100, 100, -100, 100))
         elif build_options == 'horseshoe':
-            print("Bidenatate Rotator: Left --> horseshoe chosen")
+            logging.debug("Bidenatate Rotator: Left --> horseshoe chosen")
             box_list.append(Box(-4.0, 4.0, -1.4, 1.4, 0.5, 100))            # Top_Plate
             box_list.append(Box(-4.0, 4.0, -1.4, 1.4, -100.0, -0.5))        # Bottom_Plate
             box_list.append(Box(-100, 0.5, -1.4, 1.4, -100.0, 100.0))       # Left_Plate_Big
@@ -51,13 +52,13 @@ def get_boxes(denticity, planar: bool = True, input_topology=None, bool_placed_b
 
     elif (denticity == 2) and (input_topology == [2, 2]) and bool_placed_boxes == True: # place bidentate in the plane to the left
         if build_options == 'slab':
-            print("Bidenatate Rotator: Right --> slab chosen")
+            logging.debug("Bidenatate Rotator: Right --> slab chosen")
             box_list.append(Box(-100.0, 100.0, -1.0, 1.0, 0.5, 1.0))        # Top_Plate
             box_list.append(Box(-100.0, 100.0, -1.0, 1.0, -1.0, -0.5))      # Bottom_Plate
             box_list.append(Box(0.1, 100, -1.0, 1.0, -1.0, 1.0))
             box_list.append(Box(0.5, 100, -100, 100, -100, 100))
         elif build_options == 'horseshoe':
-            print("Bidenatate Rotator: Left --> horseshoe chosen")
+            logging.debug("Bidenatate Rotator: Left --> horseshoe chosen")
             box_list.append(Box(-4.0, 4.0, -1.4, 1.4, 0.5, 100))            # Top_Plate
             box_list.append(Box(-4.0, 4.0, -1.4, 1.4, -100.0, -0.5))        # Bottom_Plate
             box_list.append(Box(-0.5, 100, -1.4, 1.4, -100.0, 100.0))       # Right_Plate_Big
