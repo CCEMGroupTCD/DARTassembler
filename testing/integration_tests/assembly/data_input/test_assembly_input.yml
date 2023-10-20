@@ -1,4 +1,4 @@
-verbose: 3
+verbose: 2            # recommended: 2.  (0, 1, 2, 3): 0 = only errors, 1 = also warnings, 2 = also info, 3 = also debug
 optimization_movie: true
 concatenate_xyz: true
 overwrite_output_path: true

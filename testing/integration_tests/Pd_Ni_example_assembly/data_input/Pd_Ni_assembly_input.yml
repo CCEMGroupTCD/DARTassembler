@@ -1,4 +1,4 @@
-verbose: 3
+verbose: 2
 optimization_movie: true          # (true, false): if true, will generate a movie of the forcefield optimization of each complex
 concatenate_xyz: true             # (true, false): if true, will save a file with all xzy files of all complexes concatenated
 overwrite_output_path: true       # (true, false): if true, will overwrite the output path if it already exists
