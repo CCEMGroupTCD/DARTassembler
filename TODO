@@ -7,8 +7,6 @@ Must:
 - work on documentation
 - assembly:
     - fix that hydrides can't be assembled
-- ligand filtering
-    - refactor output ligand db path to not overwrite and to only take the folder name, not the whole path
 
 
 Should:
