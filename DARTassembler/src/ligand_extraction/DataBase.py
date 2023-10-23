@@ -208,6 +208,7 @@ class LigandDB(MoleculeDB):
     def __init__(self, dict_):
         super().__init__(dict_=dict_)
 
+
     @classmethod
     def load_from_json(cls, path: Union[str, Path], n_max: int=None, show_progress: bool=True, only_core_ligands: bool=False):
         """
@@ -216,12 +217,22 @@ class LigandDB(MoleculeDB):
         :return: A LigandDB object
         """
         db = load_unique_ligand_db(path=path, n_max=n_max, show_progress=show_progress, molecule='class')
+
         if only_core_ligands:
             # Remove all free ligands which were not connected to the metal.
             db = {identifier: lig for identifier, lig in db.items() if lig.denticity > 0}
 
         return cls(db)
 
+    def get_reduced_df(self, max_entries: int=5) -> pd.DataFrame:
+        ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}
+        df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
+        return df_ligand_info
+
+    def save_reduced_csv(self, outpath: Union[str, Path], max_entries: int=5) -> None:
+        df_ligand_info = self.get_reduced_df(max_entries=max_entries)
+        df_ligand_info.to_csv(outpath, index=False)
+        return
 
     def check_db_equal(self, db: str) -> bool:
         """

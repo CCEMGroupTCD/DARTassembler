@@ -58,12 +58,26 @@ def check_if_return_entry(i: int, n_max: Union[int, list]=None) -> bool:
 
     return is_good
 
+def ensure_path_exists(path: Union[str, Path]) -> Path:
+    """
+    Check if the path exists. If not, raise an error.
+    """
+    try:
+        path = Path(path)
+        if not path.exists():
+            raise FileNotFoundError(f'Could not find file {path}')
+    except TypeError:
+        raise TypeError(f'Expected path to be a string or Path, but got {type(path)} for file {path}')
+
+    return path
+
 def iterate_over_json(path: Union[str, Path], n_max: int=None, show_progress: bool=True) -> tuple[str, dict]:
     """
     Iterate over a JSON or JSON Lines file and yield the key and value of each entry.
     :param path: Path to the JSON or JSON Lines file
     :return: Tuple with the key and value of each entry
     """
+    path = ensure_path_exists(path)
     try:
         # Try to load as normal JSON file first
         with open(path, 'r') as file:
@@ -154,7 +168,10 @@ def iterate_unique_ligand_db(path: Union[str, Path], molecule: str= 'dict', n_ma
     check_molecule_value(molecule)  # Check if the molecule value is valid
     for name, mol in tqdm(iterate_over_json(path, n_max=n_max, show_progress=False), disable=not show_progress, desc='Load unique ligand db'):
         if molecule == 'class':
-            mol = RCA_Ligand.read_from_mol_dict(mol)
+            try:
+                mol = RCA_Ligand.read_from_mol_dict(mol)
+            except Exception as e:
+                raise ValueError(f"Error: the provided file '{path}' seems to not be a valid ligand database file. Internal error message:\n{e}.")
         yield name, mol
 
 def load_unique_ligand_db(path: Union[str, Path], molecule: str='dict', n_max=None, show_progress: bool=True) -> dict:
