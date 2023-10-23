@@ -1,9 +1,9 @@
-verbose: 3
-optimization_movie: true          # (true, false): if true, will generate a movie of the forcefield optimization of each complex
-concatenate_xyz: true             # (true, false): if true, will save a file with all xzy files of all complexes concatenated
-overwrite_output_path: true       # (true, false): if true, will overwrite the output path if it already exists
-Output_Path: 'output/assembled_complexes'    # (str): path to the output directory
-complex_name_length: 8
+verbose: 2                        # recommended: 2      # (0, 1, 2, 3): 0 = only print errors, 1 = also warnings, 2 = also info, 3 = also debug
+optimization_movie: true          # recommended: true   # (true, false): if true, will generate a movie of the forcefield optimization of each complex
+concatenate_xyz: true             # recommended: true   #(true, false): if true, will save a file with all xzy files of all complexes concatenated
+overwrite_output_path: true       # recommended: false  # (true, false): if true, will overwrite output if it already exists
+Output_Path: 'output/assembled_complexes'               # (str): path to the output directory
+complex_name_length: 8                                  # (int): length of the complex name
 
 Batches:
   - Input_Path: ['output/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines', 'output/ligand_databases/Br/ligand_db_Br.jsonlines', 'output/ligand_databases/phenyl/ligand_db_phenyl.jsonlines']

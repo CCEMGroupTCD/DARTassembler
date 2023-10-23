@@ -1,4 +1,4 @@
-from DARTassembler.src.assembly.assembled_complex_output import AssembledComplexOutput
+from DARTassembler.src.assembled_complex_output.assembled_complex_output import DARTComplexOutput
 import pandas as pd
 from pathlib import Path
 
@@ -8,9 +8,9 @@ if __name__ == '__main__':
 
     # Extract data from xtb calculations
     data = []
-    dirs = AssembledComplexOutput.get_all_complex_directories(all_structures_dir)
+    dirs = DARTComplexOutput.get_all_complex_directories(all_structures_dir)
     for dir in dirs:
-        cout = AssembledComplexOutput(dir)
+        cout = DARTComplexOutput(dir)
         complex = cout.xtbcomplex
         bond_lengths = {f'dist_{el}': complex.get_donor_metal_bond_length(el) for el in complex.donor_elements}
         data.append({

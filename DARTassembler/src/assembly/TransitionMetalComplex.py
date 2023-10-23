@@ -24,13 +24,12 @@ from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable
 atomic_number_Hg = 80
 
 
-# todo:
-# Auf dem complex fehlen noch ein paar Methoden:
-
-# 3. eine die ein Gaussian erstellt.
 
 
-class TransitionMetalComplex:
+class TransitionMetalComplex(object):
+    """
+    This class represents a mono-metallic transition metal complex assembled by DART. It contains all kind of information about the complex, including the ligands, the metal, the graph, the atomic properties, etc. Importantly, the graph and the atomic properties have consistent indices. A TransitionMetalComplex can be saved as a json file and loaded again.
+    """
 
     mol: RCA_Molecule
 
@@ -282,9 +281,21 @@ class TransitionMetalComplex:
         return complex
 
     @classmethod
+    def from_dir(cls,
+                 path: Union[Path, str],
+                 xyz: Union[Path, str, tuple] = None
+                 ):
+        """
+        Read TransitionMetalComplex from a directory containing the `*_data.json` file.
+        """
+        name = Path(path).name
+        json_path = Path(path, f"{name}_data.json")
+        return cls.from_json(json_path, xyz=xyz)
+
+    @classmethod
     def from_json(cls,
                     path: Union[Path, str],
-                    xyz: Union[Path, str] = None
+                    xyz: Union[Path, str, tuple] = None
                   ):
         """
         Read TransitionMetalComplex from json file and return it.
@@ -308,11 +319,14 @@ class TransitionMetalComplex:
             init_dict = cls.get_init_dict_from_json(properties)
 
         if xyz is not None:
-            xyz = Path(xyz).resolve()
-            if not xyz.exists():
-                raise ValueError(f"The provided xyz file {xyz} does not exist!")
+            try:
+                elements, coords = xyz
+            except:
+                xyz = Path(xyz).resolve()
+                if not xyz.exists():
+                    raise ValueError(f"The provided xyz file {xyz} does not exist!")
 
-            elements, coords = read_xyz(xyz)
+                elements, coords = read_xyz(xyz)
             same_elements = elements == init_dict['atomic_props']['atoms']
             if not same_elements:
                 raise ValueError(f"The elements in the xyz file {xyz} do not match the elements in the json file {path}!")
@@ -615,7 +629,7 @@ SDD\n
 
         return np.linalg.norm(np.array(pos1) - np.array(pos2))
 
-    def get_xtb_descriptors(self, n_unpaired: int = None):
+    def get_xtb_descriptors(self, n_unpaired: int = None) -> dict:
         from dev.src11_machine_learning.utils.utilities_ML import get_xtb_descriptors
         elements, coordinates = self.mol.get_elements_list(), self.mol.get_xyz_as_array()
         desc = get_xtb_descriptors(xyz=(elements, coordinates), charge=self.charge, n_unpaired=n_unpaired)

@@ -116,7 +116,7 @@ class DARTAssembly(object):
         logging.info("\n============  Total summary of DART assembly  ============")
         self.print_success_rate(self.df_info)
         n_success = self.df_info['success'].sum()
-        logging.info(f"Output files saved to {self.output_path}")
+        logging.info(f"DART Assembler output files saved to {self.output_path}")
         logging.info(f"Total runtime for assembling {n_success} complexes: {self.runtime}")
         logging.info('Exiting DART Assembler.')
 

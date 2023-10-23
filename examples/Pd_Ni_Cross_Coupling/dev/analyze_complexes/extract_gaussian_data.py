@@ -14,6 +14,9 @@ import ase
 import networkx as nx
 import matplotlib
 from pathlib import Path
+
+from DARTassembler.src.assembled_complex_output.assembled_complex_output import GaussianOutput
+from DARTassembler.src.assembly.TransitionMetalComplex import TransitionMetalComplex
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 import seaborn as sns
 from DARTassembler.src.ligand_extraction.io_custom import load_json
@@ -573,32 +576,60 @@ class Calculation:
 
 
 if __name__ == "__main__":
-    root = "../output/data_before_restarts"
+    root = "../output/gaussian_relaxed_complexes"
     expected_donors = ['P', 'N', 'Br', 'C']
     out_csv = 'data.csv'
     data = []
 
-    calcdirs = [calcdir for calcdir, _, _ in os.walk(root) if Calculation.is_finished_calc_dir(calcdir)]
-    calcdirs = calcdirs#[:20]  # TODO: DEBUGGING
+    calcdirs = [calcdir for calcdir, _, _ in os.walk(root) if GaussianOutput.is_finished_calc_dir(calcdir)]
+    calcdirs = calcdirs[:5]  # TODO: DEBUGGING
 
     for calcdir in tqdm(calcdirs):
-
-        calc = Calculation(calc_path=calcdir, expected_donors=expected_donors)
-        calc_data = {'metal': calc.metal_symbol}
-        calc_data.update({f'dist_{donor}': distance for donor, distance in zip(calc.donor_elements, calc.donor_distances)})
+        calcdir = Path(calcdir)
+        gaussian = GaussianOutput(calcdir)
+        data_json = Path(calcdir, f'{calcdir.name}_data.json')
+        complex = gaussian.get_gaussian_relaxed_complex(data_json)
+        calc_data = {'metal': complex.metal}
+        calc_data.update({f'dist_{donor}': complex.get_donor_metal_bond_length(donor) for donor in complex.donor_elements})
+        homo, lumo, hlgap = gaussian.get_homo_lumo_hlgap()
         calc_data.update({
-                            'P-N bite angle': calc.get_bite_angle(['P', 'N']),
-                            'HOMO': calc.homo,
-                            'LUMO': calc.lumo,
-                            'HL_gap': calc.hl_gap,
-                            'Metal charge': calc.metal_mulliken_charge,
+                            'complex': calcdir.name,
+                            'P_N_bite_angle': complex.get_bite_angle(['P', 'N']),
+                            'homo': homo,
+                            'lumo': lumo,
+                            'hlgap': hlgap,
+                            'metal_charge': gaussian.get_metal_charge(),
                             'dir': calcdir
                             })
-        calc_data.update({})
         data.append(calc_data)
 
     df = pd.DataFrame(data)
     df.to_csv(out_csv, index=False)
+
+    # #%%
+    #
+    # df_old = pd.read_csv('/Users/timosommer/PhD/projects/RCA/projects/DART/examples/Pd_Ni_Cross_Coupling/dev/analyze_complexes/data_old.csv')
+    # df_old.index = df_old['dir'].apply(lambda x: Path(x).name)
+    # df_old = df_old.drop(columns='dir')
+    #
+    # # df.index = df['dir'].apply(lambda x: Path(x).name)
+    # # df = df.drop(columns='dir')
+    #
+    # df_old = df_old[df.columns]
+    # df_old.sort_index(inplace=True)
+    # df.sort_index(inplace=True)
+    # was_good = df['HL_gap'].round(5) == df_old['HL_gap'].round(5)
+    # # df_new = df[was_good]
+    # # df_old = df[was_good]
+    # df_comp = df.round(4) == df_old.round(4)
+    # df_total = pd.concat([df, df_old], axis=1)
+
+
+
+
+
+
+
 
     print('Done!')
 
