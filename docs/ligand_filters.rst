@@ -35,10 +35,7 @@ Below we provide an example YAML file which can be used as a template. The templ
       - filter: remove_ligands_with_beta_hydrogens        # filter out ligands with beta hydrogens
         remove_ligands_with_beta_hydrogens: True            # True or False. If False, will be ignored.
 
-      - filter: strict_box_filter                         # filter out big ligands
-        strict_box_filter: False                            # True or False. If False, will be ignored.
-
-      - filter: atom_count                                # filter out ligands with atom count outside of this range
+      - filter: number_of_atoms                                # filter out ligands with atom count outside of this range
         min:                                                # Minimum number of atoms. If empty, will be ignored.
         max: 15                                             # Maximum number of atoms. If empty, will be ignored.
         apply_to_denticities: [1]                                    # List of denticities to apply this filter to. If empty, will be ignored.
@@ -61,7 +58,7 @@ Below we provide an example YAML file which can be used as a template. The templ
         max: 300.2                            # Maximum molecular weight (todo unit). If empty, will be ignored.
         apply_to_denticities: [3]                      # List of denticities to apply this filter to. If empty, will be ignored.
 
-      - filter: atom_count                  # filter out ligands with atom count outside of this range
+      - filter: number_of_atoms                  # filter out ligands with atom count outside of this range
         min: 10                               # Minimum number of atoms. If empty, will be ignored.
         max: 100                              # Maximum number of atoms. If empty, will be ignored.
         apply_to_denticities: [3]                      # List of denticities to apply this filter to. If empty, will be ignored.
@@ -184,7 +181,7 @@ This example will keep only ligands with denticity 2, 3 or 5.
     - filter: denticities
         denticities: (2, 3, 5)
 
-atom_count
+number_of_atoms
 ^^^^^^^^^^
 
 Removes ligands with number of atoms outside of the specified range. The 'min' and 'max parameters specify the minimum and maximum number of atoms, respectively.
@@ -203,7 +200,7 @@ This example will remove all ligands with a denticity of 1 or 2 with less than 1
 
 .. code-block::
 
-    - filter: atom_count
+    - filter: number_of_atoms
         min: 10
         max: 100
         apply_to_denticities: (1, 2)

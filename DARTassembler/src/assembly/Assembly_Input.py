@@ -67,7 +67,7 @@ _strict_box_filter= 'strict_box_filter'
 _filter_even_odd_electron_count = 'remove_even_odd_electron_count'
 _dentfilters = 'denticity_dependent_filters'
 # Denticity dependent filters
-_acount = 'atom_count'
+_acount = 'number_of_atoms'
 _acount_min = 'min'
 _acount_max = 'max'
 

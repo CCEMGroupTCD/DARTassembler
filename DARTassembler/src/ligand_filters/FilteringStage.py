@@ -43,7 +43,7 @@ class FilterStage:
         to_delete = []
         for unq_name, ligand in self.database.db.items():
             if denticities is None or ligand.denticity in denticities:
-                if ligand.if_same_stoichiometry(stoichiometry):
+                if not ligand.if_same_stoichiometry(stoichiometry):
                     to_delete.append(unq_name)
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
 

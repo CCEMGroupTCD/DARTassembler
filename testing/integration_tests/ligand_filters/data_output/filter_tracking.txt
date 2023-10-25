@@ -9,7 +9,7 @@ Removed ligands:
         options --> remove_ligands_with_beta_hydrogens: True
   - strict_box_filter: 0
         options --> strict_box_filter: False
-  - atom_count: 385
+  - number_of_atoms: 385
         options --> min: 1.0, max: 15.0, apply_to_denticities: [1]
   - ligand_charges: 92
         options --> ligand_charges: [-1, 0], apply_to_denticities: [2, 3]
@@ -19,7 +19,7 @@ Removed ligands:
         options --> elements: ['N', 'N', 'N'], instruction: must_contain_and_only_contain, apply_to_denticities: [3]
   - molecular_weight: 21
         options --> min: 30.1, max: 300.2, apply_to_denticities: [3]
-  - atom_count: 0
+  - number_of_atoms: 0
         options --> min: 10.0, max: 100.0, apply_to_denticities: [3]
   - molecular_weight: 203
         options --> min: 10.1, max: 300.2, apply_to_denticities: None
