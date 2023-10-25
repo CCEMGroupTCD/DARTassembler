@@ -33,7 +33,7 @@ from DARTassembler.src.ligand_extraction.utilities_graph import graph_from_graph
 from DARTassembler.src.ligand_extraction.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, \
     unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center, \
-    find_smallest_ring_with_specified_nodes, get_max_deviation_from_coplanarity
+    find_smallest_ring_with_specified_nodes, get_max_deviation_from_coplanarity, if_same_stoichiometries
 from DARTassembler.src.assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
 class RCA_Molecule(object):
@@ -163,6 +163,14 @@ class RCA_Molecule(object):
         self.warnings.append(warning)
 
         return
+
+    def if_same_stoichiometry(self, other_stoi: str) -> bool:
+        """
+        Checks if the stoichiometry of the molecule is the same as the given stoichiometry.
+        :param other_stoi: stoichiometry to compare to
+        :return: True if the stoichiometry is the same, False otherwise
+        """
+        return if_same_stoichiometries(self.stoichiometry, other_stoi)
 
     def get_reindexed_graph(self, node_label='node_label') -> nx.Graph:
         """

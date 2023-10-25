@@ -10,6 +10,7 @@ from DARTassembler.src.ligand_filters.constant_Ligands import get_monodentate_li
 from rdkit.Chem import rdmolfiles
 from DARTassembler.src.assembly.building_block_utility import ligand_to_mol
 from rdkit.Chem.Draw import rdMolDraw2D
+from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist
 
 
 class FilterStage:
@@ -42,7 +43,7 @@ class FilterStage:
         to_delete = []
         for unq_name, ligand in self.database.db.items():
             if denticities is None or ligand.denticity in denticities:
-                if ligand.stoichiometry != stoichiometry:
+                if ligand.if_same_stoichiometry(stoichiometry):
                     to_delete.append(unq_name)
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
 

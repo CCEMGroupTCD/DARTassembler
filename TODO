@@ -7,6 +7,8 @@ Must:
 - work on documentation
 - assembly:
     - fix that hydrides can't be assembled
+- ligand filtering:
+    - fix the min/max problem with the number of atoms where sometimes the max is not in the interval boundaries
 
 
 Should:
@@ -16,6 +18,8 @@ Should:
     - check if denticity == None gives same results as replacing with list(range(100))
     - refactor output ligand db path to not overwrite and to only take the folder name, not the whole path
     - add subgraph matching filter
+    - add denticities to each filter where it makes slightly sense
+    - merge ligand composition and coordinating atom composition filter by adding an option 'apply_to' which is either 'ligand_atoms' or 'coordinating_atoms'
 output
 - ligand db:
     - make unique IDs of ligands like Zotrux02 and in case this points to more than one ligand, add a letter to all of them like a, b, c etc.

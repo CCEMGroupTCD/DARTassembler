@@ -1,28 +1,33 @@
-input_ligand_db_path:           # path or nothing
+input_ligand_db_path:           # path or nothing. If nothing, the entire MetaLig ligand database will be used as input
 output_ligand_db_path: 'output/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines'   # path or nothing
 
 filters:
-  - filter: 'remove_ligands_with_neighboring_coordinating_atoms'
-    remove_ligands_with_neighboring_coordinating_atoms: True
+  - filter: 'remove_ligands_with_adjacent_coordinating_atoms'
+    remove_ligands_with_adjacent_coordinating_atoms: True
 
-  - filter: 'metals_of_interest'
-    metals_of_interest: [ "Pd", "Ni" ]
-    denticities: [ 2 ]
+  - filter: 'metal_ligand_binding_history'
+    metal_ligand_binding_history: [ "Pd", "Ni" ]
+    apply_to_denticities: [ 2 ]
 
   - filter: 'ligand_composition'
-    atoms_of_interest: [ "C", "H", "N", "P"]
+    elements: [ "C", "H", "N", "P"]
     instruction: "must_only_contain_in_any_amount"
-    denticities: [2]
+    apply_to_denticities: [2]
 
   - filter: 'coordinating_atoms_composition'
-    atoms_of_interest: ["P", "N"]
+    elements: ["P", "N"]
     instruction: "must_contain_and_only_contain"
-    denticities: [2]
+    apply_to_denticities: [2]
 
-  - filter: 'denticities_of_interest'
-    denticities_of_interest: [2]
+  - filter: 'denticities'
+    denticities: [2]
 
   - filter: 'ligand_charges'
     ligand_charges: [0]
-    denticities: [2]
+    apply_to_denticities: [2]
+
+  - filter: 'remove_ligands_with_beta_hydrogens'
+    remove_ligands_with_beta_hydrogens: True
+
+
 

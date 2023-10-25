@@ -30,14 +30,8 @@ def is_assembled_complex_dir(dir: str):
 def relax_complex(input_file, method, force_criterion, verbosity):
     atoms = read(input_file)
     calc = TBLite(method=method, verbosity=verbosity)
-    # view(atoms)
     atoms.calc = calc
 
-    # # Fix metal centre position
-    # metal_idx = [atom.index for atom in atoms if DART_Element(atom.symbol).is_metal]
-    # assert len(metal_idx) == 1, f"Expected 1 metal centre, found {len(metal_idx)}."
-    # c = FixAtoms(indices=metal_idx)
-    # atoms.set_constraint(c)
     opt = BFGS(atoms, trajectory=traj_file, logfile=log_file)
     opt.run(fmax=force_criterion)
 
@@ -70,21 +64,21 @@ def get_own_homo_lumo(atoms):
 
     return homo, lumo
 
-# todo: convert energies from hartree to ev and check other units
-# todo: check why dipoles are different
 
 
 if __name__ == "__main__":
 
-    outdir = 'relaxations_new'
-    assembled_complexes_dir = '../output/data_before_g16_calcs'
+    assembled_complexes_dir = 'data/Pd_Ni_all_assembled_complexes'
 
     method = 'GFN2-xTB'
-    force_criterion = 0.05  # lower is more accurate
+    force_criterion = 8e-4  # lower is more accurate
     verbosity = 0
 
+
+
+
     calcdirs = [calcdir for calcdir, _, _ in os.walk(assembled_complexes_dir) if is_assembled_complex_dir(calcdir)]
-    calcdirs = calcdirs[2:4]   # TODO: DEBUGGING
+    calcdirs = calcdirs#[2:4]   # TODO: DEBUGGING
 
     n_calcs = len(calcdirs)
     global_start = datetime.now()
@@ -95,11 +89,8 @@ if __name__ == "__main__":
         cname = Path(calcdir).name
         input_file = Path(calcdir, f'{cname}_structure.xyz')
 
-        # Set up output directory
-        complex_outdir = Path(outdir, 'complexes', cname)
-        complex_outdir.mkdir(exist_ok=True, parents=True)
         # Set up output file paths
-        complex_path = str(Path(complex_outdir, f'{cname}'))
+        complex_path = str(Path(calcdir, f'{cname}'))
         traj_file = complex_path + '_xtbtrajectory.traj'
         log_file = complex_path + '_xtblog.txt'
         relaxed_structure_file = complex_path + '_xtbstructure.xyz'
@@ -148,7 +139,7 @@ if __name__ == "__main__":
 
 
     df = pd.DataFrame(df)
-    overview_csv = Path(outdir, 'xtb_relaxations.csv')
+    overview_csv = Path(assembled_complexes_dir, 'xtb_relaxations.csv')
     df.to_csv(overview_csv, index=False)
 
     global_duration = datetime.now() - global_start

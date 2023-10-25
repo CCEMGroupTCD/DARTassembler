@@ -58,9 +58,9 @@ _filters = 'filters'
 # Filters
 _filter = 'filter'
 _graph_hash_wm = 'graph_IDs'     # graph_hash_with_metal
-_denticities = 'denticities'
-_denticities_of_interest = 'denticities_of_interest'
-_remove_ligands_with_neighboring_coordinating_atoms = 'remove_ligands_with_neighboring_coordinating_atoms'
+_denticities = 'apply_to_denticities'
+_denticities_of_interest = 'denticities'
+_remove_ligands_with_neighboring_coordinating_atoms = 'remove_ligands_with_adjacent_coordinating_atoms'
 _only_confident_charges = 'only_confident_charges'
 _remove_ligands_with_beta_hydrogens = 'remove_ligands_with_beta_hydrogens'
 _strict_box_filter= 'strict_box_filter'
@@ -74,15 +74,15 @@ _acount_max = 'max'
 _stoichiometry = 'stoichiometry'
 
 _ligcomp = 'ligand_composition'
-_ligcomp_atoms_of_interest = 'atoms_of_interest'
+_ligcomp_atoms_of_interest = 'elements'
 _ligcomp_instruction = 'instruction'
 
 _ligand_charges = 'ligand_charges'
 
-_metals_of_interest = 'metals_of_interest'
+_metals_of_interest = 'metal_ligand_binding_history'
 
 _coords = 'coordinating_atoms_composition'
-_coords_atoms_of_interest = 'atoms_of_interest'
+_coords_atoms_of_interest = 'elements'
 _coords_instruction = 'instruction'
 
 _mw = 'molecular_weight'

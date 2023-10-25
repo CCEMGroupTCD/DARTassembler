@@ -1,27 +1,7 @@
-import os
-import shutil
-import warnings
-import pymatgen.core as pt
-import re
-import pickle
-import numpy as np
-from typing import Union, Tuple
-import json
-from tqdm import tqdm
-import random
-from sklearn.metrics import r2_score, mean_absolute_error
 import pandas as pd
-import ase
-import networkx as nx
-import matplotlib
 from pathlib import Path
-from DARTassembler.src.constants.Periodic_Table import DART_Element
 import seaborn as sns
-from DARTassembler.src.ligand_extraction.io_custom import load_json
-# matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator
-import cclib
 sns.set_style("ticks")
 
 
@@ -29,47 +9,56 @@ sns.set_style("ticks")
 def hartree2ev(energy: float) -> float:
     return energy * 27.2114
 
+
+
 if __name__ == "__main__":
-    dft_csv = '../analyze_complexes/data.csv'
-    xtb_csv = '231013_relaxations/xtb_relaxations.csv'
-    xtb_structure_csv = '231013_relaxations_and_original_dirs/xtb_data.csv'
-    outdir = 'plots'
+    dft_csv = '../analyze_complexes/231019_data_all_extracted.csv'
+    xtb_csv = 'data/231013_relaxations/xtb_relaxations.csv'
+    xtb_structure_csv = 'data/231013_relaxations_and_original_dirs/xtb_data.csv'
+    outdir = 'data/plots'
     expected_donors = ['P', 'N', 'Br', 'C']
-    homo = 'HOMO'
-    lumo = 'LUMO'
-    hlgap = 'HL_gap'
+    homo = 'homo'
+    lumo = 'lumo'
+    hlgap = 'hlgap'
+    pn_bite_angle = 'P_N_bite_angle'
 
     # %% Plot histograms
 
     df_dft = pd.read_csv(dft_csv)
     df_dft['complex'] = df_dft['dir'].apply(lambda x: Path(x).name)
-    df_dft = df_dft.rename(columns={'Metal charge': 'metal_charge'})
+    df_dft = df_dft.rename(columns={'Metal charge': 'metal_charge', 'P-N bite angle': pn_bite_angle, 'HOMO': 'homo', 'LUMO': lumo, 'HL_gap': 'hlgap'})
 
     df_xtb = pd.read_csv(xtb_csv)
-    df_xtb[homo] = df_xtb[homo].apply(hartree2ev)
-    df_xtb[homo] = df_xtb[homo].apply(hartree2ev)
-    df_xtb[hlgap] = df_xtb[lumo] - df_xtb[homo]
-
     df_xtb_struct = pd.read_csv(xtb_structure_csv)
     df_xtb = df_xtb.merge(df_xtb_struct, on='complex')
+    df_xtb = df_xtb.rename(columns={'P-N bite angle': pn_bite_angle, 'HOMO': 'homo', 'LUMO': lumo, 'HL_gap': 'hlgap'})
+    df_xtb[homo] = df_xtb[homo].apply(hartree2ev)
+    df_xtb[lumo] = df_xtb[lumo].apply(hartree2ev)
+    df_xtb[hlgap] = df_xtb[lumo] - df_xtb[homo]
+
 
     df = df_dft.merge(df_xtb, on='complex', suffixes=('_dft', '_xtb'))
 
     # Remove complexes with NaN values
     df = df.dropna(axis='rows')
 
-    others = ['P-N bite angle', homo, lumo, hlgap, 'Metal charge']
-    cols = expected_donors + others
+    # Make output dir
+    outdir = Path(outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
 
-    for prop in ['dist_P', 'dist_N', 'dist_Br', 'dist_C', 'P-N bite angle', homo, lumo, hlgap, 'metal_charge']:
+    others = [pn_bite_angle, homo, lumo, hlgap, 'Metal charge']
+    cols = expected_donors + others
+    alpha = 0.6
+    df_corr = df.corr(method='pearson')
+
+    for prop in ['dist_P', 'dist_N', 'dist_Br', 'dist_C', pn_bite_angle, homo, lumo, hlgap, 'metal_charge']:
         plt.figure()
         x, y = prop + '_dft', prop + '_xtb'
-        sns.scatterplot(data=df, x=x, y=y)
+        sns.scatterplot(data=df, x=x, y=y, alpha=alpha)
 
-        # r2 = r2_score(df[x], df[y])
-        # mae = mean_absolute_error(df[x], df[y])
-        # text = f'$r2$: {r2:.2f}\nMAE: {mae:.2f}'
-        # plt.annotate(text, xy=(0.85, 0.9), xycoords='axes fraction')
+        corr = df_corr.loc[x, y]
+        text = f'Pearson correlation: {corr:.2g}'
+        plt.annotate(text, xy=(0.03, 0.93), xycoords='axes fraction')
 
         outpath = Path(outdir, f'comp_{prop}.png')
         plt.savefig(outpath)

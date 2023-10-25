@@ -5,10 +5,33 @@ from rdkit import Chem
 import numpy as np
 from openbabel import openbabel as ob
 from DARTassembler.src.constants.Periodic_Table import DART_Element
+import re
 
 unknown_rdkit_bond_orders = [0, 20, 21]
 
 from sympy import Point3D, Plane
+
+def stoichiometry2atomslist(stoichiometry: str) -> list[str]:
+    """
+    Convert a stoichiometry string to a list of atoms. For example, "C2H6F" becomes ["C", "C", "H", "H", "H", "H", "H", "H", "F"]. Note that the order of the atoms is not necessarily the same as in the stoichiometry string.
+    """
+    atoms_list = []
+    # Use a regular expression to find all elements and their counts
+    for element, count in re.findall(r'([A-Z][a-z]*)(\d*)', stoichiometry):
+        # If no count is given, assume it's 1
+        count = int(count) if count else 1
+        # Extend the list by count times the element
+        atoms_list.extend([element] * count)
+    return atoms_list
+
+def if_same_stoichiometries(stoichiometry1: str, stoichiometry2: str) -> bool:
+    """
+    Check if two stoichiometries are the same. Stable against different order of elements in the stoichiometry string and the convention of writing or not writing a count of 1.
+    """
+    atoms_list1 = sorted(stoichiometry2atomslist(stoichiometry1))
+    atoms_list2 = sorted(stoichiometry2atomslist(stoichiometry2))
+
+    return atoms_list1 == atoms_list2
 
 
 def find_smallest_ring_with_specified_nodes(graph, nodes):
