@@ -1,44 +1,44 @@
 verbose: 2                        # recommended: 2      # (0, 1, 2, 3): 0 = only print errors, 1 = also warnings, 2 = also info, 3 = also debug
-optimization_movie: true          # recommended: true   # (true, false): if true, will generate a movie of the forcefield optimization of each complex
+ffmovie: true          # recommended: true   # (true, false): if true, will generate a movie of the forcefield optimization of each complex
 concatenate_xyz: true             # recommended: true   #(true, false): if true, will save a file with all xzy files of all complexes concatenated
-overwrite_output_path: true       # recommended: false  # (true, false): if true, will overwrite output if it already exists
-Output_Path: 'output/assembled_complexes'               # (str): path to the output directory
+overwrite_output: true       # recommended: false  # (true, false): if true, will overwrite output if it already exists
+output_path: 'output/assembled_complexes'               # (str): path to the output directory
 complex_name_length: 8                                  # (int): length of the complex name
 
-Batches:
-  - Input_Path: ['output/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines', 'output/ligand_databases/Br/ligand_db_Br.jsonlines', 'output/ligand_databases/phenyl/ligand_db_phenyl.jsonlines']
-    Isomers: Generate All
-    MAX_num_complexes: 10000
+batches:
+  - ligand_db_paths: ['output/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines', 'output/ligand_databases/Br/ligand_db_Br.jsonlines', 'output/ligand_databases/phenyl/ligand_db_phenyl.jsonlines']
+    isomers: Generate All
+    max_num_complexes: 10000
     ligand_choice: 'all'
     geometry_modifier_filepath: input/Pd_phenyl_geometry_modification.xyz
     bidentate_rotator: 'slab'
-    Metal:
+    metal:
       element: Pd
       oxidation_state: 2
       spin: 1
-    Name: P_N_Donors_Pd_Metal_Centre
-    Optimisation_Choice: false
-    Random_Seed: 0
-    Topology: '(2, 1, 1)'
-    Total_Charge: 0
+    name: P_N_Donors_Pd_Metal_Centre
+    forcefield: false
+    random_seed: 0
+    topology: '(2, 1, 1)'
+    total_charge: 0
     complex_name_appendix: _PN_Pd
     gaussian_input_filepath:
 
 
-  - Input_Path: ['output/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines', 'output/ligand_databases/Br/ligand_db_Br.jsonlines', 'output/ligand_databases/phenyl/ligand_db_phenyl.jsonlines']
-    Isomers: Generate All
-    MAX_num_complexes: 10000
+  - ligand_db_paths: ['output/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines', 'output/ligand_databases/Br/ligand_db_Br.jsonlines', 'output/ligand_databases/phenyl/ligand_db_phenyl.jsonlines']
+    isomers: Generate All
+    max_num_complexes: 10000
     ligand_choice: 'all'
     geometry_modifier_filepath: input/Ni_phenyl_geometry_modification.xyz
     bidentate_rotator: 'slab'
-    Metal:
+    metal:
       element: Ni
       oxidation_state: 2
       spin: 1
-    Name: P_N_Donors_Ni_Metal_Centre
-    Optimisation_Choice: false
-    Random_Seed: 0
-    Topology: '(2, 1, 1)'
-    Total_Charge: 0
+    name: P_N_Donors_Ni_Metal_Centre
+    forcefield: false
+    random_seed: 0
+    topology: '(2, 1, 1)'
+    total_charge: 0
     complex_name_appendix: _PN_Ni
     gaussian_input_filepath:

@@ -1,156 +1,156 @@
-verbose: 2            # recommended: 2.  (0, 1, 2, 3): 0 = only errors, 1 = also warnings, 2 = also info, 3 = also debug
-optimization_movie: true
-concatenate_xyz: true
-overwrite_output_path: true
-Output_Path: './assembly/data_output'
-complex_name_length: 8
+verbose: 2                            # How much output to print. Any of (0, 1, 2, 3), recommended is 2.
+ffmovie: true                         # Whether to output a movie of the optimization process. Set to False to save disk space.
+concatenate_xyz: true                 # Whether to concatenate the xyz files of the optimization process.
+overwrite_output: true                # Whether to overwrite the output if it already exists. Recommended: False.
+output_path: assembly/data_output     # Path to the output folder.
+complex_name_length: 8                # Length of the complex name. Recommended: 8.
 
-Batches:
-  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines', 'same_ligand_as_previous']
-    Isomers: Generate Lowest Energy
-    MAX_num_complexes: 3
+batches:
+  - name: Integration_test_7          # Name of the batch.
+    topology: (2, 1, 1)               # Topology of the complexes. Options: '(2, 1, 1)', '(2, 2)', '(3, 2, 1)', '(4, 1, 1)', '(5, 1)'
+    ligand_db_paths: [assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines, same_ligand_as_previous] # Path to the ligand database. Either list of paths or single path.
+    ligand_choice: random             # How to choose the ligands. Options: 'random', 'all'
+    metal:
+      element: Fe                     # Chemical symbol of the desired metal center.
+      oxidation_state: 2              # Oxidation state of the desired metal center.
+      spin: 0                         # Spin of the desired metal center. Only needed for later DFT or xtb structure relaxations.
+    total_charge: -1                  # Total charge of the complex.
+    max_num_complexes: 3              # Maximum number of complexes to generate.
+    forcefield: true                  # Whether to optimize the structures after generation with a force field.
+    isomers: Generate Lowest Energy   # Which isomers to generate. Options: 'Generate Lowest Energy', 'Generate All'
+    bidentate_rotator: horseshoe      # How to rotate the bidentate ligands. Options: 'horseshoe', 'slab'
+    gaussian_input_filepath: assembly/data_input/Gaussian_config.yml    # Path to the Gaussian config file. If not given, no Gaussian input files are generated.
+    geometry_modifier_filepath:       # Path to the geometry modifier file. If not given, no geometry modification is performed.
+    random_seed: 0                    # Random seed for the generation of the complexes.
+    complex_name_appendix:            # String to append to the randomly generated complex name.
+
+
+  - ligand_db_paths: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
+    isomers: Generate Lowest Energy
+    max_num_complexes: 1
     ligand_choice: 'random'
-    Metal:
+    metal:
       element: Fe
       oxidation_state: 2
       spin: 0
-    Name: Integration_test_7
-    Optimisation_Choice: true
-    Random_Seed: 0
-    Topology: '(2, 1, 1)'
-    Total_Charge: -1
-    complex_name_appendix:
-    geometry_modifier_filepath:
-    bidentate_rotator: 'horseshoe'
-    gaussian_input_filepath: './assembly/data_input/Gaussian_config.yml'
-
-
-  - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    Isomers: Generate Lowest Energy
-    MAX_num_complexes: 1
-    ligand_choice: 'random'
-    Metal:
-      element: Fe
-      oxidation_state: 2
-      spin: 0
-    Name: Integration_test_1
-    Optimisation_Choice: false
-    Random_Seed: 0
-    Topology: '(2, 2)'
-    Total_Charge: 0
+    name: Integration_test_1
+    forcefield: false
+    random_seed: 0
+    topology: '(2, 2)'
+    total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath: './assembly/data_input/geometry_modifier.xyz'
     bidentate_rotator: 'horseshoe'
     gaussian_input_filepath:
 
 
-  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', 'same_ligand_as_previous']
-    Isomers: Generate Lowest Energy
-    MAX_num_complexes: 1
+  - ligand_db_paths: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', 'same_ligand_as_previous']
+    isomers: Generate Lowest Energy
+    max_num_complexes: 1
     ligand_choice: 'random'
-    Metal:
+    metal:
       element: Fe
       oxidation_state: 2
       spin: 0
-    Name: Integration_test_6
-    Optimisation_Choice: false
-    Random_Seed: 0
-    Topology: '(2, 2)'
-    Total_Charge: 0
+    name: Integration_test_6
+    forcefield: false
+    random_seed: 0
+    topology: '(2, 2)'
+    total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
     gaussian_input_filepath:
 
 
-  - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    Isomers: Generate Lowest Energy
-    MAX_num_complexes: 1
+  - ligand_db_paths: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
+    isomers: Generate Lowest Energy
+    max_num_complexes: 1
     ligand_choice: 'random'
-    Metal:
+    metal:
       element: Fe
       oxidation_state: 2
       spin: 0
-    Name: Integration_test_2
-    Optimisation_Choice: false
-    Random_Seed: 0
-    Topology: '(2, 1, 1)'
-    Total_Charge: 0
+    name: Integration_test_2
+    forcefield: false
+    random_seed: 0
+    topology: '(2, 1, 1)'
+    total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
     gaussian_input_filepath:
 
 
-  - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    Isomers: Generate All
-    MAX_num_complexes: 10
+  - ligand_db_paths: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
+    isomers: Generate All
+    max_num_complexes: 10
     ligand_choice: 'random'
-    Metal:
+    metal:
       element: Fe
       oxidation_state: 2
       spin: 0
-    Name: Integration_test_3
-    Optimisation_Choice: false
-    Random_Seed: 0
-    Topology: '(3, 2, 1)'
-    Total_Charge: 0
+    name: Integration_test_3
+    forcefield: false
+    random_seed: 0
+    topology: '(3, 2, 1)'
+    total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
     gaussian_input_filepath:
 
 
-  - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    Isomers: Generate All
-    MAX_num_complexes: 5
+  - ligand_db_paths: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
+    isomers: Generate All
+    max_num_complexes: 5
     ligand_choice: 'random'
-    Metal:
+    metal:
       element: Fe
       oxidation_state: 4
       spin: 0
-    Name: Integration_test_4
-    Optimisation_Choice: false
-    Random_Seed: 0
-    Topology: '(4, 1, 1)'
-    Total_Charge: 0
+    name: Integration_test_4
+    forcefield: false
+    random_seed: 0
+    topology: '(4, 1, 1)'
+    total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
     gaussian_input_filepath:
 
 
-  - Input_Path: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
-    Isomers: Generate Lowest Energy
-    MAX_num_complexes: 2
+  - ligand_db_paths: './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json'
+    isomers: Generate Lowest Energy
+    max_num_complexes: 2
     ligand_choice: 'random'
-    Metal:
+    metal:
       element: Fe
       oxidation_state: 2
       spin: 0
-    Name: Integration_test_5
-    Optimisation_Choice: false
-    Random_Seed: 23
-    Topology: '(5, 1)'
-    Total_Charge: 0
+    name: Integration_test_5
+    forcefield: false
+    random_seed: 23
+    topology: '(5, 1)'
+    total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'
     gaussian_input_filepath:
 
-  - Input_Path: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', 'same_ligand_as_previous']
-    Isomers: Generate Lowest Energy
-    MAX_num_complexes: 10
+  - ligand_db_paths: ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', './assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', 'same_ligand_as_previous']
+    isomers: Generate Lowest Energy
+    max_num_complexes: 10
     ligand_choice: 'all'
-    Metal:
+    metal:
       element: Fe
       oxidation_state: 2
       spin: 0
-    Name: Integration_test_8
-    Optimisation_Choice: False
-    Random_Seed: 0
-    Topology: '(2, 1, 1)'
-    Total_Charge: 0
+    name: Integration_test_8
+    forcefield: False
+    random_seed: 0
+    topology: '(2, 1, 1)'
+    total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: 'horseshoe'

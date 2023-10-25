@@ -5,6 +5,7 @@ filters:
   - filter: 'denticities'
     denticities: [1]
 
-  - filter: 'stoichiometry'
-    stoichiometry: Br
+  - filter: ligand_composition                      # filter ligands based on their composition
+    elements: Br                                    # elements to apply this filter to
+    instruction: must_contain_and_only_contain      # instruction for how to apply this filter
     apply_to_denticities:

@@ -5,7 +5,7 @@ from DARTassembler.src.ligand_filters.Ligand_Filters import LigandFilters
 from typing import Union
 from pathlib import Path
 
-def filter_ligands(filter_input_path: Union[str, Path], nmax: Union[int, None] = None):
+def filter_ligands(filter_input_path: Union[str, Path], nmax: Union[int, None] = None, outpath: Union[str, Path] = None):
     """
     Filter the full ligand database according to the specified filters. Should be run before assembly to reduce the number of ligands considered in the assembly to the the ones that are interesting to the user.
     :param filter_input_path: Path to the filter input file
@@ -13,6 +13,11 @@ def filter_ligands(filter_input_path: Union[str, Path], nmax: Union[int, None] =
     :return: LigandFilters object
     """
     filter = LigandFilters(filepath=filter_input_path, max_number=nmax)
+
+    # Overwrite the output path if specified
+    if outpath is not None:
+        filter.output_ligand_db_path = Path(outpath)
+
     filter.save_filtered_ligand_db()
     filter.save_filter_tracking()
     filter.save_ligand_info_csv()

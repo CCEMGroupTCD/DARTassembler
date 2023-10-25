@@ -26,8 +26,5 @@ filters:
     ligand_charges: [0]
     apply_to_denticities: [2]
 
-  - filter: 'remove_ligands_with_beta_hydrogens'
-    remove_ligands_with_beta_hydrogens: True
-
 
 

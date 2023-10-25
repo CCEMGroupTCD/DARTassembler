@@ -15,29 +15,30 @@ from DARTassembler.src.ligand_extraction.composition import Composition
 from pathlib import Path
 from typing import Union, Any, Tuple, List, Dict, Optional
 from DARTassembler.src.ligand_extraction.io_custom import read_yaml
+from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist
 
 allowed_topologies = [(2, 1, 1), (2, 2), (3, 2, 1), (4, 1, 1), (5, 1)]      # list all allowed topologies, others will be rejected
 
 # Define the key names in the assembly input file
 # Global settings
 _verbose = 'verbose'
-_optimization_movie = 'optimization_movie'
+_optimization_movie = 'ffmovie'
 _concatenate_xyz = 'concatenate_xyz'
-_overwrite_output_path = 'overwrite_output_path'
-_output_path = 'Output_Path'
+_overwrite_output_path = 'overwrite_output'
+_output_path = 'output_path'
 _complex_name_length = 'complex_name_length'
 # Batch settings
-_batches = 'Batches'
-_name = 'Name'
-_input_path = 'Input_Path'
-_max_num_complexes = 'MAX_num_complexes'
+_batches = 'batches'
+_name = 'name'
+_input_path = 'ligand_db_paths'
+_max_num_complexes = 'max_num_complexes'
 _ligand_choice = 'ligand_choice'
-_isomers = 'Isomers'
-_optimisation = 'Optimisation_Choice'
-_random_seed = 'Random_Seed'
-_total_charge = 'Total_Charge'
-_topology = 'Topology'
-_metal = 'Metal'
+_isomers = 'isomers'
+_optimisation = 'forcefield'
+_random_seed = 'random_seed'
+_total_charge = 'total_charge'
+_topology = 'topology'
+_metal = 'metal'
 _element = 'element'
 _oxidation_state = 'oxidation_state'
 _spin = 'spin'
@@ -260,8 +261,8 @@ class BaseInput(object):
         if allow_none and input is None:
             return None
 
-        if isinstance(input, str):
-            input = [input]
+        if isinstance(input, str): # Convert stoichiometry to list of elements
+            input = stoichiometry2atomslist(input)
 
         input = list(input)
         for i in range(len(input)):
@@ -432,7 +433,7 @@ class LigandFilterInput(BaseInput):
             _denticities: [list, tuple, type(None), int],
             },
         _ligcomp: {
-            _ligcomp_atoms_of_interest: [list, tuple],
+            _ligcomp_atoms_of_interest: [list, tuple, str],
             _ligcomp_instruction: [str],
             _denticities: [list, tuple, type(None), int],
             },
@@ -445,7 +446,7 @@ class LigandFilterInput(BaseInput):
             _denticities: [list, tuple, type(None), int],
             },
         _coords: {
-            _coords_atoms_of_interest: [list, tuple],
+            _coords_atoms_of_interest: [list, tuple, str],
             _coords_instruction: [str],
             _denticities: [list, tuple, type(None), int],
             },

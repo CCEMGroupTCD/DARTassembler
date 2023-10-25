@@ -1,5 +1,5 @@
 ===================== FILTER TRACKING =====================
---> Filtered ligand database was saved as '/Users/timosommer/PhD/projects/RCA/projects/DART/examples/Pd_Ni_Cross_Coupling/generate_complexes/output/ligand_databases/phenyl/ligand_db_phenyl.jsonlines'.
+--> Filtered ligand database was saved as '/Users/timosommer/PhD/projects/RCA/projects/DART/testing/integration_tests/output/ligand_databases/phenyl/ligand_db_phenyl.jsonlines'.
 Removed ligands:
   - denticities: 52
         options --> denticities: [1]

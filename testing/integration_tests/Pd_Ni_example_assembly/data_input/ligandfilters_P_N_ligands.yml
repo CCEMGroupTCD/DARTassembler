@@ -1,4 +1,4 @@
-input_ligand_db_path:           # path or nothing
+input_ligand_db_path:           # path or nothing. If nothing, the entire MetaLig ligand database will be used as input
 output_ligand_db_path: 'Pd_Ni_example_assembly/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines'   # path or nothing
 
 filters:
@@ -25,4 +25,6 @@ filters:
   - filter: 'ligand_charges'
     ligand_charges: [0]
     apply_to_denticities: [2]
+
+
 

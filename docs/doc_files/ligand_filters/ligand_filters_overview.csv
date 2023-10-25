@@ -1,0 +1,15 @@
+Filter Name,Options,Denticity Dependent,Description
+denticities,denticities: [list[int]],No,Keeps only ligands with denticities specified in the list.
+ligand_charges,ligand_charges: [list[int]],Yes,Keep only ligands with formal charges which are specified in the list.
+ligand_composition,"elements: [list[str]], instruction: [str]",Yes,Filter ligands based on their chemical composition.
+coordinating_atoms_composition,"elements: [list[str]], instruction: [str]",Yes,Filter ligands based on their coordinating atoms.
+number_of_atoms,"min: [float, empty], max: [float, empty]",Yes,Removes ligands with number of atoms outside of the specified range.
+molecular_weight,"min: [float, empty], max: [float, empty]",Yes,Only keeps ligands with molecular weight within the specified range.
+metal_donor_bond_lengths,"min: [float, empty], max: [float, empty]",Yes,Only keeps ligands with metal-donor bond lengths within the specified range.
+interatomic_distances,"min: [float, empty], max: [float, empty]",Yes,Only keeps ligands with interatomic distances within the specified range.
+planarity,"min: [float, empty], max: [float, empty]",Yes,This filter uses a planarity score to filter ligands based on how planar they are.
+occurrences,"min: [int, empty], max: [int, empty]",Yes,Filters ligands based on how often they were observed in the CSD.
+metal_ligand_binding_history,metal_ligand_binding_history: [list[str]],Yes,Keep only ligands which have been observed to coordinate to the metals specified.
+remove_ligands_with_adjacent_coordinating_atoms,remove_ligands_with_adjacent_coordinating_atoms: [True or False],No,Removes ligands that have coordinating atoms with a bond between them.
+remove_ligands_with_beta_hydrogens,remove_ligands_with_beta_hydrogens: [True or False],No,Removes ligands with beta Hydrogen atoms.
+graph_IDs,graph_IDs: [list[str]],No,A filter to keep only the exactly specified ligands.
