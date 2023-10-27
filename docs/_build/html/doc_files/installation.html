@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Installation &#8212; DART  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
+<p>We are currently working on providing DART as python package on conda-forge to make the installation a matter of seconds. In the meantime, it takes a few minutes to set up DART. We recommend to install DART by downloading the repository from github and installing it as local python package with the correct dependencies as specified in the conda environment file. In the following we will go through these steps one-by-one. Please open the terminal on your computer and copy and execute the following commands:</p>
+<ol class="arabic simple">
+<li><p>Install conda on your computer. Conda is a safe everyday tool for Python users and can easily be installed as explained in <cite>https://conda.io/projects/conda/en/latest/user-guide/install/index.html</cite>. Download Miniconda by following the corresponding link to the installation guide depending on if you use Windows, Mac or Linux.</p></li>
+<li><p>Download the DART repository into the current directory
+<code class="docutils literal notranslate"><span class="pre">`sh</span>
+<span class="pre">git</span> <span class="pre">clone</span> <span class="pre">todo</span>
+<span class="pre">`</span></code></p></li>
+<li><p>Set up the conda environment for DART downloading all necessary dependencies
+<code class="docutils literal notranslate"><span class="pre">`sh</span>
+<span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">DART\conda\DART_env.yml</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;--</span> <span class="pre">for</span> <span class="pre">Windows</span> <span class="pre">users</span>
+<span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-f</span> <span class="pre">DART/conda/DART_env.yml</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">&lt;--</span> <span class="pre">for</span> <span class="pre">Mac/Linux</span> <span class="pre">users</span>
+<span class="pre">`</span></code>
+Note: The conda environment will be linked to the absolute path to the cloned version of this repo. If you move the downloaded DART folder, you need to redo this step to link the conda environment again to the correct path.</p></li>
+<li><p>Activate the conda environment:
+<code class="docutils literal notranslate"><span class="pre">`sh</span>
+<span class="pre">conda</span> <span class="pre">activate</span> <span class="pre">DART</span>
+<span class="pre">`</span></code></p></li>
+</ol>
+<p>Now DART is installed as python package in the conda environment DART. Whenever you want to use DART, you need to be in this conda environment. In doubt, just type ‘conda activate DART’ into your terminal, this brings you into the correct conda environment. Then, you can use all DART commands.</p>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">DART</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Timo Sommer, Cian Clarke.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 7.0.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="../_sources/doc_files/installation.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

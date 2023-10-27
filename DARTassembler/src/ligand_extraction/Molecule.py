@@ -775,7 +775,7 @@ class RCA_Molecule(object):
 
 class RCA_Ligand(RCA_Molecule):
     """
-    Ligands need a little more information, hence we need to expand the RCA_Molecule class
+    This class is used to represent ligands in the MetaLig database.
     """
 
     def __init__(self,
@@ -1165,7 +1165,7 @@ class RCA_Ligand(RCA_Molecule):
         info['Stoichiometry'] = info['stoichiometry']
         info['Denticity'] = info['denticity']
         info['Donors'] = '-'.join(info['local_elements'])
-        info['Predicted Charge'] = int(info['pred_charge'])
+        info['Predicted Charge'] = int(info['pred_charge']) if not np.isnan(info['pred_charge']) else info['pred_charge']
         info['Confident Charge'] = info['pred_charge_is_confident']
         info['Graph ID'] = info['graph_hash_with_metal']
         info['CSD Occurrences'] = info['occurrences']

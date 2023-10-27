@@ -1,0 +1,23 @@
+Name, Type, Options, Description
+output_path, global, `dirpath`, Path in which the output will be saved.
+overwrite_output, global, true; false, Whether to overwrite the output if it already exists. Recommended: false.
+ffmovie, global, true; false, Whether to output a movie of the optimization process. Set to false to save disk space.
+concatenate_xyz, global, true; false, Whether to concatenate the xyz files of the optimization process.
+verbosity, global, 0; 1; 2; 3, How much output to print. Recommended is 2.
+complex_name_length, global, `int > 0`, Length of the randomly generated complex name. Recommended: 8.
+name, batch, `str`, Use this to name your batches for easier identification.
+topology, batch, 3-2-1; 4-1-1; 5-1; 2-1-1; 2-2, The desired denticities of the ligands of the complex.
+ligand_db_paths, batch, `filepath` or list(`filepath / keyword` ), Paths to the ligand database to use for assembling the complexes.
+ligand_choice, batch, random; all, Choose ligands randomly or systematically to assemble complexes.
+max_num_complexes, batch, `int > 0`, Maximum number of complexes to generate.
+metal -> element, batch, `chemical symbol`, Chemical symbol of the desired metal center.
+metal -> oxidation_state, batch, `int > 0`, Oxidation state of the desired metal center.
+metal -> spin, batch, `int ≥ 0`, Spin of the desired metal center.
+total_charge, batch, `int`, Total charge of the complex.
+forcefield, batch, true; false, Whether to relax the generated structures with a force field.
+isomers, batch, lowest_energy; all, Which isomers to save.
+bidentate_rotator, batch, auto; horseshoe; slab, How to assemble bidentate ligands to the complex.
+gaussian_input_filepath, batch, `filepath`, Path to the Gaussian config file.
+geometry_modifier_filepath, batch, `filepath`, Path to the geometry modifier file.
+random_seed, batch, `int`, A seed for any random number generator in the assembly process.
+complex_name_appendix, batch, `str`, Characters to append to the randomly generated complex name.

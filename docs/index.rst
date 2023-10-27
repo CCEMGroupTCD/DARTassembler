@@ -6,18 +6,19 @@
 Welcome to DART's documentation!
 ================================
 
+
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-   installation
+    :maxdepth: 2
+    :caption: Contents:
+
+    ./doc_files/installation.rst
+    ./doc_files/usage.rst
+    ./doc_files/ligand_filters/ligand_filters.rst
+    ./doc_files/assembly/assembly.rst
+    ./doc_files/examples/Pd_Ni_Cross_Coupling/Pd_Ni_Cross_Coupling.rst
 
 
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 

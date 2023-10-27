@@ -6,17 +6,25 @@
 Welcome to DART's documentation!
 ================================
 
+
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Contents:
+
+    ./doc_files/installation.rst
+    ./doc_files/usage.rst
+    ./doc_files/ligand_filters/ligand_filters.rst
+    ./doc_files/assembly/assembly.rst
+    ./doc_files/examples.rst
+    ./doc_files/api_reference.rst
+    ./doc_files/contributing.rst
+    ./doc_files/authors.rst
+    ./doc_files/license.rst
+    ./doc_files/acknowledgements.rst
+    ./doc_files/references.rst
 
 
 
-Indices and tables
-==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
-installation
