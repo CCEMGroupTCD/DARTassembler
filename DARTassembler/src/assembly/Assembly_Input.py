@@ -17,11 +17,11 @@ from typing import Union, Any, Tuple, List, Dict, Optional
 from DARTassembler.src.ligand_extraction.io_custom import read_yaml
 from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist
 
-allowed_topologies = [(2, 1, 1), (2, 2), (3, 2, 1), (4, 1, 1), (5, 1)]      # list all allowed topologies, others will be rejected
+allowed_topologies = ['2-1-1', '2-2', '3-2-1', '4-1-1', '5-1']  # list all allowed topologies, others will be rejected
 
 # Define the key names in the assembly input file
 # Global settings
-_verbose = 'verbose'
+_verbose = 'verbosity'    # verbosity
 _optimization_movie = 'ffmovie'
 _concatenate_xyz = 'concatenate_xyz'
 _overwrite_output_path = 'overwrite_output'
@@ -931,25 +931,31 @@ class AssemblyInput(BaseInput):
     def get_topology_from_input(self, topology: str) -> tuple[str, list]:
         """
         Checks the topology input for correct input.
+        @topology: Input topology in the format '3-2-1'.
         @returns: Tuple(topology, topology_list): A tuple of a string of the format '[3, 2, 1]' for specifying denticities and the same thing as list.
         """
-        topology = str(topology)
-        error_message = f"Topology '{topology}' is not in the correct format. It must be a list of denticities, e.g. '[3, 2, 1]'."
         varname = f'{_batches}->{_topology}'
 
-        try:
-            denticities = ast.literal_eval(topology)
-        except (ValueError, SyntaxError):
-            # If the input is weird, then we raise an error
-            self.raise_error(error_message, varname=varname)
+        topology = str(topology)
+        if not topology in allowed_topologies:
+            self.raise_error(f"Invalid topology '{topology}'. Supported topologies are {allowed_topologies}.", varname=varname)
 
-        # Check that denticities are either lists or tuples and make them to lists for the rest of the code
-        if not isinstance(denticities, (list, tuple)):
-            self.raise_error(error_message, varname=varname)
-        denticities = list(self.get_list_of_ints_from_input(input=denticities, varname=varname))
+        denticities = [int(dent) for dent in topology.split('-')]
 
-        if not any(sorted(denticities) == sorted(top) for top in allowed_topologies):
-            self.raise_error(f"Invalid topology '{topology}'. This topology is not supported. Supported topologies are {allowed_topologies}.", varname=varname)
+        # error_message = f"Topology '{topology}' is not in the correct format. It must be a list of denticities in the format '3-2-1'."
+        # try:
+        #     denticities = ast.literal_eval(topology)
+        # except (ValueError, SyntaxError):
+        #     # If the input is weird, then we raise an error
+        #     self.raise_error(error_message, varname=varname)
+        #
+        # # Check that denticities are either lists or tuples and make them to lists for the rest of the code
+        # if not isinstance(denticities, (list, tuple)):
+        #     self.raise_error(error_message, varname=varname)
+        # denticities = list(self.get_list_of_ints_from_input(input=denticities, varname=varname))
+        #
+        # if not any(sorted(denticities) == sorted(top) for top in allowed_topologies):
+        #     self.raise_error(f"Invalid topology '{topology}'. This topology is not supported. Supported topologies are {allowed_topologies}.", varname=varname)
 
         # Validity checks
         # - Check that denticities are positive integers
@@ -961,7 +967,7 @@ class AssemblyInput(BaseInput):
             dent_indices = [i for i, d in enumerate(denticities) if d == dent]
             min_index, max_index = min(dent_indices), max(dent_indices)
             if not max_index - min_index + 1 == occ:
-                self.raise_error(f"Invalid topology '{topology}'. Please provide a list of integers where same integers are clustered together. For example, the topology (2, 2, 1) is good, while (2, 1, 2) is bad because not all '2' appear in series.", varname=varname)
+                self.raise_error(f"Invalid topology '{topology}'. Please provide a list of integers where same integers are clustered together. For example, the topology 2-2-1 is good, while 2-1-2 is bad because not all '2' appear in series.", varname=varname)
 
         output_topology = str(denticities)
         return output_topology, denticities
@@ -1002,10 +1008,14 @@ class AssemblyInput(BaseInput):
         """
         Checks if the isomers input is correct.
         """
-        possible_values = ['Generate Lowest Energy', 'Generate All']
+        values = {'lowest_energy': 'Generate Lowest Energy', 'all': 'Generate All'}
+
+        possible_values = list(values.keys())
         isomers = str(isomers)
         if isomers not in possible_values:
             self.raise_error(f" Input value '{isomers}' not recognized. It must be one of {possible_values} (case sensitive).", varname=f'{_batches}->{_isomers}')
+
+        isomers = values[isomers]   # Convert input format to the format used in the assembly code
 
         return isomers
 

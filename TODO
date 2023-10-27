@@ -10,6 +10,9 @@ Must:
 - ligand filtering:
     - fix the min/max problem with the number of atoms where sometimes the max is not in the interval boundaries
 
+Soon:
+    - Make input (3,2,1) to 3-2-1
+    - make isomer options lowercase and one word
 
 Should:
 - ligand filtering
@@ -20,7 +23,10 @@ Should:
     - add subgraph matching filter
     - add denticities to each filter where it makes slightly sense
     - merge ligand composition and coordinating atom composition filter by adding an option 'apply_to' which is either 'ligand_atoms' or 'coordinating_atoms'
-    - add a filter which merges the ligand composition, coordinating atoms and number of atoms filter by providing a list of atoms with keywords such as a * if this atom is coordinating and keywords if if is necessary or optional and also an X if any element is allowed
+    - add filters:
+        - subgraph filter
+        - merge ligand composition, coordinating atoms and number of atoms filter by providing a list of atoms with keywords such as a * if this atom is coordinating and keywords if if is necessary or optional and also an X if any element is allowed
+        - custom filter for supplying a function that returns true or false based on an input ligand
 output
 - ligand db:
     - make unique IDs of ligands like Zotrux02 and in case this points to more than one ligand, add a letter to all of them like a, b, c etc.

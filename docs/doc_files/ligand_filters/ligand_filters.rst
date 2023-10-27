@@ -102,8 +102,8 @@ input_ligand_db_path : [str, empty]
 output_ligand_db_path : [str, empty]
     Path where the filtered ligand database will be saved. If empty, will default to 'filtered_ligand_db.json' in the current directory.
 
-Filter Descriptions
-~~~~~~~~~~~~~~~~~~~
+Filter Options
+~~~~~~~~~~~~~~
 
 denticities
 ^^^^^^^^^^^^^^^^^^^^^^^

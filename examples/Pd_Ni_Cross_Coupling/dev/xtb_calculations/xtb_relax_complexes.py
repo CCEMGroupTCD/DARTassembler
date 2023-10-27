@@ -71,8 +71,9 @@ if __name__ == "__main__":
     assembled_complexes_dir = 'data/Pd_Ni_all_assembled_complexes'
 
     method = 'GFN2-xTB'
-    force_criterion = 8e-4  # lower is more accurate
+    force_criterion = 1e-3  # lower is more accurate
     verbosity = 0
+    # todo: add accuracy to input
 
 
 
@@ -107,7 +108,7 @@ if __name__ == "__main__":
         metal_idx = metal_idx[0]
 
         # Write output relaxed structure
-        relaxed_structure = opt.atoms
+        relaxed_structure = opt.atoms   # todo: remove forces and charges from output structure, output only coordinates
         write(relaxed_structure_file, relaxed_structure)
 
         xtb_decriptors = get_xtb_descriptors(relaxed_structure_file)
