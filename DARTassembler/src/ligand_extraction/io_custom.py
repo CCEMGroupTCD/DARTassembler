@@ -13,6 +13,7 @@ import jsonlines
 from tqdm import tqdm
 import ase
 import zipfile
+import shutil
 import os
 from DARTassembler.src.constants.Paths import default_ligand_db_path
 
@@ -26,7 +27,9 @@ def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
         if not Path(zip_file).exists():
             raise FileNotFoundError(f"Could not find MetaLig database zip file at {Path(zip_file).resolve()}. Please download it from the DART github repository and place it there.")
 
-        uncompress_file(zip_file, default_ligand_db_path)
+        db_dir = Path(default_ligand_db_path).parent
+        uncompress_file(zip_file, db_dir)
+        assert Path(default_ligand_db_path).exists(), f"Could not find MetaLig database at {Path(default_ligand_db_path).resolve()}. Please download it from the DART github repository and place it there."
         print(f"Uncompressed MetaLig database to {Path(default_ligand_db_path).resolve()}.\n")
 
     if delete_zip:
@@ -35,25 +38,38 @@ def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
 
     return
 
-def compress_file(file_path, output_zip_path=None):
+def compress_file(file_path, output_zip_path=None, compression_level=6):
     """
     Compress a file into a zip file.
     """
     if output_zip_path is None:
         output_zip_path = str(file_path) + '.zip'
 
-    with zipfile.ZipFile(output_zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        zipf.write(file_path, os.path.basename(file_path))
+        with zipfile.ZipFile(output_zip_path, 'w', zipfile.ZIP_DEFLATED, compresslevel=compression_level) as zipf:
+            zipf.write(file_path, os.path.basename(file_path))
 
-def uncompress_file(zip_file_path, output_path=None):
+    return
+
+def uncompress_file(zip_file_path, output_dir):
     """
     Uncompress a zip file into a file.
     """
-    if output_path is None:
-        output_path = str(zip_file_path).replace('.zip', '')
+    # Create a temporary directory to extract the files
+    temp_dir = Path(output_dir, 'temp_extract')
 
+    # Extract all files to the temporary directory
     with zipfile.ZipFile(zip_file_path, 'r') as zipf:
-        zipf.extractall(output_path)
+        zipf.extractall(temp_dir)
+
+    # Move the contents of the temporary directory to the output directory
+    for filename in os.listdir(temp_dir):
+        shutil.move(Path(temp_dir, filename), Path(output_dir, filename))
+
+    # Remove the temporary directory
+    Path(temp_dir).rmdir()
+
+    return
+
 
 class NumpyEncoder(json.JSONEncoder):
     """Special json encoder. This is important to use in json.dump so that if json encounters a np.array, it converts it to a list automatically, otherwise errors arise. Use like this:

@@ -4,7 +4,13 @@
 .DS_Store
 *.swp
 
+
 /data/**
+# include zip file of MetaLig database
+!/data/final_db_versions/
+/data/final_db_versions/**
+!/data/final_db_versions/MetaLigDB_v1.0.0.jsonlines.zip
+
 /database/**
 /tmp/**
 /Bin_(Old)
@@ -17,6 +23,8 @@
 /examples/Pd_Ni_Cross_Coupling/output/**
 /examples/Pd_Ni_Cross_Coupling/dev/output/**
 /examples/Pd_Ni_Cross_Coupling/dev/xtb_calculations/data/**
+
+/docs/_build
 
 /src04_Assembly/Z-test.py
 /src04_Assembly/test12.py

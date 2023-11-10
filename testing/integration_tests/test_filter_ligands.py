@@ -22,4 +22,5 @@ def test_filter_ligands(nmax=3000):
 
 
 if __name__ == "__main__":
-    filters = test_filter_ligands()
+    nmax = 3000
+    filters = test_filter_ligands(nmax=nmax)
