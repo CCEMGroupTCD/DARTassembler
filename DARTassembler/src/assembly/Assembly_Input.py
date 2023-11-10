@@ -894,7 +894,7 @@ class AssemblyInput(BaseInput):
         varname = f'{_batches}->{_input_path}'
         if ligand_db_path is None or ligand_db_path == '' or ligand_db_path == 'default':
             # No input given, use default ligand database and all different ligands in similarity list
-            print(f"Ligand database path '{varname}' is not specified in batch {self.batch_name} in file '{self.path}'. Using full default ligand database.")
+            # print(f"Ligand database path '{varname}' is not specified in batch {self.batch_name} in file '{self.path}'. Using full default ligand database.")
             output_ligand_db_path = Path(default_ligand_db_path)
             similarity_list = list(range(1, n_ligands + 1))
 
@@ -962,7 +962,7 @@ class AssemblyInput(BaseInput):
         if not all(isinstance(denticity, int) and denticity > 0 for denticity in denticities):
             self.raise_error(f"Invalid topology '{topology}'. Please provide a list of positive integers.", varname=varname)
         # - Check that same integers are clustered together in the list.
-        occurrences = pd.value_counts(denticities)
+        occurrences = pd.Series(denticities).value_counts()
         for dent, occ in occurrences.items():
             dent_indices = [i for i, d in enumerate(denticities) if d == dent]
             min_index, max_index = min(dent_indices), max(dent_indices)

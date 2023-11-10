@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-QEJPOO-03-a,C13H10N2O1,3,N-N-C,-2,True,adb750c4c6150b2ad52d22a2455105cc,1,QEJPOO,W(1)
+Ligand 1,unq_CSD-IREZOX-02-a,C34H32N2O6,2,N-N,0,True,0d2a63ef5b04393334c626382088a627,1,IREZOX,Pd(1)
+Ligand 2,unq_CSD-AZABOU-01-a,C16H35N1,1,N,0,True,0760483fba149c68ae3e5d70e2f59b6a,1,AZABOU,Zn(1)

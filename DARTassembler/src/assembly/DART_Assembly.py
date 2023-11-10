@@ -118,7 +118,7 @@ class DARTAssembly(object):
         n_success = self.df_info['success'].sum()
         logging.info(f"DART Assembler output files saved to {self.output_path}")
         logging.info(f"Total runtime for assembling {n_success} complexes: {self.runtime}")
-        logging.info('Exiting DART Assembler.')
+        logging.info('Done! All complexes assembled. Exiting DART Assembler.')
 
         return
 
@@ -466,8 +466,8 @@ class DARTAssembly(object):
         Check if the complex can be assembled based on certain conditions to avoid errors.
         """
         if not RCA.planar_check_(ligands):
-            logging.warning(
-                "Skipping complex: non-planar tridentate ligand (not yet supported)")
+            # logging.warning(
+            #     "Skipping complex: non-planar tridentate ligand (not yet supported)")
             self.add_batch_info(success=False, reason='non-planar tridentate', ligands=ligands)
             return False
 
@@ -480,8 +480,8 @@ class DARTAssembly(object):
                 pass
 
         if hydride_found:
-            logging.warning(
-                "Skipping complex: hydride (not yet supported)")
+            # logging.warning(
+            #     "Skipping complex: hydride (not yet supported)")
             self.add_batch_info(success=False, reason='hydride', ligands=ligands)
             return False
 
@@ -506,9 +506,9 @@ class DARTAssembly(object):
         @return: ligand database or list of ligand databases. The db are in the format {denticity: {charge: [ligand, ligand, ...]}}
         """
         if self.multiple_db:
-            ligand_db = [LigandDB.from_json(json_=path, type_="Ligand").get_lig_db_in_old_format() for path in self.ligand_json]
+            ligand_db = [LigandDB.load_from_json(path).get_lig_db_in_old_format() for path in self.ligand_json]
         else:
-            ligand_db = LigandDB.from_json(json_=self.ligand_json, type_="Ligand").get_lig_db_in_old_format()
+            ligand_db = LigandDB.load_from_json(self.ligand_json).get_lig_db_in_old_format()
         self.last_ligand_db_path = self.ligand_json
 
         if len(ligand_db) == 0:

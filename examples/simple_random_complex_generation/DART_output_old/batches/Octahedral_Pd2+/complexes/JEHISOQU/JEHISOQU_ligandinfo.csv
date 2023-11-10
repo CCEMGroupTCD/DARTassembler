@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-AGUDOY-03-a,C10H12N3O2S1,3,O-N-N,-1,True,b8100780237c506bd0210df100f483c5,1,AGUDOY,Co(1)
+Ligand 1,unq_CSD-VAVGEF-02-a,C5H7N2O1,2,O-N,-1,True,396116e7839f860a317c8627348a1b69,1,VAVGEF,Re(1)
+Ligand 2,unq_CSD-HIPDAN-01-b,C8H7N5O2,1,N,0,True,5803b6d68fe4db42e580eee269a59f6e,1,HIPDAN,Au(1)

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-YIDZUH-03-a,C13H10Cl1N2S1,3,C-S-N,-1,True,39c41e967d50368d1f64d1532acb36de,6,"YIDZUH, YIDZUH01, YIDZUH02, VIWKUI, OWEVAO, ... (1 more)","Pd(5), Pt(1)"
+Ligand 1,unq_CSD-AXAJUE-02-a,C19H15N5,2,N-N,0,True,cb316fe5594134806b3498df25149848,21,"AXAJUE, AXAJUE, BEQMOZ, QAYVUH, QAYVUH, ... (16 more)","Fe(8), Mn(4), Co(4), Ni(2), Cu(2), ... (1 more)"
+Ligand 2,unq_CSD-LIZNUF-01-b,C8H5N2S2,1,S,-1,True,2d69a25c46a5aed798167a6e8ea32da0,1,LIZNUF,Au(1)

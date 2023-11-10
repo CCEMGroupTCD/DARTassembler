@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-XAYBAB-03-a,C16H32N2O3,3,O-O-O,0,True,2e678e1cf8fa7e442d512e0b45c39a62,4,"XAYBAB, XAYBAB, XAYBAB, ROCGEW","Yb(3), U(1)"
+Ligand 1,unq_CSD-LELPOI-02-a,C6H7N6S1,2,S-N,-1,True,2808220c0cf28f4ebc2b4e7c881d0e62,2,"LELPOI, LELPOI",Hg(2)
+Ligand 2,unq_CSD-SIMWAO-01-a,C12H18N1,1,N,-1,True,f910ab028e57853d670ddf2d808670af,166,"SIMWAO, SIMWAO, SIMWIW, SIMWOC, SORJUH, ... (161 more)","Sc(37), Y(29), Fe(20), Co(18), Ti(15), ... (19 more)"

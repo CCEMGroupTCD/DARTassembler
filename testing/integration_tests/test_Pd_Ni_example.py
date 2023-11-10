@@ -10,10 +10,10 @@ def copy_input_files_from_example_and_adapt_paths(example_input_dir, test_input_
     copy_tree(str(example_input_dir), str(test_input_dir))
 
     replace_paths = {
-        'output/ligand_databases/Br/ligand_db_Br.jsonlines': 'Pd_Ni_example_assembly/ligand_databases/Br/ligand_db_Br.jsonlines',
-        'output/ligand_databases/phenyl/ligand_db_phenyl.jsonlines': 'Pd_Ni_example_assembly/ligand_databases/phenyl/ligand_db_phenyl.jsonlines',
-        'output/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines': 'Pd_Ni_example_assembly/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines',
-        'output/assembled_complexes': 'Pd_Ni_example_assembly/assembled_complexes',
+        'ligand_db_Br.jsonlines': 'Pd_Ni_example_assembly/ligand_databases/Br/ligand_db_Br.jsonlines',
+        'ligand_db_phenyl.jsonlines': 'Pd_Ni_example_assembly/ligand_databases/phenyl/ligand_db_phenyl.jsonlines',
+        'ligand_db_P_N_donors.jsonlines': 'Pd_Ni_example_assembly/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines',
+        'assembler_output': 'Pd_Ni_example_assembly/assembled_complexes',
         'input/Pd_phenyl_geometry_modification.xyz': 'Pd_Ni_example_assembly/data_input/Pd_phenyl_geometry_modification.xyz',
         'input/Ni_phenyl_geometry_modification.xyz': 'Pd_Ni_example_assembly/data_input/Ni_phenyl_geometry_modification.xyz'
     }

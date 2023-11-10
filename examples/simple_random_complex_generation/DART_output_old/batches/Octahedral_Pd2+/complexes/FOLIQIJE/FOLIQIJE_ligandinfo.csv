@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-TIBSAZ-03-a,C11H13Br1N1O4,3,O-O-N,-1,True,3e03af9abba7691bbd3797fad04abfad,2,"TIBSAZ, TIBSAZ",Zn(2)
+Ligand 1,unq_CSD-TUFPUF-02-a,C15H25O2,2,O-O,-1,True,d462b844115d1dd86484e98c68985c26,2,"TUFPUF, TUFPUF",Ni(2)
+Ligand 2,unq_CSD-SASWOB-01-b,C17H15N3O2,1,C,0,True,e282e4ce00e3c91d572c6bad19112ab5,2,"SASWOB, SASWOB",Ni(2)

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-KABZUJ-03-a,C9H9N4O2,3,N-N-O,-1,True,006e6223c56ca82c2f960a871c398f4a,10,"KABZUJ, KABZUJ, KABZUJ01, KABZUJ01, DAPQAN, ... (5 more)","Co(4), Zn(4), Ni(2)"
+Ligand 1,unq_CSD-SOXDOA-02-a,C10H8N3,2,N-N,-1,True,c53126c84a5b53b7303ece266212690e,20,"SOXDOA, PYIMPD01, PYIMPD01, PYRDCU, PYRDCU, ... (15 more)","Cu(4), Co(4), Pd(2), Ru(2), Ni(2), ... (4 more)"
+Ligand 2,unq_CSD-YIPROH-01-c,C5H8N2,1,N,0,True,233e9b031215ae357e2bbc0f2ce3f2cb,4,"YIPROH, YIPROH, UKAWIO, UKAWIO",Pt(4)

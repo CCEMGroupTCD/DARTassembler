@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-LULMUA-03-a,C19H15N3,3,N-N-N,0,True,66bf790089dac08226bea3e5b37a9cb5,1,LULMUA,Pt(1)
+Ligand 1,unq_CSD-UYULUW-02-a,C7H5N1O2S3,2,S-S,-2,True,9117c21cf486b216a5714c1a34125d5a,10,"UYULUW, IYOCEE, IYOCEE, NEQXUF, NEQXUF, ... (5 more)","Ni(3), Pt(2), Re(2), Zn(2), Pd(1)"
+Ligand 2,unq_CSD-YOCYAR-01-a,C5H9N3,1,N,0,True,a4abee5331eb5cd5d046df1b08c626eb,2,"YOCYAR, YOCYAR",Co(2)

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-VIHPAF-03-a,C14H9Br1N2O3,3,N-O-O,-2,True,0e2e97c00dfacc8d7e6a078915998d0d,3,"VIHPAF, VIHPAF01, VIHPAF02",Mo(3)
+Ligand 1,unq_CSD-PAFHIO-02-a,C6H7N5,2,N-N,0,True,165c636136cd700dd265539dd11dbb83,1,PAFHIO,Ru(1)
+Ligand 2,unq_CSD-WEPBEY-01-e,C9H18N2,1,N,0,True,1fbbea1f17527f276da7bd348ebb2c46,6,"WEPBEY, WEPBEY, WEPBOI, WEPBOI, NEYXEU, ... (1 more)","W(2), Re(2), Ta(2)"

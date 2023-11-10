@@ -19,8 +19,8 @@ def filter_ligands(filter_input_path: Union[str, Path], nmax: Union[int, None] =
         filter.output_ligand_db_path = Path(outpath)
 
     filter.save_filtered_ligand_db()
-    filter.save_filter_tracking()
-    filter.save_ligand_info_csv()
+    # filter.save_filter_tracking()
+    # filter.save_ligand_info_csv()
     filter.print_filter_tracking()
 
     return filter

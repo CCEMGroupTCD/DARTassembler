@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-VINHOQ-03-a,C13H17N2O1,3,N-N-O,-1,True,263aac9b4cd08a85d987b72f387037dd,1,VINHOQ,Cu(1)
+Ligand 1,unq_CSD-WAKGAS-02-a,C17H10F6N1O1,2,N-O,-1,True,3900341421eefde1a32ed43fa80bcc6b,2,"WAKGAS, WAKGAS",Ti(2)
+Ligand 2,unq_CSD-PATQAC-01-d,C22H39N1,1,N,0,True,eb19a28f66378c7e253b9cc0026e85dc,1,PATQAC,Re(1)

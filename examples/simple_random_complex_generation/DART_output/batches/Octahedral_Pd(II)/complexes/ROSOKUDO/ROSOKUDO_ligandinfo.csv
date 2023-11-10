@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-TARWEQ-03-a,C11H15N2S1,3,N-N-S,-1,True,596a3d08e0b1af43ce8de1ba4ed58798,11,"TARWEQ, TARWIU, TARWOA, TARXUH, ZESHAJ, ... (6 more)",Ni(11)
+Ligand 1,unq_CSD-FAFBIY-02-a,C10H14N3O1,2,O-N,-1,True,ae2506caf4a6ec6860459de2ff903287,2,"FAFBIY, FAFBIY",Pd(2)
+Ligand 2,unq_CSD-UPAVOZ-01-a,C7H8N2S1,1,S,0,True,b999bf38b858a0c68a962a41a71db4c8,15,"UPAVOZ, UPAVOZ, XOFDED, XOMSOH, XOMSOH, ... (10 more)","Cu(8), Cd(4), Pt(2), Ag(1)"

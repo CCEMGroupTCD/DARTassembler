@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-VOXPOQ-03-a,C7H11N4O1,3,N-N-N,-1,True,3bb9b40226f7d10b8d27b6cc06bd6826,2,"VOXPOQ, VOXPOQ",Ni(2)
+Ligand 1,unq_CSD-TOFXUK-02-a,C10H11N4,2,N-N,-1,True,4f9bed572fb9db1f87440ab2cc633779,2,"TOFXUK, TOFXUK",Pd(2)
+Ligand 2,unq_CSD-YURYIU-01-b,C7H12N2,1,C,0,True,4af30978566fc76bc7bf837ee12d1bdb,16,"YURYIU, YURYIU, DUSRER, REBJAN, GAMGUA, ... (11 more)","Au(5), Ag(4), Pd(3), Ir(2), Fe(1), ... (1 more)"

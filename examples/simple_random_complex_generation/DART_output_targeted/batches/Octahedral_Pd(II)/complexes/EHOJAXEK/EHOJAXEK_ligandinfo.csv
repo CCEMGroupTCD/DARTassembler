@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-ENAKOW-03-a,C12H9N3O1,3,N-N-O,-2,True,ffa73f17f3a410fb9633fe35776612a7,1,ENAKOW,Pd(1)
+Ligand 1,unq_CSD-CUBGAJ-02-a,C12H11N3O2,2,N-N,0,True,b47cce5c0eaee624ada097149d925789,1,CUBGAJ,Pt(1)
+Ligand 2,unq_CSD-JUVTUR-01-d,C5H8N2,1,C,0,True,e945c2d3d58f713d8fe359c7a776c9d0,1,JUVTUR,Pt(1)

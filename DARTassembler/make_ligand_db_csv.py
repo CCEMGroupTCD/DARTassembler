@@ -3,6 +3,9 @@ This module reads in a ligand db from file and saves a .csv file with an overvie
 """
 from typing import Union
 from pathlib import Path
+from DARTassembler.src.constants.Paths import default_ligand_db_path
+
+import DARTassembler.src.constants.Paths
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
 def get_ligand_csv_output_path(output_path: Union[str, Path], input_path: Union[str, Path]):
@@ -13,7 +16,8 @@ def get_ligand_csv_output_path(output_path: Union[str, Path], input_path: Union[
         if str(input_path).endswith('.csv'):
             raise ValueError(f"Input path {input_path} ends with .csv. Please specify an output path explicitly.")
         else:
-            output_path = Path(input_path).with_suffix('.csv')
+            current_dir = Path.cwd()
+            output_path = current_dir.joinpath(Path(input_path).with_suffix('.csv').name)
 
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -28,9 +32,14 @@ def make_ligand_db_csv(input_path: Union[str, Path], output_path: Union[str, Pat
     :param nmax: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.
     :return: LigandDB object
     """
+    if str(input_path).lower() == 'metalig':  # shortcut for entire MetaLig
+        input_path = default_ligand_db_path
+
     db = LigandDB.load_from_json(input_path, n_max=nmax)
 
     output_path = get_ligand_csv_output_path(output_path, input_path)
     db.save_reduced_csv(output_path)
+
+    print(f"Saved `{Path(input_path).name}` ligand database as .csv to `{output_path}`.")
 
     return db

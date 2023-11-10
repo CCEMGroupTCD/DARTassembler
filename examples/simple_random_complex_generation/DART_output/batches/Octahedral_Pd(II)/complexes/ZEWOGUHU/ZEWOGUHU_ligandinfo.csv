@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-RISCII-03-a,C9H10N3O2,3,N-N-O,-1,True,bdec31a04e4997b3c0a030777455e60b,2,"RISCII, RISCII",Ni(2)
+Ligand 1,unq_CSD-TARHIF-02-a,C6H7N3S1,2,N-N,0,True,b7b3173b6480b9d09dfbdb9337e35ad7,9,"TARHIF, TARHIF, TARHOL, TARHOL, TEFQIF, ... (4 more)","Ni(4), Co(2), Cd(2), Pt(1)"
+Ligand 2,unq_CSD-NELTOP-01-a,C13H9N4S1,1,S,-1,True,edb2644aa0eb088ca1cd90317db7af34,2,"NELTOP, NELTOP",Hg(2)

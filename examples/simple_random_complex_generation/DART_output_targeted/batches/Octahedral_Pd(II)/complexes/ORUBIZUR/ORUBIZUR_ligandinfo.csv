@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-SURZUC-03-a,C13H9N1O2,3,N-O-O,-2,True,5f683000dd176f04656a7916066db273,65,"SURZUC, SURZUC, SUXLON, CIKTAR, TUQQOL, ... (60 more)","Ni(12), Fe(11), Mo(11), Cu(10), Re(5), ... (9 more)"
+Ligand 1,unq_CSD-BAKRAH-02-a,C6H14N2,2,N-N,0,True,a72b262838538e4862960c8bf1e80ada,13,"BAKRAH, BAKRAH, CHXCUA, CHXCUA, CHXCUB, ... (8 more)","Cu(6), Ni(4), Pd(2), Pt(1)"
+Ligand 2,unq_CSD-POGNUV-01-a,C3H4N2,1,N,0,True,d1946f1553275cfd0b37ad35a30944fc,480,"POGNUV, SOQHAI, SOQHAI, SORFEL, SORFEL, ... (475 more)","Cu(95), Ni(84), Ru(61), Mn(37), Pt(31), ... (20 more)"

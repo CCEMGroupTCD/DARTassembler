@@ -63,15 +63,15 @@ if __name__ == "__main__":
         plt.close()
 
     # # 2D scatter plots
-    # for donor1, donor2 in [('P', 'N'), ('P', 'Br'), ('P', 'C'), ('N', 'Br'), ('N', 'C'), ('Br', 'C')]:
-    #     for dist in ['dist', 'dist_norm']:
-    #         plt.figure()
-    #         sns.scatterplot(data=df, x=f'{dist}_{donor1}', y=f'{dist}_{donor2}', hue='metal', alpha=0.4)
-    #         label = 'Distance' if dist == 'dist' else 'Normalized distance'
-    #         plt.xlabel(f'{label} to {donor1} in Angstroms')
-    #         plt.ylabel(f'{label} to {donor2} in Angstroms')
-    #         plt.savefig(Path(outdir, f'scatter_{dist}_{donor1}_{donor2}.svg'))
-    #         plt.close()
+    for donor1, donor2 in [('P', 'N'), ('P', 'Br'), ('P', 'C'), ('N', 'Br'), ('N', 'C'), ('Br', 'C')]:
+        for dist in ['dist', 'dist_norm']:
+            plt.figure()
+            sns.scatterplot(data=df, x=f'{dist}_{donor1}', y=f'{dist}_{donor2}', hue='metal', alpha=0.4)
+            label = 'Distance' if dist == 'dist' else 'Normalized distance'
+            plt.xlabel(f'{label} to {donor1} in Angstroms')
+            plt.ylabel(f'{label} to {donor2} in Angstroms')
+            plt.savefig(Path(outdir, f'scatter_{dist}_{donor1}_{donor2}.svg'))
+            plt.close()
 
     # 2D scatter plots with Mulliken charge as hue
     for donor1, donor2 in [('P', 'N'), ('P', 'Br'), ('P', 'C'), ('N', 'Br'), ('N', 'C'), ('Br', 'C')]:

@@ -57,7 +57,7 @@ if __name__ == '__main__':
     exclude_uncertain_charges = True
     nmax = 100
 
-    ligands = LigandDB.from_json(db_path, max_number=nmax)
+    ligands = LigandDB.load_from_json(db_path, max_number=nmax)
     df_ligands = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path ,n_max=nmax), orient='index')
     # df_ligands['has_metal_neighbors'] = df_ligands['graph_dict'].apply(lambda graph_dict: 'metal_neighbor' in str(graph_dict))
 

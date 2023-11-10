@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-EWUDAD-03-a,C12H12N4S1,3,S-N-N,0,True,ed08e4d889251d8427d8991bed630ec1,1,EWUDAD,Zn(1)
+Ligand 1,unq_CSD-VIPBUS-02-a,C12H20N3Si1,2,N-N,-1,True,5fb52058bb64fc72958c69b5bd3f494b,6,"VIPBUS, VIPBUS, VIPBUS, VIPCAZ, VIPCAZ, ... (1 more)","Zr(3), Hf(3)"
+Ligand 2,unq_CSD-MIVGII-01-a,C3H5O2,1,C,-1,True,1da93e7f169f72e186bac243c4b72fa0,7,"MIVGII, CUQRUC, HASHUE, DUSJUW, NIDWUT, ... (2 more)","Co(2), Ni(1), Mn(1), Pt(1), Ru(1), ... (1 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-COSALA01-03-a,C14H12N1O2,3,N-O-O,-1,True,8cc935ec4d2c1ec00374f33034ad5b5d,13,"COSALA01, COSALA01, VAJNEA01, VAJNEA01, KINHUN, ... (8 more)","La(3), Nd(3), Co(2), Cu(2), Ni(2), ... (1 more)"
+Ligand 1,unq_CSD-KICPAO-02-a,C13H11N2O1,2,N-N,-1,True,5e0e933b66d0959fd67537ad970687ec,8,"KICPAO, OBOBAM, WEMJUT, IWUDUA, NAXZOB, ... (3 more)","Re(3), Ru(2), Pt(2), Ir(1)"
+Ligand 2,unq_CSD-GIBWEU-01-b,C4H8N2,1,N,0,True,765d0067b8ae8b2c63eff6ae2365b3a2,2,"GIBWEU, GIBWEU",Pd(2)

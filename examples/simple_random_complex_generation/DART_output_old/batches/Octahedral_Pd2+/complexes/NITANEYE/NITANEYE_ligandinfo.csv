@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-DILFEK-03-a,C13H11Br2N2O1,3,N-N-O,-1,True,28689f3c1dfa7140594312acd2b72e0f,1,DILFEK,Cu(1)
+Ligand 1,unq_CSD-YIVGAO-02-a,C24H22N3O2,2,O-N,-1,True,91c3f48f297c73a67062be4b5c099c06,4,"YIVGAO, YIVGAO, YIVGES, YIVGES",Zn(4)
+Ligand 2,unq_CSD-XUYDIE-01-c,C5H13O1P1,1,P,0,True,56ecd255de45b903a8f22ab74592f384,4,"XUYDIE, XUYDIE, OJANUI, OJANUI",Ru(4)

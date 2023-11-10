@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-VAPHUR-03-a,C8H10N4S1,3,S-N-N,-2,True,e8120e25d47c378c14c1d01d4cae26c9,1,VAPHUR,Pd(1)
+Ligand 1,unq_CSD-TICNOK-02-b,C15H10N2O2,2,N-N,0,True,67d7355bc37333d25876b0b9630e4766,7,"TICNOK, ZIHRIU, ZIHRIU, WILVUK, WINJIO, ... (2 more)","Cu(3), Ni(2), Pd(1), Ag(1)"
+Ligand 2,unq_CSD-QUZYUH-01-a,C10H15N1,1,N,0,True,9ebe942537538e07ae1f52ad5ce86175,1,QUZYUH,Pt(1)

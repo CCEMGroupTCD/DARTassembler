@@ -5,7 +5,9 @@ from tqdm import tqdm
 import pandas as pd
 import numpy as np
 
+from DARTassembler.src.constants.Paths import default_ligand_db_path
 from DARTassembler.src.constants.Periodic_Table import DART_Element
+from DARTassembler.src.constants.constants import size_full_ligand_db
 from DARTassembler.src.ligand_extraction.utilities_graph import remove_node_features_from_graph, make_multigraph_to_graph, remove_edge_features_from_graph
 from DARTassembler.src.ligand_extraction.utilities import identify_metal_in_ase_mol
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_all_ligands_by_graph_hashes, group_list_without_hashing
@@ -17,7 +19,7 @@ from typing import Union
 from pathlib import Path
 import jsonlines
 import itertools
-
+from warnings import warn
 
 
 class BaselineDB:
@@ -168,6 +170,11 @@ class MoleculeDB(BaselineDB):
                   **kwargs
                   ):
         """
+        DEPRECATED: Please use the function `load_from_json` instead.
+
+        This function is very complex and has issues.
+
+
         :param json_: path to json file
         :param type_: ignored. Only for historical reasons
         :param graph_strategy: strategy to create the graph
@@ -175,6 +182,8 @@ class MoleculeDB(BaselineDB):
         :param show_progress: show progress bar
         :param kwargs: kwargs for the graph creation
         """
+        warn('The function `from_json` is deprecated. Please use the function `LigandDB.load_from_json(`path`)` instead to load the ligand database.', DeprecationWarning)
+
         db = {}
         if isinstance(json_, dict):
             for n, (identifier, mol) in tqdm(enumerate(json_.items()), desc=f"Load {cls.type} Database", disable=not show_progress):
@@ -191,8 +200,9 @@ class MoleculeDB(BaselineDB):
                                                                                     **kwargs
                                                                                     )
         else:
+            total = size_full_ligand_db if Path(json_).resolve() == Path(default_ligand_db_path).resolve() else None
             for identifier, mol in tqdm(iterate_over_json(path=json_, n_max=max_number, show_progress=False),
-                                        desc=f"Load {cls.type} Database", disable=not show_progress):
+                                        desc=f"Load {cls.type} Database", disable=not show_progress, total=total):
                 db[identifier] = cls.get_class().read_from_mol_dict(
                                                                                 dict_=mol,
                                                                                 graph_creating_strategy=graph_strategy,

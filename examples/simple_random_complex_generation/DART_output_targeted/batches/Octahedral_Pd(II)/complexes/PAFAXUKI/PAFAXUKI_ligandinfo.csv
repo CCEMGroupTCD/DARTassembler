@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OPALAT-03-a,C8H16N2,3,N-N-C,-2,True,ba74ebf64ac2dd9001a56ffdb5cc6061,1,OPALAT,Ni(1)
+Ligand 1,unq_CSD-LOQTUH-02-a,C4H9N3,2,N-N,0,True,521f52587e7d7d914864706b2e37f83c,27,"LOQTUH, CABWEJ, CABWEJ, CIDVUG, MUXWOT, ... (22 more)","Pt(20), Ni(4), V(2), Pd(1)"
+Ligand 2,unq_CSD-XABFAJ-01-a,C5H11N5,1,N,0,True,56a9312313613bfecad73c932376ddfb,2,"XABFAJ, XABFAJ",Pt(2)

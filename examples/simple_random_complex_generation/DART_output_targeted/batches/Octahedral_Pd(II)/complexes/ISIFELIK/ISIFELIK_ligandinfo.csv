@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-NIBTIB-03-a,C11H12N2O1,3,O-N-C,-2,True,fc4ae9059f831dd3bbb5f08905e48181,1,NIBTIB,Pd(1)
+Ligand 1,unq_CSD-MUSWEC-02-a,C8H9N5S1,2,N-N,0,True,b8d01804bbd22cb438a2dfec9d27955f,4,"MUSWEC, MUSWIG, KESNOL, KESQAA","Ru(2), Cu(1), Pd(1)"
+Ligand 2,unq_CSD-LUBXAJ-01-a,C8H11N1,1,N,0,True,26d229c5892c64a29cacba1dfe852b65,6,"LUBXAJ, LUBXAJ, YEVDOT, YEVDOT, XAMHUR, ... (1 more)","Zn(4), Pt(2)"

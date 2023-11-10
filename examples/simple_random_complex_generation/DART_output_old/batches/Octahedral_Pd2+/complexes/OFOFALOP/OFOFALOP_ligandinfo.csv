@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-ZUTHAX-03-a,C13H18N5S1,3,S-N-N,-1,True,8bbc106fd7319850166c7b7f4bebb9f1,1,ZUTHAX,Ni(1)
+Ligand 1,unq_CSD-KACMIL01-02-a,C8H8N7,2,N-N,-1,True,a3d4d564e443594603ad3e395a19ee7b,4,"KACMIL01, KACMIL01, KACMIL02, KACMIL02",Cu(4)
+Ligand 2,unq_CSD-WAHDAK-01-c,C6H7N1,1,C,0,True,bfb24020bf83fc87a8869b3f15776644,4,"WAHDAK, DEQSIC, DEQSIC01, SATWIV","Pd(2), Cr(1), Ir(1)"

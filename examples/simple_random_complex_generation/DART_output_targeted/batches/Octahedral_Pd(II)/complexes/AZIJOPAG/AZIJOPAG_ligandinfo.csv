@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-SIZWUW-03-a,C14H12N1O1S1,3,S-N-O,-1,True,3ede2f41cde9d8d2e685f8c2132e892a,7,"SIZWUW, MESNED, DEGHUV, DEGJAD, DEGJEH, ... (2 more)","Cu(3), Ru(3), Pt(1)"
+Ligand 1,unq_CSD-SOLGUV-02-a,C11H2N7,2,N-N,-1,True,3f5931c920e5de59ab2e033b266d0a22,23,"SOLGUV, SOLGUV, JOQYAR, JOQYAR, JOQYEV, ... (18 more)","Ni(11), Cu(4), Zn(2), Fe(2), Co(2), ... (1 more)"
+Ligand 2,unq_CSD-WAVGEG-01-b,C3H7N1,1,N,0,True,dae5e94ffd932a5c388786ddb766b4a0,9,"WAVGEG, ODEXEB, ODEXEB, ODEXEB, ODEXEB, ... (4 more)","Ni(4), Cu(4), Au(1)"

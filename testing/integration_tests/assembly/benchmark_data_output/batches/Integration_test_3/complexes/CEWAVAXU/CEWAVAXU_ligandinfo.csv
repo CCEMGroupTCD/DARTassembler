@@ -1,4 +1,4 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PCSCUP20-03-b,C13H10N3O2,3,O-N-N,-1,True,ba483c8337a3a4207c3ef9869f226f07,19,"PCSCUP20, PIVFAC, PIVFAC, PIYVID, PIYVID, ... (14 more)","Co(4), Ni(4), Cu(3), Dy(3), Zn(2), ... (2 more)"
-Ligand 1,unq_CSD-OZUHEX-02-a,C22H32N10O2,2,N-N,0,True,360382b19f0a5284fdf04a1fb33cc158,2,"OZUHEX, OZUHOH","Ni(1), Pd(1)"
-Ligand 2,unq_CSD-PABQAL-01-a,Cl3Sn1,1,Sn,-1,True,17fc683776618ed7dd2270e532126688,81,"PABQAL, PILHAT, PILHAT01, SNISMO, LUXTAZ, ... (76 more)","Pt(26), Ru(17), Pd(7), Rh(6), Au(4), ... (8 more)"
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PCSCUP20-03-b,C13H10N3O2,3,-1,O-N-N,28,240.24200000000002,0.6612394849947064,False,True,12.81484949814082,2.0218785222065265,ba483c8337a3a4207c3ef9869f226f07,19,"PCSCUP20, PIVFAC, PIVFAC, PIYVID, PIYVID, ... (14 more)","Co(4), Ni(4), Cu(3), Dy(3), Zn(2), ... (2 more)"
+Ligand 1,unq_CSD-OZUHEX-02-a,C22H32N10O2,2,0,N-N,66,468.566,0.09059249418495405,False,False,15.026380803440329,1.9993498488886976,360382b19f0a5284fdf04a1fb33cc158,2,"OZUHEX, OZUHOH","Ni(1), Pd(1)"
+Ligand 2,unq_CSD-PABQAL-01-a,Cl3Sn1,1,-1,Sn,4,225.06,0.49943559387913533,False,False,3.5844210369319063,2.574082807525819,17fc683776618ed7dd2270e532126688,81,"PABQAL, PILHAT, PILHAT01, SNISMO, LUXTAZ, ... (76 more)","Pt(26), Ru(17), Pd(7), Rh(6), Au(4), ... (8 more)"

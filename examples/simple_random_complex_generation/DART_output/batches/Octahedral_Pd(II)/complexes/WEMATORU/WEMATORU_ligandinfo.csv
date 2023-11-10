@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-LUNFEG-03-a,C23H19N5,3,N-N-N,0,True,382b23ea0e164a1922eaa5911bf48d86,2,"LUNFEG, LUNFEG",Ru(2)
+Ligand 1,unq_CSD-NAKQOH-02-a,C17H12Cl1N2O2,2,O-O,-1,True,22680e496b8be02c15c4ba5b6f650ad1,2,"NAKQOH, NAKQOH",Ni(2)
+Ligand 2,unq_CSD-MEDNUH-01-d,C5H4N1O1,1,N,-1,True,f729c530318abed1c349ff1eb7d3223e,11,"MEDNUH, CARXAU, YEXSOJ, YEXSOJ, VEGCUG, ... (6 more)","Ru(5), Pt(4), Ir(1), Pd(1)"

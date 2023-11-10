@@ -1,4 +1,4 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-OZIYON-02-a,C10H6F2N2,2,N-N,0,True,9cfe1644c35cf7f9ef3b747b268cd586,1,OZIYON,Ir(1)
-Ligand 1,unq_CSD-OZOCUD-01-a,Cl1,1,Cl,-1,True,8756e7780cb7e3fab0b8bcb31598a04d,72337,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72332 more)","Ru(9548), Pd(9384), Pt(6813), Cu(6010), Zn(4576), ... (43 more)"
-Ligand 2,unq_CSD-OZOCUD-01-a,Cl1,1,Cl,-1,True,8756e7780cb7e3fab0b8bcb31598a04d,72337,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72332 more)","Ru(9548), Pd(9384), Pt(6813), Cu(6010), Zn(4576), ... (43 more)"
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZIYON-02-a,C10H6F2N2,2,0,N-N,20,192.16880632599998,0.767081198067028,False,True,8.745613586821682,2.141244286037951,9cfe1644c35cf7f9ef3b747b268cd586,1,OZIYON,Ir(1)
+Ligand 1,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72337,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72332 more)","Ru(9548), Pd(9384), Pt(6813), Cu(6010), Zn(4576), ... (43 more)"
+Ligand 2,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72337,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72332 more)","Ru(9548), Pd(9384), Pt(6813), Cu(6010), Zn(4576), ... (43 more)"

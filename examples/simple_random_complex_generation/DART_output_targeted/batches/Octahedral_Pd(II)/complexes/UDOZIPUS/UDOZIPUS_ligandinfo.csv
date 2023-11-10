@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-DIZYAN-03-a,C9H9N3S1,3,C-N-S,-2,True,40a7c5719a9e98eb3a82ea146112f332,2,"DIZYAN, DIZYAN01",Pd(2)
+Ligand 1,unq_CSD-PETLUY-02-a,C11H6N2O1,2,N-N,0,True,9c8477a321017d19115c01c6cca01edd,104,"PETLUY, PETLUY, PIQDUO, PIQDUO, PIQFAW, ... (99 more)","Cu(47), Zn(13), Co(8), Ni(6), Mn(5), ... (11 more)"
+Ligand 2,unq_CSD-BISNUM-01-a,C6H5N3,1,N,0,True,d068d64449071401ae017c87915b432a,37,"BISNUM, BISNUM, CECTOW, CECTUC, CECVAK, ... (32 more)","Zn(14), Cu(7), Co(7), Pd(4), Au(3), ... (1 more)"

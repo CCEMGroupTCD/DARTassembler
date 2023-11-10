@@ -1,7 +1,23 @@
 Metadata-Version: 2.1
 Name: DART-Assembly
 Version: 0.1
-Summary: A software for chemists to build novel metal complexes on the computer.
+Summary: A software for chemists to build novel metal complexes from random ligands on the computer.
 Home-page: https://github.com/CCEMGroupTCD/DART
 Author: Timo Sommer, Cian Clarke, Felix Kleuker
 Requires-Python: >=3.9.5
+Requires-Dist: ase
+Requires-Dist: jsonlines
+Requires-Dist: networkx
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: pyyaml
+Requires-Dist: rdkit
+Requires-Dist: scipy<=1.10.1
+Requires-Dist: scikit-learn
+Requires-Dist: sympy
+Requires-Dist: tqdm
+Requires-Dist: mchammer==1.0.4
+Requires-Dist: pysmiles==1.0.2
+Requires-Dist: spindry==0.0.91
+Requires-Dist: stk==2022.6.17.0
+Requires-Dist: vabene==0.0.5

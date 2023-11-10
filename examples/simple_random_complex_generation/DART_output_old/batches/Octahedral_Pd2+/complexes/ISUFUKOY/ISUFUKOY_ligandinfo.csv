@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-TEJTIN-03-a,C14H8Cl2N2O2,3,N-O-O,-2,True,0cd35584d018643e6af04470a39ce961,1,TEJTIN,V(1)
+Ligand 1,unq_CSD-SODFAU-02-a,C16H8N4,2,N-N,0,True,c3a21be9fe86be0d7e9d4af9d010330e,5,"SODFAU, WAPNUY, WAPPAG, WAPPEK, ADEHEY",Ru(5)
+Ligand 2,unq_CSD-QEMVEK-01-a,C15H21O1P1,1,P,0,True,aa9a5722302a2fb309f8ea2b0e7af3c7,3,"QEMVEK, QEMVEK, QEMVIO","Pd(2), Pt(1)"

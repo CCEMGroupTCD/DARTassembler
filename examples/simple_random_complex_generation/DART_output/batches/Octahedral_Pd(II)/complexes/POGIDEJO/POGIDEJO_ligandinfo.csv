@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEQXOA-03-a,C46H46N1P2,3,P-P-N,-1,True,3777eb4a33409f669bc4e726a31dddb5,15,"PEQXOA, PEQXUG, PEQYAN, PEQYER, PEQYIV, ... (10 more)","Ir(5), Ni(3), Zr(2), Rh(1), Pd(1), ... (3 more)"
+Ligand 1,unq_CSD-BEDSAG-02-a,C13H12N2O2,2,O-N,0,True,568d1a6a0dd8881ee1d81cac8363dc5e,3,"BEDSAG, BAKQIR, BAKQIR","Co(2), Rh(1)"
+Ligand 2,unq_CSD-YOXVIR-01-a,C11H17S1,1,S,-1,True,2272e4dded2c85c13b4eee501d09d3d8,2,"YOXVIR, YOXVIR",Pt(2)

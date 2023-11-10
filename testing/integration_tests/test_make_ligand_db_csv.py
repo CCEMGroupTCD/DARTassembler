@@ -3,15 +3,16 @@ Integration test for outputting a csv file of the ligand database.
 """
 from DARTassembler.make_ligand_db_csv import make_ligand_db_csv
 from DARTassembler.src.constants.Paths import project_path
+from pathlib import Path
 
-def test_make_ligand_db_csv(nmax=3000):
-    ligand_db_path = project_path().extend('testing', 'integration_tests', 'make_ligand_db_csv', 'data_input', 'filtered_ligand_db_v1.7.json')
-    output_path = project_path().extend('testing', 'integration_tests', 'make_ligand_db_csv', 'data_output', 'filtered_ligand_db_v1.7.csv')
-    db = make_ligand_db_csv(input_path=ligand_db_path, output_path=output_path, nmax=nmax)
+
+def test_make_ligand_db_csv(nmax=1000):
+    output_path = project_path().extend('testing', 'integration_tests', 'make_ligand_db_csv', 'data_output', 'MetaLig_v1.7.csv')
+    db = make_ligand_db_csv(input_path='metalig', output_path=output_path, nmax=nmax)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest
-    old_dir = project_path().extend('testing', 'integration_tests', 'make_ligand_db_csv', 'benchmark_data_output', 'filtered_ligand_db_v1.7.csv')
+    old_dir = Path(str(output_path).replace('/data_output/', '/benchmark_data_output/'))
     if old_dir.exists():
         test = IntegrationTest(new_dir=output_path.parent, old_dir=old_dir.parent)
         test.compare_all()
@@ -23,4 +24,6 @@ def test_make_ligand_db_csv(nmax=3000):
 
 
 if __name__ == "__main__":
-    filters = test_make_ligand_db_csv()
+    nmax = 1000
+
+    filters = test_make_ligand_db_csv(nmax=nmax)

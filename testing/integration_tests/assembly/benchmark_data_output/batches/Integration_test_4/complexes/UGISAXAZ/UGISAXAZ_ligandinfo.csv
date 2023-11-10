@@ -1,4 +1,4 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PARFIZ-04-a,C42H66N2O8,4,O-O-N-N,-2,True,16e2ff1af4f32cc82e811bf71fe3b95a,2,"PARFIZ, SOBXAL",Fe(2)
-Ligand 1,unq_CSD-PEDXEB-01-f,H2P1,1,P,-1,True,da0a13a38a6b8866c0389fe26e3700b1,3,"PEDXEB, POGNEG, BAZFIU","Ir(1), U(1), Zr(1)"
-Ligand 2,unq_CSD-OZUZIT-01-a,C2H5,1,C,-1,True,ec635f44581858d11dc468df2d987bf1,371,"OZUZIT, OZUZUF, PAGBEG, PAGBEG, PAGLUG, ... (366 more)","Zn(207), Co(31), Pt(23), Ni(16), Pd(14), ... (18 more)"
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PARFIZ-04-a,C42H66N2O8,4,-2,O-O-N-N,118,726.996,0.09843850965528332,False,True,25.50437915672522,2.052706523497192,16e2ff1af4f32cc82e811bf71fe3b95a,2,"PARFIZ, SOBXAL",Fe(2)
+Ligand 1,unq_CSD-PEDXEB-01-f,H2P1,1,-1,P,3,32.989761998,1.0,False,False,2.5291927763616595,2.439452850538415,da0a13a38a6b8866c0389fe26e3700b1,3,"PEDXEB, POGNEG, BAZFIU","Ir(1), U(1), Zr(1)"
+Ligand 2,unq_CSD-OZUZIT-01-a,C2H5,1,-1,C,7,29.061999999999994,0.4668880077830716,False,True,2.733142023386271,1.9526874557900973,ec635f44581858d11dc468df2d987bf1,371,"OZUZIT, OZUZUF, PAGBEG, PAGBEG, PAGLUG, ... (366 more)","Zn(207), Co(31), Pt(23), Ni(16), Pd(14), ... (18 more)"

@@ -6,6 +6,8 @@ from DARTassembler.src.constants.Periodic_Table import DART_Element
 
 project_path = Path(__file__).parent.resolve().parent
 
+size_full_ligand_db = 41018
+
 #
 ATOMIC_PROPERTIES_COLUMN_SEPARATOR = '  ===  '
 

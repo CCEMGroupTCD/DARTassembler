@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-NEVMEI-03-a,C13H10N2O3,3,O-O-N,-2,True,c943dc2de65edc0adac2d4dd8cd29244,4,"NEVMEI, NEVMIM, NEVMOS, NEVMUY",Mo(4)
+Ligand 1,unq_CSD-UQIQIX-02-a,C19H23N4,2,N-N,1,True,b485c9a9525a046a1958fc013eb2b44c,1,UQIQIX,Mn(1)
+Ligand 2,unq_CSD-LASRAZ-01-a,C6H4F3N2S1,1,S,-1,True,2aaa76bf62229320bb182bc6f8549264,2,"LASRAZ, LASRAZ",Hg(2)

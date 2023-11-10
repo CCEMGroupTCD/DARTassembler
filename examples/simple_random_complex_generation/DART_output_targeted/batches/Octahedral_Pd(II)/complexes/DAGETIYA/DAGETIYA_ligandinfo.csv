@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-DELZIH-03-a,C8H9N3S2,3,S-N-C,-2,True,dab120ad7e209475a0f15127007072d9,4,"DELZIH, DELZON, OXUZEN, OXUZEN01","Pd(2), Pt(1), Au(1)"
+Ligand 1,unq_CSD-BIMSUO-02-a,C10H14N2O1,2,N-N,0,True,9a4fe1289752f26457f9bbd793d54b6a,1,BIMSUO,Pd(1)
+Ligand 2,unq_CSD-ZOMHAN-01-b,C7H10N2,1,C,0,True,1f169f20fd4c6ebdfff205c884d92b10,2,"ZOMHAN, ZOMHAN",Pd(2)

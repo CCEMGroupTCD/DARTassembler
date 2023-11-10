@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-KITYIV-03-a,C16H15N2O1,3,O-N-N,-1,True,52bee421020b56a14ca8376298cedf7e,6,"KITYIV, KITYIV, KITYIV01, KITYIV01, HOPTIQ, ... (1 more)","Fe(4), Cu(1), Co(1)"
+Ligand 1,unq_CSD-HEZDUL-02-a,C12H14N3O2,2,N-N,-1,True,26be3017bf1701c91cac8b4208ea4239,2,"HEZDUL, HEZDUL",Co(2)
+Ligand 2,unq_CSD-WOLWAV-01-d,C4H11N1,1,C,0,True,cd5ebffb52f3aa049971c8adb6f9338b,1,WOLWAV,Pt(1)

@@ -469,7 +469,8 @@ class Bidentate_coordinating_distance:
         self.ligand_coord_0 = ligand.coordinates[ligand.ligand_to_metal[0]][1]
         self.ligand_coord_1 = ligand.coordinates[ligand.ligand_to_metal[1]][1]
         self.coord_atom_dist = np.linalg.norm(np.array(self.ligand_coord_0) - np.array(self.ligand_coord_1))
-        self.median = 0.5 * np.sqrt((2 * (self.ligand_covalent_radius_0 + self.metal_covalent_radius) ** 2) + (2 * (self.ligand_covalent_radius_1 + self.metal_covalent_radius) ** 2) - self.coord_atom_dist ** 2)
+        with np.errstate(all='ignore'):     # Ignore all numpy warnings such as taking the sqrt of a negative number
+            self.median = 0.5 * np.sqrt((2 * (self.ligand_covalent_radius_0 + self.metal_covalent_radius) ** 2) + (2 * (self.ligand_covalent_radius_1 + self.metal_covalent_radius) ** 2) - self.coord_atom_dist ** 2)
 
         logging.debug(f"Bidentate: The metal atomic radius is:{self.metal_covalent_radius}")
         logging.debug(f"Bidentate: The ligand atomic radius is:{self.ligand_covalent_radius_0}")

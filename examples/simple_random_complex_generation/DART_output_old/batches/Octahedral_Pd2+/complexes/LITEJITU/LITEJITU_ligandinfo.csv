@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-YUGGOY-03-a,C18H15N2O2,3,O-N-N,-1,True,6976a3d01d7b66675253958d6e1eaf4c,2,"YUGGOY, ZADJAS",Cu(2)
+Ligand 1,unq_CSD-GITZAL-02-a,C14H20N4O2,2,N-N,0,True,12d890d3c442223a1c044c02faf0c22c,3,"GITZAL, GITZAL, VABFEM",Fe(3)
+Ligand 2,unq_CSD-LULZOI-01-a,C4H10N1,1,N,-1,True,e51e5251e07d1393c8f18fc5f29a3dc0,39,"LULZOI, LULZOI, MAZMIK, CAVQUO, CAVREZ, ... (34 more)","Zr(8), W(6), Mo(5), Nb(4), Sc(4), ... (8 more)"

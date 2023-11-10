@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-CAPHUW-03-a,C12H10N3O1,3,O-N-N,-1,True,e7b683a74c180152ac71716892c7153e,1,CAPHUW,Pd(1)
+Ligand 1,unq_CSD-BAJPOS-02-b,C4H8N3O2,2,N-N,-1,True,0bc90f841269c41cce75f438c617ce27,19,"BAJPOS, NACGAD, CUJZOX, CUJZOX, HAFGAZ, ... (14 more)","Cu(14), Co(3), Ni(2)"
+Ligand 2,unq_CSD-BEWFUH-01-c,C15H12N2,1,N,0,True,0e87dfdeddb5b67f5fc035c2fd470138,26,"BEWFUH, TOKMIR, TOKMIR, KUHLAC, KUHLAC, ... (21 more)","Cu(7), Pt(4), Co(2), La(2), Nd(2), ... (5 more)"

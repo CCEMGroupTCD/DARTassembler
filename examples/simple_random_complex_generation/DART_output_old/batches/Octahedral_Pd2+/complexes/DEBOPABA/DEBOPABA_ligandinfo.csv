@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PECTEW-03-a,C17H11N1,3,N-C-C,-2,True,578e2a50c913a5569ac31b3d80265c91,33,"PECTEW, PECWOJ, TAMJIB, LIYRET, LUPYAY, ... (28 more)","Au(23), Pt(6), Pd(2), Os(1), Ir(1)"
+Ligand 1,unq_CSD-UJUCAD-02-a,C20H18N4,2,N-N,0,True,d2123ac1fd5692333398fc801ea00b2f,1,UJUCAD,Re(1)
+Ligand 2,unq_CSD-JUSDIM-01-c,C5H8N2S1,1,S,0,True,5aa7c58b4685ac4e336cbb4d87279f4a,1,JUSDIM,Cu(1)

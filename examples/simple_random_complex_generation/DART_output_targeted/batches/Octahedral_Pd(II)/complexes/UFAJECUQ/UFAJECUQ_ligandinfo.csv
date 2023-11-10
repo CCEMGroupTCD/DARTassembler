@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-LAYYIV-03-a,C6H6N4S1,3,N-N-S,-2,True,de90a9d356470e4ed1f539912de40341,1,LAYYIV,Pd(1)
+Ligand 1,unq_CSD-HUBNAV-02-a,C12H12N2S1,2,N-N,0,True,64c9f2c4676b67f035ab189a275f0b2f,1,HUBNAV,Pd(1)
+Ligand 2,unq_CSD-PATQEJ-01-a,C6H13N1,1,N,0,True,40e83c9f35a944f2724f5053bbef8ccb,62,"PATQEJ, PATQEJ, PATQEJ, PAWKOQ, PAWKOQ, ... (57 more)","Pt(30), Ni(8), Ag(7), Au(6), Cu(5), ... (4 more)"

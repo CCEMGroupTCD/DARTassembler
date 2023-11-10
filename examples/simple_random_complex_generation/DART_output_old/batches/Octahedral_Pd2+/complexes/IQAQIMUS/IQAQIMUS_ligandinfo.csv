@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-ACOWOI-03-a,C17H19N2O2,3,N-N-O,-1,True,a3df83c57416b979bdaba5d9aa05fc5a,8,"ACOWOI, ACOXAV, ACOXAV, ACOXEZ, ACOXEZ, ... (3 more)","Th(3), U(3), Np(2)"
+Ligand 1,unq_CSD-KAPXII-02-a,C10H24O1P2,2,P-O,0,True,0109e298bc02a8ffe8c115af738241f2,1,KAPXII,Mo(1)
+Ligand 2,unq_CSD-RUCBIC-01-a,C7H9O3,1,C,-1,True,6eac848a43e33feb8559e207e1706581,1,RUCBIC,Pd(1)

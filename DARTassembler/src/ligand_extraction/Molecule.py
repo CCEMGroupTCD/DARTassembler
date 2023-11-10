@@ -1157,27 +1157,34 @@ class RCA_Ligand(RCA_Molecule):
         return False
 
     def get_ligand_output_info(self, max_entries=np.inf) -> dict:
-        important_data = ['unique_name', 'stoichiometry', 'denticity', 'local_elements', 'pred_charge', 'pred_charge_is_confident', 'graph_hash_with_metal',  'occurrences', 'count_metals', 'all_ligand_names']
-        info = self.write_to_mol_dict(include_graph_dict=False)
-        info = {key: val for key, val in info.items() if key in important_data}
 
-        info['Ligand ID'] = info['unique_name']
-        info['Stoichiometry'] = info['stoichiometry']
-        info['Denticity'] = info['denticity']
-        info['Donors'] = '-'.join(info['local_elements'])
-        info['Predicted Charge'] = int(info['pred_charge']) if not np.isnan(info['pred_charge']) else info['pred_charge']
-        info['Confident Charge'] = info['pred_charge_is_confident']
-        info['Graph ID'] = info['graph_hash_with_metal']
-        info['CSD Occurrences'] = info['occurrences']
-        # Currently doesn't work because the ligand doesn't have the attribute 'identical_ligand_info'
+        info = {
+            'Ligand ID': self.unique_name,
+            'Stoichiometry': self.stoichiometry,
+            'Denticity': self.denticity,
+            'Formal Charge': int(self.pred_charge) if not np.isnan(self.pred_charge) else self.pred_charge,
+            'Donors': '-'.join(self.local_elements),
+            'Number of Atoms': self.n_atoms,
+            'Molecular Weight': self.global_props['molecular_weight'],
+            'Ligand Planarity': self.calculate_planarity(),
+            'Haptic': self.has_neighboring_coordinating_atoms,
+            'Beta-Hydrogen': self.has_betaH,
+            'Max. Interatomic Distance': self.stats['max_atomic_distance'],
+            'Avg. M-D Bond Length': np.mean(self.stats['coordinating_atom_distances_to_metal']),
+            'Graph ID': self.graph_hash_with_metal,
+            'CSD Occurrences': self.occurrences,
+            }
+
+        # Currently doesn't work because the ligand doesn't have the attribute 'identical_ligand_info'.
+        # For future bug search: This bug is only present when running the assembler, not the dbinfo module
         # csd_mos_counts = [f'{el}+{mos:.0f}' if mos > 0 else f'{el}+{mos:.0f}' for el, mos in zip(self.identical_ligand_info['original_metal_symbol'], self.identical_ligand_info['original_metal_os']) if not np.isnan(mos)]
         # csd_mos_counts = pd.value_counts(pd.Series(csd_mos_counts)).to_dict()
-        # info['CSD Metal OS Count'] = ', '.join([f'{el}({count})' for el, count in csd_mos_counts.items()])
 
-        # Get CSD complex IDs, but truncate if there are too many
+        # Truncate lists if there are too many
         truncate_data = {
-                            'CSD Complex IDs': [name.replace('CSD-', '').split('-')[0] for i, name in enumerate(info['all_ligand_names'])],
-                            'CSD Metal Count': [f'{el}({count})' for el, count in info['count_metals'].items()]
+                            'CSD Complex IDs': [name.replace('CSD-', '').split('-')[0] for i, name in enumerate(self.all_ligand_names)],
+                            'CSD Metal Count': [f'{el}({count})' for el, count in self.count_metals.items()],
+                            # 'CSD Metal OS Count': [f'{el}({count})' for el, count in csd_mos_counts.items()]
                         }
         for key, data in truncate_data.items():
             n_data = len(data)
@@ -1186,10 +1193,6 @@ class RCA_Ligand(RCA_Molecule):
             if n_data > max_entries:
                 data += f', ... ({n_data - max_entries} more)'
             info[key] = data
-
-
-        for key in important_data:
-            del info[key]
 
         return info
 

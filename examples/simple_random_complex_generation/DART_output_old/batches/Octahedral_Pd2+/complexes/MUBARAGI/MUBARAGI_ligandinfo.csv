@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-EKACOJ-03-a,C12H15Br1N3O2,3,O-O-N,-1,True,76ad93b63b1375b549fe79b03abdf51d,2,"EKACOJ, EKACUP",Fe(2)
+Ligand 1,unq_CSD-ELICOU-02-a,C10H7Br1N2,2,N-N,0,True,7f3f4f7d0f76f0ffee2d3f09f3b5085d,3,"ELICOU, FIVZOC, OREJIH","Dy(2), Ru(1)"
+Ligand 2,unq_CSD-ZEYGOB-01-a,C8H10N3O4,1,N,-1,True,57fba0ffacedd7f5dc18a6918c9bfa05,3,"ZEYGOB, ZEYHAO, HUNSIT","Mo(2), Ru(1)"

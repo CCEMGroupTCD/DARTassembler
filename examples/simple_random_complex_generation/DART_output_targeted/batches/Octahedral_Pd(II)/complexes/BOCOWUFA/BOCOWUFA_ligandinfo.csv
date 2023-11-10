@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-LAYYIV-03-a,C6H6N4S1,3,N-N-S,-2,True,de90a9d356470e4ed1f539912de40341,1,LAYYIV,Pd(1)
+Ligand 1,unq_CSD-POJDUQ-02-a,C12H12N2O2,2,N-N,0,True,1779482e1ddd2b59fa6ea8664d18130e,17,"POJDUQ, BIQZIN, BIQZOT, CAMVIX, DOLPOL, ... (12 more)","Zn(5), Cu(4), Ru(2), Ag(2), Ir(2), ... (2 more)"
+Ligand 2,unq_CSD-JOXSAT-01-b,C8H19N1,1,N,0,True,b3089d502417a2deae475ea9727af61f,4,"JOXSAT, HIWBAS, XEXQIA, XEXQIA","Pt(2), Ir(1), Zn(1)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OGIMOG-03-a,C6H11N3O2S1,3,S-O-N,0,True,8e3b47c321f20931edbc72f68cc47bd8,1,OGIMOG,Zn(1)
+Ligand 1,unq_CSD-DINXEF-02-a,C23H18N5O1,2,O-N,-1,True,d1224925cea95d35e1eef5502cd4bec0,1,DINXEF,Re(1)
+Ligand 2,unq_CSD-LOKNIK-01-a,C13H12N1O1,1,N,-1,True,eeb76c4d4b5f984d159f758e72767599,2,"LOKNIK, LOKNIK",Ru(2)

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-SUVYOA-03-a,C8H14N1O2,3,O-N-O,-1,True,2ae9d0265ca401528b3b964a82f1d328,2,"SUVYOA, SUVYOA",Ni(2)
+Ligand 1,unq_CSD-VAMBOE-02-a,C10H9N2,2,N-N,-1,True,b75fca172bde27887db2dceb7e69890d,5,"VAMBOE, VAMBOE, VAMBUK, VAMBUK, FONCAO","Fe(4), Pt(1)"
+Ligand 2,unq_CSD-KIVKUX-01-a,C5H9N1,1,C,0,True,c7a7c7acecbfb2106cecf96115e83974,3,"KIVKUX, FOLFAN, FOLFER","W(2), Pt(1)"

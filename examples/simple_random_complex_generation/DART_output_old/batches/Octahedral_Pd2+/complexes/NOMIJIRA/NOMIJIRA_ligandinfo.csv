@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-UYIBEL02-03-a,C23H18N5O2,3,N-O-O,-1,True,7ea6d8d6ec0249e14cd52484323e3754,1,UYIBEL02,V(1)
+Ligand 1,unq_CSD-CAGGAW-02-a,C10H5I1N1O2,2,O-N,-1,True,0d2ac594e6cfa02599211e62d0da8599,4,"CAGGAW, CAGGAW, CAGGEA, CAGGEA",Cu(4)
+Ligand 2,unq_CSD-ELIREX-01-b,C8H10N4S1,1,S,0,True,79c0a45132aa2b512d7ee01e3e39d339,1,ELIREX,Cu(1)

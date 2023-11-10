@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-QEHPAX-03-a,C12H11N4S2,3,S-N-N,-1,True,fcd053c060d6c75ccb6e907957b45e7b,16,"QEHPAX, QEHPAX, QEHPEB, QEHPEB, QEHPIF, ... (11 more)","Fe(10), Zn(2), Cu(1), Hg(1), Cd(1), ... (1 more)"
+Ligand 1,unq_CSD-IYEJIG-02-a,C12H11N4O1,2,N-N,-1,True,b3dc0330645f7b5181dd1e4c3566c2c3,1,IYEJIG,Pt(1)
+Ligand 2,unq_CSD-HOJROO-01-c,C6H13N3,1,N,0,True,869a8c3160e98214c647231d7bbe7b70,2,"HOJROO, HOJROO",Pt(2)

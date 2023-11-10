@@ -1,4 +1,4 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-OZIYON-02-a,C10H6F2N2,2,N-N,0,True,9cfe1644c35cf7f9ef3b747b268cd586,1,OZIYON,Ir(1)
-Ligand 1,unq_CSD-PACBEB-01-d,C3F5,1,C,-1,True,a556ad6faad5bde10c5e0c1608bdd654,6,"PACBEB, TEJDIY, TEJDIY, TEJDOE, TEJFEW, ... (1 more)","Pt(3), Pd(2), Rh(1)"
-Ligand 2,unq_CSD-PACBEB-01-d,C3F5,1,C,-1,True,a556ad6faad5bde10c5e0c1608bdd654,6,"PACBEB, TEJDIY, TEJDIY, TEJDOE, TEJFEW, ... (1 more)","Pt(3), Pd(2), Rh(1)"
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZIYON-02-a,C10H6F2N2,2,0,N-N,20,192.16880632599998,0.767081198067028,False,True,8.745613586821682,2.141244286037951,9cfe1644c35cf7f9ef3b747b268cd586,1,OZIYON,Ir(1)
+Ligand 1,unq_CSD-PACBEB-01-d,C3F5,1,-1,C,8,131.025015815,0.4002253723901516,False,False,3.819217947433741,2.029285926132639,a556ad6faad5bde10c5e0c1608bdd654,6,"PACBEB, TEJDIY, TEJDIY, TEJDOE, TEJFEW, ... (1 more)","Pt(3), Pd(2), Rh(1)"
+Ligand 2,unq_CSD-PACBEB-01-d,C3F5,1,-1,C,8,131.025015815,0.4002253723901516,False,False,3.819217947433741,2.029285926132639,a556ad6faad5bde10c5e0c1608bdd654,6,"PACBEB, TEJDIY, TEJDIY, TEJDOE, TEJFEW, ... (1 more)","Pt(3), Pd(2), Rh(1)"

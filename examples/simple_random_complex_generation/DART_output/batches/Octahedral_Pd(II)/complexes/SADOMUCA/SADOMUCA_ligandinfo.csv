@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-DIHCII-03-b,C31H27N5O3,3,N-N-N,0,True,6b56b9ae0582a875131c0ce9192cd3f0,1,DIHCII,Ru(1)
+Ligand 1,unq_CSD-VASSOZ-02-a,C9H8N3O1,2,N-C,-1,True,aff545bbf921f292794b7f6ed9658a6f,2,"VASSOZ, VASSOZ",Pd(2)
+Ligand 2,unq_CSD-POJMEJ-01-b,C12H11Si1,1,Si,-1,True,d94353bb0ab6baaebf412180d9679208,49,"POJMEJ, BAXFIQ, BAXFIQ, BAXFOW, BAXFOW, ... (44 more)","Pt(18), Fe(7), Pd(4), Ni(4), Co(4), ... (6 more)"

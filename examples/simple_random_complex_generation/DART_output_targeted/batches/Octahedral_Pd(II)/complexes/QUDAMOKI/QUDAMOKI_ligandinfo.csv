@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-BEPNOZ-03-a,C11H11N1O1S1,3,N-O-S,-2,True,44301164ce68101090d13917ab655c3a,2,"BEPNOZ, RISQIW",Ni(2)
+Ligand 1,unq_CSD-PELWEL-02-b,C16H6N6,2,N-N,0,True,ab4a0a3836b19c1494f96edd89779737,24,"PELWEL, PELWUB, TEBDUB, TEBDUB, TEWYOL, ... (19 more)","Ag(7), Cu(5), Zn(4), Co(3), Eu(2), ... (3 more)"
+Ligand 2,unq_CSD-LOQVUJ-01-b,C3H5N1,1,N,0,True,cb0b1b97e704f5255f341dbce54ba1bf,67,"LOQVUJ, MATSIJ, AZINON, AZINON, BUTWOF, ... (62 more)","Pt(24), Mo(11), Ru(8), W(6), Fe(5), ... (7 more)"

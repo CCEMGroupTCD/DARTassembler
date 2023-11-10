@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-SUYHUR-03-a,C17H13N2O2,3,N-O-N,-1,True,723f21ed72c02c049f7be3b6be5695ec,352,"SUYHUR, SUYHUR, QEFDAI, KICVID, KICVID, ... (347 more)","Fe(349), Ni(2), Cu(1)"
+Ligand 1,unq_CSD-BIKSOG-02-a,C16H12N3O1,2,O-N,-1,True,774bfa3502711ba1a3904329500684c6,8,"BIKSOG, BIKSOG, BIKSUM, BIKSUM, TINHOQ, ... (3 more)","Zn(4), Co(2), Ni(2)"
+Ligand 2,unq_CSD-PITVUL-01-a,C25H25N1,1,C,0,True,f4fa52a662e3e3e28ccdf1accd95d7cc,206,"PITVUL, PITVUL, PITWAS, PITWAS, PITWAS, ... (201 more)","Co(122), Ni(24), Fe(21), Mo(11), Cu(8), ... (6 more)"

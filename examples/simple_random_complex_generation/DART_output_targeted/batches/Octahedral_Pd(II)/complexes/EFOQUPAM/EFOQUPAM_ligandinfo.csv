@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-MASXAH-03-a,C9H10N3O1S1,3,S-O-N,-1,True,3000c9a82cb08369d05d08922e51127c,5,"MASXAH, MASXAH, DIBMEI, DIBMEI, AMIFEJ","Ni(2), Cr(2), Cu(1)"
+Ligand 1,unq_CSD-YOZSAK-02-a,C6H5N2O2,2,N-N,-1,True,8d481526f75c46326e1b30d618415827,2,"YOZSAK, YOZSAK",Ni(2)
+Ligand 2,unq_CSD-LIHHAN-01-a,C7H6N2,1,N,0,True,cdad6cd6142201501fb1e2f0d08200ec,18,"LIHHAN, LIHHAN, LIHHAN, LIHHAN, KIDHOX, ... (13 more)","Pd(12), Re(4), Co(2)"

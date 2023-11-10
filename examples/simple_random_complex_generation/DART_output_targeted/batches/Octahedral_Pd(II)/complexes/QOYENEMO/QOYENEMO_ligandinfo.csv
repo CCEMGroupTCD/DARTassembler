@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-UHOJOS-03-a,C8H8N2O1S1,3,S-N-N,-2,True,1f29cfa440366e5f3aff89f5fdd46364,5,"UHOJOS, UJIMEG, UJIMIK, HOZHUA, HOZJAI",Ni(5)
+Ligand 1,unq_CSD-GARGIS-02-a,C13H14N2,2,N-N,0,True,2e590916148780c8e707b8ff4baba503,3,"GARGIS, JEXZES, OCEWEZ","Re(1), Pt(1), Ru(1)"
+Ligand 2,unq_CSD-NAHLEO-01-b,C13H9N1,1,C,0,True,5a17dacb2498e7949eb32b20495c65a5,2,"NAHLEO, NAHLEO",Ni(2)

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-ZESKIU-03-a,C11H14N2O1S1,3,S-N-N,-2,True,cc9de54c0bd14db40caee26339678a8d,2,"ZESKIU, ZESKUG",Ni(2)
+Ligand 1,unq_CSD-CIBKOP-02-a,C10H8N2O2,2,N-N,0,True,0f3d7eef28179858ad7feaa634d177c9,2,"CIBKOP, EPUKOS","Pd(1), Re(1)"
+Ligand 2,unq_CSD-IXIDOI-01-b,C6H11N3,1,N,0,True,869e65d2807725818a69e4c009f0da0b,4,"IXIDOI, IXIDOI, IXIDOI, IXIDOI",Ni(4)

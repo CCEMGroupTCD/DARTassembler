@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-CAGBAQ-03-a,C10H11N3O2S1,3,O-N-S,-2,True,59c96ca07fca676ee21b54e13c51b260,1,CAGBAQ,Ni(1)
+Ligand 1,unq_CSD-UHUPUI-02-a,C7H10N2,2,N-N,0,True,27365724333aa3d428bd1e9309c92d3a,1,UHUPUI,Pt(1)
+Ligand 2,unq_CSD-PAZJIK-01-b,C9H10N2,1,C,0,True,f6602843ba162ef10767b023f2579612,55,"PAZJIK, PAZJIK, PAZJIK01, PAZJIK01, LIMVAH, ... (50 more)","Au(17), Pd(15), Pt(7), Ir(6), Ni(4), ... (3 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-SOSVEB-03-a,C14H9N3S2,3,S-N-N,-2,True,edab8af305c40b4df1ce96bf6383b091,2,"SOSVEB, SOSVEB10",Ni(2)
+Ligand 1,unq_CSD-QAZYAV-02-a,C6H8N2O2,2,N-N,0,True,f6e68bae2c429e9282f1e280a57519a7,8,"QAZYAV, ISUKOX, FEFJIK, FEFJIK, FEFJIK, ... (3 more)","Ni(4), Cu(3), Ru(1)"
+Ligand 2,unq_CSD-POFVOY-01-c,C7H9N1,1,N,0,True,5b4cabcd20a3c304182cd0c768cf9942,35,"POFVOY, POFVOY, POFVUE, POFVUE, TAJFUF, ... (30 more)","Zn(8), Pd(6), Ni(6), Co(5), Ru(4), ... (4 more)"

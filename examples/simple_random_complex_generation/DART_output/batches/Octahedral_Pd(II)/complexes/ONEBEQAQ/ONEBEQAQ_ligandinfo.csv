@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-RATKOO-03-a,C17H13N2O1S1,3,S-N-O,-1,True,9d65bbea7ab12c9e1ef869348a8b8efb,1,RATKOO,Pd(1)
+Ligand 1,unq_CSD-CEVMEY-02-a,C16H18N2,2,N-N,0,True,a2e6a50c4364b1a000e1efd88f7a0def,1,CEVMEY,Zn(1)
+Ligand 2,unq_CSD-KUYNIC-01-a,C12H9N2O2S1,1,N,-1,True,4ee749e48cf202515704ac5b73025a09,2,"KUYNIC, KUYNIC",Co(2)

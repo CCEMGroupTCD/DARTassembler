@@ -30,10 +30,9 @@ class LigandFilters(object):
 
     def get_filtered_db(self) -> LigandDB:
         print(f"Filtering ligand database: {self.ligand_db_path} --> {self.output_ligand_db_path}...")
-        db = LigandDB.from_json(
-            json_=self.ligand_db_path,
-            type_="Ligand",
-            max_number=self.max_number,
+        db = LigandDB.load_from_json(
+            self.ligand_db_path,
+            n_max=self.max_number,
         )
 
         self.Filter = FilterStage(db)
@@ -153,6 +152,7 @@ class LigandFilters(object):
         output= "===================== FILTER TRACKING =====================\n"
         output += f"--> Filtered ligand database was saved as '{self.output_ligand_db_path}'.\nRemoved ligands:\n"
 
+
         for filter in self.filter_tracking:
             output += f"  - {filter['filter']}: {filter['n_ligands_removed']}\n"
             options = ', '.join([f"{name}: {option}" for name, option in filter['full_filter_options'].items()])
@@ -160,6 +160,11 @@ class LigandFilters(object):
         output += f"\nNumber of ligands before filtering: {self.n_ligands_before}\n"
         output += f"Number of ligands filtered out: {self.n_ligands_before - self.n_ligands_after}\n"
         output += f"Number of ligands after filtering: {self.n_ligands_after}\n"
+
+        denticity_count = pd.Series([lig.denticity for lig in self.Filter.database.db.values()]).value_counts().to_dict()
+        dent_output = ', '.join(sorted([f'{dent}: {count}' for dent, count in denticity_count.items()]))
+        output += f"Number of ligands per denticity: {dent_output}\n"
+
         if self.n_ligands_after <= 10:
             stoichiometries = ','.join([ligand.stoichiometry for ligand in self.Filter.database.db.values()])
             output += f'  --> Remaining ligands: {stoichiometries}\n'

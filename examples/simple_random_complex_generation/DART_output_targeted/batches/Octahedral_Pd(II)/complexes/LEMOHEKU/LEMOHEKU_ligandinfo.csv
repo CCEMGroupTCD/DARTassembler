@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-NERXAL-03-a,C14H11N3S1,3,S-N-C,-2,True,fcf4f5ed42fd69575f0bffdadc445f42,1,NERXAL,Pd(1)
+Ligand 1,unq_CSD-YEQSIX-02-a,C10H10N4,2,N-N,0,True,6be2fe296d3eba48ca01a8dbfcb9a11e,1,YEQSIX,Pt(1)
+Ligand 2,unq_CSD-LOQWUJ-01-a,C3H7N1,1,C,0,True,2d5b1e266f99188cf44835e71a10392b,8,"LOQWUJ, BELXEV, YOJZIG, KIZFUU, WOLWID, ... (3 more)","Pt(6), Pd(1), Au(1)"

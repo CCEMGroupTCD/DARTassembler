@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-EZEMUT-03-a,C14H10N2O3,3,O-N-N,-2,True,bd1252b3e9316bbd1842543a9c0712e9,1,EZEMUT,Ni(1)
+Ligand 1,unq_CSD-LEDJEJ-02-a,C9H13N1O1,2,O-N,0,True,366a13f5acfbf955f0c432ccd4c17ac4,3,"LEDJEJ, RESKOR, RESKOR","Ni(2), Pd(1)"
+Ligand 2,unq_CSD-CEMQAN-01-a,C11H7N1S4,1,N,0,True,70168019df8ca153a328f100f3fc11ac,2,"CEMQAN, CEMQAN",Ni(2)

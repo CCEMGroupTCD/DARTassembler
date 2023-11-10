@@ -7,7 +7,7 @@ import numpy as np
 from DARTassembler.src.assembly.Assembly_Input import AssemblyInput
 
 _gbl_optimization_movie = 'ffmovie.xyz'
-_gbl_concatenated_xyz = 'INTEGRATION_TEST.xyz'
+_gbl_concatenated_xyz = 'concat_passed_complexes.xyz'
 _gbl_run_info_table = 'info_table.csv'
 _gbl_batch_dir = 'batches'
 

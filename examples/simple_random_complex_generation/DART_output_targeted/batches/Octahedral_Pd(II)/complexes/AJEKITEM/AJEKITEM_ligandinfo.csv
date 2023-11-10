@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-RISCII-03-a,C9H10N3O2,3,N-N-O,-1,True,bdec31a04e4997b3c0a030777455e60b,2,"RISCII, RISCII",Ni(2)
+Ligand 1,unq_CSD-GIVYIV-02-a,C10H11N2O2,2,N-N,-1,True,83b37a718ca6a12e796b4b61440037b3,6,"GIVYIV, GIVYIV, GIVYIV01, GIVYIV01, GIVYOB, ... (1 more)","Pd(4), Pt(2)"
+Ligand 2,unq_CSD-PALZOS-01-a,C8H11N1,1,N,0,True,01a42f6a926542266db7e74635de698d,53,"PALZOS, PEMYAH10, SSCEBC, SSCEBC01, SSCEBC03, ... (48 more)","Co(33), Pt(7), Zn(3), Ni(2), Pd(2), ... (4 more)"

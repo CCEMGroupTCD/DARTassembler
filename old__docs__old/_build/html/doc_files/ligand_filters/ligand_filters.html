@@ -1,0 +1,755 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Ligand Filter Module &mdash; DART  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Troubleshooting DART" href="../troubleshooting.html" />
+    <link rel="prev" title="Ligands" href="../ligands/ligands.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> DART
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/Pd_Ni_Cross_Coupling/Pd_Ni_Cross_Coupling.html">How to: Assemble Pd/Ni complexes for Cross-Coupling screening (exact ligand control)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../metalig/metalig.html">MetaLig - A database of 41,018 ligands of transition metal complexes from the Cambridge Structural Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ligands/ligands.html">Ligands</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ligand Filter Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-yaml-file">Input YAML File</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#copy-paste-ligand-filter-input-file-template">Copy-Paste Ligand Filter Input File Template</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-output-options">Input/Output Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filter-options">Filter Options</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#denticities">denticities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ligand-charges">ligand_charges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ligand-composition">ligand_composition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#coordinating-atoms-composition">coordinating_atoms_composition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#number-of-atoms">number_of_atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#molecular-weight">molecular_weight</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metal-donor-bond-lengths">metal_donor_bond_lengths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interatomic-distances">interatomic_distances</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#planarity">planarity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#occurrences">occurrences</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#metal-ligand-binding-history">metal_ligand_binding_history</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#remove-ligands-with-adjacent-coordinating-atoms">remove_ligands_with_adjacent_coordinating_atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#remove-ligands-with-beta-hydrogens">remove_ligands_with_beta_hydrogens</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#graph-ids">graph_IDs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#table-overview-of-all-available-filters">Table: overview of all available filters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../troubleshooting.html">Troubleshooting DART</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DART</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Ligand Filter Module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/doc_files/ligand_filters/ligand_filters.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="ligand-filter-module">
+<h1>Ligand Filter Module<a class="headerlink" href="#ligand-filter-module" title="Permalink to this heading">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
+<p>The Ligand Filter module allows users to filter down the entire MetaLig database with 41,018 ligands to a subset of ligands based on various criteria. Given the vast and diverse chemical space covered in the MetaLig database, this is helpful when using DART to assemble complexes with a certain chemistry, for example square-planar Pd complexes with P-N donors as shown in one of the examples.</p>
+<p>The module is designed to provide a list of already implemented filters which can be used by specifying various options. The input to the module is a YAML file which allows users to specify various filters to apply to the ligand database. The module will then apply these filters and save the filtered ligand database to a new file. The module can be used to filter the entire MetaLig database (default) or a user-provided ligand database.</p>
+<p>In case none of the usual filters are sufficient, the module has one extra filter (<cite>graph_IDs</cite>) which allows users to specify a list of ligand IDs to have exact control over which ligands make it through the filter. This allows users to select ligands by doing their Excel magic on a ligand_overview.csv file, extract the ligand IDs and input them as list into the graph_IDs filter.</p>
+</section>
+<section id="input-yaml-file">
+<h2>Input YAML File<a class="headerlink" href="#input-yaml-file" title="Permalink to this heading">¶</a></h2>
+<p>The Ligand Filter module uses a YAML file to allow the user to supply various options for each filter. At the beginning of each ligand filter input file, the user has to specify the input and output ligand database paths or can let them empty for default values. Then, the user can specify a list of filters after the keyword <cite>‘filters:’</cite>. Not every filter has to be specified, and the order of the filters does not matter. Some filters which are simple yes/no switches can also be ignored by setting them to False.</p>
+<p>Below we provide an example YAML file which can be used as a template. The template contains all available filters and examples how to use them.</p>
+<section id="copy-paste-ligand-filter-input-file-template">
+<h3>Copy-Paste Ligand Filter Input File Template<a class="headerlink" href="#copy-paste-ligand-filter-input-file-template" title="Permalink to this heading">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_ligand_db_path</span><span class="p">:</span>           <span class="c1"># path or empty. If empty, the entire MetaLig ligand database will be used as input</span>
+<span class="n">output_ligand_db_path</span><span class="p">:</span> <span class="n">data</span><span class="o">/</span><span class="n">filtered_ligand_db</span><span class="o">.</span><span class="n">json</span>   <span class="c1"># path or empty. If empty defaults to &#39;filtered_ligand_db.json&#39; in the current directory.</span>
+
+<span class="n">filters</span><span class="p">:</span>
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">denticities</span>         <span class="c1"># filter out ligands with denticities not in this list</span>
+    <span class="n">denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>  <span class="c1"># list of denticities to keep</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">ligand_charges</span>                            <span class="c1"># filter out ligands with charges not provided in this list</span>
+    <span class="n">ligand_charges</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>                             <span class="c1"># only keep ligands with these charges</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>                                 <span class="c1"># List of denticities to apply this filter to. If empty, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">ligand_composition</span>                      <span class="c1"># filter ligands based on their composition</span>
+    <span class="n">elements</span><span class="p">:</span> <span class="p">[</span> <span class="n">C</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">P</span><span class="p">]</span>          <span class="c1"># elements to apply this filter to</span>
+    <span class="n">instruction</span><span class="p">:</span> <span class="n">must_only_contain_in_any_amount</span>    <span class="c1"># instruction for how to apply this filter</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span>                                      <span class="c1"># List of denticities to apply this filter to. If empty, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">coordinating_atoms_composition</span>            <span class="c1"># filter ligands based on their coordinating atoms</span>
+    <span class="n">elements</span><span class="p">:</span> <span class="p">[</span><span class="n">P</span><span class="p">,</span> <span class="n">N</span><span class="p">]</span>                       <span class="c1"># TODO</span>
+    <span class="n">instruction</span><span class="p">:</span> <span class="n">must_contain_and_only_contain</span>        <span class="c1">#</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">number_of_atoms</span>                  <span class="c1"># filter out ligands with atom count outside of this range</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mi">10</span>                               <span class="c1"># Minimum number of atoms. If empty, will be ignored.</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="mi">100</span>                              <span class="c1"># Maximum number of atoms. If empty, will be ignored.</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>                      <span class="c1"># List of denticities to apply this filter to. If empty, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">molecular_weight</span>            <span class="c1"># filter out ligands with molecular weight outside of this range.</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mf">30.1</span>                             <span class="c1"># Minimum molecular weight (todo unit). If empty, will be ignored.</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="mf">300.2</span>                            <span class="c1"># Maximum molecular weight (todo unit). If empty, will be ignored.</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>                      <span class="c1"># List of denticities to apply this filter to. If empty, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">metal_donor_bond_lengths</span>    <span class="c1"># filter out ligands based on the bond lengths between the metal and the donor atoms</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mf">1.0</span>                              <span class="c1"># Minimum bond length (in Angstrom). If empty, will be ignored.</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="mf">2.5</span>                              <span class="c1"># Maximum bond length (in Angstrom). If empty, will be ignored.</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>                      <span class="c1"># List of denticities to apply this filter to. If empty, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">interatomic_distances</span>       <span class="c1"># filter out ligands with interatomic distances outside of this range</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mf">0.5</span>                              <span class="c1"># Minimum interatomic distance (in Angstrom). If empty, will be ignored.</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="mf">40.0</span>                             <span class="c1"># Maximum interatomic distance (in Angstrom). If empty, will be ignored.</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>                      <span class="c1"># List of denticities to apply this filter to. If empty, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">planarity</span>                   <span class="c1"># filter out ligands based on their &#39;planarity score&#39;, which is a number between 0 and 1. 0 is not planar, 1 is perfectly planar.</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mf">0.2</span>                              <span class="c1"># Minimum planarity score. If empty, will be ignored.</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="mf">1.0</span>                              <span class="c1"># Maximum planarity score. If empty, will be ignored.</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>                      <span class="c1"># List of denticities to apply this filter to. If empty, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">occurrences</span>                 <span class="c1"># filter out ligands based on the number of times they have been observed in the CSD</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mi">3</span>                                <span class="c1"># Minimum number of occurrences. If empty, will be ignored.</span>
+    <span class="nb">max</span><span class="p">:</span>                                  <span class="c1"># Maximum number of occurrences. If empty, will be ignored.</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">]</span>                      <span class="c1"># List of denticities to apply this filter to. If empty, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">metal_ligand_binding_history</span>                                                  <span class="c1"># only keep ligands which have been observed to coordinate to these metals</span>
+    <span class="n">metal_ligand_binding_history</span><span class="p">:</span> <span class="p">[</span><span class="n">Pd</span><span class="p">,</span> <span class="n">Ni</span><span class="p">]</span>                        <span class="c1"># list of metals to keep</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span>                                                                  <span class="c1"># List of denticities to apply this filter to. If empty, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">remove_ligands_with_adjacent_coordinating_atoms</span>  <span class="c1"># filter out ligands with neighboring coordinating atoms</span>
+    <span class="n">remove_ligands_with_adjacent_coordinating_atoms</span><span class="p">:</span> <span class="kc">True</span>      <span class="c1"># True or False. If False, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">remove_ligands_with_beta_hydrogens</span>        <span class="c1"># filter out ligands with beta hydrogens</span>
+    <span class="n">remove_ligands_with_beta_hydrogens</span><span class="p">:</span> <span class="kc">True</span>            <span class="c1"># True or False. If False, will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">graph_IDs</span>                   <span class="c1"># only keep ligands with the following graph IDs</span>
+    <span class="n">graph_IDs</span><span class="p">:</span> <span class="p">[</span><span class="n">a2b7bbb6ca4ce36dc3147760335e7374</span><span class="p">,</span> <span class="mi">53</span><span class="n">b7a3d91a1be6e167a3975bb7921206</span><span class="p">]</span>     <span class="c1"># list of graph IDs to keep</span>
+</pre></div>
+</div>
+</section>
+<section id="input-output-options">
+<h3>Input/Output Options<a class="headerlink" href="#input-output-options" title="Permalink to this heading">¶</a></h3>
+<p>The following two options have to be specified at the beginning of each ligand filter input file. They can be let empty but they have to be specified.</p>
+<dl class="simple">
+<dt>input_ligand_db_path<span class="classifier">[str, empty]</span></dt><dd><p>Path to the input ligand database. If empty, the entire MetaLig ligand database will be used as input.</p>
+</dd>
+<dt>output_ligand_db_path<span class="classifier">[str, empty]</span></dt><dd><p>Path where the filtered ligand database will be saved. If empty, will default to ‘filtered_ligand_db.json’ in the current directory.</p>
+</dd>
+</dl>
+</section>
+<section id="filter-options">
+<h3>Filter Options<a class="headerlink" href="#filter-options" title="Permalink to this heading">¶</a></h3>
+<section id="denticities">
+<h4>denticities<a class="headerlink" href="#denticities" title="Permalink to this heading">¶</a></h4>
+<p>Keeps only ligands with denticities specified in the list.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>denticities<span class="classifier">[list[int]]</span></dt><dd><p>List of denticities to keep.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>This example will keep only ligands with denticity 2, 3 or 5.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">denticities</span>
+    <span class="n">denticities</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="ligand-charges">
+<h4>ligand_charges<a class="headerlink" href="#ligand-charges" title="Permalink to this heading">¶</a></h4>
+<p>Keep only ligands with formal charges which are specified in the list.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>ligand_charges<span class="classifier">[list[int]]</span></dt><dd><p>List of charges to keep.</p>
+</dd>
+<dt>denticities<span class="classifier">[list[int], empty]</span></dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>For ligands with denticity of 2 or 3, this example will keep only ligands which have a formal charge of -1, 0 or 1. Ligands with denticities other than 2 or 3 will always pass.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">ligand_charges</span>
+    <span class="n">ligand_charges</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="ligand-composition">
+<h4>ligand_composition<a class="headerlink" href="#ligand-composition" title="Permalink to this heading">¶</a></h4>
+<p>Filter ligands based on their chemical composition, i.e. the atoms in their chemical formula. The ‘elements’ parameter specifies the elements to apply this filter to. The ‘instruction’ parameter specifies exactly how to apply this filter. This filter works exactly like the ‘coordinating_atoms_composition’ filter, except that it applies to all atoms instead of only the coordinating atoms.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>elements<span class="classifier">[list[str]]</span></dt><dd><p>List of chemical elements to apply this filter to. Depending on the instruction, duplicate elements in this list may or may not be ignored.</p>
+</dd>
+<dt>instruction<span class="classifier">[str]</span></dt><dd><p>Instruction for how to apply this filter. Note that instructions must be lowercase and exactly the correct string, so the best is to copy-paste it from the documentation. The following instructions are available:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>must_contain_and_only_contain</strong></dt><dd><p>Ligands must consist of exactly these atoms in exactly this count. For example, if the ‘elements’ are ‘(C, C, H, N)’, then a ligand must consist of exactly two Carbon, one Hydrogen and one Nitrogen atom to pass this filter.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>must_at_least_contain</strong></dt><dd><p>Ligands must contain all specified elements but can also contain other elements. Duplicate elements are ignored. For example, if the ‘elements’ are ‘(C, C, H, N)’, then a ligand must contain at least one Carbon, one Hydrogen and one Nitrogen atom to pass this filter.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>must_exclude</strong></dt><dd><p>Ligands must not contain any of the specified elements. Duplicate elements are ignored. For example, if the ‘elements’ are ‘(C, C, H, N)’, then a ligand must not contain any Carbon, Hydrogen or Nitrogen atoms to pass this filter.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>must_only_contain_in_any_amount</strong></dt><dd><p>Ligands must only contain the specified elements, but the amount of each element is not important and can even be zero. Duplicate elements are ignored. For example, if the ‘elements’ are ‘(C, C, H, N)’, then any ligand that contains no other elements than Carbon, Hydrogen and Nitrogen will pass this filter, and even ligands containing subsets such as ligands containing only Carbon.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt>denticities<span class="classifier">[list[int], empty]</span></dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>This example will keep only ligands with denticity 3 which consist of only Carbon, Hydrogen, Nitrogen and Phosphorus atoms or a subset of these elements. Ligands with denticities other than 3 will always pass.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">ligand_composition</span>
+    <span class="n">elements</span><span class="p">:</span> <span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+    <span class="n">instruction</span><span class="p">:</span> <span class="n">must_only_contain_in_any_amount</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="coordinating-atoms-composition">
+<h4>coordinating_atoms_composition<a class="headerlink" href="#coordinating-atoms-composition" title="Permalink to this heading">¶</a></h4>
+<p>Filter ligands based on their coordinating atoms, i.e. the atoms bound to the metal center. The ‘elements’ parameter specifies the elements to apply this filter to. The ‘instruction’ parameter specifies exactly how to apply this filter. This filter works exactly like the ‘ligand_composition’ filter, except that it only applies to the coordinating atoms of the ligand.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>elements<span class="classifier">[list[str]]</span></dt><dd><p>List of chemical elements to apply this filter to. Depending on the instruction, duplicate elements in this list may or may not be ignored.</p>
+</dd>
+<dt>instruction<span class="classifier">[str]</span></dt><dd><p>Instruction for how to apply this filter. Note that instructions must be lowercase and exactly the correct string, so the best is to copy-paste it from the documentation. The following instructions are available:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>must_contain_and_only_contain</strong></dt><dd><p>The ligand must have exactly these coordinating atoms in exactly this count. For example, if the ‘elements’ are ‘(C, C, N)’, the ligand must have exactly two Carbon and one Nitrogen atom coordinating to the metal.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>must_at_least_contain</strong></dt><dd><p>The coordinating atoms of the ligand must contain all specified elements but can also contain other elements. Duplicate elements are ignored. For example, if the ‘elements’ are ‘(C, C, N)’, then the list of coordinating atoms must contain at least one Carbon and one Nitrogen atom to pass this filter.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>must_exclude</strong></dt><dd><p>The coordinating atoms of the ligand must not contain any of the specified elements. Duplicate elements are ignored. For example, if the ‘elements’ are ‘(C, C, N)’, then the list of coordinating atoms must not contain any Carbon or Nitrogen atoms to pass this filter.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><strong>must_only_contain_in_any_amount</strong></dt><dd><p>The coordinating atoms of the ligand must only contain the specified elements, but the amount of each element is not important and can even be zero. Duplicate elements are ignored. For example, if the ‘elements’ are ‘(C, C, N)’, then any ligand with coordinating atoms which contain no other elements than Carbon and Nitrogen will pass this filter, and even ligands containing subsets such as ligands containing only Carbon.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+<dt>denticities<span class="classifier">[list[int], empty]</span></dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>This example will keep only ligands with denticity of 3 which have exactly one Carbon, one Nitrogen and one Oxygen coordinating to the metal center. Ligands with denticities other than 3 will be removed automatically, since these will always have more or less coordinating atoms.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">coordinating_atoms_composition</span>
+    <span class="n">elements</span><span class="p">:</span> <span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">O</span><span class="p">)</span>
+    <span class="n">instruction</span><span class="p">:</span> <span class="n">must_contain_and_only_contain</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span>
+</pre></div>
+</div>
+</section>
+<section id="number-of-atoms">
+<h4>number_of_atoms<a class="headerlink" href="#number-of-atoms" title="Permalink to this heading">¶</a></h4>
+<p>Removes ligands with number of atoms outside of the specified range. The ‘min’ and ‘max parameters specify the minimum and maximum number of atoms, respectively.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>min<span class="classifier">[float, empty]</span></dt><dd><p>Minimum number of atoms. If empty, will be set to 0.</p>
+</dd>
+<dt>max<span class="classifier">[float, empty]</span></dt><dd><p>Maximum number of atoms. If empty, will be set to infinity.</p>
+</dd>
+<dt>denticities<span class="classifier">[list[int], empty]</span></dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>This example will remove all ligands with a denticity of 1 or 2 with less than 10 atoms or more than 100 atoms. Ligands with denticities other than 1 or 2 will always pass.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">number_of_atoms</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mi">10</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="mi">100</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="molecular-weight">
+<h4>molecular_weight<a class="headerlink" href="#molecular-weight" title="Permalink to this heading">¶</a></h4>
+<p>Only keeps ligands with molecular weight within the specified range. The ‘min’ and ‘max’ parameters specify the minimum and maximum molecular weight, respectively. For example, setting ‘min’ to 30 and ‘max’ to 300 will remove all ligands with molecular weight less than 30g/mol or more than 300g/mol.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>min<span class="classifier">[float, empty]</span></dt><dd><p>Minimum molecular weight in g/mol. If empty, will be set to 0.</p>
+</dd>
+<dt>max<span class="classifier">[float, empty]</span></dt><dd><p>Maximum molecular weight in g/mol. If empty, will be set to infinity.</p>
+</dd>
+<dt>denticities<span class="classifier">[list[int], empty]</span></dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>This example will keep only ligands with a molecular weight between 10g/mol and 300g/mol. Because the denticities list is empty, this filter will be applied to every ligand.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">molecular_weight</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mi">30</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="mi">300</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span>
+</pre></div>
+</div>
+</section>
+<section id="metal-donor-bond-lengths">
+<h4>metal_donor_bond_lengths<a class="headerlink" href="#metal-donor-bond-lengths" title="Permalink to this heading">¶</a></h4>
+<p>Only keeps ligands with metal-donor bond lengths within the specified range. All bond lengths between the metal and the donor atoms are considered. The ‘min’ and ‘max’ parameters specify the minimum and maximum allowed bond length for at least one bond.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>min<span class="classifier">[float, empty]</span></dt><dd><p>Minimum bond length in Angstrom. If empty, will be set to 0.</p>
+</dd>
+<dt>max<span class="classifier">[float, empty]</span></dt><dd><p>Maximum bond length in Angstrom. If empty, will be set to infinity.</p>
+</dd>
+<dt>denticities<span class="classifier">[list[int], empty]</span></dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>For ligands with a denticity of 2 or 3, this example will only keep ligands which have a metal-donor bond length between 1.0 Angstrom and 2.5 Angstrom. Ligands with denticities other than 2 or 3 will always pass.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">metal_donor_bond_lengths</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mf">1.0</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="mf">2.5</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="interatomic-distances">
+<h4>interatomic_distances<a class="headerlink" href="#interatomic-distances" title="Permalink to this heading">¶</a></h4>
+<p>Only keeps ligands with interatomic distances within the specified range. The calculated interatomic distances are not only between atoms with a bond, but between all atoms in the ligand. The maximum interatomic distance is a measure for the total size of the ligand, while the minimum interatomic distance is a measure for the smallest bond length. Therefore, this filter is basically a 2-in-1 filter which can be used to remove either too big ligands or ligands with too small bond lengths.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>min<span class="classifier">[float, empty]</span></dt><dd><p>Minimum interatomic distance in Angstrom. If empty, will be set to 0.</p>
+</dd>
+<dt>max<span class="classifier">[float, empty]</span></dt><dd><p>Maximum interatomic distance in Angstrom. If empty, will be set to infinity.</p>
+</dd>
+<dt>denticities<span class="classifier">[list[int], empty]</span></dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>For ligands with a denticity of 3 or 4, this example will only keep ligands which have an interatomic distance between 0.5 Angstrom and 40 Angstrom. Ligands with denticities other than 3 or 4 will always pass.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">interatomic_distances</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mf">0.5</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="mi">40</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="planarity">
+<h4>planarity<a class="headerlink" href="#planarity" title="Permalink to this heading">¶</a></h4>
+<p>This filter uses a ‘planarity score’ to filter ligands based on how planar all their atoms are. Very planar ligands are ones in which all atoms lie in one plane, while very non-planar ligands are ones which are sphere-like. The planarity score is a number between 0 and 1, where 0 is not planar (a perfect sphere) and 1 is perfectly planar. Because this planarity score has no physical intuition behind it, it is recommended to try different values for the ‘min’ and ‘max’ parameters to see what works best for your application.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>min<span class="classifier">[float]</span></dt><dd><p>Minimum planarity score. If empty, will be set to 0.</p>
+</dd>
+<dt>max<span class="classifier">[float]</span></dt><dd><p>Maximum planarity score. If empty, will be set to 1.</p>
+</dd>
+<dt>denticities<span class="classifier">[list[int], empty]</span></dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>This example will keep only ligands with a denticity of 1 which have a planarity score between 0.9 and 1.0, i.e. very planar ligands. Ligands with denticities other than 1 will always pass.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">planarity</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mf">0.9</span>
+    <span class="nb">max</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="occurrences">
+<h4>occurrences<a class="headerlink" href="#occurrences" title="Permalink to this heading">¶</a></h4>
+<p>Filters ligands based on how often they were observed in the Cambridge Structural Database (CSD). The ‘min’ and ‘max’ parameters specify the minimum and maximum number of occurrences, respectively.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>min<span class="classifier">[int]</span></dt><dd><p>Minimum number of occurrences. If empty, will be set to 0.</p>
+</dd>
+<dt>max<span class="classifier">[int]</span></dt><dd><p>Maximum number of occurrences. If empty, will be set to infinity.</p>
+</dd>
+<dt>denticities<span class="classifier">[list[int], empty]</span></dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>For ligands with denticities of 3 or 4, this example will keep only ligands which have been observed in the CSD at least 3 times. Ligands with denticities other than 3 or 4 will always pass.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">occurrences</span>
+    <span class="nb">min</span><span class="p">:</span> <span class="mi">3</span>
+    <span class="nb">max</span><span class="p">:</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="metal-ligand-binding-history">
+<h4>metal_ligand_binding_history<a class="headerlink" href="#metal-ligand-binding-history" title="Permalink to this heading">¶</a></h4>
+<p>Keep only ligands which have been observed in the Cambridge Structural Database to coordinate to the metals specified in the ‘metal_ligand_binding_history’ list. If a ligand has never been observed coordinating to any of the metals in the ‘metal_ligand_binding_history’ list, it will be filtered out.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>metal_ligand_binding_history<span class="classifier">[list[str]]</span></dt><dd><p>List of metals, e.g. (Pd, Ni). Any metal from the d- or f-block can be specified.</p>
+</dd>
+<dt>denticities<span class="classifier">[list[int], empty]</span></dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>For ligands with denticity of 2 or 3, this example will keep only ligands which have been observed to coordinate to Pd or Ni. Ligands with denticities other than 2 or 3 will always pass.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">metal_ligand_binding_history</span>
+    <span class="n">metal_ligand_binding_history</span><span class="p">:</span> <span class="p">(</span><span class="n">Pd</span><span class="p">,</span> <span class="n">Ni</span><span class="p">)</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="remove-ligands-with-adjacent-coordinating-atoms">
+<h4>remove_ligands_with_adjacent_coordinating_atoms<a class="headerlink" href="#remove-ligands-with-adjacent-coordinating-atoms" title="Permalink to this heading">¶</a></h4>
+<p>Removes ligands that have coordinating atoms with a bond between them, i.e. coordinating atoms which are neighbors.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>remove_ligands_with_adjacent_coordinating_atoms<span class="classifier">[True or False]</span></dt><dd><p>If True, apply this filter. If False, will be ignored.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>This example will remove all ligands with neighboring coordinating atoms.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">remove_ligands_with_adjacent_coordinating_atoms</span>
+      <span class="n">remove_ligands_with_adjacent_coordinating_atoms</span><span class="p">:</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="remove-ligands-with-beta-hydrogens">
+<h4>remove_ligands_with_beta_hydrogens<a class="headerlink" href="#remove-ligands-with-beta-hydrogens" title="Permalink to this heading">¶</a></h4>
+<p>Removes ligands with beta Hydrogen atoms, i.e. Hydrogen atoms bound to coordinating atoms.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>remove_ligands_with_beta_hydrogens<span class="classifier">[True or False]</span></dt><dd><p>If True, apply this filter. If False, will be ignored.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>This example will remove all ligands with beta Hydrogen atoms.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">remove_ligands_with_beta_hydrogens</span>
+      <span class="n">remove_ligands_with_beta_hydrogens</span><span class="p">:</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</section>
+<section id="graph-ids">
+<h4>graph_IDs<a class="headerlink" href="#graph-ids" title="Permalink to this heading">¶</a></h4>
+<p>A filter to keep only the exactly specified ligands. Graph IDs are unique IDs for each ligand which can be taken from the ligand overview csv. This filter will remove all other ligands except for the ones specified.</p>
+<dl class="simple">
+<dt><strong>Options</strong>:</dt><dd><dl class="simple">
+<dt>graph_IDs<span class="classifier">[list[str]]</span></dt><dd><p>List of graph IDs to keep.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Example</strong>:</p>
+<p>This example will keep only the 2 ligands with the graph IDs ‘a2b7bbb6ca4ce36dc3147760335e7374’ and ‘53b7a3d91a1be6e167a3975bb7921206’.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">graph_IDs</span>
+    <span class="n">graph_IDs</span><span class="p">:</span> <span class="p">[</span><span class="n">a2b7bbb6ca4ce36dc3147760335e7374</span><span class="p">,</span> <span class="mi">53</span><span class="n">b7a3d91a1be6e167a3975bb7921206</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="table-overview-of-all-available-filters">
+<h2>Table: overview of all available filters<a class="headerlink" href="#table-overview-of-all-available-filters" title="Permalink to this heading">¶</a></h2>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Overview of all available filters</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 10.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Filter Name</p></th>
+<th class="head"><p>Options</p></th>
+<th class="head"><p>Denticity Dependent</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>denticities</p></td>
+<td><p>denticities: [list[int]]</p></td>
+<td><p>No</p></td>
+<td><p>Keeps only ligands with denticities specified in the list.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ligand_charges</p></td>
+<td><p>ligand_charges: [list[int]]</p></td>
+<td><p>Yes</p></td>
+<td><p>Keep only ligands with formal charges which are specified in the list.</p></td>
+</tr>
+<tr class="row-even"><td><p>ligand_composition</p></td>
+<td><p>elements: [list[str]], instruction: [str]</p></td>
+<td><p>Yes</p></td>
+<td><p>Filter ligands based on their chemical composition.</p></td>
+</tr>
+<tr class="row-odd"><td><p>coordinating_atoms_composition</p></td>
+<td><p>elements: [list[str]], instruction: [str]</p></td>
+<td><p>Yes</p></td>
+<td><p>Filter ligands based on their coordinating atoms.</p></td>
+</tr>
+<tr class="row-even"><td><p>number_of_atoms</p></td>
+<td><p>min: [float, empty], max: [float, empty]</p></td>
+<td><p>Yes</p></td>
+<td><p>Removes ligands with number of atoms outside of the specified range.</p></td>
+</tr>
+<tr class="row-odd"><td><p>molecular_weight</p></td>
+<td><p>min: [float, empty], max: [float, empty]</p></td>
+<td><p>Yes</p></td>
+<td><p>Only keeps ligands with molecular weight within the specified range.</p></td>
+</tr>
+<tr class="row-even"><td><p>metal_donor_bond_lengths</p></td>
+<td><p>min: [float, empty], max: [float, empty]</p></td>
+<td><p>Yes</p></td>
+<td><p>Only keeps ligands with metal-donor bond lengths within the specified range.</p></td>
+</tr>
+<tr class="row-odd"><td><p>interatomic_distances</p></td>
+<td><p>min: [float, empty], max: [float, empty]</p></td>
+<td><p>Yes</p></td>
+<td><p>Only keeps ligands with interatomic distances within the specified range.</p></td>
+</tr>
+<tr class="row-even"><td><p>planarity</p></td>
+<td><p>min: [float, empty], max: [float, empty]</p></td>
+<td><p>Yes</p></td>
+<td><p>This filter uses a planarity score to filter ligands based on how planar they are.</p></td>
+</tr>
+<tr class="row-odd"><td><p>occurrences</p></td>
+<td><p>min: [int, empty], max: [int, empty]</p></td>
+<td><p>Yes</p></td>
+<td><p>Filters ligands based on how often they were observed in the CSD.</p></td>
+</tr>
+<tr class="row-even"><td><p>metal_ligand_binding_history</p></td>
+<td><p>metal_ligand_binding_history: [list[str]]</p></td>
+<td><p>Yes</p></td>
+<td><p>Keep only ligands which have been observed to coordinate to the metals specified.</p></td>
+</tr>
+<tr class="row-odd"><td><p>remove_ligands_with_adjacent_coordinating_atoms</p></td>
+<td><p>remove_ligands_with_adjacent_coordinating_atoms: [True or False]</p></td>
+<td><p>No</p></td>
+<td><p>Removes ligands that have coordinating atoms with a bond between them.</p></td>
+</tr>
+<tr class="row-even"><td><p>remove_ligands_with_beta_hydrogens</p></td>
+<td><p>remove_ligands_with_beta_hydrogens: [True or False]</p></td>
+<td><p>No</p></td>
+<td><p>Removes ligands with beta Hydrogen atoms.</p></td>
+</tr>
+<tr class="row-odd"><td><p>graph_IDs</p></td>
+<td><p>graph_IDs: [list[str]]</p></td>
+<td><p>No</p></td>
+<td><p>A filter to keep only the exactly specified ligands.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../troubleshooting.html" class="btn btn-neutral float-right" title="Troubleshooting DART" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../ligands/ligands.html" class="btn btn-neutral float-left" title="Ligands" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2023, Timo Sommer, Cian Clarke
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

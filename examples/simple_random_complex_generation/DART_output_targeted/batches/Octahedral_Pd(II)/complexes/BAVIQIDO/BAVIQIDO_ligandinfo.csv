@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-LIQNIK-03-a,C13H12N3O1,3,N-C-N,-1,True,342bf6490f282700a448aa7bfc6240ad,1,LIQNIK,Pd(1)
+Ligand 1,unq_CSD-RIKLAA-02-a,C13H13N2,2,N-N,-1,True,360641d1ccf01b56230260b91aaf4cef,5,"RIKLAA, RIKLAA, RIKLAA, NOPVIY, NOPVIY","Y(3), Ni(2)"
+Ligand 2,unq_CSD-AJEBAS-01-d,C7H12N2,1,N,0,True,9c7daa55d409e6c0e3fe94186d812f70,1,AJEBAS,Pt(1)

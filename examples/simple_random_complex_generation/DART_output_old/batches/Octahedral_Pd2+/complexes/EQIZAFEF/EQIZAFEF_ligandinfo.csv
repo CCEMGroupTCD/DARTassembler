@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-QIQRAL-03-a,C21H13N3,3,N-N-N,0,True,6c903e3b83850fdcd569148bc8d6fa8a,3,"QIQRAL, IKIREC, FEJVEW","Ru(1), Cu(1), Pt(1)"
+Ligand 1,unq_CSD-QEWRIW-02-a,C15H12F1N2O1S1,2,S-O,-1,True,9826cf463db799d65dfc407011d555a0,2,"QEWRIW, QEWROC",Pd(2)
+Ligand 2,unq_CSD-PENLIE-01-a,C20H21Sn2,1,Sn,-1,True,40cdcd10a2a7608922c86f0281064054,2,"PENLIE, PENLOK",Os(2)

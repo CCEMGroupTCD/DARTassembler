@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-KUBKEA-03-a,C12H17N3O1P1,3,C-N-P,-1,True,cff58c646cac9b0c9303e11297875606,1,KUBKEA,Fe(1)
+Ligand 1,unq_CSD-RAZKAE-02-a,C10H11N2O1S2,2,S-N,-1,True,a6f756e649abaf619d2b1b0ff24f2dcc,2,"RAZKAE, RAZKAE",Ni(2)
+Ligand 2,unq_CSD-LEZBID-01-d,C10H8N2S1,1,N,0,True,4bc04e9e7d16b36e1f8f1a7791d37bbf,40,"LEZBID, LEZBID, LEZBOJ, LEZBOJ, YONTUT, ... (35 more)","Mn(12), Cu(12), Zn(10), Co(4), Cd(2)"

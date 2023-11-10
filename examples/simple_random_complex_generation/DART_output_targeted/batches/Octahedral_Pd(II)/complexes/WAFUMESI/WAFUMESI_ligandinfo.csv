@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-BEPNOZ-03-a,C11H11N1O1S1,3,N-O-S,-2,True,44301164ce68101090d13917ab655c3a,2,"BEPNOZ, RISQIW",Ni(2)
+Ligand 1,unq_CSD-YUNYUE-02-a,C8H12N4,2,N-N,0,True,a57f8f860a0fff3a2ff711f7f724878d,2,"YUNYUE, YUNYUE",Ni(2)
+Ligand 2,unq_CSD-SOCTEK-01-a,C11H9N3,1,N,0,True,b99aa6e57828b9d5a274d95f0e8684e6,12,"SOCTEK, SOCTEK, SOCTIO, SOCTIO, SOCTOU, ... (7 more)","Cd(2), Mn(2), Co(2), Ni(2), Zn(2), ... (1 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-HAVCUD-03-a,C14H10N2O3,3,N-O-O,-2,True,04eb1f8090553fbbcf129da5f9bdc276,3,"HAVCUD, WETSAS, FAPKAJ","Cu(1), Mo(1), Ni(1)"
+Ligand 1,unq_CSD-TARHUR-02-a,C7H9N3S1,2,N-N,0,True,5ef0c4daccd9b2f4c8677c703ca3fbda,8,"TARHUR, TARHUR, TARJAZ, TARJAZ, YEGRAF, ... (3 more)","Ni(4), Cu(2), Zn(1), Pt(1)"
+Ligand 2,unq_CSD-CIJROE-01-a,C9H10N4,1,N,0,True,efdf2c9f1b0f68882dbe2976e9b187c1,2,"CIJROE, CIJROE",Pd(2)

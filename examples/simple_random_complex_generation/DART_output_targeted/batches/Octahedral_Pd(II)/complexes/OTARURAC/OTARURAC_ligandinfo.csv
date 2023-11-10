@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-CIGLIO-03-a,C8H8N3S2,3,S-N-N,-1,True,2697c2820cd63700206bafa115ee3d5e,23,"CIGLIO, CIGLIO, QOHFAV, QOHFAV, GEPKOC, ... (18 more)","Cd(5), Co(4), Ni(4), Zn(4), Fe(3), ... (2 more)"
+Ligand 1,unq_CSD-GEMROG-02-a,C14H8N3O1S1,2,N-N,-1,True,d49c28d66f0b545838f6ab266e38b10f,2,"GEMROG, GEMROG",Ni(2)
+Ligand 2,unq_CSD-XUBNIS-01-d,C14H11N1,1,N,0,True,2042dd39e34f59e693348f6f7c44c998,2,"XUBNIS, XUBNIS",Pt(2)

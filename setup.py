@@ -9,7 +9,12 @@ setup(
     description="A software for chemists to build novel metal complexes from random ligands on the computer.",
     url='https://github.com/CCEMGroupTCD/DART',
     python_requires=">=3.9.5",
-    author="Cian Clarke, Timo Sommer, Felix Kleuker",
+    author="Timo Sommer, Cian Clarke, Felix Kleuker",
     packages=find_packages(),
     install_requires=requirements,
+    entry_points={
+        'console_scripts': [
+            'dart=dart_cli:main',
+        ],
+    },
 )

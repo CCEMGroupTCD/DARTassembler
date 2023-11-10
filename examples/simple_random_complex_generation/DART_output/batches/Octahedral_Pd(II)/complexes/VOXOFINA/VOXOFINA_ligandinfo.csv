@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-JUFCUI-03-a,C13H8Cl2N1,3,Cl-N-C,-1,True,4790e6150327b8cd4bb77998e6742e23,1,JUFCUI,Mo(1)
+Ligand 1,unq_CSD-GEKVUN-02-a,C12H15O2,2,O-O,-1,True,7c633d5e359d29816f65ab91d27262d7,8,"GEKVUN, GEKVUN, ZOJREV, ZOJREV, ZOJRIZ, ... (3 more)","Zr(3), Ni(2), Ti(2), Mn(1)"
+Ligand 2,unq_CSD-YERNUF-01-d,C24H19P1,1,C,0,True,b908b876276b8772c0caa6a2c8472a88,1,YERNUF,Pd(1)

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-JITCEX-03-a,C14H10N3,3,N-N-N,-1,True,db9746b4056ca7dde9ba1795236cc48f,1,JITCEX,Pd(1)
+Ligand 1,unq_CSD-TOFXUK-02-a,C10H11N4,2,N-N,-1,True,4f9bed572fb9db1f87440ab2cc633779,2,"TOFXUK, TOFXUK",Pd(2)
+Ligand 2,unq_CSD-ADIDOI-01-a,C8H12N2,1,N,0,True,5b5ffcdb30cf1beabf6a5b4fc8ed0921,1,ADIDOI,Pd(1)

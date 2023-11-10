@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-SACXEA-03-a,C15H13N4O2,3,N-N-N,-1,True,2ad867b8a3a0d1912bc72ee1503534a1,2,"SACXEA, SACXIE",Cu(2)
+Ligand 1,unq_CSD-DEZBES-02-a,C2H7N3O1,2,O-N,0,True,373f1020e3828038c6221970b7fcb78d,30,"DEZBES, DEZBES, XEZSON, XEZSON, XEZSUT, ... (25 more)","Cu(10), Mn(8), Co(6), Zn(4), Ni(2)"
+Ligand 2,unq_CSD-EZAXOU-01-a,C4H8Br1,1,C,-1,True,7076f9e0b486513eb5a2c044bc8808d7,3,"EZAXOU, SASKAZ, SASKED","Co(2), Pt(1)"

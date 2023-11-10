@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-LONRIQ-03-a,C12H12N3,3,N-N-N,-1,True,cb85380c0236b618f3c563bc1fb36b23,2,"LONRIQ, QIXHEL",Cu(2)
+Ligand 1,unq_CSD-COYLAD10-02-a,C7H9N3O1,2,O-N,0,True,3bb9177ef674e9eb8e82d74ee80ed423,6,"COYLAD10, COYLAD10, DUMBOC, DUMBOC, DUMBUI, ... (1 more)","Zn(2), Co(2), Ni(2)"
+Ligand 2,unq_CSD-PEXMIO-01-b,C3H3,1,C,-1,True,ef3409bcf6a3e39820c91f11ab02222b,12,"PEXMIO, TAFHUE, TAFJAM, MAYJUT, BOLVII, ... (7 more)","Au(4), Ni(3), Rh(2), Ru(2), Fe(1)"

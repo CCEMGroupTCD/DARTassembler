@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-KUXRUR-03-a,C20H23N2,3,C-N-N,-1,True,0d1f88114a5f9166cf92c08a6ee2fc43,1,KUXRUR,Pd(1)
+Ligand 1,unq_CSD-GIVMOQ-02-a,C23H14N4,2,N-N,0,True,c4bf4d309ac38360d0b3e4bd518dcfb6,2,"GIVMOQ, KUKPEO","Cu(1), Ru(1)"
+Ligand 2,unq_CSD-BOVGAW-01-a,C7H8N1O2S1,1,N,-1,True,eb45ebe7542f6172452cede9b8228531,14,"BOVGAW, JOTDAA, GIWZUH, GIWZUH, VIPQIX, ... (9 more)","Pd(7), Fe(2), Ru(2), Cu(1), Os(1), ... (1 more)"

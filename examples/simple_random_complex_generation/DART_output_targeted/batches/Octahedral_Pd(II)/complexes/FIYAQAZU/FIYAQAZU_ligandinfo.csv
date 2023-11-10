@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-GUQPOX-03-a,C11H14N1O3,3,C-N-O,-1,True,d4e2ebc342c9426bfc4fc1da86d68887,1,GUQPOX,Pd(1)
+Ligand 1,unq_CSD-SUGROC-02-a,C14H12N3,2,N-N,-1,True,1f3009b4b157a47fcf55da2599f89f9a,3,"SUGROC, MUXXAG, MUXXAG",Ni(3)
+Ligand 2,unq_CSD-PAZJIK-01-b,C9H10N2,1,C,0,True,f6602843ba162ef10767b023f2579612,55,"PAZJIK, PAZJIK, PAZJIK01, PAZJIK01, LIMVAH, ... (50 more)","Au(17), Pd(15), Pt(7), Ir(6), Ni(4), ... (3 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-DURRAK-03-a,C11H12N3O2,3,O-O-N,-1,True,f2e6d14de97fdbb36aea0f3caceab108,1,DURRAK,V(1)
+Ligand 1,unq_CSD-ZALHIG-02-a,C11H10N3O2,2,N-C,-1,True,9372a2840da6ff6e762c2ac02332085f,2,"ZALHIG, ZALHUS","Os(1), Ru(1)"
+Ligand 2,unq_CSD-GOGSAZ-01-a,C14H8N4O2,1,N,0,True,e8fe5422076202d908f2f8fdb4eed06b,12,"GOGSAZ, GOGSAZ, GOGSAZ, GOGSAZ, GOGSAZ, ... (7 more)",Fe(12)

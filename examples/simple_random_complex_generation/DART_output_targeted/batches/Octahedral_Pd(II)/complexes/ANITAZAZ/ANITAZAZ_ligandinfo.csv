@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-SURZUC-03-a,C13H9N1O2,3,N-O-O,-2,True,5f683000dd176f04656a7916066db273,65,"SURZUC, SURZUC, SUXLON, CIKTAR, TUQQOL, ... (60 more)","Ni(12), Fe(11), Mo(11), Cu(10), Re(5), ... (9 more)"
+Ligand 1,unq_CSD-NEKZAG-02-a,C8H10N2,2,N-N,0,True,2db35092e7b8145b92184ff59d2ff970,7,"NEKZAG, NEKZAG, NEKZEK, NEKZIO, OMASIE, ... (2 more)","Ni(2), Cu(2), Pd(1), Pt(1), Mo(1)"
+Ligand 2,unq_CSD-PIDQEA-01-a,C6H8N2,1,N,0,True,df6445dbf9d827c93689192db418ac86,23,"PIDQEA, PIDQEA, MULYEY, MULYIC, QEWRUI, ... (18 more)","Cu(7), Zn(5), Pd(4), Mn(3), Co(2), ... (1 more)"

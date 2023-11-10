@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-UYEZUV02-03-a,C22H17N4O3,3,N-O-O,-1,True,bfcb09cb204dd2d44cb1532ebc24b5d5,1,UYEZUV02,V(1)
+Ligand 1,unq_CSD-RILLUW-02-a,C27H20N2O1,2,N-N,0,True,5eaead5f7216e502c954e22f3d6710f3,1,RILLUW,Pd(1)
+Ligand 2,unq_CSD-HUYTUR-01-a,C7H5N4O1S1,1,S,-1,True,07353b51595ecaedc803b876b5e41132,4,"HUYTUR, HUYTUR, HUYVAZ, HUYVAZ","Mn(2), Zn(2)"

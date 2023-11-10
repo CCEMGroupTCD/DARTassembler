@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-WACWUV-03-a,C8H9N4O2,3,O-N-N,-1,True,59cb714c6fe46ca358b4edf4eb0c7f20,2,"WACWUV, WACWUV",Ni(2)
+Ligand 1,unq_CSD-SUGROC-02-a,C14H12N3,2,N-N,-1,True,1f3009b4b157a47fcf55da2599f89f9a,3,"SUGROC, MUXXAG, MUXXAG",Ni(3)
+Ligand 2,unq_CSD-SOMLEM-01-a,C2H4N4,1,N,0,True,93b934a658b2302bb1d808e120ccf212,40,"SOMLEM, SOMLEM, LIJJAP, LIJJAP, LIJJAP01, ... (35 more)","Cu(18), Zn(7), Ag(7), Pt(3), Mn(2), ... (2 more)"

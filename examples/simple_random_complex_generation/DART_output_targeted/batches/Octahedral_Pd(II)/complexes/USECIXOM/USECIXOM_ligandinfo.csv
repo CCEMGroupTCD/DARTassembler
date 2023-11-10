@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-BICQAI-03-a,C11H13N3O1S1,3,O-N-N,-2,True,26ce52ec253b38a95334707503c35e52,1,BICQAI,Ni(1)
+Ligand 1,unq_CSD-CEBPUX-02-a,C13H12N2,2,N-N,0,True,e8358b60aa7a5c80230cea829a809961,10,"CEBPUX, TICXUB, TUGBON, KEZYAR, WEWXIH, ... (5 more)","Ru(3), Mn(2), Mo(2), Cu(1), Ni(1), ... (1 more)"
+Ligand 2,unq_CSD-PAXTIU-01-b,C6H8N2,1,N,0,True,664d31a9aa0e544d2e13e18d8043702d,21,"PAXTIU, PAXTIU, PAXTIU, PAXTIU, LIQLED, ... (16 more)","Co(8), Cu(6), Ni(4), Zn(2), Mn(1)"

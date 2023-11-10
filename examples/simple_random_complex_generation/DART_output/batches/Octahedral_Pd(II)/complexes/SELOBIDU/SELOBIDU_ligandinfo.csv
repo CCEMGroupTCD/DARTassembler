@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-AWIHOF-03-a,C13H10N2O3S1,3,N-O-O,-2,True,635dc5c77e74ac26cb39a9d9d5b74b91,1,AWIHOF,Pd(1)
+Ligand 1,unq_CSD-PETRUC-02-a,C11H11N3O1,2,N-N,0,True,c034c7e89e45d359a13421a54c227738,1,PETRUC,Cu(1)
+Ligand 2,unq_CSD-PIHPUT-01-b,C5H6N2,1,N,0,True,aa944d67482ec4ba22aef4065c81a40a,43,"PIHPUT, PIHPUT, PIHPUT, PIHQAA, PIHQAA, ... (38 more)","Ni(17), Cu(11), Co(9), Mn(2), Cd(2), ... (1 more)"

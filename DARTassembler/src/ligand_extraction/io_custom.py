@@ -12,6 +12,48 @@ from pathlib import Path, PurePath
 import jsonlines
 from tqdm import tqdm
 import ase
+import zipfile
+import os
+from DARTassembler.src.constants.Paths import default_ligand_db_path
+
+def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
+    """
+    Checks if the MetaLig database exists as uncompressed file, and if not uncompresses it.
+    """
+    if not Path(default_ligand_db_path).exists():
+
+        zip_file = str(default_ligand_db_path) + ".zip"
+        if not Path(zip_file).exists():
+            raise FileNotFoundError(f"Could not find MetaLig database zip file at {Path(zip_file).resolve()}. Please download it from the DART github repository and place it there.")
+
+        uncompress_file(zip_file, default_ligand_db_path)
+        print(f"Uncompressed MetaLig database to {Path(default_ligand_db_path).resolve()}.\n")
+
+    if delete_zip:
+        Path(zip_file).unlink()
+        print("Deleted MetaLig database zip file for optimizing disk space.")
+
+    return
+
+def compress_file(file_path, output_zip_path=None):
+    """
+    Compress a file into a zip file.
+    """
+    if output_zip_path is None:
+        output_zip_path = str(file_path) + '.zip'
+
+    with zipfile.ZipFile(output_zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        zipf.write(file_path, os.path.basename(file_path))
+
+def uncompress_file(zip_file_path, output_path=None):
+    """
+    Uncompress a zip file into a file.
+    """
+    if output_path is None:
+        output_path = str(zip_file_path).replace('.zip', '')
+
+    with zipfile.ZipFile(zip_file_path, 'r') as zipf:
+        zipf.extractall(output_path)
 
 class NumpyEncoder(json.JSONEncoder):
     """Special json encoder. This is important to use in json.dump so that if json encounters a np.array, it converts it to a list automatically, otherwise errors arise. Use like this:
@@ -272,3 +314,9 @@ def read_xyz(path: str):
     coords = atoms.get_positions()
     elements = atoms.get_chemical_symbols()
     return elements, coords
+
+
+if __name__ == '__main__':
+
+    metalig = '/Users/timosommer/PhD/projects/RCA/projects/DART/data/final_db_versions/MetaLigDB_v1.0.0.jsonlines'
+    compress_file(metalig)

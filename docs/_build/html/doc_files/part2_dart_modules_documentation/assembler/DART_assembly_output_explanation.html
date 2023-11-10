@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assembler Output &mdash; DART  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            DART
+              <img src="../../../_static/DART_pic.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">How to Use DART</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../part1_getting_started_and_how_to_guides/installation_guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../part1_getting_started_and_how_to_guides/examples/simple_octahedral_assembly/simple_octahedral_assembly.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../part1_getting_started_and_how_to_guides/understanding_the_dart_workflow.html">Understanding the DART Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../part1_getting_started_and_how_to_guides/tutorials_and_examples.html">Tutorials And Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../metalig/metalig_database.html">Ligand Database (MetaLig)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ligand_filters/ligand_filters.html">Ligand Filter Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assembler.html">Assembler Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/api_documentation.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/api_documentation.html#ligands">Ligands</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../part3_additional_resources/troubleshooting_and_faqs.html">Troubleshooting And FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../part3_additional_resources/how_to_cite_dart.html">How To Cite DART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../part3_additional_resources/version_history.html">Version History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../part3_additional_resources/contributing_to_dart.html">Contributing to DART</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DART</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Assembler Output</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/doc_files/part2_dart_modules_documentation/assembler/DART_assembly_output_explanation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="assembler-output">
+<span id="assembly-output"></span><h1>Assembler Output<a class="headerlink" href="#assembler-output" title="Permalink to this heading"></a></h1>
+<section id="what-to-expect-in-the-output-folder">
+<h2>What to Expect in the Output Folder<a class="headerlink" href="#what-to-expect-in-the-output-folder" title="Permalink to this heading"></a></h2>
+<p>The output of the DART assembler will be saved in a specific folder. This folder is determined by the <cite>output_path</cite> you set in your assembly input file. Within this folder, each generated metal complex has a unique name such as <cite>IKOTENIC</cite>, which is automatically generated based on its coordinates.</p>
+<p>The assembler module creates not only the xyz files for each complex but also various other files that could be of interest. Below, you’ll find an overview of all files and folders generated by the DART assembler.</p>
+</section>
+<section id="folder-structure">
+<h2>Folder Structure<a class="headerlink" href="#folder-structure" title="Permalink to this heading"></a></h2>
+<p>Here’s how the output folder will look:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>output_path/
+├── info_table.csv                  (Summary Table)
+├── concat_passed_complexes.xyz     (Successful Complexes)
+├── ffmovie.xyz                     (Forcefield Trajectories)
+└── batches/                        (Batch Folders)
+    ├── batch_1/
+    │   ├── concat_passed_complexes.xyz
+    │   ├── concat_failed_complexes.xyz
+    │   ├── concat_passed_ffmovie.xyz
+    │   ├── concat_failed_ffmovie.xyz
+    │   └── complexes/              (Individual Complex Folders)
+    │       ├── complex_1/
+    │       │   ├── complex_1_structure.xyz
+    │       │   ├── complex_1_ligandinfo.csv
+    │       │   ├── complex_1_ffmovie.xyz
+    │       │   └── complex_1_data.json
+    │       ├── complex_2/
+    │       └── ...
+    └── batch_2/
+        └── ...
+</pre></div>
+</div>
+</section>
+<section id="types-of-output-files">
+<h2>Types of Output Files<a class="headerlink" href="#types-of-output-files" title="Permalink to this heading"></a></h2>
+<section id="general-output-files">
+<h3>General Output Files<a class="headerlink" href="#general-output-files" title="Permalink to this heading"></a></h3>
+<p>These files provide a broad overview of the assembly process:</p>
+<ul class="simple">
+<li><p><strong>batches/</strong>: This is a folder that contains all the batches of assembled complexes.</p></li>
+<li><p><strong>info_table.csv</strong>: This is a summary table listing all generated complexes and their characteristics. It’s a good starting point for understanding the results.</p></li>
+<li><p><strong>concat_passed_complexes.xyz</strong>: This file contains the coordinates of all successfully generated complexes, bundled together. You can visualize these using software like ASE.</p></li>
+<li><p><strong>ffmovie.xyz</strong>: This contains forcefield optimization trajectories for the successfully generated complexes.</p></li>
+</ul>
+</section>
+<section id="batch-specific-files">
+<h3>Batch-Specific Files<a class="headerlink" href="#batch-specific-files" title="Permalink to this heading"></a></h3>
+<p>Inside the <cite>batches</cite> folder, you’ll find separate folders for each batch. These folders may contain:</p>
+<ul class="simple">
+<li><p><strong>complexes/</strong>: This is a folder that contains all the complexes for that batch.</p></li>
+<li><p><strong>concat_passed_complexes.xyz</strong>: Coordinates of successful complexes for that specific batch.</p></li>
+<li><p><strong>concat_failed_complexes.xyz</strong>: Coordinates of complexes that failed to assemble correctly.</p></li>
+<li><p><strong>concat_passed_ffmovie.xyz</strong>: Forcefield optimization trajectories for successful complexes.</p></li>
+<li><p><strong>concat_failed_ffmovie.xyz</strong>: Forcefield optimization trajectories for failed complexes.</p></li>
+</ul>
+<p>If a file is missing, that means no complexes fall into that category for the batch (e.g., no failed complexes).</p>
+</section>
+<section id="complex-specific-files">
+<h3>Complex-Specific Files<a class="headerlink" href="#complex-specific-files" title="Permalink to this heading"></a></h3>
+<p>Within each batch, each complex has its own folder under <cite>complexes</cite>. These folders contain:</p>
+<ul class="simple">
+<li><p><strong>NAME_structure.xyz</strong>: The 3D coordinates of the complex.</p></li>
+<li><p><strong>NAME_ligandinfo.csv</strong>: Detailed information about the ligands in the complex.</p></li>
+<li><p><strong>NAME_ffmovie.xyz</strong>: Forcefield optimization trajectory for the complex, if activated.</p></li>
+<li><p><strong>NAME_data.json</strong>: This is a machine-readable data file, useful for further computational analysis.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Timo Sommer, Cian Clarke.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

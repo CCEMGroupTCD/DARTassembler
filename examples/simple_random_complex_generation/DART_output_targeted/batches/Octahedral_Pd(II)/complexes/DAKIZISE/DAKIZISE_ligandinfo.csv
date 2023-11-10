@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-JITCIY-03-a,C8H8N3O1S2,3,S-N-O,-1,True,28879c2cb15adaf89e79bf007ec683fc,2,"JITCIY, VOBSAG","Ni(1), Cu(1)"
+Ligand 1,unq_CSD-OZOWAE-02-a,C7H4N3O1S1,2,N-N,-1,True,c9664d45be4071ad06dd194343ca68ce,1,OZOWAE,Ni(1)
+Ligand 2,unq_CSD-PIFTOP-01-a,C9H16N2,1,C,0,True,911b2ba4e0689b0e7af7cdb3b075b183,296,"PIFTOP, PIFTOP, SIQXUL, SIQXUL, SOKROB, ... (291 more)","Ni(136), Fe(22), Ag(16), Ir(14), Pt(13), ... (19 more)"

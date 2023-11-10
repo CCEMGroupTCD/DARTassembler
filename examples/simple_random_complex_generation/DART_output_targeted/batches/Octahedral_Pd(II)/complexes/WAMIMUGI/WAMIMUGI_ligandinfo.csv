@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-BEPNOZ-03-a,C11H11N1O1S1,3,N-O-S,-2,True,44301164ce68101090d13917ab655c3a,2,"BEPNOZ, RISQIW",Ni(2)
+Ligand 1,unq_CSD-LUKWUL-02-c,C10H11N3,2,N-N,0,True,347d50fdf06e1f08ac47537b4e8e7e05,23,"LUKWUL, BUZBOQ, BUZCAD, BUZDOS, CIFBUR, ... (18 more)","Fe(8), Cu(4), Ir(3), Cd(2), Ni(2), ... (4 more)"
+Ligand 2,unq_CSD-JUCQEG-01-b,C9H12N4,1,N,0,True,cc1f0d9f127c43d9d2f3149bf1d2549a,12,"JUCQEG, JUCQEG, COQHUM, COQHUM, COQHUM, ... (7 more)","Ru(6), Fe(3), Ni(3)"

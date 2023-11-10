@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-UDIKEY-03-a,C14H10N3,3,C-N-N,-1,True,35876a653d9b6b1b9338a0f4f2f37e52,1,UDIKEY,Pt(1)
+Ligand 1,unq_CSD-YEHMAZ-02-a,C7H9N2,2,N-N,-1,True,b5a165f0374a4e878c14b7246cb09320,2,"YEHMAZ, YEHMAZ",Ni(2)
+Ligand 2,unq_CSD-KEVTUD-01-a,C11H12N2,1,N,0,True,f59575333d890a841265c965ca89110b,20,"KEVTUD, KEVTUD, KEVVAL, KEVVAL, KEVVEP, ... (15 more)","Co(12), Pd(4), Ni(4)"

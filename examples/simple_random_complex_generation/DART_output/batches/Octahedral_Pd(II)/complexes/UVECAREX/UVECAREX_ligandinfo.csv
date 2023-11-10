@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-ENAKOW-03-a,C12H9N3O1,3,N-N-O,-2,True,ffa73f17f3a410fb9633fe35776612a7,1,ENAKOW,Pd(1)
+Ligand 1,unq_CSD-TAKJEY-02-a,C9H8N2,2,N-N,0,True,c6e9c62fb70a352a69a9b212f0586036,72,"TAKJEY, MACQOX, BINZOQ, BINZOQ, BINZOQ, ... (67 more)","Fe(26), Cd(10), Cu(7), Mn(6), Zn(6), ... (9 more)"
+Ligand 2,unq_CSD-ILOPOP-01-b,C7H11N1O1,1,C,0,True,28566f2c6aea6343e7cb6484645d072a,2,"ILOPOP, ILOPOP",Pt(2)

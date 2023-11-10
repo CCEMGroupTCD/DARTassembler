@@ -15,8 +15,7 @@ We are currently working on providing DART as python package on conda-forge to m
    ```
 3. Set up the conda environment for DART downloading all necessary dependencies
    ```sh
-   conda env create -f DART\conda\DART_env.yml      <-- for Windows users
-   conda env create -f DART/conda/DART_env.yml      <-- for Mac/Linux users
+   conda env create -f DART_env.yml      <-- for Mac/Linux users
    ```
    Note: The conda environment will be linked to the absolute path to the cloned version of this repo. If you move the downloaded DART folder, you need to redo this step to link the conda environment again to the correct path.
 4. Activate the conda environment:

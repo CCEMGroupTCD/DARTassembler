@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-POQSAP-03-a,C12H12N2O1S1,3,S-N-O,-2,True,20866b5011b9b44296c07e07462b9ca7,3,"POQSAP, JOXKEM, JOXKEM","V(2), Ni(1)"
+Ligand 1,unq_CSD-GARGIS-02-a,C13H14N2,2,N-N,0,True,2e590916148780c8e707b8ff4baba503,3,"GARGIS, JEXZES, OCEWEZ","Re(1), Pt(1), Ru(1)"
+Ligand 2,unq_CSD-IRUPIU-01-a,C8H10N2,1,N,0,True,52c0a101c540e5ff4bba435cd2efca18,4,"IRUPIU, IRUPIU, IRUPIU, IRUPIU",Ni(4)

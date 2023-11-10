@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-MOHSIN-03-a,C10H10Br1N3O1S1,3,N-N-O,-2,True,b27795c819d5f34f0229c4839337d0fa,5,"MOHSIN, YEGMUU, YEGNAB, YEGNEF, JATDAM","Mo(3), Ni(2)"
+Ligand 1,unq_CSD-EGUYOW-02-a,C16H17N2O3P1,2,N-N,0,True,d0d4ce19db083cf13bb1bb4718f0eea5,1,EGUYOW,Cu(1)
+Ligand 2,unq_CSD-CEJQUE-01-c,C5H4N2O3,1,O,0,True,34a9fec81908f9f4947d0d1acde82cc5,24,"CEJQUE, CEJQUE, KEKXAZ, KEKXAZ, YARNOU, ... (19 more)","Cu(11), Co(8), Ni(2), Cd(2), U(1)"

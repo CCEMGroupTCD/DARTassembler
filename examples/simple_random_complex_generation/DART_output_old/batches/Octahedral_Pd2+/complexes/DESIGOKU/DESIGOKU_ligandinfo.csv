@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-WILTET-03-a,C18H29N2O1,3,O-N-N,-1,True,f0c22048be08a3c4ca04f3f60216cbe4,2,"WILTET, WILTET",Zn(2)
+Ligand 1,unq_CSD-BODXAU-02-b,C5H14N2,2,N-N,0,True,e1d0bf6d05e260968ca21ce053d5ad2c,2,"BODXAU, BODXEY",Cu(2)
+Ligand 2,unq_CSD-GUTQOB-01-d,C5F4N1,1,C,-1,True,656d5ce9986d90652d6a75e9da814bee,5,"GUTQOB, GUTQUH, SECQIE, SECQUQ, SECRAX","Ni(2), Co(2), Fe(1)"

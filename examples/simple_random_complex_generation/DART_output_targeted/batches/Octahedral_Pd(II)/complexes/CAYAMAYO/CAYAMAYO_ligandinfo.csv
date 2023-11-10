@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-RELDUK-03-a,C7H12N4O1S1,3,S-N-N,-2,True,a9654e7278430a215a19a82145bc7f9a,2,"RELDUK, RELFAS","Pt(1), Pd(1)"
+Ligand 1,unq_CSD-TAWMUB-02-a,C10H14N4,2,N-N,0,True,d4f28de5327bfed68b03ff803c477af0,20,"TAWMUB, BACLIC, CEMWAS, CEMWAS, CEMWEW, ... (15 more)","Co(6), Zn(5), Ni(3), Ru(2), Cu(2), ... (2 more)"
+Ligand 2,unq_CSD-HOVRUF-01-a,C6H7N5,1,N,0,True,12197849f1458d73dbd782744f66379f,2,"HOVRUF, OJOMEF","Pt(1), Ru(1)"

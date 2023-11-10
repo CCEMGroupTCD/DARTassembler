@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-JUKQIR-03-a,C12H11N4S1,3,N-N-S,-1,True,647a10bc13e9f454b3633ac4b37ea475,7,"JUKQIR, JUKQUD, JUKQUD, FEKZON, FEKZON, ... (2 more)","Ni(4), Zn(2), Cu(1)"
+Ligand 1,unq_CSD-SOXDOA-02-a,C10H8N3,2,N-N,-1,True,c53126c84a5b53b7303ece266212690e,20,"SOXDOA, PYIMPD01, PYIMPD01, PYRDCU, PYRDCU, ... (15 more)","Cu(4), Co(4), Pd(2), Ru(2), Ni(2), ... (4 more)"
+Ligand 2,unq_CSD-SOGWEQ-01-b,C7H9N1,1,N,0,True,2ecfedffc692ca2046cea6aeb441cd56,71,"SOGWEQ, SOGWEQ, SOGWEQ, SOGWEQ, SURSUW, ... (66 more)","Ni(26), Co(10), Pd(8), Ag(4), Mo(4), ... (10 more)"

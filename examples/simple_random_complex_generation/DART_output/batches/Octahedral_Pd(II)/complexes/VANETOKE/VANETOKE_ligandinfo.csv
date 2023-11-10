@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-WABCUZ-03-a,C13H9Cl1N3O1,3,N-N-O,-1,True,4bfa27ca961b18b720ebb2ce71a85c79,4,"WABCUZ, WABCUZ, AMUYOY, AMUYOY","Co(2), Ni(2)"
+Ligand 1,unq_CSD-ROLDEE-02-a,C13H9N3O1,2,N-N,0,True,e715872553d2a0b354d9c643ecdc1bff,1,ROLDEE,Mn(1)
+Ligand 2,unq_CSD-GIJNUJ-01-a,C8H8N2O1P1,1,P,-1,True,dfaa75a3df614cdac8dafc100400ff7b,1,GIJNUJ,Pd(1)

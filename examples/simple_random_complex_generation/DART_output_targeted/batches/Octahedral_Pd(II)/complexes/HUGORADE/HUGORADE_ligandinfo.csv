@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-FUZSOK-03-a,C12H10N4,3,N-N-N,-2,True,ea48dc79ac1be7499ebdc7afaff86b84,1,FUZSOK,Pt(1)
+Ligand 1,unq_CSD-PAKFOX-02-a,C10H10N6,2,N-N,0,True,8d89a07a174118df86ed8bd6f18a7cc9,10,"PAKFOX, YEDCIV, YEDCOB, YEDCUH, GERHUH, ... (5 more)","Pt(6), Ru(2), Re(1), Ni(1)"
+Ligand 2,unq_CSD-LAZGEZ-01-c,C5H4N2,1,N,0,True,b153afeb06c414996538bef39ab0a21c,1,LAZGEZ,Pt(1)
