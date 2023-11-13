@@ -42,7 +42,7 @@ Copy-Paste Assembly Input File Template
     batches:                              # List of batches to generate. The first option in each batch needs a hyphen ('-') in front of it to mark the start of the batch.
       - name: First_batch                 # Name of the batch. Note the hyphen in front of it to mark the start of the batch.
         topology: 2-1-1                   # Topology of the complexes. Options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
-        ligand_db_paths: (data/bidentate_ligands.jsonlines, data/monodentate_ligands.jsonlines, same_ligand_as_previous) # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
+        ligand_db_paths: [data/bidentate_ligands.jsonlines, data/monodentate_ligands.jsonlines, same_ligand_as_previous] # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
         ligand_choice: random             # How to choose the ligands. Options: random, all
         max_num_complexes: 100            # Maximum number of complexes to generate.
         metal:
@@ -83,32 +83,38 @@ Global Options
 
 The following two options have to be specified at the beginning of each assembly input file. They are global options which apply to all batches.
 
-output_path :
+.. confval:: output_path
+
     Options: `dirpath`
 
     Path in which the output will be saved.
 
-overwrite_output :
+.. confval:: overwrite_output
+
     Options: true, false
 
     Whether to overwrite the output if it already exists. Recommended: false.
 
-ffmovie :
+.. confval:: ffmovie
+
     Options: true, false
 
     Whether to output a movie of the optimization process. Set to false to save disk space.
 
-concatenate_xyz :
+.. confval:: concatenate_xyz
+
     Options: true, false
 
     Whether to concatenate the xyz files of the optimization process.
 
-verbosity :
+.. confval:: verbosity
+
     Options: 0, 1, 2, 3
 
     How much output to print. Recommended is 2.
 
-complex_name_length :
+.. confval:: complex_name_length
+
     Options: `int > 0`
 
     Length of the randomly generated complex name. Recommended: 8.
@@ -118,17 +124,20 @@ Batch Options
 
 Batch options are specified in the assembly input file below the word 'batches:'. Each batch option is required, but some can be left empty. As many batches as desired can be specified. The first batch option needs a hyphen ('-') in front of it to mark the start of the batch.
 
-name :
+.. confval:: name
+
     Options: `str`
 
     Use this to name your batches for easier identification.
 
-topology :
+.. confval:: topology
+
     Options: 3-2-1, 4-1-1, 5-1, 2-1-1, 2-2
 
     The topology specifies the desired denticities of the ligands of the complex. For example, 3-2-1 would generate a complex with one tridentate, one bidentate and one monodentate ligand.
 
-ligand_db_paths :
+.. confval:: ligand_db_paths
+
     Options: `filepath` or list(`filepath / keyword` )
 
     TODO
@@ -139,12 +148,14 @@ ligand_db_paths :
         - 'same_ligand_as_previous':
             Instead of a path in a list (except the first path), the keyword 'same_ligand_as_previous' can be used. In this case, the ligand that is assembled will be exactly the same as the ligand on the previous ligand site in each assembled complex.
 
-ligand_choice :
+.. confval:: ligand_choice
+
     Options: random, all
 
     If 'random', ligands will be chosen at random from the ligand database to assemble complexes. If 'all', every possible combination of ligands will systematically be assembled. Note that this can lead to a very large number of complexes. The option 'max_num_complexes' is used either way to limit the number of complexes generated for both cases.
 
-max_num_complexes :
+.. confval:: max_num_complexes
+
     Options: `int > 0`
 
     Maximum number of complexes to generate.
@@ -153,49 +164,58 @@ max_num_complexes :
 
     If 'ligand_choice' is set to 'all', 'max_num_complexes' will still be used to limit the number of complexes generated. To stop only after every possible complex is generated, set 'max_num_complexes' to a very large number.
 
-metal -> element :
+.. confval:: metal -> element
+
     Options: `chemical symbol`
 
     Chemical symbol of the desired metal center, e.g. `Pd`.
 
-metal -> oxidation_state :
+.. confval:: metal -> oxidation_state
+
     Options: `int > 0`
 
     Oxidation state of the desired metal center, e.g. `3`.
 
-metal -> spin :
+.. confval:: metal -> spin
+
     Options: `int ≥ 0`
 
     Spin of the desired metal center. Only needed for later DFT or xtb structure relaxations, not for the initial structure generation.
 
-total_charge :
+.. confval:: total_charge
+
     Options: `int`
 
     Total charge of the complex. Can be positive, negative or zero.
 
-forcefield :
+.. confval:: forcefield
+
     Options: true, false
 
     Whether to relax the generated structures with a force field. Currently, the only available force field is the Universal Force Field (UFF).
 
-isomers :
+.. confval:: isomers
+
     Options: lowest_energy, all
 
     The assembler will always generate all possible isomers. The option 'isomers' determines which isomers are saved. If `lowest_energy`, only the lowest energy isomer is saved as determined by the forcefield. If `all`, all isomers are saved.
 
-bidentate_rotator :
+.. confval:: bidentate_rotator
+
     Options: auto, horseshoe, slab
 
     How to assemble bidentate ligands to the complex. Effects only ligands with denticity of 2. 'horseshoe' and 'slab' are the shapes of the underlying potential energy surfaces. 'horseshoe' works best for ligands with a planar metallacycle, while non-planar ligands often give better results with 'slab'. 'auto' will choose the shape automatically based on the ligand geometry.
 
     This option can severely affect the quality of generated complexes and how many make it through the post-assembly filter. For serious applications we recommend to set 'max_num_complexes' to 200, try all three options and check how many complexes fail the post-assembly filter for each option (this info is returned at the end of the assembly if 'verbosity' >= 2). Whichever option has the least complexes failing the post-assembly filter gives the highest quality complexes.
 
-gaussian_input_filepath :
+.. confval:: gaussian_input_filepath
+
     Options: `filepath`
 
     Path to the Gaussian config file. If not given, no Gaussian input files are generated.
 
-geometry_modifier_filepath :
+.. confval:: geometry_modifier_filepath
+
     Options: `filepath`
 
     Path to the geometry modifier file. If not given, no geometry modification is performed.
@@ -204,12 +224,14 @@ geometry_modifier_filepath :
 
     For moving an atom to another position you need to supply the chemical symbol and the coordinates of the original atom and the coordinates the atom at it's new coordinates. The geometry modifier file is an .xyz file with two sets of atoms: The first set is all atoms that should be moved, the second set is the new positions of these atoms. Both sets of atoms are provided as "molecule" in the .xyz format and concatenated. The order and the chemical elements of both sets of atoms have to match up. In the assembly, for each generated complex, the atoms with coordinates in the first set are moved to the coordinates in the second set.
 
-random_seed :
+.. confval:: random_seed
+
     Options: `int`
 
     A seed for any random number generator in the assembly process to make the generation of complexes exactly reproducible for each individual batch.
 
-complex_name_appendix :
+.. confval:: complex_name_appendix
+
     Options: `str`
 
     Characters to append to the randomly generated complex name. Useful for example to distinguish different batches of complexes.

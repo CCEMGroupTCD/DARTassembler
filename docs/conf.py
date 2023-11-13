@@ -18,6 +18,7 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.autodoc',
     'sphinx_rtd_theme',
+    'sphinx_toolbox.confval',
 ]
 
 templates_path = ['_templates']

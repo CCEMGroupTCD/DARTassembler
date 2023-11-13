@@ -119,265 +119,291 @@ Filters
 denticities
 ^^^^^^^^^^^
 
-Keeps only ligands with denticities specified in the list.
+    Keeps only ligands with denticities specified in the list.
 
+    .. confval:: denticities
 
-denticities :
-    List of denticities to keep.
+        List of denticities to keep.
 
-**Example** :    This example will keep only ligands with denticity 2, 3 or 5.
+    **Example** :    This example will keep only ligands with denticity 2, 3 or 5.
 
-.. code-block::
+    .. code-block::
 
-    - filter: denticities
-        denticities: [2, 3, 5]
+        - filter: denticities
+            denticities: [2, 3, 5]
 
 .. _filter_ligand_charges:
 
 ligand_charges
 ^^^^^^^^^^^^^^
 
-Keep only ligands with formal charges which are specified in the list.
+    Keep only ligands with formal charges which are specified in the list.
 
 
-ligand_charges :
-    List of charges to keep.
+    .. confval:: ligand_charges
 
-denticities :
-    A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+        List of charges to keep.
 
-**Example** :    For ligands with denticity of 2 or 3, this example will keep only ligands which have a formal charge of -1, 0 or 1. Ligands with denticities other than 2 or 3 will always pass.
+    .. confval:: denticities
 
-.. code-block::
+        A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
-    - filter: ligand_charges
-        ligand_charges: [-1, 0, 1]
-        apply_to_denticities: [2, 3]
+    **Example** :    For ligands with denticity of 2 or 3, this example will keep only ligands which have a formal charge of -1, 0 or 1. Ligands with denticities other than 2 or 3 will always pass.
+
+    .. code-block::
+
+        - filter: ligand_charges
+            ligand_charges: [-1, 0, 1]
+            apply_to_denticities: [2, 3]
 
 .. _filter_ligand_composition:
 
 ligand_composition
 ^^^^^^^^^^^^^^^^^^
 
-Filter ligands based on their chemical composition, i.e. the atoms in their chemical formula. The 'elements' parameter specifies the elements to apply this filter to. The 'instruction' parameter specifies exactly how to apply this filter. This filter works exactly like the 'coordinating_atoms_composition' filter, except that it applies to all atoms instead of only the coordinating atoms.
+    Filter ligands based on their chemical composition, i.e. the atoms in their chemical formula. The 'elements' parameter specifies the elements to apply this filter to. The 'instruction' parameter specifies exactly how to apply this filter. This filter works exactly like the 'coordinating_atoms_composition' filter, except that it applies to all atoms instead of only the coordinating atoms.
 
 
-elements :
-    List of chemical elements to apply this filter to. Depending on the instruction, duplicate elements in this list may or may not be ignored.
+    .. confval:: elements
 
-instruction :
-    Options: any of the words below
+        List of chemical elements to apply this filter to. Depending on the instruction, duplicate elements in this list may or may not be ignored.
 
-    Instruction for how to apply this filter. Note that instructions must be lowercase and exactly the correct string, so the best is to copy-paste it from the documentation. The following instructions are available:
+    .. confval:: instruction
 
-    - **must_contain_and_only_contain**
-        Ligands must consist of exactly these atoms in exactly this count. For example, if the 'elements' are '[C, C, H, N]', then a ligand must consist of exactly two Carbon, one Hydrogen and one Nitrogen atom to pass this filter.
-    - **must_at_least_contain**
-        Ligands must contain all specified elements but can also contain other elements. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, H, N]', then a ligand must contain at least one Carbon, one Hydrogen and one Nitrogen atom to pass this filter.
-    - **must_exclude**
-        Ligands must not contain any of the specified elements. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, H, N]', then a ligand must not contain any Carbon, Hydrogen or Nitrogen atoms to pass this filter.
-    - **must_only_contain_in_any_amount**
-        Ligands must only contain the specified elements, but the amount of each element is not important and can even be zero. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, H, N]', then any ligand that contains no other elements than Carbon, Hydrogen and Nitrogen will pass this filter, and even ligands containing subsets such as ligands containing only Carbon.
+        Options: any of the words below
 
-denticities :
-    A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+        Instruction for how to apply this filter. Note that instructions must be lowercase and exactly the correct string, so the best is to copy-paste it from the documentation. The following instructions are available:
 
-**Example** :    This example will keep only ligands with denticity 3 which consist of only Carbon, Hydrogen, Nitrogen and Phosphorus atoms or a subset of these elements. Ligands with denticities other than 3 will always pass.
+        - **must_contain_and_only_contain**
+            Ligands must consist of exactly these atoms in exactly this count. For example, if the 'elements' are '[C, C, H, N]', then a ligand must consist of exactly two Carbon, one Hydrogen and one Nitrogen atom to pass this filter.
+        - **must_at_least_contain**
+            Ligands must contain all specified elements but can also contain other elements. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, H, N]', then a ligand must contain at least one Carbon, one Hydrogen and one Nitrogen atom to pass this filter.
+        - **must_exclude**
+            Ligands must not contain any of the specified elements. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, H, N]', then a ligand must not contain any Carbon, Hydrogen or Nitrogen atoms to pass this filter.
+        - **must_only_contain_in_any_amount**
+            Ligands must only contain the specified elements, but the amount of each element is not important and can even be zero. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, H, N]', then any ligand that contains no other elements than Carbon, Hydrogen and Nitrogen will pass this filter, and even ligands containing subsets such as ligands containing only Carbon.
 
-.. code-block::
+    .. confval:: denticities
 
-    - filter: ligand_composition
-        elements: [C, H, N, P]
-        instruction: must_only_contain_in_any_amount
-        apply_to_denticities: [3]
+        A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+    **Example** :    This example will keep only ligands with denticity 3 which consist of only Carbon, Hydrogen, Nitrogen and Phosphorus atoms or a subset of these elements. Ligands with denticities other than 3 will always pass.
+
+    .. code-block::
+
+        - filter: ligand_composition
+            elements: [C, H, N, P]
+            instruction: must_only_contain_in_any_amount
+            apply_to_denticities: [3]
 
 .. _filter_coordinating_atoms_composition:
 
 coordinating_atoms_composition
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Filter ligands based on their coordinating atoms, i.e. the atoms bound to the metal center. The 'elements' parameter specifies the elements to apply this filter to. The 'instruction' parameter specifies exactly how to apply this filter. This filter works exactly like the 'ligand_composition' filter, except that it only applies to the coordinating atoms of the ligand.
+    Filter ligands based on their coordinating atoms, i.e. the atoms bound to the metal center. The 'elements' parameter specifies the elements to apply this filter to. The 'instruction' parameter specifies exactly how to apply this filter. This filter works exactly like the 'ligand_composition' filter, except that it only applies to the coordinating atoms of the ligand.
 
-elements :
-    List of chemical elements to apply this filter to. Depending on the instruction, duplicate elements in this list may or may not be ignored.
+    .. confval:: elements
 
-instruction :
-    Options: any of the words below
+        List of chemical elements to apply this filter to. Depending on the instruction, duplicate elements in this list may or may not be ignored.
 
-    Instruction for how to apply this filter. Note that instructions must be lowercase and exactly the correct string, so the best is to copy-paste it from the documentation. The following instructions are available:
+    .. confval:: instruction
 
-    - **must_contain_and_only_contain**
-        The ligand must have exactly these coordinating atoms in exactly this count. For example, if the 'elements' are '[C, C, N]', the ligand must have exactly two Carbon and one Nitrogen atom coordinating to the metal.
-    - **must_at_least_contain**
-        The coordinating atoms of the ligand must contain all specified elements but can also contain other elements. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, N]', then the list of coordinating atoms must contain at least one Carbon and one Nitrogen atom to pass this filter.
-    - **must_exclude**
-        The coordinating atoms of the ligand must not contain any of the specified elements. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, N]', then the list of coordinating atoms must not contain any Carbon or Nitrogen atoms to pass this filter.
-    - **must_only_contain_in_any_amount**
-        The coordinating atoms of the ligand must only contain the specified elements, but the amount of each element is not important and can even be zero. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, N]', then any ligand with coordinating atoms which contain no other elements than Carbon and Nitrogen will pass this filter, and even ligands containing subsets such as ligands containing only Carbon.
+        Options: any of the words below
 
-denticities :
-    A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+        Instruction for how to apply this filter. Note that instructions must be lowercase and exactly the correct string, so the best is to copy-paste it from the documentation. The following instructions are available:
 
-**Example** : This example will keep only ligands with denticity of 3 which have exactly one Carbon, one Nitrogen and one Oxygen coordinating to the metal center. Ligands with denticities other than 3 will be removed automatically, since these will always have more or less coordinating atoms.
+        - **must_contain_and_only_contain**
+            The ligand must have exactly these coordinating atoms in exactly this count. For example, if the 'elements' are '[C, C, N]', the ligand must have exactly two Carbon and one Nitrogen atom coordinating to the metal.
+        - **must_at_least_contain**
+            The coordinating atoms of the ligand must contain all specified elements but can also contain other elements. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, N]', then the list of coordinating atoms must contain at least one Carbon and one Nitrogen atom to pass this filter.
+        - **must_exclude**
+            The coordinating atoms of the ligand must not contain any of the specified elements. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, N]', then the list of coordinating atoms must not contain any Carbon or Nitrogen atoms to pass this filter.
+        - **must_only_contain_in_any_amount**
+            The coordinating atoms of the ligand must only contain the specified elements, but the amount of each element is not important and can even be zero. Duplicate elements are ignored. For example, if the 'elements' are '[C, C, N]', then any ligand with coordinating atoms which contain no other elements than Carbon and Nitrogen will pass this filter, and even ligands containing subsets such as ligands containing only Carbon.
 
-.. code-block::
+    .. confval:: denticities
 
-    - filter: coordinating_atoms_composition
-        elements: [C, N, O]
-        instruction: must_contain_and_only_contain
-        apply_to_denticities:
+        A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+    **Example** : This example will keep only ligands with denticity of 3 which have exactly one Carbon, one Nitrogen and one Oxygen coordinating to the metal center. Ligands with denticities other than 3 will be removed automatically, since these will always have more or less coordinating atoms.
+
+    .. code-block::
+
+        - filter: coordinating_atoms_composition
+            elements: [C, N, O]
+            instruction: must_contain_and_only_contain
+            apply_to_denticities:
 
 .. _filter_number_of_atoms:
 
 number_of_atoms
 ^^^^^^^^^^^^^^^
 
-Removes ligands with number of atoms outside of the specified range. The 'min' and 'max parameters specify the minimum and maximum number of atoms, respectively.
+    Removes ligands with number of atoms outside of the specified range. The 'min' and 'max parameters specify the minimum and maximum number of atoms, respectively.
 
 
-min :
-    Minimum number of atoms. If empty, will be set to 0.
+    .. confval:: min
 
-max :
-    Maximum number of atoms. If empty, will be set to infinity.
+        Minimum number of atoms. If empty, will be set to 0.
 
-denticities :
-    A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+    .. confval:: max
 
-**Example** : This example will remove all ligands with a denticity of 1 or 2 with less than 10 atoms or more than 100 atoms. Ligands with denticities other than 1 or 2 will always pass.
+        Maximum number of atoms. If empty, will be set to infinity.
 
-.. code-block::
+    .. confval:: denticities
 
-    - filter: number_of_atoms
-        min: 10
-        max: 100
-        apply_to_denticities: [1, 2]
+        A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+    **Example** : This example will remove all ligands with a denticity of 1 or 2 with less than 10 atoms or more than 100 atoms. Ligands with denticities other than 1 or 2 will always pass.
+
+    .. code-block::
+
+        - filter: number_of_atoms
+            min: 10
+            max: 100
+            apply_to_denticities: [1, 2]
 
 .. _filter_molecular_weight:
 
 molecular_weight
 ^^^^^^^^^^^^^^^^
 
-Only keeps ligands with molecular weight within the specified range. The 'min' and 'max' parameters specify the minimum and maximum molecular weight, respectively. For example, setting 'min' to 30 and 'max' to 300 will remove all ligands with molecular weight less than 30g/mol or more than 300g/mol.
+    Only keeps ligands with molecular weight within the specified range. The 'min' and 'max' parameters specify the minimum and maximum molecular weight, respectively. For example, setting 'min' to 30 and 'max' to 300 will remove all ligands with molecular weight less than 30g/mol or more than 300g/mol.
 
-min :
-    Minimum molecular weight in g/mol. If empty, will be set to 0.
+    .. confval:: min
 
-max :
-    Maximum molecular weight in g/mol. If empty, will be set to infinity.
+        Minimum molecular weight in g/mol. If empty, will be set to 0.
 
-denticities :
-    A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+    .. confval:: max
 
-**Example** : This example will keep only ligands with a molecular weight between 10g/mol and 300g/mol. Because the denticities list is empty, this filter will be applied to every ligand.
+        Maximum molecular weight in g/mol. If empty, will be set to infinity.
 
-.. code-block::
+    .. confval:: denticities
 
-    - filter: molecular_weight
-        min: 30
-        max: 300
-        apply_to_denticities:
+        A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+    **Example** : This example will keep only ligands with a molecular weight between 10g/mol and 300g/mol. Because the denticities list is empty, this filter will be applied to every ligand.
+
+    .. code-block::
+
+        - filter: molecular_weight
+            min: 30
+            max: 300
+            apply_to_denticities:
 
 .. _filter_metal_donor_bond_lengths:
 
 metal_donor_bond_lengths
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Only keeps ligands with metal-donor bond lengths within the specified range. All bond lengths between the metal and the donor atoms are considered. The 'min' and 'max' parameters specify the minimum and maximum allowed bond length for at least one bond.
+    Only keeps ligands with metal-donor bond lengths within the specified range. All bond lengths between the metal and the donor atoms are considered. The 'min' and 'max' parameters specify the minimum and maximum allowed bond length for at least one bond.
 
-min :
-    Minimum bond length in Angstrom. If empty, will be set to 0.
+    .. confval:: min
 
-max :
-    Maximum bond length in Angstrom. If empty, will be set to infinity.
+        Minimum bond length in Angstrom. If empty, will be set to 0.
 
-denticities :
-    A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+    .. confval:: max
 
-**Example** : For ligands with a denticity of 2 or 3, this example will only keep ligands which have a metal-donor bond length between 1.0 Angstrom and 2.5 Angstrom. Ligands with denticities other than 2 or 3 will always pass.
+        Maximum bond length in Angstrom. If empty, will be set to infinity.
 
-.. code-block::
+    .. confval:: denticities
 
-    - filter: metal_donor_bond_lengths
-        min: 1.0
-        max: 2.5
-        apply_to_denticities: [2, 3]
+        A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+    **Example** : For ligands with a denticity of 2 or 3, this example will only keep ligands which have a metal-donor bond length between 1.0 Angstrom and 2.5 Angstrom. Ligands with denticities other than 2 or 3 will always pass.
+
+    .. code-block::
+
+        - filter: metal_donor_bond_lengths
+            min: 1.0
+            max: 2.5
+            apply_to_denticities: [2, 3]
 
 .. _filter_interatomic_distances:
 
 interatomic_distances
 ^^^^^^^^^^^^^^^^^^^^^
 
-Only keeps ligands with interatomic distances within the specified range. The calculated interatomic distances are not only between atoms with a bond, but between all atoms in the ligand. The maximum interatomic distance is a measure for the total size of the ligand, while the minimum interatomic distance is a measure for the smallest bond length. Therefore, this filter is basically a 2-in-1 filter which can be used to remove either too big ligands or ligands with too small bond lengths.
+    Only keeps ligands with interatomic distances within the specified range. The calculated interatomic distances are not only between atoms with a bond, but between all atoms in the ligand. The maximum interatomic distance is a measure for the total size of the ligand, while the minimum interatomic distance is a measure for the smallest bond length. Therefore, this filter is basically a 2-in-1 filter which can be used to remove either too big ligands or ligands with too small bond lengths.
 
-min :
-    Minimum interatomic distance in Angstrom. If empty, will be set to 0.
+    .. confval:: min
 
-max :
-    Maximum interatomic distance in Angstrom. If empty, will be set to infinity.
+        Minimum interatomic distance in Angstrom. If empty, will be set to 0.
 
-denticities :
-    A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+    .. confval:: max
 
-**Example** : For ligands with a denticity of 3 or 4, this example will only keep ligands which have an interatomic distance between 0.5 Angstrom and 40 Angstrom. Ligands with denticities other than 3 or 4 will always pass.
+        Maximum interatomic distance in Angstrom. If empty, will be set to infinity.
 
-.. code-block::
+    .. confval:: denticities
 
-    - filter: interatomic_distances
-        min: 0.5
-        max: 40
-        apply_to_denticities: [3, 4]
+        A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+    **Example** : For ligands with a denticity of 3 or 4, this example will only keep ligands which have an interatomic distance between 0.5 Angstrom and 40 Angstrom. Ligands with denticities other than 3 or 4 will always pass.
+
+    .. code-block::
+
+        - filter: interatomic_distances
+            min: 0.5
+            max: 40
+            apply_to_denticities: [3, 4]
 
 .. _filter_planarity:
 
 planarity
 ^^^^^^^^^
 
-This filter uses a 'planarity score' to filter ligands based on how planar all their atoms are. Very planar ligands are ones in which all atoms lie in one plane, while very non-planar ligands are ones which are sphere-like. The planarity score is a number between 0 and 1, where 0 is not planar (a perfect sphere) and 1 is perfectly planar. Because this planarity score has no physical intuition behind it, it is recommended to try different values for the 'min' and 'max' parameters to see what works best for your application.
+    This filter uses a 'planarity score' to filter ligands based on how planar all their atoms are. Very planar ligands are ones in which all atoms lie in one plane, while very non-planar ligands are ones which are sphere-like. The planarity score is a number between 0 and 1, where 0 is not planar (a perfect sphere) and 1 is perfectly planar. Because this planarity score has no physical intuition behind it, it is recommended to try different values for the 'min' and 'max' parameters to see what works best for your application.
 
 
-min :
-    Minimum planarity score. If empty, will be set to 0.
+    .. confval:: min
 
-max :
-    Maximum planarity score. If empty, will be set to 1.
+        Minimum planarity score. If empty, will be set to 0.
 
-denticities :
-    A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+    .. confval:: max
 
-**Example** : This example will keep only ligands with a denticity of 1 which have a planarity score between 0.9 and 1.0, i.e. very planar ligands. Ligands with denticities other than 1 will always pass.
+        Maximum planarity score. If empty, will be set to 1.
 
-.. code-block::
+    .. confval:: denticities
 
-    - filter: planarity
-        min: 0.9
-        max: 1
-        apply_to_denticities: [1]
+        A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+    **Example** : This example will keep only ligands with a denticity of 1 which have a planarity score between 0.9 and 1.0, i.e. very planar ligands. Ligands with denticities other than 1 will always pass.
+
+    .. code-block::
+
+        - filter: planarity
+            min: 0.9
+            max: 1
+            apply_to_denticities: [1]
 
 .. _filter_occurrences:
 
 occurrences
 ^^^^^^^^^^^
 
-Filters ligands based on how often they were observed in the Cambridge Structural Database (CSD).
+    Filters ligands based on how often they were observed in the Cambridge Structural Database (CSD).
 
-min :
-    Minimum number of occurrences. If empty, will be set to 0.
+    .. confval:: min
 
-max :
-    Maximum number of occurrences. If empty, will be set to infinity.
+        Minimum number of occurrences. If empty, will be set to 0.
 
-denticities :
-    A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+    .. confval:: max
 
-**Example** : For ligands with denticities of 3 or 4, this example will keep only ligands which have been observed in the CSD at least 3 times. Ligands with denticities other than 3 or 4 will always pass.
+        Maximum number of occurrences. If empty, will be set to infinity.
 
-.. code-block::
+    .. confval:: denticities
 
-    - filter: occurrences
-        min: 3
-        max:
-        apply_to_denticities: [3, 4]
+        A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+    **Example** : For ligands with denticities of 3 or 4, this example will keep only ligands which have been observed in the CSD at least 3 times. Ligands with denticities other than 3 or 4 will always pass.
+
+    .. code-block::
+
+        - filter: occurrences
+            min: 3
+            max:
+            apply_to_denticities: [3, 4]
 
 
 .. _filter_metal_ligand_binding_history:
@@ -385,74 +411,79 @@ denticities :
 metal_ligand_binding_history
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Keep only ligands which have been observed in the Cambridge Structural Database to coordinate to the metals specified in the 'metal_ligand_binding_history' list. If a ligand has never been observed coordinating to any of the metals in the 'metal_ligand_binding_history' list, it will be filtered out.
+    Keep only ligands which have been observed in the Cambridge Structural Database to coordinate to the metals specified in the 'metal_ligand_binding_history' list. If a ligand has never been observed coordinating to any of the metals in the 'metal_ligand_binding_history' list, it will be filtered out.
 
-metal_ligand_binding_history :
-    List of metals, e.g. [Pd, Ni]. Any metal from the d- or f-block can be specified.
+    .. confval:: metal_ligand_binding_history
 
-denticities :
-    A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+        List of metals, e.g. [Pd, Ni]. Any metal from the d- or f-block can be specified.
 
-**Example** :   For ligands with denticity of 2 or 3, this example will keep only ligands which have been observed to coordinate to Pd or Ni. Ligands with denticities other than 2 or 3 will always pass.
+    .. confval:: denticities
 
-.. code-block::
+        A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
-    - filter: metal_ligand_binding_history
-        metal_ligand_binding_history: [Pd, Ni]
-        apply_to_denticities: [2, 3]
+    **Example** :   For ligands with denticity of 2 or 3, this example will keep only ligands which have been observed to coordinate to Pd or Ni. Ligands with denticities other than 2 or 3 will always pass.
+
+    .. code-block::
+
+        - filter: metal_ligand_binding_history
+            metal_ligand_binding_history: [Pd, Ni]
+            apply_to_denticities: [2, 3]
 
 .. _filter_remove_ligands_with_adjacent_coordinating_atoms:
 
 remove_ligands_with_adjacent_coordinating_atoms
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Removes ligands that have coordinating atoms with a bond between them, i.e. coordinating atoms which are neighbors. It is recommended to apply this filter, since it filters out ligands with haptic interactions, which are difficult to assemble and might not be stable.
+    Removes ligands that have coordinating atoms with a bond between them, i.e. coordinating atoms which are neighbors. It is recommended to apply this filter, since it filters out ligands with haptic interactions, which are difficult to assemble and might not be stable.
 
-remove_ligands_with_adjacent_coordinating_atoms :
-    If true, apply this filter. If false, will be ignored.
+    .. confval:: remove_ligands_with_adjacent_coordinating_atoms
 
-**Example** : This example will remove all ligands with neighboring coordinating atoms.
+        If true, apply this filter. If false, will be ignored.
 
-.. code-block::
+    **Example** : This example will remove all ligands with neighboring coordinating atoms.
 
-      - filter: remove_ligands_with_adjacent_coordinating_atoms
-            remove_ligands_with_adjacent_coordinating_atoms: true
+    .. code-block::
+
+          - filter: remove_ligands_with_adjacent_coordinating_atoms
+                remove_ligands_with_adjacent_coordinating_atoms: true
 
 .. _filter_remove_ligands_with_beta_hydrogens:
 
 remove_ligands_with_beta_hydrogens
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Removes ligands with beta Hydrogen atoms, i.e. Hydrogen atoms bound to coordinating atoms.
+    Removes ligands with beta Hydrogen atoms, i.e. Hydrogen atoms bound to coordinating atoms.
 
 
-remove_ligands_with_beta_hydrogens :
-    If true, apply this filter. If false, will be ignored.
+    .. confval:: remove_ligands_with_beta_hydrogens
 
-**Example** : This example will remove all ligands with beta Hydrogen atoms.
+        If true, apply this filter. If false, will be ignored.
 
-.. code-block::
+    **Example** : This example will remove all ligands with beta Hydrogen atoms.
 
-      - filter: remove_ligands_with_beta_hydrogens
-            remove_ligands_with_beta_hydrogens: true
+    .. code-block::
+
+          - filter: remove_ligands_with_beta_hydrogens
+                remove_ligands_with_beta_hydrogens: true
 
 .. _filter_graph_IDs:
 
 graph_IDs
 ^^^^^^^^^
 
-A filter to keep only the exactly specified ligands. Graph IDs are unique IDs for each ligand which can be taken from the ligand overview csv. This filter will remove all other ligands except for the ones specified.
-This filter allows users to select ligands by doing their Excel magic on a ligand_overview.csv file generated by ``dart dbinfo``, extract the ligand IDs and input them as list into the graph_IDs filter.
+    A filter to keep only the exactly specified ligands. Graph IDs are unique IDs for each ligand which can be taken from the ligand overview csv. This filter will remove all other ligands except for the ones specified.
+    This filter allows users to select ligands by doing their Excel magic on a ligand_overview.csv file generated by ``dart dbinfo``, extract the ligand IDs and input them as list into the graph_IDs filter.
 
-graph_IDs :
-    List of graph IDs to keep.
+    .. confval:: graph_IDs
 
-**Example** : This example will keep only the 2 ligands with the graph IDs `a2b7bbb6ca4ce36dc3147760335e7374` and `53b7a3d91a1be6e167a3975bb7921206`.
+        List of graph IDs to keep.
 
-.. code-block::
+    **Example** : This example will keep only the 2 ligands with the graph IDs `a2b7bbb6ca4ce36dc3147760335e7374` and `53b7a3d91a1be6e167a3975bb7921206`.
 
-    - filter: graph_IDs
-        graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]
+    .. code-block::
+
+        - filter: graph_IDs
+            graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]
 
 
 

@@ -32,9 +32,9 @@ def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
         assert Path(default_ligand_db_path).exists(), f"Could not find MetaLig database at {Path(default_ligand_db_path).resolve()}. Please download it from the DART github repository and place it there."
         print(f"Uncompressed MetaLig database to {Path(default_ligand_db_path).resolve()}.\n")
 
-    if delete_zip:
-        Path(zip_file).unlink()
-        print("Deleted MetaLig database zip file for optimizing disk space.")
+        if delete_zip:
+            Path(zip_file).unlink()
+            print("Deleted MetaLig database zip file for optimizing disk space.")
 
     return
 
