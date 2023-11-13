@@ -1058,7 +1058,6 @@
             }
         },
         "metal_oxi_state": 2,
-        "spin": 1,
         "metal": "Pd",
         "metal_idx": 0,
         "charge": 0.0,

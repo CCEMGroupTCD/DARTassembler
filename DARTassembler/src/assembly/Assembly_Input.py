@@ -39,8 +39,8 @@ _random_seed = 'random_seed'
 _total_charge = 'total_charge'
 _topology = 'topology'
 _metal = 'metal'
-_element = 'element'
-_oxidation_state = 'oxidation_state'
+_element = 'metal_center'
+_oxidation_state = 'metal_oxidation_state'
 _spin = 'spin'
 _complex_name_appendix = 'complex_name_appendix'
 _geometry_modifier_filepath = 'geometry_modifier_filepath'
@@ -354,11 +354,11 @@ class BaseInput(object):
                     self.raise_warning(message=f"Setting '{actual_key}' is not recognized and will be skipped.",
                                        varname=actual_key)
 
-                if actual_key == _metal:
-                    for metal_key in batch[_metal]:
-                        if not metal_key in valid_settings[_metal]:
-                            self.raise_warning(message=f"Setting '{metal_key}' is not recognized and will be skipped.",
-                                               varname=actual_key)
+                # if actual_key == _metal:
+                #     for metal_key in batch[_metal]:
+                #         if not metal_key in valid_settings[_metal]:
+                #             self.raise_warning(message=f"Setting '{metal_key}' is not recognized and will be skipped.",
+                #                                varname=actual_key)
 
         return
 
@@ -684,28 +684,30 @@ class AssemblyInput(BaseInput):
                         _input_path: [str, list, tuple, type(None)],
                         _max_num_complexes: [int, str],
                         _ligand_choice: [str],
+                        _element: [str],
+                        _oxidation_state: [int, str],
                         _isomers: [str],
                         _optimisation: [str, bool],
                         _random_seed: [int, str],
                         _total_charge: [int, str],
                         _topology: [str, list, tuple],
-                        _metal: [dict],
+                        # _metal: [dict],
                         _complex_name_appendix: [str,type(None)],
                         _geometry_modifier_filepath: [str, type(None)],
                         _bidentate_rotator: [str],
-                        _gaussian_path: [str, type(None)],
+                        # _gaussian_path: [str, type(None)],
                         # _ligand_filters_path: [str, Path, type(None)],
                         }
     # Metal settings in the batch settings
-    metal_valid_keys = {
-                        _element: [str],
-                        _oxidation_state: [int, str],
-                        _spin: [int, str],
-                        }
+    # metal_valid_keys = {
+    #                     _element: [str],
+    #                     _oxidation_state: [int, str],
+    #                     _spin: [int, str],
+    #                     }
     total_keys = deepcopy(valid_keys)
     total_keys.update({
         _batches: batches_valid_keys,
-        _metal: metal_valid_keys,
+        # _metal: metal_valid_keys,
         })
 
     def __init__(self, path: Union[str, Path] = 'assembly_input.yml'):
@@ -825,12 +827,12 @@ class AssemblyInput(BaseInput):
         Optimisation_Instruction = self.get_bool_from_input(batch_settings[_optimisation], varname=f'{_batches}->{_optimisation}')
         Random_Seed = self.get_int_from_input(batch_settings[_random_seed], varname=f'{_batches}->{_random_seed}')
         Total_Charge = self.get_int_from_input(batch_settings[_total_charge], varname=f'{_batches}->{_total_charge}')
-        metal_list = self.get_metal_from_input(batch_settings[_metal])
+        metal_list = self.get_metal_from_input(element=batch_settings[_element], oxidation_state=batch_settings[_oxidation_state])
         # topology_similarity, _ = self.get_topology_from_input(batch_settings[_topology])
         complex_name_appendix = batch_settings[_complex_name_appendix] or ''
         geometry_modifier_filepath = self.get_geometry_modifier_from_input(batch_settings[_geometry_modifier_filepath])
         bidentate_rotator = self.get_bidentate_rotator_from_input(batch_settings[_bidentate_rotator], varname=f'{_batches}->{_bidentate_rotator}')
-        gaussian_path = self.get_path_from_input(path=batch_settings[_gaussian_path], varname=f'{_batches}->{_gaussian_path}', allow_none=True)
+        # gaussian_path = self.get_path_from_input(path=batch_settings[_gaussian_path], varname=f'{_batches}->{_gaussian_path}', allow_none=True)
 
         if isinstance(Ligand_json, list):
             similarity = topology_similarity.split('--')[1].lstrip('[').rstrip(']').split(', ')
@@ -838,7 +840,7 @@ class AssemblyInput(BaseInput):
             if not len(Ligand_json) == n_diff_ligands:
                 self.raise_error(f"Input '{_input_path}' is a list of paths and must have the same length as the number of different ligands specified in the similarity list at the end of the topology. Yet, the topology {topology_similarity} specifies {n_diff_ligands} different ligands, but {len(Ligand_json)} paths were given.", varname=f'{_batches}->{_input_path}')
 
-        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator, ligand_choice, gaussian_path
+        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator, ligand_choice
 
     def get_bidentate_rotator_from_input(self, bidentate_rotator: str, varname: str):
         """
@@ -972,37 +974,29 @@ class AssemblyInput(BaseInput):
         output_topology = str(denticities)
         return output_topology, denticities
 
-    def get_metal_from_input(self, metal: dict):
+    def get_metal_from_input(self, element: str, oxidation_state: int) -> list:
         """
         Checks the metal input for correct input.
         """
-        varname = f'{_batches}->{_metal}'
-        for key, types in self.metal_valid_keys.items():
-            if key not in metal.keys():
-                self.raise_error(f"Key '{key}' is missing in '{_metal}'.", varname=varname)
-            self.check_correct_input_type(input=metal[key], types=types, varname=f'{varname}->{key}')
-
-        element, oxidation_state, spin = metal[_element], metal[_oxidation_state], metal[_spin]
-
         # Check the element
         if not is_chemical_element(element):
-            self.raise_error(f"Input element '{element}' is not a valid chemical element symbol, e.g. 'Fe' for iron.", varname=f'{varname}->{_element}')
+            self.raise_error(f"Input element '{element}' is not a valid chemical element symbol, e.g. 'Fe' for iron.", varname=_element)
         element = str(element)
 
         # Check the oxidation state
-        oxidation_state = self.get_int_from_input(oxidation_state, varname=f'{varname}->{_oxidation_state}')
+        oxidation_state = self.get_int_from_input(oxidation_state, varname=_oxidation_state)
         if oxidation_state > 0:
             oxidation_state = f"+{oxidation_state}"
         else:
-            self.raise_error(f"Input oxidation state '{oxidation_state}' is not a positive integer > 0.", varname=f'{varname}->{_oxidation_state}')
+            self.raise_error(f"Input oxidation state '{oxidation_state}' is not a positive integer > 0.", varname=_oxidation_state)
 
         # Check the spin
-        spin = self.get_int_from_input(spin, varname=f'{varname}->{_spin}')
-        if spin < 0:
-            self.raise_error(f"Input spin '{spin}' is not a positive integer >= 0.", varname=f'{varname}->{_spin}')
-        spin = str(spin)
+        # spin = self.get_int_from_input(spin, varname=_spin)
+        # if spin < 0:
+        #     self.raise_error(f"Input spin '{spin}' is not a positive integer >= 0.", varname=f'{varname}->{_spin}')
+        # spin = str(spin)
 
-        return [element, oxidation_state, spin]
+        return [element, oxidation_state]
 
     def get_isomers_from_input(self, isomers):
         """

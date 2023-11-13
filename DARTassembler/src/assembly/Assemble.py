@@ -75,17 +75,16 @@ class PlacementRotation:
             ligands: dict = None,
             metal: str = None,
             metal_ox_state: int = None,
-            metal_multiplicity: int = None,
             view_complex: bool = True,
             write_gaussian_input_files: bool = False,
-            output_directory: Union[str,Path,None] =None,
+            output_directory: Union[str,Path,None] = None,
             ):
 
         #todo: in order to check for duplicates we may need to append a list here
         for complex_ in list_of_complexes_wih_isomers:  # We loop through all the created isomers
             if (complex_ is not None) and (complex_ != (None, None)):
 
-                Assembled_complex = TMC.from_stkBB(compl=complex_, ligands=ligands, metal=metal,metal_idx=0, metal_charge=metal_ox_state, spin=metal_multiplicity)
+                Assembled_complex = TMC.from_stkBB(compl=complex_, ligands=ligands, metal=metal,metal_idx=0, metal_charge=metal_ox_state)
                 #
                 #
                 # 1.

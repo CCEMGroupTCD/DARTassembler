@@ -83,14 +83,13 @@ class DARTAssembly(object):
             self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction,\
             self.optimisation_instruction, self.random_seed, self.total_charge, metal_list, self.topology_similarity,\
             self.complex_name_appendix, self.geometry_modifier_filepath, bidentate_rotator, self.ligand_choice, \
-                                self.gaussian_path = self.settings.check_and_return_batch_settings(batch_settings)
+                                 = self.settings.check_and_return_batch_settings(batch_settings)
 
             self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
             self.batch_idx = idx
             self.batch_outcontrol = BatchAssemblyOutput(self.batch_output_path)
             self.metal_type = metal_list[0]
             self.metal_ox_state = metal_list[1]
-            self.metal_spin = metal_list[2]
             self.build_options = {'bidentate_rotator': bidentate_rotator}
             self.multiple_db = isinstance(self.ligand_json, list)
 
@@ -235,7 +234,6 @@ class DARTAssembly(object):
                             metal=self.metal_type,
                             metal_idx=0,
                             metal_charge=int(self.metal_ox_state),
-                            spin=self.metal_spin
                             )
                 if complex_is_good:  # New complex successfully built.
                     self.save_successfully_assembled_complex(tmc, ff_movie, metal_charge=int(self.metal_ox_state), ligands=ligands, note=note)
@@ -254,7 +252,6 @@ class DARTAssembly(object):
                                    ligands=ligands,
                                    metal=self.metal_type,
                                    metal_ox_state=int(self.metal_ox_state),
-                                   metal_multiplicity=self.metal_spin,
                                    view_complex=False,
                                    write_gaussian_input_files=False,
                                    output_directory=self.batch_output_path,
@@ -358,21 +355,6 @@ class DARTAssembly(object):
         complex_dir = Path(self.batch_outcontrol.complex_dir, complex_name)
         complex_outcontrol = ComplexAssemblyOutput(complex_dir)
 
-        if self.gaussian_path is not None:
-            complex_outcontrol.save_gaussian(Generate_Gaussian_input_file(xyz=xyz_string,
-                                                                          ligands=ligands,
-                                                                          complex_charge=complex_total_charge,
-                                                                          spin=self.metal_spin,
-                                                                          filename=complex_name,
-                                                                          path_to_Gaussian_input_file=self.gaussian_path,
-                                                                          metal_type=self.metal_type).Generate_Gaussian_com_without_NBO())
-
-            complex_outcontrol.save_submission_script(SumbitCalc(calc_name=complex_name,
-                                                                 queue="amd",
-                                                                 num_cores="32",
-                                                                 requested_time="72:00:00",
-                                                                 node_preference=[6, 7]).gen_submission_string())
-
         complex_idx = len(self.assembled_complex_names)
         complex_outcontrol.save_all_complex_data(
                                                 complex=complex,
@@ -449,7 +431,6 @@ class DARTAssembly(object):
             "batch name": self.batch_name,
             "metal": self.metal_type,
             "oxi state": self.metal_ox_state,
-            "spin": self.metal_spin,
             "topology": topology,
             "similarity": similarity,
             "total charge": self.total_charge,

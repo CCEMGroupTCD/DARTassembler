@@ -36,7 +36,6 @@ Preparing for Assembly
 
     output_path: DART_output              # Path to the output folder.
     overwrite_output: false               # Whether to overwrite the output if it already exists. Recommended: false.
-
     ffmovie: true                         # Whether to output a movie of the optimization process. Set to false to save disk space.
     concatenate_xyz: true                 # Whether to concatenate the xyz files of the optimization process.
     verbosity: 2                          # How much output to print. Options: (0, 1, 2, 3), recommended is 2.
@@ -48,15 +47,12 @@ Preparing for Assembly
         ligand_db_paths:                  # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
         ligand_choice: random             # How to choose the ligands. Options: random, all
         max_num_complexes: 100            # Maximum number of complexes to generate.
-        metal:
-          element: Pd                     # Chemical symbol of the desired metal center.
-          oxidation_state: 2              # Oxidation state of the desired metal center.
-          spin: 0                         # Spin of the desired metal center. Only needed for later DFT or xtb structure relaxations.
+        metal_center: Pd                  # Chemical symbol of the desired metal center.
+        metal_oxidation_state: 2          # Oxidation state of the desired metal center.
         total_charge: 0                   # Total charge of the complex.
         forcefield: true                  # Whether to optimize the structures after generation with a force field.
         isomers: lowest_energy            # Which isomers to generate. Options: lowest_energy, all
         bidentate_rotator: auto           # How to rotate the bidentate ligands. Options: horseshoe, slab, auto
-        gaussian_input_filepath:          # Path to the Gaussian config file. If not given, no Gaussian input files are generated.
         geometry_modifier_filepath:       # Path to the geometry modifier file. If not given, no geometry modification is performed.
         random_seed: 0                    # Random seed for the generation of the complexes.
         complex_name_appendix:            # String to append to the randomly generated complex name.

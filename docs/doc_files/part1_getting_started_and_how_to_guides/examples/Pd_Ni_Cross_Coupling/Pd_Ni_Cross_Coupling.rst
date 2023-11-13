@@ -155,17 +155,14 @@ The assembler module is configured by the file ``input/Pd_Ni_assembly_input.yml`
         ligand_choice: all
         geometry_modifier_filepath: input/Pd_phenyl_geometry_modification.xyz
         bidentate_rotator: slab
-        metal:
-          element: Pd
-          oxidation_state: 2
-          spin: 1
+        metal_center: Pd
+        metal_oxidation_state: 2
         name: P_N_Donors_Pd_Metal_Centre
         forcefield: false
         random_seed: 0
         topology: 2-1-1
         total_charge: 0
         complex_name_appendix: _PN_Pd
-        gaussian_input_filepath:
 
 
       - ligand_db_paths: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
@@ -174,17 +171,14 @@ The assembler module is configured by the file ``input/Pd_Ni_assembly_input.yml`
         ligand_choice: all
         geometry_modifier_filepath: input/Ni_phenyl_geometry_modification.xyz
         bidentate_rotator: slab
-        metal:
-          element: Ni
-          oxidation_state: 2
-          spin: 1
+        metal_center: Ni
+        metal_oxidation_state: 2
         name: P_N_Donors_Ni_Metal_Centre
         forcefield: false
         random_seed: 0
         topology: 2-1-1
         total_charge: 0
         complex_name_appendix: _PN_Ni
-        gaussian_input_filepath:
 
 
 At the beginning we define global preferences, such as enabling forcefield trajectories and XYZ file concatenation. Then, two batches are set up, with identical options apart from the metal center. Let us go through the important options:

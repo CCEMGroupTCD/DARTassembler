@@ -33,7 +33,6 @@ Copy-Paste Assembly Input File Template
 
     output_path: assembly/data_output     # Path to the output folder.
     overwrite_output: false               # Whether to overwrite the output if it already exists. Recommended: false.
-
     ffmovie: true                         # Whether to output a movie of the optimization process. Set to false to save disk space.
     concatenate_xyz: true                 # Whether to concatenate the xyz files of the optimization process.
     verbosity: 2                          # How much output to print. Options: (0, 1, 2, 3), recommended is 2.
@@ -42,37 +41,31 @@ Copy-Paste Assembly Input File Template
     batches:                              # List of batches to generate. The first option in each batch needs a hyphen ('-') in front of it to mark the start of the batch.
       - name: First_batch                 # Name of the batch. Note the hyphen in front of it to mark the start of the batch.
         topology: 2-1-1                   # Topology of the complexes. Options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
-        ligand_db_paths: [data/bidentate_ligands.jsonlines, data/monodentate_ligands.jsonlines, same_ligand_as_previous] # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
+        ligand_db_paths: [bidentate_ligands.jsonlines, monodentate_ligands.jsonlines, same_ligand_as_previous] # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
         ligand_choice: random             # How to choose the ligands. Options: random, all
         max_num_complexes: 100            # Maximum number of complexes to generate.
-        metal:
-          element: Fe                     # Chemical symbol of the desired metal center.
-          oxidation_state: 2              # Oxidation state of the desired metal center.
-          spin: 0                         # Spin of the desired metal center. Only needed for later DFT or xtb structure relaxations.
+        metal_center: Fe                  # Chemical symbol of the desired metal center.
+        metal_oxidation_state: 2          # Oxidation state of the desired metal center.
         total_charge: 0                   # Total charge of the complex.
         forcefield: true                  # Whether to optimize the structures after generation with a force field.
         isomers: lowest_energy            # Which isomers to generate. Options: lowest_energy, all
         bidentate_rotator: auto           # How to rotate the bidentate ligands. Options: horseshoe, slab, auto
-        gaussian_input_filepath: data/Gaussian_config.yml    # Path to the Gaussian config file. If not given, no Gaussian input files are generated.
         geometry_modifier_filepath:       # Path to the geometry modifier file. If not given, no geometry modification is performed.
         random_seed: 0                    # Random seed for the generation of the complexes.
         complex_name_appendix:            # String to append to the randomly generated complex name.
 
       - name: Second_batch                # Here comes the second batch, marked by the hyphen in front of the name.
         topology: 3-2-1                   # Topology for the second batch. Options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
-        ligand_db_paths: [data/tridentate_ligands.jsonlines, data/bidentate_ligands.jsonlines, data/monodentate_ligands.jsonlines] # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
+        ligand_db_paths: [tridentate_ligands.jsonlines, bidentate_ligands.jsonlines, monodentate_ligands.jsonlines] # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
         ligand_choice: all                # How to choose the ligands. Options: random, all
         max_num_complexes: 100            # Maximum number of complexes to generate.
-        metal:
-          element: Pd                     # Chemical symbol of the desired metal center.
-          oxidation_state: 3              # Oxidation state of the desired metal center.
-          spin: 1                         # Spin of the desired metal center. Only needed for later DFT or xtb structure relaxations.
+        metal_center: Pd                  # Chemical symbol of the desired metal center.
+        metal_oxidation_state: 3          # Oxidation state of the desired metal center.
         total_charge: 1                   # Total charge of the complex.
         forcefield: false                 # Whether to optimize the structures after generation with a force field.
         isomers: all                      # Which isomers to generate. Options: lowest_energy, all
         bidentate_rotator: horseshoe      # How to rotate the bidentate ligands. Options: horseshoe, slab, auto
-        gaussian_input_filepath: data/Gaussian_config.yml    # Path to the Gaussian config file. If empty, no Gaussian input files are generated.
-        geometry_modifier_filepath: data/geometry_modifier.xyz      # Path to the geometry modifier file. If empty, no geometry modification is performed.
+        geometry_modifier_filepath: geometry_modifier.xyz      # Path to the geometry modifier file. If empty, no geometry modification is performed.
         random_seed: 1                    # Random seed for the generation of the complexes.
         complex_name_appendix: _2nd_batch # String to append to the randomly generated complex name.
 
@@ -87,13 +80,13 @@ The following two options have to be specified at the beginning of each assembly
 
     Options: `dirpath`
 
-    Path in which the output will be saved.
+    Path to directory in which the output will be saved.
 
 .. confval:: overwrite_output
 
-    Options: true, false
+    Options: true, false (recommended: false)
 
-    Whether to overwrite the output if it already exists. Recommended: false.
+    Whether to overwrite the output if it already exists.
 
 .. confval:: ffmovie
 
@@ -109,13 +102,13 @@ The following two options have to be specified at the beginning of each assembly
 
 .. confval:: verbosity
 
-    Options: 0, 1, 2, 3
+    Options: 0, 1, 2, 3 (recommended: 2)
 
-    How much output to print. Recommended is 2.
+    How much output to print (except the progress bars, which are always printed). 0 means only errors, 1 means also warnings, 2 means also normal info, 3 means also debug info.
 
 .. confval:: complex_name_length
 
-    Options: `int > 0`
+    Options: `integer > 0`
 
     Length of the randomly generated complex name. Recommended: 8.
 
@@ -126,7 +119,7 @@ Batch options are specified in the assembly input file below the word 'batches:'
 
 .. confval:: name
 
-    Options: `str`
+    Options: `string`
 
     Use this to name your batches for easier identification.
 
@@ -156,7 +149,7 @@ Batch options are specified in the assembly input file below the word 'batches:'
 
 .. confval:: max_num_complexes
 
-    Options: `int > 0`
+    Options: `integer > 0`
 
     Maximum number of complexes to generate.
 
@@ -164,27 +157,21 @@ Batch options are specified in the assembly input file below the word 'batches:'
 
     If 'ligand_choice' is set to 'all', 'max_num_complexes' will still be used to limit the number of complexes generated. To stop only after every possible complex is generated, set 'max_num_complexes' to a very large number.
 
-.. confval:: metal -> element
+.. confval:: metal_center
 
     Options: `chemical symbol`
 
-    Chemical symbol of the desired metal center, e.g. `Pd`.
+    Chemical symbol of the desired metal center, e.g. `Pd` or `Fe`.
 
-.. confval:: metal -> oxidation_state
+.. confval:: metal_oxidation_state
 
-    Options: `int > 0`
+    Options: `integer > 0`
 
     Oxidation state of the desired metal center, e.g. `3`.
 
-.. confval:: metal -> spin
-
-    Options: `int ≥ 0`
-
-    Spin of the desired metal center. Only needed for later DFT or xtb structure relaxations, not for the initial structure generation.
-
 .. confval:: total_charge
 
-    Options: `int`
+    Options: `integer`
 
     Total charge of the complex. Can be positive, negative or zero.
 
@@ -208,12 +195,6 @@ Batch options are specified in the assembly input file below the word 'batches:'
 
     This option can severely affect the quality of generated complexes and how many make it through the post-assembly filter. For serious applications we recommend to set 'max_num_complexes' to 200, try all three options and check how many complexes fail the post-assembly filter for each option (this info is returned at the end of the assembly if 'verbosity' >= 2). Whichever option has the least complexes failing the post-assembly filter gives the highest quality complexes.
 
-.. confval:: gaussian_input_filepath
-
-    Options: `filepath`
-
-    Path to the Gaussian config file. If not given, no Gaussian input files are generated.
-
 .. confval:: geometry_modifier_filepath
 
     Options: `filepath`
@@ -226,13 +207,13 @@ Batch options are specified in the assembly input file below the word 'batches:'
 
 .. confval:: random_seed
 
-    Options: `int`
+    Options: `integer`
 
     A seed for any random number generator in the assembly process to make the generation of complexes exactly reproducible for each individual batch.
 
 .. confval:: complex_name_appendix
 
-    Options: `str`
+    Options: `string`
 
     Characters to append to the randomly generated complex name. Useful for example to distinguish different batches of complexes.
 

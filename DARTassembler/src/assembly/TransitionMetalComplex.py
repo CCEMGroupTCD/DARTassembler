@@ -40,7 +40,6 @@ class TransitionMetalComplex(object):
                  metal_idx: int,
                  charge: int,
                  ligand_props: dict,
-                 spin: int = None
                  ):
         """
         :param atomic_props: dict
@@ -49,7 +48,6 @@ class TransitionMetalComplex(object):
         :param metal_idx: int
         :param charge: int
         :param ligand_props: dict
-        :param spin: int
         """
         self.atomic_props = atomic_props
         self.graph = graph
@@ -57,7 +55,6 @@ class TransitionMetalComplex(object):
         self.metal_oxi_state = metal_oxi_state
         self.metal_idx = metal_idx
         self.charge = charge
-        self.spin = spin
 
         self.metal = self.atomic_props["atoms"][self.metal_idx]
         self.metal_position = [self.atomic_props['x'][self.metal_idx], self.atomic_props['y'][self.metal_idx], self.atomic_props['z'][self.metal_idx]]
@@ -212,7 +209,6 @@ class TransitionMetalComplex(object):
 
         complex_properties['ligand_props'] = props['ligand_props']
         complex_properties['metal_oxi_state'] = props['metal_oxi_state']
-        complex_properties['spin'] = int(props['spin'])
         complex_properties['metal'] = props['metal']
         complex_properties['metal_idx'] = props['metal_idx']
         complex_properties['charge'] = props['charge']
@@ -234,13 +230,11 @@ class TransitionMetalComplex(object):
                  metal_charge: int = 2,
                  metal: str = "Fe",
                  metal_idx: int = 0,
-                 spin: int = 0
                  ):
         """
         :param compl: stk.ConstructedMolecule
         :param ligands: dict[RCA_Ligand]
         :param metal: str
-        :param spin: int
         :param metal_charge: int
         """
         atomic_props = cls.stk_Constructed_Mol_to_atomic_props(compl)
@@ -275,7 +269,6 @@ class TransitionMetalComplex(object):
             metal_oxi_state=metal_charge,
             metal_idx=metal_idx,
             charge=charge,
-            spin=spin
         )
 
         return complex
@@ -346,7 +339,6 @@ class TransitionMetalComplex(object):
         assert len(metal_idx) == 1, f"Expected 1 metal centre, found {len(metal_idx)}."
         metal_idx = metal_idx[0]
 
-        spin = int(comp['spin'])
 
         return dict(
                 atomic_props=comp['atomic_props'],
@@ -355,7 +347,6 @@ class TransitionMetalComplex(object):
                 metal_idx=metal_idx,
                 charge=comp['charge'],
                 ligand_props=comp['ligand_props'],
-                spin=spin,
                 )
 
     @staticmethod
@@ -368,7 +359,6 @@ class TransitionMetalComplex(object):
 
         comp = properties['complex']
         mol = comp['mol']
-        spin = int([prop for prop in comp['ligand_props'].values()][0]['Metal Spin:'])  # get spin from ligand props
         charge = comp['total_charge']
         metal_idx = [idx for idx, el in enumerate(mol['atomic_props']['atoms']) if el in ['Pd', 'Ni']][0]
         metal_os = 2  # hard coded because this is only for the old example run where this always was 2 for both Pd and Ni
@@ -382,7 +372,6 @@ class TransitionMetalComplex(object):
             metal_idx=metal_idx,
             charge=charge,
             ligand_props=ligand_props,
-            spin=spin,
             )
 
 
