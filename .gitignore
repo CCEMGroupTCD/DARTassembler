@@ -24,7 +24,7 @@
 /examples/Pd_Ni_Cross_Coupling/dev/output/**
 /examples/Pd_Ni_Cross_Coupling/dev/xtb_calculations/data/**
 
-/docs/_build
+#/docs/_build
 
 /src04_Assembly/Z-test.py
 /src04_Assembly/test12.py

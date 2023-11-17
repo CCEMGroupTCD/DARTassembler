@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation Guide &mdash; DART  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Quickstart Guide" href="examples/simple_octahedral_assembly/simple_octahedral_assembly.html" />
+    <link rel="prev" title="DART: Directed Assembly of Random Transition Metal Complexes" href="../../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            DART
+              <img src="../../_static/DART_pic.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">How to Use DART</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#easy-installation-coming-soon">Easy Installation (Coming Soon)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-installation">Manual Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-open-terminal-and-navigate-to-installation-directory">Step 1: Open Terminal and Navigate to Installation Directory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-install-conda">Step 2: Install Conda</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-download-dart-from-github">Step 3: Download DART from GitHub</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-4-navigate-to-the-dart-directory">Step 4: Navigate to the DART Directory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-5-install-dart-into-a-conda-environment">Step 5: Install DART into a Conda Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-6-ensure-that-dart-is-installed-correctly">Step 6: Ensure that DART is Installed Correctly</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/simple_octahedral_assembly/simple_octahedral_assembly.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="understanding_the_dart_workflow.html">Understanding the DART Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials_and_examples.html">Tutorials And Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_dart_modules_documentation/module_overview.html">Module Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2_dart_modules_documentation/metalig/metalig_database.html">MetaLig Ligand Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2_dart_modules_documentation/ligand_filters/ligand_filters.html">Ligand Filter Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2_dart_modules_documentation/assembler/assembler.html">Assembler Module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part3_additional_resources/troubleshooting_and_faqs.html">Troubleshooting And FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3_additional_resources/how_to_cite_dart.html">How To Cite DART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3_additional_resources/version_history.html">Version History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3_additional_resources/contributing_to_dart.html">Contributing to DART</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DART</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/doc_files/part1_getting_started_and_how_to_guides/installation_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation-guide">
+<span id="id1"></span><h1>Installation Guide<a class="headerlink" href="#installation-guide" title="Permalink to this headline"></a></h1>
+<p>DART requires about 400MB of space, mostly due to the MetaLig database. The installation process should take about 5-10 minutes.</p>
+<section id="easy-installation-coming-soon">
+<h2>Easy Installation (Coming Soon)<a class="headerlink" href="#easy-installation-coming-soon" title="Permalink to this headline"></a></h2>
+<p>We are in the process of making DART available as a Python package on conda-forge for quick and easy installation. Stay tuned for updates!</p>
+</section>
+<section id="manual-installation">
+<h2>Manual Installation<a class="headerlink" href="#manual-installation" title="Permalink to this headline"></a></h2>
+<p>For now, you can install DART manually by downloading the code from GitHub and setting it up as a local Python package. Below are simple step-by-step instructions to guide you through this process.</p>
+<section id="step-1-open-terminal-and-navigate-to-installation-directory">
+<h3>Step 1: Open Terminal and Navigate to Installation Directory<a class="headerlink" href="#step-1-open-terminal-and-navigate-to-installation-directory" title="Permalink to this headline"></a></h3>
+<p>First, open your terminal application:</p>
+<ul class="simple">
+<li><p>On Windows, search for Command Prompt or PowerShell in the Start menu.</p></li>
+<li><p>On macOS, open the Applications folder, then Utilities, and double-click on Terminal.</p></li>
+<li><p>On Linux, you can usually find the Terminal in your applications menu or you can use a keyboard shortcut like Ctrl+Alt+T.</p></li>
+</ul>
+<p>Next, navigate to the directory where you want to install DART. Your home directory is a good choice if you don’t have a specific location in mind. To navigate to the home directory use the command <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">$HOME</span></code> on Linux and macOS, or <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">%USERPROFILE%</span></code> on Windows.</p>
+</section>
+<section id="step-2-install-conda">
+<h3>Step 2: Install Conda<a class="headerlink" href="#step-2-install-conda" title="Permalink to this headline"></a></h3>
+<p>Conda is an environment and package manager that simplifies Python installations. If you don’t have it already, you can install Conda by following the instructions on the <a class="reference external" href="https://conda.io/projects/conda/en/latest/user-guide/install/index.html">official Conda installation guide</a>. Choose the Miniconda version appropriate for your operating system (Windows, Mac, or Linux). During the installation, you will be asked if you want to add Conda to your PATH variable. Make sure to select ‘yes’ to this option.</p>
+<dl class="simple">
+<dt><strong>Ensure that Conda is installed correctly:</strong></dt><dd><p>Run <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">--version</span></code> to confirm that Conda is installed and working correctly. If this outputs the version number, conda is installed.</p>
+</dd>
+</dl>
+</section>
+<section id="step-3-download-dart-from-github">
+<h3>Step 3: Download DART from GitHub<a class="headerlink" href="#step-3-download-dart-from-github" title="Permalink to this headline"></a></h3>
+<p>Try to download DART into the current folder using git:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/CCEMGroupTCD/DART.git
+</pre></div>
+</div>
+<dl class="simple">
+<dt>If this gives an error message that git is not installed:</dt><dd><p>You can download DART directly from the GitHub website. Visit the <a class="reference external" href="https://github.com/CCEMGroupTCD/DART">DART repository</a> in your web browser and download the code as a ZIP file by clicking on the big green button that says <code class="docutils literal notranslate"><span class="pre">&lt;&gt;</span> <span class="pre">Code</span></code> and then <code class="docutils literal notranslate"><span class="pre">Download</span> <span class="pre">ZIP</span></code>. Unzip the file into your current directory.</p>
+</dd>
+</dl>
+</section>
+<section id="step-4-navigate-to-the-dart-directory">
+<h3>Step 4: Navigate to the DART Directory<a class="headerlink" href="#step-4-navigate-to-the-dart-directory" title="Permalink to this headline"></a></h3>
+<p>Now, change to the DART directory with this command:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> DART
+</pre></div>
+</div>
+<p>If the command fails, it could be due to an unsuccessful download or DART being in a different directory. Please verify the download location and repeat step 3 if necessary.</p>
+</section>
+<section id="step-5-install-dart-into-a-conda-environment">
+<h3>Step 5: Install DART into a Conda Environment<a class="headerlink" href="#step-5-install-dart-into-a-conda-environment" title="Permalink to this headline"></a></h3>
+<ul>
+<li><dl>
+<dt><strong>For inexperienced Conda users:</strong></dt><dd><p>Install DART in the base environment of Conda for simplicity. Run the following command:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda env update --name base --file DART_env.yml
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><strong>For experienced Conda users:</strong></dt><dd><p>If you wish to create a new conda environment for DART, run this command and replace <cite>YOUR_ENV</cite> with your desired environment name:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>conda env create --name YOUR_ENV --file DART_env.yml
+</pre></div>
+</div>
+<p>Activate the environment with <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">activate</span> <span class="pre">YOUR_ENV</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Be aware that the Conda environment will link to the absolute path where you’ve downloaded DART. Avoid moving the DART folder after installation, as this would require reinstalling the environment.</p>
+</div>
+</section>
+<section id="step-6-ensure-that-dart-is-installed-correctly">
+<h3>Step 6: Ensure that DART is Installed Correctly<a class="headerlink" href="#step-6-ensure-that-dart-is-installed-correctly" title="Permalink to this headline"></a></h3>
+<p>Run the following command to verify the installation:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>dart --help
+</pre></div>
+</div>
+<p>If this command is successful, it will display a list of available DART commands. If not, please refer to the <a class="reference internal" href="../part3_additional_resources/troubleshooting_and_faqs.html#troubleshooting"><span class="std std-ref">troubleshooting section</span></a> for further assistance.</p>
+</section>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h2>
+<p>After installation, DART is ready for use. Here are some basic terminal commands for interaction:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">dart</span> <span class="pre">--help</span></code>: Displays available commands.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dart</span> <span class="pre">assembly</span> <span class="pre">--path</span> <span class="pre">assembly_input.yml</span></code>: Starts the <a class="reference internal" href="../part2_dart_modules_documentation/assembler/assembler.html#assembly-input"><span class="std std-ref">assembler module</span></a> with the specified configuration file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dart</span> <span class="pre">ligandfilters</span> <span class="pre">--path</span> <span class="pre">ligandfilters_input.yml</span></code>: Runs the <a class="reference internal" href="../part2_dart_modules_documentation/ligand_filters/ligand_filters.html#ligandfilters"><span class="std std-ref">ligand filters module</span></a> with the specified configuration file.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dart</span> <span class="pre">dbinfo</span> <span class="pre">--path</span> <span class="pre">ligand_db.jsonlines</span></code>: Generates an overview table of the specified ligand database file and saves it as a CSV file. Use the command <code class="docutils literal notranslate"><span class="pre">dart</span> <span class="pre">dbinfo</span> <span class="pre">--path</span> <span class="pre">metalig</span></code> to generate a table for the entire MetaLig database.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../../index.html" class="btn btn-neutral float-left" title="DART: Directed Assembly of Random Transition Metal Complexes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples/simple_octahedral_assembly/simple_octahedral_assembly.html" class="btn btn-neutral float-right" title="Quickstart Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Timo Sommer, Cian Clarke.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
