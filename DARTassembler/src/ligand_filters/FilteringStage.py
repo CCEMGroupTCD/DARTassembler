@@ -250,10 +250,10 @@ class FilterStage:
 
             value = get_value_from_ligand(ligand)
             try:
-                if not (min <= value < max):    # todo: include right boundary
+                if not (min <= value <= max):    # todo: include right boundary
                     to_delete.append(unq_name)
             except TypeError:
-                if not all(min <= v < max for v in value): # todo: include right boundary
+                if not all(min <= v <= max for v in value): # todo: include right boundary
                     to_delete.append(unq_name)
 
         for unq_name in to_delete:

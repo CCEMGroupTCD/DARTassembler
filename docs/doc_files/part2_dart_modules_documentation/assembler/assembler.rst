@@ -12,6 +12,12 @@ Assembler Input
 
 The DART Assembler Module is designed for generating complexes from a predefined ligand database. It operates by either randomly or systematically selecting ligands and assembling them into a transition metal complex geometry.
 
+The assembler module is run from the command line by providing a single configuration file:
+
+.. code-block::
+
+    dart assembler --path assembler_input.yml
+
 **Assembler Input File:**
 
     The input for the assembler module is structured as a YAML file, consisting of:

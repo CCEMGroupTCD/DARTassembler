@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ligand Filter Module &mdash; DART  documentation</title>
+  <title>Ligand Filters Module &mdash; DART  documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -53,7 +53,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../module_overview.html">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../metalig/metalig_database.html">MetaLig Ligand Database</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Ligand Filter Module</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Ligand Filters Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#input-file">Input File</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#input-output-options">Input/Output Options</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#filters">Filters</a></li>
@@ -85,7 +85,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Ligand Filter Module</li>
+      <li class="breadcrumb-item active">Ligand Filters Module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/doc_files/part2_dart_modules_documentation/ligand_filters/ligand_filters.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -95,10 +95,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ligand-filter-module">
-<span id="ligandfilters"></span><h1>Ligand Filter Module<a class="headerlink" href="#ligand-filter-module" title="Permalink to this headline"></a></h1>
-<p>The Ligand Filter module streamlines the selection of ligands from the extensive <a class="reference internal" href="../metalig/metalig_database.html#metalig"><span class="std std-ref">MetaLig Database</span></a>, which boasts 41,018 entries. This tool is invaluable for assembling complexes targeted to a certain chemical space.</p>
+  <section id="ligand-filters-module">
+<span id="ligandfilters"></span><h1>Ligand Filters Module<a class="headerlink" href="#ligand-filters-module" title="Permalink to this headline"></a></h1>
+<p>The Ligand Filters module streamlines the selection of ligands from the extensive <a class="reference internal" href="../metalig/metalig_database.html#metalig"><span class="std std-ref">MetaLig Database</span></a>, which boasts 41,018 entries. This tool is invaluable for assembling complexes targeted to a certain chemical space.</p>
 <p>Users can apply a range of predefined filters via an input file to refine the ligand pool. The module supports both the entire MetaLig database and user-supplied subsets. For those requiring precise control, the <a class="reference internal" href="#confval-graph_IDs"><code class="xref std std-confval docutils literal notranslate"><span class="pre">graph_IDs</span></code></a> filter enables selection based on specific ligand IDs.</p>
+<p>The ligand filters module is run from the command line by providing a single configuration file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dart</span> <span class="n">ligandfilters</span> <span class="o">--</span><span class="n">path</span> <span class="n">ligandfilters_input</span><span class="o">.</span><span class="n">yml</span>
+</pre></div>
+</div>
 <p><strong>Currently implemented filters :</strong></p>
 <ul class="simple">
 <li><p>denticities</p></li>

@@ -95,6 +95,6 @@ Usage
 After installation, DART is ready for use. Here are some basic terminal commands for interaction:
 
 - ``dart --help``: Displays available commands.
-- ``dart assembly --path assembly_input.yml``: Starts the :ref:`assembler module <assembly_input>` with the specified configuration file.
+- ``dart assembler --path assembly_input.yml``: Starts the :ref:`assembler module <assembly_input>` with the specified configuration file.
 - ``dart ligandfilters --path ligandfilters_input.yml``: Runs the :ref:`ligand filters module <ligandfilters>` with the specified configuration file.
 - ``dart dbinfo --path ligand_db.jsonlines``: Generates an overview table of the specified ligand database file and saves it as a CSV file. Use the command ``dart dbinfo --path metalig`` to generate a table for the entire MetaLig database.

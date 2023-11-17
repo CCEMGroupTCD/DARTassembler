@@ -8,7 +8,7 @@ DART implements a list of commands for the terminal which you can use to interac
 ``dart --help`` :
     Displays a list of available commands. Useful to check if DART is available.
 
-``dart assembly --path assembler_input.yml`` :
+``dart assembler --path assembler_input.yml`` :
     Initiates the :ref:`assembler module <assembly_input>` using the specified configuration file which is named `assembler_input.yml` here. This will run the assembler and save the output to the directory specified in the configuration file.
 
 ``dart ligandfilters --path ligandfilters_input.yml`` :

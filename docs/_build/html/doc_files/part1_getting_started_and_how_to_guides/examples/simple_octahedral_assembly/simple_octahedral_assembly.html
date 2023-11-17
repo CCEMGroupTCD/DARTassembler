@@ -164,7 +164,7 @@
 <section id="targeting-chemical-space">
 <h2>Targeting Chemical Space<a class="headerlink" href="#targeting-chemical-space" title="Permalink to this headline"></a></h2>
 <p>To achieve complexes with more realistic and stable chemistry targeted to your own field of research, it is essential to filter the ligands used for the assembler. The ligand filter module makes this easy:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dart ligandfilter --path ligandfilter_input.yml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dart ligandfilters --path ligandfilter_input.yml
 </pre></div>
 </div>
 <p>The file ligandfilter_input.yml contains all the filter options that we want to set. For example, let’s generate complexes in which the monodentate is neutral and only composed of C, H and N. Both the bidentate and the tridentate should be composed only of C, H, N, O, P and S. The bidentate should exclusively be an N-N donor. Additionally, we want to keep the ligands relatively small and set an upper limit of 30 atoms per ligand. Finally, we restrict our ligands to those that have been observed coordinating to either Ni, Pd or Pt in the Cambridge Structural Database. This is helpful to increase the likelihood that our Pd complexes will be stable, since the ligands have precedent coordinating to a group 10 transition metal. Helpfully, the MetaLig database contains a lot of this extrinsic information.</p>
@@ -214,7 +214,7 @@
     <span class="n">denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>After running the above command, the MetaLig database will be filtered down to 1,423 ligands that meet the above criteria, including 415 monodentates, 558 bidentates and 450 tridentates.</p>
+<p>After running the above command, the MetaLig database will be filtered down to 1,561 ligands that meet the above criteria, including 427 monodentates, 615 bidentates and 519 tridentates.</p>
 <p><strong>Inspecting the ligand database with ‘dbinfo’:</strong></p>
 <p>To view the filtered ligands in a table format, execute this command:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>dart dbinfo --path filtered_ligand_db.json
@@ -236,7 +236,7 @@
 <figure class="align-center" id="id2">
 <a class="reference internal image-reference" href="../../../../_images/quickstart_figure2.png"><img alt="../../../../_images/quickstart_figure2.png" src="../../../../_images/quickstart_figure2.png" style="width: 100%;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 2: (left) a histogram of the elements in the 300 complexes generated with the above input file. The chemistry is now confined to the six organic elements we specified. (right) 2 examples of the complexes generated with the above input file for targeted complexes. Note the N-N bidentate ligand and the neutral monodentate ligand.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-text">Figure 2: (left) a histogram of the elements in the 300 complexes generated with the above input file. The chemistry is now confined to the six organic elements we specified. (right) 2 examples of the complexes generated with the above input file for targeted complexes. Note the N-N bidentate ligand and the neutral monodentate ligand. (The shown complexes might be different if DART has been updated since this guide was written.)</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 </section>

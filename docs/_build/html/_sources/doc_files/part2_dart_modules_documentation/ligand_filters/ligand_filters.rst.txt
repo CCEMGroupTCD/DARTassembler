@@ -1,11 +1,17 @@
 .. _ligandfilters:
 
-Ligand Filter Module
-====================
+Ligand Filters Module
+========================
 
-The Ligand Filter module streamlines the selection of ligands from the extensive :ref:`MetaLig Database <metalig>`, which boasts 41,018 entries. This tool is invaluable for assembling complexes targeted to a certain chemical space.
+The Ligand Filters module streamlines the selection of ligands from the extensive :ref:`MetaLig Database <metalig>`, which boasts 41,018 entries. This tool is invaluable for assembling complexes targeted to a certain chemical space.
 
 Users can apply a range of predefined filters via an input file to refine the ligand pool. The module supports both the entire MetaLig database and user-supplied subsets. For those requiring precise control, the :confval:`graph_IDs` filter enables selection based on specific ligand IDs.
+
+The ligand filters module is run from the command line by providing a single configuration file:
+
+.. code-block::
+
+    dart ligandfilters --path ligandfilters_input.yml
 
 **Currently implemented filters :**
 

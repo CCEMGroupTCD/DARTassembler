@@ -7,7 +7,7 @@ def main():
     desc = f"""DART command-line interface for assembling novel transition metal complexes from a database of ligands. Available modules: {", ".join(modules)}.
 Usage: dart <module> --path <path>
 Examples: 
-    -> dart assembly --path assembly_input.yml
+    -> dart assembler --path assembly_input.yml
     -> dart ligandfilters --path ligandfilters_input.yml
     -> dart dbinfo --path ligand_db.jsonlines
 """

@@ -3,17 +3,11 @@ TODO:
 Must:
 - paths:
     - check default paths in Paths.py
-- work on example
-- work on documentation
 - assembly:
     - fix that hydrides can't be assembled
     - double check the ligand planarity filtering, it is very slow and I'm not sure if it's correct
-    - rename Predicted Charge to Formal Charge in ligand csv and remove PredChargeConfident. Also add num atoms
 - ligand filtering:
     - fix the min/max problem with the number of atoms where sometimes the max is not in the interval boundaries
-- ligand csv:
-    - add that if not specified, takes whole ligand db
-    - add all properties listed in paper for filters
 - add gaussian files module and add it to Pd/Ni example in docs
 
 

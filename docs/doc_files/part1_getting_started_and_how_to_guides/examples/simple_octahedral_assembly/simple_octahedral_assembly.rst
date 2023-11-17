@@ -81,7 +81,7 @@ To achieve complexes with more realistic and stable chemistry targeted to your o
 
 .. code-block:: bash
 
-    dart ligandfilter --path ligandfilter_input.yml
+    dart ligandfilters --path ligandfilter_input.yml
 
 The file ligandfilter_input.yml contains all the filter options that we want to set. For example, let's generate complexes in which the monodentate is neutral and only composed of C, H and N. Both the bidentate and the tridentate should be composed only of C, H, N, O, P and S. The bidentate should exclusively be an N-N donor. Additionally, we want to keep the ligands relatively small and set an upper limit of 30 atoms per ligand. Finally, we restrict our ligands to those that have been observed coordinating to either Ni, Pd or Pt in the Cambridge Structural Database. This is helpful to increase the likelihood that our Pd complexes will be stable, since the ligands have precedent coordinating to a group 10 transition metal. Helpfully, the MetaLig database contains a lot of this extrinsic information.
 
@@ -134,7 +134,7 @@ The input file for these filters looks like this:
         denticities: [1, 2, 3]
 
 
-After running the above command, the MetaLig database will be filtered down to 1,423 ligands that meet the above criteria, including 415 monodentates, 558 bidentates and 450 tridentates.
+After running the above command, the MetaLig database will be filtered down to 1,561 ligands that meet the above criteria, including 427 monodentates, 615 bidentates and 519 tridentates.
 
 **Inspecting the ligand database with 'dbinfo':**
 
@@ -166,7 +166,7 @@ The assembler will now draw from the 1,423 ligands that have been filtered to ma
    :width: 100%
    :align: center
 
-   Figure 2: (left) a histogram of the elements in the 300 complexes generated with the above input file. The chemistry is now confined to the six organic elements we specified. (right) 2 examples of the complexes generated with the above input file for targeted complexes. Note the N-N bidentate ligand and the neutral monodentate ligand.
+   Figure 2: (left) a histogram of the elements in the 300 complexes generated with the above input file. The chemistry is now confined to the six organic elements we specified. (right) 2 examples of the complexes generated with the above input file for targeted complexes. Note the N-N bidentate ligand and the neutral monodentate ligand. (The shown complexes might be different if DART has been updated since this guide was written.)
 
 Understanding the Output of the Assembler Module
 ------------------------------------------------
