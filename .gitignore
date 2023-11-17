@@ -10,6 +10,7 @@
 !/data/final_db_versions/
 /data/final_db_versions/**
 !/data/final_db_versions/MetaLigDB_v1.0.0.jsonlines.zip
+!/data/final_db_versions/MetaLigDB_v1.0.0.csv
 
 /database/**
 /tmp/**

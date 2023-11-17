@@ -3,13 +3,6 @@ TODO:
 Must:
 - paths:
     - check default paths in Paths.py
-- assembly:
-    - fix that hydrides can't be assembled
-    - double check the ligand planarity filtering, it is very slow and I'm not sure if it's correct
-- ligand filtering:
-    - fix the min/max problem with the number of atoms where sometimes the max is not in the interval boundaries
-- add gaussian files module and add it to Pd/Ni example in docs
-
 
 Should:
 - ligand filtering
@@ -25,6 +18,8 @@ Should:
         - merge ligand composition, coordinating atoms and number of atoms filter by providing a list of atoms with keywords such as a * if this atom is coordinating and keywords if if is necessary or optional and also an X if any element is allowed
         - custom filter for supplying a function that returns true or false based on an input ligand
 - modules:
+    - gaussian module and add it to Pd/Ni example in docs
+    - xtb module
     - merge ligand databases
     - relax via forcefield
 output
@@ -45,6 +40,9 @@ example:
 assembly:
     - always output ff optimized structures together with original structure
     - refactor the ligand choice, this seems a little unstable
+    - double check the ligand planarity filtering, it is very slow and I'm not sure if it's correct
+    - fix that hydrides can't be assembled
+
 
 
 
