@@ -15,6 +15,15 @@ DART integrates a collection of modules, each serving a unique function in the a
 - **Ligand Filters** :
     Tailor assembled ligands to your research needs with a wide range of chemical and data-driven filters.
 
+.. tip::
+
+    Using DART is simple. After download, just run the DART assembler and start generating complexes by executing the following command in your terminal:
+
+    .. code-block:: bash
+
+        dart assembler --path assembly_input.yml
+
+
 **Your role:** While DART is a powerful new tool for chemistry researchers to streamline the exploration of novel molecular complexes, it is not a substitute for the expertise of a practiced chemist. Therefore, DART facilitates the inspection of generated complexes by providing various output formats, empowering the expert analysis and evaluation that is the hallmark of a skilled chemist.
 
 .. figure:: /_static/homepage_picture.png
