@@ -15,7 +15,7 @@ For chemists who prefer a hands-on approach, the database is designed to be user
 
 **Extrinsic information:**
 
-Unique to the MetaLig database, alongside the usual chemical information (intrinsic properties), you'll find valuable extrinsic data extracted from the CSD's extensive records. This includes statistics like how often a ligand appears in the `CSD Occurrences` or which metals it typically bonds with in the `CSD Metal Count` — information that can guide your selection of ligands for specific metal centers. Moreover, if you're looking to replicate or adapt a known synthesis, the `CSD Complex IDs` associated with each ligand point you to past literature where these ligands have been used, connecting the dots between computational design and practical laboratory work.
+Unique to the MetaLig database, alongside the usual chemical information (intrinsic properties), you'll find valuable extrinsic data extracted from the CSD's extensive records. This includes statistics like how often a ligand appears in the :confval:`CSD Occurrences` or which metals it typically bonds with in the :confval:`CSD Metal Count` — information that can guide your selection of ligands for specific metal centers. Moreover, if you're looking to replicate or adapt a known synthesis, the :confval:`CSD Complex IDs` associated with each ligand point you to past literature where these ligands have been used, connecting the dots between computational design and practical laboratory work.
 
 
 .. _metalig_ligand_properties:
