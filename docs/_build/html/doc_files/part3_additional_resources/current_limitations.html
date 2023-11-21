@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Current Limitations of DART &mdash; DART  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="How To Cite DART" href="how_to_cite_dart.html" />
+    <link rel="prev" title="Troubleshooting And FAQs" href="troubleshooting_and_faqs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            DART
+              <img src="../../_static/DART_pic.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">How to Use DART</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part1_getting_started_and_how_to_guides/installation_guide.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1_getting_started_and_how_to_guides/examples/simple_octahedral_assembly/simple_octahedral_assembly.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1_getting_started_and_how_to_guides/understanding_the_dart_workflow.html">Understanding the DART Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1_getting_started_and_how_to_guides/tutorials_and_examples.html">Tutorials And Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../part2_dart_modules_documentation/module_overview.html">Module Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2_dart_modules_documentation/metalig/metalig_database.html">MetaLig Ligand Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2_dart_modules_documentation/ligand_filters/ligand_filters.html">Ligand Filters Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2_dart_modules_documentation/assembler/assembler.html">Assembler Module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting_and_faqs.html">Troubleshooting And FAQs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Current Limitations of DART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how_to_cite_dart.html">How To Cite DART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version_history.html">Version History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_to_dart.html">Contributing to DART</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DART</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Current Limitations of DART</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/doc_files/part3_additional_resources/current_limitations.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="current-limitations-of-dart">
+<span id="current-limitations"></span><h1>Current Limitations of DART<a class="headerlink" href="#current-limitations-of-dart" title="Permalink to this headline"></a></h1>
+<p>In the latest version, DART still has some limitations which we will seek to address in future releases. If any of them are important for your work, please let us know and leave us a <a class="reference internal" href="contributing_to_dart.html#contributing"><span class="std std-ref">feature request</span></a>. These limitations include:</p>
+<dl class="simple">
+<dt>Assembler:</dt><dd><ul class="simple">
+<li><p>The hydride ligand (H) cannot yet be assembled due to issues with the underlying stk library.</p></li>
+<li><p>Tridentate ligands with non-planar coordinating atoms cannot yet be assembled.</p></li>
+<li><p>Only octahedral and square-planar geometries are supported. Let us know if you need other geometries for your research.</p></li>
+</ul>
+</dd>
+<dt>MetaLig database:</dt><dd><ul class="simple">
+<li><p>Ligands might have missing Hydrogen atoms or wrong charges. This should be extremely rare, but cannot be excluded because of the large number of ligands in the database.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Other limitations are more fundamental and will probably not be addressed anytime soon:</p>
+<dl class="simple">
+<dt>MetaLig:</dt><dd><ul class="simple">
+<li><p>Unique ligands are defined by their graph when connected to an (anonymous) metal center. Therefore stereoisomers are not distinguished in the ligand extraction process and only one stereoisomer would be part of the MetaLig database.</p></li>
+</ul>
+</dd>
+</dl>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="troubleshooting_and_faqs.html" class="btn btn-neutral float-left" title="Troubleshooting And FAQs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="how_to_cite_dart.html" class="btn btn-neutral float-right" title="How To Cite DART" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Timo Sommer, Cian Clarke.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
