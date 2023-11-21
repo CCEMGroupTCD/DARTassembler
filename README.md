@@ -27,12 +27,10 @@ Please cite our paper as given in [1].
 The documentation contains a section about the Pd/Ni cross coupling example that was used in the paper. It will show you how to reproduce the results of the paper.
 
 ## License
-... TODO
-The 3DSC<sub>MP</sub> database is subject to the Creative Commons Attribution 4.0 License, implying that the content may be copied, distributed, transmitted, and adapted, without obtaining specific permission from the repository owner, provided proper attribution is given to the repository owner. All software in this repository is subject to the MIT license. See `LICENSE.md` for more information.
+DART is subject to the MIT license. See `LICENSE.md` for more information.
 
 ## Origin of data
 We are grateful to the providers of the Cambridge Structural Database[2], which is the source of all ligands in the ligand database.
-
 
 ## References
 todo
