@@ -52,7 +52,7 @@ Preparing for Assembly
         total_charge: 0                   # Total charge of the complex.
         forcefield: true                  # Whether to optimize the structures after generation with a force field.
         isomers: lowest_energy            # Which isomers to generate. Options: lowest_energy, all
-        bidentate_rotator: auto           # How to rotate the bidentate ligands. Options: horseshoe, slab, auto
+        bidentate_rotator: auto           # How to rotate bidentate ligands in square-planar complexes. Options: horseshoe, slab, auto
         geometry_modifier_filepath:       # Path to the geometry modifier file. If not given, no geometry modification is performed.
         random_seed: 0                    # Random seed for the generation of the complexes.
         complex_name_appendix:            # String to append to the randomly generated complex name.
