@@ -55,14 +55,24 @@ if __name__ == '__main__':
     db_path = project_path().extend(*f'data/final_db_versions/unique_ligand_db_v{db_version}.json'.split('/'))
     exclude_unconnected_ligands = True
     exclude_uncertain_charges = True
-    nmax = 100
+    nmax = False
 
-    ligands = LigandDB.load_from_json(db_path, max_number=nmax)
-    df_ligands = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path ,n_max=nmax), orient='index')
+    # ligands = LigandDB.load_from_json(db_path, n_max=nmax)
+    # df_ligands = pd.DataFrame.from_dict({name: lig.get_ligand_output_info(add_confident_charge=True) for name, lig in ligands.db.items()}, orient='index'
+
+    # for thesis
+    df_ligands = pd.read_csv(db_path.with_suffix('.csv'), index_col=0)
+    n_denticities = df_ligands['Denticity'].value_counts()
+    print(f'Denticities:\n{n_denticities}')
+    print(f'Total number of ligands: {len(df_ligands)}')
+    n_solvent = (df_ligands['Denticity'] <= 0).sum()
+    print(f'Number of solvent molecules/counter ions: {n_solvent}')
+
+
     # df_ligands['has_metal_neighbors'] = df_ligands['graph_dict'].apply(lambda graph_dict: 'metal_neighbor' in str(graph_dict))
-
-    planarity = [ligand.calculate_planarity() for ligand in ligands.db.values()]
-    df_ligands['planarity'] = planarity
+    #
+    # planarity = [ligand.calculate_planarity() for ligand in ligands.db.values()]
+    # df_ligands['planarity'] = planarity
 
     # has_identical_ligand_info = [hasattr(ligand, 'identical_ligand_info') for ligand in ligands.db.values()]
     # df_ligands['has_identical_ligand_info'] = has_identical_ligand_info

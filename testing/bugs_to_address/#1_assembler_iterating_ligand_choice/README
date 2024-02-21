@@ -1,0 +1,1 @@
+There is a little bug in the assembler, in the ligand choice algorithm. If you assemble multiple batches with the same settings just different metals, the first chosen ligand in the ligand choice always advances one for the next batch, i.e. the each new batch throws away the first ligand from the previous batch.

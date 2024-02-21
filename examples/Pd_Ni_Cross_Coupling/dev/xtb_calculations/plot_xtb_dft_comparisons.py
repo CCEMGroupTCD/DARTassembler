@@ -52,15 +52,25 @@ if __name__ == "__main__":
     df_corr = df.corr(method='pearson')
 
     for prop in ['dist_P', 'dist_N', 'dist_Br', 'dist_C', pn_bite_angle, homo, lumo, hlgap, 'metal_charge']:
-        plt.figure()
+        fig, ax = plt.subplots()
         x, y = prop + '_dft', prop + '_xtb'
-        sns.scatterplot(data=df, x=x, y=y, alpha=alpha)
+
+        # diagonal line, except for homo-lumo gap because of large offset
+        if not prop == hlgap:
+            min_value = min(df[x].min(), df[y].min())
+            max_value = max(df[x].max(), df[y].max())
+            ax.plot([min_value, max_value], [min_value, max_value], color='black', linestyle='dashed', alpha=0.3)
+
+        sns.scatterplot(data=df, x=x, y=y, alpha=alpha, hue='metal', ax=ax)
 
         corr = df_corr.loc[x, y]
         text = f'Pearson correlation: {corr:.2g}'
-        plt.annotate(text, xy=(0.03, 0.93), xycoords='axes fraction')
+        plt.annotate(text, xy=(0.018, 0.81), xycoords='axes fraction')
+        plt.legend(loc='upper left')
 
-        outpath = Path(outdir, f'comp_{prop}.png')
+
+
+        outpath = Path(outdir, f'comp_{prop}.pdf')
         plt.savefig(outpath)
 
 

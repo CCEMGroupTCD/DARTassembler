@@ -28,7 +28,31 @@ def warn_if_nan_values(df):
         warnings.warn(f'{n_nan} of {len(df.columns)} calculated features have NaN values for some molecules!')
 
 class RAC:
-    def __init__(self, depth=4, molecular_stats: list[str]=None, atom_stats: list[str]=None, element_label: str='node_label'):
+    """
+    Class for computing the RAC descriptors of molecules.
+
+    """
+    def __init__(self, depth: int=4, molecular_stats: list[str]=None, atom_stats: list[str]=None, element_label: str='node_label'):
+        """
+        :param depth: The depth of the autocorrelation, i.e. how often the convolution is applied.
+        :param molecular_stats: List of strings such as ['sum', 'std', 'min', 'max'] specifying which statistics to calculate over the atom autocorrelation features to get the molecular features.
+        :param atom_stats: List of strings such as ['sum', 'std', 'min', 'max'] specifying which statistics to calculate over the convolution features to get the atom autocorrelation features.
+        :param element_label: The label of the node attribute of the networkx graph that specifies the element of the atom.
+
+        Simple usage example:
+        ``` python
+            import networkx as nx
+            G = nx.Graph()
+            G.add_nodes_from([(0, {'node_label': 'C'}),
+                              (1, {'node_label': 'C'}),
+                              (2, {'node_label': 'H'}),
+                              (3, {'node_label': 'C'}),
+                              (4, {'node_label': 'C'}),
+                              (5, {'node_label': 'C'})])
+            G.add_edges_from([(0, 1), (0, 2), (0, 3), (1, 4), (3, 5)])
+            features, labels = RAC(depth=4).molecule_autocorrelation(mol=G, return_labels=True)
+        ```
+        """
         self.depth = depth
         self.element_label = element_label
         self.molecular_stats = molecular_stats or ['sum', 'std', 'min', 'max']
@@ -155,21 +179,27 @@ class RAC:
 
         return prop_vector, label
 
-    def molecule_autocorrelation(self, mol, properties: list[str]=None, return_labels: bool=False) -> Union[np.array, Tuple[np.array, list]]:
+    def molecule_autocorrelation(self, mol: nx.Graph, properties: list[str]=None, return_labels: bool=False) -> Union[np.array, Tuple[np.array, list]]:
         """
         Calculates the molecule features.
 
-        Parameters
-        ----------
-        graph : networkx.Graph
-            The molecule graph.
+        :param mol: The molecule as a networkx graph.
+        :param properties: List of strings. Atomic properties of the graph to use for the autocorrelation. If None, the following are used and automatically calculated from pymatgen: ['electronegativity', 'row', 'group', 'atomic_mass', 'electron_affinity', 'min_oxidation_state', 'max_oxidation_state', 'ionization_energy', 'nuclear_charge', 'ident', 'topology', 'size']. This should also support to use properties which are in the graph pre-calculated for each atom, such as atomic charges or atomic energies. In this case, provide the label name of the property as a string here.
+        :param return_labels: If True, the labels of the features are also returned as second element of the tuple.
 
-        Returns
-        -------
-        features : np.array
-            The molecule features.
-        labels : list
-            The labels for the features.
+        Example usage with own calculated properties, here xtb atomic charges in the graph attribute 'charge':
+        ``` python
+            import networkx as nx
+            G = nx.Graph()
+            G.add_nodes_from([(0, {'node_label': 'C', 'charge': 0.5}),
+                              (1, {'node_label': 'C', 'charge': 0.5}),
+                              (2, {'node_label': 'H', 'charge': 0.1}),
+                              (3, {'node_label': 'C', 'charge': -0.5}),
+                              (4, {'node_label': 'C', 'charge': -0.5}),
+                              (5, {'node_label': 'C', 'charge': -0.5})])
+            G.add_edges_from([(0, 1), (0, 2), (0, 3), (1, 4), (3, 5)])
+            features, labels = RAC(depth=4).molecule_autocorrelation(mol=G, properties=['charge'], return_labels=True)
+        ```
         """
         graph = self.input_molecule_to_graph(mol)
         default_props = ['electronegativity', 'row', 'group', 'atomic_mass', 'electron_affinity', 'min_oxidation_state', 'max_oxidation_state', 'ionization_energy', 'nuclear_charge', 'ident', 'topology', 'size']

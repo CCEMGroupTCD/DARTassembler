@@ -9,7 +9,8 @@ from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _f
     _metals_of_interest, _denticities_of_interest, _remove_ligands_with_neighboring_coordinating_atoms, \
     _remove_ligands_with_beta_hydrogens, _strict_box_filter, _acount, _acount_min, _acount_max, _denticities, \
     _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max, _graph_hash_wm, _stoichiometry, _min, _max, \
-    _md_bond_length, _interatomic_distances, _occurrences, _planarity
+    _md_bond_length, _interatomic_distances, _occurrences, _planarity, _remove_missing_bond_orders, _atm_neighbors, \
+    _atom, _neighbors
 
 
 
@@ -128,6 +129,16 @@ class LigandFilters(object):
                     stoichiometry=filter[_stoichiometry],
                     denticities=filter[_denticities]
                 )
+            elif filtername == _remove_missing_bond_orders:
+                self.Filter.filter_missing_bond_orders(
+                    denticities=filter[_denticities]
+                )
+            elif filtername == _atm_neighbors:
+                self.Filter.filter_atomic_neighbors(
+                    atom=filter[_atom],
+                    neighbors=filter[_neighbors],
+                    denticities=filter[_denticities]
+                )
             else:
                 raise ValueError(f"Unknown filter: {filtername}")
 
@@ -203,8 +214,8 @@ class LigandFilters(object):
 
 
 if __name__ == "__main__":
-    ligand_filter_path = project_path().extend(*'dev/test/2-1-1-Cl-example/ligandfilters.yml'.split('/'))
-    max_number = 100
+    ligand_filter_path = project_path().extend(*'testing/integration_tests/ligand_filters/data_input/ligandfilters.yml'.split('/'))
+    max_number = 1000
 
 
     filter = LigandFilters(filepath=ligand_filter_path, max_number=max_number)

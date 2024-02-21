@@ -390,7 +390,39 @@ class RCA_Molecule(object):
 
         return good_bond_orders_present
 
+    def has_specified_atomic_neighbors(self, atom, neighbors, node_label='node_label') -> bool:
+        """
+        Checks if there's at least one node of the specified atom type that is connected
+        to the specified neighbors in at least their given count, but can also be connected
+        to other atom types.
 
+        Parameters:
+        - atom (str): The atom label to search for.
+        - neighbors (list): A list of neighbor atom labels to check against the atom's neighbors.
+        - node_label (str, optional): The node attribute key that contains the atom label. Default is 'node_label'.
+
+        Returns:
+        - bool: True if at least one specified atom is connected to all specified neighbors in at least their given count, False otherwise.
+        """
+        neighbor_counts = pd.Series(neighbors).value_counts().to_dict()
+        for node, data in self.graph.nodes(data=True):
+            if data.get(node_label) == atom:  # Check if the node is the specified atom
+                # Count the occurrence of each neighbor atom type
+                atomic_neighbors = [self.graph.nodes[neighbor].get(node_label) for neighbor in
+                                    self.graph.neighbors(node)]
+                atomic_neighbor_counts = pd.Series(atomic_neighbors).value_counts().to_dict()
+
+                # Check if the specified neighbors are present in the required count
+                all_present = True
+                for required_neighbor, required_count in neighbor_counts.items():
+                    if atomic_neighbor_counts.get(required_neighbor, 0) < required_count:
+                        all_present = False
+                        break  # A required neighbor is not present in sufficient quantity, no need to check further
+
+                if all_present:
+                    return True  # Found a node that meets the criteria
+
+        return False  # No nodes met the criteria
 
     @classmethod
     def make_from_atomic_properties(cls,
@@ -1047,15 +1079,14 @@ class RCA_Ligand(RCA_Molecule):
 
     def betaH_check(self, node_label='node_label') -> bool:
         """
-        Checks if the ligand has beta Hydrogen. Alpha H is ignored. Beta H is defined as a H atom which is exactly two bonds away from a coordinating atom.
+        Checks if the ligand has beta Hydrogen. Alpha H is ignored. Beta H is defined as a H atom which is exactly two bonds away from a coordinating atom, i.e. three bonds away from the metal.
         @return: True if beta Hydrogen is present, False otherwise
         """
         graph = self.get_reindexed_graph()     # historical issue
         A = get_adjacency_matrix(graph)
 
         # The second power of the adjacency matrix, i.e. A^2[i,j] represents the number of paths of length two
-        # from i to j. Hence, as we are only interested in Hydrogen which has a distance of two to our functional atoms
-        # we can make quick use of that
+        # from i to j. Hence, as we are only interested in Hydrogen which has a distance of two to our coordinating atoms
         B = np.matmul(A, A)
 
         for functional_index in self.ligand_to_metal:
@@ -1156,7 +1187,7 @@ class RCA_Ligand(RCA_Molecule):
 
         return False
 
-    def get_ligand_output_info(self, max_entries=np.inf) -> dict:
+    def get_ligand_output_info(self, max_entries=5, add_confident_charge=False) -> dict:
 
         info = {
             'Ligand ID': self.unique_name,
@@ -1174,6 +1205,9 @@ class RCA_Ligand(RCA_Molecule):
             'Graph ID': self.graph_hash_with_metal,
             'CSD Occurrences': self.occurrences,
             }
+        if add_confident_charge:
+            info['Charge Confident'] = self.pred_charge_is_confident
+
 
         # Currently doesn't work because the ligand doesn't have the attribute 'identical_ligand_info'.
         # For future bug search: This bug is only present when running the assembler, not the dbinfo module
@@ -1687,6 +1721,28 @@ class RCA_Complex(RCA_Molecule):
         """
         return
 
+    def get_output_info(self) -> dict:
+
+        info = {
+            'Complex ID': self.mol_id,
+            'Stoichiometry': self.stoichiometry,
+            'Metal': self.metal,
+            'Metal OS': self.metal_oxi_state,
+            'Charge': self.charge,
+            'Number of Atoms': self.n_atoms,
+            'Fully Connected': self.fully_connected,
+            'Coordinating Atoms': self.donor_elements,
+            'Number of Donors': self.n_donors,
+            'Octahedral': self.is_octahedral,
+            # 'Planarity': self.calculate_planarity(),
+            'Haptic': any(lig.has_neighboring_coordinating_atoms for lig in self.ligands),
+            'Beta-Hydrogen': any(lig.has_betaH for lig in self.ligands),
+            'Ligand Unique Names': [lig.unique_name for lig in self.ligands],
+            **self.global_props,
+            }
+
+        return info
+
     def de_assemble(self, inherit_global_properties: list = ['CSD_code']):
         """
         now only graph based, makeslife waaay easier
@@ -1818,8 +1874,8 @@ class RCA_Complex(RCA_Molecule):
         """
         Generates descriptors for the complex and its ligands.
         """
-        from src11_machine_learning.utils.utilities_ML import get_element_descriptors
-        from src11_machine_learning.dataset_preparation.descriptors import RAC
+        from dev.src11_machine_learning.utils.utilities_ML import get_element_descriptors
+        from dev.src11_machine_learning.dataset_preparation.descriptors import RAC
         descriptors = {}
 
         # Complex descriptors

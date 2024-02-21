@@ -9,6 +9,8 @@ scipy<=1.10.1
 scikit-learn
 sympy
 tqdm
+sphinx>=4.3.0
+sphinx_rtd_theme>=0.5.1
 mchammer==1.0.4
 pysmiles==1.0.2
 spindry==0.0.91

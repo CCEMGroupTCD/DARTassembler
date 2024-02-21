@@ -67,6 +67,9 @@ _remove_ligands_with_beta_hydrogens = 'remove_ligands_with_beta_hydrogens'
 _strict_box_filter= 'strict_box_filter'
 _filter_even_odd_electron_count = 'remove_even_odd_electron_count'
 _dentfilters = 'denticity_dependent_filters'
+_atm_neighbors = 'atomic_neighbors'
+_atom = 'atom'
+_neighbors = 'neighbors'
 # Denticity dependent filters
 _acount = 'number_of_atoms'
 _acount_min = 'min'
@@ -95,6 +98,8 @@ _occurrences = 'occurrences'
 _md_bond_length = 'metal_donor_bond_lengths'
 _min = 'min'
 _max = 'max'
+_remove_missing_bond_orders = 'remove_ligands_with_missing_bond_orders'
+
 
 
 
@@ -475,6 +480,15 @@ class LigandFilterInput(BaseInput):
             _max: [float, str, type(None)],
             _denticities: [list, tuple, type(None), int],
             },
+        _remove_missing_bond_orders: {
+            _remove_missing_bond_orders: [bool, str],
+            _denticities: [list, tuple, type(None), int],
+            },
+        _atm_neighbors: {
+            _atom: [str],
+            _neighbors: [list, tuple],
+            _denticities: [list, tuple, type(None), int],
+            }
         }
 
 
@@ -592,6 +606,13 @@ class LigandFilterInput(BaseInput):
                 out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_occurrences))
             elif self.filtername == _md_bond_length:
                 out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_md_bond_length))
+            elif self.filtername == _remove_missing_bond_orders:
+                out_filter_settings[_remove_missing_bond_orders] = self.get_bool_from_input(input=filter_values[_remove_missing_bond_orders], varname=_remove_missing_bond_orders)
+                out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_remove_missing_bond_orders}:{_denticities}', allow_none=True)
+            elif self.filtername == _atm_neighbors:
+                out_filter_settings[_atom] = self.get_list_of_chemical_elements_from_input(input=filter_values[_atom], varname=f'{_atm_neighbors}:{_atom}')[0]
+                out_filter_settings[_neighbors] = self.get_list_of_chemical_elements_from_input(input=filter_values[_neighbors], varname=f'{_atm_neighbors}:{_neighbors}')
+                out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_atm_neighbors}:{_denticities}', allow_none=True)
             else:
                 self.raise_error(f"Filter '{self.filtername}' is not a valid filter.", varname=_filter)
 

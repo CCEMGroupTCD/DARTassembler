@@ -21,7 +21,6 @@ import jsonlines
 import itertools
 from warnings import warn
 
-
 class BaselineDB:
     def __init__(self, dict_: dict):
         """
@@ -183,6 +182,9 @@ class MoleculeDB(BaselineDB):
         :param kwargs: kwargs for the graph creation
         """
         warn('The function `from_json` is deprecated. Please use the function `LigandDB.load_from_json(`path`)` instead to load the ligand database.', DeprecationWarning)
+
+        if max_number is False:
+            max_number = None
 
         db = {}
         if isinstance(json_, dict):
@@ -647,6 +649,20 @@ class ComplexDB(MoleculeDB):
         """
         db = load_complex_db(path=path, n_max=n_max, show_progress=show_progress, molecule='class')
         return cls(db)
+
+
+    def to_dataframe(self) -> pd.DataFrame:
+        """
+        Creates a csv file of the database with the most important information.
+        """
+        data = []
+        for name, complex in tqdm(self.db.items(), desc='Create csv file'):
+            mol_data = complex.get_output_info()
+            mol_data = {key: value for key, value in mol_data.items() if not key.startswith('Unnamed:')}
+            data.append(mol_data)
+        df = pd.DataFrame(data)
+
+        return df
 
 
 if __name__ == '__main__':

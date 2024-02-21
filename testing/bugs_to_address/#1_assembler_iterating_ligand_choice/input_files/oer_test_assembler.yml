@@ -1,0 +1,82 @@
+verbosity: 2
+ffmovie: false
+concatenate_xyz: true
+overwrite_output: true
+output_path: output/assemblerH2Oallsame
+complex_name_length: 8
+
+batches:
+  - ligand_db_paths: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
+    isomers: all
+    max_num_complexes: 20
+    ligand_choice: random
+    geometry_modifier_filepath: input_files/H_shift.xyz
+    bidentate_rotator: auto
+    metal_center: Cr
+    metal_oxidation_state: 3
+    name: Cr
+    forcefield: false
+    random_seed: 5
+    topology: 3-2-1
+    total_charge: 0
+    complex_name_appendix: _Cr
+
+  - ligand_db_paths: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
+    isomers: all
+    max_num_complexes: 20
+    ligand_choice: random
+    geometry_modifier_filepath: input_files/H_shift.xyz
+    bidentate_rotator: auto
+    metal_center: Mn
+    metal_oxidation_state: 3
+    name: Mn
+    forcefield: false
+    random_seed: 5
+    topology: 3-2-1
+    total_charge: 0
+    complex_name_appendix: _Mn
+
+  - ligand_db_paths: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
+    isomers: all
+    max_num_complexes: 20
+    ligand_choice: random
+    geometry_modifier_filepath: input_files/H_shift.xyz
+    bidentate_rotator: auto
+    metal_center: Fe
+    metal_oxidation_state: 3
+    name: Fe
+    forcefield: false
+    random_seed: 5
+    topology: 3-2-1
+    total_charge: 0
+    complex_name_appendix: _Fe
+
+  - ligand_db_paths: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
+    isomers: all
+    max_num_complexes: 20
+    ligand_choice: random
+    geometry_modifier_filepath: input_files/H_shift.xyz
+    bidentate_rotator: auto
+    metal_center: Co
+    metal_oxidation_state: 3
+    name: Co
+    forcefield: false
+    random_seed: 5
+    topology: 3-2-1
+    total_charge: 0
+    complex_name_appendix: _Co
+
+  - ligand_db_paths: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
+    isomers: all
+    max_num_complexes: 20
+    ligand_choice: random
+    geometry_modifier_filepath: input_files/H_shift.xyz
+    bidentate_rotator: auto
+    metal_center: Ru
+    metal_oxidation_state: 3
+    name: Ru
+    forcefield: false
+    random_seed: 5
+    topology: 3-2-1
+    total_charge: 0
+    complex_name_appendix: _Ru

@@ -369,6 +369,26 @@ class FilterStage:
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Ligand Charge Filter: [{denticity}] [{charge}]"
 
+    def filter_atomic_neighbors(self, atom: str, neighbors: list, denticities: int = None):
+        """
+        This function will filter out all ligands in which the specified atom has the specified neighbors in the specified amount. For example, if `atom` is 'C' and `neighbors` is ['H', 'H'], then all ligands in which a 'C' atom has two 'H' neighbors will be filtered out.
+
+        Parameters:
+        atom: str -> Chemical element of the central element.
+        neighbors: list -> List of chemical elements of the neighbors. Can include repeating elements.
+        denticity: int -> The denticity of the ligands to filter. If None, all denticities are considered.
+        """
+        denticities = self.ensure_denticities_is_list(denticities)
+
+        to_delete = []
+        for unq_name, ligand in self.database.db.items():
+            if ligand.denticity in denticities:
+                if ligand.has_specified_atomic_neighbors(atom, neighbors):
+                    to_delete.append(unq_name)
+
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+        self.filter_tracking[len(self.filter_tracking)] = f"Atomic Neighbors Filter: {atom} {neighbors}"
+
     def filter_sub_structure_search(self, denticity: int = None, SMARTS: str = None, instruction: str = None):
         warnings.warn("This Filter is still under active developement please do not use")
         raise NotImplementedError
@@ -489,3 +509,18 @@ class FilterStage:
             denticities = list(range(-10, 100))
 
         return denticities
+
+    def filter_missing_bond_orders(self, denticities):
+        """
+        Filter out all ligands in which not all bond orders are present.
+        """
+        denticities = self.ensure_denticities_is_list(denticities)
+
+        to_delete = []
+        for unq_name, ligand in self.database.db.items():
+            if ligand.denticity in denticities:
+                if not ligand.has_good_bond_orders:
+                    to_delete.append(unq_name)
+
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+        self.filter_tracking[len(self.filter_tracking)] = f"Missing Bond Order Filter"

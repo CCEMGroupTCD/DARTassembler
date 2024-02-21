@@ -1,0 +1,22 @@
+===================== FILTER TRACKING =====================
+--> Filtered ligand database was saved as '/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/src/ligand_filters/oer_ligands.jsonlines'.
+Removed ligands:
+  - denticities: 496
+        options --> denticities: [2, 3]
+  - remove_ligands_with_adjacent_coordinating_atoms: 26
+        options --> remove_ligands_with_adjacent_coordinating_atoms: True
+  - remove_ligands_with_beta_hydrogens: 338
+        options --> remove_ligands_with_beta_hydrogens: True
+  - metal_ligand_binding_history: 65
+        options --> metal_ligand_binding_history: ['Cr', 'Mn', 'Fe', 'Co', 'Ru'], apply_to_denticities: None
+  - ligand_composition: 37
+        options --> elements: ['C', 'H', 'N', 'O'], instruction: must_only_contain_in_any_amount, apply_to_denticities: None
+  - coordinating_atoms_composition: 2
+        options --> elements: ['N', 'O'], instruction: must_only_contain_in_any_amount, apply_to_denticities: None
+  - remove_ligands_with_missing_bond_orders: 3
+        options --> remove_ligands_with_missing_bond_orders: True, apply_to_denticities: None
+
+Number of ligands before filtering: 1000
+Number of ligands filtered out: 967
+Number of ligands after filtering: 33
+Number of ligands per denticity: 2: 26, 3: 7

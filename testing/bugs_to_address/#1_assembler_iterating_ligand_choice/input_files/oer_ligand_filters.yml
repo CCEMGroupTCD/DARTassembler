@@ -1,0 +1,29 @@
+input_ligand_db_path:           # path or nothing. If nothing, the entire MetaLig ligand database will be used as input
+output_ligand_db_path: oer_ligands.jsonlines   # path or nothing
+
+filters:
+  - filter: denticities
+    denticities: [2, 3]
+
+  - filter: remove_ligands_with_adjacent_coordinating_atoms
+    remove_ligands_with_adjacent_coordinating_atoms: True
+
+  - filter: remove_ligands_with_beta_hydrogens
+    remove_ligands_with_beta_hydrogens: True
+
+  - filter: metal_ligand_binding_history
+    metal_ligand_binding_history: [Cr, Mn, Fe, Co, Ru]
+    apply_to_denticities:
+
+  - filter: ligand_composition
+    elements: [C, H, N, O]
+    instruction: must_only_contain_in_any_amount
+    apply_to_denticities:
+
+  - filter: coordinating_atoms_composition
+    elements: [N, O]
+    instruction: must_only_contain_in_any_amount
+    apply_to_denticities:
+
+
+

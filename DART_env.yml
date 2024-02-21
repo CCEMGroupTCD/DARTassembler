@@ -17,6 +17,8 @@ dependencies:
   - scikit-learn
   - sympy
   - tqdm
+  - sphinx>=4.3.0             # to avoid bullet-point bug
+  - sphinx_rtd_theme>=0.5.1   # to avoid bullet-point bug
   - pip:
       - mchammer==1.0.4
       - pysmiles==1.0.2

@@ -17,14 +17,14 @@ def assemble_complexes(assembly_input_path: Union[str, Path]):
 if __name__ == "__main__":
     from DARTassembler.src.constants.Paths import project_path
 
-    USER_INPUT = project_path().extend('examples', 'Pd_Ni_Cross_Coupling', 'input', 'input_files', 'Pd_Ni_assembly_input.yml')  # In this file the user specifies which input they want
+    USER_INPUT = project_path().extend('dev/oerdata/testbatch_data/input_files/oer_test_assembler.yml')  # In this file the user specifies which input they want
     assembly = assemble_complexes(assembly_input_path=USER_INPUT)
 
     # %% ==============    Doublecheck refactoring    ==================
-    from dev.test.Integration_Test import IntegrationTest
-
-    test = IntegrationTest(new_dir=project_path().extend('examples', 'Pd_Ni_Cross_Coupling', 'output', 'data_before_g16_calcs', 'DART_Example_Pd_Ni_Complexes'),
-                           old_dir=project_path().extend('Legacy_unit_test_do_not_delete', 'DART_Example_Pd_Ni_Complexes'))
-    test.compare_all()
+    # from dev.test.Integration_Test import IntegrationTest
+    #
+    # test = IntegrationTest(new_dir=project_path().extend('examples', 'Pd_Ni_Cross_Coupling', 'output', 'data_before_g16_calcs', 'DART_Example_Pd_Ni_Complexes'),
+    #                        old_dir=project_path().extend('Legacy_unit_test_do_not_delete', 'DART_Example_Pd_Ni_Complexes'))
+    # test.compare_all()
 
     print('Done!')

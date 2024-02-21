@@ -5,6 +5,7 @@ Summary: A software for chemists to build novel metal complexes from random liga
 Home-page: https://github.com/CCEMGroupTCD/DART
 Author: Timo Sommer, Cian Clarke, Felix Kleuker
 Requires-Python: >=3.9.5
+License-File: LICENSE
 Requires-Dist: ase
 Requires-Dist: jsonlines
 Requires-Dist: networkx
@@ -16,6 +17,8 @@ Requires-Dist: scipy<=1.10.1
 Requires-Dist: scikit-learn
 Requires-Dist: sympy
 Requires-Dist: tqdm
+Requires-Dist: sphinx>=4.3.0
+Requires-Dist: sphinx_rtd_theme>=0.5.1
 Requires-Dist: mchammer==1.0.4
 Requires-Dist: pysmiles==1.0.2
 Requires-Dist: spindry==0.0.91

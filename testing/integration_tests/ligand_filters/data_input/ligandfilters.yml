@@ -72,6 +72,11 @@ filters:
     max: 2.5
     apply_to_denticities: [2]
 
+  - filter: atomic_neighbors
+    atom: C
+    neighbors: [H, H, H]
+    apply_to_denticities: 1
+
 
 
 
