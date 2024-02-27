@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEJJOE-03-a,C15H10N3O1,3,-1,N-N-N,29,248.26500000000007,0.5104748220720637,False,True,11.129449723593705,2.125276708359664,9b12e1f146fb8ed5f69aa323e0b7b0f1,8,"PEJJOE, PEJJOE, CAPYOI, CAPYOI, KAYJAW, ... (3 more)","Co(3), Ni(3), Cu(2)"
-Ligand 1,unq_CSD-PARRUW-02-a,C5H14N2,2,0,N-N,21,102.18099999999997,0.21417969115488525,False,True,6.6606901414192805,2.2354390043426133,19d0c1817e51fcb5ad66476cef3009ea,17,"PARRUW, PARRUW, PARSAD, PARSAD, BEVHAM, ... (12 more)","Ni(7), Co(4), Zn(2), Ru(2), Ti(1), ... (1 more)"
-Ligand 2,unq_CSD-PEDXEB-01-f,H2P1,1,-1,P,3,32.989761998,1.0,False,False,2.5291927763616595,2.439452850538415,da0a13a38a6b8866c0389fe26e3700b1,3,"PEDXEB, POGNEG, BAZFIU","Ir(1), U(1), Zr(1)"

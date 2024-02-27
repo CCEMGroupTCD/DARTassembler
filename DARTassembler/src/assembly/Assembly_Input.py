@@ -221,12 +221,15 @@ class BaseInput(object):
 
         return meaning
 
-    def get_int_from_input(self, input: Union[str, int], varname: str, allow_none=False) -> Union[int,None]:
+    def get_int_from_input(self, input: Union[str, int], varname: str, allow_none = False, allow_str: str = None) -> Union[int,None]:
         """
         Returns an int from a string or int input.
         """
-        if allow_none and input is None:
+        if allow_none and input is None:    # If input is None, return None
             return None
+
+        if allow_str is not None and input == allow_str:  # If input is a specific string, return this string
+            return input
 
         if isinstance(input, int):
             output = input
@@ -351,13 +354,12 @@ class BaseInput(object):
         """
         for actual_key in actual_settings:
             if not actual_key in valid_settings:
-                self.raise_warning(message=f"Setting '{actual_key}' is not recognized and will be skipped.", varname=actual_key)
+                self.raise_error(message=f"The provided word '{actual_key}' is not a valid DART setting. Please check the documentation", varname=actual_key)
 
         for batch in actual_settings[_batches]:
             for actual_key in batch:
                 if not actual_key in valid_settings[_batches]:
-                    self.raise_warning(message=f"Setting '{actual_key}' is not recognized and will be skipped.",
-                                       varname=actual_key)
+                    self.raise_error(message=f"The provided word '{actual_key}' is not a valid DART setting. Please check the documentation.", varname=actual_key)
 
                 # if actual_key == _metal:
                 #     for metal_key in batch[_metal]:
@@ -381,7 +383,8 @@ class BaseInput(object):
             batch_name = f" in batch '{batch_name}'"
         if file != '':
             file = f" in input file '{file}'"
-        total_message = f"Invalid input{varname}{batch_name}{file}: {message}"
+        total_message = f"Invalid input{varname}{batch_name}{file}:\n\t\t{message}"
+
         warnings.warn(total_message, UserWarning)
 
     def raise_error(self, message: str, varname: str = '', file=None):
@@ -704,7 +707,7 @@ class AssemblyInput(BaseInput):
                         _name: [str],
                         _input_path: [str, list, tuple, type(None)],
                         _max_num_complexes: [int, str],
-                        _ligand_choice: [str],
+                        # _ligand_choice: [str],  # ligand choice is not used anymore, 'all' is specified in _max_num_complexes
                         _element: [str],
                         _oxidation_state: [int, str],
                         _isomers: [str],
@@ -842,18 +845,15 @@ class AssemblyInput(BaseInput):
 
         # Here we take the batch inputs and format them correctly
         Ligand_json, topology_similarity = self.get_ligand_db_path_and_topologies_from_input(batch_settings[_input_path], topology=batch_settings[_topology])
-        Max_Num_Assembled_Complexes = self.get_int_from_input(batch_settings[_max_num_complexes], varname=f'{_batches}->{_max_num_complexes}')
-        ligand_choice = self.get_ligand_choice_from_input(batch_settings[_ligand_choice], varname=f'{_batches}->{_ligand_choice}')
+        Max_Num_Assembled_Complexes = self.get_int_from_input(batch_settings[_max_num_complexes], varname=f'{_batches}->{_max_num_complexes}', allow_str='all')
         Generate_Isomer_Instruction = self.get_isomers_from_input(batch_settings[_isomers])
         Optimisation_Instruction = self.get_bool_from_input(batch_settings[_optimisation], varname=f'{_batches}->{_optimisation}')
         Random_Seed = self.get_int_from_input(batch_settings[_random_seed], varname=f'{_batches}->{_random_seed}')
         Total_Charge = self.get_int_from_input(batch_settings[_total_charge], varname=f'{_batches}->{_total_charge}')
         metal_list = self.get_metal_from_input(element=batch_settings[_element], oxidation_state=batch_settings[_oxidation_state])
-        # topology_similarity, _ = self.get_topology_from_input(batch_settings[_topology])
         complex_name_appendix = batch_settings[_complex_name_appendix] or ''
         geometry_modifier_filepath = self.get_geometry_modifier_from_input(batch_settings[_geometry_modifier_filepath])
         bidentate_rotator = self.get_bidentate_rotator_from_input(batch_settings[_bidentate_rotator], varname=f'{_batches}->{_bidentate_rotator}')
-        # gaussian_path = self.get_path_from_input(path=batch_settings[_gaussian_path], varname=f'{_batches}->{_gaussian_path}', allow_none=True)
 
         if isinstance(Ligand_json, list):
             similarity = topology_similarity.split('--')[1].lstrip('[').rstrip(']').split(', ')
@@ -861,7 +861,7 @@ class AssemblyInput(BaseInput):
             if not len(Ligand_json) == n_diff_ligands:
                 self.raise_error(f"Input '{_input_path}' is a list of paths and must have the same length as the number of different ligands specified in the similarity list at the end of the topology. Yet, the topology {topology_similarity} specifies {n_diff_ligands} different ligands, but {len(Ligand_json)} paths were given.", varname=f'{_batches}->{_input_path}')
 
-        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator, ligand_choice
+        return self.batch_name, Ligand_json, Max_Num_Assembled_Complexes, Generate_Isomer_Instruction, Optimisation_Instruction, Random_Seed, Total_Charge, metal_list, topology_similarity, complex_name_appendix, geometry_modifier_filepath, bidentate_rotator
 
     def get_bidentate_rotator_from_input(self, bidentate_rotator: str, varname: str):
         """
@@ -872,14 +872,14 @@ class AssemblyInput(BaseInput):
 
         return bidentate_rotator
 
-    def get_ligand_choice_from_input(self, ligand_choice: str, varname) -> str:
-        """
-        Checks the input for the ligand choice.
-        """
-        if not ligand_choice in ['random', 'all']:
-            self.raise_error(f"Input '{ligand_choice}' for '{varname}' is not valid. Valid inputs are 'random' and 'all'.")
-
-        return ligand_choice
+    # def get_ligand_choice_from_input(self, ligand_choice: str, varname) -> str:
+    #     """
+    #     Checks the input for the ligand choice.
+    #     """
+    #     if not ligand_choice in ['random', 'all']:
+    #         self.raise_error(f"Input '{ligand_choice}' for '{varname}' is not valid. Valid inputs are 'random' and 'all'.")
+    #
+    #     return ligand_choice
 
     def get_geometry_modifier_from_input(self, path):
         if path is None:

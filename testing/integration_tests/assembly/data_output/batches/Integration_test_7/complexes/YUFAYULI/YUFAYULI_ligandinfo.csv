@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAMJEV-02-a,C14H20N1O3,2,-1,O-O,38,250.318,0.1384054782301682,False,False,9.181914678867367,2.003795240485663,8255a2bbac3aec5b8d3b0ed7a55061ac,1,PAMJEV,Cu(1)
-Ligand 1,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72303,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72298 more)","Ru(9546), Pd(9381), Pt(6800), Cu(6008), Zn(4575), ... (43 more)"
-Ligand 2,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72303,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72298 more)","Ru(9546), Pd(9381), Pt(6800), Cu(6008), Zn(4575), ... (43 more)"

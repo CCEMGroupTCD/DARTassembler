@@ -1,3 +1,4 @@
+import sys
 from unittest.mock import patch
 import datetime
 from DARTassembler.src.constants.Paths import project_path
@@ -7,7 +8,7 @@ from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.assembly.Monkeypatch_stk import MONKEYPATCH_STK_SmartsFunctionalGroupFactory
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 from DARTassembler.src.assembly.Assemble import PlacementRotation
-from DARTassembler.src.assembly.ligands import ChooseRandomLigands
+from DARTassembler.src.assembly.ligands import LigandChoice
 from DARTassembler.src.assembly.Isomer import BuildIsomers
 from DARTassembler.src.assembly.Optimise import OPTIMISE
 from DARTassembler.src.assembly.Post_Filter import PostFilter
@@ -64,7 +65,8 @@ class DARTAssembly(object):
 
         # Set up logging
         verbosity2logging = {0: logging.ERROR, 1: logging.WARNING, 2: logging.INFO, 3: logging.DEBUG}
-        logging.basicConfig(level=verbosity2logging[self.verbose], format='%(message)s')
+        # Print to stdout
+        logging.basicConfig(level=verbosity2logging[self.verbose], format='%(message)s', stream=sys.stdout)
 
 
     def run_all_batches(self):
@@ -76,13 +78,13 @@ class DARTAssembly(object):
         self.assembled_complex_names = []
         self.last_ligand_db_path = None     # to avoid reloading the same ligand database in the next batch
 
-        logging.info(f"Starting DART Assembler. Output will be saved to {self.output_path}.")
-        logging.info(f"Running {self.n_batches} batches...")
+        logging.info(f"Starting DART Assembler. Output will be saved to `{self.output_path}`.")
+        logging.info(f"Running {self.n_batches} batches...\n")
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
             self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction,\
             self.optimisation_instruction, self.random_seed, self.total_charge, metal_list, self.topology_similarity,\
-            self.complex_name_appendix, self.geometry_modifier_filepath, bidentate_rotator, self.ligand_choice, \
+            self.complex_name_appendix, self.geometry_modifier_filepath, bidentate_rotator, \
                                  = self.settings.check_and_return_batch_settings(batch_settings)
 
             self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
@@ -138,60 +140,52 @@ class DARTAssembly(object):
     def run_batch(self):
         logging.info(f"====================      Batch {self.batch_idx}: {self.batch_name}      ====================")
 
+        random.seed(int(self.random_seed))  # Set random seed for reproducibility
+
         # Here we load the ligand database and avoid reloading the same ligand database if it is the same as the last one
         if self.check_if_reload_database():
             self.ligand_db = self.get_ligand_db()
         RCA = PlacementRotation(database=self.ligand_db)
-
         Topology, Similarity = RCA.format_topologies(self.topology_similarity)
-        choice = ChooseRandomLigands(
-                                        database=self.ligand_db,
-                                        topology=Topology,
-                                        instruction=Similarity,
-                                        metal_oxidation_state=int(self.metal_ox_state),
-                                        total_complex_charge=self.total_charge,
-                                        max_attempts=1000000,
-                                        ligand_choice=self.ligand_choice,
-                                        max_num_assembled_complexes=self.max_num_assembled_complexes,
-                                        )
-        ligand_chooser = choice.choose_ligands()
 
+        # Choose ligands for each complex
+        choice = LigandChoice(
+            database=self.ligand_db,
+            topology=Topology,
+            instruction=Similarity,
+            metal_oxidation_state=int(self.metal_ox_state),
+            total_complex_charge=self.total_charge,
+            max_num_assembled_complexes=self.max_num_assembled_complexes,
+        )
+        ligand_combinations = choice.choose_ligands()
 
-        if self.ligand_choice == 'random':
-            progressbar = tqdm(total=self.max_num_assembled_complexes, desc='Assembling complexes', unit=' complexes')
-        elif self.ligand_choice == 'all':
-            progressbar = tqdm(desc='Assembling complexes', unit=' complexes')
-        else:
-            raise ValueError(f"Unknown ligand choice '{self.ligand_choice}'")
+        # Set progress bar with or without final number of assembled complexes
+        if self.max_num_assembled_complexes == 'all':
+            # If we don't know the final number of assembled complexes, we don't set the total number of iterations for the progress bar
+            progressbar = tqdm(desc='Assembling complexes', unit=' complexes', file=sys.stdout)
+        else: # self.max_num_assembled_complexes is an integer
+            # If we know the final number of assembled complexes, we set the total number of iterations for the progress bar
+            progressbar = tqdm(total=self.max_num_assembled_complexes, desc='Assembling complexes', unit=' complexes', file=sys.stdout)
+
 
         j = 0  # Assembly iteration we are on
-        batch_sum_assembled_complexes = 0  # Number of assembled complexes produced
-        # Note: j is not always equal to batch_sum_assembled_complexes
+        batch_sum_assembled_complexes = 0  # Number of assembled complexes produced. Note: j is not always equal to batch_sum_assembled_complexes because of filters and isomers.
         while choice.if_make_more_complexes(batch_sum_assembled_complexes):
             logging.debug(f"###############################__Attempting_Assembly_of_Complex_#_{j}__###############################")
-            #
-            #
-            # 1. Choose Random seed
-            random.seed(int(self.random_seed) + j)
 
-            #
-            #
-            # 2. Choose Ligands
-            ligands = next(ligand_chooser)
-            if ligands is None:
-                break
+            # 1. Choose Ligands for Complex
+            try:
+                ligands = next(ligand_combinations)
+            except StopIteration:
+                break # If all ligand combinations are exhausted, stop the batch
 
-            #
-            #
-            # 3. Detect certain conditions which hinder complex assembly, e.g. tridentate non-planar
+            # 2. Detect certain conditions which hinder complex assembly, e.g. tridentate non-planar
             complex_can_be_assembled = self.check_if_complex_can_be_assembled(RCA, ligands)
             if not complex_can_be_assembled:
                 j += 1
                 continue
 
-            #
-            #
-            # 4. Obtain rotated building blocks
+            # 3. Obtain rotated building blocks
             # Here we pass in our ligands and get out our stk building blocks
             # The first line is a monkey patch to fix an inconvenience in stk where every molecule is sanitized with rdkit, which throws errors for some of our molecules
             with patch('stk.SmartsFunctionalGroupFactory', new=MONKEYPATCH_STK_SmartsFunctionalGroupFactory):  # Monkey patch to fix rdkit sanitization error
@@ -201,13 +195,11 @@ class DARTAssembly(object):
                                                                                                                 metal=self.metal_type,
                                                                                                                 build_options=self.build_options,
                                                                                                                 )
-            # 5. Optionally modify the exact 3D coordinates of the ligands.
+            # 4. Optionally modify the exact 3D coordinates of the ligands.
             if self.geometry_modifier_filepath is not None:
                 stk_ligand_building_blocks_list = self.modify_ligand_geometry(geometry_modifier_path=self.geometry_modifier_filepath, building_blocks=stk_ligand_building_blocks_list)
 
-            #
-            #
-            # 6. Generate Isomers
+            # 5. Generate Isomers
             Isomers = BuildIsomers(topology=self.topology_similarity,
                                    building_blocks_list=stk_ligand_building_blocks_list,
                                    metal_input=self.metal_type,
@@ -219,9 +211,7 @@ class DARTAssembly(object):
 
             Assembled_Complex_list, Building_Block_list = Isomers.Generate()
 
-            #
-            #
-            # 7. Post-Process
+            # 6. Post-Process
             # Post process includes error detection and optimization
             Post_Process_Complex_List = []
             logging.debug("entering post process")
@@ -235,6 +225,7 @@ class DARTAssembly(object):
                             metal_idx=0,
                             metal_charge=int(self.metal_ox_state),
                             )
+
                 if complex_is_good:  # New complex successfully built.
                     self.save_successfully_assembled_complex(tmc, ff_movie, metal_charge=int(self.metal_ox_state), ligands=ligands, note=note)
                     Post_Process_Complex_List.append(complex)
@@ -244,9 +235,7 @@ class DARTAssembly(object):
                     self.save_failed_assembled_complex(complex=tmc, ff_movie=ff_movie, ligands=ligands, note=note)
             logging.debug("Leaving post process")
 
-            #
-            #
-            # 8. Format Outputs
+            # 7. Format Outputs
             # Todo: this function should not be used anymore. It is only used for the old output format.
             RCA.output_controller_(list_of_complexes_wih_isomers=Post_Process_Complex_List,
                                    ligands=ligands,

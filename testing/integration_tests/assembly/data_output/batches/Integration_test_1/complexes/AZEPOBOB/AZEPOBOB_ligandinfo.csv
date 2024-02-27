@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PASQOS-02-a,C10H9N2O2S1,2,-1,N-N,24,221.254,0.2683276337834358,False,True,9.319845338309,2.031470628200882,bb8450165025fe9bde2716e4e5a5b99d,1,PASQOS,Au(1)
-Ligand 1,unq_CSD-OZUSIM-02-a,C5H1F6O2,2,-1,O-O,14,207.05141897800002,0.3152659775426917,False,False,7.0014477510012165,2.061630306421341,8b9c59c2957fc7f9b61fd2fbed67733a,2167,"OZUSIM, OZUSIM, OZUSOS, OZUSOS, OZUSOS01, ... (2162 more)","Cu(371), Dy(210), Tb(186), Gd(176), Eu(157), ... (31 more)"

@@ -9,7 +9,6 @@ batches:                              # List of batches to generate. The first o
   - name: Integration_test_7          # Name of the batch. Note the hyphen and whitespace in front of it to mark the start of the batch.
     topology: 2-1-1                   # Topology of the complexes. Options: '(2, 1, 1)', '(2, 2)', '(3, 2, 1)', '(4, 1, 1)', '(5, 1)'
     ligand_db_paths: [assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines, same_ligand_as_previous] # Path to the ligand database. Either list of paths or single path.
-    ligand_choice: random             # How to choose the ligands. Options: 'random', 'all'
     metal_center: Fe                  # Chemical symbol of the desired metal center.
     metal_oxidation_state: 2          # Oxidation state of the desired metal center.
     total_charge: -1                  # Total charge of the complex.
@@ -25,7 +24,6 @@ batches:                              # List of batches to generate. The first o
   - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
     max_num_complexes: 1
-    ligand_choice: random
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_1
@@ -41,7 +39,6 @@ batches:                              # List of batches to generate. The first o
   - ligand_db_paths: [./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, same_ligand_as_previous]
     isomers: lowest_energy
     max_num_complexes: 1
-    ligand_choice: random
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_6
@@ -57,7 +54,6 @@ batches:                              # List of batches to generate. The first o
   - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
     max_num_complexes: 1
-    ligand_choice: random
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_2
@@ -73,7 +69,6 @@ batches:                              # List of batches to generate. The first o
   - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: all
     max_num_complexes: 10
-    ligand_choice: random
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_3
@@ -89,7 +84,6 @@ batches:                              # List of batches to generate. The first o
   - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: all
     max_num_complexes: 5
-    ligand_choice: random
     metal_center: Fe
     metal_oxidation_state: 4
     name: Integration_test_4
@@ -105,7 +99,6 @@ batches:                              # List of batches to generate. The first o
   - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
     max_num_complexes: 2
-    ligand_choice: random
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_5
@@ -117,10 +110,9 @@ batches:                              # List of batches to generate. The first o
     geometry_modifier_filepath:
     bidentate_rotator: horseshoe
 
-  - ligand_db_paths: [./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, same_ligand_as_previous]
+  - ligand_db_paths: [./assembly/data_input/oer_ligands.jsonlines, assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines, same_ligand_as_previous]
     isomers: lowest_energy
-    max_num_complexes: 10
-    ligand_choice: all
+    max_num_complexes: all
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_8
@@ -131,3 +123,4 @@ batches:                              # List of batches to generate. The first o
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: horseshoe
+

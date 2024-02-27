@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-ETUCED-02-a,C16H9N1O2,2,0,O-O,28,247.25300000000001,0.7308531921616126,False,False,9.279481504372969,2.0100801536035684,dcd8e456c34022d415f5d39b680a288f,2,"ETUCED, ETUCED",Co(2)
+Ligand 1,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72303,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72298 more)","Ru(9546), Pd(9381), Pt(6800), Cu(6008), Zn(4575), ... (43 more)"
+Ligand 2,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72303,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72298 more)","Ru(9546), Pd(9381), Pt(6800), Cu(6008), Zn(4575), ... (43 more)"

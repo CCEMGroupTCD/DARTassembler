@@ -1,5 +1,6 @@
 import functools
 import json
+import sys
 from copy import deepcopy
 from tqdm import tqdm
 import pandas as pd
@@ -75,7 +76,7 @@ class BaselineDB:
     def to_json(self, path, desc: str='Save DB to json', json_lines: bool=False):
         if json_lines:
             with jsonlines.open(path, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as writer:
-                for key, mol in tqdm(self.db.items(), desc):
+                for key, mol in tqdm(self.db.items(), desc, file=sys.stdout):
                     data = {'key': key, 'value': mol.write_to_mol_dict()}
                     writer.write(data)
         else:
