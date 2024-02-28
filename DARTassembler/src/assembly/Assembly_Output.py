@@ -4,6 +4,8 @@ from typing import Union
 import json
 import pandas as pd
 import numpy as np
+import yaml
+
 from DARTassembler.src.assembly.Assembly_Input import AssemblyInput
 
 _gbl_optimization_movie = 'ffmovie.xyz'
@@ -61,7 +63,7 @@ class AssemblyOutput(object):
         self.batch_dir = Path(self.outdir, _gbl_batch_dir)
         if ensure_empty_output_dir:
             self.ensure_output_directory_empty()
-
+        self.settings_path = Path(self.outdir, 'input', 'assembly_input.yml')
 
     def save_global_optimization_movie(self, xyz_string):
         append_global_optimization_movie(xyz_string, self.outdir)
@@ -71,6 +73,20 @@ class AssemblyOutput(object):
 
     def save_run_info_table(self, df_info: pd.DataFrame):
         df_info.to_csv(self.run_info_table, index=False)
+
+    def save_settings(self, settings: dict):
+        """
+        Save settings as yaml file. Try to save them in the original order if possible (Pyyaml version >= 5.1).
+        """
+        # Make sure the directory exists
+        self.settings_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Save the settings dictionary as yaml
+        with open(self.settings_path, 'w') as f:
+            try:
+                yaml.dump(settings, f, sort_keys=False)
+            except Exception:   # If the keyword sort_keys is not yet supported in this yaml version
+                yaml.dump(settings, f)
 
     def ensure_output_directory_empty(self) -> None:
         """

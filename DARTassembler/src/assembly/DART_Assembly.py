@@ -105,6 +105,9 @@ class DARTAssembly(object):
         self.df_info = self.df_info[['attempt'] + [col for col in self.df_info.columns if col != 'attempt']]  # Move attempt column to front
         self.gbl_outcontrol.save_run_info_table(self.df_info)
 
+        # Save yaml file with input settings
+        self.gbl_outcontrol.save_settings(self.settings.global_settings)
+
         # Print nice summary per batch
         logging.info("\n============  Summary per batch  ============")
         for batch_idx, batch in enumerate(self.batches):

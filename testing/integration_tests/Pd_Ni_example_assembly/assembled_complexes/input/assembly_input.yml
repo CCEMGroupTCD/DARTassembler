@@ -1,0 +1,39 @@
+verbosity: 2
+ffmovie: true
+concatenate_xyz: true
+overwrite_output: true
+output_path: Pd_Ni_example_assembly/assembled_complexes
+complex_name_length: 8
+batches:
+- ligand_db_paths:
+  - Pd_Ni_example_assembly/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines
+  - Pd_Ni_example_assembly/ligand_databases/Br/ligand_db_Br.jsonlines
+  - Pd_Ni_example_assembly/ligand_databases/phenyl/ligand_db_phenyl.jsonlines
+  isomers: all
+  max_num_complexes: all
+  geometry_modifier_filepath: Pd_Ni_example_assembly/data_input/Pd_phenyl_geometry_modification.xyz
+  bidentate_rotator: slab
+  metal_center: Pd
+  metal_oxidation_state: 2
+  name: P_N_Donors_Pd_Metal_Centre
+  forcefield: false
+  random_seed: 0
+  topology: 2-1-1
+  total_charge: 0
+  complex_name_appendix: _PN_Pd
+- ligand_db_paths:
+  - Pd_Ni_example_assembly/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines
+  - Pd_Ni_example_assembly/ligand_databases/Br/ligand_db_Br.jsonlines
+  - Pd_Ni_example_assembly/ligand_databases/phenyl/ligand_db_phenyl.jsonlines
+  isomers: all
+  max_num_complexes: all
+  geometry_modifier_filepath: Pd_Ni_example_assembly/data_input/Ni_phenyl_geometry_modification.xyz
+  bidentate_rotator: slab
+  metal_center: Ni
+  metal_oxidation_state: 2
+  name: P_N_Donors_Ni_Metal_Centre
+  forcefield: false
+  random_seed: 0
+  topology: 2-1-1
+  total_charge: 0
+  complex_name_appendix: _PN_Ni
