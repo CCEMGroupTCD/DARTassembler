@@ -1,3 +1,5 @@
+import sys
+
 from tqdm import tqdm
 
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
@@ -59,7 +61,7 @@ class LigandFilters(object):
         self.Filter.filter_charge_confidence(filter_for="confident")
         self.Filter.filter_unconnected_ligands()
 
-        for idx, filter in tqdm(enumerate(self.filters), desc="Applying filters", unit=" filters"):
+        for idx, filter in tqdm(enumerate(self.filters), desc="Applying filters", unit=" filters", total=len(self.filters), file=sys.stdout):
             filtername = filter[_filter]
             unique_filtername = f"Filter {idx+1:02d}: {filtername}"    # name for printing filters for the user
             n_ligands_before = len(self.Filter.database.db)
