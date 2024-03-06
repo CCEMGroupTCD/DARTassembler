@@ -1,5 +1,6 @@
 input_ligand_db_path:           # path or nothing
 output_ligand_db_path: ligand_filters/data_output/filtered_ligand_db_v1.7.json   # path or nothing
+output_ligands_info: True   # True or False. If True, an overview of the filtered and passed ligands will be saved.
 
 filters:
 
@@ -15,9 +16,6 @@ filters:
 
   - filter: remove_ligands_with_beta_hydrogens
     remove_ligands_with_beta_hydrogens: True
-
-  - filter: strict_box_filter
-    strict_box_filter: False
 
   - filter: number_of_atoms
     min: 1
@@ -75,6 +73,11 @@ filters:
   - filter: atomic_neighbors
     atom: C
     neighbors: [H, H, H]
+    apply_to_denticities: 1
+
+  - filter: smarts
+    smarts: N=N
+    should_contain: False
     apply_to_denticities: 1
 
 

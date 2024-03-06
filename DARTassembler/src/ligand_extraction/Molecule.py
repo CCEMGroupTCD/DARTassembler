@@ -276,13 +276,51 @@ class RCA_Molecule(object):
 
         return info
 
-    def get_smiles(self) -> str:
+    def get_smiles(self) -> Union[str,None]:
         """
         Returns the SMILES string of the molecule.
         @return: SMILES string of the molecule.
         """
+        if not self.check_for_good_bond_orders(): # if the molecule has unknown bond orders, we cannot calculate the SMILES
+            return None
+
         smiles = graph_to_smiles(self.graph, element_label='node_label', bond_label='bond_type')
+
         return smiles
+
+    def get_rdkit_mol_from_smiles(self, sanitize: bool=False) -> Union[Chem.Mol,None]:
+        """
+        Returns the RDKit molecule constructed from the SMILES string of the molecule.
+        @return: RDKit molecule from the given SMILES string. Returns None if the molecule has unknown bond orders and therefore no SMILES can be calculated.
+        """
+        smiles = self.get_smiles()
+        if smiles is None:
+            return None
+
+        return Chem.MolFromSmiles(smiles, sanitize=sanitize)
+
+    def has_smarts_pattern(self, smarts: str, accept_none: bool=False) -> Union[bool,None]:
+        """
+        Checks whether the molecule matches the given SMARTS pattern.
+        @param smarts: SMARTS pattern to match.
+        @param accept_none: If True, return None if the molecule has unknown bond orders and therefore no SMILES can be calculated. If False, raise an error in this case.
+        @return: True if the molecule matches the SMARTS pattern, False otherwise.
+        """
+        mol = self.get_rdkit_mol_from_smiles()
+        # If the molecule has unknown bond orders, we cannot calculate the SMILES. In this case, return the specified value.
+        if mol is None:
+            if accept_none:
+                return None
+            else:
+                raise ValueError(f'Molecule has unknown bond orders and therefore no SMILES can be calculated. Cannot check for SMARTS pattern: {smarts}')
+
+        # Check if the molecule matches the SMARTS pattern.
+        pattern = Chem.MolFromSmarts(smarts)
+        if pattern is None:
+            raise ValueError(f'Invalid SMARTS pattern: {smarts}')
+        match = mol.HasSubstructMatch(pattern)
+
+        return match
 
     def count_C_H_bonds(self, node_label='node_label') -> int:
         """
@@ -1076,6 +1114,27 @@ class RCA_Ligand(RCA_Molecule):
         :return: list of elements in first coordination sphere
         """
         return [self.atomic_props["atoms"][i] for i in self.ligand_to_metal]
+
+    def get_xyz_file_format_string(self, comment: str='', with_metal:bool=False) -> str:
+        """
+        Returns a string that can be written into an .xyz file.
+        @comment: comment for the xyz file
+        @param with_metal: If True, the metal center in it's original position is included in the xyz file, otherwise not.
+        """
+        n_ligand_atoms = len(self.atomic_props['x'])
+        if with_metal:
+            str_ = f"{n_ligand_atoms+1}\n" # +1 for the metal
+            str_ += comment + '\n'
+            str_ += f"{self.original_metal_symbol}  {self.original_metal_position[0]}  {self.original_metal_position[1]}  {self.original_metal_position[2]} \n"     # metal atom
+        else:
+            str_ = f"{n_ligand_atoms}\n"
+            str_ += comment + '\n'
+
+        # Add ligand atoms
+        for i, _ in enumerate(self.atomic_props['x']):
+            str_ += f"{self.atomic_props['atoms'][i]}  {self.atomic_props['x'][i]}  {self.atomic_props['y'][i]}  {self.atomic_props['z'][i]} \n"
+
+        return str_
 
     def betaH_check(self, node_label='node_label') -> bool:
         """

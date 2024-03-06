@@ -19,9 +19,6 @@ def filter_ligands(filter_input_path: Union[str, Path], nmax: Union[int, None] =
         filter.output_ligand_db_path = Path(outpath)
 
     filter.save_filtered_ligand_db()
-    # filter.save_filter_tracking()
-    # filter.save_ligand_info_csv()
-    filter.print_filter_tracking()
 
     return filter
 
@@ -38,8 +35,6 @@ if __name__ == "__main__":
 
     filter = LigandFilters(filepath=ligand_filter_path, max_number=max_number)
     filter.save_filtered_ligand_db()
-    filter.save_filter_tracking()
-    filter.print_filter_tracking()
 
     # Check if the new filtered db is the same as the old one
     benchmark_dir = project_path().extend("src14_Assembly_Unit_Test", 'ligandfilters_benchmark')

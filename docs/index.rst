@@ -89,6 +89,7 @@ Eager to begin? Install DART or explore our tutorials for a hands-on demonstrati
    :caption: Additional Resources
 
    ./doc_files/part3_additional_resources/troubleshooting_and_faqs
+   ./doc_files/part3_additional_resources/tips_and_tricks
    ./doc_files/part3_additional_resources/current_limitations
    ./doc_files/part3_additional_resources/how_to_cite_dart
    ./doc_files/part3_additional_resources/version_history

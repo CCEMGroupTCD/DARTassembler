@@ -53,7 +53,7 @@ The assembler module is run from the command line by providing a single configur
         max_num_complexes: 100            # Maximum number of complexes to generate.
         forcefield: true                  # Whether to optimize the structures after generation with a force field.
         isomers: lowest_energy            # Which isomers to generate. :options: lowest_energy, all
-        bidentate_rotator: auto           # How to rotate the bidentate ligands. :options: horseshoe, slab, auto
+        bidentate_rotator: auto           # How to rotate bidentate ligands in square-planar complexes. :options: horseshoe, slab, auto
         geometry_modifier_filepath:       # Path to the geometry modifier file. If not given, no geometry modification is performed.
         random_seed: 0                    # Random seed for the generation of the complexes.
         complex_name_appendix:            # String to append to the randomly generated complex name.
@@ -68,7 +68,7 @@ The assembler module is run from the command line by providing a single configur
         max_num_complexes: 100            # Maximum number of complexes to generate.
         forcefield: false                 # Whether to optimize the structures after generation with a force field.
         isomers: all                      # Which isomers to generate. :options: lowest_energy, all
-        bidentate_rotator: horseshoe      # How to rotate the bidentate ligands. :options: horseshoe, slab, auto
+        bidentate_rotator: horseshoe      # How to rotate bidentate ligands in square-planar complexes. :options: horseshoe, slab, auto
         geometry_modifier_filepath: geometry_modifier.xyz      # Path to the geometry modifier file. If empty, no geometry modification is performed.
         random_seed: 1                    # Random seed for the generation of the complexes.
         complex_name_appendix: _2nd_batch # String to append to the randomly generated complex name.
@@ -200,7 +200,7 @@ Each batch in the assembler input file defines configurations for generating com
 
     :options: ``auto``, ``horseshoe``, ``slab``
 
-    How to assemble bidentate ligands to the complex. Effects only ligands with denticity of 2. ``horseshoe`` and ``slab`` are the shapes of the underlying potential energy surfaces. ``horseshoe`` works best for ligands with a planar metallacycle, while non-planar ligands often give better results with ``slab``. ``auto`` will choose the shape automatically based on the ligand geometry.
+    How to assemble bidentate ligands in square-planar complexes. Effects only the topologies ``2-2`` or ``2-1-1``. ``horseshoe`` and ``slab`` are the shapes of the underlying potential energy surfaces. ``horseshoe`` works best for ligands with a planar metallacycle, while non-planar ligands often give better results with ``slab``. ``auto`` will choose the shape automatically based on the ligand geometry.
 
     Tip: This option can severely affect the quality of generated complexes and how many make it through the post-assembly filter. For serious applications we recommend to set :confval:`max_num_complexes` to ``100``, try all three options and check how many complexes fail the post-assembly filter for each option (this info is returned at the end of the assembly if :confval:`verbosity` >= ``2``). Whichever option has the least complexes failing the post-assembly filter usually gives the highest quality complexes.
 

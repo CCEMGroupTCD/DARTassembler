@@ -389,37 +389,27 @@ class FilterStage:
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Atomic Neighbors Filter: {atom} {neighbors}"
 
-    def filter_sub_structure_search(self, denticity: int = None, SMARTS: str = None, instruction: str = None):
-        warnings.warn("This Filter is still under active developement please do not use")
-        raise NotImplementedError
-        # filter_for = even --> This will extract all ligands with an even number of electrons
-        # filter_for = odd  --> This will extract all ligands with an odd number of electrons
-        new_db = deepcopy(self.database.db)
-        if ((instruction != "must_include") and (instruction != "must_exclude")) or (denticity is None) or (SMARTS is None):
-            print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
+    def filter_smarts_substructure_search(self, smarts: str, should_be_present: bool, denticities: list = None):
+        """
+        This function will filter out all ligands in which the specified SMARTS pattern is present or not present. If the ligand has no valid SMILES string, it is excluded automatically.
+        @param smarts: str -> SMARTS pattern to search for.
+        @param should_be_present: bool -> If True, the ligands with the SMARTS pattern present will be kept. If False, the ligands with the SMARTS pattern present will be removed.
+        @param denticities: list -> The denticity of the ligands to filter. If None, all denticities are considered.
+        @return: None
+        """
+        denticities = self.ensure_denticities_is_list(denticities)
 
-        else:
-            mol_sub_struct = rdmolfiles.MolFromSmarts(SMARTS)
-            for unq_name, ligand in self.database.db.items():
-                ligand_mol_string = ligand_to_mol(ligand)
-                ligand_mol = rdmolfiles.MolFromMolBlock(ligand_mol_string, removeHs=False, sanitize=False, strictParsing=False)
-                test = list(ligand_mol.GetSubstructMatch(mol_sub_struct))
-                test_bonds = []
-                if test == []:
-                    print("No fragment detected")
-                else:
-                    print("fragment detected")
-                    for bond in mol_sub_struct.GetBonds():
-                        aid1 = test[bond.GetBeginAtomIdx()]
-                        aid2 = test[bond.GetEndAtomIdx()]
-                        test_bonds.append(ligand_mol.GetBondBetweenAtoms(aid1, aid2).GetIdx())
-                    d = rdMolDraw2D.MolDraw2DCairo(500, 500)
-                    rdMolDraw2D.PrepareAndDrawMolecule(d, ligand_mol, highlightAtoms=test, highlightBonds=test_bonds)
-                    d.FinishDrawing()
-                    p = d.GetDrawingText()
-                    with open('tmp.png', 'wb') as f:
-                        f.write(p)
-                    print("done")
+        to_delete = []
+        for unq_name, ligand in self.database.db.items():
+            if ligand.denticity in denticities:
+                has_pattern = ligand.has_smarts_pattern(smarts, accept_none=True)
+                if has_pattern is None:  # If the ligand has no valid SMILES string, exclude it automatically.
+                    to_delete.append(unq_name)
+                if has_pattern != should_be_present:
+                    to_delete.append(unq_name)
+
+        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+        self.filter_tracking[len(self.filter_tracking)] = f"SMARTS Filter: {smarts} {should_be_present}"
 
     def filter_symmetric_monodentate_ligands(self, instruction: str = None, threshold: float = None):
         to_delete = []
@@ -482,25 +472,6 @@ class FilterStage:
                     pass
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"monodentate_filter: {threshold}"
-
-    # def filter_atom_count(self, number: int, instruction: str, denticity: list=None):
-    #     denticity = self.ensure_denticities_is_list(denticity)
-    #
-    #     to_delete = []
-    #     if (instruction != "greater_than") and (instruction != "less_than"):
-    #         print("!!!Warning!!! -> Arguments specified incorrectly  -> Proceeding to next filter")
-    #
-    #     else:
-    #         for unq_name, ligand in self.database.db.items():
-    #             num_atoms = ligand.global_props['n_atoms']
-    #             if ligand.denticity in denticity:
-    #                 if (num_atoms < number) and (instruction == "greater_than"):
-    #                     to_delete.append(unq_name)
-    #                 elif (num_atoms >= number) and (instruction == "less_than"):
-    #                     to_delete.append(unq_name)
-    #
-    #     self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
-    #     self.filter_tracking[len(self.filter_tracking)] = f"Atom Number Filter: [{number}] [{instruction}]"
 
     def ensure_denticities_is_list(self, denticities):
         if isinstance(denticities, int):

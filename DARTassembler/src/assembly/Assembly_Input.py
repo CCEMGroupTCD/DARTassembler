@@ -55,6 +55,7 @@ _same_ligand_keyword = 'same_ligand_as_previous'
 # Global
 _ligand_db_path = 'input_ligand_db_path'
 _output_ligand_db_path = 'output_ligand_db_path'
+_output_ligands_info = 'output_ligands_info'
 _filters = 'filters'
 # Filters
 _filter = 'filter'
@@ -99,6 +100,9 @@ _md_bond_length = 'metal_donor_bond_lengths'
 _min = 'min'
 _max = 'max'
 _remove_missing_bond_orders = 'remove_ligands_with_missing_bond_orders'
+_smarts_filter = 'smarts'
+_smarts = 'smarts'
+_should_be_present = 'should_contain'
 
 
 
@@ -413,6 +417,7 @@ class LigandFilterInput(BaseInput):
     valid_keys = {
         _ligand_db_path: [str, Path, type(None)],
         _output_ligand_db_path: [str, Path, type(None)],
+        _output_ligands_info: [bool, str],
         _filters: [list, tuple],
     }
 
@@ -491,7 +496,12 @@ class LigandFilterInput(BaseInput):
             _atom: [str],
             _neighbors: [list, tuple],
             _denticities: [list, tuple, type(None), int],
-            }
+            },
+        _smarts_filter: {
+            _smarts: [str],
+            _should_be_present: [bool, str],
+            _denticities: [list, tuple, type(None), int],
+            },
         }
 
 
@@ -532,8 +542,8 @@ class LigandFilterInput(BaseInput):
         self.check_input_types(valid_keys=self.valid_keys, settings=settings)
         self.ligand_db_path = self.check_ligand_db_path(settings)
         self.output_ligand_db_path = self.get_path_from_input(path=settings[_output_ligand_db_path], varname=_output_ligand_db_path, allow_none=True)
+        self.output_filtered_ligands = self.get_bool_from_input(input=settings[_output_ligands_info], varname=_output_ligands_info)
         self.output_ligand_db_path = self.output_ligand_db_path or self.get_output_ligand_db_path()
-
 
         # Check all input types
         self.filters = self.check_filters(all_filters=settings[_filters])
@@ -616,6 +626,10 @@ class LigandFilterInput(BaseInput):
                 out_filter_settings[_atom] = self.get_list_of_chemical_elements_from_input(input=filter_values[_atom], varname=f'{_atm_neighbors}:{_atom}')[0]
                 out_filter_settings[_neighbors] = self.get_list_of_chemical_elements_from_input(input=filter_values[_neighbors], varname=f'{_atm_neighbors}:{_neighbors}')
                 out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_atm_neighbors}:{_denticities}', allow_none=True)
+            elif self.filtername == _smarts_filter:
+                out_filter_settings[_smarts] = filter_values[_smarts]
+                out_filter_settings[_should_be_present] = self.get_bool_from_input(input=filter_values[_should_be_present], varname=_should_be_present)
+                out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_smarts_filter}:{_denticities}', allow_none=True)
             else:
                 self.raise_error(f"Filter '{self.filtername}' is not a valid filter.", varname=_filter)
 
