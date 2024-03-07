@@ -37,8 +37,14 @@ def make_ligand_db_csv(input_path: Union[str, Path], output_path: Union[str, Pat
 
     db = LigandDB.load_from_json(input_path, n_max=nmax)
 
+    # Save to csv
     output_path = get_ligand_csv_output_path(output_path, input_path)
     db.save_reduced_csv(output_path)
+
+    # Save concatenated xyz file
+    xyz_output_name = f'concat_{output_path.with_suffix("").name}.xyz'
+    xyz_output_path = output_path.parent.joinpath(xyz_output_name)
+    db.save_concat_xyz(xyz_output_path, with_metal=True)
 
     print(f"Saved `{Path(input_path).name}` ligand database as .csv to `{output_path}`.")
 

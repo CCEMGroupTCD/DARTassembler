@@ -1,5 +1,5 @@
 16
-Ligand ID: unq_CSD-PASTEI-01-b  ===  Stoichiometry: C5H9Si1  ===  Charge: -1  ===  Denticity: 1
+Ligand ID: unq_CSD-PASTEI-01-b  ===  Stoichiometry: C5H9Si1  ===  Charge: -1  ===  Donors: C
 Ru  0.0  0.0  0.0 
 Si  4.2681  -2.7397  -0.4637 
 C  1.7056  -1.1393  -0.2207 
@@ -17,7 +17,7 @@ H  5.0013  -2.1768  1.7068
 H  5.7266  -1.2356  0.6982 
 H  6.2274  -2.7021  0.9027 
 16
-Ligand ID: unq_CSD-PASMOL-01-c  ===  Stoichiometry: C6H9  ===  Charge: -1  ===  Denticity: 1
+Ligand ID: unq_CSD-PASMOL-01-c  ===  Stoichiometry: C6H9  ===  Charge: -1  ===  Donors: C
 Pt  0.0  0.0  0.0 
 C  1.8713999999999995  0.2224999999999997  -0.6517999999999999 
 C  3.0063000000000004  0.27790000000000026  -1.0505 

@@ -4,6 +4,11 @@ Must:
 - paths:
     - check default paths in Paths.py
 
+Update docs:
+- dbinfo has concat xyz files
+- ligandfilters has new output_ligands_info option and describe output
+- ligandfilters has new filters: smarts, atomic neighbors
+
 Should:
 - ligand filtering
     - add option to filter several ligand db at once so that the full ligand db has to be read in only once

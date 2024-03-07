@@ -247,7 +247,7 @@ class LigandDB(MoleculeDB):
         df_ligand_info.to_csv(outpath, index=False)
         return
 
-    def save_concat_xyz(self, outpath: Union[str, Path], with_metal: bool=False) -> None:
+    def save_concat_xyz(self, outpath: Union[str, Path], with_metal: bool=True) -> None:
         """
         Save a concatenated xyz file with all ligands in the database. This could be also implemented as a method of the MolecularDB class, but the ligand class additionally has the possibility to add the metal to the ligand.
         :param outpath: Path to the output file

@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 def test_make_ligand_db_csv(nmax=1000):
-    output_path = project_path().extend('testing', 'integration_tests', 'make_ligand_db_csv', 'data_output', 'MetaLig_v1.7.csv')
+    output_path = project_path().extend('testing', 'integration_tests', 'dbinfo', 'data_output', 'MetaLig_v1.7.csv')
     db = make_ligand_db_csv(input_path='metalig', output_path=output_path, nmax=nmax)
 
     #%% ==============    Doublecheck refactoring    ==================
