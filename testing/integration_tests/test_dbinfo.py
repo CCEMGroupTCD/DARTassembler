@@ -1,14 +1,14 @@
 """
 Integration test for outputting a csv file of the ligand database.
 """
-from DARTassembler.make_ligand_db_csv import make_ligand_db_csv
+from DARTassembler.make_ligand_db_csv import save_dbinfo
 from DARTassembler.src.constants.Paths import project_path
 from pathlib import Path
 
 
 def test_make_ligand_db_csv(nmax=1000):
     output_path = project_path().extend('testing', 'integration_tests', 'dbinfo', 'data_output', 'MetaLig_v1.7.csv')
-    db = make_ligand_db_csv(input_path='metalig', output_path=output_path, nmax=nmax)
+    db = save_dbinfo(input_path='metalig', output_path=output_path, nmax=nmax)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest

@@ -24,9 +24,9 @@ def get_ligand_csv_output_path(output_path: Union[str, Path], input_path: Union[
 
     return output_path
 
-def make_ligand_db_csv(input_path: Union[str, Path], output_path: Union[str, Path, None] = None, nmax: Union[int, None] = None):
+def save_dbinfo(input_path: Union[str, Path], output_path: Union[str, Path, None] = None, nmax: Union[int, None] = None):
     """
-    Reads in the given ligand database and saves a .csv file with the most important information about all ligands in the database.
+    Reads in the given ligand database and saves a .csv file and a concatenated .xyz file with an overview of the ligands.
     :param input_path: Path to the ligand database
     :param output_path: Path to the output .csv file. If None, the output file will be saved in the same directory as the input file with the same name as the input file but with the .csv extension.
     :param nmax: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.
@@ -35,17 +35,24 @@ def make_ligand_db_csv(input_path: Union[str, Path], output_path: Union[str, Pat
     if str(input_path).lower() == 'metalig':  # shortcut for entire MetaLig
         input_path = default_ligand_db_path
 
+    print(f"===============     DBINFO MODULE     =================")
+    print(f"This module reads in a ligand db from file and saves a .csv file and a concatenated .xyz file with an overview of the ligands in the database.")
+    print(f'Reading ligand database from `{input_path.name}`...')
     db = LigandDB.load_from_json(input_path, n_max=nmax)
 
     # Save to csv
+    print('Saving ligand database to csv file...')
     output_path = get_ligand_csv_output_path(output_path, input_path)
     db.save_reduced_csv(output_path)
+    print(f'Saved to `{output_path.name}`.')
 
     # Save concatenated xyz file
+    print('Saving ligand database to concatenated xyz file...')
     xyz_output_name = f'concat_{output_path.with_suffix("").name}.xyz'
     xyz_output_path = output_path.parent.joinpath(xyz_output_name)
     db.save_concat_xyz(xyz_output_path, with_metal=True)
+    print(f'Saved to `{xyz_output_name}`.')
 
-    print(f"Saved `{Path(input_path).name}` ligand database as .csv to `{output_path}`.")
+    print(f"Done! Exiting dbinfo module.")
 
     return db

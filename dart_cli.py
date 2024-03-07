@@ -1,5 +1,5 @@
 import argparse
-from DARTassembler import filter_ligands, assemble_complexes, make_ligand_db_csv
+from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo
 
 
 def main():
@@ -23,7 +23,7 @@ Examples:
     elif args.module == 'assembler':
         assemble_complexes(args.path)
     elif args.module == 'dbinfo':
-        make_ligand_db_csv(args.path)
+        save_dbinfo(args.path)
     else:
         raise ValueError(f'Unknown module {args.module}.')
 
