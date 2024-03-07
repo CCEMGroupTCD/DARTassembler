@@ -55,7 +55,7 @@ class LigandFilters(object):
         self.df_all_ligands = self.get_ligand_df()
         self.df_all_ligands['Filter'] = None    # initialize column for filter tracking
         if self.output_info:
-            self.all_xyz_strings = {ligand_id: ligand.get_xyz_file_format_string(comment='placeholder', with_metal=True) for ligand_id, ligand in self.Filter.database.db.items()}   # save xyz strings for outputting later and keep a placeholder comment for replacing later
+            self.all_xyz_strings = {ligand_id: ligand.get_xyz_file_format_string(comment=None, with_metal=True) for ligand_id, ligand in self.Filter.database.db.items()}   # save xyz strings for outputting later and keep a placeholder comment for replacing later
 
         # mandatory filters
         self.Filter.filter_charge_confidence(filter_for="confident")
@@ -171,11 +171,6 @@ class LigandFilters(object):
             ligand_was_filtered = ~self.df_all_ligands.index.isin(self.Filter.database.db.keys()) & (self.df_all_ligands['Filter'].isna())
             self.df_all_ligands['Filter'].loc[ligand_was_filtered] = unique_filtername
 
-            # If specified, save concatenated xyz files of all filtered out ligands
-            if self.output_info:
-                filtered_ligand_ids = self.df_all_ligands.index[ligand_was_filtered]
-                self.save_filtered_ligands_xyz_files(filtered_ligand_ids, unique_filtername)
-
             n_ligands_after = len(self.Filter.database.db)
             self.filter_tracking.append({
                 "filter": filtername,
@@ -188,7 +183,7 @@ class LigandFilters(object):
 
         self.n_ligands_after = len(self.Filter.database.db)
 
-        # Nicen up the ligand df
+        # Clean up the ligand df
         self.df_all_ligands['Filter'].fillna('Passed', inplace=True)      # fill in 'Passed' for ligands that were not filtered out
         self.df_all_ligands.set_index('Ligand ID', inplace=True)    # set index to ligand ID, making sure that the column in the csv is named 'Ligand ID'
         columns = ['Filter'] + [col for col in self.df_all_ligands.columns if col != 'Filter']
@@ -196,21 +191,6 @@ class LigandFilters(object):
         self.df_all_ligands = self.df_all_ligands.sort_values(by='Filter')# sort by filter name
 
         return self.Filter.database
-
-    def save_filtered_ligands_xyz_files(self, filtered_ligand_ids: list, unique_filtername: str):
-        """
-        Save concatenated xyz files of all filtered out ligands for each filter.
-        """
-        xyz_filename = f"concat_{unique_filtername.replace(' ', '')}.xyz"
-        xyz_filepath = Path(self.xyz_outdir, xyz_filename)
-        with open(xyz_filepath, 'w') as f:
-            for ligand_id in filtered_ligand_ids:
-                xyz_string = self.all_xyz_strings[ligand_id]
-                comment = f"Ligand ID: {ligand_id}. Filtered out by {unique_filtername}."
-                xyz_string = xyz_string.replace('placeholder', comment)  # replace placeholder comment with actual comment
-                f.write(xyz_string)
-
-        return
 
     def get_filter_tracking_string(self) -> str:
         df_filters = pd.DataFrame(self.filter_tracking)
@@ -262,7 +242,10 @@ class LigandFilters(object):
 
         return
 
-    def save_filtered_ligands_output(self):
+    def save_filtered_ligands_output(self) -> None:
+        """
+        Saves a directory with an overview of all ligands that were filtered out and passed. This overview contains both a csv file with all ligands and one concatenated xyz file for each filter plus the passed ligands.
+        """
 
         # Save stdout output of filtering to info directory
         with open(Path(self.outdir, "filters.txt"), 'w') as f:
@@ -274,15 +257,20 @@ class LigandFilters(object):
         # Save concatenated xyz files
         modes = ['Passed'] + [filter['unique_filtername'] for filter in self.filter_tracking]
         for mode in modes:
+            # Get ligand IDs that were filtered out with this filter or passed
             filtered_ligand_ids = self.df_all_ligands.index[self.df_all_ligands['Filter'] == mode]
+
+            # Remove spaces from mode name so that a file has never a space in its name
             xyz_filename = f"concat_{mode.replace(' ', '')}.xyz"
             xyz_filepath = Path(self.xyz_outdir, xyz_filename)
+
+            # Write concatenated xyz file
             with open(xyz_filepath, 'w') as f:
                 for ligand_id in filtered_ligand_ids:
                     xyz_string = self.all_xyz_strings[ligand_id]
-                    comment = f"Ligand ID: {ligand_id}. {mode}."
-                    xyz_string = xyz_string.replace('placeholder', comment)  # replace placeholder comment with actual comment
                     f.write(xyz_string)
+
+        return
 
     def get_ligand_df(self):
         db = self.Filter.database

@@ -1115,12 +1115,26 @@ class RCA_Ligand(RCA_Molecule):
         """
         return [self.atomic_props["atoms"][i] for i in self.ligand_to_metal]
 
+    def get_charge_as_int(self) -> Union[float, int]:
+        """
+        Returns the charge of the ligand as an integer.
+        """
+        if not hasattr(self, 'pred_charge'):
+            raise AttributeError('The charge of the ligand has not been predicted yet.')
+        elif np.isnan(self.pred_charge):
+            return self.pred_charge
+        else:
+            return int(self.pred_charge)
+
     def get_xyz_file_format_string(self, comment: str='', with_metal:bool=False) -> str:
         """
         Returns a string that can be written into an .xyz file.
-        @comment: comment for the xyz file
+        @comment: comment for the xyz file.
         @param with_metal: If True, the metal center in it's original position is included in the xyz file, otherwise not.
         """
+        if comment is None: # default comment specifying important properties of the ligand
+            comment = f'Ligand ID: {self.unique_name}  ===  Stoichiometry: {self.stoichiometry}  ===  Charge: {self.get_charge_as_int()}  ===  Denticity: {self.denticity}'
+
         n_ligand_atoms = len(self.atomic_props['x'])
         if with_metal:
             str_ = f"{n_ligand_atoms+1}\n" # +1 for the metal
