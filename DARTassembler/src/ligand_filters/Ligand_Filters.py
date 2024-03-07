@@ -213,20 +213,23 @@ class LigandFilters(object):
         return
 
     def get_filter_tracking_string(self) -> str:
-        output= "==================================== FILTERS OVERVIEW ====================================\n"
         df_filters = pd.DataFrame(self.filter_tracking)
         df_filters = df_filters[['unique_filtername', 'n_ligands_removed', 'n_ligands_after', 'full_filter_options']]
         df_filters = df_filters.rename(columns={'n_ligands_removed': 'Ligands removed', 'n_ligands_after': 'Ligands passed', 'unique_filtername': 'Filters', 'full_filter_options': 'Filter options'})
-
         df_filters = df_filters.set_index('Filters')
-        output += df_filters.to_string(justify='center', index_names=False) + '\n\n'
+
+        output = "================================ FILTER OPTIONS SPECIFIED ===============================\n"
+        output += df_filters[['Filter options']].to_string(justify='center', index_names=False) + '\n\n'
+
+        output += "==================================== FILTER RESULTS ====================================\n"
+        output += df_filters[['Ligands removed', 'Ligands passed']].to_string(justify='center', index_names=False, max_colwidth=50) + '\n\n'
 
         # Count denticities of all passed ligands
         denticity_count = pd.Series(
             [lig.denticity for lig in self.Filter.database.db.values()]).value_counts().to_dict()
         dent_output = ', '.join(sorted([f'{dent}: {count}' for dent, count in denticity_count.items()]))
 
-        output += "===========   Total   ===========\n"
+        output += "===========   TOTAL   ===========\n"
         output += f"Before filtering:  {self.n_ligands_before} ligands\n"
         output += f"Filtered out:      {self.n_ligands_before - self.n_ligands_after} ligands\n"
         output += f"Passed:            {self.n_ligands_after} ligands\n"

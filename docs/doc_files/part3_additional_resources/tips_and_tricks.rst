@@ -16,7 +16,7 @@ Concatenated xyz files can be visualized quickly with the free software ``ase``,
 
     ase gui <path_to_xyz_file>
 
-**Display bonds:** Per default, ``ase`` does not display bonds. To display bonds, you can press `Ctrl` + `B` in the ase viewer. Since both bonds and background are colored white, you can also change the default settings of ase such that it uses a black background. To do that, create a file under the path `~/.ase/gui.py` and add the following line:
+**Display bonds:** Per default, ``ase`` does not display bonds. To display bonds, you can press `Ctrl` + `B` in the ase viewer. Some versions of ase have white bonds which clash with the white background. In this case, you can change the default settings of ase such that it uses a black background. To do that, create a file under the path `~/.ase/gui.py` and add the following line:
 
 .. code-block:: python
 
