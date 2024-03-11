@@ -10,7 +10,7 @@ from DARTassembler.src.ligand_filters.constant_Ligands import get_monodentate_li
 from rdkit.Chem import rdmolfiles
 from DARTassembler.src.assembly.building_block_utility import ligand_to_mol
 from rdkit.Chem.Draw import rdMolDraw2D
-from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist
+from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist, has_smarts_pattern
 
 
 class FilterStage:
@@ -391,7 +391,7 @@ class FilterStage:
 
     def filter_smarts_substructure_search(self, smarts: str, should_be_present: bool, denticities: list = None):
         """
-        This function will filter out all ligands in which the specified SMARTS pattern is present or not present. If the ligand has no valid SMILES string, it is excluded automatically.
+        This function will filter out all ligands in which the specified SMARTS pattern is present or not present. If the ligand has no valid SMILES string, it is passed through.
         @param smarts: str -> SMARTS pattern to search for.
         @param should_be_present: bool -> If True, the ligands with the SMARTS pattern present will be kept. If False, the ligands with the SMARTS pattern present will be removed.
         @param denticities: list -> The denticity of the ligands to filter. If None, all denticities are considered.
@@ -402,9 +402,11 @@ class FilterStage:
         to_delete = []
         for unq_name, ligand in self.database.db.items():
             if ligand.denticity in denticities:
-                has_pattern = ligand.has_smarts_pattern(smarts, accept_none=True)
-                if has_pattern is None:  # If the ligand has no valid SMILES string, exclude it automatically.
-                    to_delete.append(unq_name)
+                smiles = ligand.get_smiles(with_metal='Hg')   # Get molecule from SMILES string connected to Hg metal center
+                if smiles is None:  # If the ligand has no valid SMILES string, pass it through.
+                    continue
+
+                has_pattern = has_smarts_pattern(smarts=smarts, smiles=smiles)
                 if has_pattern != should_be_present:
                     to_delete.append(unq_name)
 

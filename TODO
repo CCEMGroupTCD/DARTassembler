@@ -8,6 +8,8 @@ Update docs:
 - dbinfo has concat xyz files
 - ligandfilters has new output_ligands_info option and describe output
 - ligandfilters has new filters: smarts, atomic neighbors
+    - smarts: recommend to put the smarts in '' to avoid yaml errors
+- concat module
 
 Should:
 - ligand filtering

@@ -4,6 +4,9 @@ This module is a wrapper for the ligand filtering code. It takes in a filter inp
 from DARTassembler.src.ligand_filters.Ligand_Filters import LigandFilters
 from typing import Union
 from pathlib import Path
+import matplotlib
+matplotlib.use('TkAgg') # for visualization of graphs
+
 
 def filter_ligands(filter_input_path: Union[str, Path], nmax: Union[int, None] = None, outpath: Union[str, Path] = None):
     """

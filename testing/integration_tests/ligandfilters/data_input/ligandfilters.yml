@@ -1,5 +1,5 @@
 input_ligand_db_path:           # path or nothing
-output_ligand_db_path: ligand_filters/data_output/filtered_ligand_db_v1.7.json   # path or nothing
+output_ligand_db_path: ligandfilters/data_output/filtered_ligand_db_v1.7.json   # path or nothing
 output_ligands_info: True   # True or False. If True, an overview of the filtered and passed ligands will be saved.
 
 filters:
@@ -79,6 +79,11 @@ filters:
     smarts: N=N
     should_contain: False
     apply_to_denticities: 1
+
+  - filter: smarts  # remove C with exactly 2 H atoms
+    smarts: '[C&H2]'
+    should_contain: False
+    apply_to_denticities: 2
 
 
 

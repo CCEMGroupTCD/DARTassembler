@@ -1,5 +1,5 @@
 import collections
-from typing import List, Tuple
+from typing import List, Tuple, Union
 import networkx as nx
 from rdkit import Chem
 import numpy as np
@@ -10,6 +10,34 @@ import re
 unknown_rdkit_bond_orders = [0, 20, 21]
 
 from sympy import Point3D, Plane
+
+def get_rdkit_mol_from_smiles(smiles: str, sanitize: bool=False) -> Chem.Mol:
+    """
+    Get an RDKit molecule from a SMILES string. If sanitize is set to False, the molecule will not be sanitized but an attempt will be made to calculate properties important for other functions.
+    """
+    mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
+    if not sanitize:
+        # Let rdkit calculate properties important for other functions, especially HasSubstructMatch(). Usually, those properties would be called by the sanitization process, but here we need to do that manually so that the right properties are set.
+        Chem.FastFindRings(mol)
+        mol.UpdatePropertyCache(strict=False)
+
+    return mol
+
+def has_smarts_pattern(smarts: str, smiles: str) -> bool:
+    """
+    Checks whether the molecule matches the given SMARTS pattern.
+    @param smarts: SMARTS pattern to match.
+    @return: True if the molecule matches the SMARTS pattern, False otherwise.
+    """
+    mol = get_rdkit_mol_from_smiles(smiles)
+
+    # Check if the molecule matches the SMARTS pattern.
+    pattern = Chem.MolFromSmarts(smarts)
+    if pattern is None:
+        raise ValueError(f'Invalid SMARTS pattern: {smarts}')
+    match = mol.HasSubstructMatch(pattern)
+
+    return match
 
 def stoichiometry2atomslist(stoichiometry: str) -> list[str]:
     """
@@ -94,6 +122,8 @@ def are_points_coplanar(points, dist=0.1):
 
 def graph_to_rdkit_mol(graph: nx.Graph, element_label: str='node_label', bond_label: str='bond_type') -> Chem.Mol:
     """
+    DEPRECATED: Use get_rdkit_mol_from_smiles() instead.
+
     Create an rdkit mol object from a graph. Note that the bond type must be specified in the graph under the attribute called `edge_label`.
     @param graph: input graph of the molecule
     @param element_label: element label for the node dictionary

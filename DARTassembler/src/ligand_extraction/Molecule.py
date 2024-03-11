@@ -299,29 +299,6 @@ class RCA_Molecule(object):
 
         return Chem.MolFromSmiles(smiles, sanitize=sanitize)
 
-    def has_smarts_pattern(self, smarts: str, accept_none: bool=False) -> Union[bool,None]:
-        """
-        Checks whether the molecule matches the given SMARTS pattern.
-        @param smarts: SMARTS pattern to match.
-        @param accept_none: If True, return None if the molecule has unknown bond orders and therefore no SMILES can be calculated. If False, raise an error in this case.
-        @return: True if the molecule matches the SMARTS pattern, False otherwise.
-        """
-        mol = self.get_rdkit_mol_from_smiles()
-        # If the molecule has unknown bond orders, we cannot calculate the SMILES. In this case, return the specified value.
-        if mol is None:
-            if accept_none:
-                return None
-            else:
-                raise ValueError(f'Molecule has unknown bond orders and therefore no SMILES can be calculated. Cannot check for SMARTS pattern: {smarts}')
-
-        # Check if the molecule matches the SMARTS pattern.
-        pattern = Chem.MolFromSmarts(smarts)
-        if pattern is None:
-            raise ValueError(f'Invalid SMARTS pattern: {smarts}')
-        match = mol.HasSubstructMatch(pattern)
-
-        return match
-
     def count_C_H_bonds(self, node_label='node_label') -> int:
         """
         Returns the number of C-H bonds in the molecule.
@@ -923,6 +900,43 @@ class RCA_Ligand(RCA_Molecule):
 
         assert nx.is_connected(self.graph), f'Graph of ligand with name {self.name} is not fully connected.'
 
+    def get_smiles(self, with_metal: str=None) -> Union[str,None]:
+        """
+        Returns the SMILES string of the molecule.
+        @param with_metal: If not None, the ligand graph is connected to the metal with the specified symbol. If 'original', the original metal symbol is used. If None, the ligand is not connected to any metal.
+        @return: SMILES string of the molecule.
+        """
+        if not self.check_for_good_bond_orders(): # if the molecule has unknown bond orders, we cannot calculate the SMILES
+            return None
+
+        if with_metal is None:
+            graph = self.graph
+        else:   # connect ligand to metal center
+            if with_metal == 'original':
+                with_metal = self.original_metal_symbol
+
+            if not DART_Element(with_metal).is_metal:
+                raise ValueError(f'Invalid input for with_metal: {with_metal}. Must be a metal symbol.')
+
+            graph = self.get_graph_with_metal(metal_symbol=with_metal)
+
+        smiles = graph_to_smiles(graph, element_label='node_label', bond_label='bond_type')
+
+        return smiles
+
+    def get_rdkit_mol_from_smiles(self, sanitize: bool=False, with_metal: str=None) -> Union[Chem.Mol,None]:
+        """
+        Returns the RDKit molecule constructed from the SMILES string of the molecule.
+        @param sanitize: If True, the molecule is sanitized. If False, the molecule is not sanitized.
+        @param with_metal: If not None, the ligand graph is connected to the metal with the specified symbol. If 'original', the original metal symbol is used. If None, the ligand is not connected to any metal.
+        @return: RDKit molecule from the given SMILES string. Returns None if the molecule has unknown bond orders and therefore no SMILES can be calculated.
+        """
+        smiles = self.get_smiles(with_metal=with_metal)
+        if smiles is None:
+            return None
+
+        return Chem.MolFromSmiles(smiles, sanitize=sanitize)
+
     def get_ligand_stats(self) -> dict:
         """
         Returns a dictionary with potentially interesting ligand statistics.
@@ -1067,9 +1081,10 @@ class RCA_Ligand(RCA_Molecule):
         return [self.original_metal_position] + self.get_coordinates_list()
 
 
-    def get_graph_with_metal(self, metal_symbol: Union[str, None]=None, return_metal_index: bool=False):
+    def get_graph_with_metal(self, metal_symbol: Union[str, None]=None, return_metal_index: bool=False) -> Union[nx.Graph, tuple[nx.Graph, int]]:
         """
-        Returns the graph of the ligand but with the original metal connected to the coordinating atoms.
+        Returns the graph of the ligand but with the specified metal center connected to the coordinating atoms. The metal is connected to the coordinating atoms with a bond type of 1.
+        @param metal_symbol: Symbol of the metal. If None, the original metal symbol is used.
         @return:
         """
         graph_with_metal = nx.Graph(self.graph)   # unfreeze graph
@@ -1078,11 +1093,11 @@ class RCA_Ligand(RCA_Molecule):
 
         # Add metal node and bonds of coordinating atoms
         metal_idx = max(self.graph.nodes) + 1
-        graph_with_metal.add_node(metal_idx, node_label=metal_symbol)
+        graph_with_metal.add_node(metal_idx, node_label=metal_symbol)   # hardcode: name 'node_label' is used for the element string
         for atom_idx in self.ligand_to_metal:
             # Indices of graph and atomic indices don't match
             graph_idx = self.atomic_index_to_graph_index[atom_idx]
-            graph_with_metal.add_edge(metal_idx, graph_idx)
+            graph_with_metal.add_edge(metal_idx, graph_idx, bond_type=1)    # hardcode: name 'bond_type' is used for the bond type
 
         if return_metal_index:
             return graph_with_metal, metal_idx

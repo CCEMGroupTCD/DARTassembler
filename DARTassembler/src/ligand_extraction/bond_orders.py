@@ -16,10 +16,10 @@ bond_order_rdkit_to_pysmiles = {
     }
 
 
-# Currently not deterministic!!
-def graph_to_smiles(graph, element_label='node_label', bond_label='bond_type'):
+
+def graph_to_smiles(graph, element_label='node_label', bond_label='bond_type') -> str:
     """
-    Convert networkx graph of a molecule to smiles string.
+    Convert networkx graph of a molecule to smiles string. This function is currently not deterministic, i.e. it can return different smiles strings for the same molecule.
     @param graph:
     @param element_label:
     @param bond_label:

@@ -3,17 +3,18 @@ from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo
 
 
 def main():
-    modules = ['ligandfilters', 'assembler', 'dbinfo']
+    modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat']
     desc = f"""DART command-line interface for assembling novel transition metal complexes from a database of ligands. Available modules: {", ".join(modules)}.
 Usage: dart <module> --path <path>
 Examples: 
     -> dart assembler --path assembly_input.yml
     -> dart ligandfilters --path ligandfilters_input.yml
     -> dart dbinfo --path ligand_db.jsonlines
+    -> dart concat --path ligand_db1.jsonlines ligand_db2.jsonlines
 """
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('module', choices=modules, help='DART module that you want to use')
-    parser.add_argument('--path', required=True, help='Path to the input file')
+    parser.add_argument('--path', required=True, help='Path to the input file(s)')
 
     args = parser.parse_args()
 
