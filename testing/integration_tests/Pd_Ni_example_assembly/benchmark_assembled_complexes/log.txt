@@ -1,0 +1,22 @@
+Running 2 batches...
+
+====================      Batch 0: P_N_Donors_Pd_Metal_Centre      ====================
+
+====================      Batch 1: P_N_Donors_Ni_Metal_Centre      ====================
+
+
+============  Summary per batch  ============
+Batch 0 ('P_N_Donors_Pd_Metal_Centre'):
+  - 346 complexes tried, 314 complexes successfully assembled.
+  - 32 complexes failed because of post-filters:
+    - clashing ligands: 32
+Batch 1 ('P_N_Donors_Ni_Metal_Centre'):
+  - 346 complexes tried, 306 complexes successfully assembled.
+  - 40 complexes failed because of post-filters:
+    - clashing ligands: 40
+
+============  Total summary of DART assembly  ============
+  - 692 complexes tried, 620 complexes successfully assembled.
+  - 72 complexes failed because of post-filters:
+    - clashing ligands: 72
+Done! All complexes assembled. Exiting DART Assembler.
