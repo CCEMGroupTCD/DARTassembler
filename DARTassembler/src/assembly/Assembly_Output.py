@@ -64,6 +64,7 @@ class AssemblyOutput(object):
         if ensure_empty_output_dir:
             self.ensure_output_directory_empty()
         self.settings_path = Path(self.outdir, 'input', 'assembly_input.yml')
+        self.log_path = Path(self.outdir, 'log.txt')
 
     def save_global_optimization_movie(self, xyz_string):
         append_global_optimization_movie(xyz_string, self.outdir)

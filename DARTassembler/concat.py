@@ -29,7 +29,7 @@ def concatenate_ligand_databases(paths: list[str]) -> None:
 
     # Concatenate ligand databases
     full_db = {}
-    for i, db in ligand_dbs:
+    for i, db in enumerate(ligand_dbs):
         # Check if any ligands are duplicated
         if len(set(db.db.keys()).intersection(full_db.keys())) > 0:
             warnings.warn(f"Ligand database Nr {i} contains ligands already existing in previous databases. Duplicates will be overwritten. This should probably be ok since all ligands in the MetaLig are unique. If you want to avoid this warning, please remove duplicates from the ligand databases before concatenating them.")

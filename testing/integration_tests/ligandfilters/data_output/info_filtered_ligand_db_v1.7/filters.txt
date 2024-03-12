@@ -15,8 +15,8 @@ Filter 12: planarity                                                            
 Filter 13: occurrences                                                                                                      {'min': 3.0, 'max': None, 'apply_to_denticities': [4]}
 Filter 14: metal_donor_bond_lengths                                                                                          {'min': 1.0, 'max': 2.5, 'apply_to_denticities': [2]}
 Filter 15: atomic_neighbors                                                                               {'atom': 'C', 'neighbors': ['H', 'H', 'H'], 'apply_to_denticities': [1]}
-Filter 16: smarts                                                                                          {'smarts': 'N=N', 'should_contain': False, 'apply_to_denticities': [1]}
-Filter 17: smarts                                                                                       {'smarts': '[C&H2]', 'should_contain': False, 'apply_to_denticities': [2]}
+Filter 16: smarts                                                                   {'smarts': 'N=N', 'should_contain': False, 'include_metal': True, 'apply_to_denticities': [1]}
+Filter 17: smarts                                                                {'smarts': '[C&H2]', 'should_contain': False, 'include_metal': True, 'apply_to_denticities': [2]}
 
 ==================================== FILTER RESULTS ====================================
                                                     Ligands removed  Ligands passed

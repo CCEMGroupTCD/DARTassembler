@@ -78,11 +78,13 @@ filters:
   - filter: smarts
     smarts: N=N
     should_contain: False
+    include_metal: True
     apply_to_denticities: 1
 
   - filter: smarts  # remove C with exactly 2 H atoms
     smarts: '[C&H2]'
     should_contain: False
+    include_metal: True
     apply_to_denticities: 2
 
 

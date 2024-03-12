@@ -1,9 +1,13 @@
 import argparse
-from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo
+from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo, concatenate_ligand_databases
 
+modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat']
+
+def check_n_args(args, n):
+    if len(args) != n:
+        raise ValueError(f'Expected {n} path, got {len(args)} arguments.')
 
 def main():
-    modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat']
     desc = f"""DART command-line interface for assembling novel transition metal complexes from a database of ligands. Available modules: {", ".join(modules)}.
 Usage: dart <module> --path <path>
 Examples: 
@@ -14,17 +18,22 @@ Examples:
 """
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('module', choices=modules, help='DART module that you want to use')
-    parser.add_argument('--path', required=True, help='Path to the input file(s)')
+    parser.add_argument('--path', required=True, help='Path to the input file(s)', nargs='+')
 
     args = parser.parse_args()
 
     print(f'Executing module {args.module} with input file {args.path}')
     if args.module == 'ligandfilters':
-        filter_ligands(args.path)
+        check_n_args(args.path, 1)
+        filter_ligands(args.path[0])
     elif args.module == 'assembler':
-        assemble_complexes(args.path)
+        check_n_args(args.path, 1)
+        assemble_complexes(args.path[0])
     elif args.module == 'dbinfo':
-        save_dbinfo(args.path)
+        check_n_args(args.path, 1)
+        save_dbinfo(args.path[0])
+    elif args.module == 'concat':
+        concatenate_ligand_databases(args.path)
     else:
         raise ValueError(f'Unknown module {args.module}.')
 

@@ -6,6 +6,8 @@ import numpy as np
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.ligand_extraction.DataBase import MoleculeDB, LigandDB
 from typing import Union
+
+from DARTassembler.src.ligand_extraction.Molecule import pseudo_metal
 from DARTassembler.src.ligand_filters.constant_Ligands import get_monodentate_list
 from rdkit.Chem import rdmolfiles
 from DARTassembler.src.assembly.building_block_utility import ligand_to_mol
@@ -389,11 +391,12 @@ class FilterStage:
         self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
         self.filter_tracking[len(self.filter_tracking)] = f"Atomic Neighbors Filter: {atom} {neighbors}"
 
-    def filter_smarts_substructure_search(self, smarts: str, should_be_present: bool, denticities: list = None):
+    def filter_smarts_substructure_search(self, smarts: str, should_be_present: bool, include_metal: bool = False, denticities: list = None):
         """
         This function will filter out all ligands in which the specified SMARTS pattern is present or not present. If the ligand has no valid SMILES string, it is passed through.
         @param smarts: str -> SMARTS pattern to search for.
         @param should_be_present: bool -> If True, the ligands with the SMARTS pattern present will be kept. If False, the ligands with the SMARTS pattern present will be removed.
+        @param include_metal: bool -> If True, the ligands will be filtered based on the SMILES string where the coordinating atoms of the ligand are connected to a metal center.
         @param denticities: list -> The denticity of the ligands to filter. If None, all denticities are considered.
         @return: None
         """
@@ -402,7 +405,8 @@ class FilterStage:
         to_delete = []
         for unq_name, ligand in self.database.db.items():
             if ligand.denticity in denticities:
-                smiles = ligand.get_smiles(with_metal='Hg')   # Get molecule from SMILES string connected to Hg metal center
+                with_metal = pseudo_metal if include_metal else None        # Optionally include the metal center in the SMILES string.
+                smiles = ligand.get_smiles(with_metal=with_metal)
                 if smiles is None:  # If the ligand has no valid SMILES string, pass it through.
                     continue
 

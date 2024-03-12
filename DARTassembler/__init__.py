@@ -5,3 +5,4 @@ check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=True)
 from .filter_ligands import filter_ligands
 from .assemble_complexes import assemble_complexes
 from .make_ligand_db_csv import save_dbinfo
+from .concat import concatenate_ligand_databases

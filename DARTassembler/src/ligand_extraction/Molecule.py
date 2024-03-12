@@ -36,6 +36,8 @@ from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardi
     find_smallest_ring_with_specified_nodes, get_max_deviation_from_coplanarity, if_same_stoichiometries
 from DARTassembler.src.assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
 
+pseudo_metal = 'Cu'     # pseudo metal for display in ligand xyz files and for use in the SMARTS filter.
+
 class RCA_Molecule(object):
     """
     The idea of this class is to build a method which contains an ase molecule for visualization but also other convenient features, as a graph representation and all the global information we have at hand when creating a database
@@ -877,6 +879,7 @@ class RCA_Ligand(RCA_Molecule):
         if 'original_metal_position' in kwargs.keys():
             self.original_metal_position = kwargs['original_metal_position']
         try:
+            # Only the original ligands had this property, it's deleted for unique ligands and cannot be used.
             self.original_metal_symbol = DART_Element(self.original_metal).symbol
         except (ValueError, AttributeError):
             pass
@@ -903,7 +906,7 @@ class RCA_Ligand(RCA_Molecule):
     def get_smiles(self, with_metal: str=None) -> Union[str,None]:
         """
         Returns the SMILES string of the molecule.
-        @param with_metal: If not None, the ligand graph is connected to the metal with the specified symbol. If 'original', the original metal symbol is used. If None, the ligand is not connected to any metal.
+        @param with_metal: If not None, the ligand graph is connected to the metal with the specified symbol.
         @return: SMILES string of the molecule.
         """
         if not self.check_for_good_bond_orders(): # if the molecule has unknown bond orders, we cannot calculate the SMILES
@@ -911,10 +914,7 @@ class RCA_Ligand(RCA_Molecule):
 
         if with_metal is None:
             graph = self.graph
-        else:   # connect ligand to metal center
-            if with_metal == 'original':
-                with_metal = self.original_metal_symbol
-
+        else:
             if not DART_Element(with_metal).is_metal:
                 raise ValueError(f'Invalid input for with_metal: {with_metal}. Must be a metal symbol.')
 
@@ -1084,16 +1084,14 @@ class RCA_Ligand(RCA_Molecule):
     def get_graph_with_metal(self, metal_symbol: Union[str, None]=None, return_metal_index: bool=False) -> Union[nx.Graph, tuple[nx.Graph, int]]:
         """
         Returns the graph of the ligand but with the specified metal center connected to the coordinating atoms. The metal is connected to the coordinating atoms with a bond type of 1.
-        @param metal_symbol: Symbol of the metal. If None, the original metal symbol is used.
-        @return:
+        @param metal_symbol: Symbol of the metal.
+        @return: Graph of the ligand with the metal. If return_metal_index is True, the metal index is also returned.
         """
         graph_with_metal = nx.Graph(self.graph)   # unfreeze graph
-        if metal_symbol is None:
-            metal_symbol = self.original_metal_symbol
 
         # Add metal node and bonds of coordinating atoms
         metal_idx = max(self.graph.nodes) + 1
-        graph_with_metal.add_node(metal_idx, node_label=metal_symbol)   # hardcode: name 'node_label' is used for the element string
+        graph_with_metal.add_node(metal_idx, node_label=metal_symbol)       # hardcode: name 'node_label' is used for the element string
         for atom_idx in self.ligand_to_metal:
             # Indices of graph and atomic indices don't match
             graph_idx = self.atomic_index_to_graph_index[atom_idx]
@@ -1155,7 +1153,7 @@ class RCA_Ligand(RCA_Molecule):
         if with_metal:
             str_ = f"{n_ligand_atoms+1}\n" # +1 for the metal
             str_ += comment + '\n'
-            str_ += f"{self.original_metal_symbol}  {self.original_metal_position[0]}  {self.original_metal_position[1]}  {self.original_metal_position[2]} \n"     # metal atom
+            str_ += f"{pseudo_metal}  {self.original_metal_position[0]}  {self.original_metal_position[1]}  {self.original_metal_position[2]} \n"     # metal atom
         else:
             str_ = f"{n_ligand_atoms}\n"
             str_ += comment + '\n'
@@ -1377,9 +1375,6 @@ class RCA_Ligand(RCA_Molecule):
         """
         Get ASE molecule with metal at original metal location. If no metal is specified, the original metal is used.
         """
-        if metal is None:
-            metal = self.original_metal_symbol
-
         # Get ASE molecule
         ase_mol = self.get_ase_molecule(add_atoms=[(metal, self.original_metal_position)])
 

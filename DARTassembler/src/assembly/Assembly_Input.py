@@ -103,6 +103,7 @@ _remove_missing_bond_orders = 'remove_ligands_with_missing_bond_orders'
 _smarts_filter = 'smarts'
 _smarts = 'smarts'
 _should_be_present = 'should_contain'
+_include_metal = 'include_metal'
 
 
 
@@ -500,6 +501,7 @@ class LigandFilterInput(BaseInput):
         _smarts_filter: {
             _smarts: [str],
             _should_be_present: [bool, str],
+            _include_metal: [bool, str],
             _denticities: [list, tuple, type(None), int],
             },
         }
@@ -629,6 +631,7 @@ class LigandFilterInput(BaseInput):
             elif self.filtername == _smarts_filter:
                 out_filter_settings[_smarts] = filter_values[_smarts]
                 out_filter_settings[_should_be_present] = self.get_bool_from_input(input=filter_values[_should_be_present], varname=_should_be_present)
+                out_filter_settings[_include_metal] = self.get_bool_from_input(input=filter_values[_include_metal], varname=_include_metal)
                 out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_smarts_filter}:{_denticities}', allow_none=True)
             else:
                 self.raise_error(f"Filter '{self.filtername}' is not a valid filter.", varname=_filter)

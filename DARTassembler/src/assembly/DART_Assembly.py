@@ -65,8 +65,11 @@ class DARTAssembly(object):
 
         # Set up logging
         verbosity2logging = {0: logging.ERROR, 1: logging.WARNING, 2: logging.INFO, 3: logging.DEBUG}
+        stream_handler = logging.StreamHandler(stream=sys.stdout)
+        stream_handler.setLevel(verbosity2logging[self.verbose])
         # Print to stdout
-        logging.basicConfig(level=verbosity2logging[self.verbose], format='%(message)s', stream=sys.stdout)
+        logging.basicConfig(level=verbosity2logging[self.verbose], format='%(message)s', handlers=[logging.FileHandler(self.gbl_outcontrol.log_path, mode='w'),
+                              stream_handler])
 
 
     def run_all_batches(self):
@@ -78,7 +81,7 @@ class DARTAssembly(object):
         self.assembled_complex_names = []
         self.last_ligand_db_path = None     # to avoid reloading the same ligand database in the next batch
 
-        logging.info(f"Starting DART Assembler. Output will be saved to `{self.output_path}`.")
+        print(f"Starting DART Assembler. Output will be saved to `{self.output_path}`.")    # print to leave path out of log file
         logging.info(f"Running {self.n_batches} batches...\n")
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
@@ -120,8 +123,8 @@ class DARTAssembly(object):
         logging.info("\n============  Total summary of DART assembly  ============")
         self.print_success_rate(self.df_info)
         n_success = self.df_info['success'].sum()
-        logging.info(f"DART Assembler output files saved to {self.output_path}")
-        logging.info(f"Total runtime for assembling {n_success} complexes: {self.runtime}")
+        print(f"DART Assembler output files saved to {self.output_path}")               # print to leave path out of log file
+        print(f"Total runtime for assembling {n_success} complexes: {self.runtime}")    # print to leave runtime out of log file
         logging.info('Done! All complexes assembled. Exiting DART Assembler.')
 
         return

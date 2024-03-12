@@ -15,7 +15,7 @@ from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _f
     _remove_ligands_with_beta_hydrogens, _strict_box_filter, _acount, _acount_min, _acount_max, _denticities, \
     _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max, _graph_hash_wm, _stoichiometry, _min, _max, \
     _md_bond_length, _interatomic_distances, _occurrences, _planarity, _remove_missing_bond_orders, _atm_neighbors, \
-    _atom, _neighbors, _smarts_filter, _smarts, _should_be_present
+    _atom, _neighbors, _smarts_filter, _smarts, _should_be_present, _include_metal
 
 
 
@@ -162,6 +162,7 @@ class LigandFilters(object):
                 self.Filter.filter_smarts_substructure_search(
                     smarts=filter[_smarts],
                     should_be_present=filter[_should_be_present],
+                    include_metal=filter[_include_metal],
                     denticities=filter[_denticities]
                 )
             else:

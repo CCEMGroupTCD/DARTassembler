@@ -34,6 +34,7 @@ def save_dbinfo(input_path: Union[str, Path], output_path: Union[str, Path, None
     """
     if str(input_path).lower() == 'metalig':  # shortcut for entire MetaLig
         input_path = default_ligand_db_path
+    input_path = Path(input_path)
 
     print(f"===============     DBINFO MODULE     =================")
     print(f"This module reads in a ligand db from file and saves a .csv file and a concatenated .xyz file with an overview of the ligands in the database.")
