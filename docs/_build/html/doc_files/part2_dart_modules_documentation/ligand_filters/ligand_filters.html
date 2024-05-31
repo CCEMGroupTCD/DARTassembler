@@ -66,6 +66,8 @@
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../part3_additional_resources/troubleshooting_and_faqs.html">Troubleshooting And FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../part3_additional_resources/tips_and_tricks.html">Tips and Tricks around DART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../part3_additional_resources/current_limitations.html">Current Limitations of DART</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../part3_additional_resources/how_to_cite_dart.html">How To Cite DART</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../part3_additional_resources/version_history.html">Version History</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../part3_additional_resources/contributing_to_dart.html">Contributing to DART</a></li>
@@ -98,7 +100,7 @@
   <section id="ligand-filters-module">
 <span id="ligandfilters"></span><h1>Ligand Filters Module<a class="headerlink" href="#ligand-filters-module" title="Permalink to this headline"></a></h1>
 <p>The Ligand Filters module streamlines the selection of ligands from the extensive <a class="reference internal" href="../metalig/metalig_database.html#metalig"><span class="std std-ref">MetaLig Database</span></a>, which boasts 41,018 entries. This tool is invaluable for assembling complexes targeted to a certain chemical space.</p>
-<p>Users can apply a range of predefined filters via an input file to refine the ligand pool. The module supports both the entire MetaLig database and user-supplied subsets. For those requiring precise control, the <a class="reference internal" href="#confval-graph_IDs"><code class="xref std std-confval docutils literal notranslate"><span class="pre">graph_IDs</span></code></a> filter enables selection based on specific ligand IDs.</p>
+<p>Users can apply a range of predefined filters via an input file to refine the ligand pool. The module supports both the entire MetaLig database and user-supplied subsets. For those requiring precise control, the <a class="reference internal" href="#confval-graph_IDs"><code class="xref std std-confval docutils literal notranslate"><span class="pre">graph_IDs</span></code></a> filter enables selection based on specific ligand IDs. Otherwise, the <a class="reference internal" href="#confval-smarts"><code class="xref std std-confval docutils literal notranslate"><span class="pre">smarts</span></code></a> filter allows for the application of powerful SMARTS patterns to filter ligands based on their 2D chemical structure, which should suffice for most applications.</p>
 <p>The ligand filters module is run from the command line by providing a single configuration file:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dart</span> <span class="n">ligandfilters</span> <span class="o">--</span><span class="n">path</span> <span class="n">ligandfilters_input</span><span class="o">.</span><span class="n">yml</span>
 </pre></div>
@@ -119,6 +121,9 @@
 <li><p>remove_ligands_with_adjacent_coordinating_atoms</p></li>
 <li><p>remove_ligands_with_beta_hydrogens</p></li>
 <li><p>graph_IDs</p></li>
+<li><p>remove_ligands_with_missing_bond_orders</p></li>
+<li><p>atomic_neighbors</p></li>
+<li><p>smarts</p></li>
 </ul>
 <section id="input-file">
 <h2>Input File<a class="headerlink" href="#input-file" title="Permalink to this headline"></a></h2>
@@ -187,6 +192,20 @@
 
   <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">graph_IDs</span>                           <span class="c1"># Only keep ligands with the following graph IDs</span>
     <span class="n">graph_IDs</span><span class="p">:</span> <span class="p">[</span><span class="n">a2b7bbb6ca4ce36dc3147760335e7374</span><span class="p">,</span> <span class="mi">53</span><span class="n">b7a3d91a1be6e167a3975bb7921206</span><span class="p">]</span>     <span class="c1"># List of graph IDs to keep</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">remove_ligands_with_missing_bond_orders</span>              <span class="c1"># Filter out ligands with missing bond orders</span>
+    <span class="n">remove_ligands_with_missing_bond_orders</span><span class="p">:</span> <span class="n">true</span>                <span class="c1"># true or false. If false, filter will be ignored.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">atomic_neighbors</span>                    <span class="c1"># Filters out ligands in which a chemical element is connected to the specified neighbors</span>
+    <span class="n">atom</span><span class="p">:</span> <span class="n">C</span>                                     <span class="c1"># Chemical element of the central atom</span>
+    <span class="n">neighbors</span><span class="p">:</span> <span class="n">H2</span>                               <span class="c1"># List of chemical elements or stoichiometry</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>                   <span class="c1"># List of denticities to apply this filter to. If empty, applies to all denticities.</span>
+
+  <span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">smarts</span>                              <span class="c1"># Filters ligands based on their 2D chemical structure using SMARTS patterns</span>
+    <span class="n">smarts</span><span class="p">:</span> <span class="s1">&#39;[C&amp;H2]&#39;</span>                            <span class="c1"># SMARTS pattern to match</span>
+    <span class="n">should_contain</span><span class="p">:</span> <span class="kc">False</span>                       <span class="c1"># If True, the ligand must contain the SMARTS pattern to pass. If False, the ligand must not contain the SMARTS pattern to pass.</span>
+    <span class="n">include_metal</span><span class="p">:</span> <span class="kc">True</span>                         <span class="c1"># If True, the ligand structure will contain the metal center &#39;Cu&#39; connected to the coordinating atoms</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span>                       <span class="c1"># List of denticities to apply this filter to. If empty, applies to all denticities.</span>
 </pre></div>
 </div>
 <section id="input-output-options">
@@ -237,7 +256,7 @@
 <dd class="field-odd"><dl class="simple">
 <dt>ligand_charges :</dt><dd><p>List of charges to keep.</p>
 </dd>
-<dt>denticities :</dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+<dt>apply_to_denticities :</dt><dd><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
 </dd>
 </dl>
 </dd>
@@ -288,7 +307,7 @@
 </li>
 </ul>
 </div></blockquote>
-<p><strong>denticities :</strong></p>
+<p><strong>apply_to_denticities :</strong></p>
 <blockquote>
 <div><p>A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
 </div></blockquote>
@@ -341,7 +360,7 @@
 </li>
 </ul>
 </div></blockquote>
-<p><strong>denticities :</strong></p>
+<p><strong>apply_to_denticities :</strong></p>
 <blockquote>
 <div><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
 </div></blockquote>
@@ -369,7 +388,7 @@
 </dd>
 <dt>max :</dt><dd><p>Maximum number of atoms. If empty, will be set to infinity.</p>
 </dd>
-<dt>denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+<dt>apply_to_denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
 </dd>
 </dl>
 </dd>
@@ -396,7 +415,7 @@
 </dd>
 <dt>max :</dt><dd><p>Maximum molecular weight in g/mol. If empty, will be set to infinity.</p>
 </dd>
-<dt>denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+<dt>apply_to_denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
 </dd>
 </dl>
 </dd>
@@ -423,7 +442,7 @@
 </dd>
 <dt>max :</dt><dd><p>Maximum bond length in Angstrom. If empty, will be set to infinity.</p>
 </dd>
-<dt>denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+<dt>apply_to_denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
 </dd>
 </dl>
 </dd>
@@ -450,7 +469,7 @@
 </dd>
 <dt>max :</dt><dd><p>Maximum interatomic distance in Angstrom. If empty, will be set to infinity.</p>
 </dd>
-<dt>denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+<dt>apply_to_denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
 </dd>
 </dl>
 </dd>
@@ -477,7 +496,7 @@
 </dd>
 <dt>max :</dt><dd><p>Maximum planarity score. If empty, will be set to 1.</p>
 </dd>
-<dt>denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+<dt>apply_to_denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
 </dd>
 </dl>
 </dd>
@@ -504,7 +523,7 @@
 </dd>
 <dt>max :</dt><dd><p>Maximum number of occurrences. If empty, will be set to infinity.</p>
 </dd>
-<dt>denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+<dt>apply_to_denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
 </dd>
 </dl>
 </dd>
@@ -529,7 +548,7 @@
 <dd class="field-odd"><dl class="simple">
 <dt>metal_ligand_binding_history :</dt><dd><p>List of metals, e.g. [Pd, Ni]. Any metal from the d- or f-block can be specified.</p>
 </dd>
-<dt>denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+<dt>apply_to_denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
 </dd>
 </dl>
 </dd>
@@ -602,6 +621,106 @@ This filter allows users to select ligands by doing their Excel magic on a ‘li
 <dd class="field-even"><p>This example will keep only the 2 ligands with the graph IDs <cite>a2b7bbb6ca4ce36dc3147760335e7374</cite> and <cite>53b7a3d91a1be6e167a3975bb7921206</cite>.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">graph_IDs</span>
     <span class="n">graph_IDs</span><span class="p">:</span> <span class="p">[</span><span class="n">a2b7bbb6ca4ce36dc3147760335e7374</span><span class="p">,</span> <span class="mi">53</span><span class="n">b7a3d91a1be6e167a3975bb7921206</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="filter-remove-ligands-with-missing-bond-orders"></span><dl class="std confval">
+<dt class="sig sig-object std" id="confval-remove_ligands_with_missing_bond_orders">
+<span class="sig-name descname"><span class="pre">remove_ligands_with_missing_bond_orders</span></span><a class="headerlink" href="#confval-remove_ligands_with_missing_bond_orders" title="Permalink to this definition"></a></dt>
+<dd><p>Removes ligands with missing bond orders (~4% of ligands in the MetaLig). Most helpful in concert with the filter <a class="reference internal" href="#confval-smarts"><code class="xref std std-confval docutils literal notranslate"><span class="pre">smarts</span></code></a>, since that filter will automatically pass ligands with unknown bond orders. If you want to be sure that all passed ligands obey the SMARTS filter, it is recommended to apply this filter together with the SMARTS filter.</p>
+<dl class="field-list">
+<dt class="field-odd">Options</dt>
+<dd class="field-odd"><dl class="simple">
+<dt>remove_ligands_with_missing_bond_orders :</dt><dd><p>If true, apply this filter. If false, will be ignored.</p>
+</dd>
+<dt>apply_to_denticities :</dt><dd><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Example</dt>
+<dd class="field-even"><p>This example will remove all ligands with missing bond orders.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">remove_ligands_with_missing_bond_orders</span>
+      <span class="n">remove_ligands_with_missing_bond_orders</span><span class="p">:</span> <span class="n">true</span>
+      <span class="n">apply_to_denticities</span><span class="p">:</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="filter-atomic-neighbors"></span><dl class="std confval">
+<dt class="sig sig-object std" id="confval-atomic_neighbors">
+<span class="sig-name descname"><span class="pre">atomic_neighbors</span></span><a class="headerlink" href="#confval-atomic_neighbors" title="Permalink to this definition"></a></dt>
+<dd><p>This filter removes all ligands in which a chemical element <code class="xref std std-confval docutils literal notranslate"><span class="pre">atom</span></code> is connected to the atoms specified in <code class="xref std std-confval docutils literal notranslate"><span class="pre">neighbors</span></code>. Importantly, this filter only checks if the specified atom has at least the specified neighbors, but there might be more neighbors than specified and the ligand will still be removed. For more control, use the <a class="reference internal" href="#confval-smarts"><code class="xref std std-confval docutils literal notranslate"><span class="pre">smarts</span></code></a> filter.</p>
+<dl class="field-list">
+<dt class="field-odd">Options</dt>
+<dd class="field-odd"><p><strong>atom :</strong></p>
+<blockquote>
+<div><p>Chemical element of the central atom.</p>
+</div></blockquote>
+<p><strong>neighbors :</strong></p>
+<blockquote>
+<div><p>List of chemical elements or stoichiometry. The ligand will be removed if the <code class="xref std std-confval docutils literal notranslate"><span class="pre">atom</span></code> is connected to at least the specified neighbors.</p>
+</div></blockquote>
+<p><strong>apply_to_denticities :</strong></p>
+<blockquote>
+<div><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</div></blockquote>
+</dd>
+<dt class="field-even">Example</dt>
+<dd class="field-even"><p>This example removes all ligands in which a C is connected to 2 H atoms, plus potentially other neighbors.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">atomic_neighbors</span>
+    <span class="n">atom</span><span class="p">:</span> <span class="n">C</span>
+    <span class="n">neighbors</span><span class="p">:</span> <span class="n">H2</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="filter-smarts"></span><dl class="std confval">
+<dt class="sig sig-object std" id="confval-smarts">
+<span class="sig-name descname"><span class="pre">smarts</span></span><a class="headerlink" href="#confval-smarts" title="Permalink to this definition"></a></dt>
+<dd><p>This filter is a very powerful tool to filter ligands based on their 2D chemical structure, including bond orders. <a class="reference external" href="https://www.daylight.com/dayhtml/doc/theory/theory.smarts.html">SMARTS</a> is a language to describe and match chemical patterns and motifs in molecules. It can be thought of as a way to search chemical motifs in SMILES strings.</p>
+<p>The smarts filter works by first computing the SMILES string of the ligand (with or without ‘Cu’ metal center depending on <code class="xref std std-confval docutils literal notranslate"><span class="pre">include_metal</span></code>) and then matching the specified SMARTS pattern to the SMILES string using rdkit.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If a ligand has unknown bond orders (~4% of ligands in the MetaLig), it will automatically pass this filter. If you want to be sure that all passed ligands obey the SMARTS filter, it is recommended to apply this filter together with the filter <a class="reference internal" href="#confval-remove_ligands_with_missing_bond_orders"><code class="xref std std-confval docutils literal notranslate"><span class="pre">remove_ligands_with_missing_bond_orders</span></code></a>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>SMARTS patterns are very expressive, but can be difficult to come up with. It is recommended to use tools like <a class="reference external" href="https://smartsview.zbh.uni-hamburg.de/">SMARTSviewer</a> to design the SMARTS pattern. Alternatively, the modern world offers fascinating AI models such as ChatGPT, which are a great help in designing SMARTS patterns. Anyway, always make sure your SMARTS pattern works as intended by checking the output ligands.</p>
+</div>
+<dl class="field-list">
+<dt class="field-odd">Options</dt>
+<dd class="field-odd"><p><strong>smarts :</strong></p>
+<blockquote>
+<div><p><a class="reference external" href="https://www.daylight.com/dayhtml/doc/theory/theory.smarts.html">SMARTS</a> pattern to match. Please note that the SMARTS pattern must be enclosed in single or double quotes, e.g. ‘[C&amp;H2]’. Otherwise it is likely that the YAML parser will throw an error.</p>
+</div></blockquote>
+<p><strong>should_contain :</strong></p>
+<blockquote>
+<div><p>If True, the ligand <cite>must contain</cite> the SMARTS pattern to pass. If False, the ligand <cite>must not contain</cite> the SMARTS pattern to pass.</p>
+</div></blockquote>
+<p><strong>include_metal :</strong></p>
+<blockquote>
+<div><p>If True, the ligand structure will contain the metal center ‘Cu’ connected to the coordinating atoms. The bonds between ‘Cu’ and the coordinating atoms are single bonds. This allows to target coordinating atoms in the SMARTS pattern in contrast to other atoms.</p>
+</div></blockquote>
+<p><strong>apply_to_denticities :</strong></p>
+<blockquote>
+<div><p>A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.</p>
+</div></blockquote>
+</dd>
+<dt class="field-even">Example</dt>
+<dd class="field-even"><p>This example will remove all ligands in which a C is connected to exactly 2 H atoms, plus potentially other elements.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="nb">filter</span><span class="p">:</span> <span class="n">smarts</span>
+    <span class="n">smarts</span><span class="p">:</span> <span class="s1">&#39;[C&amp;H2]&#39;</span>
+    <span class="n">should_contain</span><span class="p">:</span> <span class="kc">False</span>
+    <span class="n">include_metal</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="n">apply_to_denticities</span><span class="p">:</span>
 </pre></div>
 </div>
 </dd>

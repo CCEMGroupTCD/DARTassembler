@@ -26,6 +26,8 @@ import ase
 from copy import deepcopy
 import numpy as np
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
+from DARTassembler.src.ligand_extraction.utilities_graph import get_graph_hash
+
 warnings.simplefilter("always")
 import logging
 from rdkit import RDLogger
@@ -360,8 +362,8 @@ class DARTAssembly(object):
                                                 batch_idx=self.batch_idx,
                                                 ligands=ligands,
                                                 )
-
-        self.add_batch_info(success=True, reason=note, ligands=ligands, complex_idx=complex_idx, complex_name=complex_name)
+        graph_hash = get_graph_hash(complex.graph)
+        self.add_batch_info(success=True, reason=note, ligands=ligands, complex_idx=complex_idx, complex_name=complex_name, complex_graph_hash=graph_hash)
         self.assembled_complex_names.append(complex_name)
 
         return
@@ -401,13 +403,14 @@ class DARTAssembly(object):
 
         return total_name
 
-    def add_batch_info(self, success, ligands, reason: str = '', complex_idx=None, complex_name=None):
+    def add_batch_info(self, success, ligands, reason: str = '', complex_idx=None, complex_name=None, complex_graph_hash=None):
         """
         Add information about the batch to the batch info variable which will be saved to the batch info file.
         """
         ligand_names = tuple(ligand.unique_name for ligand in ligands.values())
         ligand_stoichiometries = tuple(ligand.stoichiometry for ligand in ligands.values())
         ligand_charges = tuple(ligand.pred_charge for ligand in ligands.values())
+        ligand_donors = tuple('-'.join(sorted(ligand.local_elements)) for ligand in ligands.values())
         topology = f'({self.topology_similarity.split("--")[0].strip("[]")})'
         similarity = f'({self.topology_similarity.split("--")[1].strip("[]")})'
         atoms = [self.metal_type] + [atom for ligand in ligands.values() for atom in ligand.atomic_props['atoms']]
@@ -418,10 +421,12 @@ class DARTAssembly(object):
             "complex idx": complex_idx,
             'complex name': complex_name,
             "stoichiometry": stoichiometry,
+            'graph hash': complex_graph_hash,
             "note": reason,
             "ligand names": ligand_names,
             "ligand stoichiometries": ligand_stoichiometries,
             "ligand charges": ligand_charges,
+            "ligand donors": ligand_donors,
             "batch idx": self.batch_idx,
             "batch name": self.batch_name,
             "metal": self.metal_type,

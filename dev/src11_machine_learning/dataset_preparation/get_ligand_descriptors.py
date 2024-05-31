@@ -8,7 +8,7 @@ import networkx as nx
 from DARTassembler.src.ligand_extraction.bond_orders import graph_to_smiles
 from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, save_full_ligand_db, save_complex_db
 from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns
-from src11_machine_learning.dataset_preparation.descriptors import SOAP_3D, RDKit_2D
+from dev.src11_machine_learning.dataset_preparation.descriptors import SOAP_3D, RDKit_2D
 import random
 
 if __name__ == '__main__':

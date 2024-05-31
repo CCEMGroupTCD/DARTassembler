@@ -12,8 +12,8 @@ sympy
 tqdm
 sphinx>=4.3.0             # to avoid bullet-point bug
 sphinx_rtd_theme>=0.5.1   # to avoid bullet-point bug
-mchammer==1.0.4
+mchammer        # original version ==1.0.4
 pysmiles==1.0.2
-spindry==0.0.91
-stk==2022.6.17.0
-vabene==0.0.5
+spindry         # original version ==0.0.91
+stk             # original version ==2022.6.17.0
+vabene          # original version ==0.0.5

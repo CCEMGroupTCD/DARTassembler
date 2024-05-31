@@ -55,6 +55,8 @@ class TransitionMetalComplex(object):
         self.metal_oxi_state = metal_oxi_state
         self.metal_idx = metal_idx
         self.charge = charge
+        # todo:
+        # - add graph hash of complex!!!
 
         self.metal = self.atomic_props["atoms"][self.metal_idx]
         self.metal_position = [self.atomic_props['x'][self.metal_idx], self.atomic_props['y'][self.metal_idx], self.atomic_props['z'][self.metal_idx]]

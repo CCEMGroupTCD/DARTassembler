@@ -495,7 +495,7 @@ class LigandFilterInput(BaseInput):
             },
         _atm_neighbors: {
             _atom: [str],
-            _neighbors: [list, tuple],
+            _neighbors: [list, tuple, str],
             _denticities: [list, tuple, type(None), int],
             },
         _smarts_filter: {

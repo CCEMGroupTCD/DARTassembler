@@ -66,9 +66,6 @@ class LigandFilters(object):
             unique_filtername = f"Filter {idx+1:02d}: {filtername}"    # name for printing filters for the user
             n_ligands_before = len(self.Filter.database.db)
 
-            if filtername == _stoichiometry:
-                self.Filter.stoichiometry_filter(stoichiometry=filter[_stoichiometry], denticities=filter[_denticities])
-
             if filtername == _denticities_of_interest:
                 self.Filter.denticity_of_interest_filter(denticity_of_interest=filter[_denticities_of_interest])
 
@@ -83,7 +80,7 @@ class LigandFilters(object):
                 if filter[_remove_ligands_with_beta_hydrogens]:
                     self.Filter.filter_betaHs()
 
-            elif filtername == _strict_box_filter:
+            elif filtername == _strict_box_filter:  # deprecated
                 if filter[_strict_box_filter]:
                     self.Filter.box_excluder_filter()
 
@@ -143,7 +140,7 @@ class LigandFilters(object):
                     max=filter[_max],
                     denticities=filter[_denticities]
                 )
-            elif filtername == _stoichiometry:
+            elif filtername == _stoichiometry:  # deprecated
                 self.Filter.stoichiometry_filter(
                     stoichiometry=filter[_stoichiometry],
                     denticities=filter[_denticities]

@@ -1,5 +1,11 @@
 import rdkit.Chem.AllChem as rdkit
-from stk.molecular import GenericFunctionalGroup, FunctionalGroupFactory
+
+# stk refactored their package, read in functions from correct locations
+try:
+    from stk.molecular import GenericFunctionalGroup, FunctionalGroupFactory
+except (ImportError, ModuleNotFoundError):
+    from stk._internal.functional_groups.generic_functional_group import GenericFunctionalGroup
+    from stk._internal.functional_group_factories.functional_group_factory import FunctionalGroupFactory
 
 # This is a monkey patch to the stk library which removes the rdkit sanitization of the molecule, which has led to errors in the DART code. Actually we just had to monkey patch one function that this module calls, but because of weird imports in the stk library it is not possible to monkey patch the function directly, so we had to also monkey patch this class.
 # The path to the original class is stk.SmartsFunctionalGroupFactory

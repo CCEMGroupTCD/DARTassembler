@@ -19,8 +19,8 @@ Requires-Dist: sympy
 Requires-Dist: tqdm
 Requires-Dist: sphinx>=4.3.0
 Requires-Dist: sphinx_rtd_theme>=0.5.1
-Requires-Dist: mchammer==1.0.4
+Requires-Dist: mchammer
 Requires-Dist: pysmiles==1.0.2
-Requires-Dist: spindry==0.0.91
-Requires-Dist: stk==2022.6.17.0
-Requires-Dist: vabene==0.0.5
+Requires-Dist: spindry
+Requires-Dist: stk
+Requires-Dist: vabene

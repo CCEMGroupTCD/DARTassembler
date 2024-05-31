@@ -1,0 +1,105 @@
+This is a test for the cclib library:
+
+The test compares the parsed cclib output for three different files: The entire .log from a singlepoint with an NBO calculation, the extracted .log from only the singlepoint calculation and the extracted .log from only the NBO calculation.
+
+Results:
+    * The singlepoint and NBO outputs are mostly identical, both when separating the two .log files into two files or when taking the entire .log file
+    * The NBO adds an attribute 'natural' to the 'atomcharges' and leaves the 'mulliken' and 'mulliken_sum' as they are
+        * The 'mulliken' and 'mulliken_sum' attributes are only mostly perfectly the same, there seems to be a very small numerical difference but that can probably be ignored. These two attributes are identical when comparing the entire .log file with the nbo file, just the singlepoint file is slightly different
+    * The 'scfvalues' (specifying the final convergence values) are different, but that is expected
+    * The metadata is slightly different but that is expected
+        * The metadata for the whole file actually contains the wall-time for both jobs individually which is nice
+    * Most importantly, the 'moenergies' are identical for all files, which is important because this gives us the HOMO-LUMO gap and the total energy
+
+Here is the raw comparisons:
+====== NBO vs Singlepoint =======
+metadata:	 False
+charge:	 True
+mult:	 True
+natom:	 True
+atommasses:	 True
+atomcoords:	 True
+atomnos:	 True
+rotconsts:	 True
+dispersionenergies:	 True
+nbasis:	 True
+nmo:	 True
+scftargets:	 True
+scfvalues:	 False
+scfenergies:	 True
+mosyms:	 True
+homos:	 True
+moenergies:	 True
+atomcharges-natural:	 natural not in SP data
+atomcharges-mulliken:	 False
+atomcharges-mulliken_sum:	 False
+atomspins-mulliken:	 True
+atomspins-mulliken_sum:	 True
+moments-0:	 True
+moments-1:	 True
+moments-2:	 True
+moments-3:	 True
+moments-4:	 True
+coreelectrons:	 True
+
+====== NBO vs full file ======
+metadata:	 False
+charge:	 True
+mult:	 True
+natom:	 True
+atommasses:	 False
+atomcoords:	 True
+atomnos:	 True
+rotconsts:	 True
+dispersionenergies:	 True
+nbasis:	 True
+nmo:	 True
+scftargets:	 True
+scfvalues:	 False
+scfenergies:	 True
+mosyms:	 True
+homos:	 True
+moenergies:	 True
+atomcharges-mulliken_sum:	 True
+atomcharges-natural:	 True
+atomcharges-mulliken:	 True
+atomspins-mulliken_sum:	 True
+atomspins-mulliken:	 True
+moments-0:	 True
+moments-1:	 True
+moments-2:	 True
+moments-3:	 True
+moments-4:	 True
+coreelectrons:	 True
+
+===== Full file vs Singlepoint =====
+metadata:	 False
+charge:	 True
+mult:	 True
+natom:	 True
+atommasses:	 False
+atomcoords:	 True
+atomnos:	 True
+rotconsts:	 True
+dispersionenergies:	 True
+nbasis:	 True
+nmo:	 True
+scftargets:	 True
+scfvalues:	 False
+scfenergies:	 False
+mosyms:	 True
+homos:	 True
+moenergies:	 True
+aonames:	 True
+atombasis:	 True
+atomcharges-natural:	 natural not in NBO data
+atomcharges-mulliken_sum:	 False
+atomcharges-mulliken:	 False
+atomspins-mulliken_sum:	 True
+atomspins-mulliken:	 True
+moments-0:	 True
+moments-1:	 True
+moments-2:	 True
+moments-3:	 True
+moments-4:	 True
+coreelectrons:	 True

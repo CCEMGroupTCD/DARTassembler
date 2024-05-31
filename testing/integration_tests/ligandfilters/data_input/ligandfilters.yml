@@ -4,10 +4,6 @@ output_ligands_info: True   # True or False. If True, an overview of the filtere
 
 filters:
 
-#  - filter: stoichiometry               # only keep ligands with the following stoichiometry (chemical formula)
-#    stoichiometry: C2H6N2P2             # chemical formula of ligands to keep
-#    apply_to_denticities:                          # List of denticities to apply this filter to. If nothing, will be ignored.
-
   - filter: denticities
     denticities: [1, 2, 3, 4, 5]
 
@@ -72,7 +68,7 @@ filters:
 
   - filter: atomic_neighbors
     atom: C
-    neighbors: [H, H, H]
+    neighbors: H3
     apply_to_denticities: 1
 
   - filter: smarts

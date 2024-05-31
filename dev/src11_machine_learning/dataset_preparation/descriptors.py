@@ -400,18 +400,14 @@ if __name__ == '__main__':
     # 5 -- 3
     G = nx.Graph()
     G.add_nodes_from([(0, {'node_label': 'C'}),
-                      (1, {'node_label': 'C'}),
-                      (2, {'node_label': 'H'}),
-                      (3, {'node_label': 'C'}),
-                      (4, {'node_label': 'C'}),
-                      (5, {'node_label': 'C'})])
-    G.add_edges_from([(0, 1), (0, 2), (0, 3), (1, 4), (3, 5)])
+                      (1, {'node_label': 'H'})])
+    G.add_edges_from([(0, 1)])
     own_result, labels = RAC(depth=4).molecule_autocorrelation(mol=G, return_labels=True)
     own_result = list(own_result)
 
-    molsimplify_result = list(compute_RAC_from_graph('[H][C]([C][C])([C][C])', depth=4))
+    df = pd.DataFrame({'own': own_result}, index=labels)
 
-    df = pd.DataFrame({'own': own_result, 'molsimplify': molsimplify_result}, index=labels)
-    df['diff'] = df['own'] - df['molsimplify']
+    average_rac = df['own'].mean()
+    print(f'Average RAC: {average_rac}')
 
     print('Done!')

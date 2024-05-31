@@ -10,14 +10,14 @@ Update docs:
 - ligandfilters has new filters: smarts, atomic neighbors
     - smarts: recommend to put the smarts in '' to avoid yaml errors
 - concat module
+- added to complex csv: graph hash, ligand donors
 
 Should:
 - ligand filtering
     - add option to filter several ligand db at once so that the full ligand db has to be read in only once
-    - add option to output 3D structures as xyz files
+    - in 'ligands_overview.csv', sort so that passed ligands come first
     - check if denticity == None gives same results as replacing with list(range(100))
     - refactor output ligand db path to not overwrite and to only take the folder name, not the whole path
-    - add subgraph matching filter
     - add denticities to each filter where it makes slightly sense
     - merge ligand composition and coordinating atom composition filter by adding an option 'apply_to' which is either 'ligand_atoms' or 'coordinating_atoms'
     - add filters:

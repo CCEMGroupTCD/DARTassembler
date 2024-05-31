@@ -1,13 +1,24 @@
 import warnings
 import numpy as np
-from stk.molecular.topology_graphs.topology_graph import Edge
-from stk.molecular.topology_graphs.metal_complex.metal_complex import MetalComplex
-from stk.molecular.topology_graphs.metal_complex.vertices import MetalVertex, UnaligningVertex
-from stk.molecular.topology_graphs.topology_graph.vertex import Vertex
-from scipy.spatial.distance import euclidean
-from stk.utilities import get_projection
 from DARTassembler.src.constants.Periodic_Table import DART_Element as element
 import logging
+from scipy.spatial.distance import euclidean
+
+# Get stk functions which were refactored at some point
+try:
+    from stk.molecular.topology_graphs.topology_graph import Edge
+    from stk.molecular.topology_graphs.metal_complex.metal_complex import MetalComplex
+    from stk.molecular.topology_graphs.metal_complex.vertices import MetalVertex, UnaligningVertex
+    from stk.molecular.topology_graphs.topology_graph.vertex import Vertex
+    from stk.utilities import get_projection
+except (ImportError, ModuleNotFoundError):
+    from stk._internal.topology_graphs.edge import Edge
+    from stk._internal.topology_graphs.metal_complex.metal_complex import MetalComplex
+    from stk._internal.topology_graphs.metal_complex.vertices import MetalVertex, UnaligningVertex
+    from stk._internal.topology_graphs.vertex import Vertex
+    from stk._internal.utilities.utilities import get_projection
+
+
 
 class TridentateLigandVertex(Vertex):
     """

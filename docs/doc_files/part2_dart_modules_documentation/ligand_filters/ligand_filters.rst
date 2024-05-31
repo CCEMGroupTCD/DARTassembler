@@ -5,7 +5,7 @@ Ligand Filters Module
 
 The Ligand Filters module streamlines the selection of ligands from the extensive :ref:`MetaLig Database <metalig>`, which boasts 41,018 entries. This tool is invaluable for assembling complexes targeted to a certain chemical space.
 
-Users can apply a range of predefined filters via an input file to refine the ligand pool. The module supports both the entire MetaLig database and user-supplied subsets. For those requiring precise control, the :confval:`graph_IDs` filter enables selection based on specific ligand IDs.
+Users can apply a range of predefined filters via an input file to refine the ligand pool. The module supports both the entire MetaLig database and user-supplied subsets. For those requiring precise control, the :confval:`graph_IDs` filter enables selection based on specific ligand IDs. Otherwise, the :confval:`smarts` filter allows for the application of powerful SMARTS patterns to filter ligands based on their 2D chemical structure, which should suffice for most applications.
 
 The ligand filters module is run from the command line by providing a single configuration file:
 
@@ -29,6 +29,9 @@ The ligand filters module is run from the command line by providing a single con
 - remove_ligands_with_adjacent_coordinating_atoms
 - remove_ligands_with_beta_hydrogens
 - graph_IDs
+- remove_ligands_with_missing_bond_orders
+- atomic_neighbors
+- smarts
 
 
 Input File
@@ -105,6 +108,21 @@ Below is an example YAML file, serving as a comprehensive template showcasing al
       - filter: graph_IDs                           # Only keep ligands with the following graph IDs
         graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]     # List of graph IDs to keep
 
+      - filter: remove_ligands_with_missing_bond_orders              # Filter out ligands with missing bond orders
+        remove_ligands_with_missing_bond_orders: true                # true or false. If false, filter will be ignored.
+
+      - filter: atomic_neighbors                    # Filters out ligands in which a chemical element is connected to the specified neighbors
+        atom: C                                     # Chemical element of the central atom
+        neighbors: H2                               # List of chemical elements or stoichiometry
+        apply_to_denticities: [3]                   # List of denticities to apply this filter to. If empty, applies to all denticities.
+
+      - filter: smarts                              # Filters ligands based on their 2D chemical structure using SMARTS patterns
+        smarts: '[C&H2]'                            # SMARTS pattern to match
+        should_contain: False                       # If True, the ligand must contain the SMARTS pattern to pass. If False, the ligand must not contain the SMARTS pattern to pass.
+        include_metal: True                         # If True, the ligand structure will contain the metal center 'Cu' connected to the coordinating atoms
+        apply_to_denticities:                       # List of denticities to apply this filter to. If empty, applies to all denticities.
+
+
 
 Input/Output Options
 ~~~~~~~~~~~~~~~~~~~~
@@ -151,7 +169,7 @@ Filters
         ligand_charges :
             List of charges to keep.
 
-        denticities :
+        apply_to_denticities :
             A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
     :example: For ligands with denticity of 2 or 3, this example will keep only ligands which have a formal charge of -1, 0 or 1. Ligands with denticities other than 2 or 3 will always pass.
@@ -187,7 +205,7 @@ Filters
             - ``must_only_contain_in_any_amount``
                 Ligands must only contain the specified elements, but the amount of each element is not important and can even be zero. Duplicate elements are ignored. For example, if the :confval:`elements` are '[C, C, H, N]', then any ligand that contains no other elements than Carbon, Hydrogen and Nitrogen will pass this filter, and even ligands containing subsets such as ligands containing only Carbon.
 
-        **denticities :**
+        **apply_to_denticities :**
 
             A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
@@ -225,7 +243,7 @@ Filters
             - ``must_only_contain_in_any_amount``
                 The coordinating atoms of the ligand must only contain the specified elements, but the amount of each element is not important and can even be zero. Duplicate elements are ignored. For example, if the :confval:`elements` are '[C, C, N]', then any ligand with coordinating atoms which contain no other elements than Carbon and Nitrogen will pass this filter, and even ligands containing subsets such as ligands containing only Carbon.
 
-        **denticities :**
+        **apply_to_denticities :**
 
             A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
@@ -252,7 +270,7 @@ Filters
         max :
             Maximum number of atoms. If empty, will be set to infinity.
 
-        denticities :
+        apply_to_denticities :
             A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
     :example: This example will remove all ligands with a denticity of 1 or 2 with less than 10 atoms or more than 100 atoms. Ligands with denticities other than 1 or 2 will always pass.
@@ -278,7 +296,7 @@ Filters
         max :
             Maximum molecular weight in g/mol. If empty, will be set to infinity.
 
-        denticities :
+        apply_to_denticities :
             A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
     :example: This example will keep only ligands with a molecular weight between 10g/mol and 300g/mol. Because the denticities list is empty, this filter will be applied to every ligand.
@@ -305,7 +323,7 @@ Filters
         max :
             Maximum bond length in Angstrom. If empty, will be set to infinity.
 
-        denticities :
+        apply_to_denticities :
             A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
     :example: For ligands with a denticity of 2 or 3, this example will only keep ligands which have a metal-donor bond length between 1.0 Angstrom and 2.5 Angstrom. Ligands with denticities other than 2 or 3 will always pass.
@@ -331,7 +349,7 @@ Filters
         max :
             Maximum interatomic distance in Angstrom. If empty, will be set to infinity.
 
-        denticities :
+        apply_to_denticities :
             A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
     :example: For ligands with a denticity of 3 or 4, this example will only keep ligands which have an interatomic distance between 0.5 Angstrom and 40 Angstrom. Ligands with denticities other than 3 or 4 will always pass.
@@ -358,7 +376,7 @@ Filters
         max :
             Maximum planarity score. If empty, will be set to 1.
 
-        denticities :
+        apply_to_denticities :
             A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
     :example: This example will keep only ligands with a denticity of 1 which have a planarity score between 0.9 and 1.0, i.e. very planar ligands. Ligands with denticities other than 1 will always pass.
@@ -384,7 +402,7 @@ Filters
         max :
             Maximum number of occurrences. If empty, will be set to infinity.
 
-        denticities :
+        apply_to_denticities :
             A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
     :example: For ligands with denticities of 3 or 4, this example will keep only ligands which have been observed in the CSD at least 3 times. Ligands with denticities other than 3 or 4 will always pass.
@@ -408,7 +426,7 @@ Filters
         metal_ligand_binding_history :
             List of metals, e.g. [Pd, Ni]. Any metal from the d- or f-block can be specified.
 
-        denticities :
+        apply_to_denticities :
             A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
 
     :example:   For ligands with denticity of 2 or 3, this example will keep only ligands which have been observed to coordinate to Pd or Ni. Ligands with denticities other than 2 or 3 will always pass.
@@ -474,6 +492,98 @@ Filters
 
             - filter: graph_IDs
                 graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]
+
+.. _filter_remove_ligands_with_missing_bond_orders:
+
+.. confval:: remove_ligands_with_missing_bond_orders
+
+    Removes ligands with missing bond orders (~4% of ligands in the MetaLig). Most helpful in concert with the filter :confval:`smarts`, since that filter will automatically pass ligands with unknown bond orders. If you want to be sure that all passed ligands obey the SMARTS filter, it is recommended to apply this filter together with the SMARTS filter.
+
+    :options:
+
+        remove_ligands_with_missing_bond_orders :
+            If true, apply this filter. If false, will be ignored.
+        apply_to_denticities :
+            A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+    :example: This example will remove all ligands with missing bond orders.
+
+        .. code-block::
+
+              - filter: remove_ligands_with_missing_bond_orders
+                    remove_ligands_with_missing_bond_orders: true
+                    apply_to_denticities:
+
+.. _filter_atomic_neighbors:
+
+.. confval:: atomic_neighbors
+
+        This filter removes all ligands in which a chemical element :confval:`atom` is connected to the atoms specified in :confval:`neighbors`. Importantly, this filter only checks if the specified atom has at least the specified neighbors, but there might be more neighbors than specified and the ligand will still be removed. For more control, use the :confval:`smarts` filter.
+
+        :options:
+
+            **atom :**
+
+                Chemical element of the central atom.
+
+            **neighbors :**
+
+                List of chemical elements or stoichiometry. The ligand will be removed if the :confval:`atom` is connected to at least the specified neighbors.
+
+            **apply_to_denticities :**
+
+                A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+        :example: This example removes all ligands in which a C is connected to 2 H atoms, plus potentially other neighbors.
+
+            .. code-block::
+
+                - filter: atomic_neighbors
+                    atom: C
+                    neighbors: H2
+                    apply_to_denticities:
+
+.. _filter_smarts:
+
+.. confval:: smarts
+
+        This filter is a very powerful tool to filter ligands based on their 2D chemical structure, including bond orders. `SMARTS <https://www.daylight.com/dayhtml/doc/theory/theory.smarts.html>`_ is a language to describe and match chemical patterns and motifs in molecules. It can be thought of as a way to search chemical motifs in SMILES strings.
+
+        The smarts filter works by first computing the SMILES string of the ligand (with or without 'Cu' metal center depending on :confval:`include_metal`) and then matching the specified SMARTS pattern to the SMILES string using rdkit.
+
+        .. warning::
+            If a ligand has unknown bond orders (~4% of ligands in the MetaLig), it will automatically pass this filter. If you want to be sure that all passed ligands obey the SMARTS filter, it is recommended to apply this filter together with the filter :confval:`remove_ligands_with_missing_bond_orders`.
+
+        .. note::
+            SMARTS patterns are very expressive, but can be difficult to come up with. It is recommended to use tools like `SMARTSviewer <https://smartsview.zbh.uni-hamburg.de/>`_ to design the SMARTS pattern. Alternatively, the modern world offers fascinating AI models such as ChatGPT, which are a great help in designing SMARTS patterns. Anyway, always make sure your SMARTS pattern works as intended by checking the output ligands.
+
+        :options:
+
+            **smarts :**
+
+                `SMARTS <https://www.daylight.com/dayhtml/doc/theory/theory.smarts.html>`_ pattern to match. Please note that the SMARTS pattern must be enclosed in single or double quotes, e.g. '[C&H2]'. Otherwise it is likely that the YAML parser will throw an error.
+
+            **should_contain :**
+
+                If True, the ligand `must contain` the SMARTS pattern to pass. If False, the ligand `must not contain` the SMARTS pattern to pass.
+
+            **include_metal :**
+
+                If True, the ligand's coordinating atoms will be connected to a 'Cu' metal center. The bonds between 'Cu' and the coordinating atoms are single bonds. This allows to target coordinating atoms in the SMARTS pattern in contrast to other atoms. If False, the ligand will be treated as just the ligand structure without a metal center.
+
+            **apply_to_denticities :**
+
+                A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+        :example: This example will remove all ligands in which a C is connected to exactly 2 H atoms, plus potentially other elements.
+
+            .. code-block::
+
+                - filter: smarts
+                    smarts: '[C&H2]'
+                    should_contain: False
+                    include_metal: True
+                    apply_to_denticities:
 
 
 
