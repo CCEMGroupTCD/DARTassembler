@@ -6,6 +6,7 @@ import ase
 
 from DARTassembler.src.assembled_complex_output.gaussian import GaussianOutput
 from DARTassembler.src.assembly.TransitionMetalComplex import TransitionMetalComplex
+from DARTassembler.src.assembled_complex_output.utils import is_complex_directory, get_filepaths_from_dirpath, get_all_complex_directories
 
 
 
@@ -14,7 +15,7 @@ class DARTComplexOutput(object):
 
     def __init__(self, dirpath: Union[str, Path]):
 
-        if not self.is_complex_directory(dirpath):
+        if not is_complex_directory(dirpath):
             raise ValueError(f'"{dirpath}" is not a valid complex directory!')
 
         self.dirpath = Path(dirpath).resolve()
@@ -46,35 +47,7 @@ class DARTComplexOutput(object):
         return self.gaussian_output.get_relaxed_complex(self.data_file)
 
     def get_filepaths(self):
-        return self.get_filepaths_from_dirpath(self.dirpath)
-
-    @staticmethod
-    def get_filepaths_from_dirpath(dirpath):
-        dirpath = Path(dirpath).resolve()
-        name = dirpath.name
-
-        structure_file = Path(dirpath, f'{name}_structure.xyz')
-        data_file = Path(dirpath, f'{name}_data.json')
-        ligandinfo_file = Path(dirpath, f'{name}_ligandinfo.csv')
-        xtbstructure_file = Path(dirpath, f'{name}_xtbstructure.xyz')
-        xtbdata_file = Path(dirpath, f'{name}_xtbdata.json')
-        gaussiandata_file = Path(dirpath, f'{name}_gaussian.fchk')
-
-        return (structure_file, data_file, ligandinfo_file, xtbstructure_file, xtbdata_file, gaussiandata_file)
-
-    @staticmethod
-    def is_complex_directory(dir: Union[str, Path]) -> bool:
-        important_files = ['_structure.xyz', '_data.json']
-        name = Path(dir).name
-        return all([Path(dir, f'{name}{file}').exists() for file in important_files])
-
-    @staticmethod
-    def get_all_complex_directories(dir: Union[str, Path]) -> List[str]:
-        dir = Path(dir).resolve()
-        if not dir.exists():
-            raise ValueError(f'Directory "{dir}" does not exist!')
-
-        return [str(dirpath) for dirpath, _, _ in os.walk(dir) if DARTComplexOutput.is_complex_directory(dirpath)]
+        return get_filepaths_from_dirpath(self.dirpath)
 
 
 

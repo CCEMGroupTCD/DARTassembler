@@ -3,16 +3,16 @@ Utility functions for input and output.
 """
 import json
 import sys
-
 import yaml
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand, RCA_Complex
 import numpy as np
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from DARTassembler.src.ligand_extraction.utilities import get_duration_string
 from typing import Union
 from pathlib import Path, PurePath
 import jsonlines
 from tqdm import tqdm
+import functools
 import ase
 import zipfile
 import shutil
@@ -92,18 +92,14 @@ class NumpyEncoder(json.JSONEncoder):
             return str(obj)
         elif isinstance(obj, Path):
             return str(obj)
+        elif isinstance(obj, (datetime, date)):
+            return obj.isoformat()
+        elif isinstance(obj, timedelta):
+            return str(obj)
         return json.JSONEncoder.default(self, obj)
 
 
-def load_json(path: Union[str, Path], n_max: int=None, show_progress: bool=True) -> dict:
-    """
-    Load a JSON or JSON Lines file. If the file is a JSON Lines file, it is converted to a dictionary.
-    :param path: Path to the JSON or JSON Lines file
-    :return: Dictionary with the contents of the file
-    """
-    db = {key: value for key, value in iterate_over_json(path, n_max=n_max, show_progress=show_progress)}
 
-    return db
 
 def check_if_return_entry(i: int, n_max: Union[int, list]=None) -> bool:
     """
@@ -130,6 +126,16 @@ def ensure_path_exists(path: Union[str, Path]) -> Path:
         raise TypeError(f'Expected path to be a string or Path, but got {type(path)} for file {path}')
 
     return path
+
+def load_json(path: Union[str, Path], n_max: int=None, show_progress: bool=True) -> dict:
+    """
+    Load a JSON or JSON Lines file. If the file is a JSON Lines file, it is converted to a dictionary.
+    :param path: Path to the JSON or JSON Lines file
+    :return: Dictionary with the contents of the file
+    """
+    db = {key: value for key, value in iterate_over_json(path, n_max=n_max, show_progress=show_progress)}
+
+    return db
 
 def iterate_over_json(path: Union[str, Path], n_max: int=None, show_progress: bool=True) -> tuple[str, dict]:
     """
@@ -165,6 +171,23 @@ def iterate_over_json(path: Union[str, Path], n_max: int=None, show_progress: bo
 
     return
 
+def iterate_over_jsonlines(path: Union[str, Path], n_max: int=None, show_progress: bool=True) -> tuple[str, dict]:
+    """
+    Iterate over a JSON Lines file and yield the key and value of each entry.
+    :param path: Path to the JSON Lines file
+    :return: Tuple with the key and value of each entry
+    """
+    path = ensure_path_exists(path)
+    with jsonlines.open(path, 'r') as reader:
+        for i, line in tqdm(enumerate(reader), disable=not show_progress, desc='Load jsonlines'):
+            key, value = line['key'], line['value']
+            if check_if_return_entry(i, n_max):
+                yield key, value
+            else:
+                return
+
+    return
+
 def get_n_entries_of_json_db(path: Union[str, Path]) -> int:
     """
     Get the number of entries in a JSON or JSON Lines file.
@@ -183,6 +206,19 @@ def save_json(db: dict, path: Union[str, Path], **kwargs):
 
     return
 
+def save_jsonlines(db: dict, path: Union[str, Path]):
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with jsonlines.open(path, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as writer:
+        for key, value in db.items():
+            data = {'key': key, 'value': value}
+            writer.write(data)
+
+    return
+
+def load_jsonlines(path: Union[str, Path], n_max: int=None, show_progress: bool=True) -> dict:
+    db = {key: value for key, value in iterate_over_jsonlines(path, n_max=n_max, show_progress=show_progress)}
+    return db
 
 def check_molecule_value(output: str):
     possible_values = ['dict', 'class']

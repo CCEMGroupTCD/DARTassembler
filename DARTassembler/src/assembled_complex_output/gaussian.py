@@ -30,6 +30,9 @@ class GaussianOutput(object):
         :param input_path: Path to the fchk file or directory containing the fchk file.
         :return: Path to the fchk file.
         """
+        if not input_path.exists():
+            raise FileNotFoundError(f'Path {input_path} not found.')
+
         if input_path.is_file():
             fchk_file = input_path
         else:

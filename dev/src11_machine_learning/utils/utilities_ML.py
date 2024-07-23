@@ -27,7 +27,7 @@ def get_element_descriptors(el: str) -> dict:
 def get_xtb_descriptors(xyz: str, charge: int=0, n_unpaired: int=None) -> dict:
     """
     Returns a dictionary with global XTB descriptors for a given molecule.
-    @param xyz: path to an xyz file or xyz string
+    @param xyz: path to an xyz file or xyz string or a tuple/list with elements and coordinates
     """
     import morfeus
     from xtb.interface import XTBException
