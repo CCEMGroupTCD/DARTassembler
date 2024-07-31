@@ -3,6 +3,7 @@ ffmovie: false
 concatenate_xyz: true
 overwrite_output: true
 output_path: output/assemblerH2Oallsame
+same_isomer_names: false
 complex_name_length: 8
 
 batches:

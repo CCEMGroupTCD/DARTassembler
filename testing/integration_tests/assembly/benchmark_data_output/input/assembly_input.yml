@@ -3,6 +3,7 @@ ffmovie: true
 concatenate_xyz: true
 overwrite_output: true
 output_path: assembly/data_output
+same_isomer_names: true
 complex_name_length: 8
 batches:
 - name: Integration_test_7

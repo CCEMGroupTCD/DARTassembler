@@ -1,9 +1,8 @@
 import sys
 from unittest.mock import patch
 import datetime
-from DARTassembler.src.constants.Paths import project_path
-from DARTassembler.src.assembly.Guassian_com import Generate_Gaussian_input_file
-from DARTassembler.src.assembly.Submission import SumbitCalc
+
+from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.assembly.Monkeypatch_stk import MONKEYPATCH_STK_SmartsFunctionalGroupFactory
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
@@ -26,7 +25,6 @@ import ase
 from copy import deepcopy
 import numpy as np
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
-from DARTassembler.src.ligand_extraction.utilities_graph import get_graph_hash
 
 warnings.simplefilter("always")
 import logging
@@ -56,11 +54,12 @@ class DARTAssembly(object):
         self.overwrite_existing_output = self.settings.overwrite_output_path
         self.batches = self.settings.Batches
         self.n_batches = len(self.batches)
+        self.same_isomer_names = self.settings.same_isomer_names
 
         self.df_info = None
         self.gbl_outcontrol = AssemblyOutput(outdir=self.output_path, ensure_empty_output_dir=self.overwrite_existing_output)
 
-        # initialize some necessary variables
+        # Initialize some necessary variables
         self.random_seed = None
         self.topology_similarity = None
         self.metal_list = None
@@ -99,6 +98,12 @@ class DARTAssembly(object):
             self.metal_ox_state = metal_list[1]
             self.build_options = {'bidentate_rotator': bidentate_rotator}
             self.multiple_db = isinstance(self.ligand_json, list)
+            if self.generate_isomer_instruction == 'Generate All':
+                self.multiple_isomers = True
+            elif self.generate_isomer_instruction == 'Generate Lowest Energy':
+                self.multiple_isomers = False
+            else:
+                raise ValueError(f"generate_isomer_instruction must be either 'Generate All' or 'Generate Lowest Energy', but is {self.generate_isomer_instruction}.")
 
             self.run_batch()  # run the batch assembly
 
@@ -362,7 +367,7 @@ class DARTAssembly(object):
                                                 batch_idx=self.batch_idx,
                                                 ligands=ligands,
                                                 )
-        graph_hash = get_graph_hash(complex.graph)
+        graph_hash = complex.graph_hash
         self.add_batch_info(success=True, reason=note, ligands=ligands, complex_idx=complex_idx, complex_name=complex_name, complex_graph_hash=graph_hash)
         self.assembled_complex_names.append(complex_name)
 
@@ -383,23 +388,40 @@ class DARTAssembly(object):
 
         return
 
-    def get_complex_name(self, complex) -> str:
+    def get_complex_name(self, complex, decimals=6) -> str:
         """
         Returns the name of the complex.
         """
         # Get a random name for the complex
-        name = complex.create_random_name(length=self.complex_name_length)
-        # name = 'complex_'
+        if self.same_isomer_names:
+            hash_string = complex.graph_hash
+        else:
+            xyz = complex.mol.get_xyz_as_array()
+            sorted_indices = np.lexsort((xyz[:, 2], xyz[:, 1], xyz[:, 0]), axis=0)
+            xyz = np.round(xyz, decimals=decimals)  # round to 6 decimals to get rid of numerical noise
+            xyz = xyz[sorted_indices]
+            elements = [el for _, el in sorted(zip(sorted_indices, complex.mol.get_elements_list()))] # sort elements according to xyz
+            hash_string = str(elements) + str(xyz)  # make hash string
 
-        # If the name is already used, add a number to the end of the name
+        # Generate a pronounceable word from the hash
+        name = generate_pronounceable_word(length=self.complex_name_length, seed=hash_string)
+
+        # If the name is based on the graph hash AND there are multiple isomers, add a number to the end of each name, otherwise start without a number.
         i = 1
-        total_name = name
+        if self.same_isomer_names and self.multiple_isomers:  # Names based on graph hash
+                total_name = name + str(i)
+        else:
+            total_name = name
+        # If the name is already used, add increasing numer to end of name
         while total_name in self.assembled_complex_names:
             total_name = name + str(i)
             i += 1
 
         # Add the specified appendix to the name
         total_name += self.complex_name_appendix
+
+        # Add name to complex
+        complex.mol_id = total_name
 
         return total_name
 

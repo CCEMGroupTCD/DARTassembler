@@ -18,7 +18,7 @@ from DARTassembler.src.ligand_extraction.utilities import angle_between_ab_ac_ve
 from DARTassembler.src.ligand_extraction.utilities_Molecule import original_metal_ligand
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Molecule, RCA_Ligand
 from DARTassembler.src.ligand_extraction.utilities_graph import graphs_are_equal, \
-    get_sorted_atoms_and_indices_from_graph, view_graph, graph_from_graph_dict
+    get_sorted_atoms_and_indices_from_graph, view_graph, graph_from_graph_dict, get_graph_hash
 from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word
 
 atomic_number_Hg = 80
@@ -55,8 +55,7 @@ class TransitionMetalComplex(object):
         self.metal_oxi_state = metal_oxi_state
         self.metal_idx = metal_idx
         self.charge = charge
-        # todo:
-        # - add graph hash of complex!!!
+        self.graph_hash = get_graph_hash(self.graph)
 
         self.metal = self.atomic_props["atoms"][self.metal_idx]
         self.metal_position = [self.atomic_props['x'][self.metal_idx], self.atomic_props['y'][self.metal_idx], self.atomic_props['z'][self.metal_idx]]
@@ -79,9 +78,6 @@ class TransitionMetalComplex(object):
 
         self.functional_groups = {key: lig['donor_elements'] for key, lig in ligand_props.items()}
         assert sorted(self.donor_elements) == sorted([el for elements in self.functional_groups.values() for el in elements]), f"The donor indices {self.donor_indices} do not match the donor elements {self.donor_elements}!"
-
-        self.mol_id = self.create_random_name()
-
 
     @staticmethod
     def get_total_charge(metal_charge_, ligands_):
@@ -184,16 +180,19 @@ class TransitionMetalComplex(object):
 
         return graph, ligand_indices, ligand_donor_indices
 
-    def create_random_name(self, length=8, decimals=6):
+    def create_random_name(self, length=8, decimals=6, from_graph=False):
         """
         Generate a hash name of the molecule based on its xyz coordinates and elements. If coordinates or elements change, the name will change.
         """
-        xyz = self.mol.get_xyz_as_array()
-        sorted_indices = np.lexsort((xyz[:, 2], xyz[:, 1], xyz[:, 0]), axis=0)
-        xyz = np.round(xyz, decimals=decimals)  # round to 6 decimals to get rid of numerical noise
-        xyz = xyz[sorted_indices]
-        elements = [el for _, el in sorted(zip(sorted_indices, self.mol.get_elements_list()))] # sort elements according to xyz
-        hash_string = str(elements) + str(xyz)  # make hash string
+        if from_graph:
+            hash_string = self.graph_hash
+        else:
+            xyz = self.mol.get_xyz_as_array()
+            sorted_indices = np.lexsort((xyz[:, 2], xyz[:, 1], xyz[:, 0]), axis=0)
+            xyz = np.round(xyz, decimals=decimals)  # round to 6 decimals to get rid of numerical noise
+            xyz = xyz[sorted_indices]
+            elements = [el for _, el in sorted(zip(sorted_indices, self.mol.get_elements_list()))] # sort elements according to xyz
+            hash_string = str(elements) + str(xyz)  # make hash string
 
         # Generate a pronounceable word from the hash
         name = generate_pronounceable_word(length=length, seed=hash_string)

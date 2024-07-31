@@ -1,0 +1,455 @@
+{
+    "complex": {
+        "atomic_props": {
+            "x": [
+                0.0,
+                5.02269,
+                3.5496,
+                1.30687,
+                1.22803,
+                1.25113,
+                1.30687,
+                1.40964,
+                1.07616,
+                3.75552,
+                2.60592,
+                2.77136,
+                2.53239,
+                2.46544,
+                3.42938,
+                -1.35057,
+                -0.84049,
+                -1.02835,
+                -2.63362,
+                -3.40581,
+                -2.38654,
+                -2.97671,
+                -3.20275,
+                -1.32229,
+                -2.30392
+            ],
+            "y": [
+                0.0,
+                1.12642,
+                2.44184,
+                1.33753,
+                1.79288,
+                2.07638,
+                -1.33753,
+                -1.79265,
+                -2.06474,
+                1.48814,
+                0.68566,
+                0.56138,
+                -0.68903,
+                -0.55278,
+                -1.30652,
+                1.35057,
+                1.91523,
+                1.61238,
+                2.14547,
+                1.70887,
+                3.18325,
+                2.2351,
+                -2.89098,
+                -1.32229,
+                -2.11502
+            ],
+            "z": [
+                0.0,
+                -0.14679,
+                -1.14949,
+                0.0,
+                -0.93849,
+                0.73957,
+                0.0,
+                0.93587,
+                -0.71637,
+                -0.41358,
+                0.17493,
+                1.26821,
+                -0.45318,
+                -1.55869,
+                -0.22941,
+                0.0,
+                0.80153,
+                -1.03162,
+                0.05318,
+                -0.59884,
+                -0.30121,
+                1.10637,
+                -0.00078,
+                0.0,
+                -0.00315
+            ],
+            "atoms": [
+                "Fe",
+                "O",
+                "O",
+                "N",
+                "H",
+                "H",
+                "N",
+                "H",
+                "H",
+                "C",
+                "C",
+                "H",
+                "C",
+                "H",
+                "H",
+                "C",
+                "H",
+                "H",
+                "C",
+                "H",
+                "H",
+                "H",
+                "O",
+                "N",
+                "C"
+            ]
+        },
+        "global_props": {
+            "n_atoms": 25,
+            "n_elements": 5,
+            "molecular_weight": 230.025,
+            "n_C_H_bonds": 8
+        },
+        "graph_dict": {
+            "graph": {
+                "0": {
+                    "3": {},
+                    "6": {},
+                    "15": {},
+                    "23": {}
+                },
+                "1": {
+                    "9": {}
+                },
+                "2": {
+                    "9": {}
+                },
+                "3": {
+                    "0": {},
+                    "4": {},
+                    "5": {},
+                    "10": {}
+                },
+                "4": {
+                    "3": {}
+                },
+                "5": {
+                    "3": {}
+                },
+                "6": {
+                    "0": {},
+                    "7": {},
+                    "8": {},
+                    "12": {}
+                },
+                "7": {
+                    "6": {}
+                },
+                "8": {
+                    "6": {}
+                },
+                "9": {
+                    "1": {},
+                    "2": {},
+                    "10": {}
+                },
+                "10": {
+                    "3": {},
+                    "9": {},
+                    "11": {},
+                    "12": {}
+                },
+                "11": {
+                    "10": {}
+                },
+                "12": {
+                    "6": {},
+                    "10": {},
+                    "13": {},
+                    "14": {}
+                },
+                "13": {
+                    "12": {}
+                },
+                "14": {
+                    "12": {}
+                },
+                "15": {
+                    "0": {},
+                    "16": {},
+                    "17": {},
+                    "18": {}
+                },
+                "16": {
+                    "15": {}
+                },
+                "17": {
+                    "15": {}
+                },
+                "18": {
+                    "15": {},
+                    "19": {},
+                    "20": {},
+                    "21": {}
+                },
+                "19": {
+                    "18": {}
+                },
+                "20": {
+                    "18": {}
+                },
+                "21": {
+                    "18": {}
+                },
+                "22": {
+                    "24": {}
+                },
+                "23": {
+                    "0": {},
+                    "24": {}
+                },
+                "24": {
+                    "22": {},
+                    "23": {}
+                }
+            },
+            "node_attributes": {
+                "0": {
+                    "node_label": "Fe"
+                },
+                "1": {
+                    "metal_neighbor": false,
+                    "node_label": "O",
+                    "orig_idx": 3
+                },
+                "2": {
+                    "metal_neighbor": false,
+                    "node_label": "O",
+                    "orig_idx": 4
+                },
+                "3": {
+                    "metal_neighbor": true,
+                    "node_label": "N",
+                    "orig_idx": 13
+                },
+                "4": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 14
+                },
+                "5": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 15
+                },
+                "6": {
+                    "metal_neighbor": true,
+                    "node_label": "N",
+                    "orig_idx": 16
+                },
+                "7": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 17
+                },
+                "8": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 18
+                },
+                "9": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 31
+                },
+                "10": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 32
+                },
+                "11": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 33
+                },
+                "12": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 34
+                },
+                "13": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 35
+                },
+                "14": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 36
+                },
+                "15": {
+                    "metal_neighbor": true,
+                    "node_label": "C",
+                    "orig_idx": 51
+                },
+                "16": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 52
+                },
+                "17": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 53
+                },
+                "18": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 56
+                },
+                "19": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 57
+                },
+                "20": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 58
+                },
+                "21": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 59
+                },
+                "22": {
+                    "metal_neighbor": false,
+                    "node_label": "O",
+                    "orig_idx": 1
+                },
+                "23": {
+                    "metal_neighbor": true,
+                    "node_label": "N",
+                    "orig_idx": 4
+                },
+                "24": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 10
+                }
+            }
+        },
+        "ligand_props": {
+            "0": {
+                "unique_name": "unq_CSD-PASKOK-02-b",
+                "ligand_indices_in_complex": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14
+                ],
+                "donor_indices": [
+                    3,
+                    6
+                ],
+                "donor_elements": [
+                    "N",
+                    "N"
+                ],
+                "donor_bond_lengths": [
+                    1.9759776238611613,
+                    1.9658480332925024
+                ],
+                "stoichiometry": "C3H7N2O2",
+                "denticity": 2,
+                "pred_charge": -1,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "7c2550c8205f17657253a8a3eec16765",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 3,
+                "n_atoms": 14
+            },
+            "1": {
+                "unique_name": "unq_CSD-OZUZIT-01-a",
+                "ligand_indices_in_complex": [
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20,
+                    21
+                ],
+                "donor_indices": [
+                    15
+                ],
+                "donor_elements": [
+                    "C"
+                ],
+                "donor_bond_lengths": [
+                    1.9526874557900973
+                ],
+                "stoichiometry": "C2H5",
+                "denticity": 1,
+                "pred_charge": -1,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "ec635f44581858d11dc468df2d987bf1",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 371,
+                "n_atoms": 7
+            },
+            "2": {
+                "unique_name": "unq_CSD-PALKET-01-a",
+                "ligand_indices_in_complex": [
+                    22,
+                    23,
+                    24
+                ],
+                "donor_indices": [
+                    23
+                ],
+                "donor_elements": [
+                    "N"
+                ],
+                "donor_bond_lengths": [
+                    2.088194095384814
+                ],
+                "stoichiometry": "C1N1O1",
+                "denticity": 1,
+                "pred_charge": -1,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "cc47759db1574f650ff7ab82ae512efb",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 293,
+                "n_atoms": 3
+            }
+        },
+        "metal_oxi_state": 2,
+        "metal": "Fe",
+        "metal_idx": 0,
+        "charge": -1,
+        "mol_id": "AQEFILOQ"
+    },
+    "complex_idx": 2,
+    "xyz_structure": "25\n\nFe  0.0  0.0  0.0 \nO  5.02269  1.12642  -0.14679 \nO  3.5496  2.44184  -1.14949 \nN  1.30687  1.33753  0.0 \nH  1.22803  1.79288  -0.93849 \nH  1.25113  2.07638  0.73957 \nN  1.30687  -1.33753  0.0 \nH  1.40964  -1.79265  0.93587 \nH  1.07616  -2.06474  -0.71637 \nC  3.75552  1.48814  -0.41358 \nC  2.60592  0.68566  0.17493 \nH  2.77136  0.56138  1.26821 \nC  2.53239  -0.68903  -0.45318 \nH  2.46544  -0.55278  -1.55869 \nH  3.42938  -1.30652  -0.22941 \nC  -1.35057  1.35057  0.0 \nH  -0.84049  1.91523  0.80153 \nH  -1.02835  1.61238  -1.03162 \nC  -2.63362  2.14547  0.05318 \nH  -3.40581  1.70887  -0.59884 \nH  -2.38654  3.18325  -0.30121 \nH  -2.97671  2.2351  1.10637 \nO  -3.20275  -2.89098  -0.00078 \nN  -1.32229  -1.32229  0.0 \nC  -2.30392  -2.11502  -0.00315 \n",
+    "batch_idx": 0
+}

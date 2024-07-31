@@ -28,6 +28,7 @@ _concatenate_xyz = 'concatenate_xyz'
 _overwrite_output_path = 'overwrite_output'
 _output_path = 'output_path'
 _complex_name_length = 'complex_name_length'
+_same_isomer_names = 'same_isomer_names'
 # Batch settings
 _batches = 'batches'
 _name = 'name'
@@ -719,6 +720,7 @@ class AssemblyInput(BaseInput):
                         _batches: [list, tuple, dict],
                         _overwrite_output_path: [bool, str],
                         _complex_name_length: [int, str],
+                        _same_isomer_names: [bool, str],
                         }
     # Batch settings
     batches_valid_keys = {
@@ -791,6 +793,7 @@ class AssemblyInput(BaseInput):
         self.concatenate_xyz = self.get_bool_from_input(self.global_settings[_concatenate_xyz], varname=_concatenate_xyz)
         self.Batches =  self.get_batches_from_input(self.global_settings[_batches])
         self.complex_name_length = self.get_int_from_input(self.global_settings[_complex_name_length], varname=_complex_name_length)
+        self.same_isomer_names = self.get_bool_from_input(self.global_settings[_same_isomer_names], varname=_same_isomer_names)
 
         # Check if the output path exists and is a directory. Must come after self.overwrite_output_path is set.
         self.Output_Path = self.ensure_output_directory_valid(self.global_settings[_output_path], varname=_output_path)

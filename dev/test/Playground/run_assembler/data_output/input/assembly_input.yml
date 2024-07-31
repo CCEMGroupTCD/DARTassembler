@@ -1,0 +1,21 @@
+verbosity: 2
+ffmovie: true
+concatenate_xyz: true
+overwrite_output: true
+output_path: data_output
+same_isomer_names: true
+complex_name_length: 8
+batches:
+- name: Integration_test_7
+  topology: 2-1-1
+  ligand_db_paths: INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  metal_center: Fe
+  metal_oxidation_state: 2
+  total_charge: -1
+  max_num_complexes: 10
+  forcefield: true
+  isomers: lowest_energy
+  bidentate_rotator: horseshoe
+  geometry_modifier_filepath: null
+  random_seed: 0
+  complex_name_appendix: null

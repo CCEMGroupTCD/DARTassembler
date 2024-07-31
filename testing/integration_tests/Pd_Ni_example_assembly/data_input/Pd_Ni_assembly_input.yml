@@ -5,6 +5,7 @@ ffmovie: true
 concatenate_xyz: true
 overwrite_output: true
 output_path: Pd_Ni_example_assembly/assembled_complexes
+same_isomer_names: false
 complex_name_length: 8
 
 batches:

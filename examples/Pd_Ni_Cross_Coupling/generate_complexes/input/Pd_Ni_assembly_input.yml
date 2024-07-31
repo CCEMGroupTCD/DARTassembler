@@ -5,6 +5,7 @@ ffmovie: true
 concatenate_xyz: true
 overwrite_output: true
 output_path: assembler_output
+same_isomer_names: false
 complex_name_length: 8
 
 batches:
