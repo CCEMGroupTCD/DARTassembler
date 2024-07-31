@@ -3,7 +3,13 @@ TODO:
 Todo before publication:
 - tests:
     - make test of full assembler, filters etc, everything but ligand extraction
-- check which conda environment is latest and without too many fixed versions, especially for stk
+- conda:
+    - check which conda environment is latest and without too many fixed versions, especially for stk
+    - check if possible to move from pysmiles to rdkit for SMILES generation, otherwise add pysmiles to installation as one additional pip install
+    -> latest good conda env was 'DART11_try_to_minimize' but there seemed to be numerical differences in the .xyz files of the assembly in the batch 'Integration_test_3'
+- modules:
+    - add concat functionality to ligandfilters and add multiple ligand dbs to the tests
+    - add names by graph hash to assembler and edit the yml files to include this option.
 
 
 

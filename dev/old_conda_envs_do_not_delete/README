@@ -1,0 +1,4 @@
+=== Overview of conda environments ===
+
+* conda_env_conda_mols_rdkit.yml: Original development environment for this project. Should have mostly correct versions of all packages, including scikit-learn for the charge assignment.
+* conda_env_try_to_minimize.yml: Attempt to minimize the environment to only the packages needed for the main DART functionality, i.e. ligand filters and assembler.

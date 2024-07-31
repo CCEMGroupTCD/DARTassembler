@@ -2,12 +2,16 @@ name: conda_mols_rdkit
 channels:
   - conda-forge
   - defaults
+  - hjkgroup
 dependencies:
   - _py-xgboost-mutex=2.0
   - abseil-cpp=20210324.2
   - absl-py=1.3.0
   - aiohttp=3.8.3
   - aiosignal=1.3.1
+  - alabaster=0.7.13
+  - apeye=1.4.1
+  - apeye-core=1.1.4
   - appnope=0.1.3
   - arpack=3.7.0
   - ase=3.22.1
@@ -16,10 +20,14 @@ dependencies:
   - astunparse=1.6.3
   - async-timeout=4.0.2
   - attrs=22.1.0
+  - autodocsumm=0.2.11
+  - babel=2.13.0
   - backcall=0.2.0
   - backports=1.0
   - backports.functools_lru_cache=1.6.4
   - bcrypt=3.2.2
+  - beautifulsoup4=4.12.2
+  - biopython=1.81
   - biotite=0.36.1
   - blinker=1.5
   - boost=1.74.0
@@ -29,11 +37,13 @@ dependencies:
   - brotlipy=0.7.0
   - bzip2=1.0.8
   - c-ares=1.18.1
-  - ca-certificates=2023.05.30
+  - ca-certificates=2023.11.17
+  - cachecontrol=0.13.1
   - cachetools=4.2.4
   - cairo=1.16.0
   - castepxbin=0.1.0
-  - certifi=2023.5.7
+  - cclib=1.8
+  - certifi=2023.11.17
   - cffi=1.14.6
   - cfgv=3.3.1
   - charset-normalizer=2.1.1
@@ -43,12 +53,17 @@ dependencies:
   - colormath=3.0.0
   - contourpy=1.0.6
   - cryptography=38.0.3
+  - cssutils=2.9.0
   - cycler=0.11.0
   - dbus=1.13.6
   - decorator=5.1.1
+  - dftd4=3.5.0
+  - dict2css=0.3.0
   - dill=0.3.6
   - distlib=0.3.6
   - dnspython=2.2.1
+  - docutils=0.17.1
+  - domdf-python-tools=3.7.0
   - dscribe=1.2.2
   - emmet-core=0.38.4
   - executing=1.2.0
@@ -87,13 +102,16 @@ dependencies:
   - gunicorn=20.1.0
   - h5py=2.10.0
   - hdf5=1.10.6
+  - html5lib=1.1
   - hydride=1.1.2
   - hyperopt=0.2.7
   - icu=68.2
   - identify=2.5.9
   - idna=3.4
   - ijson=3.1.3
+  - imagesize=1.4.1
   - importlib-metadata=5.1.0
+  - importlib-resources=5.12.0
   - importlib_resources=5.12.0
   - invoke=1.7.3
   - ipython=8.13.2
@@ -146,6 +164,7 @@ dependencies:
   - line_profiler=4.0.2
   - llvm-openmp=16.0.5
   - llvmlite=0.39.1
+  - lockfile=0.12.2
   - markdown=3.4.1
   - markupsafe=2.1.1
   - matminer=0.8.0
@@ -167,8 +186,10 @@ dependencies:
   - multidict=6.0.2
   - multiprocess=0.70.14
   - munkres=1.1.4
+  - mypy_extensions=1.0.0
   - mysql-common=8.0.31
   - mysql-libs=8.0.31
+  - natsort=8.4.0
   - ncurses=6.3
   - networkx=2.8.8
   - nodeenv=1.7.0
@@ -179,7 +200,7 @@ dependencies:
   - oauthlib=3.2.2
   - openbabel=3.1.1
   - openjpeg=2.5.0
-  - openssl=1.1.1u
+  - openssl=1.1.1w
   - opt_einsum=3.3.0
   - packaging=21.3
   - palettable=3.3.0
@@ -192,6 +213,7 @@ dependencies:
   - pbr=5.11.1
   - pcre=8.45
   - pcre2=10.40
+  - periodictable=1.5.2
   - pexpect=4.8.0
   - phonopy=2.19.1
   - pickleshare=0.7.5
@@ -246,6 +268,7 @@ dependencies:
   - python_abi=3.9
   - pytz=2022.6
   - pyu2f=0.1.5
+  - pyyaml=6.0
   - qt=5.12.9
   - rdkit=2022.09.1
   - re2=2021.08.01
@@ -262,10 +285,28 @@ dependencies:
   - seaborn-base=0.12.1
   - seekpath=2.1.0
   - setuptools=65.5.1
+  - simple-dftd3=0.7.0
   - six=1.16.0
   - snappy=1.1.9
+  - snowballstemmer=2.2.0
+  - soupsieve=2.5
   - sparse=0.13.0
   - spglib=2.0.2
+  - sphinx=4.5.0
+  - sphinx-autodoc-typehints=1.19.2
+  - sphinx-jinja2-compat=0.2.0
+  - sphinx-prompt=1.4.0
+  - sphinx-rtd-theme=1.3.0
+  - sphinx-tabs=3.3.1
+  - sphinx-toolbox=3.1.2
+  - sphinx_rtd_theme=1.3.0
+  - sphinxcontrib-applehelp=1.0.4
+  - sphinxcontrib-devhelp=1.0.2
+  - sphinxcontrib-htmlhelp=2.0.1
+  - sphinxcontrib-jquery=4.1
+  - sphinxcontrib-jsmath=1.0.1
+  - sphinxcontrib-qthelp=1.0.3
+  - sphinxcontrib-serializinghtml=1.1.5
   - sqlalchemy=1.4.44
   - sqlite=3.40.0
   - stack_data=0.6.2
@@ -275,6 +316,8 @@ dependencies:
   - sympy=1.11.1
   - tabulate=0.9.0
   - tbb=2021.7.0
+  - tblite=0.3.0
+  - tblite-python=0.3.0
   - tenacity=8.1.0
   - tensorboard=2.4.1
   - tensorboard-plugin-wit=1.8.1
@@ -286,10 +329,12 @@ dependencies:
   - threadpoolctl=3.1.0
   - tk=8.6.12
   - toml=0.10.2
+  - toml-f=0.3.1
   - tqdm=4.64.1
   - traitlets=5.9.0
   - typing-extensions=4.4.0
   - typing_extensions=4.4.0
+  - typing_inspect=0.9.0
   - tzdata=2022f
   - ukkonen=1.0.1
   - uncertainties=3.1.7
@@ -297,6 +342,7 @@ dependencies:
   - urllib3=1.26.13
   - virtualenv=20.17.1
   - wcwidth=0.2.6
+  - webencodings=0.5.1
   - werkzeug=2.2.2
   - wheel=0.38.4
   - wrapt=1.14.1
