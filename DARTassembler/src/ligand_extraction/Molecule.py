@@ -578,6 +578,7 @@ class RCA_Molecule(object):
         coordinates = self.get_coordinates_list()
         deviation = get_max_deviation_from_coplanarity(points=coordinates)  # deviation is a float that is 0 if the molecule is perfectly planar and > 0 if it is not. The higher the value, the less planar the molecule is.
         planarity = 1/ (1+ deviation)   # planarity is a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
+        planarity = round(planarity, 10)    # round to 10 decimal places to avoid floating point errors which happen with np.linalg.svd() in different versions of numpy
 
         return planarity
 

@@ -13,6 +13,7 @@ from pathlib import Path
 sns.set_theme()
 plt.rcParams['svg.fonttype'] = 'none' # for correct text rendering in some programs
 import pysmiles
+from DARTassembler.src.constants.Paths import project_path
 
 
 def flatten(l):
@@ -20,9 +21,11 @@ def flatten(l):
 
 if __name__ == '__main__':
 
-    db_version = '1.7'
-    save_plots_dir = f'../../data/db_statistics/unique_ligand_statistics/v{db_version}'
-    db_path = f'../../data/final_db_versions/unique_ligand_db_v{db_version}.json'
+    # db_version = '1.7'
+    # save_plots_dir = f'../../data/db_statistics/unique_ligand_statistics/v{db_version}'
+    # db_path = f'../../data/final_db_versions/unique_ligand_db_v{db_version}.json'
+    save_plots_dir = project_path().extend('data/db_statistics/unique_ligand_statistics/MetaLigDB_v1.0.0')
+    db_path = project_path().extend('data/final_db_versions/MetaLigDB_v1.0.0.jsonlines')
     exclude_unconnected_ligands = True
     exclude_uncertain_charges = True
 
@@ -211,5 +214,14 @@ if __name__ == '__main__':
     plt.savefig(fname=save_path)
     plt.close()
     sns.set(font_scale=1)
+
+    #%% Make histogram of charges
+    plt.figure()
+    sns.histplot(data=data, x='pred_charge', discrete=True)
+    save_path = Path(save_plots_dir, f'hist_pred_charge.svg')
+    plt.xlabel('Predicted formal ligand charge')
+    plt.savefig(fname=save_path)
+    plt.savefig(fname=save_path.with_suffix('.png'), dpi=300)
+    plt.close()
 
 

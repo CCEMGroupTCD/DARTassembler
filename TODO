@@ -1,6 +1,13 @@
 TODO:
 
-Must:
+Todo before publication:
+- tests:
+    - make test of full assembler, filters etc, everything but ligand extraction
+- check which conda environment is latest and without too many fixed versions, especially for stk
+
+
+
+At the very end:
 - paths:
     - check default paths in Paths.py
 

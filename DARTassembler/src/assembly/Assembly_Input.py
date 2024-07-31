@@ -6,6 +6,7 @@ import difflib
 import warnings
 import os
 from copy import deepcopy
+import yaml
 import ase
 import pandas as pd
 
@@ -17,7 +18,7 @@ from typing import Union, Any, Tuple, List, Dict, Optional
 from DARTassembler.src.ligand_extraction.io_custom import read_yaml
 from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist
 
-allowed_topologies = ['2-1-1', '2-2', '3-2-1', '4-1-1', '5-1']  # list all allowed topologies, others will be rejected
+allowed_topologies = ['3-2-1', '4-1-1', '5-1', '2-1-1', '2-2']  # list all allowed topologies, others will be rejected
 
 # Define the key names in the assembly input file
 # Global settings
