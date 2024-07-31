@@ -41,13 +41,16 @@ class IntegrationTest(object):
         for file in self.changed:
             if file.endswith('.csv'):
                 self._compare_csv_files(Path(self.new_dir, file), Path(self.old_dir, file))
-    def _compare_csv_files(self, new_file, old_file):
+    def _compare_csv_files(self, new_file, old_file, exact=True):
         """
         Compares two csv files and prints the differences.
         """
-        df_new = pd.read_csv(new_file)
-        df_old = pd.read_csv(old_file)
-        pd.testing.assert_frame_equal(df_new, df_old, check_like=True)
+        if exact:
+            assert filecmp.cmp(new_file, old_file, shallow=False), f'csv files are not the same: \n - {new_file}\n - {old_file}'
+        else:
+            df_new = pd.read_csv(new_file)
+            df_old = pd.read_csv(old_file)
+            pd.testing.assert_frame_equal(df_new, df_old, check_like=True)
 
 
     def _only_in_one(self, dcmp):
