@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAYTER-02-b,C11H10N1O1,2,-1,O-N,23,172.20700000000005,0.3827679372,False,True,7.9171433655075365,2.0957479309143925,3ad5329ddc1f222a8d9d26907daf42c9,18,"PAYTER, PIFVAD, AZOBOH, AZOBOH, AZOBOH, ... (13 more)","Hf(4), Pt(4), Zr(4), Pd(2), V(2), ... (2 more)"
+Ligand 1,unq_CSD-PELBIS-01-a,C5F4N1,1,-1,C,10,150.055612652,0.9312311932,False,False,5.337582288827031,1.895261135041818,7b49116bc0386fda57a495d2c458ce36,4,"PELBIS, MAPKIX, MAPKOD, VAWJAF",Ni(4)
+Ligand 2,unq_CSD-PAKJUI-01-a,Cl1O4,1,-1,O,5,99.446,0.3820511267,False,False,2.338802242601969,2.737134905334408,b1a53a0c39b096304aa1d8b8395de8ac,1072,"PAKJUI, PAPFIV, PASFIZ, PASFOE, PEBRIZ, ... (1067 more)","Cu(797), Cd(54), Zn(52), Mn(48), Ag(35), ... (8 more)"

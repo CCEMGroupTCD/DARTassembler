@@ -1,52 +1,59 @@
 Running 8 batches...
 
-====================      Batch 0: Integration_test_7      ====================
+====================      Batch 0: Integration_test_1      ====================
 
-====================      Batch 1: Integration_test_1      ====================
+====================      Batch 1: Integration_test_2      ====================
 
-====================      Batch 2: Integration_test_6      ====================
+====================      Batch 2: Integration_test_3      ====================
 
-====================      Batch 3: Integration_test_2      ====================
+====================      Batch 3: Integration_test_4      ====================
 
-====================      Batch 4: Integration_test_3      ====================
+====================      Batch 4: Integration_test_5      ====================
 
-====================      Batch 5: Integration_test_4      ====================
+====================      Batch 5: Integration_test_6      ====================
 
-====================      Batch 6: Integration_test_5      ====================
+====================      Batch 6: Integration_test_7      ====================
 
 ====================      Batch 7: Integration_test_8      ====================
 
 
 ============  Summary per batch  ============
-Batch 0 ('Integration_test_7'):
-  - 3 complexes tried, 3 complexes successfully assembled.
-Batch 1 ('Integration_test_1'):
-  - 4 complexes tried, 1 complexes successfully assembled.
-  - 3 complexes failed because of post-filters:
-    - clashing ligands: 3
-Batch 2 ('Integration_test_6'):
-  - 1 complexes tried, 1 complexes successfully assembled.
-Batch 3 ('Integration_test_2'):
-  - 1 complexes tried, 1 complexes successfully assembled.
-Batch 4 ('Integration_test_3'):
-  - 21 complexes tried, 12 complexes successfully assembled.
-  - 9 complexes failed because of post-filters:
-    - clashing ligands: 8
-    - non-planar tridentate: 1
-Batch 5 ('Integration_test_4'):
-  - 6 complexes tried, 6 complexes successfully assembled.
-Batch 6 ('Integration_test_5'):
-  - 4 complexes tried, 2 complexes successfully assembled.
+Batch 0 ('Integration_test_1'):
+  - 12 complexes tried, 8 complexes successfully assembled.
+  - 4 complexes failed because of post-filters:
+    - clashing ligands: 4
+Batch 1 ('Integration_test_2'):
+  - 8 complexes tried, 6 complexes successfully assembled.
   - 2 complexes failed because of post-filters:
-    - clashing ligands: 2
+    - hydride: 2
+Batch 2 ('Integration_test_3'):
+  - 29 complexes tried, 10 complexes successfully assembled.
+  - 19 complexes failed because of post-filters:
+    - clashing ligands: 18
+    - non-planar tridentate: 1
+Batch 3 ('Integration_test_4'):
+  - 8 complexes tried, 8 complexes successfully assembled.
+Batch 4 ('Integration_test_5'):
+  - 23 complexes tried, 9 complexes successfully assembled.
+  - 14 complexes failed because of post-filters:
+    - clashing ligands: 14
+Batch 5 ('Integration_test_6'):
+  - 20 complexes tried, 10 complexes successfully assembled.
+  - 10 complexes failed because of post-filters:
+    - clashing ligands: 10
+Batch 6 ('Integration_test_7'):
+  - 8 complexes tried, 7 complexes successfully assembled.
+  - 1 complexes failed because of post-filters:
+    - clashing ligands: 1
 Batch 7 ('Integration_test_8'):
   - 56 complexes tried, 52 complexes successfully assembled.
   - 4 complexes failed because of post-filters:
     - clashing ligands: 4
 
 ============  Total summary of DART assembly  ============
-  - 96 complexes tried, 78 complexes successfully assembled.
-  - 18 complexes failed because of post-filters:
-    - clashing ligands: 17
+  - 164 complexes tried, 110 complexes successfully assembled.
+  - 54 complexes failed because of post-filters:
+    - clashing ligands: 51
+    - hydride: 2
     - non-planar tridentate: 1
 Done! All complexes assembled. Exiting DART Assembler.

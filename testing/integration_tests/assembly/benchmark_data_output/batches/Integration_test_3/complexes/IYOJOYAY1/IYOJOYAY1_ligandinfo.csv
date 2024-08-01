@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEDNAO-03-a,C19H14N3S2,3,-1,S-S-N,38,348.46200000000005,0.1605583224,False,False,16.729871855157768,2.1886650778948913,9a8ddd7d17b4069f62005d0ca504ec21,2,"PEDNAO, WOFLOU","Pd(1), Ru(1)"
-Ligand 1,unq_CSD-PAHWIE-02-a,C4H3N2S1,2,-1,S-N,10,111.142,0.9490864036,False,True,5.414256701524226,2.5059886009560315,d43858be7653f65d888843ed7cc8c0e2,89,"PAHWIE, PAHWIE, SOTLAP, SOTLAP, TEBXUV, ... (84 more)","Ru(27), Re(13), Mo(12), Ni(9), Fe(5), ... (11 more)"
-Ligand 2,unq_CSD-OZUBIV-01-a,C2H6O1,1,0,O,9,46.069,0.3896574822,False,True,3.2779023994011784,2.3123538094331493,80a0fcc3592b58fd7e700ddea4ec582a,582,"OZUBIV, PARREI, PASYOA, PAZDAX, PIRSEO, ... (577 more)","Co(73), Mn(65), Ni(62), Zn(57), Mo(47), ... (30 more)"

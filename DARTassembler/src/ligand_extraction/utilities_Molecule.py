@@ -1,15 +1,12 @@
 import collections
-from typing import List, Tuple, Union
 import networkx as nx
 from rdkit import Chem
 import numpy as np
-from openbabel import openbabel as ob
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 import re
 
 unknown_rdkit_bond_orders = [0, 20, 21]
 
-from sympy import Point3D, Plane
 
 def get_rdkit_mol_from_smiles(smiles: str, sanitize: bool=False) -> Chem.Mol:
     """
@@ -316,28 +313,6 @@ def get_standardized_stoichiometry_from_atoms_list(atoms: list) -> str:
     formula = [f"{el}{(c[el])}" for el in elements]
     return "".join(formula)
 
-def get_coordinates_and_elements_from_OpenBabel_mol(mol: ob.OBMol) -> Tuple[np.ndarray, List[str]]:
-    """
-    Returns the 3D coordinates of each atom in the molecule and the corresponding list of chemical elements.
-
-    Args:
-        mol (ob.OBMol): An Open Babel molecule object.
-
-    Returns:
-        Tuple[np.ndarray, List[str]]: A tuple containing a N x 3 numpy array of xyz coordinates and a list of chemical elements for each atom.
-    """
-    n_atoms = mol.NumAtoms()
-    coords = np.empty((n_atoms, 3))
-    elements = []
-
-    for idx, atom in enumerate(ob.OBMolAtomIter(mol)):
-        coords[idx, 0] = atom.GetX()
-        coords[idx, 1] = atom.GetY()
-        coords[idx, 2] = atom.GetZ()
-        atomic_number = atom.GetAtomicNum()
-        elements.append(DART_Element(atomic_number).symbol)
-
-    return coords, elements
 
 def get_concatenated_xyz_string_from_coordinates(coord_list: list[np.array], element_list: list[list[str]], comment: str = "") -> str:
     """

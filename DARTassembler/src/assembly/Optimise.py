@@ -3,7 +3,8 @@ from openbabel import openbabel as ob
 from rdkit.Chem import rdmolfiles
 import numpy as np
 import re
-from DARTassembler.src.ligand_extraction.utilities_Molecule import get_coordinates_and_elements_from_OpenBabel_mol, get_concatenated_xyz_string_from_coordinates
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_concatenated_xyz_string_from_coordinates
+from DARTassembler.src.assembly.forcefields import get_coordinates_and_elements_from_OpenBabel_mol
 import logging
 
 class OPTIMISE:
