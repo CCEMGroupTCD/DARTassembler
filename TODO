@@ -6,12 +6,12 @@ Todo before publication:
 - conda:
     - check which conda environment is latest and without too many fixed versions, especially for stk
     - check if possible to move from pysmiles to rdkit for SMILES generation, otherwise add pysmiles to installation as one additional pip install
+    - see if it is possible to remove openbabel from conda env so that we can install everything via pip
     -> latest good conda env was 'DART11_try_to_minimize' but there seemed to be numerical differences in the .xyz files of the assembly in the batch 'Integration_test_3'
 - modules:
+    - refactor modules to take global settings as cli/python input and only filters/batches as yml file
+       - make python api, the cli should make use of this api
     - add concat functionality to ligandfilters and add multiple ligand dbs to the tests
-    - add names by graph hash to assembler and edit the yml files to include this option.
-
-
 
 At the very end:
 - paths:
@@ -24,6 +24,8 @@ Update docs:
     - smarts: recommend to put the smarts in '' to avoid yaml errors
 - concat module
 - added to complex csv: graph hash, ligand donors
+
+
 
 Should:
 - ligand filtering

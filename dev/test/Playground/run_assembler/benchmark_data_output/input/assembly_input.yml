@@ -3,7 +3,7 @@ ffmovie: true
 concatenate_xyz: true
 overwrite_output: true
 output_path: data_output
-same_isomer_names: false
+same_isomer_names: true
 complex_name_length: 8
 batches:
 - name: Integration_test_7
@@ -14,7 +14,7 @@ batches:
   total_charge: -1
   max_num_complexes: 10
   forcefield: true
-  isomers: all
+  isomers: lowest_energy
   bidentate_rotator: horseshoe
   geometry_modifier_filepath: null
   random_seed: 0

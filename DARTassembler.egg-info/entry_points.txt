@@ -1,0 +1,2 @@
+[console_scripts]
+dart = dart_cli:main

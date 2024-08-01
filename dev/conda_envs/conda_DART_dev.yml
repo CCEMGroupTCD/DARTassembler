@@ -1,0 +1,28 @@
+name: DART_dev
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - ase
+  - jsonlines
+  - networkx
+  - numpy
+  - openbabel
+  - pandas
+  - pbr                       # Needed for pysmiles, better to install now via conda then later via pip
+  - pip
+  - python>=3.9
+  - pyyaml
+  - rdkit
+  - scipy                     # scikit-learn Lasso fit with sparse matrices fails with scipy 1.11 so for ligand extraction it should be scipy<=1.10.1
+  - scikit-learn
+  - stk
+  - sympy
+  - tqdm
+  # For development, not needed for running DART itself
+  - sphinx>=4.3.0             # To avoid bullet-point bug
+  - sphinx_rtd_theme>=0.5.1   # To avoid bullet-point bug
+  - setuptools<67.3           # Gives deprecation warning otherwise
+  - pip:
+      - pysmiles
+      - -e ../../.            # Install DART in editable mode without installing dependencies, these are handled by conda

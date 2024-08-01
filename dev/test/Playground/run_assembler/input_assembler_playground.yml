@@ -19,6 +19,6 @@ batches:                              # List of batches to generate. The first o
     bidentate_rotator: horseshoe      # How to rotate the bidentate ligands. Options: 'horseshoe', 'slab'
     geometry_modifier_filepath:       # Path to the geometry modifier file. If not given, no geometry modification is performed.
     random_seed: 0                    # Random seed for the generation of the complexes.
-    complex_name_appendix:            # String to append to the randomly generated complex name.
+    complex_name_appendix:         # String to append to the randomly generated complex name.
 
 
