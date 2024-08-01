@@ -339,7 +339,7 @@ class DARTAssembly(object):
         if ff_movie is not None:
             self.batch_outcontrol.save_passed_ff_movie(ff_movie)
 
-            # Save to global optimization movie. Todo: Remove this once it is not needed anymore
+            # Save to global optimization movie.
             global_optimization_movie_path = Path(self.output_path, _gbl_optimization_movie)
             with open(global_optimization_movie_path, "a") as f:
                 f.write(ff_movie)
@@ -349,7 +349,7 @@ class DARTAssembly(object):
         complex_total_charge = complex.get_total_charge(metal_charge, ligands)
         self.batch_outcontrol.save_passed_xyz(xyz_string, append=True)
 
-        # This is the old way of saving the concatenated xyz file to the global file. Todo: Remove this once it is not needed anymore
+        # This is the old way of saving the concatenated xyz file to the global file.
         append_global_concatenated_xyz(xyz_string, outdir=self.output_path)
 
         # Save to complex directory
