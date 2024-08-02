@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PERMAA-04-a,C36H40N4O2,4,-2,N-N-N-N,82,560.7420000000001,0.1126182552,False,False,14.50484296571321,2.0201614512788675,58b352d79207f120bc66ad96a2a5df41,5,"PERMAA, PIBNOD, YAFPAW, HAKTES, WAXNOY","Ni(2), Zn(2), Mn(1)"
+Ligand 1,unq_CSD-PABMUB-01-a,C1H3Cl2Si1,1,-1,Si,7,114.02,0.4451338714,False,True,3.9175118876654356,2.3090305021805153,31c94da0600e7cf7e0521bb6bb810e6f,13,"PABMUB, PABMUB, MACQOX, BUPKON, MEXVIU, ... (8 more)","Ru(9), Pt(2), W(1), Ir(1)"
+Ligand 2,unq_CSD-PAXDOI-01-b,C2H5O1,1,-1,C,8,45.06099999999999,0.4156248933,False,False,3.48427717324555,2.086017509514242,5c7293c9177d41c0f1de9bfb841aef70,9,"PAXDOI, PAXFAW, JUJSIQ, JUJTOX, CIYJUP, ... (4 more)","Co(4), Ru(2), Mn(2), Ir(1)"

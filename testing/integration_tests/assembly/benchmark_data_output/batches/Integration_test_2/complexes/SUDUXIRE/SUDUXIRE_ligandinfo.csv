@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PABTOF-02-a,C33H30N2O2,2,0,N-N,67,486.61499999999995,0.0677082266,False,True,15.969320576029524,1.9951899588783932,018a87350409b84a8f0aa0fe04e1d5d9,1,PABTOF,Cu(1)
+Ligand 1,unq_CSD-PAGBOP-01-a,F6P1,1,-1,F,7,144.96418097600002,0.3130129526,False,False,3.1566342851207825,3.0273458556960424,521dadebc1901bc3a4985318fa3a878a,25,"PAGBOP, PAGBOP, TAKXAH, BEFFAT, BIHTIX, ... (20 more)","Cu(19), Ni(2), Ag(1), Co(1), Ir(1), ... (1 more)"
+Ligand 2,unq_CSD-PAHTEY-01-a,O4S1,1,-2,O,5,96.056,0.3722676753,False,False,2.4489829827910197,2.0681287895099767,cbb1dfe176d3b39d613b83a81554b31c,221,"PAHTEY, PENQOQ, PETCUO, PIJROQ, PIKYOY, ... (216 more)","Cu(73), Zn(33), Mn(21), Cd(19), Fe(19), ... (14 more)"

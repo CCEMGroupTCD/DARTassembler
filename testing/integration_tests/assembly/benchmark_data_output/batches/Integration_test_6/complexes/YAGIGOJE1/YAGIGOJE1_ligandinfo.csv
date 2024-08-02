@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PABVIB-02-a,C12H17N2O3S1,2,-1,O-N,35,269.33899999999994,0.1496632719,False,True,11.003091008439402,1.9407565288870705,8f12dd2247862fe92da263ae21d2830a,2,"PABVIB, PABVIB",Cu(2)
+Ligand 1,unq_CSD-PABVIB-02-a,C12H17N2O3S1,2,-1,O-N,35,269.33899999999994,0.1496632719,False,True,11.003091008439402,1.9407565288870705,8f12dd2247862fe92da263ae21d2830a,2,"PABVIB, PABVIB",Cu(2)

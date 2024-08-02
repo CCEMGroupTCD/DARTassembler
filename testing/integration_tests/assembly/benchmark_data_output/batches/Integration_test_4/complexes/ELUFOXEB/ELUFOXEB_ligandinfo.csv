@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PACFEF-04-a,C39H35N5,4,-2,N-N-N-N,79,573.7440000000001,0.0612304169,False,False,17.755393766120765,2.048534112350648,a2f263413dc50c768eb7bceea1e55030,1,PACFEF,Zn(1)
+Ligand 1,unq_CSD-OZUZIT-01-a,C2H5,1,-1,C,7,29.061999999999994,0.4668880078,False,True,2.733142023386271,1.9526874557900973,ec635f44581858d11dc468df2d987bf1,371,"OZUZIT, OZUZUF, PAGBEG, PAGBEG, PAGLUG, ... (366 more)","Zn(207), Co(31), Pt(23), Ni(16), Pd(14), ... (18 more)"
+Ligand 2,unq_CSD-PEDXEB-01-f,H2P1,1,-1,P,3,32.989761998,1.0,False,False,2.5291927763616595,2.439452850538415,da0a13a38a6b8866c0389fe26e3700b1,3,"PEDXEB, POGNEG, BAZFIU","Ir(1), U(1), Zr(1)"

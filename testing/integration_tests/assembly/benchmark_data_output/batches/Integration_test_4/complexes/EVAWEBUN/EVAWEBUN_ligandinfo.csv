@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PENBUG-04-a,C11H18N2O2S2,4,-4,S-S-N-N,35,274.39699999999993,0.1361904037,False,True,9.564459153031079,2.03008266834071,252492a975a3531356aa198bed6cee55,1,PENBUG,Co(1)
+Ligand 1,unq_CSD-PAJHAM-01-a,C2H6O1S1,1,0,O,10,78.12899999999999,0.3762018944,False,False,4.379736514905891,2.1629272387207115,e05bef67d45c36859d07f07a1b2bfee1,1496,"PAJHAM, PAJHAM, PAJHAM, PAJHAM, PAJHAM, ... (1491 more)","Ni(160), Cu(146), Co(138), Zn(114), U(83), ... (39 more)"
+Ligand 2,unq_CSD-PAGBEE-01-b,C3H4N2,1,0,N,9,68.079,0.9814616701,False,True,3.974905641647359,2.125295605321763,66ead66bcc2cf9a8bec894d0055b75a1,1228,"PAGBEE, PAGBEE, PAGBEE, PAGBEE, PANGER, ... (1223 more)","Ni(295), Cu(262), Co(234), Fe(123), Zn(63), ... (16 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAGLUE-04-a,C36H44N4O1,4,-2,N-N-N-N,85,548.7750000000001,0.1087007357,False,False,14.520152497821776,2.0785666444806172,83e47551fe1ae91b88a6eefa2820d490,3,"PAGLUE, PIBNUJ, ICIBEC","Zn(1), Co(1), Fe(1)"
+Ligand 1,unq_CSD-PACBEB-01-d,C3F5,1,-1,C,8,131.025015815,0.4002253724,False,False,3.819217947433741,2.029285926132639,a556ad6faad5bde10c5e0c1608bdd654,6,"PACBEB, TEJDIY, TEJDIY, TEJDOE, TEJFEW, ... (1 more)","Pt(3), Pd(2), Rh(1)"
+Ligand 2,unq_CSD-PAXDOI-01-b,C2H5O1,1,-1,C,8,45.06099999999999,0.4156248933,False,False,3.48427717324555,2.086017509514242,5c7293c9177d41c0f1de9bfb841aef70,9,"PAXDOI, PAXFAW, JUJSIQ, JUJTOX, CIYJUP, ... (4 more)","Co(4), Ru(2), Mn(2), Ir(1)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZIZAA-02-a,C12H12N2O2,2,0,N-N,28,216.24,0.3477193601,False,True,9.37089375139853,2.1427167763347823,df80a13dd9221f00d698a5746f63c98d,129,"OZIZAA, PEBWOK, PEBWOK, PODSEJ, POJDOK, ... (124 more)","Ru(31), Re(28), Ir(14), Cu(13), Ni(6), ... (16 more)"
+Ligand 1,unq_CSD-PEBNIT-01-d,C1H3N1,1,-2,N,5,29.041999999999998,0.4748139509,False,True,2.039766226801493,1.6657033529413334,bed160728bd859cf36d48ecfda613ec8,12,"PEBNIT, SIRZUP, CEWVUX, CEWVUX, TOVPOJ, ... (7 more)","Mo(4), Re(2), U(2), V(1), Nb(1), ... (2 more)"
+Ligand 2,unq_CSD-PELBIS-01-a,C5F4N1,1,-1,C,10,150.055612652,0.9312311932,False,False,5.337582288827031,1.895261135041818,7b49116bc0386fda57a495d2c458ce36,4,"PELBIS, MAPKIX, MAPKOD, VAWJAF",Ni(4)

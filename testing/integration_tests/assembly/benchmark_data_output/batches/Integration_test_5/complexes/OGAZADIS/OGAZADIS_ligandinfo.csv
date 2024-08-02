@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZUWEM-05-a,C23H31N5O4,5,-2,O-O-N-N-N,63,441.532,0.0818308537,False,True,10.878462189114783,2.0836590161537325,d2bf10e641a3c88df163c65c216db0b4,1,OZUWEM,V(1)
+Ligand 1,unq_CSD-OZONIB-01-a,H2O1,1,0,O,3,18.015,1.0,False,False,1.3185869482138832,2.0152851138238472,f0ad139de72732dc551a6046595594f3,18405,"OZONIB, OZOPEZ, OZOPID, OZUZIU, OZUZOA, ... (18400 more)","Ni(2751), Co(2668), Cu(2607), Zn(2062), Mn(1684), ... (45 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PALFOZ-04-a,C51H36N4Si1,4,-2,N-N-N-N,92,732.9619999999998,0.062313205,False,False,18.036265930896004,1.9151400431112213,dd35e987238deeba29b0d28dc2ee88e9,1,PALFOZ,Ni(1)
+Ligand 1,unq_CSD-PEBNIT-01-d,C1H3N1,1,-2,N,5,29.041999999999998,0.4748139509,False,True,2.039766226801493,1.6657033529413334,bed160728bd859cf36d48ecfda613ec8,12,"PEBNIT, SIRZUP, CEWVUX, CEWVUX, TOVPOJ, ... (7 more)","Mo(4), Re(2), U(2), V(1), Nb(1), ... (2 more)"
+Ligand 2,unq_CSD-PASYEQ-01-c,C2H6O2,1,0,O,10,62.068000000000005,0.3677713605,False,True,3.7102864053870555,2.437039458030994,d13bce9711dc78a899e40019d5405a8f,2,"PASYEQ, GIBDED",U(2)

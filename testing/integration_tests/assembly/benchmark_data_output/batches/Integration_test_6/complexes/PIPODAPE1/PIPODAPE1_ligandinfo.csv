@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAGWEA-02-a,C12H14N3O3S1,2,-1,S-O,33,280.32199999999995,0.1795599904,False,False,12.425652309235117,2.092973767122034,221d01bd2cbe5d8bc427856015f8fb4b,10,"PAGWEA, PAGWEA, PAGWIE, PAGWIE, PITCIH, ... (5 more)","Cu(5), Ni(2), Ag(1), Pd(1), Ru(1)"
+Ligand 1,unq_CSD-PAGWEA-02-a,C12H14N3O3S1,2,-1,S-O,33,280.32199999999995,0.1795599904,False,False,12.425652309235117,2.092973767122034,221d01bd2cbe5d8bc427856015f8fb4b,10,"PAGWEA, PAGWEA, PAGWIE, PAGWIE, PITCIH, ... (5 more)","Cu(5), Ni(2), Ag(1), Pd(1), Ru(1)"

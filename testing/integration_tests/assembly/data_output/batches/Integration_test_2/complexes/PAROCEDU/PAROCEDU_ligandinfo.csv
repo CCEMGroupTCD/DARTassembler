@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PECNIX-02-a,C16H13N4S1,2,-1,S-N,34,293.368,0.2547842291,False,True,12.113399137318972,2.041581084392779,2f38e156287204c466186bef3b629255,5,"PECNIX, PECNIX, TEZWIH, FAVVEH, FAVVEH","Pd(3), Ni(2)"
+Ligand 1,unq_CSD-PENMOK-01-a,C1H1O2,1,-1,C,4,45.017,0.9049555335,False,True,2.3242935184696445,2.0578249779803923,e7f8435924d4c493f866105dc5bfea6b,9,"PENMOK, PENMON, PUVGES, JUJBIC, GOFPOG, ... (4 more)","Ru(3), Ni(2), Ir(2), Pt(1), Pd(1)"
+Ligand 2,unq_CSD-PAGFIQ-01-b,F1,1,-1,F,1,18.998403163,1.0,False,False,,1.858994378689726,863df8eac131c790b7c49ff759330253,2046,"PAGFIQ, PAGGAJ, PAGGAJ, PAGGEN, PAGGOX, ... (2041 more)","Ta(337), Ti(247), W(225), Nb(172), V(98), ... (33 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEBQUJ-04-a,C24H20N2S2,4,0,S-S-N-N,48,400.558,0.0809663218,False,True,12.839373829357877,2.1677156729256217,d2eaaeac9f0124a4db654e357eb85547,2,"PEBQUJ, PEBREU","Cu(1), Ag(1)"
+Ligand 1,unq_CSD-PACGOP-01-b,N1,1,-3,N,1,14.007,1.0,False,False,,1.8392864513174658,c49b33437fe70e292200a55b80369110,482,"PACGOP, PAFFUZ, PASICR, PASNCO10, PASNOS, ... (477 more)","Re(93), Cr(85), Mo(78), Os(59), Tc(57), ... (17 more)"
+Ligand 2,unq_CSD-OZODUD-01-a,I1,1,-1,I,1,126.90447,1.0,False,False,,2.9637283175082025,5403354a323d4ad250e8cc4f234d5227,7691,"OZODUD, OZODUD, OZODUD, OZODUD, OZOWIK, ... (7686 more)","Pd(1141), Pt(953), Zn(597), Cd(591), Cu(503), ... (42 more)"

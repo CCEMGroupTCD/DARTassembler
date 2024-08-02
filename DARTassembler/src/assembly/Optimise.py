@@ -4,7 +4,7 @@ from rdkit.Chem import rdmolfiles
 import numpy as np
 import re
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_concatenated_xyz_string_from_coordinates
-from DARTassembler.src.assembly.forcefields import get_coordinates_and_elements_from_OpenBabel_mol
+from DARTassembler.src.assembly.forcefields import get_coordinates_and_elements_from_OpenBabel_mol, ForceField
 import logging
 
 class OPTIMISE:
@@ -25,6 +25,7 @@ class OPTIMISE:
 
         # stk to xyz string
         complex_mol = self.isomer.to_rdkit_mol()
+        num_atoms = complex_mol.GetNumAtoms()
         xyz_string = rdmolfiles.MolToXYZBlock(complex_mol)
 
         # setup conversion
@@ -39,13 +40,14 @@ class OPTIMISE:
         constraints.AddAtomConstraint(1)  # Here we lock the metal
 
         # we constrain the all the coordinating atoms to the metal
+        fixed_atom_indices = [1] # Lock the metal. Open Babel indexing starts at 1.
         sum_of_atoms = []
         for ligand in self.ligands.values():
             coord_indexes = ligand.ligand_to_metal
             for atom_index in coord_indexes:
-                # constraints.AddAtomConstraint(1 + 1 + atom_index + sum(sum_of_atoms))
+                fixed_atom_indices.append(1 + atom_index + sum(sum_of_atoms))  # The one is to account for open babel indexing starting at 1 and to account for the metal
                 constraints.AddAtomConstraint(1 + 1 + atom_index + sum(sum_of_atoms))  # The one is to account for open babel indexing starting at 1 and to account for the metal
-                assert (1 + 1 + atom_index + sum(sum_of_atoms)) <= int(xyz_string.split("\n")[0])
+                assert (1 + 1 + atom_index + sum(sum_of_atoms)) <= num_atoms
             # this is so we don't take into account any mercury that might be in the atomic props (really only an issue for tetradentate non-planar ligands.py as they make use of the add atom function)
             sum_of_atoms.append(len([i for i in ligand.atomic_props["atoms"] if i != "Hg"]))
 
@@ -66,9 +68,11 @@ class OPTIMISE:
                 optimized_coords.append(coords)
                 optimized_elements.append(elements)
         forcefield.GetCoordinates(mol)
+        xyz_string_output = conv.WriteString(mol)
+
+        # xyz_string_output, optimized_coords, optimized_elements = ForceField().optimize(complex_mol, fixed_atom_indices, self.nsteps)
 
         # UPDATE THE COORDINATES OF THE STK BUILDING BLOCK ISOMER WITH THE NEW COORDINATES
-        xyz_string_output = conv.WriteString(mol)
         list_of_nums = re.findall(r"[-+]?(?:\d*\.*\d+)", f"Current Level: {xyz_string_output}")
         num_of_atoms = int(list_of_nums[0])
         del list_of_nums[0]  # we remove the number that corresponds to the number of atoms

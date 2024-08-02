@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAVHOK-02-a,C16H14N3O1,2,-1,N-O,34,264.308,0.1273248433,False,True,9.142297561335443,2.0868904721340744,cad5afdd08ba149a3375b4e036520ff3,1,PAVHOK,V(1)
+Ligand 1,unq_CSD-PAHTEY-01-a,O4S1,1,-2,O,5,96.056,0.3722676753,False,False,2.4489829827910197,2.0681287895099767,cbb1dfe176d3b39d613b83a81554b31c,221,"PAHTEY, PENQOQ, PETCUO, PIJROQ, PIKYOY, ... (216 more)","Cu(73), Zn(33), Mn(21), Cd(19), Fe(19), ... (14 more)"
+Ligand 2,unq_CSD-PAJHAM-01-a,C2H6O1S1,1,0,O,10,78.12899999999999,0.3762018944,False,False,4.379736514905891,2.1629272387207115,e05bef67d45c36859d07f07a1b2bfee1,1496,"PAJHAM, PAJHAM, PAJHAM, PAJHAM, PAJHAM, ... (1491 more)","Ni(160), Cu(146), Co(138), Zn(114), U(83), ... (39 more)"

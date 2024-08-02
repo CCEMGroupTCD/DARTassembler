@@ -9,10 +9,7 @@ from typing import Union
 
 from DARTassembler.src.ligand_extraction.Molecule import pseudo_metal
 from DARTassembler.src.ligand_filters.constant_Ligands import get_monodentate_list
-from rdkit.Chem import rdmolfiles
-from DARTassembler.src.assembly.building_block_utility import ligand_to_mol
-from rdkit.Chem.Draw import rdMolDraw2D
-from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist, has_smarts_pattern
+from DARTassembler.src.ligand_extraction.utilities_Molecule import has_smarts_pattern
 
 
 class FilterStage:

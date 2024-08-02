@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAZXAQ-02-b,C16H12N1O1,2,-1,N-C,30,234.27800000000002,0.1796031167,False,True,9.413078227126341,2.0052934621555685,a707a2a5edf4cccc08a5ceafbd982eb2,2,"PAZXAQ, PAZXAQ",Ir(2)
+Ligand 1,unq_CSD-PALKET-01-a,C1N1O1,1,-1,N,3,42.016999999999996,1.0,False,False,2.351696693878697,2.088194095384814,cc47759db1574f650ff7ab82ae512efb,293,"PALKET, PALKET, PALKET, PALKIX, PALKIX, ... (288 more)","Co(65), Cu(45), Ni(31), Ru(23), Mn(21), ... (19 more)"
+Ligand 2,unq_CSD-PELBIS-01-a,C5F4N1,1,-1,C,10,150.055612652,0.9312311932,False,False,5.337582288827031,1.895261135041818,7b49116bc0386fda57a495d2c458ce36,4,"PELBIS, MAPKIX, MAPKOD, VAWJAF",Ni(4)

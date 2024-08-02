@@ -8,7 +8,7 @@ complex_name_length: 8
 batches:
 - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
-  max_num_complexes: 8
+  max_num_complexes: 30
   metal_center: Fe
   metal_oxidation_state: 2
   name: Integration_test_1
@@ -21,7 +21,7 @@ batches:
   bidentate_rotator: horseshoe
 - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
-  max_num_complexes: 6
+  max_num_complexes: 75
   metal_center: Co
   metal_oxidation_state: 3
   name: Integration_test_2
@@ -33,7 +33,7 @@ batches:
   geometry_modifier_filepath: null
   bidentate_rotator: horseshoe
 - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
-  isomers: all
+  isomers: lowest_energy
   max_num_complexes: 10
   metal_center: Cr
   metal_oxidation_state: 1
@@ -46,8 +46,8 @@ batches:
   geometry_modifier_filepath: null
   bidentate_rotator: horseshoe
 - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
-  isomers: all
-  max_num_complexes: 8
+  isomers: lowest_energy
+  max_num_complexes: 80
   metal_center: Fe
   metal_oxidation_state: 4
   name: Integration_test_4
@@ -60,11 +60,11 @@ batches:
   bidentate_rotator: horseshoe
 - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
-  max_num_complexes: 9
+  max_num_complexes: 25
   metal_center: Fe
   metal_oxidation_state: 2
   name: Integration_test_5
-  forcefield: false
+  forcefield: true
   random_seed: 23
   topology: 5-1
   total_charge: 0
@@ -75,7 +75,7 @@ batches:
   - ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   - same_ligand_as_previous
   isomers: all
-  max_num_complexes: 10
+  max_num_complexes: 40
   metal_center: Fe
   metal_oxidation_state: 2
   name: Integration_test_6
@@ -95,7 +95,7 @@ batches:
   metal_center: Ru
   metal_oxidation_state: 2
   total_charge: -1
-  max_num_complexes: 7
+  max_num_complexes: 50
   forcefield: true
   isomers: lowest_energy
   bidentate_rotator: horseshoe

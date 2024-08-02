@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PADFAC-02-a,C15H17N2,2,-1,N-N,34,225.315,0.1346590342,False,False,10.203855540431764,2.3087989282789576,d668bbb52281b2165415f08b55a1380f,2,"PADFAC, PADFAC",Zr(2)
+Ligand 1,unq_CSD-PALKET-01-a,C1N1O1,1,-1,N,3,42.016999999999996,1.0,False,False,2.351696693878697,2.088194095384814,cc47759db1574f650ff7ab82ae512efb,293,"PALKET, PALKET, PALKET, PALKIX, PALKIX, ... (288 more)","Co(65), Cu(45), Ni(31), Ru(23), Mn(21), ... (19 more)"
+Ligand 2,unq_CSD-OZODUD-01-a,I1,1,-1,I,1,126.90447,1.0,False,False,,2.9637283175082025,5403354a323d4ad250e8cc4f234d5227,7691,"OZODUD, OZODUD, OZODUD, OZODUD, OZOWIK, ... (7686 more)","Pd(1141), Pt(953), Zn(597), Cd(591), Cu(503), ... (42 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAWQUA-02-a,C12H14N1O1,2,-1,O-C,28,188.25,0.1380090672,False,True,8.433740955827373,2.012024185412666,1a85713ca4ea83a84300c062ea387bec,1,PAWQUA,Pd(1)
+Ligand 1,unq_CSD-PAHWIF-01-a,C4O4,1,-2,O,8,112.03999999999999,0.9718626377,False,False,4.566791996577028,1.9623788675992206,7b182d14e6b499355fa496a4dd288d16,11,"PAHWIF, QAGZEF, KEJKEP, KELNOE, KELNUK, ... (6 more)","Cu(5), Co(3), Yb(2), Eu(1)"
+Ligand 2,unq_CSD-PAKVEF-01-a,N2,1,0,N,2,28.014,1.0,False,False,1.1183807670020074,1.7906916875889054,60aef06530deadddb1333674bfb08b38,432,"PAKVEF, PEMKUQ, PEVJEI, PEXGIL, PIGLEZ, ... (427 more)","Fe(121), Mo(87), Ru(57), Co(50), W(36), ... (9 more)"

@@ -1,0 +1,397 @@
+{
+    "complex": {
+        "atomic_props": {
+            "x": [
+                0.0,
+                1.51067,
+                4.20207,
+                2.76124,
+                1.51067,
+                2.2866,
+                2.90728,
+                1.30112,
+                2.47028,
+                3.79475,
+                4.44258,
+                3.53818,
+                5.04236,
+                4.30742,
+                1.33636,
+                0.27575,
+                4.28402,
+                5.52036,
+                3.76079,
+                -1.58392,
+                -1.58392
+            ],
+            "y": [
+                0.0,
+                1.49595,
+                0.91399,
+                -0.93757,
+                -1.49595,
+                -5.24052,
+                0.34842,
+                -2.92754,
+                -3.87752,
+                -3.59409,
+                -4.77024,
+                -5.80984,
+                0.3219,
+                1.94013,
+                -5.75632,
+                -3.32771,
+                -2.67632,
+                -4.86993,
+                -6.86653,
+                1.58392,
+                -1.58392
+            ],
+            "z": [
+                0.0,
+                0.0,
+                0.06858,
+                0.02616,
+                0.0,
+                -0.01939,
+                0.03333,
+                -0.03314,
+                -0.00396,
+                0.04029,
+                0.0512,
+                0.01568,
+                0.09121,
+                0.07715,
+                -0.05184,
+                -0.09577,
+                0.06127,
+                0.08272,
+                0.01489,
+                0.0,
+                0.0
+            ],
+            "atoms": [
+                "Ru",
+                "S",
+                "N",
+                "N",
+                "N",
+                "C",
+                "C",
+                "C",
+                "C",
+                "N",
+                "C",
+                "C",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "Cl",
+                "Cl"
+            ]
+        },
+        "global_props": {
+            "n_atoms": 21,
+            "n_elements": 6,
+            "molecular_weight": 339.1799999999999,
+            "n_C_H_bonds": 4
+        },
+        "graph_dict": {
+            "graph": {
+                "0": {
+                    "1": {},
+                    "4": {},
+                    "19": {},
+                    "20": {}
+                },
+                "1": {
+                    "0": {},
+                    "6": {}
+                },
+                "2": {
+                    "6": {},
+                    "12": {},
+                    "13": {}
+                },
+                "3": {
+                    "4": {},
+                    "6": {}
+                },
+                "4": {
+                    "0": {},
+                    "3": {},
+                    "7": {}
+                },
+                "5": {
+                    "8": {},
+                    "11": {},
+                    "14": {}
+                },
+                "6": {
+                    "1": {},
+                    "2": {},
+                    "3": {}
+                },
+                "7": {
+                    "4": {},
+                    "8": {},
+                    "15": {}
+                },
+                "8": {
+                    "5": {},
+                    "7": {},
+                    "9": {}
+                },
+                "9": {
+                    "8": {},
+                    "10": {},
+                    "16": {}
+                },
+                "10": {
+                    "9": {},
+                    "11": {},
+                    "17": {}
+                },
+                "11": {
+                    "5": {},
+                    "10": {},
+                    "18": {}
+                },
+                "12": {
+                    "2": {}
+                },
+                "13": {
+                    "2": {}
+                },
+                "14": {
+                    "5": {}
+                },
+                "15": {
+                    "7": {}
+                },
+                "16": {
+                    "9": {}
+                },
+                "17": {
+                    "10": {}
+                },
+                "18": {
+                    "11": {}
+                },
+                "19": {
+                    "0": {}
+                },
+                "20": {
+                    "0": {}
+                }
+            },
+            "node_attributes": {
+                "0": {
+                    "node_label": "Ru"
+                },
+                "1": {
+                    "metal_neighbor": true,
+                    "node_label": "S",
+                    "orig_idx": 1
+                },
+                "2": {
+                    "metal_neighbor": false,
+                    "node_label": "N",
+                    "orig_idx": 2
+                },
+                "3": {
+                    "metal_neighbor": false,
+                    "node_label": "N",
+                    "orig_idx": 3
+                },
+                "4": {
+                    "metal_neighbor": true,
+                    "node_label": "N",
+                    "orig_idx": 4
+                },
+                "5": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 5
+                },
+                "6": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 6
+                },
+                "7": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 7
+                },
+                "8": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 8
+                },
+                "9": {
+                    "metal_neighbor": false,
+                    "node_label": "N",
+                    "orig_idx": 9
+                },
+                "10": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 10
+                },
+                "11": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 11
+                },
+                "12": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 18
+                },
+                "13": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 19
+                },
+                "14": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 20
+                },
+                "15": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 21
+                },
+                "16": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 22
+                },
+                "17": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 23
+                },
+                "18": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 24
+                },
+                "19": {
+                    "node_label": "Cl"
+                },
+                "20": {
+                    "node_label": "Cl"
+                }
+            }
+        },
+        "ligand_props": {
+            "0": {
+                "unique_name": "unq_CSD-PABZUN-02-a",
+                "ligand_indices_in_complex": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18
+                ],
+                "donor_indices": [
+                    1,
+                    4
+                ],
+                "donor_elements": [
+                    "S",
+                    "N"
+                ],
+                "donor_bond_lengths": [
+                    2.3774979915869543,
+                    2.491485496646529
+                ],
+                "stoichiometry": "C6H7N4S1",
+                "denticity": 2,
+                "pred_charge": -1,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "4d38b22095086e3d5dde21012e87a10c",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 6,
+                "n_atoms": 18
+            },
+            "1": {
+                "unique_name": "unq_CSD-OZOCUD-01-a",
+                "ligand_indices_in_complex": [
+                    19
+                ],
+                "donor_indices": [
+                    19
+                ],
+                "donor_elements": [
+                    "Cl"
+                ],
+                "donor_bond_lengths": [
+                    2.327796359220454
+                ],
+                "stoichiometry": "Cl1",
+                "denticity": 1,
+                "pred_charge": -1.0,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "8756e7780cb7e3fab0b8bcb31598a04d",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 72303,
+                "n_atoms": 1
+            },
+            "2": {
+                "unique_name": "unq_CSD-OZOCUD-01-a",
+                "ligand_indices_in_complex": [
+                    20
+                ],
+                "donor_indices": [
+                    20
+                ],
+                "donor_elements": [
+                    "Cl"
+                ],
+                "donor_bond_lengths": [
+                    2.327796359220454
+                ],
+                "stoichiometry": "Cl1",
+                "denticity": 1,
+                "pred_charge": -1.0,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "8756e7780cb7e3fab0b8bcb31598a04d",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 72303,
+                "n_atoms": 1
+            }
+        },
+        "metal_oxi_state": 2,
+        "metal": "Ru",
+        "metal_idx": 0,
+        "charge": -1.0,
+        "mol_id": "ICINUZEH"
+    },
+    "complex_idx": 279,
+    "xyz_structure": "21\n\nRu  0.0  0.0  0.0 \nS  1.51067  1.49595  0.0 \nN  4.20207  0.91399  0.06858 \nN  2.76124  -0.93757  0.02616 \nN  1.51067  -1.49595  0.0 \nC  2.2866  -5.24052  -0.01939 \nC  2.90728  0.34842  0.03333 \nC  1.30112  -2.92754  -0.03314 \nC  2.47028  -3.87752  -0.00396 \nN  3.79475  -3.59409  0.04029 \nC  4.44258  -4.77024  0.0512 \nC  3.53818  -5.80984  0.01568 \nH  5.04236  0.3219  0.09121 \nH  4.30742  1.94013  0.07715 \nH  1.33636  -5.75632  -0.05184 \nH  0.27575  -3.32771  -0.09577 \nH  4.28402  -2.67632  0.06127 \nH  5.52036  -4.86993  0.08272 \nH  3.76079  -6.86653  0.01489 \nCl  -1.58392  1.58392  0.0 \nCl  -1.58392  -1.58392  0.0 \n",
+    "batch_idx": 6
+}

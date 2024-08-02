@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PERMIL-02-a,C14H12N1O1,2,-1,O-N,28,210.25600000000003,0.225497049,False,True,9.669942575320704,1.9390312982109936,f8f9d93b993e4beb1c1dea3805b0120e,10,"PERMIL, PERMIL, PERMOR, PERMOR, PERMUX, ... (5 more)","Cu(2), Ni(2), Pd(2), V(2), Zn(2)"
+Ligand 1,unq_CSD-PEDXEB-01-f,H2P1,1,-1,P,3,32.989761998,1.0,False,False,2.5291927763616595,2.439452850538415,da0a13a38a6b8866c0389fe26e3700b1,3,"PEDXEB, POGNEG, BAZFIU","Ir(1), U(1), Zr(1)"
+Ligand 2,unq_CSD-OZUTEL-01-a,C1H3O1,1,-1,O,5,31.033999999999995,0.4691305624,False,True,1.9426893961722238,1.8282635614155838,ef776a7fbd2f0e4398d061c40124c4c3,548,"OZUTEL, OZUTEL, PADQOC, PAFFEI, PANZAH, ... (543 more)","V(160), Re(40), Fe(36), Mn(30), Mo(29), ... (36 more)"

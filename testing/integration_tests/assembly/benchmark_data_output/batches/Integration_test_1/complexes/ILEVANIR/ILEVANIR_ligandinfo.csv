@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PECLOB-02-a,C12H10F3O3,2,-1,O-O,28,259.20420948899994,0.3098095701,False,False,13.047677765410977,2.3877432089151664,b3c6091486ec34c3922b56e343f8577f,7,"PECLOB, PECLOB, PECLOB, PECLOB, VEKCEX, ... (2 more)",Eu(7)
+Ligand 1,unq_CSD-PAPYEL-02-a,C8H6N1O2,2,-1,N-C,17,148.141,0.3213800346,False,False,7.048880209650325,2.078992074451697,42a53d167436cf785a7d27c5f8e6c2f4,1,PAPYEL,Ir(1)

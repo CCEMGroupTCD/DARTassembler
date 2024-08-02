@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PANSUU-02-a,C21H28N1O2,2,-1,O-N,52,326.46,0.1642118717,False,True,20.071438984038988,1.8750753503404112,982c08f87b3902c8c4ab17000275866d,2,"PANSUU, PANSUU",Ni(2)
+Ligand 1,unq_CSD-PAFCIJ-01-b,C2H3N1,1,0,N,6,41.053000000000004,0.4931114442,False,False,3.1726348198303573,2.050467434513408,2d7dc351d5610f51ec03c0d8c43d387b,4934,"PAFCIJ, PAFGAG, PAGLER, PAHNAQ, PAJSEB, ... (4929 more)","Ru(995), Fe(574), Cu(559), Ni(481), Pd(415), ... (41 more)"
+Ligand 2,unq_CSD-PEBNIT-01-d,C1H3N1,1,-2,N,5,29.041999999999998,0.4748139509,False,True,2.039766226801493,1.6657033529413334,bed160728bd859cf36d48ecfda613ec8,12,"PEBNIT, SIRZUP, CEWVUX, CEWVUX, TOVPOJ, ... (7 more)","Mo(4), Re(2), U(2), V(1), Nb(1), ... (2 more)"

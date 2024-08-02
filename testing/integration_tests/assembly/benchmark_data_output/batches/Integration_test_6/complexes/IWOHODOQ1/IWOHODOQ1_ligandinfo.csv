@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAJVUU-02-a,C12H22N1O1,2,-1,O-N,36,196.31400000000002,0.1383886716,False,True,8.712706406737231,1.8774890764993826,4ab3834c8be358d3a9ab7f102d6a12b8,4,"PAJVUU, PAJVUU, PAJWAB, PAJWAB","Ni(2), Cu(2)"
+Ligand 1,unq_CSD-PAJVUU-02-a,C12H22N1O1,2,-1,O-N,36,196.31400000000002,0.1383886716,False,True,8.712706406737231,1.8774890764993826,4ab3834c8be358d3a9ab7f102d6a12b8,4,"PAJVUU, PAJVUU, PAJWAB, PAJWAB","Ni(2), Cu(2)"

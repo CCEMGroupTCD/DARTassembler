@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 
 from DARTassembler.src.assembly.building_block_utility import rotate_tridentate_bb, rotate_tetradentate_bb, penta_as_tetra, \
-    get_optimal_rotation_angle_tridentate, Bidentate_Rotator, nonplanar_tetra_solver
+    get_optimal_rotation_angle_tridentate, Bidentate_Rotator
 from DARTassembler.src.assembly.stk_utils import create_placeholder_Hg_bb
 import DARTassembler.src.assembly.stk_extension as stk_e
 from DARTassembler.src.assembly.stk_extension import monodentate_coordinating_distance, Bidentate_coordinating_distance
@@ -296,8 +296,9 @@ class PlacementRotation:
                                                                               stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), )]
                                                                           )
                 elif topology_determining_ligand_planar is False:
-                    bb_for_complex = nonplanar_tetra_solver(stk_bb=building_block, ligand=ligand)
-                    bb_for_complex = stk.BuildingBlock.init_from_molecule(bb_for_complex, functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg]', bonders=(0,), deleters=(), ), ], )
+                    raise NotImplementedError("Non-planar tetradentate complexes are not yet supported")
+                    # bb_for_complex = nonplanar_tetra_solver(stk_bb=building_block, ligand=ligand)
+                    # bb_for_complex = stk.BuildingBlock.init_from_molecule(bb_for_complex, functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg]', bonders=(0,), deleters=(), ), ], )
                 else:
                     raise ValueError("!!!Fatal Error!!! -> Program unable to determine if the tetradentate ligand is planar or not -> Exiting program")
 

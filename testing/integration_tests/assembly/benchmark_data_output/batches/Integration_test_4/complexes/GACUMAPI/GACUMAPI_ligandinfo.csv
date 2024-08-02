@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAYHIG-04-a,C46H58O4,4,-2,O-O-O-O,108,674.9659999999998,0.0397315091,False,True,14.658103304998228,2.0521314667745236,6cc0efb28be1d3f74e2fed358f69623f,31,"PAYHIG, PAYHOM01, PAYHUS, LOQRAL, LOQREP, ... (26 more)","Ti(8), Fe(6), U(4), Cr(3), Ce(2), ... (7 more)"
+Ligand 1,unq_CSD-PAGFIQ-01-b,F1,1,-1,F,1,18.998403163,1.0,False,False,,1.858994378689726,863df8eac131c790b7c49ff759330253,2046,"PAGFIQ, PAGGAJ, PAGGAJ, PAGGEN, PAGGOX, ... (2041 more)","Ta(337), Ti(247), W(225), Nb(172), V(98), ... (33 more)"
+Ligand 2,unq_CSD-PEDXEB-01-f,H2P1,1,-1,P,3,32.989761998,1.0,False,False,2.5291927763616595,2.439452850538415,da0a13a38a6b8866c0389fe26e3700b1,3,"PEDXEB, POGNEG, BAZFIU","Ir(1), U(1), Zr(1)"

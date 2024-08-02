@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEDJAM-04-a,C52H34F12N4O3,4,-2,N-N-N-N,105,990.849837956,0.0532079414,False,False,19.584727002692684,1.9977708168829247,cb4aa8b9ac58d6edb11f381b61f6ef91,4,"PEDJAM, PEDJIU, PEDJOA, PEDKAN","Cu(1), Zn(1), Pd(1), Ag(1)"
+Ligand 1,unq_CSD-PENMOK-01-a,C1H1O2,1,-1,C,4,45.017,0.9049555335,False,True,2.3242935184696445,2.0578249779803923,e7f8435924d4c493f866105dc5bfea6b,9,"PENMOK, PENMON, PUVGES, JUJBIC, GOFPOG, ... (4 more)","Ru(3), Ni(2), Ir(2), Pt(1), Pd(1)"
+Ligand 2,unq_CSD-PANPID-01-a,C1N1S1,1,-1,S,3,58.078,1.0,False,False,2.8031703301797415,2.8640501270054615,3755af547cb1890c9d1403d6885d101c,418,"PANPID, PANPID, PIXYOL, PIXYOL, PIXYOL, ... (413 more)","Hg(140), Pd(75), Pt(62), Cu(29), Ag(22), ... (10 more)"

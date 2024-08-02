@@ -9,7 +9,7 @@ complex_name_length: 8                # Length of the complex name. Recommended:
 batches:                              # List of batches to generate. The first option in each batch needs a hyphen and whitespace ('- ') in front of it to mark the start of the batch.
   - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
-    max_num_complexes: 8
+    max_num_complexes: 30
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_1
@@ -23,7 +23,7 @@ batches:                              # List of batches to generate. The first o
 
   - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
-    max_num_complexes: 6
+    max_num_complexes: 75
     metal_center: Co
     metal_oxidation_state: 3
     name: Integration_test_2
@@ -36,7 +36,7 @@ batches:                              # List of batches to generate. The first o
     bidentate_rotator: horseshoe
 
   - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
-    isomers: all
+    isomers: lowest_energy
     max_num_complexes: 10
     metal_center: Cr
     metal_oxidation_state: 1
@@ -50,8 +50,8 @@ batches:                              # List of batches to generate. The first o
     bidentate_rotator: horseshoe
 
   - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
-    isomers: all
-    max_num_complexes: 8
+    isomers: lowest_energy
+    max_num_complexes: 80
     metal_center: Fe
     metal_oxidation_state: 4
     name: Integration_test_4
@@ -66,11 +66,11 @@ batches:                              # List of batches to generate. The first o
 
   - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
-    max_num_complexes: 9
+    max_num_complexes: 25
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_5
-    forcefield: false
+    forcefield: true
     random_seed: 23
     topology: 5-1
     total_charge: 0
@@ -80,7 +80,7 @@ batches:                              # List of batches to generate. The first o
 
   - ligand_db_paths: [ ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, same_ligand_as_previous ]
     isomers: all
-    max_num_complexes: 10
+    max_num_complexes: 40
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_6
@@ -98,7 +98,7 @@ batches:                              # List of batches to generate. The first o
     metal_center: Ru                  # Chemical symbol of the desired metal center.
     metal_oxidation_state: 2          # Oxidation state of the desired metal center.
     total_charge: -1                  # Total charge of the complex.
-    max_num_complexes: 7              # Maximum number of complexes to generate.
+    max_num_complexes: 50              # Maximum number of complexes to generate.
     forcefield: true                  # Whether to optimize the structures after generation with a force field.
     isomers: lowest_energy            # Which isomers to generate. Options: 'lowest_energy', 'all'
     bidentate_rotator: horseshoe      # How to rotate the bidentate ligands. Options: 'horseshoe', 'slab'

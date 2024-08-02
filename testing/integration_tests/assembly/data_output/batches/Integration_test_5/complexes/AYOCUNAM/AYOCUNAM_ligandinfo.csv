@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZUWEM-05-a,C23H31N5O4,5,-2,O-O-N-N-N,63,441.532,0.0818308537,False,True,10.878462189114783,2.0836590161537325,d2bf10e641a3c88df163c65c216db0b4,1,OZUWEM,V(1)
+Ligand 1,unq_CSD-PBTUCU-01-a,C1H4N2S1,1,0,S,8,76.11699999999999,0.9238572057,False,False,3.8086552771286617,2.2952237254786296,32fb7e03a61bce4586319852c4489d61,348,"PBTUCU, PBTUCU, PEKSUT, PEKSUT, PEKSUT01, ... (343 more)","Pt(73), Zn(46), Ni(39), Co(34), Pd(31), ... (13 more)"

@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAFMOC-02-a,C12H15N2O1S2,2,-1,S-S,32,267.385,0.1810929249,False,False,10.27935985312315,2.29870238868674,a8a2fac1024d42a1412d440854e9abd9,7,"PAFMOC, PAFMOC, UNOYAZ, UNOYON, KOZYIJ, ... (2 more)","Pd(3), Cu(2), Zn(2)"
+Ligand 1,unq_CSD-PECLIV-02-a,C11H8F3O3,2,-1,O-O,25,245.177209489,0.3332078825,False,False,11.21584296876521,2.3673651308623045,5f772ec04996769284ce9d79ae7c2de6,27,"PECLIV, PECLIV, PECLIV, PECLIV, LORFEG, ... (22 more)","Eu(10), Dy(10), Co(2), Cu(2), V(2), ... (1 more)"
