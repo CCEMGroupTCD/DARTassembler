@@ -12,7 +12,7 @@ dependencies:
   - pandas
   - pbr                       # Needed for pysmiles, better to install now via conda then later via pip.
   - pip
-  - python                    # DART was tested with python>=3.9, but it might be possible to use lower versions as well.
+  - python>=3.9               # DART was tested with python>=3.9, but it might be possible to use lower versions as well.
   - pyyaml
   - rdkit
   - scipy                     # scikit-learn Lasso fit with sparse matrices fails with scipy 1.11 so for ligand extraction it should be scipy<=1.10.1.
