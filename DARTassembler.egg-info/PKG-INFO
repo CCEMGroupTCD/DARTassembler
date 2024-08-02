@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: DARTassembler
-Version: 0.1
-Summary: A software for chemists to build novel metal complexes from random ligands on the computer.
-Home-page: https://github.com/CCEMGroupTCD/DART
-Author: Timo Sommer, Cian Clarke, Felix Kleuker
-Requires-Python: >=3.9
-License-File: LICENSE
