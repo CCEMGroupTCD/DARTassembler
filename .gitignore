@@ -6,12 +6,9 @@
 
 
 /data/**
-# include zip file of MetaLig database
-!/data/final_db_versions/
-/data/final_db_versions/**
-!/data/final_db_versions/MetaLigDB_v1.0.0.jsonlines.zip
-!/data/final_db_versions/MetaLigDB_v1.0.0.csv
+/data_input/**
 
+/DARTassembler/metalig/MetaLigDB_v1.0.0.jsonlines
 /database/**
 /tmp/**
 /Bin_(Old)
