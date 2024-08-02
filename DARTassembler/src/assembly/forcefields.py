@@ -1,15 +1,14 @@
 from typing import Tuple, List
 import numpy as np
-from openbabel import openbabel as ob
 import rdkit
+import stk
 from rdkit import Chem
+from rdkit.Chem import AllChem
 from rdkit.Chem import rdmolfiles
 from DARTassembler.src.constants.Periodic_Table import DART_Element
-from openbabel import pybel
-pybel.ob.obErrorLog.StopLogging()   # Remove Openbabel warnings
 
 
-def get_coordinates_and_elements_from_OpenBabel_mol(mol: ob.OBMol) -> Tuple[np.ndarray, List[str]]:
+def get_coordinates_and_elements_from_OpenBabel_mol(mol) -> Tuple[np.ndarray, List[str]]:
     """
     Returns the 3D coordinates of each atom in the molecule and the corresponding list of chemical elements.
 
@@ -19,6 +18,7 @@ def get_coordinates_and_elements_from_OpenBabel_mol(mol: ob.OBMol) -> Tuple[np.n
     Returns:
         Tuple[np.ndarray, List[str]]: A tuple containing a N x 3 numpy array of xyz coordinates and a list of chemical elements for each atom.
     """
+    from openbabel import openbabel as ob
     n_atoms = mol.NumAtoms()
     coords = np.empty((n_atoms, 3))
     elements = []
@@ -35,24 +35,39 @@ def get_coordinates_and_elements_from_OpenBabel_mol(mol: ob.OBMol) -> Tuple[np.n
 
 class ForceField(object):
 
-    def __init__(self):
+    def __init__(self, backend='openbabel'):
         """
-        Initialize the UFF force field object.
+        Initialize the force field object. This object is used to calculate the energy of a molecule using the UFF force field.
+        """
+        self.backend = backend
 
-        Args:
-            backend (str, optional): The backend to use for the UFF force field. Defaults to 'openbabel'.
-        """
-        pass
 
     def singlepoint(self, mol):
-        return self._singlepoint_with_openbabel(mol)
+        if self.backend == 'openbabel':
+            return self._singlepoint_with_openbabel(mol)
+        elif self.backend == 'rdkit':
+            return self._singlepoint_with_rdkit(mol)
+        else:
+            raise ValueError(f"Unsupported backend: {self.backend}")
 
-    def _singlepoint_with_openbabel(self, mol: ob.OBMol) -> float:
+    def _singlepoint_with_openbabel(self, mol) -> float:
         """
         Calculate the energy of the molecule using the UFF force field with Open Babel.
+        :param mol: openbabel.OBMol
+        :return: Energy in kcal/mol
         """
+        from openbabel import openbabel as ob
+        from openbabel import pybel
+        pybel.ob.obErrorLog.StopLogging()  # Remove Openbabel warnings
+
         if isinstance(mol, str):
             mol = pybel.readstring("mol", mol)
+        elif isinstance(mol, stk.BuildingBlock):
+            string = stk.MolWriter().to_string(mol)
+            mol = pybel.readstring("mol", string)
+        else:
+            raise ValueError(f"Unsupported input type: {type(mol)}")
+
         obmol = mol.OBMol
         ff = ob._openbabel.OBForceField_FindType("uff")
         assert (ff.Setup(obmol))
@@ -62,12 +77,45 @@ class ForceField(object):
 
         return uffE
 
-    def optimize(self, mol_rdkit, fixed_atom_indices, nsteps=100):
+    def _singlepoint_with_rdkit(self, mol):
+        """
+        Calculate the energy of the molecule using the UFF force field with RDKit.
+        :param mol: rdkit.Chem.Mol
+        :return: Energy in kcal/mol
+        """
+        if isinstance(mol, stk.BuildingBlock):
+            string = stk.MolWriter().to_string(mol)
+            rdkit_mol = Chem.MolFromMolBlock(string, sanitize=False, removeHs=False, strictParsing=False)
+        else:
+            raise ValueError(f"Unsupported input type: {type(mol)}")
+
+        # rdkit_mol = Chem.AddHs(rdkit_mol)
+        # ff = AllChem.UFFGetMoleculeForceField(rdkit_mol)
+        # ff.Initialize()
+
+        # Adjust the valence of problematic atoms temporarily
+        for atom in rdkit_mol.GetAtoms():
+            if atom.GetExplicitValence() > atom.GetTotalValence():
+                atom.SetNumExplicitHs(atom.GetTotalValence() - atom.GetExplicitValence())
+
+        # Initialize the UFF force field
+        ff = AllChem.UFFGetMoleculeForceField(rdkit_mol)
+        ff.Initialize()
+
+        # Revert valence adjustments
+        for atom in rdkit_mol.GetAtoms():
+            atom.SetNoImplicit(True)
+
+        energy = ff.CalcEnergy()
+        assert isinstance(energy, float)
+        return energy
+
+    def optimize(self, mol_rdkit, fixed_atom_indices, nsteps):
         return self._optimize_with_openbabel(mol_rdkit, fixed_atom_indices, nsteps)
 
     def _optimize_with_openbabel(self, mol_rdkit: Chem.Mol, fixed_atom_indices: List[int], nsteps: int):
-
-        # setup conversion
+        from openbabel import openbabel as ob
+        # Read in the molecule and convert it to an Open Babel molecule
         xyz_string = rdmolfiles.MolToXYZBlock(mol_rdkit)
         conv = ob.OBConversion()
         conv.SetInAndOutFormats('xyz', 'xyz')

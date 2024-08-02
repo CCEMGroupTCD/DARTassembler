@@ -1,5 +1,5 @@
 from copy import deepcopy
-
+import stk
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from openbabel import openbabel
@@ -31,7 +31,6 @@ def optimize_with_rdkit(mol, nsteps, fixed_atom_indices):
         print(f"RDKit UFF optimization did not converge. Result code: {result}")
 
     return mol
-
 
 # Function for UFF optimization with Open Babel
 def optimize_with_openbabel(mol, nsteps, fixed_atom_indices):

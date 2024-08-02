@@ -22,4 +22,5 @@ dependencies:
   - tqdm
   - pip:
       - pysmiles
-      - -e .                  # Install DART in editable mode. All of its dependencies are installed by conda.
+      - "--editable=git+https://github.com/CCEMGroupTCD/DART@master#egg=DART_Assembly"
+#      - -e .                  # Install DART in editable mode. All of its dependencies are installed by conda.

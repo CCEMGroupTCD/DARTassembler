@@ -1,6 +1,8 @@
 import os
 import stk
 import itertools
+
+import stko
 from rdkit import Chem
 from rdkit.Chem import rdmolfiles
 
@@ -382,6 +384,6 @@ def get_energy_stk(building_block):
         logging.debug("in get energy function returning none")
         return None
     else:
-        string = building_block_to_mol(building_block)  # Here there is a dependency on the above ligand_to_mol function.
-        uffE = ForceField().singlepoint(string)
+        uffE = ForceField().singlepoint(building_block)
+
         return uffE

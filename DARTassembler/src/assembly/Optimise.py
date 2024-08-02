@@ -1,10 +1,8 @@
 from DARTassembler.src.assembly.building_block_utility import mercury_remover
-from openbabel import openbabel as ob
-from rdkit.Chem import rdmolfiles
 import numpy as np
 import re
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_concatenated_xyz_string_from_coordinates
-from DARTassembler.src.assembly.forcefields import get_coordinates_and_elements_from_OpenBabel_mol, ForceField
+from DARTassembler.src.assembly.forcefields import ForceField
 import logging
 
 class OPTIMISE:
@@ -26,51 +24,20 @@ class OPTIMISE:
         # stk to xyz string
         complex_mol = self.isomer.to_rdkit_mol()
         num_atoms = complex_mol.GetNumAtoms()
-        xyz_string = rdmolfiles.MolToXYZBlock(complex_mol)
-
-        # setup conversion
-        conv = ob.OBConversion()
-        conv.SetInAndOutFormats('xyz', 'xyz')
-        mol = ob.OBMol()
-        conv.ReadString(mol, xyz_string)
-
-        # Define constraints
-        # OPEN BABEL INDEXING STARTS AT ONE !!!!!!!!!!!!!!!!!!!!!!!!!!!
-        constraints = ob.OBFFConstraints()
-        constraints.AddAtomConstraint(1)  # Here we lock the metal
 
         # we constrain the all the coordinating atoms to the metal
-        fixed_atom_indices = [1] # Lock the metal. Open Babel indexing starts at 1.
+        fixed_atom_indices = [0] # Lock the metal. For `fixed_atom_indices`, indexing is 0-based.
         sum_of_atoms = []
         for ligand in self.ligands.values():
             coord_indexes = ligand.ligand_to_metal
             for atom_index in coord_indexes:
-                fixed_atom_indices.append(1 + atom_index + sum(sum_of_atoms))  # The one is to account for open babel indexing starting at 1 and to account for the metal
-                constraints.AddAtomConstraint(1 + 1 + atom_index + sum(sum_of_atoms))  # The one is to account for open babel indexing starting at 1 and to account for the metal
-                assert (1 + 1 + atom_index + sum(sum_of_atoms)) <= num_atoms
-            # this is so we don't take into account any mercury that might be in the atomic props (really only an issue for tetradentate non-planar ligands.py as they make use of the add atom function)
+                fixed_atom_idx = 1 + atom_index + sum(sum_of_atoms) # 0-based indexing, the +1 comes from somewhere else.
+                fixed_atom_indices.append(fixed_atom_idx)  # The one is to account for open babel indexing starting at 1 and to account for the metal
+                assert fixed_atom_idx < num_atoms
+            # this is so we don't take into account any mercury that might be in the atomic props (really only an issue for tetradentate non-planar ligands as they make use of the add atom function)
             sum_of_atoms.append(len([i for i in ligand.atomic_props["atoms"] if i != "Hg"]))
 
-        # Set up the force field with the constraints
-        forcefield = ob.OBForceField.FindForceField("Uff")
-        forcefield.Setup(mol, constraints)
-        forcefield.SetConstraints(constraints)
-
-
-        # Optimize the molecule coordinates using the force field with constrained atoms.
-        optimized_coords = []
-        optimized_elements = []
-        forcefield.ConjugateGradientsInitialize(self.nsteps)
-        while forcefield.ConjugateGradientsTakeNSteps(1):
-            forcefield.GetCoordinates(mol)
-            if return_ff_movie:
-                coords, elements = get_coordinates_and_elements_from_OpenBabel_mol(mol)
-                optimized_coords.append(coords)
-                optimized_elements.append(elements)
-        forcefield.GetCoordinates(mol)
-        xyz_string_output = conv.WriteString(mol)
-
-        # xyz_string_output, optimized_coords, optimized_elements = ForceField().optimize(complex_mol, fixed_atom_indices, self.nsteps)
+        xyz_string_output, optimized_coords, optimized_elements = ForceField().optimize(complex_mol, fixed_atom_indices, self.nsteps)
 
         # UPDATE THE COORDINATES OF THE STK BUILDING BLOCK ISOMER WITH THE NEW COORDINATES
         list_of_nums = re.findall(r"[-+]?(?:\d*\.*\d+)", f"Current Level: {xyz_string_output}")

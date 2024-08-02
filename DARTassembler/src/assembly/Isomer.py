@@ -106,12 +106,12 @@ class BuildIsomers:
 
         for building_blocks_list in self.ALL_building_blocks:
             if len(building_blocks_list) == 2:
-                # If there are only two ligands.py that comprise our complex then ...
+                # If there are only two ligands that comprise our complex then ...
                 # This is our input complex
                 complex = stk_e.complex_topology_two(metals=self.create_metal_building_block(self.metal_input, self.charge_input),
                                                      ligands={building_block: (i,) for i, building_block in building_blocks_list.items()})
             elif len(building_blocks_list) == 3:
-                # If there are 3 ligands.py in our complex then ...
+                # If there are 3 ligands in our complex then ...
                 complex = stk_e.complex_topology_three(metals=self.create_metal_building_block(self.metal_input, self.charge_input),
                                                        ligands={building_block: (i,) for i, building_block in building_blocks_list.items()})
             else:
