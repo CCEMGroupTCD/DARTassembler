@@ -17,22 +17,24 @@ import ase
 import zipfile
 import shutil
 import os
-from DARTassembler.src.constants.Paths import default_ligand_db_path
+from DARTassembler.src.constants.Paths import default_ligand_db_path, test_ligand_db_path
 
 def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
     """
     Checks if the MetaLig database exists as uncompressed file, and if not uncompresses it.
     """
-    if not Path(default_ligand_db_path).exists():
+    zip_files = [default_ligand_db_path, test_ligand_db_path]
 
-        zip_file = str(default_ligand_db_path) + ".zip"
+    for zip_file in zip_files:
+        name = Path(zip_file).name
         if not Path(zip_file).exists():
-            raise FileNotFoundError(f"Could not find MetaLig database zip file at {Path(zip_file).resolve()}. Please download it from the DART github repository and place it there.")
+            raise FileNotFoundError(f"DART Error: Could not find MetaLig database file {name} at {Path(zip_file).resolve()}.")
 
-        db_dir = Path(default_ligand_db_path).parent
-        uncompress_file(zip_file, db_dir)
-        assert Path(default_ligand_db_path).exists(), f"Could not find MetaLig database at {Path(default_ligand_db_path).resolve()}. Please download it from the DART github repository and place it there."
-        print(f"Uncompressed MetaLig database to {Path(default_ligand_db_path).resolve()}.\n")
+        db_dir = Path(zip_file).parent
+        try:
+            uncompress_file(zip_file, db_dir)
+        except Exception as e:
+            raise Exception(f"DART Error: Could not uncompress MetaLig database file {name} at {Path(zip_file).resolve()}. Error message: {e}")
 
         if delete_zip:
             Path(zip_file).unlink()

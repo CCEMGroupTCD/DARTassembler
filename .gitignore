@@ -5,7 +5,7 @@
 *.swp
 
 # Only include the zip file of the MetaLig, but not the full file. This is because the full .jsonlines file has around 300MB which is too large for GitHub.
-/DARTassembler/data/metalig/MetaLigDB_v1.0.0.jsonlines
+/DARTassembler/data/metalig/*.jsonlines
 
 # Ignore the CSD and tmQM input databases so that these are not made public.
 /data_input
