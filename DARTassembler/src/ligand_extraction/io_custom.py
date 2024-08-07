@@ -23,7 +23,7 @@ def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
     """
     Checks if the MetaLig database exists as uncompressed file, and if not uncompresses it.
     """
-    zip_files = [default_ligand_db_path, test_ligand_db_path]
+    zip_files = [default_ligand_db_path + '.zip', test_ligand_db_path + '.zip']
 
     for zip_file in zip_files:
         name = Path(zip_file).name
