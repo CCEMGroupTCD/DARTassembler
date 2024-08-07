@@ -5,11 +5,13 @@ from setuptools.command.egg_info import egg_info
 import subprocess
 import os
 import zipfile
+import sysconfig
 
 def custom_command():
     print('FANCY SHIIIIIT YESS LEETTTTSSS GOGOGGGGGGOO!!!!!!')
     print("Executing post-installation tasks...")
-    data_dir = os.path.join(os.path.dirname(__file__), 'DARTassembler', 'data')
+    install_path = sysconfig.get_paths()['purelib']
+    data_dir = os.path.join(install_path, 'DARTassembler', 'data')
     files_to_unzip = ['metalig/MetaLigDB_v1.0.0.jsonlines.zip']  # Update with actual file names
 
     for filename in files_to_unzip:
