@@ -18,20 +18,6 @@ import zipfile
 import shutil
 import os
 from DARTassembler.src.constants.Paths import default_ligand_db_path
-from setuptools import Command
-
-class UnzipMetaLigCommand(Command):
-    description = "Unzip MetaLig files after installation"
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=True)
 
 def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
     """
@@ -50,7 +36,6 @@ def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
 
         if delete_zip:
             Path(zip_file).unlink()
-            print("Deleted MetaLig database zip file for optimizing disk space.")
 
     return
 
