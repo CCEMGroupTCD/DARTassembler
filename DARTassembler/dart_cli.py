@@ -19,7 +19,7 @@ Examples:
 """
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('module', choices=modules, help='DART module that you want to use')
-    parser.add_argument('--path', required=True, help='Path to the input file(s)', nargs='+')
+    parser.add_argument('--path', required=True, help='Path to the input file(s)', nargs='*')
 
     args = parser.parse_args()
 
