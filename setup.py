@@ -17,7 +17,7 @@ def extract_metalig_zipfile() -> None:
     # Get the path to the metalig zip files
     install_path = sysconfig.get_paths()['purelib']
     data_dir = Path(install_path, 'DARTassembler', 'data', 'metalig')
-    metalig_files_to_unzip = glob.glob('MetaLigDB_v*.jsonlines.zip', root_dir=data_dir)
+    metalig_files_to_unzip = ['MetaLigDB_v1.0.0.jsonlines.zip']#glob.glob('MetaLigDB_v*.jsonlines.zip', root_dir=data_dir)
 
     for filename in metalig_files_to_unzip:
         file_path = Path(data_dir, filename)
