@@ -41,12 +41,13 @@ class project_path:
         return all_files_exist
 
 
-# Default paths, to use if not user specified
-csd_graph_path = project_path().extend(*'data_input/CSD/graphs'.split('/'))
-default_ligand_db_path = project_path().extend(*'DARTassembler/metalig/MetaLigDB_v1.0.0.jsonlines'.split('/'))
-test_ligand_db_path = project_path().extend(*'DARTassembler/metalig/test200_MetaLigDB_v1.0.0.jsonlines'.split('/'))
-element_data_path = project_path().extend(*'DARTassembler/src/constants/element_data_table.csv'.split('/'))
+# Fixed paths in the project
+default_ligand_db_path = project_path().extend(*'DARTassembler/data/metalig/MetaLigDB_v1.0.0.jsonlines'.split('/'))
+test_ligand_db_path = project_path().extend(*'DARTassembler/data/metalig/test200_MetaLigDB_v1.0.0.jsonlines'.split('/'))
+element_data_path = project_path().extend(*'DARTassembler/data/element_data_table.csv'.split('/'))
+test_installation_dirpath = project_path().extend(*'DARTassembler/data/tests/test_installation'.split('/'))
+# For development only
 charge_benchmark_dir = project_path().extend('dev', 'test', 'debug', 'databases', 'charge_benchmark')
-test_installation_dirpath = project_path().extend(*'DARTassembler/tests/test_installation'.split('/'))
+csd_graph_path = project_path().extend(*'data_input/CSD/graphs'.split('/'))
 
 
