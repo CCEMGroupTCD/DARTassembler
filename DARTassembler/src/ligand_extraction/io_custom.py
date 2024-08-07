@@ -23,21 +23,24 @@ def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
     """
     Checks if the MetaLig database exists as uncompressed file, and if not uncompresses it.
     """
-    zip_files = [default_ligand_db_path + '.zip', test_ligand_db_path + '.zip']
+    files = [default_ligand_db_path, test_ligand_db_path]
 
-    for zip_file in zip_files:
-        name = Path(zip_file).name
-        if not Path(zip_file).exists():
-            raise FileNotFoundError(f"DART Error: Could not find MetaLig database file {name} at {Path(zip_file).resolve()}.")
+    for unzipped_file in files:
+        zip_file = Path(str(unzipped_file) + '.zip')
 
-        db_dir = Path(zip_file).parent
-        try:
-            uncompress_file(zip_file, db_dir)
-        except Exception as e:
-            raise Exception(f"DART Error: Could not uncompress MetaLig database file {name} at {Path(zip_file).resolve()}. Error message: {e}")
+        if not unzipped_file.exists():
+            name = Path(zip_file).name
+            if not Path(zip_file).exists():
+                raise FileNotFoundError(f"DART Error: Could not find MetaLig database file {name} at {Path(zip_file).resolve()}.")
 
-        if delete_zip:
-            Path(zip_file).unlink()
+            db_dir = Path(zip_file).parent
+            try:
+                uncompress_file(zip_file, db_dir)
+            except Exception as e:
+                raise Exception(f"DART Error: Could not uncompress MetaLig database file {name} at {Path(zip_file).resolve()}. Error message: {e}")
+
+            if delete_zip:
+                Path(zip_file).unlink()
 
     return
 
