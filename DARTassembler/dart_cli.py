@@ -1,7 +1,7 @@
 import argparse
 from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo, concatenate_ligand_databases, run_installation_test
 
-modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat']
+modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat', 'test']
 
 def check_n_args(args, n):
     if len(args) != n:
