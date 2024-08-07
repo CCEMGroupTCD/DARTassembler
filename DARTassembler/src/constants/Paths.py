@@ -1,6 +1,5 @@
 from pathlib import Path
 import os
-#todo rename path or Dart or something
 
 
 def split_paths_on_unix_and_windows(relpaths: str) -> tuple:
@@ -44,8 +43,10 @@ class project_path:
 
 # Default paths, to use if not user specified
 csd_graph_path = project_path().extend(*'data_input/CSD/graphs'.split('/'))
-default_ligand_db_path = project_path().extend(*'data/final_db_versions/MetaLigDB_v1.0.0.jsonlines'.split('/'))
+default_ligand_db_path = project_path().extend(*'DARTassembler/metalig/MetaLigDB_v1.0.0.jsonlines'.split('/'))
+test_ligand_db_path = project_path().extend(*'DARTassembler/metalig/test200_MetaLigDB_v1.0.0.jsonlines'.split('/'))
 element_data_path = project_path().extend(*'DARTassembler/src/constants/element_data_table.csv'.split('/'))
 charge_benchmark_dir = project_path().extend('dev', 'test', 'debug', 'databases', 'charge_benchmark')
+test_installation_dirpath = project_path().extend(*'DARTassembler/tests/test_installation'.split('/'))
 
 

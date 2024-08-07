@@ -3,6 +3,8 @@ This module reads in a ligand db from file and saves a .csv file with an overvie
 """
 from typing import Union
 from pathlib import Path
+
+from DARTassembler.src.assembly.Assembly_Input import get_correct_ligand_db_path_from_input
 from DARTassembler.src.constants.Paths import default_ligand_db_path
 
 import DARTassembler.src.constants.Paths
@@ -32,9 +34,9 @@ def save_dbinfo(input_path: Union[str, Path], output_path: Union[str, Path, None
     :param nmax: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.
     :return: LigandDB object
     """
-    if str(input_path).lower() == 'metalig':  # shortcut for entire MetaLig
-        input_path = default_ligand_db_path
-    input_path = Path(input_path)
+    input_path = get_correct_ligand_db_path_from_input(input_path)
+    if input_path is None:
+        raise ValueError(f"Invalid ligand database path.")
 
     print(f"===============     DBINFO MODULE     =================")
     print(f"This module reads in a ligand db from file and saves a .csv file and a concatenated .xyz file with an overview of the ligands in the database.")

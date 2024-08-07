@@ -1,8 +1,6 @@
 import os
 import stk
 import itertools
-
-import stko
 from rdkit import Chem
 from rdkit.Chem import rdmolfiles
 

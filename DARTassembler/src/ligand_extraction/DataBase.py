@@ -15,6 +15,7 @@ from DARTassembler.src.ligand_extraction.utilities_Molecule import get_all_ligan
 import networkx as nx
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Molecule, RCA_Ligand, RCA_Complex
 from DARTassembler.src.ligand_extraction.io_custom import save_json, NumpyEncoder, load_unique_ligand_db, load_complex_db, iterate_over_json
+from DARTassembler.src.assembly.Assembly_Input import get_correct_ligand_db_path_from_input
 from scipy.special import comb
 from typing import Union
 from pathlib import Path
@@ -229,7 +230,11 @@ class LigandDB(MoleculeDB):
         :param path: Path to the JSON or JSON Lines file
         :return: A LigandDB object
         """
-        db = load_unique_ligand_db(path=path, n_max=n_max, show_progress=show_progress, molecule='class')
+        db_path = get_correct_ligand_db_path_from_input(path)
+        if db_path is None:
+            raise ValueError(f'Invalid ligand database path spedified: {path}')
+
+        db = load_unique_ligand_db(path=db_path, n_max=n_max, show_progress=show_progress, molecule='class')
 
         if only_core_ligands:
             # Remove all free ligands which were not connected to the metal.
@@ -681,10 +686,11 @@ class ComplexDB(MoleculeDB):
 
 if __name__ == '__main__':
 
-    db_version = '1.7'
-    db_path = f'../data/final_db_versions/unique_ligand_db_v{db_version}.json'
-    n_max = 1000
+    db_path = 'metalig'
+    n_max = 200
 
-    db = LigandDB.from_json(json_=db_path, type_='Ligand', max_number=n_max)
-    df_metals = db.calc_number_of_possible_complexes()
-    print(df_metals)
+    db = LigandDB.load_from_json(path=db_path, n_max=n_max)
+    outpath = '/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/metalig/test200_MetaLigDB_v1.0.0.jsonlines'
+    db.to_json(outpath, desc='Save ligand db to json', json_lines=True)
+    # df_metals = db.calc_number_of_possible_complexes()
+    # print(df_metals)

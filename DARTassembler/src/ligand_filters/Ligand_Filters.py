@@ -1,7 +1,6 @@
 import sys
 
 from tqdm import tqdm
-
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 from DARTassembler.src.constants.Paths import project_path
 from DARTassembler.src.ligand_filters.FilteringStage import FilterStage
@@ -167,7 +166,7 @@ class LigandFilters(object):
 
             # To the dataframe with all ligands, add a column specifying which filter was applied to filter this ligand. This is important for outputting a csv with all filtered out ligands later.
             ligand_was_filtered = ~self.df_all_ligands.index.isin(self.Filter.database.db.keys()) & (self.df_all_ligands['Filter'].isna())
-            self.df_all_ligands['Filter'].loc[ligand_was_filtered] = unique_filtername
+            self.df_all_ligands.loc[ligand_was_filtered, 'Filter'] = unique_filtername
 
             n_ligands_after = len(self.Filter.database.db)
             self.filter_tracking.append({
@@ -182,7 +181,7 @@ class LigandFilters(object):
         self.n_ligands_after = len(self.Filter.database.db)
 
         # Clean up the ligand df
-        self.df_all_ligands['Filter'].fillna('Passed', inplace=True)      # fill in 'Passed' for ligands that were not filtered out
+        self.df_all_ligands.fillna({'Filter': 'Passed'}, inplace=True)      # fill in 'Passed' for ligands that were not filtered out
         self.df_all_ligands.set_index('Ligand ID', inplace=True)    # set index to ligand ID, making sure that the column in the csv is named 'Ligand ID'
         columns = ['Filter'] + [col for col in self.df_all_ligands.columns if col != 'Filter']
         self.df_all_ligands = self.df_all_ligands[columns]                # move 'Filter' column to the front

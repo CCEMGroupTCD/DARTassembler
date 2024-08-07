@@ -10,7 +10,7 @@ import yaml
 import ase
 import pandas as pd
 
-from DARTassembler.src.constants.Paths import default_ligand_db_path
+from DARTassembler.src.constants.Paths import default_ligand_db_path, test_ligand_db_path
 from DARTassembler.src.constants.Periodic_Table import all_atomic_symbols
 from DARTassembler.src.ligand_extraction.composition import Composition
 from pathlib import Path
@@ -108,7 +108,26 @@ _should_be_present = 'should_contain'
 _include_metal = 'include_metal'
 
 
+def get_correct_ligand_db_path_from_input(path) -> Union[Path, None]:
+    """
+    Returns either a valid path to a ligand database file or None if the path is not valid.
+    """
+    path = str(path)
+    if path.lower() in ('', 'none', 'null', 'default', 'metalig'):
+        path = default_ligand_db_path
+        assert Path(path).is_file(), f"Default ligand database file '{path}' not found."
+    elif path.lower() in ('test_metalig', 'test'):
+        path = test_ligand_db_path
+        assert Path(path).is_file(), f"Test ligand database file '{path}' not found."
+    else:
+        try:
+            path = Path(path)
+        except TypeError:
+            return None
+        if not path.is_file():
+            return None
 
+    return Path(path)
 
 class BaseInput(object):
 
@@ -544,7 +563,7 @@ class LigandFilterInput(BaseInput):
         settings = self.raw_input_settings
 
         self.check_input_types(valid_keys=self.valid_keys, settings=settings)
-        self.ligand_db_path = self.check_ligand_db_path(settings)
+        self.ligand_db_path = self.check_ligand_db_path(settings[_ligand_db_path])
         self.output_ligand_db_path = self.get_path_from_input(path=settings[_output_ligand_db_path], varname=_output_ligand_db_path, allow_none=True)
         self.output_filtered_ligands = self.get_bool_from_input(input=settings[_output_ligands_info], varname=_output_ligands_info)
         self.output_ligand_db_path = self.output_ligand_db_path or self.get_output_ligand_db_path()
@@ -675,12 +694,11 @@ class LigandFilterInput(BaseInput):
         return stoichiometry
 
 
-    def check_ligand_db_path(self, settings) -> Path:
-        path = settings[_ligand_db_path]
-        if path is None and default_ligand_db_path.exists():
-            path = default_ligand_db_path
-        else:
-            self.raise_error(f'Input ligand db path is not specified and no db found at default location. Please specify a valid path to the input ligand db.', varname=_ligand_db_path)
+
+    def check_ligand_db_path(self, path) -> Path:
+        path = get_correct_ligand_db_path_from_input(path)
+        if path is None:
+            self.raise_error(f'Invalid ligand database filepath.', varname=_ligand_db_path)
         self.ensure_file_present(path=path, varname=_ligand_db_path)
 
         return Path(path)
@@ -934,40 +952,46 @@ class AssemblyInput(BaseInput):
         """
         _, topology_list = self.get_topology_from_input(topology)
         n_ligands = len(topology_list)
-
         varname = f'{_batches}->{_input_path}'
-        if ligand_db_path is None or ligand_db_path == '' or ligand_db_path == 'default':
-            # No input given, use default ligand database and all different ligands in similarity list
-            # print(f"Ligand database path '{varname}' is not specified in batch {self.batch_name} in file '{self.path}'. Using full default ligand database.")
-            output_ligand_db_path = Path(default_ligand_db_path)
+
+        # Allow specifying list with length 1 instead of single path
+        if isinstance(ligand_db_path, (list, tuple)) and len(ligand_db_path) == 1:
+            assert n_ligands != 1
+            ligand_db_path = ligand_db_path[0]
+
+        if ligand_db_path is None or isinstance(ligand_db_path, (str, Path)):   # Single input ligand database path is given
+            output_ligand_db_path = get_correct_ligand_db_path_from_input(ligand_db_path)
+            if output_ligand_db_path is None:
+                self.raise_error(f"Invalid ligand database filepath.", varname=varname)
             similarity_list = list(range(1, n_ligands + 1))
 
-        else:   # input given, check it
-            # Check if the file exists
-            if isinstance(ligand_db_path, str):     # single path is given, take for all ligands
-                output_ligand_db_path = Path(self.ensure_file_present(ligand_db_path, varname=varname))
-                similarity_list = list(range(1, n_ligands + 1))
+        elif isinstance(ligand_db_path, (list, tuple)):   # List of paths and keywords is given
+            # If the input is a list, it can be a list of either ligand db paths or same_ligand_keywords. Here we map the ligand db input to the historical way, in which we have a similarity list specifying same ligands and the ligand db list has the reduced length of how many different similarities there are.
+            if len(ligand_db_path) != n_ligands: # new format: ligand db list must be same length as topology
+                self.raise_error(f"Inconsistent number of denticities and ligand databases. Input is a list of ligand db paths of length {len(ligand_db_path)} while the number of specified denticities in the topology is {n_ligands}. Please provide input where the number of ligand database paths is the same as the number of denticities in the topology.")
 
-            elif isinstance(ligand_db_path, (list, tuple)): # list of paths and keywords is given
-                # If the input is a list, it can be a list of either ligand db paths or same_ligand_keywords. Here we map the ligand db input to the historical way, in which we have a similarity list specifying same ligands and the ligand db list has the reduced length of how many different similarities there are.
+            # Reduce ligand db list to old format, in which there are no keywords and the number of elements is the number of different similarities
+            output_ligand_db_path = []
+            for input_path in ligand_db_path:
+                if input_path == _same_ligand_keyword:
+                    continue
+                path = get_correct_ligand_db_path_from_input(input_path)
+                if path is None:
+                    self.raise_error(f"Invalid ligand database filepath.", varname=varname)
+                path = Path(self.ensure_file_present(path, varname=varname))
+                output_ligand_db_path.append(path)
 
-                if len(ligand_db_path) != n_ligands: # new format: ligand db list must be same length as topology
-                    self.raise_error(f"Inconsistent number of denticities and ligand databases. Input is a list of ligand db paths of length {len(ligand_db_path)} while the number of specified denticities in the topology is {n_ligands}. Please provide input where the number of ligand database paths is the same as the number of denticities in the topology.")
+            # The first entry cannot be a keyword since the keywords always reference to the previous ligand db path.
+            if ligand_db_path[0] == _same_ligand_keyword:
+                self.raise_error(f"Invalid first entry '{_same_ligand_keyword}' in ligand database path list. Please provide a list where the first entry is a ligand database path. Only later elements can be this keyword since it always refers to the previous element in the list.")
 
-                # Reduce ligand db list to old format, in which there are no keywords and the number of elements is the number of different similarities
-                output_ligand_db_path = [Path(self.ensure_file_present(path, varname=varname)) for path in ligand_db_path if path != _same_ligand_keyword]
-
-                # The first entry cannot be a keyword since the keywords always reference to the previous ligand db path.
-                if ligand_db_path[0] == _same_ligand_keyword:
-                    self.raise_error(f"Invalid first entry '{_same_ligand_keyword}' in ligand database path list. Please provide a list where the first entry is a ligand database path. Only later elements can be this keyword since it always refers to the previous element in the list.")
-
-                # Build the similarity list such that it maps to the historic format, i.e. [1, 2, 2] for one different and two same ligands
-                similarity = 0
-                similarity_list = []
-                for path in  ligand_db_path:
-                    if path != _same_ligand_keyword:
-                        similarity += 1
-                    similarity_list.append(similarity)
+            # Build the similarity list such that it maps to the historic format, i.e. [1, 2, 2] for one different and two same ligands
+            similarity = 0
+            similarity_list = []
+            for path in  ligand_db_path:
+                if path != _same_ligand_keyword:
+                    similarity += 1
+                similarity_list.append(similarity)
 
         full_topology_str = str(topology_list) + '--' + str(similarity_list)
         return output_ligand_db_path, full_topology_str

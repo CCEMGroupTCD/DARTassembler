@@ -22,7 +22,7 @@ except (ImportError, ModuleNotFoundError):
 
 class TridentateLigandVertex(Vertex):
     """
-    Some modifications of Vertex elements of stk as a preparation for Tridentate ligands.py
+    Some modifications of Vertex elements of stk as a preparation for Tridentate ligands
     No build-in functionality for that in stk
     """
 
@@ -40,9 +40,10 @@ class TridentateLigandVertex(Vertex):
 
 class BidentateLigandVertex(Vertex):
     """
-    Some modifications of Vertex elements of stk as a preparation for Bidentate ligands.py
+    Some modifications of Vertex elements of stk as a preparation for Bidentate ligands
     No build-in functionality for that in stk
     """
+    # Todo: This function is a bug which shows for the bidentate ligand consisting of just two oxygens. I assume it's in general for all bi-atomic bidentate ligands. The issue is that in the last call to building_block.with_rotation_between_vectors(), the rotation makes the rotation matrix go NaN.
 
     def place_building_block(self, building_block, edges):
         building_block = building_block.with_centroid(

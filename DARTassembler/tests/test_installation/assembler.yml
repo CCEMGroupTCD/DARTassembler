@@ -1,0 +1,22 @@
+verbosity: 2                          # How much output to print. Options: (0, 1, 2, 3), recommended is 2.
+ffmovie: true                         # Whether to output a movie of the optimization process. Set to False to save disk space.
+concatenate_xyz: true                 # Whether to concatenate the xyz files of the optimization process.
+overwrite_output: true                # Whether to overwrite the output if it already exists. Recommended: False.
+output_path: test_output              # Path to the output folder.
+same_isomer_names: true
+complex_name_length: 8                # Length of the complex name. Recommended: 8.
+
+batches:                              # List of batches to generate. The first option in each batch needs a hyphen and whitespace ('- ') in front of it to mark the start of the batch.
+  - ligand_db_paths: test_metalig
+    isomers: lowest_energy
+    max_num_complexes: 5
+    metal_center: Fe
+    metal_oxidation_state: 2
+    name: Test1
+    forcefield: true
+    random_seed: 1
+    topology: 2-2
+    total_charge: 0
+    complex_name_appendix: _test
+    geometry_modifier_filepath:
+    bidentate_rotator: horseshoe

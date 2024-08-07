@@ -1,5 +1,5 @@
 import argparse
-from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo, concatenate_ligand_databases
+from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo, concatenate_ligand_databases, run_installation_test
 
 modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat']
 
@@ -15,6 +15,7 @@ Examples:
     -> dart ligandfilters --path ligandfilters_input.yml
     -> dart dbinfo --path ligand_db.jsonlines
     -> dart concat --path ligand_db1.jsonlines ligand_db2.jsonlines
+    -> dart test
 """
     parser = argparse.ArgumentParser(description=desc)
     parser.add_argument('module', choices=modules, help='DART module that you want to use')
@@ -34,6 +35,9 @@ Examples:
         save_dbinfo(args.path[0])
     elif args.module == 'concat':
         concatenate_ligand_databases(args.path)
+    elif args.module == 'test':
+        check_n_args(args.path, 1)
+        run_installation_test(args.path[0])
     else:
         raise ValueError(f'Unknown module {args.module}.')
 
