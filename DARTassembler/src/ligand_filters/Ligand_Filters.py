@@ -4,7 +4,6 @@ from tqdm import tqdm
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 from DARTassembler.src.constants.Paths import project_path
 from DARTassembler.src.ligand_filters.FilteringStage import FilterStage
-from dev.test.Integration_Test import IntegrationTest
 from pathlib import Path
 import pandas as pd
 pd.options.mode.chained_assignment = None   # silence pandas SettingWithCopyWarning
