@@ -15,7 +15,7 @@ DART integrates a collection of modules, each serving a unique function in the a
 
 Using DART is simple. After download, just run the DART assembler and start generating complexes by executing the following command in your terminal:
 
-    dart assembler --path assembly_input.yml
+    DARTassembler assembler --path assembly_input.yml
 
 ## Documentation
 The documentation of DART (TODO: LINK) will show you how to install and use DART.
