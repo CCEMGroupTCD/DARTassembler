@@ -36,7 +36,8 @@ Examples:
     elif args.module == 'concat':
         concatenate_ligand_databases(args.path)
     elif args.module == 'test':
-        run_installation_test(args.path[0])
+        path = None if len(args.path) == 0 else args.path
+        run_installation_test(path)
     else:
         raise ValueError(f'Unknown module {args.module}.')
 
