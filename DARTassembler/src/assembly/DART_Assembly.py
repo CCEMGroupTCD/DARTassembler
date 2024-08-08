@@ -476,12 +476,12 @@ class DARTAssembly(object):
         """
         Check if the complex can be assembled based on certain conditions to avoid errors.
         """
+        # Non-planar tridentate ligands
         if not RCA.planar_check_(ligands):
-            # logging.warning(
-            #     "Skipping complex: non-planar tridentate ligand (not yet supported)")
             self.add_batch_info(success=False, reason='non-planar tridentate', ligands=ligands)
             return False
 
+        # Hydride ligand
         hydride_found = False
         for ligand in ligands.values():
             if ((ligand.atomic_props['atoms'][0] == "H") or (ligand.atomic_props['atoms'][0] == "Se")) and (
@@ -489,12 +489,16 @@ class DARTAssembly(object):
                 hydride_found = True
             else:
                 pass
-
         if hydride_found:
-            # logging.warning(
-            #     "Skipping complex: hydride (not yet supported)")
             self.add_batch_info(success=False, reason='hydride', ligands=ligands)
             return False
+
+        # Haptic ligands
+        for ligand in ligands.values():
+            if ligand.has_neighboring_coordinating_atoms:
+                self.add_batch_info(success=False, reason='haptic ligand', ligands=ligands)
+                return False
+
 
         return True
 

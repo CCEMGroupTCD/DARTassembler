@@ -3,19 +3,12 @@ TODO:
 Todo before publication:
 - tests:
     - make test of full assembler, filters etc, everything but ligand extraction
-- conda:
-    - check if possible to move from pysmiles to rdkit for SMILES generation, otherwise add pysmiles to installation as one additional pip install
-    - see if it is possible to remove openbabel from conda env so that we can install everything via pip
 - modules:
     - refactor modules to take global settings as cli/python input and only filters/batches as yml file
        - make python api, the cli should make use of this api
     - add concat functionality to ligandfilters and add multiple ligand dbs to the tests
-- paths:
-    - change project_path() calculation so that it checks for the DARTassembler folder and then goes up one level. This is because only the DARTassembler folder will be installed via pip.
-
-At the very end:
-- paths:
-    - check default paths in Paths.py
+- assembler:
+  - Filter out ligands with haptic interactions.
 
 Update docs:
 - dbinfo has concat xyz files

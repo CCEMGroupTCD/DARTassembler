@@ -25,6 +25,8 @@ def test_module_in_directory(function, input: Union[Path, str], outdir: [Path, s
             function(input)
     else:               # Save the files in the specified directory
         print(f'==========  Testing module {function.__name__} in directory {Path(outdir).name}  ==========')
+        outdir = Path(outdir)
+        outdir.mkdir(parents=True, exist_ok=True)
         os.chdir(outdir)
         function(input)
 
