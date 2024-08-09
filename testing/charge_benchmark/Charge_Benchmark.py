@@ -11,16 +11,16 @@ from DARTassembler.src.linear_charge_solver.charge_benchmark.merge_benchmark_cha
 
 class ChargeBenchmark:
 
-    def __init__(self, true_charge_name: str):
+    def __init__(self, true_charge_name: str = 'charge'):
         self.true_charge_name = true_charge_name
 
         self.benchmark_charge_dir = charge_benchmark_dir
         self.benchmark_charge_filenames = {
-            'Cian1': 'Cian_already_assigned_ligand_charges.csv',
-            'Cian2': 'Cian_BenchMark_corrected_170223.csv',
-            'Manting': 'Manting_Corrected_170223.csv',
-            'Marconi1': 'Marconi_corrected_by_Cian_020223.csv',
-            'Cian3': 'Cian_ligand_charges_CSD_060423.csv'
+            'C1': 'C1.csv',
+            'C2': 'C2.csv',
+            'C3': 'C3.csv',
+            'Man': 'Man.csv',
+            'Mar': 'Mar.csv',
         }
         self.update_properties = ['unique_name', 'name', 'graph_hash', 'local_elements', 'pred_charge', 'pred_charge_is_confident']
 
@@ -74,7 +74,7 @@ class ChargeBenchmark:
 
         try:
             frac_not_scale_invariant = sum(~self.df_confident['charge_scale_invariant']) / len(self.df_confident)
-            print(f'Frac. not scale invariant: {frac_not_scale_invariant:.2g}')
+            print(f'Frac. not scale invariant: {frac_not_scale_invariant:.4g}')
         except KeyError:
             pass
 
@@ -84,19 +84,19 @@ class ChargeBenchmark:
 
         y_true_all, y_pred_all = y_true[valid], y_pred[valid]
         acc = accuracy_score(y_true=y_true_all, y_pred=y_pred_all)
-        print(f'Total accuracy (n={len(y_true_all)}): {acc:.2g}')
+        print(f'Total accuracy (n={len(y_true_all)}): {acc:.4g}')
 
         confident = valid & self.df_confident['pred_charge_is_confident']
         y_true_conf, y_pred_conf = y_true[confident], y_pred[confident]
         acc = accuracy_score(y_true=y_true_conf, y_pred=y_pred_conf)
-        print(f'Confident accuracy (n={len(y_true_conf)}): {acc:.2g}')
+        print(f'Confident accuracy (n={len(y_true_conf)}): {acc}')
 
         y_true_no_conf, y_pred_no_conf = y_true[~confident], y_pred[~confident]
         acc = accuracy_score(y_true=y_true_no_conf, y_pred=y_pred_no_conf)
-        print(f'Non-confident accuracy (n={len(y_true_no_conf)}): {acc:.2g}')
+        print(f'Non-confident accuracy (n={len(y_true_no_conf)}): {acc:.4g}')
 
         if len(confident) > 0:
-            print(f'Frac confident predictions: {sum(confident) / len(confident):.2g}')
+            print(f'Frac confident predictions: {sum(confident) / len(confident):.4g}')
         else:
             print(f'Frac confident predictions: 0.0')
 
@@ -108,5 +108,20 @@ if __name__ == '__main__':
 
     ligand_db_version = 'v1.7'
 
-    charge_benchmark = ChargeBenchmark(true_charge_name='charge')
-    charge_benchmark.calculate_scores_of_charge_benchmark(f'/Users/timosommer/PhD/projects/RCA/projects/DART/data/final_db_versions/complex_db_{ligand_db_version}.json')
+    charge_benchmark = ChargeBenchmark()
+    complex_db = project_path().extend('data', 'final_db_versions', f'complex_db_{ligand_db_version}.json') # Very big, therefore only local, not on github
+    charge_benchmark.calculate_scores_of_charge_benchmark(full_ligand_db=complex_db)
+
+    #%% Write benchmark csv to file
+    df_out = charge_benchmark.df_confident
+    drop_columns = ['issue_detected', 'author', 'confidence', 'metal', 'denticity', 'name', 'graph_hash']
+    int_columns = ['true_charge', 'pred_charge', 'prediction_error']
+    rename_columns = {'charge': 'true_charge', 'local_elements': 'donors'}
+    order_columns = ['CSD_code', 'stoichiometry', 'donors', 'true_charge', 'pred_charge', 'pred_charge_is_confident', 'prediction_error', 'comment', 'unique_name']
+    df_out = df_out.sort_values(by=['pred_charge_is_confident'], ascending=False)
+    df_out = df_out.drop(columns=drop_columns)
+    df_out = df_out.rename(columns=rename_columns)
+    df_out[int_columns] = df_out[int_columns].astype(int)
+    df_out = df_out[order_columns]
+    df_out['donors'] = df_out['donors'].apply(lambda x: '-'.join(sorted(x)))
+    df_out.to_csv(f'benchmark_ligand_charges_{ligand_db_version}.csv', index=False)

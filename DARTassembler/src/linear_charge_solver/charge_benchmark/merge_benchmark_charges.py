@@ -70,11 +70,12 @@ if __name__ == '__main__':
 
     benchmark_charge_dir = '../../../../dev/test/debug/databases/charge_benchmark'
     benchmark_charge_filenames = {
-                                    'Cian1': 'Cian_already_assigned_ligand_charges.csv',
-                                    'Cian2': 'Cian_BenchMark_corrected_170223.csv',
-                                    'Manting': 'Manting_Corrected_170223.csv',
-                                    'Marconi1': 'Marconi_corrected_by_Cian_020223.csv'
-                                }
+            'C1': 'C1.csv',
+            'C2': 'C2.csv',
+            'C3': 'C3.csv',
+            'Man': 'Man.csv',
+            'Mar': 'Mar.csv',
+        }
 
     # Update the resulting merged dfs with ligand information from the latest full ligand db.
     # Ligands are identified by 'CSD_code' and 'stoichiometry' (hard coded).
