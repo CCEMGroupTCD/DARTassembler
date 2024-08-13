@@ -1,5 +1,5 @@
 
-# DART (Directed Assembly of Random Transition metal complexes)
+# DART - Directed Assembly of Random Transition metal complexes
 Welcome to the DART platform, a cutting-edge suite of tools for the generation and exploration of mono-metallic transition metal complexes! Developed by the CCEM group at Trinity College Dublin, DART is engineered to facilitate the design and analysis of molecular complexes for chemistry research.
 
 DART integrates a collection of modules, each serving a unique function in the assembly process:
@@ -30,10 +30,10 @@ The documentation contains a section about the Pd/Ni cross coupling example that
 DART is subject to the MIT license. See `LICENSE.md` for more information.
 
 ## Origin of data
-We are grateful to the providers of the Cambridge Structural Database[2], which is the source of all ligands in the ligand database.
+We are grateful to the providers of the [Cambridge Structural Database](https://www.ccdc.cam.ac.uk/structures/)[2], which is the source of all ligands in the ligand database.
 
 ## References
 todo
 [1] our own paper
-[2] Cambridge Structural Database
+[2] Groom, C. R., Bruno, I. J., Lightfoot, M. P. & Ward, S. C. The Cambridge Structural Database. Acta Crystallogr B Struct Sci Cryst Eng Mater 72, 171–179 (2016) 
 
