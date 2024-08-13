@@ -7,8 +7,7 @@ Todo before publication:
     - refactor modules to take global settings as cli/python input and only filters/batches as yml file
        - make python api, the cli should make use of this api
     - add concat functionality to ligandfilters and add multiple ligand dbs to the tests
-- assembler:
-  - Filter out ligands with haptic interactions.
+
 
 Update docs:
 - dbinfo has concat xyz files
@@ -18,9 +17,6 @@ Update docs:
 - concat module
 - added to complex csv: graph hash, ligand donors
 
-Bugs:
-Assembler:
- - It seems like bi-atomic, bidentate ligands cannot be assembled, see class `BidentateLigandVertex()`. They are skipped atm. The issue arose with bidentate O2.
 
 
 Should:
