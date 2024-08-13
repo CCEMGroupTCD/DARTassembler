@@ -3,6 +3,8 @@
 Troubleshooting And FAQs
 ============================
 
+Please check out the FAQs below for common issues and solutions. If you encounter a problem that is not listed here, please `let us know.<https://github.com/CCEMGroupTCD/DART/issues>`_
+
 Potential issues and solutions
 ------------------------------
 
