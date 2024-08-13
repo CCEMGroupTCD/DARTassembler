@@ -33,7 +33,6 @@ DART is subject to the MIT license. See `LICENSE.md` for more information.
 We are grateful to the providers of the [Cambridge Structural Database](https://www.ccdc.cam.ac.uk/structures/)[2], which is the source of all ligands in the ligand database.
 
 ## References
-todo
-[1] our own paper
-[2] Groom, C. R., Bruno, I. J., Lightfoot, M. P. & Ward, S. C. The Cambridge Structural Database. Acta Crystallogr B Struct Sci Cryst Eng Mater 72, 171–179 (2016) 
+1. our own paper # TODO
+2. Groom, C. R., Bruno, I. J., Lightfoot, M. P. & Ward, S. C. The Cambridge Structural Database. Acta Crystallogr B Struct Sci Cryst Eng Mater 72, 171–179 (2016) 
 
