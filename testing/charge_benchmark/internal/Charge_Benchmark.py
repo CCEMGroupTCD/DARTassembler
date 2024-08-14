@@ -11,8 +11,9 @@ from DARTassembler.src.linear_charge_solver.charge_benchmark.merge_benchmark_cha
 
 class ChargeBenchmark:
 
-    def __init__(self, true_charge_name: str = 'charge'):
+    def __init__(self, true_charge_name: str = 'charge', only_confident: bool = True):
         self.true_charge_name = true_charge_name
+        self.only_confident = only_confident # If True, consider only charges where the benchmark charge is confident by the author
 
         self.benchmark_charge_dir = charge_benchmark_dir
         self.benchmark_charge_filenames = {
@@ -52,10 +53,16 @@ class ChargeBenchmark:
         )
         if 'pred_charge' in self.df_all:
             self.df_all['prediction_error'] = self.df_all['charge'] - self.df_all['pred_charge']
+            # Drop rows where no prediction was made because the ligand was not in the ligand db. This is due to benchmarked ligands which belong to complexes which were filtered out, e.g. because they were missing the metal oxidation state.
+            self.df_all = self.df_all[self.df_all['pred_charge'].notna()]
 
-        self.df_all['high_confidence'] = (self.df_all['confidence'] == 3) & self.df_all['issue_detected'].isna() & self.df_all['unique_name'].notna()
-        self.df_confident = self.df_all[self.df_all['high_confidence']]
-        self.df_confident = self.df_confident.drop(columns='high_confidence')
+        if self.only_confident:
+            self.df_all['high_confidence'] = (self.df_all['confidence'] == 3) & self.df_all['issue_detected'].isna() & self.df_all['unique_name'].notna()
+            self.df_confident = self.df_all[self.df_all['high_confidence']]
+            self.df_confident = self.df_confident.drop(columns='high_confidence')
+        else:
+            self.df_confident = deepcopy(self.df_all)
+
 
         # n_duplicates = self.df_all.loc[self.df_all['graph_hash'].notna(), 'graph_hash'].duplicated().sum()
         # if n_duplicates > 0:
@@ -107,21 +114,25 @@ class ChargeBenchmark:
 if __name__ == '__main__':
 
     ligand_db_version = 'v1.7'
+    only_confident = False  # If True, consider only charges where the benchmark charge is confident by the author
+    out_csv = Path('..', f'benchmark_ligand_charges_{ligand_db_version}.csv')   # Output file
 
-    charge_benchmark = ChargeBenchmark()
+    charge_benchmark = ChargeBenchmark(only_confident=only_confident)
     complex_db = project_path().extend('data', 'final_db_versions', f'complex_db_{ligand_db_version}.json') # Very big, therefore only local, not on github
     charge_benchmark.calculate_scores_of_charge_benchmark(full_ligand_db=complex_db)
 
     #%% Write benchmark csv to file
     df_out = charge_benchmark.df_confident
-    drop_columns = ['issue_detected', 'author', 'confidence', 'metal', 'denticity', 'name', 'graph_hash']
+    drop_columns = ['issue_detected', 'author', 'confidence', 'metal', 'denticity', 'name', 'graph_hash', 'comment']
     int_columns = ['true_charge', 'pred_charge', 'prediction_error']
     rename_columns = {'charge': 'true_charge', 'local_elements': 'donors'}
-    order_columns = ['CSD_code', 'stoichiometry', 'donors', 'true_charge', 'pred_charge', 'pred_charge_is_confident', 'prediction_error', 'comment', 'unique_name']
+    order_columns = ['CSD_code', 'stoichiometry', 'donors', 'true_charge', 'pred_charge', 'pred_charge_is_confident', 'prediction_error']
+    index = 'unique_name'
+    df_out = df_out.set_index(index)
     df_out = df_out.sort_values(by=['pred_charge_is_confident'], ascending=False)
     df_out = df_out.drop(columns=drop_columns)
     df_out = df_out.rename(columns=rename_columns)
     df_out[int_columns] = df_out[int_columns].astype(int)
     df_out = df_out[order_columns]
     df_out['donors'] = df_out['donors'].apply(lambda x: '-'.join(sorted(x)))
-    df_out.to_csv(f'benchmark_ligand_charges_{ligand_db_version}.csv', index=False)
+    df_out.to_csv(out_csv, index=True)

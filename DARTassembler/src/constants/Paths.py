@@ -48,7 +48,7 @@ element_data_path = project_path().extend(*'DARTassembler/data/element_data_tabl
 test_installation_dirpath = project_path().extend(*'DARTassembler/data/tests/test_installation'.split('/'))
 full_ligand_db_csv = project_path().extend(*'data/final_db_versions/unique_ligand_db_v1.7.csv'.split('/'))
 # For development only
-charge_benchmark_dir = project_path().extend('testing', 'charge_benchmark', 'data_charge_benchmark')
+charge_benchmark_dir = project_path().extend('testing', 'charge_benchmark', 'internal', 'data_charge_benchmark')
 csd_graph_path = project_path().extend(*'data_input/CSD/graphs'.split('/'))
 
 
