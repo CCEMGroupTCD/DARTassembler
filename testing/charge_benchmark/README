@@ -3,7 +3,7 @@
 The file `benchmark_ligand_charges_v1.7.csv` contains the charge benchmark for the latest version of the unique ligand database (version 1.7). This is the version that corresponds to the published MetaLig database version 1.0.0. The column `true_charge` contains the charge as determined by chemists, the column `pred_charge` contains the predictions of the Linear Charge Solver and the column `pred_charge_is_confident` indicates whether the Linear Charge Solver classifies this prediction as confident or not.
 
 The benchmark yields the following scores:
-Total accuracy (n=403): 0.9826
+Total accuracy (n=403): 0.9851
 Confident accuracy (n=387): 1.0
-Non-confident accuracy (n=16): 0.5625
+Non-confident accuracy (n=16): 0.625
 Frac confident predictions: 0.9603

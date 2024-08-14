@@ -17,9 +17,9 @@ class ChargeBenchmark:
 
         self.benchmark_charge_dir = charge_benchmark_dir
         self.benchmark_charge_filenames = {
+            # 'C1': 'C1.csv',
             'C1': 'C1.csv',
             'C2': 'C2.csv',
-            'C3': 'C3.csv',
             'Man': 'Man.csv',
             'Mar': 'Mar.csv',
         }
