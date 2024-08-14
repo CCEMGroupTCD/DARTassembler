@@ -46,7 +46,7 @@ Proposing new transition metal complexes can be a meticulous and lengthy endeavo
 
 - **Powerful Assembler**: Generate novel transition metal complexes in a matter of seconds with DART's automated processes and comprehensive user options.
 
-- **Advanced Complex Control**: DART supports the assembly of a wide range of octahedral and square-planar geometries. Want more? Leave us a :ref:`feature request <contributing>`!
+- **Advanced Complex Control**: DART supports the assembly of a wide range of octahedral and square-planar geometries. Want more? Leave us a `feature request! <https://github.com/CCEMGroupTCD/DART/issues>`_
 
 - **Comprehensive Ligand Database**: Tap into a diverse array of 41,018 ligands from real-world structures for innovative materials discovery.
 
@@ -93,7 +93,6 @@ Eager to begin? Install DART or explore our tutorials for a hands-on demonstrati
    ./doc_files/part3_additional_resources/current_limitations
    ./doc_files/part3_additional_resources/how_to_cite_dart
    ./doc_files/part3_additional_resources/version_history
-   ./doc_files/part3_additional_resources/contributing_to_dart
 
 
 

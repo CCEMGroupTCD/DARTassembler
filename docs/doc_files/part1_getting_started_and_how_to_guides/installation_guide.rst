@@ -7,6 +7,9 @@ The DART installation process is very simple and should take only about 2 minute
 
 First, open your terminal and make sure conda is installed. If these instructions are unclear, please refer to the FAQ at the bottom of this page.
 
+Installation Steps
+-------------------
+
 Step 1: Download the DART conda file from GitHub
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -29,7 +32,8 @@ Create a new Conda environment with the DART conda file by running the following
 
 Activate the environment with ``conda activate DART``. Congratulations! You have successfully installed DART.
 
-note:: The DART installation is now linked to this conda environment. You must activate this environment every time you want to use DART. If you don't want to do that, you can instead install DART into the conda base environment.
+.. note::
+    The DART installation is now linked to this conda environment. You must activate this environment every time you want to use DART. If you don't want to do that, you can instead install DART into the conda base environment.
 
 Ensure that DART is Installed Correctly
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -42,7 +46,8 @@ Run the following command to verify the installation:
 
 This command will run a brief test of the ``ligandfilters`` and ``assembler`` module of DART, without saving any files.
 
-note:: If this command didn't work, you probably forgot to activate the DART environment with ``conda activate DART``.
+.. note::
+    If this command didn't work, you probably forgot to activate the DART environment with ``conda activate DART``.
 
 Usage
 -----
@@ -56,7 +61,7 @@ After installation, DART is ready for use. Here are some basic terminal commands
 - ``DARTassembler test --path outdir``: Runs a brief test of the ``ligandfilters`` and ``assembler`` modules of DART. If no path is specified, no files will be saved. Otherwise, the output will be saved in the specified directory (here in the directory ``outdir``).
 
 Installation FAQ
-======================
+------------------
 
 What's the terminal?
 ^^^^^^^^^^^^^^^^^^^^

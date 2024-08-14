@@ -3,10 +3,10 @@
 Troubleshooting And FAQs
 ============================
 
-Please check out the FAQs below for common issues and solutions. If you encounter a problem that is not listed here, please `let us know.<https://github.com/CCEMGroupTCD/DART/issues>`_
+Please check out the FAQs below for common issues and solutions. If you encounter a problem that is not listed here, please `let us know. <https://github.com/CCEMGroupTCD/DART/issues>`_
 
-Potential issues and solutions
-------------------------------
+FAQ
+------
 
 DART cannot be found :
     First, check if conda is installed by running the command ``conda --help``. If this is not successful, refer to the next section.
@@ -27,8 +27,8 @@ The input yaml file cannot be found:
 The input yaml file is not valid:
     Verify that the options in the YAML file are set up correctly to match the criteria desired. Ensure that the syntax of the yaml file, including lists and nested elements, is correct.
 
-FAQs
-----
+General troubleshooting:
+--------------------------
 
 Updating DART:
     If DART is not performing as documented, ensure that you have the latest version. Updates may include bug fixes and performance improvements.
