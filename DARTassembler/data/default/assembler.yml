@@ -1,0 +1,27 @@
+output_path: DARTassembler            # Output folder path.
+
+batches:                              # List of batches to generate.
+  - name: First_batch                 # Name of the batch.
+    metal_center: Fe                  # Chemical symbol of the desired metal center.
+    metal_oxidation_state: 2          # Oxidation state of the desired metal center.
+    total_charge: 0                   # Total charge of the complex.
+    topology: 2-1-1                   # Topology of the complexes. :options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
+    ligand_db_paths: metalig          # Paths to the ligand databases. Either single path or list of [path, 'same_ligand_as_previous'].
+    ligand_choice: random             # How to choose the ligands. :options: random, all
+    max_num_complexes: 100            # Maximum number of complexes to generate.
+    isomers: all                      # Which isomers to generate. :options: lowest_energy, all
+    forcefield: false                 # Whether to optimize the structures after generation with a force field.
+    # ======== Advanced batch settings ========
+    random_seed: 0                    # Random seed for generating complexes reproducibly. Choose any integer.
+    bidentate_rotator: auto           # How to rotate bidentate ligands in square-planar complexes. :options: auto, horseshoe, slab. Recommended: auto.
+    geometry_modifier_filepath:       # Path to the geometry modifier file. If not given, no geometry modification is performed.
+    complex_name_appendix:            # String to append to the randomly generated complex name.
+
+
+# ======== Advanced global settings ========
+overwrite_output: false               # Whether to overwrite the output if it already exists. Recommended: false.
+ffmovie: true                         # Whether to output a movie of the optimization process. Set to false to save disk space.
+concatenate_xyz: true                 # Whether to concatenate the xyz files of the optimization process.
+verbosity: 2                          # Output verbosity level (0-3), recommended: 2.
+same_isomer_names: true               # Whether to give the same name to isomers of the same complex and then to number them.
+complex_name_length: 8                # Length for generated complex names, recommended: 8.
