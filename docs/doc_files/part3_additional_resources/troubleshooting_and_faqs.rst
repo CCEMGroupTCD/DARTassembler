@@ -11,7 +11,7 @@ FAQ
 DART cannot be found :
     First, check if conda is installed by running the command ``conda --help``. If this is not successful, refer to the next section.
 
-    If the command ``dart --help`` doesn't display a list of possible DART commands, then either DART is not installed or the correct conda environment is not activated. Run ``conda activate base`` (or replace `base` with the name of the conda environment in which you installed DART) and try again. To see a list of all conda environments, run ``conda env list``. Please refer to the :ref:`installation_guide` for more details.
+    If the command ``DARTassembler --help`` doesn't display a list of possible DART commands, then either DART is not installed or the correct conda environment is not activated. Run ``conda activate base`` (or replace `base` with the name of the conda environment in which you installed DART) and try again. To see a list of all conda environments, run ``conda env list``. Please refer to the :ref:`installation_guide` for more details.
 
     It can also happen that you moved the DART folder or that one of the parent folders changed its name. In this case, you need to re-install DART since the path to the DART folder is hard-coded in the installation process.
 

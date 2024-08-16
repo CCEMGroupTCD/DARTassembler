@@ -1,22 +1,20 @@
 """
 This file contains functions and a classes for the input of the assembly. They doublecheck that the input is correct and convert it to the correct format.
 """
-import ast
 import difflib
 import warnings
-import os
 from copy import deepcopy
 import yaml
 import ase
 import pandas as pd
 
-from DARTassembler.src.constants.Paths import default_ligand_db_path, test_ligand_db_path
 from DARTassembler.src.constants.Periodic_Table import all_atomic_symbols
 from DARTassembler.src.ligand_extraction.composition import Composition
 from pathlib import Path
-from typing import Union, Any, Tuple, List, Dict, Optional
+from typing import Union, Any, Tuple
 from DARTassembler.src.ligand_extraction.io_custom import read_yaml
 from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist
+from DARTassembler.src.metalig.metalig_utils import get_correct_ligand_db_path_from_input
 
 allowed_topologies = ['3-2-1', '4-1-1', '5-1', '2-1-1', '2-2']  # list all allowed topologies, others will be rejected
 
@@ -107,27 +105,6 @@ _smarts = 'smarts'
 _should_be_present = 'should_contain'
 _include_metal = 'include_metal'
 
-
-def get_correct_ligand_db_path_from_input(path) -> Union[Path, None]:
-    """
-    Returns either a valid path to a ligand database file or None if the path is not valid.
-    """
-    path = str(path)
-    if path.lower() in ('', 'none', 'null', 'default', 'metalig'):
-        path = default_ligand_db_path
-        assert Path(path).is_file(), f"Default ligand database file '{path}' not found."
-    elif path.lower() in ('test_metalig', 'test'):
-        path = test_ligand_db_path
-        assert Path(path).is_file(), f"Test ligand database file '{path}' not found."
-    else:
-        try:
-            path = Path(path)
-        except TypeError:
-            return None
-        if not path.is_file():
-            return None
-
-    return Path(path)
 
 class BaseInput(object):
 

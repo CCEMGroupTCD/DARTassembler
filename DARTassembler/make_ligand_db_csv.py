@@ -4,7 +4,7 @@ This module reads in a ligand db from file and saves a .csv file with an overvie
 from typing import Union
 from pathlib import Path
 
-from DARTassembler.src.assembly.Assembly_Input import get_correct_ligand_db_path_from_input
+from DARTassembler.src.metalig.metalig_utils import get_correct_ligand_db_path_from_input
 from DARTassembler.src.constants.Paths import default_ligand_db_path
 
 import DARTassembler.src.constants.Paths

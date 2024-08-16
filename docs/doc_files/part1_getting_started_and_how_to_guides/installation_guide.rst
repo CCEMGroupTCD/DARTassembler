@@ -57,7 +57,7 @@ After installation, DART is ready for use. Here are some basic terminal commands
 - ``DARTassembler --help``: Displays available commands.
 - ``DARTassembler assembler --path assembly_input.yml``: Starts the :ref:`assembler module <assembly_input>` with the specified configuration file.
 - ``DARTassembler ligandfilters --path ligandfilters_input.yml``: Runs the :ref:`ligand filters module <ligandfilters>` with the specified configuration file.
-- ``DARTassembler dbinfo --path ligand_db.jsonlines``: Generates an overview table of the specified ligand database file and saves it as a CSV file. Use the command ``dart dbinfo --path metalig`` to generate a table for the entire MetaLig database.
+- ``DARTassembler dbinfo --path ligand_db.jsonlines``: Generates an overview table of the specified ligand database file and saves it as a CSV file. Use the command ``DARTassembler dbinfo --path metalig`` to generate a table for the entire MetaLig database.
 - ``DARTassembler test --path outdir``: Runs a brief test of the ``ligandfilters`` and ``assembler`` modules of DART. If no path is specified, no files will be saved. Otherwise, the output will be saved in the specified directory (here in the directory ``outdir``).
 
 Installation FAQ

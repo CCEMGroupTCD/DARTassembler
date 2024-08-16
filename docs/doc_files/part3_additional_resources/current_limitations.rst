@@ -11,11 +11,14 @@ Assembler:
         - Tridentate/tetradentate ligands with non-planar coordinating atoms
         - Haptic ligands (ligands with neighboring coordinating atoms)
     - We have implemented the most important octahedral and square planar geometries. Let us know if you need any other geometries for your research and we will add them (e.g. octahedral (2-2-2, fac-3-2-1, 1-1-1-1-1-1), square planar 1-1-1-1, tetrahedral, ...).
-    - It might be possible to add support for user-defined ligands which are not yet in the MetaLig database.
 
 Ligand Filters:
     - Currently, DART supports a lot of ligand filters via pre-defined filters with options. If you need more filters, please let us know.
     - We are also thinking about adding the possibility to write a customizable python function for filtering ligands.
+
+MetaLig Ligand Database:
+    - The MetaLig database might be updated with more functionalities for exploring it's ligands and their properties.
+    - It might be possible to add support for extending the MetaLig database with user-defined ligands.
 
 Other limitations are more fundamental:
 

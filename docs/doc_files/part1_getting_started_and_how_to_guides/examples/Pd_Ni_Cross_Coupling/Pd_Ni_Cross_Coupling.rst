@@ -16,10 +16,10 @@ Utilizing just four commands, we will generate neutral complexes with a phenyl g
 
 .. code-block:: bash
 
-    dart ligandfilters --path input/ligandfilters_phenyl.yml
-    dart ligandfilters --path input/ligandfilters_Br.yml
-    dart ligandfilters --path input/ligandfilters_P_N_ligands.yml
-    dart assembler --path input/Pd_Ni_assembly_input.yml
+    DARTassembler ligandfilters --path input/ligandfilters_phenyl.yml
+    DARTassembler ligandfilters --path input/ligandfilters_Br.yml
+    DARTassembler ligandfilters --path input/ligandfilters_P_N_ligands.yml
+    DARTassembler assembler --path input/Pd_Ni_assembly_input.yml
 
 Subsequently, we present the results from DFT calculations performed with Gaussian16 on all the assembled complexes, highlighting the diverse properties of these seemingly similar complexes.
 
@@ -41,7 +41,7 @@ The systematic approach to assembling transition metal complexes with DART invol
 Confirming DART Installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Ensure DART is correctly installed by typing ``dart --help`` in the terminal. Any issues should be directed to the section :ref:`troubleshooting` for resolution.
+Ensure DART is correctly installed by typing ``DARTassembler --help`` in the terminal. Any issues should be directed to the section :ref:`troubleshooting` for resolution.
 
 
 Preparing for Assembly
@@ -85,7 +85,7 @@ Let's start with creating the phenyl database:
 
 .. code-block:: bash
 
-    dart ligandfilters --path input/ligandfilters_phenyl.yml
+    DARTassembler ligandfilters --path input/ligandfilters_phenyl.yml
 
 This command will output a new file named ``ligand_db_phenyl.jsonlines``. At the end of the filtering process, you'll see a summary like this:
 
@@ -105,7 +105,7 @@ To prepare the bromine database, the steps are similar:
 
 .. code-block:: bash
 
-    dart ligandfilters --path input/ligandfilters_Br.yml
+    DARTassembler ligandfilters --path input/ligandfilters_Br.yml
 
 Executing this will create the ``ligand_db_Br.jsonlines`` file, reserved for the bromine ligand.
 
@@ -115,7 +115,7 @@ Finally, let's compile the database for your P-N donors:
 
 .. code-block:: bash
 
-    dart ligandfilters --path input/ligandfilters_P_N_ligands.yml
+    DARTassembler ligandfilters --path input/ligandfilters_P_N_ligands.yml
 
 Upon completion, you'll have the ``ligand_db_P_N_donors.jsonlines`` file. Here's what the output will look like:
 
@@ -130,7 +130,7 @@ This indicates you have successfully filtered down to 173 bidentate ligands. To 
 
 .. code-block:: bash
 
-    dart dbinfo --path ligand_db_P_N_donors.jsonlines
+    DARTassembler dbinfo --path ligand_db_P_N_donors.jsonlines
 
 With these three ligand databases in hand, you're all set to move on to the assembly module.
 
@@ -160,7 +160,7 @@ The assembler module is configured by the file ``input/Pd_Ni_assembly_input.yml`
         name: P_N_Donors_Pd_Metal_Centre
         forcefield: false
         random_seed: 0
-        topology: 2-1-1
+        geometry: 2-1-1
         total_charge: 0
         complex_name_appendix: _PN_Pd
 
@@ -176,7 +176,7 @@ The assembler module is configured by the file ``input/Pd_Ni_assembly_input.yml`
         name: P_N_Donors_Ni_Metal_Centre
         forcefield: false
         random_seed: 0
-        topology: 2-1-1
+        geometry: 2-1-1
         total_charge: 0
         complex_name_appendix: _PN_Ni
 
@@ -189,13 +189,13 @@ At the beginning we define global preferences, such as enabling forcefield traje
 
 3. To explore all isomeric forms, we opt for `isomers: all`.
 
-4. Most importantly, `topology: 2-1-1` instructs DART to craft complexes with one bidentate and two monodentate ligands, i.e. three different ligand sites. The three ligand databases in `ligand_db_paths` are provided in the same order, so that the first ligand database is used for the first ligand site, the second ligand database for the second ligand site, and so on. This allows us to fix the bromine and phenyl ligands to always be present in the complex, while varying the P-N donor ligands.
+4. Most importantly, `geometry: 2-1-1` instructs DART to craft complexes with one bidentate and two monodentate ligands, i.e. three different ligand sites. The three ligand databases in `ligand_db_paths` are provided in the same order, so that the first ligand database is used for the first ligand site, the second ligand database for the second ligand site, and so on. This allows us to fix the bromine and phenyl ligands to always be present in the complex, while varying the P-N donor ligands.
 
 Now that we have configured the assembler, we can run it:
 
 .. code-block:: bash
 
-    dart assembler --path input/Pd_Ni_assembly_input.yml
+    DARTassembler assembler --path input/Pd_Ni_assembly_input.yml
 
 This will generate a new folder ``assembler_output`` which contains the generated complexes. To get an understanding of the output of the assembler module please refer the section :ref:`assembly_output`. The output of the assembler module concludes with the following lines:
 

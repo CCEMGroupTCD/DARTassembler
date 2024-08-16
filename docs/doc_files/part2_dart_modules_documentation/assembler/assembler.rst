@@ -16,7 +16,7 @@ The assembler module is run from the command line by providing a single configur
 
 .. code-block::
 
-    dart assembler --path assembler_input.yml
+    DARTassembler assembler --path assembler_input.yml
 
 **Assembler Input File:**
 
@@ -24,7 +24,7 @@ The assembler module is run from the command line by providing a single configur
 
     - **Global Options** include settings like output path, verbosity, and complex name length. These settings apply to all batches in the file.
 
-    - **Batch Options** specify the details of each complex generation batch, such as metal center, oxidation state, topology, and ligand database paths. Each batch must be named, and various parameters can be set to control the assembly process.
+    - **Batch Options** specify the details of each complex generation batch, such as metal center, oxidation state, geometry, and ligand database paths. Each batch must be named, and various parameters can be set to control the assembly process.
 
         - The first batch option needs a hyphen ('-') in front of it to mark the start of the batch.
         - Each batch option is required, but some can be left empty
@@ -47,7 +47,7 @@ The assembler module is run from the command line by providing a single configur
         metal_center: Fe                  # Chemical symbol of the desired metal center.
         metal_oxidation_state: 2          # Oxidation state of the desired metal center.
         total_charge: 0                   # Total charge of the complex.
-        topology: 2-1-1                   # Topology of the complexes. :options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
+        geometry: 2-1-1                   # Geometry of the complexes. :options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
         ligand_db_paths: [bidentate_ligands.jsonlines, monodentate_ligands.jsonlines, same_ligand_as_previous] # Paths to the ligand databases. Either single path or list of [path, 'same_ligand_as_previous'].
         ligand_choice: random             # How to choose the ligands. :options: random, all
         max_num_complexes: 100            # Maximum number of complexes to generate.
@@ -62,7 +62,7 @@ The assembler module is run from the command line by providing a single configur
         metal_center: Pd                  # Chemical symbol of the desired metal center.
         metal_oxidation_state: 3          # Oxidation state of the desired metal center.
         total_charge: 1                   # Total charge of the complex.
-        topology: 3-2-1                   # Topology for the second batch. :options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
+        geometry: 3-2-1                   # Geometry for the second batch. :options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
         ligand_db_paths: [tridentate_ligands.jsonlines, bidentate_ligands.jsonlines, monodentate_ligands.jsonlines] # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
         ligand_choice: all                # How to choose the ligands. :options: random, all
         max_num_complexes: 100            # Maximum number of complexes to generate.
@@ -127,11 +127,11 @@ Each batch in the assembler input file defines configurations for generating com
 
     Unique name for the batch for easy identification.
 
-.. confval:: topology
+.. confval:: geometry
 
     :options: ``3-2-1``, ``4-1-1``, ``5-1``, ``2-1-1``, ``2-2``
 
-    The topology specifies the denticities of the ligands around the complex. For example, ``3-2-1`` would generate a complex with one tridentate, one bidentate and one monodentate ligand. Currently, the following topologies are supported:
+    The geometry specifies the denticities of the ligands around the complex. For example, ``3-2-1`` would generate a complex with one tridentate, one bidentate and one monodentate ligand. Currently, the following topologies are supported:
 
         - **Octahedral complexes:** ``3-2-1``, ``4-1-1``, ``5-1``
         - **Square-planar complexes:** ``2-1-1``, ``2-2``
@@ -143,12 +143,12 @@ Each batch in the assembler input file defines configurations for generating com
     Specifies the source databases for ligands used in complex assembly. This option can be configured in two ways:
 
     - **List of Filepaths and/or Keywords:**
-      A list where each entry is either a path to a ligand database file or the keyword ``same_ligand_as_previous``. The list should match the number of ligand sites as defined in the :confval:`topology` option. For instance, in a ``3-2-1`` topology, the first database in the list supplies tridentate ligands, the second supplies bidentate, and the third supplies monodentate ligands. The ``same_ligand_as_previous`` keyword can be used in place of a path to indicate that the ligand for the current site should be identical to the one used in the previous site for each assembled complex. This feature is useful for creating complexes with symmetrical or repeating ligand structures.
+      A list where each entry is either a path to a ligand database file or the keyword ``same_ligand_as_previous``. The list should match the number of ligand sites as defined in the :confval:`geometry` option. For instance, in a ``3-2-1`` geometry, the first database in the list supplies tridentate ligands, the second supplies bidentate, and the third supplies monodentate ligands. The ``same_ligand_as_previous`` keyword can be used in place of a path to indicate that the ligand for the current site should be identical to the one used in the previous site for each assembled complex. This feature is useful for creating complexes with symmetrical or repeating ligand structures.
 
     - **Single Filepath or Empty:** 
       When a single path is provided, ligands for all sites will be drawn from this database. Identical to specifying a list with the same ligand db path for each ligand site. If empty, the entire :ref:`MetaLig database <metalig>` will be used.
 
-    Note: Ligands in the database with a denticity not matching the specified :confval:`topology` will be ignored during the assembly process. This ensures that only compatible ligands are selected for complex formation.
+    Note: Ligands in the database with a denticity not matching the specified :confval:`geometry` will be ignored during the assembly process. This ensures that only compatible ligands are selected for complex formation.
 
 .. confval:: ligand_choice
 

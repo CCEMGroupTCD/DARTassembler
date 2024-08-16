@@ -3,9 +3,11 @@
 Quickstart Guide
 =================================
 
-Welcome to the Quickstart Guide for DART! As an introductory example, we will walk through the process of assembling 100 octahedral Pd(II) complexes with a neutral charge. Each complex will consists of one tridentate, one bidentate, and one monodentate ligand, which is referred to as a 3-2-1 topology in DART.
+Welcome to the quickstart guide for DART!
 
-For now, we will use the entire MetaLig database with 41,018 ligands to assemble the complexes. Then, we will learn how to filter down the input ligands to target complexes suitable for your own field of research and to generate those that are more likely to form stable complexes.
+As an introductory example, we will walk through the process of assembling 100 octahedral Pd(II) complexes with neutral charge. Each complex will feature one tridentate, one bidentate, and one monodentate ligand, which is referred to as ``3-2-1`` geometry in DART.
+
+For now, we will use the entire MetaLig database with 41,018 ligands to assemble the complexes. Then, we will learn how to filter down the input ligands in order to target complexes suitable for your own field of research and to generate those that are more likely to form stable complexes.
 
 
 Confirming DART Installation
@@ -14,36 +16,24 @@ Confirming DART Installation
 Before starting, ensure DART is correctly installed and configured:
 
 1. Open your terminal.
-2. Type ``dart --help`` and press Enter.
+2. Type ``DARTassembler --help`` and press Enter.
 
 This command should display information how to use DART. If it throws an error, please consult the :ref:`Troubleshooting section<troubleshooting>`.
 
 Preparing for Assembly
 ----------------------
 
-1. **Creating an Output Directory**: This directory will store all generated files from the assembly process.
-
-   .. code-block:: bash
-
-       mkdir DART_simple_example
-       cd DART_simple_example
-
-2. **Configuring the Assembly Input**: The file ``assembly_input.yml`` outlines the options for the assembler. Create this file and input the following contents. For more information on each parameter, please refer to the section :ref:`assembly_input`.
+The file ``assembly_input.yml`` outlines the options for the assembler. Make a new file and copy in the following contents. For more information on each parameter, please refer to the section :ref:`assembly_input`.
 
 .. code-block::
 
     # File: assembly_input.yml
 
     output_path: DART_output              # Path to the output folder.
-    overwrite_output: false               # Whether to overwrite the output if it already exists. Recommended: false.
-    ffmovie: true                         # Whether to output a movie of the optimization process. Set to false to save disk space.
-    concatenate_xyz: true                 # Whether to concatenate the xyz files of the optimization process.
-    verbosity: 2                          # How much output to print. Options: (0, 1, 2, 3), recommended is 2.
-    complex_name_length: 8                # Length of the complex name. Recommended: 8.
 
     batches:                              # List of batches to generate. The first option in each batch needs a hyphen ('-') in front of it to mark the start of the batch.
       - name: Octahedral_Pd(II)           # Name of the batch. Note the hyphen in front of it to mark the start of the batch.
-        topology: 3-2-1                   # Topology of the complexes. Options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
+        geometry: 3-2-1                   # Geometry of the complexes. Options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
         ligand_db_paths:                  # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
         ligand_choice: random             # How to choose the ligands. Options: random, all
         max_num_complexes: 100            # Maximum number of complexes to generate.
@@ -52,10 +42,18 @@ Preparing for Assembly
         total_charge: 0                   # Total charge of the complex.
         forcefield: true                  # Whether to optimize the structures after generation with a force field.
         isomers: lowest_energy            # Which isomers to generate. Options: lowest_energy, all
+        # Advanced batch options
         bidentate_rotator: auto           # How to rotate bidentate ligands in square-planar complexes. Options: horseshoe, slab, auto
         geometry_modifier_filepath:       # Path to the geometry modifier file. If not given, no geometry modification is performed.
         random_seed: 0                    # Random seed for the generation of the complexes.
         complex_name_appendix:            # String to append to the randomly generated complex name.
+
+    # Advanced options
+    overwrite_output: false               # Whether to overwrite the output if it already exists. Recommended: false.
+    ffmovie: true                         # Whether to output a movie of the optimization process. Set to false to save disk space.
+    concatenate_xyz: true                 # Whether to concatenate the xyz files of the optimization process.
+    verbosity: 2                          # How much output to print. Options: (0, 1, 2, 3), recommended is 2.
+    complex_name_length: 8                # Length of the complex name. Recommended: 8.
 
 Running the Assembler
 ---------------------
@@ -64,7 +62,7 @@ To use the assembler, execute the following command in your terminal:
 
 .. code-block:: bash
 
-    dart assembler --path assembly_input.yml
+    DARTassembler assembler --path assembly_input.yml
 
 This command starts the assembler module, which creates complexes based on the ``assembly_input.yml`` file's instructions. The assembler will print the progress to the terminal and after a few minutes save the output files in the ``DART_output`` folder. Upon examining the generated complexes, you'll notice some wild chemistry. Using the entire MetaLig database with 41,018 different ligands clearly results in many complexes that are not very likely to form stable complexes. In fact, Figure 1 shows that there are 14 different elements in only these 300 ligands. It also shows two examples of complexes assembled in this run. In the following section, we will learn how to filter the ligands to generate complexes with a more realistic chemistry.
 
@@ -81,7 +79,7 @@ To achieve complexes with more realistic and stable chemistry targeted to your o
 
 .. code-block:: bash
 
-    dart ligandfilters --path ligandfilter_input.yml
+    DARTassembler ligandfilters --path ligandfilter_input.yml
 
 The file ligandfilter_input.yml contains all the filter options that we want to set. For example, let's generate complexes in which the monodentate is neutral and only composed of C, H and N. Both the bidentate and the tridentate should be composed only of C, H, N, O, P and S. The bidentate should exclusively be an N-N donor. Additionally, we want to keep the ligands relatively small and set an upper limit of 30 atoms per ligand. Finally, we restrict our ligands to those that have been observed coordinating to either Ni, Pd or Pt in the Cambridge Structural Database. This is helpful to increase the likelihood that our Pd complexes will be stable, since the ligands have precedent coordinating to a group 10 transition metal. Helpfully, the MetaLig database contains a lot of this extrinsic information.
 
@@ -142,7 +140,7 @@ To view the filtered ligands in a table format, execute this command:
 
 .. code-block:: bash
 
-    dart dbinfo --path filtered_ligand_db.json
+    DARTassembler dbinfo --path filtered_ligand_db.json
 
 This will generate a .csv file listing all the ligands in ``filtered_ligand_db.json``, which you can review in Excel or a similar program to ensure they meet your specifications.
 
@@ -171,7 +169,7 @@ The assembler will now draw from the 1,423 ligands that have been filtered to ma
 Understanding the Output of the Assembler Module
 ------------------------------------------------
 
-The `DART_output_targeted` directory holds all the output files from the assembly module. For an in-depth explanation of each file, see the :ref:`assembly_output` section.
+The ``DART_output_targeted`` directory holds all the output files from the assembly module. For an in-depth explanation of each file, see the :ref:`assembly_output` section.
 
 Let's examine the complex named IKIDAMIG to understand the range of information provided:
 

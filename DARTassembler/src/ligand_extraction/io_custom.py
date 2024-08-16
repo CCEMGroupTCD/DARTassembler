@@ -4,6 +4,8 @@ Utility functions for input and output.
 import json
 import sys
 import yaml
+
+from DARTassembler.src.metalig.metalig_utils import get_correct_ligand_db_path_from_input
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand, RCA_Complex
 import numpy as np
 from datetime import datetime, date, timedelta
@@ -266,6 +268,7 @@ def load_full_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
 
 def iterate_unique_ligand_db(path: Union[str, Path], molecule: str= 'dict', n_max=None, show_progress: bool=False) -> dict:
     check_molecule_value(molecule)  # Check if the molecule value is valid
+    path = get_correct_ligand_db_path_from_input(path)
     filename = Path(path).name
     for name, mol in tqdm(iterate_over_json(path, n_max=n_max, show_progress=False), disable=not show_progress, desc=f'Load ligand db `{filename}`', file=sys.stdout, unit=' ligands'):
         if molecule == 'class':

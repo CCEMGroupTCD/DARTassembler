@@ -15,7 +15,7 @@ from DARTassembler.src.ligand_extraction.utilities_Molecule import get_all_ligan
 import networkx as nx
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Molecule, RCA_Ligand, RCA_Complex
 from DARTassembler.src.ligand_extraction.io_custom import save_json, NumpyEncoder, load_unique_ligand_db, load_complex_db, iterate_over_json
-from DARTassembler.src.assembly.Assembly_Input import get_correct_ligand_db_path_from_input
+from DARTassembler.src.metalig.metalig_utils import get_correct_ligand_db_path_from_input
 from scipy.special import comb
 from typing import Union
 from pathlib import Path
@@ -84,6 +84,14 @@ class BaselineDB:
             d = self.get_dict_in_json_format(desc=desc)
             save_json(d, path=path, indent=4)
 
+        return
+
+    def to_jsonlines(self, path, desc: str='Save DB to jsonlines'):
+        self.to_json(path=path, desc=desc, json_lines=True)
+        return
+
+    def save_to_file(self, path: Union[str, Path], desc: Union[str, None]=None):
+        self.to_jsonlines(path=path, desc=desc)
         return
 
     def filter_not_fully_connected_molecules(self):
@@ -224,10 +232,13 @@ class LigandDB(MoleculeDB):
 
 
     @classmethod
-    def load_from_json(cls, path: Union[str, Path], n_max: int=None, show_progress: bool=True, only_core_ligands: bool=False):
+    def load_from_json(cls, path: Union[str, Path]='metalig', n_max: int=None, show_progress: bool=True, only_core_ligands: bool=False):
         """
         Load a JSON or JSON Lines file.
-        :param path: Path to the JSON or JSON Lines file
+        :param path: Path to the .jsonlines file of the ligand database. Alternatively, the strings 'metalig' or 'test_metalig' can be used to load the default ligand database.
+        :param n_max: Maximum number of ligands to load. If None, all ligands will be loaded.
+        :param show_progress: If True, a progress bar will be shown.
+        :param only_core_ligands: Deprecated for the MetaLig database. For other databases, this parameter specifies if outer-sphere ligands should be removed.
         :return: A LigandDB object
         """
         db_path = get_correct_ligand_db_path_from_input(path)
@@ -493,8 +504,6 @@ class LigandDB(MoleculeDB):
         df = pd.concat(df, ignore_index=True)
 
         return df
-
-
 
     def calc_number_of_possible_complexes_for_metal(self, metal: str, geometries: dict = None) -> pd.DataFrame:
         metal_oxi_states = DART_Element(metal).common_oxidation_states

@@ -51,22 +51,57 @@ def calculate_n_321_complexes_with_OH_fixed(charges_2: np.array, charges_3: np.a
 
 if __name__ == '__main__':
 
-    db_version = '1.7'
-    db_path = project_path().extend(*f'data/final_db_versions/unique_ligand_db_v{db_version}.json'.split('/'))
-    exclude_unconnected_ligands = True
-    exclude_uncertain_charges = True
-    nmax = False
+    # db_version = '1.7'
+    # db_path = project_path().extend(*f'data/final_db_versions/unique_ligand_db_v{db_version}.json'.split('/'))
+    # exclude_unconnected_ligands = True
+    # exclude_uncertain_charges = True
+    # nmax = False
+    #
+    # # for thesis
+    # df_ligands = pd.read_csv(db_path.with_suffix('.csv'), index_col=0)
+    # n_denticities = df_ligands['Denticity'].value_counts()
+    # print(f'Denticities:\n{n_denticities}')
+    # print(f'Total number of ligands: {len(df_ligands)}')
+    # n_solvent = (df_ligands['Denticity'] <= 0).sum()
+    # print(f'Number of solvent molecules/counter ions: {n_solvent}')
 
-    # ligands = LigandDB.load_from_json(db_path, n_max=nmax)
-    # df_ligands = pd.DataFrame.from_dict({name: lig.get_ligand_output_info(add_confident_charge=True) for name, lig in ligands.db.items()}, orient='index'
 
-    # for thesis
-    df_ligands = pd.read_csv(db_path.with_suffix('.csv'), index_col=0)
-    n_denticities = df_ligands['Denticity'].value_counts()
-    print(f'Denticities:\n{n_denticities}')
-    print(f'Total number of ligands: {len(df_ligands)}')
-    n_solvent = (df_ligands['Denticity'] <= 0).sum()
-    print(f'Number of solvent molecules/counter ions: {n_solvent}')
+    # ===== Code for MetaLig documentation =====
+    # from DARTassembler.src.ligand_extraction.DataBase import LigandDB
+    #
+    # # Load the first 1000 out of 41,018 ligands in the MetaLig database.
+    # metalig = LigandDB.load_from_json(path='metalig', n_max=1000)
+    #
+    # # Set some criteria to filter ligands
+    # keep_denticity = 2
+    # keep_charge = -1
+    # max_n_atoms = 50
+    #
+    # ligands_to_keep = []
+    # for ligand_name, ligand in metalig.db.items():
+    #     correct_denticity = ligand.denticity == keep_denticity
+    #     correct_charge = ligand.pred_charge == keep_charge
+    #     correct_n_atoms = ligand.n_atoms <= max_n_atoms
+    #     if correct_denticity and correct_charge and correct_n_atoms:
+    #         ligands_to_keep.append(ligand_name)
+    #
+    # # Reduce MetaLig database to only keep ligands which adhere to the above criteria
+    # filtered_metalig_dict = {ligand_name: ligand for ligand_name, ligand in metalig.db.items() if ligand_name in ligands_to_keep}
+    # filtered_metalig = LigandDB(filtered_metalig_dict)
+    #
+    # # Save filtered MetaLig database as .jsonlines file.
+    # filtered_metalig.save_to_file('filtered_metalig.jsonlines')
+    #
+    # # Save an overview table of the filtered ligand database as csv file.
+    # filtered_metalig.save_reduced_csv('filtered_metalig.csv')
+
+
+
+
+
+
+
+
 
 
     # df_ligands['has_metal_neighbors'] = df_ligands['graph_dict'].apply(lambda graph_dict: 'metal_neighbor' in str(graph_dict))

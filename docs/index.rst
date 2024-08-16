@@ -21,7 +21,7 @@ DART integrates a collection of modules, each serving a unique function in the a
 
     .. code-block:: bash
 
-        dart assembler --path assembly_input.yml
+        DARTassembler assembler --path assembly_input.yml
 
 
 **Your role:** While DART is a powerful new tool for chemistry researchers to streamline the exploration of novel molecular complexes, it is not a substitute for the expertise of a practiced chemist. Therefore, DART facilitates the inspection of generated complexes by providing various output formats, empowering the expert analysis and evaluation that is the hallmark of a skilled chemist.
