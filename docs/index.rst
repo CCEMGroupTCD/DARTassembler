@@ -2,9 +2,9 @@
 DART: Directed Assembly of Random Transition Metal Complexes
 =============================================================
 
-Welcome to the DART platform, a cutting-edge suite of tools for the generation and exploration of mono-metallic transition metal complexes! Developed by the CCEM group at Trinity College Dublin, DART is engineered to facilitate the design and analysis of molecular complexes for chemistry research.
+Welcome to the DART platform, a cutting-edge suite of tools for the exploration of coordination chemistry! Developed by the CCEM group at Trinity College Dublin, DART is designed as an accessible simple-to-use software to generate mono-metallic transition metal complexes based on ligands from decades of crystallographic data.
 
-DART integrates a collection of modules, each serving a unique function in the assembly process:
+DART integrates a collection of several modules:
 
 - **MetaLig** :
     Explore the comprehensive MetaLig database with 41,018 ligands extracted from the Cambridge Structural Database, complete with high-quality formal charge assignments.
@@ -13,18 +13,11 @@ DART integrates a collection of modules, each serving a unique function in the a
     Assemble novel transition metal complexes in a matter of seconds, guided by a simple configuration file for precise control over the resulting structures.
 
 - **Ligand Filters** :
-    Tailor assembled ligands to your research needs with a wide range of chemical and data-driven filters.
+    Assemble complexes with exactly defined sub-structures by applying advanced ligand filters for each binding site.
 
-.. tip::
+**Our conclusion:** Using DART is simple and requires no Python. Having access to a huge database of experimentally verified ligands actually helps quite a lot to simplify downstream applications.
 
-    Using DART is simple. After download, just run the DART assembler and start generating complexes by executing the following command in your terminal:
-
-    .. code-block:: bash
-
-        DARTassembler assembler --path assembly_input.yml
-
-
-**Your role:** While DART is a powerful new tool for chemistry researchers to streamline the exploration of novel molecular complexes, it is not a substitute for the expertise of a practiced chemist. Therefore, DART facilitates the inspection of generated complexes by providing various output formats, empowering the expert analysis and evaluation that is the hallmark of a skilled chemist.
+**Your role:** DART is made to be user-guided, so you can easily generate the complexes you need. DART cannot think about the chemistry for you, but it will allow you to explore the chemical space you want with the ligands you need.
 
 .. figure:: /_static/homepage_picture.png
    :width: 70%
@@ -35,33 +28,23 @@ DART integrates a collection of modules, each serving a unique function in the a
 Who Should Use DART?
 =====================
 
-- **Experimental Chemists**: Get suggestions for new complexes with exactly defined chemical attributes.
+- **Experimental Chemists**: Get suggestions for new complexes with exactly defined sub-structures.
 - **Computational Researchers**: Generate novel transition metal complexes for high-throughput screening.
 - **Software Developers**: Integrate DART into your chemistry workflow with our open-source code.
 
 Why Use DART?
 =============
 
-Proposing new transition metal complexes can be a meticulous and lengthy endeavor. DART addresses this challenge by providing a streamlined, automated solution:
-
-- **Powerful Assembler**: Generate novel transition metal complexes in a matter of seconds with DART's automated processes and comprehensive user options.
-
 - **Advanced Complex Control**: DART supports the assembly of a wide range of octahedral and square-planar geometries. Want more? Leave us a `feature request! <https://github.com/CCEMGroupTCD/DART/issues>`_
 
-- **Comprehensive Ligand Database**: Tap into a diverse array of 41,018 ligands from real-world structures for innovative materials discovery.
-
-- **Sophisticated Filters**: Design specific complex types with advanced ligand filtering capabilities, targeting exactly defined chemical attributes.
-
-- **Intuitive Interface**: Even without programming expertise, users can engage with DART through simple configuration files.
-
-- **High Synthetic Viability**: DART supports the generation of complexes with high synthetic viability, thanks to its data-driven ligand filters based on actual crystal structures from the Cambridge Structural Database.
+- **Intuitive Interface**: Users interact with DART through simple configuration files, no Python required.
 
 - **Open-Source**: DART is an open-source tool developed in Python, making it entirely free to use and customizable for your research.
 
 Getting Started
 ===============
 
-Eager to begin? Install DART or explore our tutorials for a hands-on demonstration of its capabilities.
+Eager to begin? :ref:`Install DART <installation_guide>`, explore our hands-on :ref:`quickstart guide <quickstart>` or read through the :ref:`ideas and concepts <dart_workflow>` behind DART.
 
 .. toctree::
    :maxdepth: 1
