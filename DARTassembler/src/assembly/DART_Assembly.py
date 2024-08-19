@@ -51,13 +51,12 @@ class DARTAssembly(object):
         self.concatenate_xyz = self.settings.concatenate_xyz
         self.output_path = self.settings.Output_Path
         self.complex_name_length = self.settings.complex_name_length
-        self.overwrite_existing_output = self.settings.overwrite_output_path
         self.batches = self.settings.Batches
         self.n_batches = len(self.batches)
         self.same_isomer_names = self.settings.same_isomer_names
 
         self.df_info = None
-        self.gbl_outcontrol = AssemblyOutput(outdir=self.output_path, ensure_empty_output_dir=self.overwrite_existing_output)
+        self.gbl_outcontrol = AssemblyOutput(outdir=self.output_path)
 
         # Initialize some necessary variables
         self.random_seed = None

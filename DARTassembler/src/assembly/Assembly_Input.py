@@ -23,7 +23,6 @@ allowed_topologies = ['mer-3-2-1', 'mer-4-1-1', '5-1', '2-1-1', '2-2']  # list a
 _verbose = 'verbosity'    # verbosity
 _optimization_movie = 'ffmovie'
 _concatenate_xyz = 'concatenate_xyz'
-_overwrite_output_path = 'overwrite_output'
 _output_path = 'output_directory'
 _complex_name_length = 'complex_name_length'
 _same_isomer_names = 'same_isomer_names'
@@ -105,6 +104,22 @@ _smarts = 'smarts'
 _should_be_present = 'should_contain'
 _include_metal = 'include_metal'
 
+assembler_gbl_defaults = {
+    _verbose: 2,
+    _optimization_movie: True,
+    _concatenate_xyz: True,
+    _output_path: 'DART',
+    _complex_name_length: 8,
+    _same_isomer_names: True,
+}
+assembler_batch_defaults = {
+    _optimisation: False,
+    _random_seed: 0,
+    _complex_name_appendix: None,
+    _geometry_modifier_filepath: None,
+    _bidentate_rotator: 'auto',
+}
+
 
 class BaseInput(object):
 
@@ -155,10 +170,6 @@ class BaseInput(object):
             self.raise_error(message=f"Output directory '{path}' is not a valid string.", varname=varname)
 
         path = path.resolve()  # get absolute path
-
-        if path.exists() and not self.overwrite_output_path:
-            self.raise_error(message=f"Output directory '{path}' already exists. Please delete it or set parameter `overwrite_output_path` to True.", varname=varname)
-
 
         return path
 
@@ -363,12 +374,6 @@ class BaseInput(object):
             for actual_key in batch:
                 if not actual_key in valid_settings[_batches]:
                     self.raise_error(message=f"The provided word '{actual_key}' is not a valid DART setting. Please check the documentation.", varname=actual_key)
-
-                # if actual_key == _metal:
-                #     for metal_key in batch[_metal]:
-                #         if not metal_key in valid_settings[_metal]:
-                #             self.raise_warning(message=f"Setting '{metal_key}' is not recognized and will be skipped.",
-                #                                varname=actual_key)
 
         return
 
@@ -713,7 +718,6 @@ class AssemblyInput(BaseInput):
                         _concatenate_xyz: [bool, str],
                         _output_path: [str, Path],
                         _batches: [list, tuple, dict],
-                        _overwrite_output_path: [bool, str],
                         _complex_name_length: [int, str],
                         _same_isomer_names: [bool, str],
                         }
@@ -722,7 +726,6 @@ class AssemblyInput(BaseInput):
                         _name: [str],
                         _input_path: [str, list, tuple, type(None)],
                         _max_num_complexes: [int, str],
-                        # _ligand_choice: [str],  # ligand choice is not used anymore, 'all' is specified in _max_num_complexes
                         _element: [str],
                         _oxidation_state: [int, str],
                         _isomers: [str],
@@ -730,23 +733,13 @@ class AssemblyInput(BaseInput):
                         _random_seed: [int, str],
                         _total_charge: [int, str],
                         _topology: [str, list, tuple],
-                        # _metal: [dict],
                         _complex_name_appendix: [str,type(None)],
                         _geometry_modifier_filepath: [str, type(None)],
                         _bidentate_rotator: [str],
-                        # _gaussian_path: [str, type(None)],
-                        # _ligand_filters_path: [str, Path, type(None)],
                         }
-    # Metal settings in the batch settings
-    # metal_valid_keys = {
-    #                     _element: [str],
-    #                     _oxidation_state: [int, str],
-    #                     _spin: [int, str],
-    #                     }
     total_keys = deepcopy(valid_keys)
     total_keys.update({
         _batches: batches_valid_keys,
-        # _metal: metal_valid_keys,
         })
 
     def __init__(self, path: Union[str, Path] = 'assembly_input.yml'):
@@ -764,7 +757,6 @@ class AssemblyInput(BaseInput):
         self.verbose = None
         self.optimization_movie = None
         self.concatenate_xyz = None
-        self.overwrite_output_path = None
         self.Output_Path = None
         self.Batches = None
         self.complex_name_length = None
@@ -783,14 +775,13 @@ class AssemblyInput(BaseInput):
             self.check_correct_input_type(input=self.global_settings[key], types=types, varname=key)
 
         self.verbose = self.get_int_from_input(self.global_settings[_verbose], varname=_verbose)
-        self.overwrite_output_path = self.get_bool_from_input(self.global_settings[_overwrite_output_path], varname=_overwrite_output_path)
         self.optimization_movie = self.get_bool_from_input(self.global_settings[_optimization_movie], varname=_optimization_movie)
         self.concatenate_xyz = self.get_bool_from_input(self.global_settings[_concatenate_xyz], varname=_concatenate_xyz)
         self.Batches =  self.get_batches_from_input(self.global_settings[_batches])
         self.complex_name_length = self.get_int_from_input(self.global_settings[_complex_name_length], varname=_complex_name_length)
         self.same_isomer_names = self.get_bool_from_input(self.global_settings[_same_isomer_names], varname=_same_isomer_names)
 
-        # Check if the output path exists and is a directory. Must come after self.overwrite_output_path is set.
+        # Check if the output path exists and is a directory.
         self.Output_Path = self.ensure_output_directory_valid(self.global_settings[_output_path], varname=_output_path)
 
         return

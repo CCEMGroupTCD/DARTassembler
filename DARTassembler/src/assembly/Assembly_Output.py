@@ -12,6 +12,9 @@ _gbl_optimization_movie = 'ffmovie.xyz'
 _gbl_concatenated_xyz = 'concat_passed_complexes.xyz'
 _gbl_run_info_table = 'info_table.csv'
 _gbl_batch_dir = 'batches'
+_gbl_input_dir = 'input'
+_gbl_input_settings = 'assembly_input.yml'
+_gbl_log_file = 'log.txt'
 
 # Batch output files
 _batch_passed_ff_movie = 'concat_passed_ffmovie.xyz'     # All xyz movies of the forcefield optimization of passed complexes
@@ -33,6 +36,28 @@ _complex_warnings = 'warnings.txt'
 _complex_ff_movie = 'ffmovie.xyz'
 _complex_ligand_info = 'ligandinfo.csv'
 
+
+def ensure_directory_empty(dir) -> None:
+    """
+    Checks if the output directory is valid.
+    """
+    # Delete and recreate directory
+    dir = Path(dir)
+    if dir.is_dir():
+        shutil.rmtree(dir)
+    dir.mkdir(parents=True, exist_ok=True)
+
+    return
+
+def ensure_file_deleted(file) -> None:
+    """
+    Deletes file if it exists to make space for new file.
+    """
+    file = Path(file)
+    if file.is_file():
+        file.unlink()
+
+    return
 
 def save_file(string: str, outpath: Union[str,Path]):
     with open(outpath, 'w') as f:
@@ -57,14 +82,30 @@ def save_batch_optimization_movie(xyz_string, outdir: [str,Path]):
 
 class AssemblyOutput(object):
 
-    def __init__(self, outdir: [str,Path], ensure_empty_output_dir: bool = False):
+    def __init__(self, outdir: [str,Path]):
         self.outdir = outdir
-        self.run_info_table = Path(self.outdir, _gbl_run_info_table)
+        self.outdir.mkdir(parents=True, exist_ok=True)
+
+        # Define directory paths
         self.batch_dir = Path(self.outdir, _gbl_batch_dir)
-        if ensure_empty_output_dir:
-            self.ensure_output_directory_empty()
-        self.settings_path = Path(self.outdir, 'input', 'assembly_input.yml')
-        self.log_path = Path(self.outdir, 'log.txt')
+        self.input_dirpath = Path(self.outdir, _gbl_input_dir)
+        # Define filepaths
+        self.run_info_table = Path(self.outdir, _gbl_run_info_table)
+        self.settings_path = Path(self.input_dirpath, _gbl_input_settings)
+        self.log_path = Path(self.outdir, _gbl_log_file)
+        self.ffmovie_path = Path(self.outdir, _gbl_optimization_movie)
+        self.concatenated_xyz_path = Path(self.outdir, _gbl_concatenated_xyz)
+
+        # Collect all global directories and files
+        gbl_directories = [self.batch_dir, self.input_dirpath]
+        gbl_files = [self.run_info_table, self.settings_path, self.log_path, self.ffmovie_path, self.concatenated_xyz_path]
+
+        # Ensure the DART output directory is empty by deleting all files and directories and making new empty directories
+        # It's important that the DART output dir is not deleted itself as it is the user's responsibility to specify the output directory and they might have important files in there
+        for dir in gbl_directories:
+            ensure_directory_empty(dir)
+        for file in gbl_files:
+            ensure_file_deleted(file)
 
     def save_global_optimization_movie(self, xyz_string):
         append_global_optimization_movie(xyz_string, self.outdir)
@@ -89,18 +130,6 @@ class AssemblyOutput(object):
             except Exception:   # If the keyword sort_keys is not yet supported in this yaml version
                 yaml.dump(settings, f)
 
-    def ensure_output_directory_empty(self) -> None:
-        """
-        Checks if the output directory is valid.
-        """
-        # Delete and recreate directory
-        if self.outdir.is_dir():
-            shutil.rmtree(self.outdir)
-        self.outdir.mkdir(parents=True)
-
-        return
-
-
 
 class BatchAssemblyOutput(object):
 
@@ -115,6 +144,10 @@ class BatchAssemblyOutput(object):
         self.output_path = Path(self.batchdir, _batch_output)                     # The batch output file with all stdout output
         self.errors_path = Path(self.batchdir, _batch_errors)                     # The batch errors file with all stderr output
         self.complex_dir = Path(self.batchdir, _batch_complex_dir)                # The directory where all the complex output files are stored
+
+        concatenated_files = [self.passed_ff_movie_path, self.failed_ff_movie_path, self.passed_xyz_path, self.failed_xyz_path]
+        for file in concatenated_files:
+            ensure_file_deleted(file)
 
     def save_passed_ff_movie(self, xyz_string: str, append=False) -> None:
         """

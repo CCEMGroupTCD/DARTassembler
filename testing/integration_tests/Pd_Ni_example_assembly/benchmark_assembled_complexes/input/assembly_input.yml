@@ -1,7 +1,6 @@
 verbosity: 2
 ffmovie: true
 concatenate_xyz: true
-overwrite_output: true
 output_directory: Pd_Ni_example_assembly/assembled_complexes
 same_isomer_names: false
 complex_name_length: 8

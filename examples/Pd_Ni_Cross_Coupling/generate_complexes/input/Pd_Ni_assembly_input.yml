@@ -3,7 +3,6 @@
 verbosity: 2
 ffmovie: true
 concatenate_xyz: true
-overwrite_output: true
 output_directory: assembler_output
 same_isomer_names: false
 complex_name_length: 8

@@ -196,7 +196,7 @@ class XYZIntegrationTest(object):
         return mol_results
 
     def compare_xyz_files(self, print=True):
-        if print and (len(self.old_mols) != len(self.new_mols)):
+        if (len(self.old_mols) != len(self.new_mols)):
             warnings.warn(f"Number of molecules is not the same in the two files. old: {len(self.old_mols)}, new {len(self.new_mols)}. Try to compare anyway.")
 
         df_mol_results = []
@@ -234,6 +234,11 @@ class XYZIntegrationTest(object):
         Compares the two xyz files and returns a short string describing the differences. If there are no differences, None is returned.
         :return: str or None
         """
+        same_n_mols = (len(self.old_mols) == len(self.new_mols))
+        if not same_n_mols:
+            result_string = f'Diff. n molecules! old: {len(self.old_mols)}, new: {len(self.new_mols)}'
+            return result_string
+
         df_mol_results = self.compare_xyz_files(print=False)
         same_n_atoms = df_mol_results['same_n_atoms'].all()
         n_diff_atom_types = df_mol_results['n_diff_atom_types'].mean().round().astype(int)

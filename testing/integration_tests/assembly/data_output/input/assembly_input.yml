@@ -1,7 +1,6 @@
 verbosity: 2
 ffmovie: true
 concatenate_xyz: true
-overwrite_output: true
 output_directory: assembly/data_output
 same_isomer_names: true
 complex_name_length: 8
