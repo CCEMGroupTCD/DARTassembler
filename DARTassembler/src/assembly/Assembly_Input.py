@@ -119,6 +119,12 @@ assembler_batch_defaults = {
     _geometry_modifier_filepath: None,
     _bidentate_rotator: 'auto',
 }
+ligandfilters_gbl_defaults = {
+    _ligand_db_path: 'metalig',
+    _output_ligand_db_path: None,
+    _output_ligands_info: True,
+}
+
 
 
 class BaseInput(object):
@@ -345,10 +351,10 @@ class BaseInput(object):
         for key, types in valid_keys.items():
             real_keys = tuple(settings.keys())
             if key not in real_keys:
-                similar_word = get_closest_word(word=key, words=real_keys)
-                similar_string = f"The closest key provided is '{similar_word}'. " if similar_word != '' else ''
-                # Check if key is present in input file
-                self.raise_error(f"Key '{key}' not found in input file, please add it. {similar_string}All keys found are {real_keys}.")
+                if key in ligandfilters_gbl_defaults:
+                    settings[key] = ligandfilters_gbl_defaults[key]
+                else:
+                    self.raise_error(f"Key '{key}' not found in input file, please add it. All keys found are {real_keys}.")
             self.check_correct_input_type(input=settings[key], types=types, varname=key)
 
         return
@@ -647,7 +653,7 @@ class LigandFilterInput(BaseInput):
         """
         Returns a path to the output ligand database. If the path already exists, it will be renamed to avoid overwriting.
         """
-        path = Path('filtered_ligand_db.json').resolve()
+        path = Path('filtered_ligand_db.jsonlines').resolve()
 
         idx = 1
         while path.exists():

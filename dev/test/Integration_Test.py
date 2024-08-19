@@ -160,8 +160,16 @@ class XYZIntegrationTest(object):
         self.old_xyz = old_xzy
         self.new_xyz = new_xyz
         self.tol = tol
-        self.old_mols = read(old_xzy, index=':')
-        self.new_mols = read(new_xyz, index=':')
+        self.old_mols = self.read_concatenated_xyz_file(old_xzy)
+        self.new_mols = self.read_concatenated_xyz_file(new_xyz)
+
+    def read_concatenated_xyz_file(self, filename):
+        try:
+            mols = read(filename, index=':')
+        except ase.io.formats.UnknownFileTypeError:
+            # The file is empty
+            mols = []
+        return mols
 
     def get_molecules_with_different_interatomic_distances(self):
         mols_with_different_interatomic_distances = []

@@ -45,4 +45,4 @@ Passed:            27 ligands
 Denticities:       1: 19, 2: 8
 
 Done filtering!
-Filtered ligand database with 27 entries was saved to `filtered_ligand_db.json`.
+Filtered ligand database with 27 entries was saved to `filtered_ligand_db.jsonlines`.

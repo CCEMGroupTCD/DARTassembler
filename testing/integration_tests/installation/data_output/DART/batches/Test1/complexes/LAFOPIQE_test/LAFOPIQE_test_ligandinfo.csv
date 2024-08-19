@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZIYON-02-b,C11H6F2N1,2,-1,N-C,20,190.172806326,0.7216163812,False,True,9.172156942072023,2.0269496275411654,2a93874ecbf095e56bd1ffb4f397fca5,478,"OZIYON, OZIYON, PAQJAV, PAQJAV, PEDFOW, ... (473 more)","Ir(428), Pt(44), Os(4), Au(1), Ru(1)"
+Ligand 1,unq_CSD-OZIYON-02-b,C11H6F2N1,2,-1,N-C,20,190.172806326,0.7216163812,False,True,9.172156942072023,2.0269496275411654,2a93874ecbf095e56bd1ffb4f397fca5,478,"OZIYON, OZIYON, PAQJAV, PAQJAV, PEDFOW, ... (473 more)","Ir(428), Pt(44), Os(4), Au(1), Ru(1)"

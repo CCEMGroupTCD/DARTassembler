@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PACTEW-02-a,C6H5N4O3,2,-1,N-N,18,181.13100000000003,0.8285079903,False,False,7.022965449865178,2.0554719947505644,a21d223110fb7c5bc7cb535db282b51c,1,PACTEW,Ru(1)
+Ligand 1,unq_CSD-PACMEL-02-a,C10H24N1O1Si1,2,-1,O-N,37,202.39300000000006,0.1136709954,False,False,8.862857557808317,2.347932678379017,d44963a164050ee3e9f9ca8be7b3290d,10,"PACMEL, PACMEL, PACMOV, PACMOV, SOLVUK, ... (5 more)","Y(4), Nd(3), Zr(2), Ta(1)"

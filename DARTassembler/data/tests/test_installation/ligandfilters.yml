@@ -1,6 +1,4 @@
-input_db_file: test_metalig           # path or nothing
-output_db_file:    # path or nothing
-output_ligands_info: True   # True or False. If True, an overview of the filtered and passed ligands will be saved.
+input_db_file: test_metalig     # path or nothing
 
 filters:
 

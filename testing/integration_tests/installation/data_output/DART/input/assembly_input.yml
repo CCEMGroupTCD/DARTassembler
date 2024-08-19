@@ -1,0 +1,20 @@
+output_directory: DART
+batches:
+- ligand_db_file: test_metalig
+  isomers: lowest_energy
+  max_num_complexes: 5
+  metal_center: Fe
+  metal_oxidation_state: 2
+  name: Test1
+  forcefield: true
+  random_seed: 1
+  geometry: 2-2
+  total_charge: 0
+  complex_name_appendix: _test
+  geometry_modifier_filepath: null
+  bidentate_rotator: auto
+verbosity: 2
+ffmovie: false
+concatenate_xyz: true
+complex_name_length: 8
+same_isomer_names: true
