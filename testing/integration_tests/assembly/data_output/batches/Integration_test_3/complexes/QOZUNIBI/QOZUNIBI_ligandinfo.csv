@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAHNUK-03-a,C31H19N3O2,3,0,N-N-N,55,465.512,0.5602564205,False,True,22.05750485934436,1.945606160300894,2c396331abf7c0c65bb93485505b2781,6,"PAHNUK, PAHNUK, PAHPAS, PAHPAS, PAHPEW, ... (1 more)","Fe(2), Ru(2), Zn(2)"
-Ligand 1,unq_CSD-PANGIW-02-a,C14H7Br1F4N1,2,-1,C-N,27,345.1146126519999,0.1754174949,False,True,11.429589020607871,2.120926259317232,8083e959ee6f2fdc5f976b900679d3c4,2,"PANGIW, ADUMAP",Pt(2)
-Ligand 2,unq_CSD-PAGBEE-01-b,C3H4N2,1,0,N,9,68.079,0.9814616701,False,True,3.974905641647359,2.125295605321763,66ead66bcc2cf9a8bec894d0055b75a1,1228,"PAGBEE, PAGBEE, PAGBEE, PAGBEE, PANGER, ... (1223 more)","Ni(295), Cu(262), Co(234), Fe(123), Zn(63), ... (16 more)"

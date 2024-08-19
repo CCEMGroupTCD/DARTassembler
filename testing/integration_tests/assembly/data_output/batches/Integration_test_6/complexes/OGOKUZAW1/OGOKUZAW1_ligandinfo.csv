@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAWJIJ-02-a,C7H16N3S1,2,-1,S-N,27,174.28600000000003,0.1830274514,False,True,7.120567144546844,2.057445294022431,5ac7ffccc375c2883c43dd2fbf51d8c5,5,"PAWJIJ, PAWJIJ, PAWJIJ01, PAWJIJ01, PAWJOP",Ni(5)
-Ligand 1,unq_CSD-PAWJIJ-02-a,C7H16N3S1,2,-1,S-N,27,174.28600000000003,0.1830274514,False,True,7.120567144546844,2.057445294022431,5ac7ffccc375c2883c43dd2fbf51d8c5,5,"PAWJIJ, PAWJIJ, PAWJIJ01, PAWJIJ01, PAWJOP",Ni(5)

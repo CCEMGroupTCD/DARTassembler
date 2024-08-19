@@ -1,9 +1,5 @@
-verbosity: 2
 ffmovie: true
-concatenate_xyz: true
 output_directory: assembly/data_output
-same_isomer_names: true
-complex_name_length: 8
 batches:
 - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
@@ -15,22 +11,22 @@ batches:
   random_seed: 0
   geometry: 2-2
   total_charge: 0
-  complex_name_appendix: null
   geometry_modifier_filepath: ./assembly/data_input/geometry_modifier.xyz
-  bidentate_rotator: horseshoe
+  complex_name_appendix: null
+  bidentate_rotator: auto
 - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
   max_num_complexes: 75
   metal_center: Co
   metal_oxidation_state: 3
   name: Integration_test_2
-  forcefield: false
   random_seed: 0
   geometry: 2-1-1
   total_charge: 0
+  forcefield: false
   complex_name_appendix: null
   geometry_modifier_filepath: null
-  bidentate_rotator: horseshoe
+  bidentate_rotator: auto
 - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
   max_num_complexes: 10
@@ -43,20 +39,20 @@ batches:
   total_charge: 0
   complex_name_appendix: null
   geometry_modifier_filepath: null
-  bidentate_rotator: horseshoe
+  bidentate_rotator: auto
 - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
   max_num_complexes: 80
   metal_center: Fe
   metal_oxidation_state: 4
   name: Integration_test_4
-  forcefield: false
   random_seed: 0
   geometry: mer-4-1-1
   total_charge: 0
+  forcefield: false
   complex_name_appendix: null
   geometry_modifier_filepath: null
-  bidentate_rotator: horseshoe
+  bidentate_rotator: auto
 - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
   max_num_complexes: 25
@@ -69,7 +65,7 @@ batches:
   total_charge: 0
   complex_name_appendix: null
   geometry_modifier_filepath: null
-  bidentate_rotator: horseshoe
+  bidentate_rotator: auto
 - ligand_db_file:
   - ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   - same_ligand_as_previous
@@ -78,13 +74,13 @@ batches:
   metal_center: Fe
   metal_oxidation_state: 2
   name: Integration_test_6
-  forcefield: false
   random_seed: 0
   geometry: 2-2
   total_charge: 0
+  forcefield: false
   complex_name_appendix: null
   geometry_modifier_filepath: null
-  bidentate_rotator: horseshoe
+  bidentate_rotator: auto
 - name: Integration_test_7
   geometry: 2-1-1
   ligand_db_file:
@@ -97,10 +93,10 @@ batches:
   max_num_complexes: 50
   forcefield: true
   isomers: lowest_energy
-  bidentate_rotator: horseshoe
-  geometry_modifier_filepath: null
   random_seed: 0
   complex_name_appendix: null
+  geometry_modifier_filepath: null
+  bidentate_rotator: auto
 - ligand_db_file:
   - ./assembly/data_input/oer_ligands.jsonlines
   - assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines
@@ -110,10 +106,14 @@ batches:
   metal_center: Fe
   metal_oxidation_state: 2
   name: Integration_test_8
-  forcefield: false
   random_seed: 0
   geometry: 2-1-1
   total_charge: 0
+  forcefield: false
   complex_name_appendix: null
   geometry_modifier_filepath: null
-  bidentate_rotator: horseshoe
+  bidentate_rotator: auto
+verbosity: 2
+concatenate_xyz: true
+complex_name_length: 8
+same_isomer_names: true

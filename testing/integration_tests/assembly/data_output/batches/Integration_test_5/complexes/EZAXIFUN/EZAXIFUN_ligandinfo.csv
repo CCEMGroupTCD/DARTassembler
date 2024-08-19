@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-OZUWEM-05-a,C23H31N5O4,5,-2,O-O-N-N-N,63,441.532,0.0818308537,False,True,10.878462189114783,2.0836590161537325,d2bf10e641a3c88df163c65c216db0b4,1,OZUWEM,V(1)
-Ligand 1,unq_CSD-PAYPOW-01-b,C4H4N2,1,0,N,10,80.08999999999999,0.9556373926,False,True,4.551270856585004,2.129876698309082,45ad894cbd74c02f76bac176692ec6e1,96,"PAYPOW, PAYPOW, PAYPOW, PAYPOW, PIDVIJ, ... (91 more)","Ru(16), Co(14), Zn(14), Cu(14), Ni(12), ... (7 more)"

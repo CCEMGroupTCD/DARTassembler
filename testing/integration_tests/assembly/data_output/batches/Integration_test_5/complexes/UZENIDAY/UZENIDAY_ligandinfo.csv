@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-OZUWEM-05-a,C23H31N5O4,5,-2,O-O-N-N-N,63,441.532,0.0818308537,False,True,10.878462189114783,2.0836590161537325,d2bf10e641a3c88df163c65c216db0b4,1,OZUWEM,V(1)
-Ligand 1,unq_CSD-PAKVEF-01-a,N2,1,0,N,2,28.014,1.0,False,False,1.1183807670020074,1.7906916875889054,60aef06530deadddb1333674bfb08b38,432,"PAKVEF, PEMKUQ, PEVJEI, PEXGIL, PIGLEZ, ... (427 more)","Fe(121), Mo(87), Ru(57), Co(50), W(36), ... (9 more)"

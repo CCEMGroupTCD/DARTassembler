@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAFHIO-02-a,C6H7N5,2,0,N-N,18,149.157,0.391839851,False,True,7.024145674742233,2.164214741851606,165c636136cd700dd265539dd11dbb83,1,PAFHIO,Ru(1)
-Ligand 1,unq_CSD-PABPUG-01-a,C1N1S1,1,-1,N,3,58.078,1.0,False,False,2.7569049203771976,1.9306892577522674,8cfb8c37cf16fcbdf2b0b710377c2ea0,6203,"PABPUG, PABPUG, PABPUG, PABPUG, PABQAN, ... (6198 more)","Fe(1210), Ni(1016), Co(983), Zn(518), Cu(500), ... (37 more)"
-Ligand 2,unq_CSD-PAFWIC-01-c,S1,1,-2,S,1,32.06,1.0,False,False,,2.0997975664334882,0d2567e9cf243e276fa721ccc96d280c,507,"PAFWIC, PEWYIA, PEWYIA, PEWYIA, PEWYIA, ... (502 more)","W(220), Mo(180), Nb(21), Re(21), V(14), ... (12 more)"

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAXSIT-02-a,C10H6N2O2,2,-2,N-N,20,186.17000000000002,0.5324544985,False,False,8.829823348742602,2.094045487652003,1d1bb60b87a4ddfeb5a2da493dbd4608,3,"PAXSIT, ZIRCUA, ILEXII",Ru(3)
-Ligand 1,unq_CSD-OZUBIV-01-a,C2H6O1,1,0,O,9,46.069,0.3896574822,False,True,3.2779023994011784,2.3123538094331493,80a0fcc3592b58fd7e700ddea4ec582a,582,"OZUBIV, PARREI, PASYOA, PAZDAX, PIRSEO, ... (577 more)","Co(73), Mn(65), Ni(62), Zn(57), Mo(47), ... (30 more)"
-Ligand 2,unq_CSD-PACBEB-01-d,C3F5,1,-1,C,8,131.025015815,0.4002253724,False,False,3.819217947433741,2.029285926132639,a556ad6faad5bde10c5e0c1608bdd654,6,"PACBEB, TEJDIY, TEJDIY, TEJDOE, TEJFEW, ... (1 more)","Pt(3), Pd(2), Rh(1)"

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PALFIT-04-a,C54H42Cl2N4,4,-2,N-N-N-N,102,817.858,0.0631231421,False,False,18.041744850484946,1.9333917477634857,06cf269ba02f213c1daf15f6b0381157,1,PALFIT,Ni(1)
-Ligand 1,unq_CSD-PADDUU-01-a,C2H6N1,1,-1,N,9,44.077,0.3845908165,False,True,3.9799486240402633,2.0378348043941155,97b5648247763623a711998f95683e70,1179,"PADDUU, PADDUU, PADFAC, PADFAC, PADFIK, ... (1174 more)","Ti(400), Zr(315), Ta(293), Hf(55), Nb(45), ... (7 more)"
-Ligand 2,unq_CSD-PABMUB-01-a,C1H3Cl2Si1,1,-1,Si,7,114.02,0.4451338714,False,True,3.9175118876654356,2.3090305021805153,31c94da0600e7cf7e0521bb6bb810e6f,13,"PABMUB, PABMUB, MACQOX, BUPKON, MEXVIU, ... (8 more)","Ru(9), Pt(2), W(1), Ir(1)"

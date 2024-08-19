@@ -19,14 +19,14 @@ Running 8 batches...
 
 ============  Summary per batch  ============
 Batch 0 ('Integration_test_1'):
-  - 43 complexes tried, 30 complexes successfully assembled.
-  - 13 complexes failed because of post-filters:
-    - clashing ligands: 13
+  - 42 complexes tried, 30 complexes successfully assembled.
+  - 12 complexes failed because of post-filters:
+    - clashing ligands: 12
 Batch 1 ('Integration_test_2'):
-  - 95 complexes tried, 75 complexes successfully assembled.
-  - 20 complexes failed because of post-filters:
+  - 92 complexes tried, 75 complexes successfully assembled.
+  - 17 complexes failed because of post-filters:
     - hydride: 10
-    - clashing ligands: 10
+    - clashing ligands: 7
 Batch 2 ('Integration_test_3'):
   - 34 complexes tried, 10 complexes successfully assembled.
   - 24 complexes failed because of post-filters:
@@ -48,18 +48,18 @@ Batch 5 ('Integration_test_6'):
   - 26 complexes failed because of post-filters:
     - clashing ligands: 26
 Batch 6 ('Integration_test_7'):
-  - 54 complexes tried, 50 complexes successfully assembled.
-  - 4 complexes failed because of post-filters:
-    - clashing ligands: 4
+  - 53 complexes tried, 50 complexes successfully assembled.
+  - 3 complexes failed because of post-filters:
+    - clashing ligands: 3
 Batch 7 ('Integration_test_8'):
-  - 56 complexes tried, 52 complexes successfully assembled.
-  - 4 complexes failed because of post-filters:
-    - clashing ligands: 4
+  - 56 complexes tried, 55 complexes successfully assembled.
+  - 1 complexes failed because of post-filters:
+    - clashing ligands: 1
 
 ============  Total summary of DART assembly  ============
-  - 522 complexes tried, 362 complexes successfully assembled.
-  - 160 complexes failed because of post-filters:
-    - clashing ligands: 127
+  - 517 complexes tried, 365 complexes successfully assembled.
+  - 152 complexes failed because of post-filters:
+    - clashing ligands: 119
     - hydride: 26
     - non-planar tridentate: 7
 Done! All complexes assembled. Exiting DART Assembler.

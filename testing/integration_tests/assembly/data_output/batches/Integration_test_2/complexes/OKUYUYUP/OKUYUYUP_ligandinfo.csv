@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PACKOU-02-b,C9H6N1O1,2,-1,O-N,17,144.153,0.913749022,False,True,6.834823209125457,2.13189497454986,5ecd598d7d08bebe8249014dc7767b4b,387,"PACKOU, PACKOU, PAHNAR, PERWIU, PERWUG, ... (382 more)","V(53), Cu(52), Ru(37), Co(24), Rh(21), ... (24 more)"
-Ligand 1,unq_CSD-PEDXIF-01-f,H1S1,1,-1,S,2,33.068000000000005,1.0,False,False,0.9978869525151637,2.4288253498347716,9788c50e8fb0fe8f3c14b6e8db4af9e9,65,"PEDXIF, PIGTEG, SOFYIY, TELMEE, BIZTOT, ... (60 more)","Ru(11), Ni(10), Pd(8), Mo(6), Re(5), ... (10 more)"
-Ligand 2,unq_CSD-PEDXEB-01-f,H2P1,1,-1,P,3,32.989761998,1.0,False,False,2.5291927763616595,2.439452850538415,da0a13a38a6b8866c0389fe26e3700b1,3,"PEDXEB, POGNEG, BAZFIU","Ir(1), U(1), Zr(1)"

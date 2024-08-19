@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-OZUWEM-05-a,C23H31N5O4,5,-2,O-O-N-N-N,63,441.532,0.0818308537,False,True,10.878462189114783,2.0836590161537325,d2bf10e641a3c88df163c65c216db0b4,1,OZUWEM,V(1)
-Ligand 1,unq_CSD-PAFCIJ-01-b,C2H3N1,1,0,N,6,41.053000000000004,0.4931114442,False,False,3.1726348198303573,2.050467434513408,2d7dc351d5610f51ec03c0d8c43d387b,4934,"PAFCIJ, PAFGAG, PAGLER, PAHNAQ, PAJSEB, ... (4929 more)","Ru(995), Fe(574), Cu(559), Ni(481), Pd(415), ... (41 more)"

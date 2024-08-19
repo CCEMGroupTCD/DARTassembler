@@ -343,7 +343,7 @@ class DARTAssembly(object):
         Save the successfully assembled complex to the output files.
         """
         # Save the force field movie
-        if ff_movie is not None:
+        if self.optimization_movie and ff_movie is not None:
             self.batch_outcontrol.save_passed_ff_movie(ff_movie)
 
             # Save to global optimization movie.

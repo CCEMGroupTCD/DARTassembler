@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEFXIK-05-a,C25H25N5,5,0,N-N-N-N-N,55,395.51000000000005,0.1178953867,False,True,13.382568432853239,2.3641332322275312,c284d1c3141ac582818c95b5614d886e,3,"PEFXIK, MAPSEE, MAPSII","Cd(1), Mn(1), Zn(1)"
-Ligand 1,unq_CSD-OZULIF-01-a,O1,1,-2,O,1,15.999,1.0,False,False,,1.747565498057226,b1a746e052bbfde6c86e554cbcd4ff39,7551,"OZULIF, OZULIF, OZULOL, OZULOL, OZUWEM, ... (7546 more)","Mo(2386), U(1681), V(1535), Re(933), W(436), ... (16 more)"

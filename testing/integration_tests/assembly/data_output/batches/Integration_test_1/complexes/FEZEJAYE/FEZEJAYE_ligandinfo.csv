@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEKWOU-02-a,C14H10Br1N3,2,0,N-N,28,300.159,0.6006698547,False,True,13.207370386265392,2.056420712880289,e30b83d9a7b8d68ece40ea783b55c514,1,PEKWOU,Mn(1)
-Ligand 1,unq_CSD-PECQAP-02-a,C34H48O16,2,-2,C-C,98,712.742,0.0614409104,False,False,18.42564448207986,2.05985152623949,7552221d6cc21a749d839531ba43554b,1,PECQAP,Pd(1)

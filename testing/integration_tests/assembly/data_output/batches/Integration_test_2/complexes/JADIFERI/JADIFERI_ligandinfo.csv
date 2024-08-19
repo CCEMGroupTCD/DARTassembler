@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAZFAX-02-a,C21H16N1S1,2,-1,S-N,39,314.426,0.1514947543,False,False,13.378787252213856,2.040869693481855,e452874026037a98ca89f922dc5b66c9,2,"PAZFAX, PAZFAX",Ni(2)
-Ligand 1,unq_CSD-OZUZIT-01-a,C2H5,1,-1,C,7,29.061999999999994,0.4668880078,False,True,2.733142023386271,1.9526874557900973,ec635f44581858d11dc468df2d987bf1,371,"OZUZIT, OZUZUF, PAGBEG, PAGBEG, PAGLUG, ... (366 more)","Zn(207), Co(31), Pt(23), Ni(16), Pd(14), ... (18 more)"
-Ligand 2,unq_CSD-PAGBOP-01-a,F6P1,1,-1,F,7,144.96418097600002,0.3130129526,False,False,3.1566342851207825,3.0273458556960424,521dadebc1901bc3a4985318fa3a878a,25,"PAGBOP, PAGBOP, TAKXAH, BEFFAT, BIHTIX, ... (20 more)","Cu(19), Ni(2), Ag(1), Co(1), Ir(1), ... (1 more)"

@@ -106,7 +106,7 @@ _include_metal = 'include_metal'
 
 assembler_gbl_defaults = {
     _verbose: 2,
-    _optimization_movie: True,
+    _optimization_movie: False,
     _concatenate_xyz: True,
     _output_path: 'DART',
     _complex_name_length: 8,
@@ -770,7 +770,10 @@ class AssemblyInput(BaseInput):
         """
         for key, types in self.valid_keys.items():
             if key not in self.global_settings.keys():
-                self.raise_error(f"Key '{key}' not found in input file. Please add it.")
+                if key not in assembler_gbl_defaults.keys():
+                    self.raise_error(f"Mandatory key '{key}' not found in input file. Please add it.")
+                else:
+                    self.global_settings[key] = assembler_gbl_defaults[key]
 
             self.check_correct_input_type(input=self.global_settings[key], types=types, varname=key)
 
@@ -846,7 +849,11 @@ class AssemblyInput(BaseInput):
         # Check if all keys are present
         for key, types in self.batches_valid_keys.items():
             if key not in batch_settings.keys():
-                self.raise_error(f"Key '{key}' not found in input file. Please add it.")
+                if key in assembler_batch_defaults.keys():
+                    batch_settings[key] = assembler_batch_defaults[key]
+                else:
+                    self.raise_error(f"Mandatory key '{key}' not found in input file. Please add it.")
+
             varname = f"{_batches}->{key}"
             self.check_correct_input_type(input=batch_settings[key], types=types, varname=varname)
 
