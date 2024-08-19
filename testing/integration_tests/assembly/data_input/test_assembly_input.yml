@@ -2,12 +2,12 @@ verbosity: 2                          # How much output to print. Options: (0, 1
 ffmovie: true                         # Whether to output a movie of the optimization process. Set to False to save disk space.
 concatenate_xyz: true                 # Whether to concatenate the xyz files of the optimization process.
 overwrite_output: true                # Whether to overwrite the output if it already exists. Recommended: False.
-output_path: assembly/data_output     # Path to the output folder.
+output_directory: assembly/data_output     # Path to the output folder.
 same_isomer_names: true
 complex_name_length: 8                # Length of the complex name. Recommended: 8.
 
 batches:                              # List of batches to generate. The first option in each batch needs a hyphen and whitespace ('- ') in front of it to mark the start of the batch.
-  - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
     max_num_complexes: 30
     metal_center: Fe
@@ -15,13 +15,13 @@ batches:                              # List of batches to generate. The first o
     name: Integration_test_1
     forcefield: true
     random_seed: 0
-    topology: 2-2
+    geometry: 2-2
     total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath: ./assembly/data_input/geometry_modifier.xyz
     bidentate_rotator: horseshoe
 
-  - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
     max_num_complexes: 75
     metal_center: Co
@@ -29,13 +29,13 @@ batches:                              # List of batches to generate. The first o
     name: Integration_test_2
     forcefield: false
     random_seed: 0
-    topology: 2-1-1
+    geometry: 2-1-1
     total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: horseshoe
 
-  - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
     max_num_complexes: 10
     metal_center: Cr
@@ -43,13 +43,13 @@ batches:                              # List of batches to generate. The first o
     name: Integration_test_3
     forcefield: true
     random_seed: 0
-    topology: 3-2-1
+    geometry: mer-3-2-1
     total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: horseshoe
 
-  - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
     max_num_complexes: 80
     metal_center: Fe
@@ -57,14 +57,14 @@ batches:                              # List of batches to generate. The first o
     name: Integration_test_4
     forcefield: false
     random_seed: 0
-    topology: 4-1-1
+    geometry: mer-4-1-1
     total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: horseshoe
 
 
-  - ligand_db_paths: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
     max_num_complexes: 25
     metal_center: Fe
@@ -72,13 +72,13 @@ batches:                              # List of batches to generate. The first o
     name: Integration_test_5
     forcefield: true
     random_seed: 23
-    topology: 5-1
+    geometry: 5-1
     total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: horseshoe
 
-  - ligand_db_paths: [ ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, same_ligand_as_previous ]
+  - ligand_db_file: [ ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, same_ligand_as_previous ]
     isomers: all
     max_num_complexes: 40
     metal_center: Fe
@@ -86,15 +86,15 @@ batches:                              # List of batches to generate. The first o
     name: Integration_test_6
     forcefield: false
     random_seed: 0
-    topology: 2-2
+    geometry: 2-2
     total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:
     bidentate_rotator: horseshoe
 
   - name: Integration_test_7          # Name of the batch. Note the hyphen and whitespace in front of it to mark the start of the batch.
-    topology: 2-1-1                   # Topology of the complexes. Options: '(2, 1, 1)', '(2, 2)', '(3, 2, 1)', '(4, 1, 1)', '(5, 1)'
-    ligand_db_paths: [assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines, same_ligand_as_previous] # Path to the ligand database. Either list of paths or single path.
+    geometry: 2-1-1                   # Geometry of the complexes. Options: '(2, 1, 1)', '(2, 2)', '(3, 2, 1)', '(4, 1, 1)', '(5, 1)'
+    ligand_db_file: [assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines, same_ligand_as_previous] # Path to the ligand database. Either list of paths or single path.
     metal_center: Ru                  # Chemical symbol of the desired metal center.
     metal_oxidation_state: 2          # Oxidation state of the desired metal center.
     total_charge: -1                  # Total charge of the complex.
@@ -106,7 +106,7 @@ batches:                              # List of batches to generate. The first o
     random_seed: 0                    # Random seed for the generation of the complexes.
     complex_name_appendix:            # String to append to the randomly generated complex name.
 
-  - ligand_db_paths: [./assembly/data_input/oer_ligands.jsonlines, assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines, same_ligand_as_previous]
+  - ligand_db_file: [./assembly/data_input/oer_ligands.jsonlines, assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines, same_ligand_as_previous]
     isomers: lowest_energy
     max_num_complexes: all
     metal_center: Fe
@@ -114,7 +114,7 @@ batches:                              # List of batches to generate. The first o
     name: Integration_test_8
     forcefield: False
     random_seed: 0
-    topology: 2-1-1
+    geometry: 2-1-1
     total_charge: 0
     complex_name_appendix:
     geometry_modifier_filepath:

@@ -1,5 +1,5 @@
-input_ligand_db_path:           # path or nothing. If nothing, the entire MetaLig ligand database will be used as input
-output_ligand_db_path: oer_ligands.jsonlines   # path or nothing
+input_db_file:           # path or nothing. If nothing, the entire MetaLig ligand database will be used as input
+output_db_file: oer_ligands.jsonlines   # path or nothing
 
 filters:
   - filter: denticities

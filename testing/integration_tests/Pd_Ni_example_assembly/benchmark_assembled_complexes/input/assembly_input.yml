@@ -2,11 +2,11 @@ verbosity: 2
 ffmovie: true
 concatenate_xyz: true
 overwrite_output: true
-output_path: Pd_Ni_example_assembly/assembled_complexes
+output_directory: Pd_Ni_example_assembly/assembled_complexes
 same_isomer_names: false
 complex_name_length: 8
 batches:
-- ligand_db_paths:
+- ligand_db_file:
   - Pd_Ni_example_assembly/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines
   - Pd_Ni_example_assembly/ligand_databases/Br/ligand_db_Br.jsonlines
   - Pd_Ni_example_assembly/ligand_databases/phenyl/ligand_db_phenyl.jsonlines
@@ -19,10 +19,10 @@ batches:
   name: P_N_Donors_Pd_Metal_Centre
   forcefield: false
   random_seed: 0
-  topology: 2-1-1
+  geometry: 2-1-1
   total_charge: 0
   complex_name_appendix: _PN_Pd
-- ligand_db_paths:
+- ligand_db_file:
   - Pd_Ni_example_assembly/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines
   - Pd_Ni_example_assembly/ligand_databases/Br/ligand_db_Br.jsonlines
   - Pd_Ni_example_assembly/ligand_databases/phenyl/ligand_db_phenyl.jsonlines
@@ -35,6 +35,6 @@ batches:
   name: P_N_Donors_Ni_Metal_Centre
   forcefield: false
   random_seed: 0
-  topology: 2-1-1
+  geometry: 2-1-1
   total_charge: 0
   complex_name_appendix: _PN_Ni

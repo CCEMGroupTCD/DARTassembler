@@ -10,7 +10,7 @@ matplotlib.use('TkAgg') # for visualization of graphs
 
 def filter_ligands(filter_input_path: Union[str, Path], nmax: Union[int, None] = None, outpath: Union[str, Path] = None):
     """
-    Filter the full ligand database according to the specified filters. Should be run before assembly to reduce the number of ligands considered in the assembly to the the ones that are interesting to the user.
+    Filter the full ligand database according to the specified filters. Should be run before assembly to reduce the number of ligands considered in the assembly to the ones that are interesting to the user.
     :param filter_input_path: Path to the filter input file
     :param nmax: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.
     :return: LigandFilters object

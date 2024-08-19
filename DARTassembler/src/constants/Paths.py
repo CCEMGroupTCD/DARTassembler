@@ -47,6 +47,8 @@ test_ligand_db_path = project_path().extend(*'DARTassembler/data/metalig/test200
 element_data_path = project_path().extend(*'DARTassembler/data/element_data_table.csv'.split('/'))
 test_installation_dirpath = project_path().extend(*'DARTassembler/data/tests/test_installation'.split('/'))
 full_ligand_db_csv = project_path().extend(*'data/final_db_versions/unique_ligand_db_v1.7.csv'.split('/'))
+default_assembler_yml_path = project_path().extend(*'DARTassembler/data/default/assembler.yml'.split('/'))
+default_ligandfilters_yml_path = project_path().extend(*'DARTassembler/data/default/ligandfilters.yml'.split('/'))
 # For development only
 charge_benchmark_dir = project_path().extend('testing', 'charge_benchmark', 'internal', 'data_charge_benchmark')
 csd_graph_path = project_path().extend(*'data_input/CSD/graphs'.split('/'))

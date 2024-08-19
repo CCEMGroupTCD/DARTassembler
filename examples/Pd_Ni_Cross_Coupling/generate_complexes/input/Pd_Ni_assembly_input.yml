@@ -4,12 +4,12 @@ verbosity: 2
 ffmovie: true
 concatenate_xyz: true
 overwrite_output: true
-output_path: assembler_output
+output_directory: assembler_output
 same_isomer_names: false
 complex_name_length: 8
 
 batches:
-  - ligand_db_paths: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
+  - ligand_db_file: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
     isomers: all
     max_num_complexes: all
     geometry_modifier_filepath: input/Pd_phenyl_geometry_modification.xyz
@@ -19,12 +19,12 @@ batches:
     name: P_N_Donors_Pd_Metal_Centre
     forcefield: false
     random_seed: 0
-    topology: 2-1-1
+    geometry: 2-1-1
     total_charge: 0
     complex_name_appendix: _PN_Pd
 
 
-  - ligand_db_paths: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
+  - ligand_db_file: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
     isomers: all
     max_num_complexes: all
     geometry_modifier_filepath: input/Ni_phenyl_geometry_modification.xyz
@@ -34,6 +34,6 @@ batches:
     name: P_N_Donors_Ni_Metal_Centre
     forcefield: false
     random_seed: 0
-    topology: 2-1-1
+    geometry: 2-1-1
     total_charge: 0
     complex_name_appendix: _PN_Ni

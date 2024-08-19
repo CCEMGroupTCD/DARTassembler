@@ -16,7 +16,7 @@ from DARTassembler.src.ligand_extraction.io_custom import read_yaml
 from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist
 from DARTassembler.src.metalig.metalig_utils import get_correct_ligand_db_path_from_input
 
-allowed_topologies = ['3-2-1', '4-1-1', '5-1', '2-1-1', '2-2']  # list all allowed topologies, others will be rejected
+allowed_topologies = ['mer-3-2-1', 'mer-4-1-1', '5-1', '2-1-1', '2-2']  # list all allowed topologies here, others will be rejected
 
 # Define the key names in the assembly input file
 # Global settings
@@ -24,20 +24,20 @@ _verbose = 'verbosity'    # verbosity
 _optimization_movie = 'ffmovie'
 _concatenate_xyz = 'concatenate_xyz'
 _overwrite_output_path = 'overwrite_output'
-_output_path = 'output_path'
+_output_path = 'output_directory'
 _complex_name_length = 'complex_name_length'
 _same_isomer_names = 'same_isomer_names'
 # Batch settings
 _batches = 'batches'
 _name = 'name'
-_input_path = 'ligand_db_paths'
+_input_path = 'ligand_db_file'
 _max_num_complexes = 'max_num_complexes'
 _ligand_choice = 'ligand_choice'
 _isomers = 'isomers'
 _optimisation = 'forcefield'
 _random_seed = 'random_seed'
 _total_charge = 'total_charge'
-_topology = 'topology'
+_topology = 'geometry'
 _metal = 'metal'
 _element = 'metal_center'
 _oxidation_state = 'metal_oxidation_state'
@@ -53,8 +53,8 @@ _same_ligand_keyword = 'same_ligand_as_previous'
 
 # Define names for the settings in the ligand filters file:
 # Global
-_ligand_db_path = 'input_ligand_db_path'
-_output_ligand_db_path = 'output_ligand_db_path'
+_ligand_db_path = 'input_db_file'
+_output_ligand_db_path = 'output_db_file'
 _output_ligands_info = 'output_ligands_info'
 _filters = 'filters'
 # Filters
@@ -984,6 +984,10 @@ class AssemblyInput(BaseInput):
         topology = str(topology)
         if not topology in allowed_topologies:
             self.raise_error(f"Invalid topology '{topology}'. Supported topologies are {allowed_topologies}.", varname=varname)
+
+        # Remove 'mer-' from the topology string for backwards compatibility with old code
+        if topology.startswith('mer-'):
+            topology = topology[4:]
 
         denticities = [int(dent) for dent in topology.split('-')]
 

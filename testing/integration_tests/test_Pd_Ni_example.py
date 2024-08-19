@@ -85,7 +85,7 @@ def test_Pd_Ni_example(nmax=False, skip_filters=False):
 if __name__ == '__main__':
 
     nmax = False
-    skip_filters = True
+    skip_filters = False
 
     Br_filter, phenyl_filter, P_N_filter, assembly = test_Pd_Ni_example(nmax=nmax, skip_filters=skip_filters)
 

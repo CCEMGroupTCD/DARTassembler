@@ -1,5 +1,5 @@
-input_ligand_db_path:           # path or nothing
-output_ligand_db_path: ligandfilters/data_output/filtered_ligand_db_v1.7.json   # path or nothing
+input_db_file:           # path or nothing
+output_db_file: ligandfilters/data_output/filtered_ligand_db_v1.7.json   # path or nothing
 output_ligands_info: True   # True or False. If True, an overview of the filtered and passed ligands will be saved.
 
 filters:
@@ -92,8 +92,8 @@ filters:
 #
 #
 #
-#input_ligand_db_path:           # path or nothing. If nothing, the entire MetaLig ligand database will be used as input
-#output_ligand_db_path: data/filtered_ligand_db.json   # path or nothing
+#input_db_file:           # path or nothing. If nothing, the entire MetaLig ligand database will be used as input
+#output_db_file: data/filtered_ligand_db.json   # path or nothing
 #
 #filters:
 #  - filter: denticities         # filter out ligands with denticities not in this list

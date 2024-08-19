@@ -1,7 +1,7 @@
 import argparse
-from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo, concatenate_ligand_databases, run_installation_test
+from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo, concatenate_ligand_databases, run_installation_test, get_default_config_files_saved
 
-modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat', 'test']
+modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat', 'test', 'configs']
 
 def check_n_args(args, n):
     if len(args) != n:
@@ -17,7 +17,11 @@ Usage: dart <module> --path <path>
 
     args = parser.parse_args()
 
-    print(f'Executing module {args.module} with input file {args.path}')
+    print('=============== DART ===============')
+    print(f'Execute module: {args.module}')
+    if args.path:
+        print(f'Input file: {args.path}')
+
     if args.module == 'ligandfilters':
         check_n_args(args.path, 1)
         filter_ligands(args.path[0])
@@ -32,6 +36,9 @@ Usage: dart <module> --path <path>
     elif args.module == 'test':
         path = None if len(args.path) == 0 else args.path
         run_installation_test(path)
+    elif args.module == 'configs':
+        check_n_args(args.path, 0)
+        get_default_config_files_saved()
     else:
         raise ValueError(f'Unknown module {args.module}.')
 

@@ -1,5 +1,5 @@
-input_ligand_db_path:           # path or nothing
-output_ligand_db_path: '/Users/cianclarke/Documents/PhD/Complex_Assembly/DART/data/Filtered_Jsons/P_P_080823/P_P_080823.json'   # path or nothing
+input_db_file:           # path or nothing
+output_db_file: '/Users/cianclarke/Documents/PhD/Complex_Assembly/DART/data/Filtered_Jsons/P_P_080823/P_P_080823.json'   # path or nothing
 
 filters:
   - filter: 'denticities_of_interest'

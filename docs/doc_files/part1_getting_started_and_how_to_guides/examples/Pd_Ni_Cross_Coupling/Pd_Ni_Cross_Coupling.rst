@@ -145,11 +145,11 @@ The assembler module is configured by the file ``input/Pd_Ni_assembly_input.yml`
     ffmovie: true
     concatenate_xyz: true
     overwrite_output: true
-    output_path: assembler_output
+    output_directory: assembler_output
     complex_name_length: 8
 
     batches:
-      - ligand_db_paths: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
+      - ligand_db_file: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
         isomers: all
         max_num_complexes: 999999999999999999
         ligand_choice: all
@@ -165,7 +165,7 @@ The assembler module is configured by the file ``input/Pd_Ni_assembly_input.yml`
         complex_name_appendix: _PN_Pd
 
 
-      - ligand_db_paths: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
+      - ligand_db_file: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
         isomers: all
         max_num_complexes: 999999999999999999
         ligand_choice: all
@@ -189,7 +189,7 @@ At the beginning we define global preferences, such as enabling forcefield traje
 
 3. To explore all isomeric forms, we opt for `isomers: all`.
 
-4. Most importantly, `geometry: 2-1-1` instructs DART to craft complexes with one bidentate and two monodentate ligands, i.e. three different ligand sites. The three ligand databases in `ligand_db_paths` are provided in the same order, so that the first ligand database is used for the first ligand site, the second ligand database for the second ligand site, and so on. This allows us to fix the bromine and phenyl ligands to always be present in the complex, while varying the P-N donor ligands.
+4. Most importantly, `geometry: 2-1-1` instructs DART to craft complexes with one bidentate and two monodentate ligands, i.e. three different ligand sites. The three ligand databases in `ligand_db_file` are provided in the same order, so that the first ligand database is used for the first ligand site, the second ligand database for the second ligand site, and so on. This allows us to fix the bromine and phenyl ligands to always be present in the complex, while varying the P-N donor ligands.
 
 Now that we have configured the assembler, we can run it:
 

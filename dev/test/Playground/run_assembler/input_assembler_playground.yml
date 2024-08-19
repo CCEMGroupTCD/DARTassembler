@@ -2,14 +2,14 @@ verbosity: 2                          # How much output to print. Options: (0, 1
 ffmovie: true                         # Whether to output a movie of the optimization process. Set to False to save disk space.
 concatenate_xyz: true                 # Whether to concatenate the xyz files of the optimization process.
 overwrite_output: true                # Whether to overwrite the output if it already exists. Recommended: False.
-output_path: data_output     # Path to the output folder.
+output_directory: data_output     # Path to the output folder.
 same_isomer_names: true
 complex_name_length: 8                # Length of the complex name. Recommended: 8.
 
 batches:                              # List of batches to generate. The first option in each batch needs a hyphen and whitespace ('- ') in front of it to mark the start of the batch.
   - name: Integration_test_7          # Name of the batch. Note the hyphen and whitespace in front of it to mark the start of the batch.
-    topology: 2-1-1                   # Topology of the complexes. Options: '(2, 1, 1)', '(2, 2)', '(3, 2, 1)', '(4, 1, 1)', '(5, 1)'
-    ligand_db_paths: INTEGRATION_TEST_LIGAND_DATABASE_270623.json # Path to the ligand database. Either list of paths or single path.
+    geometry: 2-1-1                   # Geometry of the complexes. Options: '(2, 1, 1)', '(2, 2)', '(3, 2, 1)', '(4, 1, 1)', '(5, 1)'
+    ligand_db_file: INTEGRATION_TEST_LIGAND_DATABASE_270623.json # Path to the ligand database. Either list of paths or single path.
     metal_center: Fe                  # Chemical symbol of the desired metal center.
     metal_oxidation_state: 2          # Oxidation state of the desired metal center.
     total_charge: -1                  # Total charge of the complex.

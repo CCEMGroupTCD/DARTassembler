@@ -46,8 +46,8 @@ Below is an example YAML file, serving as a comprehensive template showcasing al
 
 .. code-block::
 
-    input_ligand_db_path:                           # Path or empty. If empty, the entire MetaLig ligand database will be used as input
-    output_ligand_db_path: filtered_ligand_db.json  # Path or empty. If empty defaults to 'filtered_ligand_db.json' in the current directory.
+    input_db_file:                           # Path or empty. If empty, the entire MetaLig ligand database will be used as input
+    output_db_file: filtered_ligand_db.json  # Path or empty. If empty defaults to 'filtered_ligand_db.json' in the current directory.
 
     filters:
       - filter: denticities
@@ -131,11 +131,11 @@ Input/Output Options
 
 The following two options have to be specified at the beginning of each ligand filter input file. They can be let empty but they have to be specified.
 
-.. confval:: input_ligand_db_path
+.. confval:: input_db_file
 
     Path to the input ligand database. If empty, the entire MetaLig ligand database will be used as input.
 
-.. confval:: output_ligand_db_path
+.. confval:: output_db_file
 
     Path to where the filtered ligand database will be saved. If empty, will default to 'filtered_ligand_db.json' in the current directory.
 

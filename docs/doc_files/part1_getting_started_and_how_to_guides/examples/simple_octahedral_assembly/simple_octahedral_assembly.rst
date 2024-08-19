@@ -5,7 +5,7 @@ Quickstart Guide
 
 Welcome to the quickstart guide for DART!
 
-As an introductory example, we will walk through the process of assembling 100 octahedral Pd(II) complexes with neutral charge. Each complex will feature one tridentate, one bidentate, and one monodentate ligand, which is referred to as ``3-2-1`` geometry in DART.
+As an introductory example, we will walk through the process of assembling 100 octahedral Pd(II) complexes with neutral charge. Each complex will feature one tridentate, one bidentate, and one monodentate ligand, which is referred to as ``mer-3-2-1`` geometry in DART.
 
 For now, we will use the entire MetaLig database with 41,018 ligands to assemble the complexes. Then, we will learn how to filter down the input ligands in order to target complexes suitable for your own field of research and to generate those that are more likely to form stable complexes.
 
@@ -29,12 +29,12 @@ The file ``assembly_input.yml`` outlines the options for the assembler. Make a n
 
     # File: assembly_input.yml
 
-    output_path: DART_output              # Path to the output folder.
+    output_directory: DART_output              # Path to the output folder.
 
     batches:                              # List of batches to generate. The first option in each batch needs a hyphen ('-') in front of it to mark the start of the batch.
       - name: Octahedral_Pd(II)           # Name of the batch. Note the hyphen in front of it to mark the start of the batch.
-        geometry: 3-2-1                   # Geometry of the complexes. Options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
-        ligand_db_paths:                  # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
+        geometry: mer-3-2-1                   # Geometry of the complexes. Options: 2-1-1, 2-2, mer-3-2-1, mer-4-1-1, 5-1
+        ligand_db_file:                  # Path to the ligand database. Either single path or list of [path, 'same_ligand_as_previous'].
         ligand_choice: random             # How to choose the ligands. Options: random, all
         max_num_complexes: 100            # Maximum number of complexes to generate.
         metal_center: Pd                  # Chemical symbol of the desired metal center.
@@ -89,8 +89,8 @@ The input file for these filters looks like this:
 
     # File: ligandfilter_input.yml
 
-    input_ligand_db_path:
-    output_ligand_db_path: filtered_ligand_db.json
+    input_db_file:
+    output_db_file: filtered_ligand_db.json
 
     filters:
       # Keep only monodentates which are neutral
@@ -127,7 +127,7 @@ The input file for these filters looks like this:
         metal_ligand_binding_history: [Ni, Pd, Pt]
         apply_to_denticities:
 
-      # Keep only monodentates, bidentates and tridentates, since others will be ignored anyway for our 3-2-1 complexes
+      # Keep only monodentates, bidentates and tridentates, since others will be ignored anyway for our mer-3-2-1 complexes
       - filter: denticities
         denticities: [1, 2, 3]
 
@@ -146,16 +146,16 @@ This will generate a .csv file listing all the ligands in ``filtered_ligand_db.j
 
 **Assembling Complexes with Targeted Chemistry:**
 
-To redo the assembly using the refined ligand database, update the `ligand_db_paths` in the assembly input file to the path of your filtered database. Also, change the output directory to prevent overwriting previous results.
+To redo the assembly using the refined ligand database, update the `ligand_db_file` in the assembly input file to the path of your filtered database. Also, change the output directory to prevent overwriting previous results.
 
 .. code-block::
 
     # update assembly_input.yml
-    output_path: DART_output_targeted
+    output_directory: DART_output_targeted
     ...
     batches:
           ...
-          ligand_db_paths: filtered_ligand_db.json
+          ligand_db_file: filtered_ligand_db.json
           ...
 
 The assembler will now draw from the 1,423 ligands that have been filtered to match our criteria. The resulting complexes will have a more uniform chemistry, while still covering a wide chemical space within the defined parameters. A histogram of the elements and two example complexes are shown in Figure 2. This method is excellent for generating a diverse set of complexes with realistic and targeted chemical properties for your research.

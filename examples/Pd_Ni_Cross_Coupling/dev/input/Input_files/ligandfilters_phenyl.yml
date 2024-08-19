@@ -1,5 +1,5 @@
-input_ligand_db_path:           # path or nothing
-output_ligand_db_path: './ligand_databases/phenyl/ligand_db_phenyl.jsonlines'   # path or nothing
+input_db_file:           # path or nothing
+output_db_file: './ligand_databases/phenyl/ligand_db_phenyl.jsonlines'   # path or nothing
 
 filters:
   - filter: 'denticities_of_interest'

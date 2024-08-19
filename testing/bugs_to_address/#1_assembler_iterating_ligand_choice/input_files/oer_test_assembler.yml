@@ -2,12 +2,12 @@ verbosity: 2
 ffmovie: false
 concatenate_xyz: true
 overwrite_output: true
-output_path: output/assemblerH2Oallsame
+output_directory: output/assemblerH2Oallsame
 same_isomer_names: false
 complex_name_length: 8
 
 batches:
-  - ligand_db_paths: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
+  - ligand_db_file: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
     isomers: all
     max_num_complexes: 20
     ligand_choice: random
@@ -18,11 +18,11 @@ batches:
     name: Cr
     forcefield: false
     random_seed: 5
-    topology: 3-2-1
+    geometry: mer-3-2-1
     total_charge: 0
     complex_name_appendix: _Cr
 
-  - ligand_db_paths: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
+  - ligand_db_file: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
     isomers: all
     max_num_complexes: 20
     ligand_choice: random
@@ -33,11 +33,11 @@ batches:
     name: Mn
     forcefield: false
     random_seed: 5
-    topology: 3-2-1
+    geometry: mer-3-2-1
     total_charge: 0
     complex_name_appendix: _Mn
 
-  - ligand_db_paths: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
+  - ligand_db_file: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
     isomers: all
     max_num_complexes: 20
     ligand_choice: random
@@ -48,11 +48,11 @@ batches:
     name: Fe
     forcefield: false
     random_seed: 5
-    topology: 3-2-1
+    geometry: mer-3-2-1
     total_charge: 0
     complex_name_appendix: _Fe
 
-  - ligand_db_paths: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
+  - ligand_db_file: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
     isomers: all
     max_num_complexes: 20
     ligand_choice: random
@@ -63,11 +63,11 @@ batches:
     name: Co
     forcefield: false
     random_seed: 5
-    topology: 3-2-1
+    geometry: mer-3-2-1
     total_charge: 0
     complex_name_appendix: _Co
 
-  - ligand_db_paths: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
+  - ligand_db_file: [output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_ligands.jsonlines, output/ligand_db/oer_OH.jsonlines]
     isomers: all
     max_num_complexes: 20
     ligand_choice: random
@@ -78,6 +78,6 @@ batches:
     name: Ru
     forcefield: false
     random_seed: 5
-    topology: 3-2-1
+    geometry: mer-3-2-1
     total_charge: 0
     complex_name_appendix: _Ru

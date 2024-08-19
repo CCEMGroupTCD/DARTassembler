@@ -1,12 +1,12 @@
-output_path: DARTassembler            # Output folder path.
+output_directory: DARTassembler       # Output folder path.
 
 batches:                              # List of batches to generate.
   - name: First_batch                 # Name of the batch.
     metal_center: Fe                  # Chemical symbol of the desired metal center.
     metal_oxidation_state: 2          # Oxidation state of the desired metal center.
     total_charge: 0                   # Total charge of the complex.
-    topology: 2-1-1                   # Topology of the complexes. :options: 2-1-1, 2-2, 3-2-1, 4-1-1, 5-1
-    ligand_db_paths: metalig          # Paths to the ligand databases. Either single path or list of [path, 'same_ligand_as_previous'].
+    geometry: 2-1-1                   # Geometry of the complexes. :options: 2-1-1, 2-2, mer-3-2-1, mer-4-1-1, 5-1
+    ligand_db_file: metalig           # Paths to the ligand databases. Either single path or list of [path, 'same_ligand_as_previous'].
     ligand_choice: random             # How to choose the ligands. :options: random, all
     max_num_complexes: 100            # Maximum number of complexes to generate.
     isomers: all                      # Which isomers to generate. :options: lowest_energy, all
