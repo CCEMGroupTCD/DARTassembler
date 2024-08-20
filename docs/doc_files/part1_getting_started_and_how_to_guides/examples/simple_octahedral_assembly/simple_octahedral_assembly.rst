@@ -7,8 +7,8 @@ Welcome to the quickstart guide for DART!
 
 As an introductory example, we will walk through the process of assembling 100 octahedral Pd(II) complexes with neutral charge. Each complex will feature one `mer`-tridentate, one bidentate, and one monodentate ligand, which is referred to as ``mer-3-2-1`` geometry in DART.
 
-For now, we will use the entire MetaLig database with 41,018 ligands to assemble the complexes. Then, we will learn how to filter down the input ligands in order to target complexes suitable for your own field of research and to generate those that are more likely to form stable complexes.
 
+For now, we will use the entire MetaLig database with 41,018 ligands to assemble the complexes. Then, we will learn how to filter down the input ligands in order to generate complexes targeted to your own field of research and to generate those that are more likely to form stable complexes.
 
 Confirming DART Installation
 ----------------------------
@@ -23,11 +23,11 @@ This command should display information how to use DART. If it throws an error, 
 Preparing for Assembly
 ----------------------
 
-The file ``assembly_input.yml`` outlines the options for the assembler. Make a new file and copy in the following contents. For more information on each parameter, please refer to the section :ref:`assembly_input`.
+The file ``assembler.yml`` outlines the options for the assembler. Make a new file and copy in the following contents. For more information on each parameter, please refer to the section :ref:`assembly_input`.
 
 .. code-block::
 
-    # File: assembly_input.yml
+    # File: assembler.yml
 
     output_directory: DART_output              # Path to the output folder.
 
@@ -62,9 +62,9 @@ To use the assembler, execute the following command in your terminal:
 
 .. code-block:: bash
 
-    DARTassembler assembler --path assembly_input.yml
+    DARTassembler assembler --path assembler.yml
 
-This command starts the assembler module, which creates complexes based on the ``assembly_input.yml`` file's instructions. The assembler will print the progress to the terminal and after a few minutes save the output files in the ``DART_output`` folder. Upon examining the generated complexes, you'll notice some wild chemistry. Using the entire MetaLig database with 41,018 different ligands clearly results in many complexes that are not very likely to form stable complexes. In fact, Figure 1 shows that there are 14 different elements in only these 300 ligands. It also shows two examples of complexes assembled in this run. In the following section, we will learn how to filter the ligands to generate complexes with a more realistic chemistry.
+This command starts the assembler module, which creates complexes based on the ``assembler.yml`` file's instructions. The assembler will print the progress to the terminal and after a few minutes save the output files in the ``DART_output`` folder. Upon examining the generated complexes, you'll notice some wild chemistry. Using the entire MetaLig database with 41,018 different ligands clearly results in many complexes that are not very likely to form stable complexes. In fact, Figure 1 shows that there are 14 different elements in only these 300 ligands. It also shows two examples of complexes assembled in this run. In the following section, we will learn how to filter the ligands to generate complexes with a more realistic chemistry.
 
 .. figure:: DART_output/quickstart_figure1.png
    :width: 100%
@@ -150,7 +150,7 @@ To redo the assembly using the refined ligand database, update the `ligand_db_fi
 
 .. code-block::
 
-    # update assembly_input.yml
+    # update assembler.yml
     output_directory: DART_output_targeted
     ...
     batches:

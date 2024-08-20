@@ -30,20 +30,19 @@ The assembler module is run from the command line by providing a single configur
         metal_center: Fe                  # Chemical symbol of the desired metal center.
         metal_oxidation_state: 2          # Oxidation state of the desired metal center.
         total_charge: 0                   # Total charge of the complex.
-        geometry: 2-1-1                   # Geometry of the complexes. Options: 2-1-1, 2-2, mer-3-2-1, mer-4-1-1, 5-1
-        ligand_db_file: metalig           # Path to the ligand db file. Options: metalig, test_metalig, filepath or list of paths/keywords (see documentation).
-        ligand_choice: random             # How to choose ligands from the db. Options: random, all
-        max_num_complexes: 100            # Maximum number of complexes/isomers to generate.
-        isomers: all                      # Which isomers to generate. Options: lowest_energy, all
+        geometry: 2-1-1                   # Geometry of the complexes. Options: `2-1-1`, `2-2`, `mer-3-2-1`, `mer-4-1-1`, `5-1`
+        ligand_db_file: metalig           # Path to the ligand db file. Options: `metalig`, `test_metalig`, filepath or list of paths/keywords (see documentation).
+        max_num_complexes: 100            # Maximum number of complexes/isomers to generate. Integer or `all`.
+        isomers: all                      # Which isomers to save for each complex. Options: `lowest_energy`, `all`
         #random_seed: 0                   # Optional. Random seed for reproducibility of results. Choose any integer.
-        #forcefield: false                # Optional. Whether to optimize the structures after generation with a UFF force field. Recommended: false.
-        #bidentate_rotator: auto          # Optional. How to rotate bidentate ligands in square-planar complexes. Options: auto, horseshoe, slab. Recommended: auto.
+        #forcefield: false                # Optional. Whether to optimize the structures after generation with a UFF force field. Recommended: `false`.
+        #bidentate_rotator: auto          # Optional. How to rotate bidentate ligands in square-planar complexes. Options: `auto`, `horseshoe`, `slab`. Recommended: `auto`.
         #geometry_modifier_filepath:      # Optional. Path to a geometry modifier file to shift atoms in complexes.
         #complex_name_appendix:           # Optional. String to append to each randomly generated complex name for labeling purposes.
 
-    #ffmovie: false                       # Optional. Whether to output a movie of the optimization process. Set to false to save disk space.
-    #concatenate_xyz: true                # Optional. Whether to concatenate the xyz files of the optimization process.
-    #verbosity: 2                         # Optional. Output verbosity level (0-3), recommended: 2.
+    #ffmovie: false                       # Optional. Whether to output a movie (concatenated xyz file) of the forcefield optimization process.
+    #concatenate_xyz: true                # Optional. Whether to save concatenated xyz files with all passed/failed complexes respectively.
+    #verbosity: 2                         # Optional. Output verbosity level (0-3), recommended: `2`.
     #same_isomer_names: true              # Optional. Whether to give the same name to isomers of the same complex and then to number them.
     #complex_name_length: 8               # Optional. Length for generated complex names, recommended: 8.
 
@@ -112,23 +111,14 @@ Batch options are mostly mandatory and specify details concerning the metal cent
 
     Note: Ligands in the database with a denticity not matching the specified :confval:`geometry` will be ignored during the assembly process. This ensures that only compatible ligands are selected for complex formation.
 
-.. confval:: ligand_choice
-
-    :options: ``random``, ``all``
-    :required: ``true``
-
-    If ``random``, ligands will be chosen at random from the ligand database to assemble complexes. If ``all``, every possible combination of ligands will systematically be assembled. Note that this can lead to a very large number of complexes. The option :confval:`max_num_complexes` is used either way to limit the number of complexes generated.
-
 .. confval:: max_num_complexes
 
-    :options: `integer > 0`
+    :options: `integer > 0` OR ``all``
     :required: ``true``
 
-    Maximum number of complexes to generate. Notes:
+    Maximum number of complexes to generate. If :confval:`max_num_complexes` is set to ``all``, it will generate all combinatorically possible complexes.
 
-    - If :confval:`isomers` is set to ``all``, each isomer is counted as different complex. Note that the actual number of complexes generated can be a little higher in this case because for the last complex, all isomers are saved, even if this exceeds :confval:`max_num_complexes`.
-
-    - If :confval:`ligand_choice` is set to ``all``, :confval:`max_num_complexes` will still be used to limit the number of complexes generated. To stop only after every possible complex is generated, set :confval:`max_num_complexes` to a very large number.
+    Note: If :confval:`isomers` is set to ``all``, each isomer is counted as different complex. Note that the actual number of complexes generated can be a little higher in this case because for the last complex, all isomers are saved, even if this exceeds :confval:`max_num_complexes`.
 
 .. confval:: isomers
 
@@ -202,7 +192,7 @@ Global options are all optional and specify settings that apply to all batches.
     :required: ``false``
     :default: ``false``
 
-    Whether to output a movie of the forcefield optimization process. Useful for visualization e.g. with ``ase gui FILE.xyz``.
+    Whether to output a movie (i.e. a concatenated .xyz file displaying multiple frames) of the forcefield optimization process. Useful for visualization e.g. with ``ase gui FILE.xyz``.
 
 .. confval:: concatenate_xyz
 

@@ -19,7 +19,7 @@ Utilizing just four commands, we will generate neutral complexes with a phenyl g
     DARTassembler ligandfilters --path input/ligandfilters_phenyl.yml
     DARTassembler ligandfilters --path input/ligandfilters_Br.yml
     DARTassembler ligandfilters --path input/ligandfilters_P_N_ligands.yml
-    DARTassembler assembler --path input/Pd_Ni_assembly_input.yml
+    DARTassembler assembler --path input/Pd_Ni_assembler.yml
 
 Subsequently, we present the results from DFT calculations performed with Gaussian16 on all the assembled complexes, highlighting the diverse properties of these seemingly similar complexes.
 
@@ -62,7 +62,7 @@ To prepare for the assembly of transition metal complexes, you'll need to set up
     - `ligandfilters_Br.yml` : filters to extract the bromine ligand
     - `ligandfilters_phenyl.yml` : filters to extract the phenyl ligand
     - `ligandfilters_P_N_ligands.yml` : filters to extract the P-N donor ligands
-    - `Pd_Ni_assembly_input.yml` : configuration file for the DART assembler module
+    - `Pd_Ni_assembler.yml` : configuration file for the DART assembler module
     - `Ni_phenyl_geometry_modification.xyz` : file specifying how to shift the phenyl ligand for the Ni complexes
     - `Pd_phenyl_geometry_modification.xyz` : file specifying how to shift the phenyl ligand for the Pd complexes
 
@@ -137,7 +137,7 @@ With these three ligand databases in hand, you're all set to move on to the asse
 Running the Assembler
 ^^^^^^^^^^^^^^^^^^^^^
 
-The assembler module is configured by the file ``input/Pd_Ni_assembly_input.yml``. The documentation for all these options can be found at :ref:`assembly_input`. Let us go through the file and look at the important options:
+The assembler module is configured by the file ``input/Pd_Ni_assembler.yml``. The documentation for all these options can be found at :ref:`assembly_input`. Let us go through the file and look at the important options:
 
 .. code-block::
 
@@ -195,7 +195,7 @@ Now that we have configured the assembler, we can run it:
 
 .. code-block:: bash
 
-    DARTassembler assembler --path input/Pd_Ni_assembly_input.yml
+    DARTassembler assembler --path input/Pd_Ni_assembler.yml
 
 This will generate a new folder ``assembler_output`` which contains the generated complexes. To get an understanding of the output of the assembler module please refer the section :ref:`assembly_output`. The output of the assembler module concludes with the following lines:
 
