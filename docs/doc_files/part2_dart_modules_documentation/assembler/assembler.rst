@@ -1,4 +1,4 @@
-.. _assembly_input:
+.. _assembler:
 
 Assembler Module
 ====================

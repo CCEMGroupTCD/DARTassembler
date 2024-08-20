@@ -9,7 +9,7 @@ DART implements a list of commands for the terminal which you can use to interac
     Displays a list of available commands. Useful to check if DART is available.
 
 ``DARTassembler assembler --path assembler_input.yml`` :
-    Initiates the :ref:`assembler module <assembly_input>` using the specified configuration file which is named `assembler_input.yml` here. This will run the assembler and save the output to the directory specified in the configuration file.
+    Initiates the :ref:`assembler module <assembler>` using the specified configuration file which is named `assembler_input.yml` here. This will run the assembler and save the output to the directory specified in the configuration file.
 
 ``DARTassembler ligandfilters --path ligandfilters_input.yml`` :
     Executes the :ref:`ligand filters module <ligandfilters>` based on the provided configuration file which is named `ligandfilters_input.yml` here. This will run the filter and save the output to the directory specified in the configuration file.

@@ -3,16 +3,16 @@
 Pd/Ni Cross Coupling
 --------------------
 
-This example introduces the advanced features of DART through the construction of Pd(II) and Ni(II) square-planar complexes for cross-coupling reactions. Users new to DART should first review the :ref:`quickstart`. The following capabilities will be highlighted:
+This example introduces advanced features of DART through the construction of Pd(II) and Ni(II) square-planar complexes as intermediates of the oxidative addition step of the transition metal catalyzed C-C cross-coupling reaction. Users new to DART should first review the :ref:`quickstart`. The following capabilities will be highlighted:
 
-- Filter the chosen ligands for each ligand site individually
-- Fix a certain ligand to always be present in the complex
-- Generate complexes with all possible combinations of ligands instead of random assembly
-- Shift individual atoms in a ligand to a specified position
+- Filter ligands for each binding site individually
+- Fix a certain ligand to always be present in each complex
+- Generate complexes with all possible combinations of ligands
+- Shift individual atoms in a ligand to a specified position for fine-grained control
 - Generate all possible isomers of a complex
-- Choose the best bidentate rotator for the ligands
+- Choose the best rotator for bidentate ligands
 
-Utilizing just four commands, we will generate neutral complexes with a phenyl group, a bromine substrate, and varying P-N donor ligands:
+Utilizing just four commands, we will generate neutral complexes in a ``2-1-1`` geometry in which the monodentate ligands are fixed to be a phenyl group and a bromine substrate while the bidentate ligand iterates through 173 possible P-N donors:
 
 .. code-block:: bash
 
@@ -21,50 +21,45 @@ Utilizing just four commands, we will generate neutral complexes with a phenyl g
     DARTassembler ligandfilters --path input/ligandfilters_P_N_ligands.yml
     DARTassembler assembler --path input/Pd_Ni_assembler.yml
 
-Subsequently, we present the results from DFT calculations performed with Gaussian16 on all the assembled complexes, highlighting the diverse properties of these seemingly similar complexes.
+Subsequently, we present results from DFT calculations performed with Gaussian16 on all the assembled complexes, highlighting a diverse range of properties for these seemingly similar complexes.
 
 Planning the Workflow
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The systematic approach to assembling transition metal complexes with DART involves several clearly defined steps:
+To assemble the intermediates with DART, we will follow these steps:
 
-1. **Ligand Selection**: Start off by filtering individual databases for each ligand site—bromine, phenyl, and P-N donor ligands—to precisely control the ligands at each site.
+1. **Ligand Selection**: We will produce three different ligand databases—just bromine, just phenyl, and all suitable P-N donor ligands—to precisely control the ligands at each binding site in the ``2-1-1`` geometry.
 
-2. **Assembler Configuration**: Utilize the assembler module with the following options:
+2. **Assembler Configuration**:
 
-   - Assemble all possible ligand combinations to explore the full range of complex structures.
+   - Assemble all possible ligand combinations.
    - Fix bromine and phenyl ligands within each complex, varying only the P-N donor ligands.
-   - Implement a custom rotation for the phenyl ligand by adjusting specific atoms to prevent collisions with P-N donor ligands.
-   - Isomer Generation: Generate all possible isomers of each complex.
+   - Implement a user-defined rotation of the phenyl ligand to prevent collisions with the P-N donor ligands.
+   - Generate all possible isomers of each complex.
 
-
-Confirming DART Installation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Ensure DART is correctly installed by typing ``DARTassembler --help`` in the terminal. Any issues should be directed to the section :ref:`troubleshooting` for resolution.
-
-
-Preparing for Assembly
+Preparation
 ^^^^^^^^^^^^^^^^^^^^^^
 
-To prepare for the assembly of transition metal complexes, you'll need to set up an output directory and configure the necessary input files. Here's how you can do it:
+First, let's make a new directory called ``DART_cross_coupling`` and go there. Then, let's download all input files for this example from our GitHub repository so that we can explore the input files without worrying about mistakes:
 
-1. **Creating an Output Directory**: This will be the repository for all the files produced during the assembly process.
+.. code-block:: bash
 
-   .. code-block:: bash
+    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/ligandfilters_Br.yml
+    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/ligandfilters_phenyl.yml
+    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/ligandfilters_P_N_ligands.yml
+    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/Pd_Ni_assembler.yml
+    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/Ni_phenyl_geometry_modification.xyz
+    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/Pd_phenyl_geometry_modification.xyz
 
-       mkdir DART_cross_coupling
-       cd DART_cross_coupling
 
-2. **Configuring the Assembly Input**:
-   You can find all the required input files in our `GitHub repository <https://github.com/CCEMGroupTCD/DART/tree/master/examples/Pd_Ni_Cross_Coupling/generate_complexes>`_. Please download the ``input`` directory and place it into your ``DART_cross_coupling`` folder. This directory includes six essential files:
+This directory includes six essential files:
 
-    - `ligandfilters_Br.yml` : filters to extract the bromine ligand
-    - `ligandfilters_phenyl.yml` : filters to extract the phenyl ligand
-    - `ligandfilters_P_N_ligands.yml` : filters to extract the P-N donor ligands
-    - `Pd_Ni_assembler.yml` : configuration file for the DART assembler module
-    - `Ni_phenyl_geometry_modification.xyz` : file specifying how to shift the phenyl ligand for the Ni complexes
-    - `Pd_phenyl_geometry_modification.xyz` : file specifying how to shift the phenyl ligand for the Pd complexes
+- `ligandfilters_Br.yml` : filters to extract the bromine ligand
+- `ligandfilters_phenyl.yml` : filters to extract the phenyl ligand
+- `ligandfilters_P_N_ligands.yml` : filters to extract the P-N donor ligands
+- `Pd_Ni_assembler.yml` : configuration file for the DART assembler module
+- `Ni_phenyl_geometry_modification.xyz` : file specifying how to shift the phenyl ligand for the Ni complexes
+- `Pd_phenyl_geometry_modification.xyz` : file specifying how to shift the phenyl ligand for the Pd complexes
 
 We will go through the files one by one and explain what they do.
 
@@ -137,7 +132,7 @@ With these three ligand databases in hand, you're all set to move on to the asse
 Running the Assembler
 ^^^^^^^^^^^^^^^^^^^^^
 
-The assembler module is configured by the file ``input/Pd_Ni_assembler.yml``. The documentation for all these options can be found at :ref:`assembly_input`. Let us go through the file and look at the important options:
+The assembler module is configured by the file ``input/Pd_Ni_assembler.yml``. The documentation for all these options can be found at :ref:`assembler`. Let us go through the file and look at the important options:
 
 .. code-block::
 
@@ -237,7 +232,7 @@ The data presented in Figure 2 underscores the extensive range of properties ach
 Optimizing the Output Geometry in DART
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Proper geometry optimization is crucial for the successful assembly of transition metal complexes. DART provides three key options to ensure optimal geometry: `forcefield`, `geometry_modifier_filepath`, and `bidentate_rotator`. These options are documented in detail in section :ref:`assembly_input`.
+Proper geometry optimization is crucial for the successful assembly of transition metal complexes. DART provides three key options to ensure optimal geometry: `forcefield`, `geometry_modifier_filepath`, and `bidentate_rotator`. These options are documented in detail in section :ref:`assembler`.
 
 The `forcefield` option leverages a UFF forcefield to relax the output structure before going through the post-filter.
 

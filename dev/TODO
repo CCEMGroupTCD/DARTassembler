@@ -7,6 +7,7 @@ Todo before publication:
     - refactor modules to take global settings as cli/python input and only filters/batches as yml file
        - make python api, the cli should make use of this api
     - add concat functionality to ligandfilters and add multiple ligand dbs to the tests
+    - add failed complexes to DART output on global level
 
 Update docs:
 - dbinfo has concat xyz files

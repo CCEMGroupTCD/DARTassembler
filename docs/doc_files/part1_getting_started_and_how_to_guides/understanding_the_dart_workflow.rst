@@ -28,7 +28,7 @@ The DART Files
 
 To keep things simple, DART is all about files on your computer which you can move around as you want. DART has a few different types of files:
 
-    - **.jsonlines :** These files are ligand databases. You need to provide one or more of these to the :ref:`DART assembler module <assembly_input>`.
+    - **.jsonlines :** These files are ligand databases. You need to provide one or more of these to the :ref:`DART assembler module <assembler>`.
     - **.yml :** These files are configuration files for Ligand Filters or Assembler. They allow you to specify a wide range of ligand filters and assembly options to customize your output to your needs.
     - **.xyz :** These files are outputted by the dbinfo and the assembler module. They contain structures of ligands or complexes respectively. If they start with "concat", they contain multiple structures. All .xyz files can easily be visualized for example with ase with the command ``ase gui FILE.xyz``.
     - **.csv :** These files are outputted by the dbinfo and the assembler module. They contain information about ligands and complexes respectively.
