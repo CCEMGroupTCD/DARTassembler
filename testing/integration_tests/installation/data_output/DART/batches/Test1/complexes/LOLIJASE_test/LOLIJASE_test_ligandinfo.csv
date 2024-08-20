@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PACTUM-02-a,C6H3N4O4,2,-1,O-N,17,195.114,0.808015948,False,False,6.770867569964723,2.0748072856204276,489688c385c371367edf102c4ccba020,1,PACTUM,Ru(1)
+Ligand 1,unq_CSD-PADFAC-02-a,C15H17N2,2,-1,N-N,34,225.315,0.1346590342,False,False,10.203855540431764,2.3087989282789576,d668bbb52281b2165415f08b55a1380f,2,"PADFAC, PADFAC",Zr(2)

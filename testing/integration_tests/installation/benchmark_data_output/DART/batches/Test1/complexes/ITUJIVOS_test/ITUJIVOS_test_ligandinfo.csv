@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZOXOS-02-a,C8H8N1O2,2,-1,O-N,19,150.157,0.4283208484,False,True,7.645386897338813,1.8511907088604826,8c42892cc132b3c27f23cba1dd96df9f,8,"OZOXOS, OZOXOS, URUVEK, URUVEK, LEXVUF, ... (3 more)","Ni(6), Cu(2)"
+Ligand 1,unq_CSD-OZOLEW-02-b,N1O3,2,-1,O-O,4,62.004,0.9987352726,False,False,2.1922029582134948,2.281862522348893,c087b24e776419cf7c2725f25120f4c8,5799,"OZOLEW, OZOLIA, OZOLOG, OZOLOG01, OZOMAT, ... (5794 more)","Eu(517), La(430), Nd(412), U(367), Cu(367), ... (34 more)"

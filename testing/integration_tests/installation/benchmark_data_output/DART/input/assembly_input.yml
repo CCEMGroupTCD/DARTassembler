@@ -7,7 +7,7 @@ batches:
   metal_oxidation_state: 2
   name: Test1
   forcefield: true
-  random_seed: 1
+  random_seed: 10
   geometry: 2-2
   total_charge: 0
   complex_name_appendix: _test

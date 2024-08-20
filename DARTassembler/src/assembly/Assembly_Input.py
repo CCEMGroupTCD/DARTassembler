@@ -4,6 +4,8 @@ This file contains functions and a classes for the input of the assembly. They d
 import difflib
 import warnings
 from copy import deepcopy
+import random
+
 import yaml
 import ase
 import pandas as pd
@@ -112,9 +114,12 @@ assembler_gbl_defaults = {
     _complex_name_length: 8,
     _same_isomer_names: True,
 }
+def get_random_random_seed(start=1_000, end=9_999) -> int:
+    return random.randint(start, end)
+
 assembler_batch_defaults = {
     _optimisation: False,
-    _random_seed: 0,
+    _random_seed: get_random_random_seed(),
     _complex_name_appendix: None,
     _geometry_modifier_filepath: None,
     _bidentate_rotator: 'auto',
@@ -124,6 +129,7 @@ ligandfilters_gbl_defaults = {
     _output_ligand_db_path: None,
     _output_ligands_info: True,
 }
+
 
 
 
@@ -739,7 +745,7 @@ class AssemblyInput(BaseInput):
                         _random_seed: [int, str],
                         _total_charge: [int, str],
                         _topology: [str, list, tuple],
-                        _complex_name_appendix: [str,type(None)],
+                        _complex_name_appendix: [str, type(None)],
                         _geometry_modifier_filepath: [str, type(None)],
                         _bidentate_rotator: [str],
                         }
@@ -892,14 +898,16 @@ class AssemblyInput(BaseInput):
 
         return bidentate_rotator
 
-    # def get_ligand_choice_from_input(self, ligand_choice: str, varname) -> str:
-    #     """
-    #     Checks the input for the ligand choice.
-    #     """
-    #     if not ligand_choice in ['random', 'all']:
-    #         self.raise_error(f"Input '{ligand_choice}' for '{varname}' is not valid. Valid inputs are 'random' and 'all'.")
-    #
-    #     return ligand_choice
+    def get_random_seed_from_input(self, random_seed: Union[int, str, None], varname: str) -> Union[int, None]:
+        """
+        Checks the input for the random seed.
+        """
+        if random_seed is None:
+            random_seed = get_random_random_seed()
+        else:
+            self.get_int_from_input(random_seed, varname=varname)
+
+        return random_seed
 
     def get_geometry_modifier_from_input(self, path):
         if path is None:
