@@ -9,7 +9,7 @@ setup(
     author="Timo Sommer, Cian Clarke, Felix Kleuker",
     packages=find_packages(),
     include_package_data=True,
-    install_requires=[],  # Requirements are handled by conda. See file conda_DART.yml.
+    install_requires=['ase', 'jsonlines', 'networkx', 'numpy', 'openbabel-wheel', 'pandas', 'pbr', 'pyyaml', 'rdkit', 'scipy', 'scikit-learn', 'stk', 'sympy', 'tqdm', 'pysmiles'],  # Requirements are handled by conda. See file conda_DART.yml.
     package_data={
         'DARTassembler': [
             'data/*.csv',
