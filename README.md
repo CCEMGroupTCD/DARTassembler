@@ -21,7 +21,7 @@ Using DART is simple. After download, just run the DART assembler and start gene
 The documentation of DART (TODO: LINK) will show you how to install and use DART.
 
 ## How to cite DART
-Please cite our paper as given in [1].
+Please cite our paper[1].
 
 ## Reproducing the DART paper
 The documentation contains a section about the Pd/Ni cross coupling example that was used in the paper. It will show you how to reproduce the results of the paper.
@@ -30,9 +30,8 @@ The documentation contains a section about the Pd/Ni cross coupling example that
 DART is subject to the GPL-3.0-or-later license. See `LICENSE` for more information.
 
 ## Origin of data
-We are grateful to the providers of the [Cambridge Structural Database](https://www.ccdc.cam.ac.uk/structures/)[2], which is the source of all ligands in the ligand database.
+We are grateful to the providers of the [Cambridge Structural Database](https://www.ccdc.cam.ac.uk/structures/), which is the source of all ligands in the ligand database.
 
-## References
-1. our own paper # TODO
-2. Groom, C. R., Bruno, I. J., Lightfoot, M. P. & Ward, S. C. The Cambridge Structural Database. Acta Crystallogr B Struct Sci Cryst Eng Mater 72, 171–179 (2016) 
+## Citations
+1. DART paper # TODO
 
