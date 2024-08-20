@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAFWIC-02-a,C3H6N1S2,2,-1,S-S,12,120.20799999999998,0.3845515107,False,False,4.659254201049777,2.532316096586774,eac4cd02eef0e19c6e93f9e949dd7a3f,282,"PAFWIC, PAFWIC, PEBZUS, PEBZUS, PENLIE, ... (277 more)","Co(45), Re(28), Ru(24), Os(22), Mo(19), ... (24 more)"
+Ligand 1,unq_CSD-PECNIX-02-a,C16H13N4S1,2,-1,S-N,34,293.368,0.2547842291,False,True,12.113399137318972,2.041581084392779,2f38e156287204c466186bef3b629255,5,"PECNIX, PECNIX, TEZWIH, FAVVEH, FAVVEH","Pd(3), Ni(2)"

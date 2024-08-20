@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PABGEF-02-a,C7H5O2,2,-1,O-O,14,121.11499999999997,0.9397995679,False,False,5.336765376143118,1.9240700033870217,f7ebd60253fe92d23b3686c10d99001f,90,"PABGEF, PABGIJ, BOJSAV, MOCHOD, MOCHOD, ... (85 more)","Cu(12), Ru(10), Sc(9), Zn(8), Re(7), ... (17 more)"
-Ligand 1,unq_CSD-PACTUM-02-a,C6H3N4O4,2,-1,O-N,17,195.114,0.808015948,False,False,6.770867569964723,2.0748072856204276,489688c385c371367edf102c4ccba020,1,PACTUM,Ru(1)

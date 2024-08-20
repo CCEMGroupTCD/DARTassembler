@@ -7,7 +7,6 @@ Todo before publication:
     - refactor modules to take global settings as cli/python input and only filters/batches as yml file
        - make python api, the cli should make use of this api
     - add concat functionality to ligandfilters and add multiple ligand dbs to the tests
-- License: Check the licenses of DART requirements, especially RDKit and OpenBabel
 
 Update docs:
 - dbinfo has concat xyz files

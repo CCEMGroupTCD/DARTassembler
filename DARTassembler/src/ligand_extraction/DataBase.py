@@ -696,10 +696,10 @@ class ComplexDB(MoleculeDB):
 if __name__ == '__main__':
 
     db_path = 'metalig'
-    n_max = 200
+    n_max = 1000
 
     db = LigandDB.load_from_json(path=db_path, n_max=n_max)
-    outpath = '/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/metalig/test200_MetaLigDB_v1.0.0.jsonlines'
+    outpath = f'/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/data/metalig/test{n_max}_MetaLigDB_v1.0.0.jsonlines'
     db.to_json(outpath, desc='Save ligand db to json', json_lines=True)
     # df_metals = db.calc_number_of_possible_complexes()
     # print(df_metals)

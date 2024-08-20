@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-OZURAE-02-b,C6H5N2O2,2,-1,O-O,15,137.118,0.518987853,False,False,7.148208975680551,1.9381822468949519,6aedf0701cf842e447a0e06abebd87fb,26,"OZURAE, TANLUP, UBINAY, COBJAE, CUNPHA01, ... (21 more)","Ni(5), Cu(4), Zr(4), Co(4), Rh(3), ... (3 more)"
-Ligand 1,unq_CSD-OZOLEW-02-b,N1O3,2,-1,O-O,4,62.004,0.9987352726,False,False,2.1922029582134948,2.281862522348893,c087b24e776419cf7c2725f25120f4c8,5799,"OZOLEW, OZOLIA, OZOLOG, OZOLOG01, OZOMAT, ... (5794 more)","Eu(517), La(430), Nd(412), U(367), Cu(367), ... (34 more)"

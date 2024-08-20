@@ -20,29 +20,29 @@ Filter 17: smarts                                                               
 
 ==================================== FILTER RESULTS ====================================
                                                     Ligands removed  Ligands passed
-Filter 01: denticities                                      4              196     
-Filter 02: remove_ligands_with_adjacent_coordin...          8              188     
-Filter 03: remove_ligands_with_beta_hydrogens             105               83     
-Filter 04: number_of_atoms                                 30               53     
-Filter 05: ligand_charges                                   3               50     
-Filter 06: metal_ligand_binding_history                     8               42     
-Filter 07: coordinating_atoms_composition                   1               41     
-Filter 08: molecular_weight                                 0               41     
-Filter 09: number_of_atoms                                  0               41     
-Filter 10: molecular_weight                                10               31     
-Filter 11: interatomic_distances                            0               31     
-Filter 12: planarity                                        0               31     
-Filter 13: occurrences                                      0               31     
-Filter 14: metal_donor_bond_lengths                         0               31     
-Filter 15: atomic_neighbors                                 3               28     
-Filter 16: smarts                                           0               28     
-Filter 17: smarts                                           1               27     
+Filter 01: denticities                                     33              967     
+Filter 02: remove_ligands_with_adjacent_coordin...         37              930     
+Filter 03: remove_ligands_with_beta_hydrogens             550              380     
+Filter 04: number_of_atoms                                121              259     
+Filter 05: ligand_charges                                  25              234     
+Filter 06: metal_ligand_binding_history                    32              202     
+Filter 07: coordinating_atoms_composition                   7              195     
+Filter 08: molecular_weight                                 8              187     
+Filter 09: number_of_atoms                                  0              187     
+Filter 10: molecular_weight                                62              125     
+Filter 11: interatomic_distances                            0              125     
+Filter 12: planarity                                        2              123     
+Filter 13: occurrences                                      0              123     
+Filter 14: metal_donor_bond_lengths                         3              120     
+Filter 15: atomic_neighbors                                24               96     
+Filter 16: smarts                                           1               95     
+Filter 17: smarts                                           5               90     
 
 ===========   TOTAL   ===========
-Before filtering:  200 ligands
-Filtered out:      173 ligands
-Passed:            27 ligands
-Denticities:       1: 19, 2: 8
+Before filtering:  1000 ligands
+Filtered out:      910 ligands
+Passed:            90 ligands
+Denticities:       1: 53, 2: 34, 3: 2, 4: 1
 
 Done filtering!
-Filtered ligand database with 27 entries was saved to `filtered_ligand_db.jsonlines`.
+Filtered ligand database with 90 entries was saved to `filtered_ligand_db.jsonlines`.
