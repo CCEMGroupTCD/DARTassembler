@@ -27,7 +27,7 @@ Please cite our paper as given in [1].
 The documentation contains a section about the Pd/Ni cross coupling example that was used in the paper. It will show you how to reproduce the results of the paper.
 
 ## License
-DART is subject to the MIT license. See `LICENSE.md` for more information.
+DART is subject to the GPL-3.0-or-later license. See `LICENSE` for more information.
 
 ## Origin of data
 We are grateful to the providers of the [Cambridge Structural Database](https://www.ccdc.cam.ac.uk/structures/)[2], which is the source of all ligands in the ligand database.
