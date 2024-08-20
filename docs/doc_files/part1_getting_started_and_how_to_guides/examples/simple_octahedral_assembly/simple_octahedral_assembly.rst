@@ -5,7 +5,7 @@ Quickstart Guide
 
 Welcome to the quickstart guide for DART!
 
-As an introductory example, we will walk through the process of assembling 100 octahedral Pd(II) complexes with neutral charge. Each complex will feature one tridentate, one bidentate, and one monodentate ligand, which is referred to as ``mer-3-2-1`` geometry in DART.
+As an introductory example, we will walk through the process of assembling 100 octahedral Pd(II) complexes with neutral charge. Each complex will feature one `mer`-tridentate, one bidentate, and one monodentate ligand, which is referred to as ``mer-3-2-1`` geometry in DART.
 
 For now, we will use the entire MetaLig database with 41,018 ligands to assemble the complexes. Then, we will learn how to filter down the input ligands in order to target complexes suitable for your own field of research and to generate those that are more likely to form stable complexes.
 
