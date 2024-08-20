@@ -16,7 +16,8 @@ setup(
             'data/metalig/*.jsonlines.zip',
             'data/metalig/test*.jsonlines',
             'data/metalig/*.csv',
-            'data/tests/test_installation/*'
+            'data/tests/test_installation/*',
+            'data/default/*'
         ]
     },
     entry_points={
