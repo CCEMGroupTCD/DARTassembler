@@ -14,6 +14,7 @@ def get_default_config_files_saved(outdir: str) -> None:
     print(f"Getting default configuration files...")
 
     outpath = Path(outdir)
+    outpath.mkdir(parents=True, exist_ok=True)
 
     # Copy assembler.yml
     filename = default_assembler_yml_path.name
