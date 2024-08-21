@@ -6,14 +6,14 @@ from typing import Union
 from DARTassembler.src.constants.Paths import default_assembler_yml_path, default_ligandfilters_yml_path
 from shutil import copyfile
 
-def get_default_config_files_saved() -> None:
+def get_default_config_files_saved(outdir: str) -> None:
     """
     Get the default configuration files for the ligand filters and the assembler and save them to the specified output path.
     :return: None
     """
     print(f"Getting default configuration files...")
 
-    outpath = Path.cwd()
+    outpath = Path(outdir)
 
     # Copy assembler.yml
     filename = default_assembler_yml_path.name

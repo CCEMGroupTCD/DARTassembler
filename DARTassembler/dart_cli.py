@@ -35,10 +35,11 @@ Usage: dart <module> --path <path>
         concatenate_ligand_databases(args.path)
     elif args.module == 'test':
         path = None if len(args.path) == 0 else args.path
-        run_installation_test(path)
+        check_n_args(path, 1)
+        run_installation_test(path[0])
     elif args.module == 'configs':
-        check_n_args(args.path, 0)
-        get_default_config_files_saved()
+        check_n_args(args.path, 1)
+        get_default_config_files_saved(args.path[0])
     else:
         raise ValueError(f'Unknown module {args.module}.')
 

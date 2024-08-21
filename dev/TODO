@@ -8,6 +8,9 @@ Todo before publication:
        - make python api, the cli should make use of this api
     - add concat functionality to ligandfilters and add multiple ligand dbs to the tests
     - add failed complexes to DART output on global level
+    - remove openbabel warning when using forcefield
+    - optimize printed output, make DART ascii art
+    - Cian read docs and especially give a more chemical explanation of why to rotate the phenyl ligand in the example
 
 Update docs:
 - dbinfo has concat xyz files
