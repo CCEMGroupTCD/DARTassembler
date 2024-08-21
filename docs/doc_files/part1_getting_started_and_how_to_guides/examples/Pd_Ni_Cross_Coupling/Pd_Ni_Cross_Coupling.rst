@@ -1,16 +1,16 @@
 .. _Pd_Ni_Cross_Coupling:
 
-Pd/Ni Cross Coupling
---------------------
+Advanced Example
+---------------------------------------
 
 This example introduces advanced features of DART through the construction of Pd(II) and Ni(II) square-planar complexes as intermediates of the oxidative addition step of the transition metal catalyzed C-C cross-coupling reaction. Users new to DART should first review the :ref:`quickstart`. The following capabilities will be highlighted:
 
 - Filter ligands for each binding site individually
 - Fix a certain ligand to always be present in each complex
 - Generate complexes with all possible combinations of ligands
-- Shift individual atoms in a ligand to a specified position for fine-grained control
 - Generate all possible isomers of a complex
 - Choose the best rotator for bidentate ligands
+- Shift atoms in assembled complexes to customize their geometries
 
 Utilizing just four commands, we will generate neutral complexes in a ``2-1-1`` geometry in which the monodentate ligands are fixed to be a phenyl group and a bromine substrate while the bidentate ligand iterates through 173 possible P-N donors:
 
@@ -37,221 +37,348 @@ To assemble the intermediates with DART, we will follow these steps:
    - Implement a user-defined rotation of the phenyl ligand to prevent collisions with the P-N donor ligands.
    - Generate all possible isomers of each complex.
 
-Preparation
-^^^^^^^^^^^^^^^^^^^^^^
+Targeting Ligands via Ligand Filters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-First, let's make a new directory called ``DART_cross_coupling`` and go there. Then, let's download all input files for this example from our GitHub repository so that we can explore the input files without worrying about mistakes:
+To initiate the assembly process within DART, we will create three distinct ligand databases, each corresponding to a specific binding site of our ``2-1-1`` complexes:
 
-.. code-block:: bash
+1. ``ligand_db_Br.jsonlines`` : containing 1 ligand (bromine).
+2. ``ligand_db_phenyl.jsonlines`` : containing 1 ligand (phenyl).
+3. ``ligand_db_P_N_donors.jsonlines`` : containing 173 neutral P-N donor ligands.
 
-    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/ligandfilters_Br.yml
-    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/ligandfilters_phenyl.yml
-    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/ligandfilters_P_N_ligands.yml
-    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/Pd_Ni_assembler.yml
-    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/Ni_phenyl_geometry_modification.xyz
-    curl -O https://raw.githubusercontent.com/CCEMGroupTCD/DART/master/examples/Pd_Ni_Cross_Coupling/generate_complexes/input/Pd_phenyl_geometry_modification.xyz
-
-
-This directory includes six essential files:
-
-- `ligandfilters_Br.yml` : filters to extract the bromine ligand
-- `ligandfilters_phenyl.yml` : filters to extract the phenyl ligand
-- `ligandfilters_P_N_ligands.yml` : filters to extract the P-N donor ligands
-- `Pd_Ni_assembler.yml` : configuration file for the DART assembler module
-- `Ni_phenyl_geometry_modification.xyz` : file specifying how to shift the phenyl ligand for the Ni complexes
-- `Pd_phenyl_geometry_modification.xyz` : file specifying how to shift the phenyl ligand for the Pd complexes
-
-We will go through the files one by one and explain what they do.
-
-Running the Ligand Filters
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-To initiate the assembly process within DART, you'll create three distinct ligand databases, each corresponding to a specific site of your complex:
-
-1. **Bromine Database:** contains the bromine ligand.
-2. **Phenyl Database:** contains the phenyl ligand.
-3. **P-N Donor Database:** contains all the P-N donor ligands of interest.
-
-Filtering is straightforward when you're dealing with unique stoichiometries like 'Br' and 'C6H5'. If you need to narrow down your selection further, you can pinpoint the desired ligands using their Graph ID.
-
-**Setting Up the Phenyl Ligand Database**
-
-Let's start with creating the phenyl database:
-
-.. code-block:: bash
-
-    DARTassembler ligandfilters --path input/ligandfilters_phenyl.yml
-
-This command will output a new file named ``ligand_db_phenyl.jsonlines``. At the end of the filtering process, you'll see a summary like this:
-
-.. code-block::
-
-    Number of ligands before filtering: 41018
-    Number of ligands filtered out: 41017
-    Number of ligands after filtering: 1
-    Number of ligands per denticity: 1: 1
-      --> The selected ligand: C6H5
-
-This confirms that your phenyl ligand database is now ready, containing just the one ligand you need.
 
 **Isolating the Bromine Ligand**
 
-To prepare the bromine database, the steps are similar:
+Let's start with creating the Br database. First, make a new file called ``ligandfilters_Br.yml`` with the following content:
+
+.. code-block:: yaml
+
+    # File: ligandfilters_Br.yml
+
+    input_db_file: metalig
+    output_db_file: ligand_db_Br.jsonlines
+    output_ligands_info: False
+
+    filters:
+      - filter: denticities
+        denticities: [1]
+
+      - filter: ligand_composition
+        elements: Br
+        instruction: must_contain_and_only_contain
+        apply_to_denticities:
+
+Now let's run the ligand filters to obtain the file ``ligand_db_Br.jsonlines``. This process takes around 1-2 minutes since the entire MetaLig database with 41,018 ligands has to be read in:
 
 .. code-block:: bash
 
-    DARTassembler ligandfilters --path input/ligandfilters_Br.yml
+    DARTassembler ligandfilters --path ligandfilters_Br.yml
 
-Executing this will create the ``ligand_db_Br.jsonlines`` file, reserved for the bromine ligand.
+**Setting Up the Phenyl Ligand Database**
+
+The phenyl ligand database is created in the same way. The input file ``ligandfilters_phenyl.yml`` is as follows:
+
+.. code-block:: yaml
+
+    # File: ligandfilters_phenyl.yml
+
+    input_db_file: metalig
+    output_db_file: ligand_db_phenyl.jsonlines
+    output_ligands_info: False
+
+    filters:
+      - filter: denticities
+        denticities: [1]
+
+      - filter: ligand_composition
+        elements: C6H5
+        instruction: must_contain_and_only_contain
+        apply_to_denticities:
+
+To get the phenyl ligand database, run:
+
+.. code-block:: bash
+
+    DARTassembler ligandfilters --path ligandfilters_phenyl.yml
+
+Because we filter the phenyl ligand simply by its composition, it would be possible that there are other monodentate ligands with the same composition. Yet, we can see from the printed output of the ligand filters that this is not the case:
+
+.. code-block:: bash
+
+    ===========   TOTAL   ===========
+    Before filtering:  41018 ligands
+    Filtered out:      41017 ligands
+    Passed:            1 ligands
+    Denticities:       1: 1
+    Passed ligands:    C6H5
+
+If there would be other ligands that we don't want in the database, you could simply add more filters. You can also pinpoint individual ligands by specifying their :ref:`Graph ID <filter_graph_IDs>` or :ref:`write customized filters using simple Python code <metalig_python_filtering>`.
 
 **Creating the P-N Donor Ligand Database**
 
-Finally, let's compile the database for your P-N donors:
+Finally, let's compile the database for our neutral P-N donors. Please create the file ``ligandfilters_P_N_ligands.yml`` with the following content:
+
+.. code-block:: yaml
+
+    # File: ligandfilters_P_N_ligands.yml
+
+    input_db_file: metalig
+    output_db_file: ligand_db_P_N_donors.jsonlines
+    output_ligands_info: False
+
+    filters:
+        # Keep only bidentate ligands
+      - filter: denticities
+        denticities: [2]
+
+        # Keep only neutral ligands
+      - filter: ligand_charges
+        ligand_charges: [0]
+        apply_to_denticities:
+
+        # Keep only P-N donors
+      - filter: coordinating_atoms_composition
+        elements: [P, N]
+        instruction: must_contain_and_only_contain
+        apply_to_denticities:
+
+        # Keep only ligands that contain C, H, N, and P
+      - filter: ligand_composition
+        elements: [C, H, N, P]
+        instruction: must_only_contain_in_any_amount
+        apply_to_denticities:
+
+        # Keep only ligands that have a history of binding to Pd or Ni
+      - filter: metal_ligand_binding_history
+        metal_ligand_binding_history: [Pd, Ni]
+        apply_to_denticities:
+
+        # Remove haptic ligands because DART cannot assemble those yet and skips them.
+      - filter: remove_ligands_with_adjacent_coordinating_atoms
+        remove_ligands_with_adjacent_coordinating_atoms: True
+
+
+To generate the P-N donor ligand database, run:
 
 .. code-block:: bash
 
-    DARTassembler ligandfilters --path input/ligandfilters_P_N_ligands.yml
+    DARTassembler ligandfilters --path ligandfilters_P_N_ligands.yml
 
-Upon completion, you'll have the ``ligand_db_P_N_donors.jsonlines`` file. Here's what the output will look like:
-
-.. code-block::
-
-    Number of ligands before filtering: 41018
-    Number of ligands filtered out: 40845
-    Number of ligands after filtering: 173
-    Number of ligands per denticity: 2: 173
-
-This indicates you have successfully filtered down to 173 bidentate ligands. To check the ligands, use:
+To check the ligands in this database, you can run the ``dbinfo`` command to get a concatenated .xyz file of all ligand structures and a .csv file with information on all ligands:
 
 .. code-block:: bash
 
     DARTassembler dbinfo --path ligand_db_P_N_donors.jsonlines
 
-With these three ligand databases in hand, you're all set to move on to the assembly module.
+To browse through these ligands, run ``ase gui concat_ligand_db_P_N_donors.xyz``. Clearly, all 173 ligands are neutral P-N donors.
 
-Running the Assembler
-^^^^^^^^^^^^^^^^^^^^^
 
-The assembler module is configured by the file ``input/Pd_Ni_assembler.yml``. The documentation for all these options can be found at :ref:`assembler`. Let us go through the file and look at the important options:
+Assembling the Intermediates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block::
+Now that we have the ligand databases, we can assemble the complexes. To use the :ref:`Assembler Module <assembler>` we create a new input file called ``Pd_Ni_assembler.yml``. This input file specifies neutral square-planar Pd/Ni(II) complexes with one bromine, one phenyl, and one P-N donor ligand:
 
-    verbosity: 2
-    ffmovie: true
-    concatenate_xyz: true
-    overwrite_output: true
+.. code-block:: yaml
+
+    # File: Pd_Ni_assembler.yml
+
     output_directory: assembler_output
-    complex_name_length: 8
-
     batches:
-      - ligand_db_file: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
-        isomers: all
-        max_num_complexes: 999999999999999999
-        ligand_choice: all
-        geometry_modifier_filepath: input/Pd_phenyl_geometry_modification.xyz
-        bidentate_rotator: slab
+      - name: Pd
         metal_center: Pd
         metal_oxidation_state: 2
-        name: P_N_Donors_Pd_Metal_Centre
-        forcefield: false
-        random_seed: 0
-        geometry: 2-1-1
         total_charge: 0
-        complex_name_appendix: _PN_Pd
-
-
-      - ligand_db_file: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
+        geometry: 2-1-1
+        ligand_db_file: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
+        max_num_complexes: all
         isomers: all
-        max_num_complexes: 999999999999999999
-        ligand_choice: all
-        geometry_modifier_filepath: input/Ni_phenyl_geometry_modification.xyz
-        bidentate_rotator: slab
+        random_seed: 0
+        complex_name_appendix: _Pd
+
+      - name: Ni
         metal_center: Ni
         metal_oxidation_state: 2
-        name: P_N_Donors_Ni_Metal_Centre
-        forcefield: false
-        random_seed: 0
-        geometry: 2-1-1
         total_charge: 0
-        complex_name_appendix: _PN_Ni
+        geometry: 2-1-1
+        ligand_db_file: [ligand_db_P_N_donors.jsonlines, ligand_db_Br.jsonlines, ligand_db_phenyl.jsonlines]
+        max_num_complexes: all
+        isomers: all
+        random_seed: 0
+        complex_name_appendix: _Ni
 
+Let us go through the relevant options:
 
-At the beginning we define global preferences, such as enabling forcefield trajectories and XYZ file concatenation. Then, two batches are set up, with identical options apart from the metal center. Let us go through the important options:
+1. All combinatorial possible ligand combinations will be assembled because ``max_num_complexes`` = ``all``.
 
-1. All combinatorial possible ligand combinations will be assembled (`ligand_choice: all`), and to prevent premature halting, `max_num_complexes` is set to a very high number.
+2. Both isomeric forms for each complex will be generated by ``isomers`` = ``all``.
 
-2. The `geometry_modifier_filepath` and `bidentate_rotator` options are for advanced control over the assembly process and are explained below in :ref:`optimizing_geometry`.
-
-3. To explore all isomeric forms, we opt for `isomers: all`.
-
-4. Most importantly, `geometry: 2-1-1` instructs DART to craft complexes with one bidentate and two monodentate ligands, i.e. three different ligand sites. The three ligand databases in `ligand_db_file` are provided in the same order, so that the first ligand database is used for the first ligand site, the second ligand database for the second ligand site, and so on. This allows us to fix the bromine and phenyl ligands to always be present in the complex, while varying the P-N donor ligands.
+3. Most importantly, ``ligand_db_file`` specifies a list of three different ligand databases, one for each binding site in the ``2-1-1`` geometry. The list of databases in ``ligand_db_file`` has to be in the same order as the denticities in ``geometry``. This instructs DART to create complexes in which the first binding site (bidentate) is populated with ligands from the first ligand database, the second binding site (monodentate) is populated with ligands from the second database etc. Since the bromine and phenyl databases are made up of just that one ligands, this allows us to fix the bromine and phenyl ligands to always be present in the complex, while varying the P-N donor ligands.
 
 Now that we have configured the assembler, we can run it:
 
 .. code-block:: bash
 
-    DARTassembler assembler --path input/Pd_Ni_assembler.yml
+    DARTassembler assembler --path Pd_Ni_assembler.yml
 
-This will generate a new folder ``assembler_output`` which contains the generated complexes. To get an understanding of the output of the assembler module please refer the section :ref:`assembly_output`. The output of the assembler module concludes with the following lines:
+This will generate a new folder ``assembler_output`` which contains the generated complexes. The output of the assembler module concludes with the following lines:
 
 .. code-block::
 
     ============  Total summary of DART assembly  ============
-      - 692 complexes tried, 620 complexes successfully assembled.
-      - 72 complexes failed because of post-filters:
-        - clashing ligands: 72
-    DART Assembler output files saved to your_path/assembler_output
-    Total runtime for assembling 620 complexes: 0:00:51.236134
+      - 692 complexes tried, 396 complexes successfully assembled.
+      - 296 complexes failed because of post-filters:
+        - clashing ligands: 296
+    DART Assembler output files saved to YOURPATH/DART_cross_coupling/assembler_output
+    Total runtime for assembling 396 complexes: 0:00:38.598620
     Done! All complexes assembled. Exiting DART Assembler.
 
-A total of 620 complexes were assembled successfully, while 72 complexes failed the post-filters because of clashing ligands. Figure 1 showcases a subset of the assembled complexes.
+Within 38 seconds, a total of 396 complexes were assembled successfully, while 296 complexes failed the post-filters because of clashing ligands. As always, you can browse through the successfully assembled complexes using ``ase gui concat_passed_complexes.xyz``. This will give you a good overview of the chemical space of the complexes you just assembled.
 
+Optimizing the Output Geometry
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. figure:: /_static/part1/examples/Pd_Ni_Cross_Coupling/assembled_complexes.png
-   :width: 100%
-   :align: center
+So far, DART has done everything for us. Your only job was to provide input settings to tell DART exactly what kind of complexes you want. Now, we will learn how to optimize the number of successfully assembled complexes by tuning the geometry optimization settings in DART. For the most part, this is as simple as changing a single line in the input file.
 
-   Figure 1: A selection of assembled Pd(II) complexes with fixed bromine and phenyl ligands and varying P-N donor ligands.
+As a measure for the quality of the structures, we will use the percentage of successfully assembled complexes. Intuitively, the more complexes that are successfully assembled without clashing ligands, the better the geometry. However, it is always a good idea to look through the assembled complexes to ensure that the geometries are chemically reasonable, which is why we put so much emphasis on the visualization of structures with ``ase gui``.
 
+There are three settings that you can play with, documented in detail in the :ref:`Assembler Module <assembler>`:
 
-Exploring Molecular Properties with DART
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+1. ``forcefield``: Relax the complexes with a UFF forcefield. Because the UFF doesn't describe metals very well, the metal and the donor atoms are kept fixed.
+2. ``bidentate_rotator``: Choose the best rotator for bidentate ligands. The default mode is ``auto``, which lets DART choose the best rotator automatically, but you can also directly specify either ``slab`` or ``horseshoe``.
+3. ``geometry_modifier_filepath``: Manually shift atoms in the assembled complexes from one position to another in a semi-automated way. Very powerful but requires a little manual work from the user to specify the exact shift.
 
-DART excels in the automatic assembly of novel complexes, leveraging a diverse ligand pool to pave the way for innovative complex design. This approach shines in our example, where even a limited ligand selection shows a broad spectrum of complex properties. Here we show a quick overview of the results of DFT calculations for the P-N bite angle and the HOMO-LUMO gap for all 620 complexes, performed using Gaussian16 as detailed in our DART publication.
+**Bidentate Rotator and Forcefield Optimization**
 
-The data presented in Figure 2 underscores the extensive range of properties achievable by modifying even a single ligand type within the complexes.
+The first two settings, the forcefield and the bidentate rotator mode, are very simple to use since they are just a single line in the input file:
 
-.. figure:: /_static/part1/examples/Pd_Ni_Cross_Coupling/dft_figure_reduced.png
-   :width: 100%
-   :align: center
+.. code-block:: yaml
 
-   Figure 2: DFT calculated properties of the assembled complexes.
+    # Update file: Pd_Ni_assembler.yml
 
-.. _optimizing_geometry:
+    batches:
+      - name: Pd
+        ...
+        forcefield: true
+        bidentate_rotator: slab
 
-Optimizing the Output Geometry in DART
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      - name: Ni
+        ...
+        forcefield: true
+        bidentate_rotator: slab
 
-Proper geometry optimization is crucial for the successful assembly of transition metal complexes. DART provides three key options to ensure optimal geometry: `forcefield`, `geometry_modifier_filepath`, and `bidentate_rotator`. These options are documented in detail in section :ref:`assembler`.
+It is very quick to try out which of these options gives the best results since each assembly run in this example takes less than a minute. To evaluate the effect of these settings, we conducted a simple experiment as a proof-of-concept in which we tried to optimize the number of successfully assembled complexes out of a maximum of 692 possible complexes:
 
-The `forcefield` option leverages a UFF forcefield to relax the output structure before going through the post-filter.
+.. csv-table::
+    :header: "Bidentate Rotator", "Without Optimization", "With Forcefield"
+    :widths: 33, 33, 33
 
-The `geometry_modifier_filepath` is a powerful tool for manual geometry correction. It's particularly useful when standard optimization methods fail to prevent certain ligand collisions, which might be the case with complex ligand structures or when specific orientations are required. With this option, users can input a file detailing the desired adjustments, and DART will reposition the atoms accordingly.
+    "auto", 396, 385
+    "slab", **473**, 458
+    "horseshoe", 342, 330
 
-The `bidentate_rotator` setting controls the internal rotation of bidentate ligands. It can be set to `auto`, which allows DART to choose the rotation, or to specific modes (`slab` or `horseshoe`), giving users control over the bidentate ligand orientation.
+The results show that the slab rotator is the best choice for our P-N donor ligands. The forcefield optimization had little effect and rather decreased the number of successfully assembled complexes. In general, we do not recommend to use the UFF forcefield since it is not well suited for metal complexes, but it is an easy option for you to try out.
 
-To evaluate the efficacy of these optimization tools, we conducted an experiment focused on the assembly success rate—a key indicator of optimal geometry. The experiment involved multiple assembly runs, each varying the optimization method:
+**Custom Rotation of the Phenyl Ligand**
+
+The third option ``geometry_modifier_filepath`` is very powerful because it allows the user to automatically shift atoms in an assembled complex from one position to another. In our example, we want to rotate the phenyl ligand a little in order to reduce clashing with the P-N donor. To do this, we have to provide a concatenated .xyz file with exactly two phenyl molecules at different locations, specifying origin and destination of the shift. In order to implement this, please create a new file called ``Pd_phenyl_geometry_modification.xyz`` with the following content:
+
+.. code-block::
+
+    11
+    Origin of shift
+    C       -1.37885822      -1.37885822       0.00000000
+    C       -2.61882178      -1.15229953       0.58746920
+    H       -2.81065540      -0.30966243       0.97820005
+    C       -3.58540325      -2.16127881       0.60496110
+    H       -4.42111716      -2.00722798       1.02876196
+    C       -3.33994508      -3.37153613       0.01642353
+    H       -3.99087572      -4.06123881       0.04508034
+    C       -2.16468025      -3.57422256      -0.60075492
+    H       -2.01324444      -4.39862572      -1.04742888
+    C       -1.15617112      -2.60121467      -0.59980122
+    H       -0.31967840      -2.78328598      -1.01291115
+    11
+    Destination of shift
+    C       -1.35204078      -1.31992066      -0.48197010
+    C       -1.63807002      -1.59921746      -1.81393823
+    H       -1.15796809      -1.15933936      -2.50351594
+    C       -2.63068217      -2.52632650      -2.14228996
+    H       -2.83682226      -2.69439953      -3.05388981
+    C       -3.31015444      -3.19615732      -1.16198741
+    H       -3.99601236      -3.81199015      -1.38686634
+    C       -2.99747104      -2.97010890       0.12423560
+    H       -3.43865917      -3.46858118       0.80170842
+    C       -2.03898543      -2.01594063       0.49125628
+    H       -1.86191301      -1.84921651       1.41015686
+
+If you check the origin molecule in this file with the position of the phenyl ligand in the assembled Pd complexes, you will see that they are identical. For the destination molecule, we are providing the atomic positions such that the phenyl ligand is rotated. The ase gui tool is very helpful for these kinds of manipulations of .xyz files. You can also see the rotation of the phenyl ligand by running ``ase gui Pd_phenyl_geometry_modification.xyz``.
+
+As a tip, the best way to create these files is to first assemble the complexes without a forcefield to get the .xyz file of the assembled complexes. Then, extract the coordinates of the phenyl ligand from any of the assembled complexes and save it as .xyz file. Finally, to get the destination coordinates, the ase gui tool is very handy to manipulate .xyz files. Just read in the origin .xyz file with ase, manipulate it and then save the new structure as another .xyz. Finally, append the origin and the destination molecules and save them as a single file. Importantly, please make sure that there are no empty lines in between the two molecules or at the end of the file. To check if the file is correct, just read it in using the ase gui and you should get two frames with the same molecule, but at different positions.
+
+On another note, it is not necessary to shift all atoms of a specific ligand. When shifting atoms, DART does not see ligands but rather sets of atoms and simply shifts every atom from its origin to its destination.
+
+In order to run DART with the rotated phenyl ligand, we specify  ``geometry_modifier_filepath`` = ``Pd_phenyl_geometry_modification.xyz`` in the Pd batch. One thing to keep in mind is that you cannot provide the same file for the Ni batch, because Ni has a different atomic radius than Pd, leading to slightly different cartesian coordinates of the phenyl ligand when coordinated to Ni. Therefore, you  have to create a new file ``Ni_phenyl_geometry_modification.xyz`` with the following content:
+
+.. code-block::
+
+    11
+    Origin of shift
+    C       -1.30814755      -1.30814755       0.00000000
+    C       -2.54811110      -1.08158885       0.58746920
+    H       -2.73994472      -0.23895175       0.97820005
+    C       -3.51469257      -2.09056813       0.60496110
+    H       -4.35040648      -1.93651730       1.02876196
+    C       -3.26923441      -3.30082546       0.01642353
+    H       -3.92016504      -3.99052813       0.04508034
+    C       -2.09396957      -3.50351188      -0.60075492
+    H       -1.94253376      -4.32791504      -1.04742888
+    C       -1.08546044      -2.53050399      -0.59980122
+    H       -0.24896772      -2.71257530      -1.01291115
+    11
+    Destination of shift
+    C  -1.2937473829822488  -1.2398794889499034  -0.459800567
+    C  -1.601562203225019  -1.4938654694550033  -1.7919791134
+    H  -1.1309417375171225  -1.0428217585005106  -2.480879663
+    C  -2.60218398542082  -2.411889969420291  -2.121542410022
+    H  -2.8231586547736818  -2.5626138747145775  -3.032700502
+    C  -3.2683208079706407  -3.09759503004543  -1.14306436557
+    H  -3.9596020908062854  -3.707191723557817  -1.3683280760
+    C  -2.9347449854640226  -2.896087320001541  0.14198826503
+    H  -3.3668350933519986  -3.405606940434718  0.81710224434
+    C  -1.9675509241539992  -1.9516175659140573  0.5112421903
+    H  -1.7755298364628027  -1.8022912010877177  1.4301324877
+
+As before, these numbers are obtained by rotating the phenyl ligand.
+We can now add the three settings for optimizing DART output structures to the assembler configuration file:
+
+.. code-block:: yaml
+
+    # Update file: Pd_Ni_assembler.yml
+
+    batches:
+      - name: Pd
+        ...
+        geometry_modifier_filepath: Pd_phenyl_geometry_modification.xyz
+
+      - name: Ni
+        ...
+        geometry_modifier_filepath: Ni_phenyl_geometry_modification.xyz
+
+As before, we have performed an experiment to evaluate the effect of a simple rotation of the phenyl ligand. The number of successfully assembled complexes out of a maximum of 692 is shown in the table below:
 
 .. csv-table::
     :header: "Bidentate Rotator", "Without Optimization", "With Forcefield", "With Geometry Modifier"
     :widths: 25, 25, 25, 25
 
-    "Auto", "68.4%", "55.2%", "72.7%"
-    "Slab", "56.8%", "66.2%", "89.6%"
-    "Horseshoe", "49.4%", "47.7%", "62.4%"
+    "auto", 396, 385, 506
+    "slab", 473, 458, **620**
+    "horseshoe", 342, 330, 432
 
-Our results show that manual intervention via the `geometry_modifier_filepath` significantly increases the success rate, particularly when the `slab` option is employed for the `bidentate_rotator`. However, these results are completely dependent on which kind of ligands to assemble. While DART's default settings provide satisfactory results for many cases, these tools offer valuable avenues for optimization, enhancing the likelihood of successful complex assembly.
+Our results show that manual intervention via the ``geometry_modifier_filepath`` can significantly increase the success rate. However, these results are  dependent on which kind of ligands you assemble.
 
+**Conclusion**
+
+This example demonstrates how to use DART in advanced mode for assembling highly customized complexes. While DART's default settings provide very decent results for most cases, DART enables users to try a range of options to further fine-tune their assembled complexes.
 
 
 

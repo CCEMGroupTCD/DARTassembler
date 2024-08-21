@@ -52,8 +52,8 @@ Eager to begin? :ref:`Install DART <installation_guide>`, explore our hands-on :
 
    ./doc_files/part1_getting_started_and_how_to_guides/installation_guide
    ./doc_files/part1_getting_started_and_how_to_guides/examples/simple_octahedral_assembly/simple_octahedral_assembly
-   ./doc_files/part1_getting_started_and_how_to_guides/understanding_the_dart_workflow
    ./doc_files/part1_getting_started_and_how_to_guides/tutorials_and_examples
+   ./doc_files/part1_getting_started_and_how_to_guides/understanding_the_dart_workflow
 
 .. toctree::
    :maxdepth: 1

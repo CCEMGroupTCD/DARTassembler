@@ -1,4 +1,1 @@
-Tutorials And Examples
-==========================
-
 .. include:: examples/Pd_Ni_Cross_Coupling/Pd_Ni_Cross_Coupling.rst
