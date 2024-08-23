@@ -550,7 +550,6 @@ class LigandFilterInput(BaseInput):
     def __init__(self, path: Union[str, Path]):
         """
         Class for reading and checking the input file for the ligand filter. The input file should be a yaml file.
-        todo: Add that missing filter keys are added with value None so that one doesn't have to specify everything.
         """
         self.path = None
         super().__init__(path)
@@ -699,14 +698,9 @@ class LigandFilterInput(BaseInput):
 
     def get_output_ligand_db_path(self):
         """
-        Returns a path to the output ligand database. If the path already exists, it will be renamed to avoid overwriting.
+        Returns default path to the output ligand database.
         """
         path = Path('filtered_ligand_db.jsonlines').resolve()
-
-        idx = 1
-        while path.exists():
-            path = Path(f'{path}_{idx}')
-            idx += 1
 
         return path
 
