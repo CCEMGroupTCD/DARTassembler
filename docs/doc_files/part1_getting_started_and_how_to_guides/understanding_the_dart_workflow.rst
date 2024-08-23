@@ -3,6 +3,8 @@
 Understanding the DART Workflow
 ===============================
 
+.. contents:: :local:
+
 How DART helps researchers
 ----------------------------------------------
 

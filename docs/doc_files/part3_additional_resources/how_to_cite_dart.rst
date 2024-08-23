@@ -1,4 +1,4 @@
-How To Cite DART
+How to cite DART
 ====================
 
-Please cite our paper:
+If you use DART in your research, please cite our paper:

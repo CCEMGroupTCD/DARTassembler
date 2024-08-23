@@ -1,34 +1,30 @@
 .. _troubleshooting:
 
-Troubleshooting And FAQs
+Troubleshooting and FAQs
 ============================
 
 Please check out the FAQs below for common issues and solutions. If you encounter a problem that is not listed here, please `let us know. <https://github.com/CCEMGroupTCD/DART/issues>`_
 
-FAQ
-------
+FAQs
+-------------------
 
-DART cannot be found :
-    First, check if conda is installed by running the command ``conda --help``. If this is not successful, refer to the next section.
+What's the terminal?
+    The terminal is a text-based interface that allows you to interact with your computer using commands. It is also known as the command line or shell. The terminal is a powerful tool that allows you to perform a wide range of tasks, from navigating your file system to executing software like DART.
 
-    If the command ``DARTassembler --help`` doesn't display a list of possible DART commands, then either DART is not installed or the correct conda environment is not activated. Run ``conda activate base`` (or replace `base` with the name of the conda environment in which you installed DART) and try again. To see a list of all conda environments, run ``conda env list``. Please refer to the :ref:`installation_guide` for more details.
+    How to open your terminal?
 
-    It can also happen that you moved the DART folder or that one of the parent folders changed its name. In this case, you need to re-install DART since the path to the DART folder is hard-coded in the installation process.
+    - On Windows, search for Command Prompt or PowerShell in the Start menu.
+    - On macOS, open the Applications folder, then Utilities, and double-click on Terminal.
+    - On Linux, you can usually find the Terminal in your applications menu or you can use a keyboard shortcut like Ctrl+Alt+T.
 
-conda cannot be found :
-    If the command ``conda --help`` doesn't print a list of available conda commands, then either conda is not installed or it wasn't added to the PATH. A common issue is that conda is downloaded, but it was not added to the PATH, which means it won't be activated by default in a new terminal session. Please retry the installation of conda or google how to install conda correctly. If you re-install conda, remember to choose 'yes' when it asks if you want to add conda to the PATH.
+Troubleshooting
+-------------------
 
 The input yaml file cannot be read:
-    Yaml files are quite sensitive to indentation. Make sure that the indentation is correct. Ideally, copy paste the example yaml file and modify it.
+    Yaml files are quite sensitive to indentation. Make sure that the indentation is correct. You can also use the :ref:`configs module <module_overview>` of DART to get templates for the yaml files.
 
 The input yaml file cannot be found:
     Make sure that the path to the yaml file is correct.
 
 The input yaml file is not valid:
-    Verify that the options in the YAML file are set up correctly to match the criteria desired. Ensure that the syntax of the yaml file, including lists and nested elements, is correct.
-
-General troubleshooting:
---------------------------
-
-Updating DART:
-    If DART is not performing as documented, ensure that you have the latest version. Updates may include bug fixes and performance improvements.
+    Verify that the options in the YAML file are set up correctly to match the criteria desired. Ensure that the syntax of the yaml file, including lists and nested elements, is correct. You can use the :ref:`configs module <module_overview>` of DART to get templates for the yaml files.

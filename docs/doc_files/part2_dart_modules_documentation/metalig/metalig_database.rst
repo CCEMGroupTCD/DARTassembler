@@ -3,7 +3,9 @@
 MetaLig Ligand Database
 ==========================
 
-The organo\ **Meta**\ llic **Lig**\ and database (MetaLig) contains 41,018 ligands extracted from the Cambridge Structural Database (CSD). It contains 3D coordinates, formal charge, molecular graph and a variety of physical properties. Each ligand also includes statistical data about it's occurrences in the CSD, such as which metals it typically coordinates to.
+.. contents:: :local:
+
+The organo\ **Meta**\ llic **Lig**\ and database (MetaLig) contains 41,018 ligands extracted from the Cambridge Structural Database (CSD). It contains 3D coordinates, formal charge, molecular graph and a variety of physical properties. Each ligand also includes statistical data about its occurrences in the CSD, such as which metals it typically coordinates to.
 
 The MetaLig ligand database can be used in a variety of applications:
 
@@ -20,46 +22,41 @@ The MetaLig ligand database can be used in a variety of applications:
 
 .. _metalig_ligand_properties:
 
-Exploring Ligand Structures and Properties
+Explore Ligand Structures and Properties
 ------------------------------------------
 
-To explore the ligands in the MetaLig, run the command ``DARTassembler dbinfo --path metalig``. This will generate two files, an .xyz file and a .csv file.
+To explore the ligands in the MetaLig, run the command ``DARTassembler dbinfo --path metalig``. This will generate two files, an .xyz file and a .csv file:
 
-**Exploring Ligand Structures :**
+The .xyz file contains the 3D structures of all ligands concatenated. To view and browse through the ligands with ase, you can use the command ``ase gui concat_MetaLigDB_v1.0.0.xyz``. Each ligand is coordinated to a Cu metal center for visualization purposes.
 
-    The .xyz file contains the 3D structures of all ligands concatenated. To view and browse through the ligands with ase, you can use the command ``ase gui concat_MetaLigDB_v1.0.0.xyz``. Each ligand is coordinated to a Cu metal center for visualization purposes.
+The .csv file lists most of the physical and statistical properties of each ligand:
 
-**Exploring Ligand Properties :**
+**Physical properties :**
+    - **Ligand ID**
+    - **Denticity**
+    - **Donors**
+    - **Stoichiometry**
+    - **Number of Atoms**
+    - **Formal Charge** - Determined as per the DART paper.
+    - **Molecular Weight** - in g/mol.
+    - **Ligand Planarity** - Degree of planarity of all ligand atoms between 0 and 1, where 1.0 represents a perfect plane.
+    - **Haptic** - If the molecular graph has any neighboring donor atoms.
+    - **Beta-Hydrogen** - If the ligand has a hydrogen in beta position to the metal center.
+    - **Max. Interatomic Distance** - Largest distance between any two atoms in the ligand
+    - **Avg. M-D Bond Length** - Mean of all bond lengths from metal to donor atoms.
+    - **Graph ID** - The ID of the molecular graph in the database, unique for each unique ligand.
 
-
-    The .csv file lists most of the physical and statistical properties of each ligand:
-
-    **Physical properties :**
-        - **Ligand ID**
-        - **Denticity**
-        - **Donors**
-        - **Stoichiometry**
-        - **Number of Atoms**
-        - **Formal Charge** - Determined as per the DART paper.
-        - **Molecular Weight** - in g/mol.
-        - **Ligand Planarity** - Degree of planarity of all ligand atoms between 0 and 1, where 1.0 represents a perfect plane.
-        - **Haptic** - If the molecular graph has any neighboring donor atoms.
-        - **Beta-Hydrogen** - If the ligand has a hydrogen in beta position to the metal center.
-        - **Max. Interatomic Distance** - Largest distance between any two atoms in the ligand, which is a measure for the size of the ligand.
-        - **Avg. M-D Bond Length** - Mean of all bond lengths from metal to donor atoms.
-        - **Graph ID** - The ID of the molecular graph in the database, unique for each unique ligand.
-
-    **Statistical CSD properties :**
-        - **CSD Occurrences** - The number of occurrences of the ligand in the CSD.
-        - **CSD Complex IDs** - The IDs of the complexes in the CSD that contain the ligand.
-        - **CSD Metal Count** - All metals that the ligand is coordinated to in the CSD, along with their counts.
+**Statistical CSD properties :**
+    - **CSD Occurrences** - The number of occurrences of the ligand in the CSD.
+    - **CSD Complex IDs** - The IDs of the complexes in the CSD that contain the ligand.
+    - **CSD Metal Count** - All metals that the ligand is coordinated to in the CSD, along with their counts.
 
 By the way, the command ``DARTassembler dbinfo --path LIGAND_DB_PATH.jsonlines`` can be used to display the same information for any
-DART ligand database file in .jsonlines format. Other ligand database files can be generated with the DART Ligand Filters module.
+DART ligand database file in .jsonlines format. Users can generate ligand database files with the :ref:`Ligand Filters Module <ligandfilters>`.
 
 .. _metalig_python_filtering:
 
-Exploring and Filtering the MetaLig in Python
+Explore and Filter the MetaLig in Python
 ----------------------------------------------
 For many users, the DART Ligand Filters module will be enough to filter ligands which exactly defined properties. For complete freedom in filtering and exploring, the MetaLig database can be accessed with the DART Python API. First, read in the MetaLig. To speed things up, let's only load the first 1000 ligands:
 

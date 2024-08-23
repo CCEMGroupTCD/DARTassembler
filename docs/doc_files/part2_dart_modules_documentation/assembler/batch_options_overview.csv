@@ -1,0 +1,29 @@
+Name, Options, Description
+name, `str`, Use this to name your batches for easier identification.
+metal_center, `chemical symbol`, Chemical symbol of the desired metal center.
+metal_oxidation_state, `int > 0`, Oxidation state of the desired metal center.
+total_charge, `int`, Total charge of the complex.
+geometry, 3-2-1; 4-1-1; 5-1; 2-1-1; 2-2, The desired denticities of the ligands of the complex.
+ligand_db_file, `filepath` or list(`filepath / keyword` ), Paths to the ligand database to use for assembling the complexes.
+max_num_complexes, `int > 0` OR ``all``, Maximum number of complexes to generate.
+forcefield, true; false, Optional. Whether to relax the generated structures with a force field.
+isomers, lowest_energy; all, Optional. Which isomers to save.
+bidentate_rotator, auto; horseshoe; slab, How to assemble bidentate ligands to the complex.
+geometry_modifier_filepath, `filepath`, Path to the geometry modifier file.
+random_seed, `int`, A seed for any random number generator in the assembly process.
+complex_name_appendix, `str`, Characters to append to the randomly generated complex name.
+
+
+name: First_batch                 # Name of the batch.
+    metal_center: Fe                  # Chemical symbol of the desired metal center.
+    metal_oxidation_state: 2          # Oxidation state of the desired metal center.
+    total_charge: 0                   # Total charge of the complex.
+    geometry: 2-1-1                   # Geometry of the complexes. Options: `2-1-1`, `2-2`, `mer-3-2-1`, `mer-4-1-1`, `5-1`
+    ligand_db_file: metalig           # Path to the ligand db file. Options: `metalig`, `test_metalig`, filepath or list of paths/keywords (see documentation).
+    max_num_complexes: 100            # Maximum number of complexes/isomers to generate. Integer or `all`.
+    isomers: all                      # Which isomers to save for each complex. Options: `lowest_energy`, `all`
+    #random_seed: 0                   # Optional. Random seed for reproducibility of results. Choose any integer.
+    #forcefield: false                # Optional. Whether to optimize the structures after generation with a UFF force field. Recommended: `false`.
+    #bidentate_rotator: auto          # Optional. How to rotate bidentate ligands in square-planar complexes. Options: `auto`, `horseshoe`, `slab`. Recommended: `auto`.
+    #geometry_modifier_filepath:      # Optional. Path to a geometry modifier file to shift atoms in complexes.
+    #complex_name_appendix:

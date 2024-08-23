@@ -55,40 +55,42 @@ Users can download this template into their current directory by running:
 Batch Options
 -----------------------------------
 
-Batch options are mostly mandatory and specify details concerning the metal center and the ligands. Multiple batches can be specified and will be assembled in sequence. For each batch, the first option must be preceded by a hyphen ('-') to denote the start of the list.
+Batch settings are mostly mandatory and specify details concerning the metal center and the ligands. Multiple batches can be specified and will be assembled in sequence. For each batch, the first option must be preceded by a hyphen ('-') to denote the start of the list.
+
+**Mandatory batch settings:**
 
 .. confval:: name
 
     :options: `string`
-    :required: ``true``
+    :required: true
 
     Unique name for the batch for easy identification. Each batch must have a different name.
 
 .. confval:: metal_center
 
     :options: `chemical symbol`
-    :required: ``true``
+    :required: true
 
     Chemical symbol of the desired metal center, e.g. ``Pd`` or ``Fe``.
 
 .. confval:: metal_oxidation_state
 
     :options: `integer > 0`
-    :required: ``true``
+    :required: true
 
     Oxidation state of the desired metal center, e.g. ``2``.
 
 .. confval:: total_charge
 
     :options: `integer`
-    :required: ``true``
+    :required: true
 
     Total charge of the complex. Can be positive, negative or zero.
 
 .. confval:: geometry
 
     :options: ``mer-3-2-1``, ``mer-4-1-1``, ``5-1``, ``2-1-1``, ``2-2``
-    :required: ``true``
+    :required: true
 
     The geometry specifies the denticities of the ligands around the complex. For example, ``mer-3-2-1`` would generate a complex with one `mer`-tridentate, one bidentate and one monodentate ligand. Currently, the following topologies are supported:
 
@@ -114,7 +116,7 @@ Batch options are mostly mandatory and specify details concerning the metal cent
 .. confval:: max_num_complexes
 
     :options: `integer > 0` OR ``all``
-    :required: ``true``
+    :required: true
 
     Maximum number of complexes to generate. If :confval:`max_num_complexes` is set to ``all``, it will generate all combinatorically possible complexes.
 
@@ -123,9 +125,11 @@ Batch options are mostly mandatory and specify details concerning the metal cent
 .. confval:: isomers
 
     :options: ``lowest_energy``, ``all``
-    :required: ``true``
+    :required: true
 
     The assembler will always generate all possible isomers. The option :confval:`isomers` determines which isomers are saved. If ``lowest_energy``, only the lowest energy isomer is saved as determined by a UFF forcefield. If ``all``, all isomers are saved.
+
+**Optional batch settings:**
 
 .. confval:: random_seed
 
@@ -138,7 +142,7 @@ Batch options are mostly mandatory and specify details concerning the metal cent
 .. confval:: forcefield
 
     :options: ``true``, ``false``
-    :required: ``false``
+    :required: false
     :default: ``false``
 
     Whether to relax the generated structures with a force field before the post-assembly filters. Currently, the only available force field is the Universal Force Field (UFF).
@@ -146,7 +150,7 @@ Batch options are mostly mandatory and specify details concerning the metal cent
 .. confval:: bidentate_rotator
 
     :options: ``auto``, ``horseshoe``, ``slab``
-    :required: ``false``
+    :required: false
     :default: ``auto``
 
     How to assemble bidentate ligands in square-planar complexes. Effects only the topologies ``2-2`` or ``2-1-1``. ``horseshoe`` and ``slab`` are the shapes of the underlying potential energy surfaces. ``horseshoe`` works best for ligands with a planar metallacycle, while non-planar ligands often give better results with ``slab``. ``auto`` will choose the shape automatically based on the ligand geometry.
@@ -156,7 +160,7 @@ Batch options are mostly mandatory and specify details concerning the metal cent
 .. confval:: geometry_modifier_filepath
 
     :options: `empty` OR `filepath`
-    :required: ``false``
+    :required: false
     :default: ``empty``
 
     Path to the geometry modifier file. If left empty, no geometry modification is performed.
@@ -168,7 +172,7 @@ Batch options are mostly mandatory and specify details concerning the metal cent
 .. confval:: complex_name_appendix
 
     :options: `empty` or `string`
-    :required: ``false``
+    :required: false
     :default: `empty`
 
     Appends a custom string to the randomly generated name of each assembled complex. For example, if the appendix is set to ``_charge1``, a generated complex will be named 'ZUMUVAMI_charge1' if otherwise it would have been named 'ZUMUVAMI'.
@@ -181,7 +185,7 @@ Global options are all optional and specify settings that apply to all batches.
 .. confval:: output_directory
 
     :options: `dirpath`
-    :required: ``false``
+    :required: false
     :default: ``DART``
 
     Path to directory in which the output will be saved.
@@ -189,7 +193,7 @@ Global options are all optional and specify settings that apply to all batches.
 .. confval:: ffmovie
 
     :options: ``true``, ``false``
-    :required: ``false``
+    :required: false
     :default: ``false``
 
     Whether to output a movie (i.e. a concatenated .xyz file displaying multiple frames) of the forcefield optimization process. Useful for visualization e.g. with ``ase gui FILE.xyz``.
@@ -197,7 +201,7 @@ Global options are all optional and specify settings that apply to all batches.
 .. confval:: concatenate_xyz
 
     :options: ``true``, ``false``
-    :required: ``false``
+    :required: false
     :default: ``true``
 
     Whether to save concatenated xyz files with all passed/failed complexes respectively. Useful for quick visualization and browsing of the generated complexes e.g. with ``ase gui FILE.xyz``.
@@ -205,7 +209,7 @@ Global options are all optional and specify settings that apply to all batches.
 .. confval:: verbosity
 
     :options: ``0``, ``1``, ``2``, ``3``
-    :required: ``false``
+    :required: false
     :default: ``2``
 
     How much output to print (except the progress bars, which are always printed). ``0`` means only errors, ``1`` means also warnings, ``2`` means also normal info, ``3`` means also debug info.
@@ -213,27 +217,18 @@ Global options are all optional and specify settings that apply to all batches.
 .. confval:: same_isomer_names
 
         :options: ``true``, ``false``
-        :required: ``false``
+        :required: false
         :default: ``true``
 
-        Whether to give isomers of the same complex the same name and then just number them. If set to ``false``, each isomer will get a completely unique name.
+        If ``true``, isomers of the same complex will get the same name but enumerated. Very handy to see quickly which complexes are isomers of each other. If set to ``false``, each isomer will get a completely unique name.
 
 .. confval:: complex_name_length
 
     :options: `integer > 0`
-    :required: ``false``
+    :required: false
     :default: ``8``
 
     Length of the randomly generated name for each generated complex (e.g. 'ZUMUVAMI').
-
-Table: overview of all available assembler options
----------------------------------------------------
-
-.. csv-table::
-   :file: assembly_options_overview.csv
-   :widths: 20, 10, 20, 50
-   :header-rows: 1
-
 
 
 .. include:: DART_assembly_output_explanation.rst

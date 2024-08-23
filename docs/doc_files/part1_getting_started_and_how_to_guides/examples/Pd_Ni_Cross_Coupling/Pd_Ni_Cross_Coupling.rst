@@ -3,6 +3,8 @@
 Advanced Example
 ---------------------------------------
 
+.. contents:: :local:
+
 This example introduces advanced features of DART through the construction of Pd(II) and Ni(II) square-planar complexes as intermediates of the oxidative addition step of the transition metal catalyzed C-C cross-coupling reaction. Users new to DART should first review the :ref:`quickstart`. The following capabilities will be highlighted:
 
 - Filter ligands for each binding site individually
@@ -23,7 +25,7 @@ Utilizing just four commands, we will generate neutral complexes in a ``2-1-1`` 
 
 Subsequently, we present results from DFT calculations performed with Gaussian16 on all the assembled complexes, highlighting a diverse range of properties for these seemingly similar complexes.
 
-Planning the Workflow
+Plan the Workflow
 ^^^^^^^^^^^^^^^^^^^^^^
 
 To assemble the intermediates with DART, we will follow these steps:
@@ -37,7 +39,7 @@ To assemble the intermediates with DART, we will follow these steps:
    - Implement a user-defined rotation of the phenyl ligand to prevent collisions with the P-N donor ligands.
    - Generate all possible isomers of each complex.
 
-Targeting Ligands via Ligand Filters
+Target Ligands via Ligand Filters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 To initiate the assembly process within DART, we will create three distinct ligand databases, each corresponding to a specific binding site of our ``2-1-1`` complexes:
@@ -173,7 +175,7 @@ To check the ligands in this database, you can run the ``dbinfo`` command to get
 To browse through these ligands, run ``ase gui concat_ligand_db_P_N_donors.xyz``. Clearly, all 173 ligands are neutral P-N donors.
 
 
-Assembling the Intermediates
+Assemble the Intermediates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Now that we have the ligand databases, we can assemble the complexes. To use the :ref:`Assembler Module <assembler>` we create a new input file called ``Pd_Ni_assembler.yml``. This input file specifies neutral square-planar Pd/Ni(II) complexes with one bromine, one phenyl, and one P-N donor ligand:
@@ -234,7 +236,7 @@ This will generate a new folder ``assembler_output`` which contains the generate
 
 Within 38 seconds, a total of 396 complexes were assembled successfully, while 296 complexes failed the post-filters because of clashing ligands. As always, you can browse through the successfully assembled complexes using ``ase gui concat_passed_complexes.xyz``. This will give you a good overview of the chemical space of the complexes you just assembled.
 
-Optimizing the Output Geometry
+Optimize the Output Geometry
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 So far, DART has done everything for us. Your only job was to provide input settings to tell DART exactly what kind of complexes you want. Now, we will learn how to optimize the number of successfully assembled complexes by tuning the geometry optimization settings in DART. For the most part, this is as simple as changing a single line in the input file.
