@@ -15,8 +15,8 @@ Filter 12: planarity                                                            
 Filter 13: occurrences                                                                                                      {'min': 3.0, 'max': None, 'apply_to_denticities': [4]}
 Filter 14: metal_donor_bond_lengths                                                                                          {'min': 1.0, 'max': 2.5, 'apply_to_denticities': [2]}
 Filter 15: atomic_neighbors                                                                               {'atom': 'C', 'neighbors': ['H', 'H', 'H'], 'apply_to_denticities': [1]}
-Filter 16: smarts                                                                   {'smarts': 'N=N', 'should_contain': False, 'include_metal': True, 'apply_to_denticities': [1]}
-Filter 17: smarts                                                                {'smarts': '[C&H2]', 'should_contain': False, 'include_metal': True, 'apply_to_denticities': [2]}
+Filter 16: remove_ligands_with_missing_bond_orders                                                 {'remove_ligands_with_missing_bond_orders': True, 'apply_to_denticities': None}
+Filter 17: smarts                                                               {'smarts': '[C&H2]', 'should_contain': False, 'include_metal': True, 'apply_to_denticities': None}
 
 ==================================== FILTER RESULTS ====================================
                                                     Ligands removed  Ligands passed
@@ -35,14 +35,14 @@ Filter 12: planarity                                        2              123
 Filter 13: occurrences                                      0              123     
 Filter 14: metal_donor_bond_lengths                         3              120     
 Filter 15: atomic_neighbors                                24               96     
-Filter 16: smarts                                           1               95     
-Filter 17: smarts                                           5               90     
+Filter 16: remove_ligands_with_missing_bond_orders          8               88     
+Filter 17: smarts                                           7               81     
 
 ===========   TOTAL   ===========
 Before filtering:  1000 ligands
-Filtered out:      910 ligands
-Passed:            90 ligands
-Denticities:       1: 53, 2: 34, 3: 2, 4: 1
+Filtered out:      919 ligands
+Passed:            81 ligands
+Denticities:       1: 53, 2: 26, 3: 1, 4: 1
 
 Done filtering!
-Filtered ligand database with 90 entries was saved to `filtered_ligand_db.jsonlines`.
+Filtered ligand database with 81 entries was saved to `filtered_ligand_db.jsonlines`.
