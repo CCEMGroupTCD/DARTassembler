@@ -10,6 +10,7 @@ Todo before publication:
     - add failed complexes to DART output on global level
     - remove openbabel warning when using forcefield
     - optimize printed output, make DART ascii art
+    - print when extracting MetaLig from zip
     - Cian read docs and especially give a more chemical explanation of why to rotate the phenyl ligand in the example
 
 Update docs:

@@ -181,12 +181,6 @@ Now, we will redo the assembly process with the refined ligand database. First, 
 
 The assembler will now draw all it's ligands from the 81 ligands that match the criteria we specified earlier. The resulting complexes will have a more uniform chemistry, while still covering a wide chemical space within the defined boundaries. This method is excellent for generating a diverse set of complexes with realistic and targeted chemical properties for your research.
 
-.. figure:: DART_output_targeted/quickstart_figure2.png
-   :width: 100%
-   :align: center
-
-   Figure 2: (left) A bar chart of all elements in the 300 complexes generated with the above input file. The chemistry is now confined to the six organic elements we specified. (right) 2 examples of the complexes generated with the above input file for targeted complexes. Note the N-N bidentate ligand and the neutral monodentate ligand. (The shown complexes might be different if DART has been updated since this guide was written.)
-
 Understand the Output of the Assembler Module
 ------------------------------------------------
 
