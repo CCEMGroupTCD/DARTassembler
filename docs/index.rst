@@ -42,7 +42,7 @@ Why?
 Getting Started
 ===============
 
-Eager to begin? :ref:`Install DART <installation_guide>`, explore our hands-on :ref:`quickstart guide <quickstart>` or read through the :ref:`ideas and concepts <dart_workflow>` behind DART.
+Are you ready to get started? :ref:`Install DART <installation_guide>`, explore our hands-on :ref:`quickstart guide <quickstart>` or read through the :ref:`ideas and concepts <dart_workflow>` behind DART.
 
 .. toctree::
    :maxdepth: 2

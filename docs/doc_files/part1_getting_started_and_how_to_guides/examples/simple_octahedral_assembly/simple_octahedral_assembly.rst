@@ -62,13 +62,17 @@ Now execute the following command in your terminal:
 
     DARTassembler assembler --path assembler.yml
 
-You will see that the assembler module prints the progress to the terminal and after around 2 minutes saves the output files in the ``DART_output`` folder.
+You will see that the assembler module prints the progress to the terminal and after around 2 minutes saves the output files in the ``DART_output`` folder. One thing to notice from the output is that while DART assembled 100 complexes successfully, there were 226 complexes which had to be discarded due to clashing ligands. This is a common and understandable issue when assembling complexes with completely random ligands. Soon, we will show you how to filter ligands and you will see that this leads to a much higher success rate.
 
 Let's go into the ``DART_output`` folder and examine the generated complexes. First, we can browse through all successfully assembled geometries by typing ``ase gui concat_passed_complexes.xyz``. This command is useful for a quick visual inspection of the complexes.
 
 We can also inspect the properties of assembled complexes by opening the file ``info_table.csv`` with a program such as Excel. This file displays information on all complexes which DART tried to assemble, including the one which failed for various reasons. If we look at the column ``note``, we see that many complexes failed due to clashing ligands, which is a common issue when assembling complexes with completely random ligands.
 
-**Intermediary conclusion:** Using the entire MetaLig database without any filters clearly results in many complexes that are neither useful nor very likely to form stable complexes. In the following section, we will learn how to filter the ligands to generate complexes with a more realistic chemistry and with specific kinds of ligands.
+.. figure:: /_static/part1/examples/quickstart/DART_output/picture_without_filtering.png
+   :width: 100%
+   :align: center
+
+The figure above shows three randomly picked complexes. It becomes clear that using the entire MetaLig database without any filters results in quite wild complexes, many of which are neither useful nor very likely to form stable complexes. In the following section, we will learn how to filter the ligands to generate complexes with a more realistic chemistry and with specific kinds of ligands.
 
 Target Chemical Space
 ------------------------
@@ -76,15 +80,15 @@ Target Chemical Space
 To achieve complexes with more realistic and stable chemistry targeted to your own field of research, it is essential to filter the ligands used for the assembler. To use the :ref:`Ligand Filters Module <ligandfilters>` we will again need to provide an input file containing all filters we want to apply. Let's stay with assembling octahedral Pd(II) complexes with a `mer`-3-2-1 geometry, but let's restrict the ligands used for each binding site:
 
 - Monodentate: Neutral, composed only of C, H and N
-- Bidentate: N-N donor, composed only of C, H, N, O, P and S
-- Tridentate: Composed only of C, H, N, O, P and S
+- Bidentate: N-N donor, composed only of C, H, N, O
+- Tridentate: Composed only of C, H, N, O
 - All ligands should have
 
-    - no haptic interactions
-    - no CH\ :sub:`2` units
-    - specified bond orders
-    - less than 30 atoms
-    - been observed to coordinate to Ni, Pd or Pt in the Cambridge Structural Database
+  - no haptic interactions
+  - no CH\ :sub:`2` units
+  - specified bond orders
+  - less than 30 atoms
+  - been observed to coordinate to Ni, Pd or Pt in the Cambridge Structural Database
 
 The last filter does not specify physical properties, but it is very useful to increase the likelihood that our Pd complexes will be stable, since the ligands have precedent coordinating to a group 10 transition metal. Helpfully, the MetaLig database contains not only physical ligand properties but also statistical information from the Cambridge Structural Database.
 
@@ -129,6 +133,7 @@ The following file translates these requirements into a set of filters that DART
       # Remove ligands with likely haptic interactions
       - filter: remove_ligands_with_adjacent_coordinating_atoms
         remove_ligands_with_adjacent_coordinating_atoms: true
+        apply_to_denticities:
 
       # Remove ligands with CH2 units
       - filter: smarts
@@ -181,6 +186,12 @@ Now, we will redo the assembly process with the refined ligand database. First, 
 
 The assembler will now draw all it's ligands from the 81 ligands that match the criteria we specified earlier. The resulting complexes will have a more uniform chemistry, while still covering a wide chemical space within the defined boundaries. This method is excellent for generating a diverse set of complexes with realistic and targeted chemical properties for your research.
 
+.. figure:: /_static/part1/examples/quickstart/DART_output_targeted/picture_with_filtering.png
+   :width: 100%
+   :align: center
+
+The figure above shows three randomly picked complexes from the output of the assembler module with the filtered ligands. These complexes certainly look a lot more useful now. In the same way, you can rapidly generate complexes for your own field of research by filtering the ligands to your needs.
+
 Understand the Output of the Assembler Module
 ------------------------------------------------
 
@@ -202,7 +213,7 @@ Explore Your Complexes
 
 The folder ``DART_output_targeted`` now contains a rich spectrum of complexes, all adhering to the parameters you specified earlier. This approach enables DART users to do a a deep dive into well-defined chemical spaces, bringing forward potentially interesting complexes for various applications. We encourage you to explore the DART output and discover the wealth of information it provides.
 
-Keen to learn more? Dive into a :ref:`case study using advanced DART features <Pd_Ni_Cross_Coupling>` or read more about the :ref:`DART philosophy <dart_workflow>`.
+Want to learn more? Dive into a :ref:`case study using advanced DART features <Pd_Ni_Cross_Coupling>` or read more about the :ref:`DART philosophy <dart_workflow>`.
 
 
 

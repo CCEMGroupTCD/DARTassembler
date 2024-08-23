@@ -53,7 +53,7 @@ This template specifies all available filters and examples of their parameters:
     ################## Settings for the DART ligand filters module. ##################
     # Everything after '#' is ignored by the program and only there for the user.
 
-    input_db_file: test_metalig                     # path, 'metalig' or 'test_metalig'. Default: 'metalig'
+    input_db_file: metalig                          # path, 'metalig' or 'test_metalig'. Default: 'metalig'
     output_db_file: filtered_ligand_db.jsonlines    # path. Default: 'filtered_ligand_db.jsonlines'
     output_ligands_info: true                       # true or false. If true, an overview of the filtered and passed ligands will be saved. Default: true
 
@@ -145,14 +145,13 @@ This template specifies all available filters and examples of their parameters:
         graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]     # List of graph IDs to keep
 
 
-
 You can also download this template into your current directory by running:
 
 .. code-block:: bash
 
     DARTassembler configs --path .
 
-.. Note::
+.. tip::
 
     Every filter, except :confval:`denticities` and :confval:`graph_IDs` filter, has an optional parameter **apply_to_denticities**. This parameter allows users to apply the respective filter only to ligands with the specified denticities, which can be very handy. If this parameter is empty or omitted from the file, the filter will be applied to all ligands.
 

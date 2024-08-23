@@ -1,7 +1,7 @@
 ################## Settings for the DART ligand filters module. ##################
 # Everything after '#' is ignored by the program and only there for the user.
 
-input_db_file: test_metalig                     # path, 'metalig' or 'test_metalig'. Default: 'metalig'
+input_db_file: metalig                          # path, 'metalig' or 'test_metalig'. Default: 'metalig'
 output_db_file: filtered_ligand_db.jsonlines    # path. Default: 'filtered_ligand_db.jsonlines'
 output_ligands_info: true                       # true or false. If true, an overview of the filtered and passed ligands will be saved. Default: true
 
