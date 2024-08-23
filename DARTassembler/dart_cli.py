@@ -1,6 +1,19 @@
 import argparse
 from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo, concatenate_ligand_databases, run_installation_test, get_default_config_files_saved
 
+init_cli_output = r"""
+================================================================================
+                            ____  ___    ____  ______
+                           / __ \/   |  / __ \/_  __/
+                          / / / / /| | / /_/ / / /   
+                         / /_/ / ___ |/ _, _/ / /    
+                        /_____/_/  |_/_/ |_| /_/     
+        
+          DART - Directed Assembly of Random Transition metal complexes
+================================================================================
+"""
+
+
 modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat', 'test', 'configs']
 
 def check_n_args(args, n):
@@ -17,8 +30,9 @@ Usage: dart <module> --path <path>
 
     args = parser.parse_args()
 
-    print('=============== DART ===============')
-    print(f'Execute module: {args.module}')
+    print(init_cli_output)
+    module_title = f'  Execute module: {args.module}  '
+    print(f'{module_title:#^80}')
     if args.path:
         print(f'Input file: {args.path}')
 
