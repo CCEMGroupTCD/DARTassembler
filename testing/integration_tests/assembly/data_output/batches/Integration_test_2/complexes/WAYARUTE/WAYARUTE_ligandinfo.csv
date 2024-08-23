@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAHWIE-02-a,C4H3N2S1,2,-1,S-N,10,111.142,0.9490864036,False,True,5.414256701524226,2.5059886009560315,d43858be7653f65d888843ed7cc8c0e2,89,"PAHWIE, PAHWIE, SOTLAP, SOTLAP, TEBXUV, ... (84 more)","Ru(27), Re(13), Mo(12), Ni(9), Fe(5), ... (11 more)"
+Ligand 1,unq_CSD-PALJAP-01-a,C1H3O1S1,1,-1,S,6,63.094000000000015,0.4690858982,False,True,3.4805914267549416,2.3774405923177135,d1d1d6d4a62e65475105f23c569178e4,3,"PALJAP, EDIJIL, EDIJOR","Ni(2), Pd(1)"
+Ligand 2,unq_CSD-PACCOL-01-a,C1N1,1,-1,C,2,26.018,1.0,False,False,1.1471743285133258,1.8630787047250583,9d88dc32690d837e1d9728f9d6ae3ca0,3399,"PACCOL, PACCOL, PACCOL, PACCOL, PAHCEK, ... (3394 more)","Fe(1045), Pt(372), Co(315), Au(259), Ni(196), ... (22 more)"

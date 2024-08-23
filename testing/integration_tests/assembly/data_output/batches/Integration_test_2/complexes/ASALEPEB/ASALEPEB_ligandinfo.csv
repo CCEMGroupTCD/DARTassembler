@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PABYOI-02-a,C11H7Cl1N4,2,0,N-N,23,230.65500000000003,0.4217163653,False,True,10.093905426543285,2.0875806391499268,0977d31df69abbbda681a51e9e4b10e1,1,PABYOI,Ru(1)
+Ligand 1,unq_CSD-PAKJUI-01-a,Cl1O4,1,-1,O,5,99.446,0.3820511267,False,False,2.338802242601969,2.737134905334408,b1a53a0c39b096304aa1d8b8395de8ac,1072,"PAKJUI, PAPFIV, PASFIZ, PASFOE, PEBRIZ, ... (1067 more)","Cu(797), Cd(54), Zn(52), Mn(48), Ag(35), ... (8 more)"
+Ligand 2,unq_CSD-PAFWIC-01-c,S1,1,-2,S,1,32.06,1.0,False,False,,2.0997975664334882,0d2567e9cf243e276fa721ccc96d280c,507,"PAFWIC, PEWYIA, PEWYIA, PEWYIA, PEWYIA, ... (502 more)","W(220), Mo(180), Nb(21), Re(21), V(14), ... (12 more)"

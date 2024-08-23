@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAZXOG-04-a,C59H64N2O2S6,4,-2,O-N-O-N,133,1025.533,0.0622451164,False,True,35.13731972034862,1.922702472685173,2109d9d7f383744c09fabfd72c40a7bc,1,PAZXOG,Cu(1)
+Ligand 1,unq_CSD-PAHWIF-01-a,C4O4,1,-2,O,8,112.03999999999999,0.9718626377,False,False,4.566791996577028,1.9623788675992206,7b182d14e6b499355fa496a4dd288d16,11,"PAHWIF, QAGZEF, KEJKEP, KELNOE, KELNUK, ... (6 more)","Cu(5), Co(3), Yb(2), Eu(1)"
+Ligand 2,unq_CSD-PAJHAM-01-a,C2H6O1S1,1,0,O,10,78.12899999999999,0.3762018944,False,False,4.379736514905891,2.1629272387207115,e05bef67d45c36859d07f07a1b2bfee1,1496,"PAJHAM, PAJHAM, PAJHAM, PAJHAM, PAJHAM, ... (1491 more)","Ni(160), Cu(146), Co(138), Zn(114), U(83), ... (39 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAHKIS-04-a,C56H44Br8N4,4,-2,N-N-N-N,112,1412.2279999999998,0.0520378446,False,False,19.02267727108884,1.9159163708262423,1b0f703ba7e821e9a0981fe1d2b8e5b9,1,PAHKIS,Ni(1)
+Ligand 1,unq_CSD-PAKJUI-01-a,Cl1O4,1,-1,O,5,99.446,0.3820511267,False,False,2.338802242601969,2.737134905334408,b1a53a0c39b096304aa1d8b8395de8ac,1072,"PAKJUI, PAPFIV, PASFIZ, PASFOE, PEBRIZ, ... (1067 more)","Cu(797), Cd(54), Zn(52), Mn(48), Ag(35), ... (8 more)"
+Ligand 2,unq_CSD-PAFWIF-01-b,N3,1,-1,N,3,42.021,1.0,False,False,2.2359128001780406,2.0559024952560367,c8ee8cd128934fd2bc20f5cd86dd2192,1728,"PAFWIF, PAFWIF, PAKDAJ, PAKDAJ, PAKTIH, ... (1723 more)","Co(393), Cu(203), Zn(162), Ni(160), Mn(146), ... (28 more)"

@@ -55,9 +55,11 @@ filters:
 
   - filter: remove_ligands_with_adjacent_coordinating_atoms     # Filter out ligands with neighboring coordinating atoms
     remove_ligands_with_adjacent_coordinating_atoms: true       # true or false. If false, filter will have no effect.
+    apply_to_denticities:                                       # List of denticities to apply this filter to. If empty, applies to all denticities.
 
   - filter: remove_ligands_with_beta_hydrogens                  # Filter out ligands with beta hydrogens
     remove_ligands_with_beta_hydrogens: true                    # true or false. If false, filter will have no effect.
+    apply_to_denticities:                                       # List of denticities to apply this filter to. If empty, applies to all denticities.
 
   - filter: remove_ligands_with_missing_bond_orders             # Filter out ligands with missing bond orders
     remove_ligands_with_missing_bond_orders: true               # true or false. If false, filter will be ignored.

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PERNUW-04-a,C100H64N8,4,-2,N-N-N-N,172,1377.668,0.0509815889,False,False,30.841063585097057,2.0554056228395163,46f212b1d973e4d3a372423ef5f6aa4a,1,PERNUW,Zn(1)
+Ligand 1,unq_CSD-PABQAL-01-a,Cl3Sn1,1,-1,Sn,4,225.06,0.4994355939,False,False,3.5844210369319063,2.574082807525819,17fc683776618ed7dd2270e532126688,81,"PABQAL, PILHAT, PILHAT01, SNISMO, LUXTAZ, ... (76 more)","Pt(26), Ru(17), Pd(7), Rh(6), Au(4), ... (8 more)"
+Ligand 2,unq_CSD-PACCOL-01-a,C1N1,1,-1,C,2,26.018,1.0,False,False,1.1471743285133258,1.8630787047250583,9d88dc32690d837e1d9728f9d6ae3ca0,3399,"PACCOL, PACCOL, PACCOL, PACCOL, PAHCEK, ... (3394 more)","Fe(1045), Pt(372), Co(315), Au(259), Ni(196), ... (22 more)"

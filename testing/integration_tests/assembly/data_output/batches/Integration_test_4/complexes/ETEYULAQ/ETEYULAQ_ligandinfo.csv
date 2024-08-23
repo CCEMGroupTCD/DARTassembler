@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PARFEV-04-a,C44H70N2O8,4,-2,O-O-N-N,124,755.05,0.082287378,False,True,24.79094810550819,2.0565984278399507,52bfaaf4882cb3efc9187aaf653cd0b8,1,PARFEV,Fe(1)
+Ligand 1,unq_CSD-PAGFIQ-01-b,F1,1,-1,F,1,18.998403163,1.0,False,False,,1.858994378689726,863df8eac131c790b7c49ff759330253,2046,"PAGFIQ, PAGGAJ, PAGGAJ, PAGGEN, PAGGOX, ... (2041 more)","Ta(337), Ti(247), W(225), Nb(172), V(98), ... (33 more)"
+Ligand 2,unq_CSD-PAKJUI-01-a,Cl1O4,1,-1,O,5,99.446,0.3820511267,False,False,2.338802242601969,2.737134905334408,b1a53a0c39b096304aa1d8b8395de8ac,1072,"PAKJUI, PAPFIV, PASFIZ, PASFOE, PEBRIZ, ... (1067 more)","Cu(797), Cd(54), Zn(52), Mn(48), Ag(35), ... (8 more)"

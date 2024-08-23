@@ -107,9 +107,11 @@ This template specifies all available filters and examples of their parameters:
 
       - filter: remove_ligands_with_adjacent_coordinating_atoms     # Filter out ligands with neighboring coordinating atoms
         remove_ligands_with_adjacent_coordinating_atoms: true       # true or false. If false, filter will have no effect.
+        apply_to_denticities:                                       # List of denticities to apply this filter to. If empty, applies to all denticities.
 
       - filter: remove_ligands_with_beta_hydrogens                  # Filter out ligands with beta hydrogens
         remove_ligands_with_beta_hydrogens: true                    # true or false. If false, filter will have no effect.
+        apply_to_denticities:                                       # List of denticities to apply this filter to. If empty, applies to all denticities.
 
       - filter: remove_ligands_with_missing_bond_orders             # Filter out ligands with missing bond orders
         remove_ligands_with_missing_bond_orders: true               # true or false. If false, filter will be ignored.
@@ -150,6 +152,9 @@ You can also download this template into your current directory by running:
 
     DARTassembler configs --path .
 
+.. Note::
+
+    Every filter, except :confval:`denticities` and :confval:`graph_IDs` filter, has an optional parameter **apply_to_denticities**. This parameter allows users to apply the respective filter only to ligands with the specified denticities, which can be very handy. If this parameter is empty or omitted from the file, the filter will be applied to all ligands.
 
 Global Options
 ~~~~~~~~~~~~~~~~~~~~
@@ -210,7 +215,7 @@ Physical Property Filters
             List of formal charges to keep.
 
         apply_to_denticities :
-            A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: For ligands with denticity of 2 or 3, this example will keep only ligands which have a formal charge of -1, 0 or 1. Ligands with denticities other than 2 or 3 will always pass.
 
@@ -247,7 +252,7 @@ Physical Property Filters
 
         **apply_to_denticities :**
 
-            A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: This will keep only ligands with exact stoichiometry of C\ :sub:`2`\H\ :sub:`6`\N.
 
@@ -313,7 +318,7 @@ Physical Property Filters
 
         **apply_to_denticities :**
 
-            A list of denticities. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: This will keep only bidentate N-N donors.
 
@@ -370,7 +375,8 @@ Physical Property Filters
             Maximum bond length in Angstrom. If empty, will be treated as infinity.
 
         apply_to_denticities :
-            A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: This filter would remove a bidentate ligand with metal-donor bond lengths of (1.4, 2.2) Angstrom, but keep another bidentate ligand with metal-donor bond lengths of (1.6, 1.8) Angstrom.
 
@@ -396,7 +402,7 @@ Physical Property Filters
             Maximum number of atoms. If empty, will be treated as infinity.
 
         apply_to_denticities :
-            A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: This example will remove all monodentate ligands with less than 10 atoms or more than 100 atoms. Ligands with denticities other than 1 will always pass.
 
@@ -422,7 +428,7 @@ Physical Property Filters
             Maximum molecular weight in g/mol. If empty, will be treated as infinity.
 
         apply_to_denticities :
-            A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: This example will keep only ligands with a maximum molecular weight of 200 g/mol.
 
@@ -448,7 +454,7 @@ Physical Property Filters
             Maximum interatomic distance in Angstrom. If empty, will be treated as infinity.
 
         apply_to_denticities :
-            A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: This filter will remove ligands if any two atoms in the ligand are closer than 0.6 Angstrom.
 
@@ -483,7 +489,7 @@ Physical Property Filters
             Maximum planarity score. If empty, will be set to 1.
 
         apply_to_denticities :
-            A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: This filter will keep only relatively planar ligands in which most atoms lie mostly in the same plane.
 
@@ -512,12 +518,16 @@ Molecular Graph Filters
         remove_ligands_with_adjacent_coordinating_atoms :
             If ``true``, apply this filter. If ``false``, this filter has no effect.
 
+        apply_to_denticities :
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
+
     :example: This example will remove all ligands with neighboring coordinating atoms.
 
         .. code-block:: yaml
 
               - filter: remove_ligands_with_adjacent_coordinating_atoms
                 remove_ligands_with_adjacent_coordinating_atoms: true
+                apply_to_denticities:
 
 .. _filter_remove_ligands_with_beta_hydrogens:
 
@@ -530,12 +540,16 @@ Molecular Graph Filters
         remove_ligands_with_beta_hydrogens :
             If ``true``, apply this filter. If ``false``, this filter has no effect.
 
+        apply_to_denticities :
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
+
     :example: This example will remove all ligands with beta hydrogen atoms.
 
         .. code-block:: yaml
 
               - filter: remove_ligands_with_beta_hydrogens
                 remove_ligands_with_beta_hydrogens: true
+                apply_to_denticities:
 
 .. _filter_remove_ligands_with_missing_bond_orders:
 
@@ -549,7 +563,7 @@ Molecular Graph Filters
             If ``true``, apply this filter. If ``false``, this filter has no effect.
 
         apply_to_denticities :
-            A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: This example will remove all ligands with missing bond orders.
 
@@ -577,7 +591,7 @@ Molecular Graph Filters
 
             **apply_to_denticities :**
 
-                A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+                Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
         :example: This example removes all ligands in which a C is connected to 2 H atoms, plus potentially other neighbors.
 
@@ -618,7 +632,7 @@ Molecular Graph Filters
 
             **apply_to_denticities :**
 
-                A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+                Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
         :example: This example will remove all ligands in which any C atom bonds to exactly 2 H atoms.
 
@@ -649,7 +663,7 @@ Statistical CSD Filters
             Maximum number of occurrences. If empty, will be treated as infinity.
 
         apply_to_denticities :
-            A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: This example will keep only ligands which have been observed in the CSD at least 20 times. This might be helpful to avoid exotic ligands and help with synthetic feasibility.
 
@@ -673,7 +687,7 @@ Statistical CSD Filters
             List of metals, e.g. [Pd, Ni]. Any metal from the d- or f-block can be specified.
 
         apply_to_denticities :
-            A list of denticities or empty. This filter will be applied only to ligands with a denticity in this list. If empty, will apply to all ligands.
+            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
 
     :example: This filter will keep only ligands which have been observed to coordinate to Pd or Ni.
 

@@ -1,6 +1,6 @@
 input_db_file:           # path or nothing
 output_db_file: ligandfilters/data_output/filtered_ligand_db_v1.7.json   # path or nothing
-output_ligands_info: True   # True or False. If True, an overview of the filtered and passed ligands will be saved.
+#output_ligands_info: True   # True or False. If True, an overview of the filtered and passed ligands will be saved.
 
 filters:
 
@@ -9,167 +9,63 @@ filters:
 
   - filter: remove_ligands_with_adjacent_coordinating_atoms
     remove_ligands_with_adjacent_coordinating_atoms: True
+    apply_to_denticities: [1, 2, 3]
 
   - filter: remove_ligands_with_beta_hydrogens
     remove_ligands_with_beta_hydrogens: True
+    apply_to_denticities: [1, 2, 3]
 
   - filter: number_of_atoms
     min: 1
     max: 15
-    apply_to_denticities: [1]
 
   - filter: ligand_charges
     ligand_charges: [-1, 0]
-    apply_to_denticities: [2, 3]
 
   - filter: metal_ligand_binding_history
     metal_ligand_binding_history: [Fe, Mn, Cr, Ru, Co, Ni, Cu, Ir, Mo]
-    apply_to_denticities:
 
   - filter: coordinating_atoms_composition
     elements: [N, N, N]
     instruction: must_contain_and_only_contain
-    apply_to_denticities: [3]
 
   - filter: molecular_weight
     min: 30.1
     max: 300.2
-    apply_to_denticities: [3]
-
-  - filter: number_of_atoms
-    min: 10
-    max: 100
-    apply_to_denticities: [3]
-
-  - filter: molecular_weight
-    min: 10.1
-    max: 300.2
-    apply_to_denticities:
 
   - filter: interatomic_distances
     min: 0.5
     max: 40.0
-    apply_to_denticities: [3]
+    apply_to_denticities:
 
   - filter: planarity
     min: 0.2
     max: 1.0
-    apply_to_denticities: [1]
+    apply_to_denticities:
 
   - filter: occurrences
     min: 3
     max:
-    apply_to_denticities: [4]
+    apply_to_denticities:
 
   - filter: metal_donor_bond_lengths
     min: 1.0
     max: 2.5
-    apply_to_denticities: [2]
 
   - filter: atomic_neighbors
     atom: C
     neighbors: H3
-    apply_to_denticities: 1
 
   - filter: smarts
     smarts: N=N
     should_contain: False
     include_metal: True
-    apply_to_denticities: 1
 
   - filter: smarts  # remove C with exactly 2 H atoms
     smarts: '[C&H2]'
     should_contain: False
     include_metal: True
-    apply_to_denticities: 2
 
-
-
-
-
-
-#
-#
-#
-#
-#input_db_file:           # path or nothing. If nothing, the entire MetaLig ligand database will be used as input
-#output_db_file: data/filtered_ligand_db.json   # path or nothing
-#
-#filters:
-#  - filter: denticities         # filter out ligands with denticities not in this list
-#    denticities: [1, 2, 3, 4, 5]  # list of denticities to keep
-#
-#  - filter: remove_ligands_with_adjacent_coordinating_atoms  # filter out ligands with neighboring coordinating atoms
-#    remove_ligands_with_adjacent_coordinating_atoms: True      # True or False. If False, will be ignored.
-#
-#  - filter: remove_ligands_with_beta_hydrogens        # filter out ligands with beta hydrogens
-#    remove_ligands_with_beta_hydrogens: True            # True or False. If False, will be ignored.
-#
-#  - filter: strict_box_filter                         # filter out big ligands
-#    strict_box_filter: False                            # True or False. If False, will be ignored.
-#
-#  - filter: number_of_atoms                                # filter out ligands with atom count outside of this range
-#    min:                                                # Minimum number of atoms. If nothing, will be ignored.
-#    max: 15                                             # Maximum number of atoms. If nothing, will be ignored.
-#    apply_to_denticities: [1]                                    # List of denticities to apply this filter to. If nothing, will be ignored.
-#
-#  - filter: ligand_charges                            # filter out ligands with charges not provided in this list
-#    ligand_charges: [-1, 0]                             # only keep ligands with these charges
-#    apply_to_denticities: [2, 3]                                 # List of denticities to apply this filter to. If nothing, will be ignored.
-#
-#  - filter: metal_ligand_binding_history                                                  # only keep ligands which have been observed to coordinate to these metals
-#    metal_ligand_binding_history: [Pd, Ni]                        # list of metals to keep
-#    apply_to_denticities:                                                                  # List of denticities to apply this filter to. If nothing, will be ignored.
-#
-#  - filter: coordinating_atoms_composition            # filter ligands based on their coordinating atoms
-#    elements: [P, N]                       # TODO
-#    instruction: must_contain_and_only_contain        #
-#    apply_to_denticities: [2]
-#
-#  - filter: molecular_weight            # filter out ligands with molecular weight outside of this range.
-#    min: 30.1                             # Minimum molecular weight (todo unit). If nothing, will be ignored.
-#    max: 300.2                            # Maximum molecular weight (todo unit). If nothing, will be ignored.
-#    apply_to_denticities: [3]                      # List of denticities to apply this filter to. If nothing, will be ignored.
-#
-#  - filter: number_of_atoms                  # filter out ligands with atom count outside of this range
-#    min: 10                               # Minimum number of atoms. If nothing, will be ignored.
-#    max: 100                              # Maximum number of atoms. If nothing, will be ignored.
-#    apply_to_denticities: [3]                      # List of denticities to apply this filter to. If nothing, will be ignored.
-#
-#  - filter: interatomic_distances       # filter out ligands with interatomic distances outside of this range
-#    min: 0.5                              # Minimum interatomic distance (in Angstrom). If nothing, will be ignored.
-#    max: 40.0                             # Maximum interatomic distance (in Angstrom). If nothing, will be ignored.
-#    apply_to_denticities: [3]                      # List of denticities to apply this filter to. If nothing, will be ignored.
-#
-#  - filter: planarity                   # filter out ligands based on their `planarity score`, which is a number between 0 and 1. 0 is not planar, 1 is perfectly planar.
-#    min: 0.2                              # Minimum planarity score. If nothing, will be ignored.
-#    max: 1.0                              # Maximum planarity score. If nothing, will be ignored.
-#    apply_to_denticities: [1]                      # List of denticities to apply this filter to. If nothing, will be ignored.
-#
-#  - filter: occurrences                 # filter out ligands based on the number of times they have been observed in the CSD
-#    min: 3                                # Minimum number of occurrences. If nothing, will be ignored.
-#    max:                                  # Maximum number of occurrences. If nothing, will be ignored.
-#    apply_to_denticities: [4]                      # List of denticities to apply this filter to. If nothing, will be ignored.
-#
-#  - filter: metal_donor_bond_lengths    # filter out ligands based on the bond lengths between the metal and the donor atoms
-#    min: 1.0                              # Minimum bond length (in Angstrom). If nothing, will be ignored.
-#    max: 2.5                              # Maximum bond length (in Angstrom). If nothing, will be ignored.
-#    apply_to_denticities: [2]                      # List of denticities to apply this filter to. If nothing, will be ignored.
-#
-#  - filter: graph_IDs                   # only keep ligands with the following graph IDs
-#    graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]     # list of graph IDs to keep
-#
-#  - filter: ligand_composition                      # filter ligands based on their composition
-#    elements: [ C, H, N, P]          # elements to apply this filter to
-#    instruction: must_only_contain_in_any_amount    # instruction for how to apply this filter
-#    apply_to_denticities:                                      # List of denticities to apply this filter to. If nothing, will be ignored.
-#
-#  - filter: coordinating_atoms_composition          #
-#    elements: [P, N]
-#    instruction: must_contain_and_only_contain
-#    apply_to_denticities:
-#
-#
-#
-#
-#
+  - filter: remove_ligands_with_missing_bond_orders
+    remove_ligands_with_missing_bond_orders: true
+    apply_to_denticities: [1, 2, 3, 4, 5]

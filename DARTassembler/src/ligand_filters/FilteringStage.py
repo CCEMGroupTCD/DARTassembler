@@ -204,34 +204,41 @@ class FilterStage:
 
     # self.safe_and_document_after_filterstep(filtering_step_name="FunctionalAtoms_of_Interest")
 
-    def filter_betaHs(self):
+    def filter_betaHs(self, denticities: list = None):
         """
         Filter out all ligands with beta Hydrogen in it
         """
+        to_delete = []
+        denticities = self.ensure_denticities_is_list(denticities)
 
-        # print("betaH Filter running")
+        for unq_name, ligand in self.database.db.items():
+            if ligand.denticity not in denticities:
+                continue
 
-        self.database.db = {identifier: ligand for identifier, ligand in self.database.db.items()
-                            if ligand.betaH_check() is False}
+            betaH_present = ligand.betaH_check()
+            if betaH_present:
+                to_delete.append(unq_name)
+
+        for unq_name in to_delete:
+            del self.database.db[unq_name]
 
         self.filter_tracking[len(self.filter_tracking)] = f"betaH Filter"
 
-        # self.safe_and_document_after_filterstep(filtering_step_name="betaH Filter")
-
-    def filter_neighbouring_coordinating_atoms(self):
-        # The goal of this filter is to remove ligands that have coordinating atoms close to each other
-
+    def filter_neighbouring_coordinating_atoms(self, denticities: list = None):
         to_delete = []
+        denticities = self.ensure_denticities_is_list(denticities)
+
         for unq_name, ligand in self.database.db.items():
-            # print("######")
-            # print(ligand.atomic_props["atoms"])
-            # print(ligand.denticity)
+            if ligand.denticity not in denticities:
+                continue
+
             if ligand.check_for_neighboring_coordinating_atoms():
                 to_delete.append(unq_name)
 
-        self.database.db = {unq_name: ligand for unq_name, ligand in self.database.db.items() if unq_name not in to_delete}
+        for unq_name in to_delete:
+            del self.database.db[unq_name]
+
         self.filter_tracking[len(self.filter_tracking)] = f"Neighbouring Atom Filter: {0.2}"
-        # print("finished")
 
     def filter_min_max_value(self, get_value_from_ligand, min: float = None, max: float = None, denticities: list = None):
         to_delete = []
@@ -249,10 +256,10 @@ class FilterStage:
 
             value = get_value_from_ligand(ligand)
             try:
-                if not (min <= value <= max):    # todo: include right boundary
+                if not (min <= value <= max):
                     to_delete.append(unq_name)
             except TypeError:
-                if not all(min <= v <= max for v in value): # todo: include right boundary
+                if not all(min <= v <= max for v in value):
                     to_delete.append(unq_name)
 
         for unq_name in to_delete:

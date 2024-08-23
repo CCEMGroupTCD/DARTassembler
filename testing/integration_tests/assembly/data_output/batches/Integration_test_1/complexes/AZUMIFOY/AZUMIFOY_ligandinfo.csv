@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PABYUO-02-a,C10H9N3,2,0,N-N,22,171.203,0.3344006698,False,True,8.985780399052718,2.0911737678654627,cca96214ddc8c5bf085878bde98cf1a2,405,"PABYUO, PECVOJ, PEZXEY, PEZXEY, PEZXIC, ... (400 more)","Cu(131), Co(40), Ni(39), Ru(36), Zn(32), ... (14 more)"
+Ligand 1,unq_CSD-PALPOH-02-a,C6H4S2,2,-2,S-S,12,140.21800000000002,0.8828820468,False,False,5.480327760271278,2.3673188515161234,83a83ba3d61419d8c1702821820a34b8,253,"PALPOH, PALPOH, PALRAV, PALRAV, PEMJIC, ... (248 more)","Mo(51), W(34), Fe(33), Ni(25), Pt(25), ... (14 more)"

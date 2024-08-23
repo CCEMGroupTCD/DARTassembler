@@ -1,3 +1,4 @@
+import shutil
 import sys
 
 from tqdm import tqdm
@@ -37,6 +38,8 @@ class LigandFilters(object):
             self.outdir = Path(self.output_ligand_db_path.parent, outdirname)   # directory for full output
             self.outdir.mkdir(parents=True, exist_ok=True)
             self.xyz_outdir = Path(self.outdir, 'concat_xyz')                   # directory for concatenated xyz files
+            if self.xyz_outdir.exists():    # Delete the existing directory so that there are no old files left that go into the new directory
+                shutil.rmtree(self.xyz_outdir)
             self.xyz_outdir.mkdir(parents=True, exist_ok=True)
 
         self.filter_tracking = []
@@ -72,17 +75,13 @@ class LigandFilters(object):
 
             elif filtername == _remove_ligands_with_neighboring_coordinating_atoms:
                 if filter[_remove_ligands_with_neighboring_coordinating_atoms]:
-                    self.Filter.filter_neighbouring_coordinating_atoms()
+                    self.Filter.filter_neighbouring_coordinating_atoms(denticities=filter[_denticities])
 
             elif filtername == _remove_ligands_with_beta_hydrogens:
                 if filter[_remove_ligands_with_beta_hydrogens]:
-                    self.Filter.filter_betaHs()
+                    self.Filter.filter_betaHs(denticities=filter[_denticities])
 
-            elif filtername == _strict_box_filter:  # deprecated
-                if filter[_strict_box_filter]:
-                    self.Filter.box_excluder_filter()
-
-            # Denticity dependent filters
+            # ====== Denticity dependent filters ======
             elif filtername == _acount:
                 self.Filter.filter_atom_count(min=filter[_acount_min], max=filter[_acount_max], denticities=filter[_denticities])
 

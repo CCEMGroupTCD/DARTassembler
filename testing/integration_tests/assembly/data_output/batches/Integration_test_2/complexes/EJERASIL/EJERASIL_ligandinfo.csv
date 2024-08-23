@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAHCAF-02-a,C16H18N1O2,2,-1,O-O,37,256.325,0.1495145057,False,False,13.686795170528415,1.9270690641212593,0f22f1766a36f93eeac3b2d2f4651ce8,2,"PAHCAF, PAHCAF",Cu(2)
+Ligand 1,unq_CSD-PARTEH-01-b,C2H3O1,1,-1,C,6,43.04500000000001,0.4643551474,False,True,3.145721527726191,1.9557356620975144,bfb82fc89ef7bdf09f8ea96508153edf,204,"PARTEH, PASFOE, PIKLAY, PIKLAY, PIKLEC, ... (199 more)","Pt(88), Rh(33), Pd(24), Co(16), Re(11), ... (6 more)"
+Ligand 2,unq_CSD-PEDXIF-01-f,H1S1,1,-1,S,2,33.068000000000005,1.0,False,False,0.9978869525151637,2.4288253498347716,9788c50e8fb0fe8f3c14b6e8db4af9e9,65,"PEDXIF, PIGTEG, SOFYIY, TELMEE, BIZTOT, ... (60 more)","Ru(11), Ni(10), Pd(8), Mo(6), Re(5), ... (10 more)"

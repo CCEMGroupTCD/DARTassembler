@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAKKAP-04-a,C20H40N8O4,4,0,N-N-N-N,72,456.59200000000004,0.0763760155,False,True,13.709114113245976,2.067691339207021,53c9e372f3c7edd3d4c865a982724c91,1,PAKKAP,Cu(1)
+Ligand 1,unq_CSD-PEBNIT-01-d,C1H3N1,1,-2,N,5,29.041999999999998,0.4748139509,False,True,2.039766226801493,1.6657033529413334,bed160728bd859cf36d48ecfda613ec8,12,"PEBNIT, SIRZUP, CEWVUX, CEWVUX, TOVPOJ, ... (7 more)","Mo(4), Re(2), U(2), V(1), Nb(1), ... (2 more)"
+Ligand 2,unq_CSD-PAFWIC-01-c,S1,1,-2,S,1,32.06,1.0,False,False,,2.0997975664334882,0d2567e9cf243e276fa721ccc96d280c,507,"PAFWIC, PEWYIA, PEWYIA, PEWYIA, PEWYIA, ... (502 more)","W(220), Mo(180), Nb(21), Re(21), V(14), ... (12 more)"

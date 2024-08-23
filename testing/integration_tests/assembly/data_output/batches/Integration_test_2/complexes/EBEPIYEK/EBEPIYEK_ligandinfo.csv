@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PASLIH-02-a,C12H7F2N2O1,2,-1,O-N,24,233.19780632599998,0.2350299019,False,False,10.524927136564889,1.9956702930143533,6d770b811f8c718f3188e54d0369e26b,2,"PASLIH, PASLIH",Pt(2)
+Ligand 1,unq_CSD-PATGEW-01-a,C2H4N2,1,0,N,8,56.068,0.3766659373,False,True,3.3034236452504846,2.48854430139389,6d88007b311ad5b36a72559b27f7ed91,1,PATGEW,Mo(1)
+Ligand 2,unq_CSD-OZULIF-01-a,O1,1,-2,O,1,15.999,1.0,False,False,,1.747565498057226,b1a746e052bbfde6c86e554cbcd4ff39,7551,"OZULIF, OZULIF, OZULOL, OZULOL, OZUWEM, ... (7546 more)","Mo(2386), U(1681), V(1535), Re(933), W(436), ... (16 more)"

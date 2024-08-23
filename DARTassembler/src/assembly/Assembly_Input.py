@@ -129,9 +129,29 @@ ligandfilters_gbl_defaults = {
     _output_ligand_db_path: None,
     _output_ligands_info: True,
 }
-
-
-
+ligandfilters_filter_defaults = {
+    _graph_hash_wm: {},
+    _denticities_of_interest: {},
+    _remove_ligands_with_neighboring_coordinating_atoms: {_denticities: None},
+    _only_confident_charges: {},
+    _remove_ligands_with_beta_hydrogens: {_denticities: None},
+    _strict_box_filter: {},
+    _filter_even_odd_electron_count: {},
+    _acount: {_denticities: None},
+    _stoichiometry: {_denticities: None},
+    _ligcomp: {_denticities: None},
+    _ligand_charges: {_denticities: None},
+    _metals_of_interest: {_denticities: None},
+    _coords: {_denticities: None},
+    _mw: {_denticities: None},
+    _interatomic_distances: {_denticities: None},
+    _planarity: {_denticities: None},
+    _occurrences: {_denticities: None},
+    _md_bond_length: {_denticities: None},
+    _remove_missing_bond_orders: {_denticities: None},
+    _atm_neighbors: {_denticities: None},
+    _smarts_filter: {_denticities: None},
+}
 
 class BaseInput(object):
 
@@ -354,13 +374,16 @@ class BaseInput(object):
         return input
 
     def check_input_types(self, valid_keys: dict, settings: dict):
+        # Check for keys that are not allowed
+        for key in settings.keys():
+            if key not in valid_keys:
+                self.raise_error(f"Key '{key}' is not a valid key. Please check the documentation.", varname=key)
+
+        # Check if all necessary keys are specified
         for key, types in valid_keys.items():
             real_keys = tuple(settings.keys())
             if key not in real_keys:
-                if key in ligandfilters_gbl_defaults:
-                    settings[key] = ligandfilters_gbl_defaults[key]
-                else:
-                    self.raise_error(f"Key '{key}' not found in input file, please add it. All keys found are {real_keys}.")
+                self.raise_error(f"Key '{key}' not found in input file, please add it. All keys found are {real_keys}.")
             self.check_correct_input_type(input=settings[key], types=types, varname=key)
 
         return
@@ -443,13 +466,15 @@ class LigandFilterInput(BaseInput):
         _denticities_of_interest: {
             _denticities_of_interest: [list, tuple]},
         _remove_ligands_with_neighboring_coordinating_atoms: {
-            _remove_ligands_with_neighboring_coordinating_atoms: [bool, str]},
+            _remove_ligands_with_neighboring_coordinating_atoms: [bool, str],
+            _denticities: [list, tuple, type(None), int]},
         # _only_confident_charges: {                    # filter removed from options and made mandatory
         #     _only_confident_charges: [bool, str]},
         _remove_ligands_with_beta_hydrogens: {
-            _remove_ligands_with_beta_hydrogens: [bool, str]},
-        _strict_box_filter: {
-            _strict_box_filter: [bool, str]},
+            _remove_ligands_with_beta_hydrogens: [bool, str],
+            _denticities: [list, tuple, type(None), int]},
+        # _strict_box_filter: {
+        #     _strict_box_filter: [bool, str]},
         # _filter_even_odd_electron_count: {            # filter removed from options because all ligands with confident charges have even electron count
         #     _filter_even_odd_electron_count: [str]},
         _acount: {
@@ -556,6 +581,11 @@ class LigandFilterInput(BaseInput):
 
         settings = self.raw_input_settings
 
+        # Add default values to settings
+        for key, value in ligandfilters_gbl_defaults.items():
+            if key not in settings:
+                settings[key] = deepcopy(value)
+
         self.check_input_types(valid_keys=self.valid_keys, settings=settings)
         self.ligand_db_path = self.check_ligand_db_path(settings[_ligand_db_path])
         self.output_ligand_db_path = self.get_path_from_input(path=settings[_output_ligand_db_path], varname=_output_ligand_db_path, allow_none=True)
@@ -587,6 +617,12 @@ class LigandFilterInput(BaseInput):
                 similar_string = f"Did you mean '{similar_word}'? " if similar_word != '' else ''
                 self.raise_error(f"Filter '{self.filtername}' is not a valid filter. {similar_string}Valid filter names are {valid_filter_names}.", varname=_filter)
 
+            # Add default values to filter
+            default_values = ligandfilters_filter_defaults[self.filtername]
+            for key, value in default_values.items():
+                if key not in full_filter:
+                    full_filter[key] = deepcopy(value)
+
             filter_values = {key: value for key, value in full_filter.items() if key != _filter}
             self.check_input_types(valid_keys=self.filter_keys[self.filtername], settings=filter_values)
 
@@ -595,12 +631,8 @@ class LigandFilterInput(BaseInput):
                 out_filter_settings[_denticities_of_interest] = self.check_denticities_of_interest(settings=filter_values)
             elif self.filtername == _graph_hash_wm:
                 out_filter_settings[_graph_hash_wm] = self.get_list_of_str_from_input(input=filter_values[_graph_hash_wm])
-            elif self.filtername == _remove_ligands_with_neighboring_coordinating_atoms:
-                out_filter_settings[_remove_ligands_with_neighboring_coordinating_atoms] = self.get_bool_from_input(input=filter_values[_remove_ligands_with_neighboring_coordinating_atoms], varname=_remove_ligands_with_neighboring_coordinating_atoms)
             elif self.filtername == _only_confident_charges:
                 out_filter_settings[_only_confident_charges] = self.get_bool_from_input(input=filter_values[_only_confident_charges], varname=_only_confident_charges)
-            elif self.filtername == _remove_ligands_with_beta_hydrogens:
-                out_filter_settings[_remove_ligands_with_beta_hydrogens] = self.get_bool_from_input(input=filter_values[_remove_ligands_with_beta_hydrogens], varname=_remove_ligands_with_beta_hydrogens)
             elif self.filtername == _strict_box_filter:
                 out_filter_settings[_strict_box_filter] = self.get_bool_from_input(input=filter_values[_strict_box_filter], varname=_strict_box_filter)
             elif self.filtername == _filter_even_odd_electron_count:
@@ -624,6 +656,16 @@ class LigandFilterInput(BaseInput):
                 out_filter_settings[_coords_atoms_of_interest] = self.get_list_of_chemical_elements_from_input(input=filter_values[_coords_atoms_of_interest], varname=f'{_coords}:{_coords_atoms_of_interest}')
                 out_filter_settings[_coords_instruction] = self.get_instruction_from_input(input=filter_values[_coords_instruction], varname=f'{_coords}:{_coords_instruction}')
                 out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_coords}:{_denticities}', allow_none=True)
+            elif self.filtername == _remove_ligands_with_neighboring_coordinating_atoms:
+                out_filter_settings[_remove_ligands_with_neighboring_coordinating_atoms] = self.get_bool_from_input(
+                input=filter_values[_remove_ligands_with_neighboring_coordinating_atoms],
+                varname=_remove_ligands_with_neighboring_coordinating_atoms)
+                out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_remove_ligands_with_neighboring_coordinating_atoms}:{_denticities}', allow_none=True)
+            elif self.filtername == _remove_ligands_with_beta_hydrogens:
+                out_filter_settings[_remove_ligands_with_beta_hydrogens] = self.get_bool_from_input(
+                    input=filter_values[_remove_ligands_with_beta_hydrogens],
+                    varname=_remove_ligands_with_beta_hydrogens)
+                out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_remove_ligands_with_beta_hydrogens}:{_denticities}', allow_none=True)
             elif self.filtername == _mw:
                 out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_mw))
             elif self.filtername == _acount:

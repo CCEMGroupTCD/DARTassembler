@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PADFIK-02-a,C15H17N2,2,-1,N-N,34,225.315,0.1442507421,False,False,11.396129428011951,2.287861379300237,c06804681177ffe73bb3d1c9306d1296,4,"PADFIK, PADFIK, PADFOQ, PADFOQ",Zr(4)
+Ligand 1,unq_CSD-PAZXIZ-02-a,C12H14N3O3S1,2,-1,C-N,33,280.322,0.1576893688,False,True,8.79889538408089,2.0294424946882224,e599d1dc74f3e16948288c18129625a7,1,PAZXIZ,Au(1)

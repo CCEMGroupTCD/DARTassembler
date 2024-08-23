@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZUYUE-04-a,C50H31N3O1,4,-2,N-N-N-C,85,689.818,0.0876851148,False,True,17.404596452087016,2.04809032510348,603c7c32f4123e28319a4ba0f7f68475,1,OZUYUE,Pd(1)
+Ligand 1,unq_CSD-PADDUU-01-a,C2H6N1,1,-1,N,9,44.077,0.3845908165,False,True,3.9799486240402633,2.0378348043941155,97b5648247763623a711998f95683e70,1179,"PADDUU, PADDUU, PADFAC, PADFAC, PADFIK, ... (1174 more)","Ti(400), Zr(315), Ta(293), Hf(55), Nb(45), ... (7 more)"
+Ligand 2,unq_CSD-PABPUG-01-a,C1N1S1,1,-1,N,3,58.078,1.0,False,False,2.7569049203771976,1.9306892577522674,8cfb8c37cf16fcbdf2b0b710377c2ea0,6203,"PABPUG, PABPUG, PABPUG, PABPUG, PABQAN, ... (6198 more)","Fe(1210), Ni(1016), Co(983), Zn(518), Cu(500), ... (37 more)"

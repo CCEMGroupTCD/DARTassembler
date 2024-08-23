@@ -1,0 +1,661 @@
+{
+    "complex": {
+        "atomic_props": {
+            "x": [
+                0.0,
+                2.4263,
+                1.44893,
+                1.44893,
+                1.67873,
+                0.45828,
+                2.50514,
+                2.48843,
+                2.73905,
+                4.08396,
+                1.56575,
+                0.91273,
+                0.94078,
+                3.05199,
+                0.76642,
+                -0.15032,
+                -0.11661,
+                3.51055,
+                2.67836,
+                1.96266,
+                2.68643,
+                1.92663,
+                3.47286,
+                3.44881,
+                1.78461,
+                3.21105,
+                4.67625,
+                4.66518,
+                3.93068,
+                1.38984,
+                -0.16184,
+                1.04242,
+                -0.13276,
+                1.44362,
+                1.04425,
+                3.63041,
+                3.52509,
+                3.14138,
+                -1.58392,
+                -1.58392
+            ],
+            "y": [
+                0.0,
+                0.02236,
+                1.2604,
+                -1.2604,
+                2.56881,
+                3.50465,
+                3.04904,
+                2.91973,
+                0.05573,
+                0.00406,
+                -2.68723,
+                -3.57983,
+                -2.94587,
+                -3.12559,
+                4.57348,
+                3.37536,
+                3.40991,
+                2.59218,
+                4.14659,
+                2.81112,
+                4.01483,
+                2.63129,
+                2.42615,
+                0.86525,
+                0.21583,
+                -0.88655,
+                -0.88045,
+                0.90342,
+                -0.00805,
+                -3.39404,
+                -3.43649,
+                -4.66005,
+                -2.69942,
+                -2.35083,
+                -4.01884,
+                -2.57475,
+                -2.96448,
+                -4.20815,
+                1.58392,
+                -1.58392
+            ],
+            "z": [
+                0.0,
+                -0.47652,
+                0.0,
+                0.0,
+                0.07003,
+                0.06741,
+                -1.17122,
+                1.33815,
+                -2.32845,
+                0.40729,
+                -0.41588,
+                0.67042,
+                -1.7961,
+                -0.44365,
+                0.0914,
+                0.98625,
+                -0.88218,
+                -1.19512,
+                -1.15201,
+                -2.11318,
+                1.37774,
+                2.24854,
+                1.34622,
+                -2.58483,
+                -2.86759,
+                -2.66141,
+                0.1062,
+                0.12037,
+                1.50545,
+                1.65724,
+                0.80912,
+                0.42477,
+                -1.82654,
+                -2.57983,
+                -2.06707,
+                -1.20659,
+                0.54839,
+                -0.68976,
+                0.0,
+                0.0
+            ],
+            "atoms": [
+                "Ru",
+                "Si",
+                "O",
+                "N",
+                "C",
+                "C",
+                "C",
+                "C",
+                "C",
+                "C",
+                "C",
+                "C",
+                "C",
+                "C",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "H",
+                "Cl",
+                "Cl"
+            ]
+        },
+        "global_props": {
+            "n_atoms": 40,
+            "n_elements": 7,
+            "molecular_weight": 374.36299999999994,
+            "n_C_H_bonds": 24
+        },
+        "graph_dict": {
+            "graph": {
+                "0": {
+                    "2": {},
+                    "3": {},
+                    "38": {},
+                    "39": {}
+                },
+                "1": {
+                    "2": {},
+                    "3": {},
+                    "8": {},
+                    "9": {}
+                },
+                "2": {
+                    "0": {},
+                    "1": {},
+                    "4": {}
+                },
+                "3": {
+                    "0": {},
+                    "1": {},
+                    "10": {}
+                },
+                "4": {
+                    "2": {},
+                    "5": {},
+                    "6": {},
+                    "7": {}
+                },
+                "5": {
+                    "4": {},
+                    "14": {},
+                    "15": {},
+                    "16": {}
+                },
+                "6": {
+                    "4": {},
+                    "17": {},
+                    "18": {},
+                    "19": {}
+                },
+                "7": {
+                    "4": {},
+                    "20": {},
+                    "21": {},
+                    "22": {}
+                },
+                "8": {
+                    "1": {},
+                    "23": {},
+                    "24": {},
+                    "25": {}
+                },
+                "9": {
+                    "1": {},
+                    "26": {},
+                    "27": {},
+                    "28": {}
+                },
+                "10": {
+                    "3": {},
+                    "11": {},
+                    "12": {},
+                    "13": {}
+                },
+                "11": {
+                    "10": {},
+                    "29": {},
+                    "30": {},
+                    "31": {}
+                },
+                "12": {
+                    "10": {},
+                    "32": {},
+                    "33": {},
+                    "34": {}
+                },
+                "13": {
+                    "10": {},
+                    "35": {},
+                    "36": {},
+                    "37": {}
+                },
+                "14": {
+                    "5": {}
+                },
+                "15": {
+                    "5": {}
+                },
+                "16": {
+                    "5": {}
+                },
+                "17": {
+                    "6": {}
+                },
+                "18": {
+                    "6": {}
+                },
+                "19": {
+                    "6": {}
+                },
+                "20": {
+                    "7": {}
+                },
+                "21": {
+                    "7": {}
+                },
+                "22": {
+                    "7": {}
+                },
+                "23": {
+                    "8": {}
+                },
+                "24": {
+                    "8": {}
+                },
+                "25": {
+                    "8": {}
+                },
+                "26": {
+                    "9": {}
+                },
+                "27": {
+                    "9": {}
+                },
+                "28": {
+                    "9": {}
+                },
+                "29": {
+                    "11": {}
+                },
+                "30": {
+                    "11": {}
+                },
+                "31": {
+                    "11": {}
+                },
+                "32": {
+                    "12": {}
+                },
+                "33": {
+                    "12": {}
+                },
+                "34": {
+                    "12": {}
+                },
+                "35": {
+                    "13": {}
+                },
+                "36": {
+                    "13": {}
+                },
+                "37": {
+                    "13": {}
+                },
+                "38": {
+                    "0": {}
+                },
+                "39": {
+                    "0": {}
+                }
+            },
+            "node_attributes": {
+                "0": {
+                    "node_label": "Ru"
+                },
+                "1": {
+                    "metal_neighbor": false,
+                    "node_label": "Si",
+                    "orig_idx": 1
+                },
+                "2": {
+                    "metal_neighbor": true,
+                    "node_label": "O",
+                    "orig_idx": 3
+                },
+                "3": {
+                    "metal_neighbor": true,
+                    "node_label": "N",
+                    "orig_idx": 6
+                },
+                "4": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 14
+                },
+                "5": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 15
+                },
+                "6": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 16
+                },
+                "7": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 17
+                },
+                "8": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 18
+                },
+                "9": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 19
+                },
+                "10": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 20
+                },
+                "11": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 21
+                },
+                "12": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 22
+                },
+                "13": {
+                    "metal_neighbor": false,
+                    "node_label": "C",
+                    "orig_idx": 23
+                },
+                "14": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 40
+                },
+                "15": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 41
+                },
+                "16": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 42
+                },
+                "17": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 43
+                },
+                "18": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 44
+                },
+                "19": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 45
+                },
+                "20": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 46
+                },
+                "21": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 47
+                },
+                "22": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 48
+                },
+                "23": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 49
+                },
+                "24": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 50
+                },
+                "25": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 51
+                },
+                "26": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 52
+                },
+                "27": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 53
+                },
+                "28": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 54
+                },
+                "29": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 55
+                },
+                "30": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 56
+                },
+                "31": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 57
+                },
+                "32": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 58
+                },
+                "33": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 59
+                },
+                "34": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 60
+                },
+                "35": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 61
+                },
+                "36": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 62
+                },
+                "37": {
+                    "metal_neighbor": false,
+                    "node_label": "H",
+                    "orig_idx": 63
+                },
+                "38": {
+                    "node_label": "Cl"
+                },
+                "39": {
+                    "node_label": "Cl"
+                }
+            }
+        },
+        "ligand_props": {
+            "0": {
+                "unique_name": "unq_CSD-PACMEL-02-a",
+                "ligand_indices_in_complex": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11,
+                    12,
+                    13,
+                    14,
+                    15,
+                    16,
+                    17,
+                    18,
+                    19,
+                    20,
+                    21,
+                    22,
+                    23,
+                    24,
+                    25,
+                    26,
+                    27,
+                    28,
+                    29,
+                    30,
+                    31,
+                    32,
+                    33,
+                    34,
+                    35,
+                    36,
+                    37
+                ],
+                "donor_indices": [
+                    2,
+                    3
+                ],
+                "donor_elements": [
+                    "O",
+                    "N"
+                ],
+                "donor_bond_lengths": [
+                    2.4269256704728304,
+                    2.2689396862852043
+                ],
+                "stoichiometry": "C10H24N1O1Si1",
+                "denticity": 2,
+                "pred_charge": -1,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "d44963a164050ee3e9f9ca8be7b3290d",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 10,
+                "n_atoms": 37
+            },
+            "1": {
+                "unique_name": "unq_CSD-OZOCUD-01-a",
+                "ligand_indices_in_complex": [
+                    38
+                ],
+                "donor_indices": [
+                    38
+                ],
+                "donor_elements": [
+                    "Cl"
+                ],
+                "donor_bond_lengths": [
+                    2.327796359220454
+                ],
+                "stoichiometry": "Cl1",
+                "denticity": 1,
+                "pred_charge": -1.0,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "8756e7780cb7e3fab0b8bcb31598a04d",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 72303,
+                "n_atoms": 1
+            },
+            "2": {
+                "unique_name": "unq_CSD-OZOCUD-01-a",
+                "ligand_indices_in_complex": [
+                    39
+                ],
+                "donor_indices": [
+                    39
+                ],
+                "donor_elements": [
+                    "Cl"
+                ],
+                "donor_bond_lengths": [
+                    2.327796359220454
+                ],
+                "stoichiometry": "Cl1",
+                "denticity": 1,
+                "pred_charge": -1.0,
+                "pred_charge_is_confident": true,
+                "graph_hash_with_metal": "8756e7780cb7e3fab0b8bcb31598a04d",
+                "has_good_bond_orders": true,
+                "warnings": [],
+                "occurrences": 72303,
+                "n_atoms": 1
+            }
+        },
+        "metal_oxi_state": 2,
+        "metal": "Ru",
+        "metal_idx": 0,
+        "charge": -1.0,
+        "mol_id": "EKAJOWAD"
+    },
+    "complex_idx": 284,
+    "xyz_structure": "40\n\nRu  0.0  0.0  0.0 \nSi  2.4263  0.02236  -0.47652 \nO  1.44893  1.2604  0.0 \nN  1.44893  -1.2604  0.0 \nC  1.67873  2.56881  0.07003 \nC  0.45828  3.50465  0.06741 \nC  2.50514  3.04904  -1.17122 \nC  2.48843  2.91973  1.33815 \nC  2.73905  0.05573  -2.32845 \nC  4.08396  0.00406  0.40729 \nC  1.56575  -2.68723  -0.41588 \nC  0.91273  -3.57983  0.67042 \nC  0.94078  -2.94587  -1.7961 \nC  3.05199  -3.12559  -0.44365 \nH  0.76642  4.57348  0.0914 \nH  -0.15032  3.37536  0.98625 \nH  -0.11661  3.40991  -0.88218 \nH  3.51055  2.59218  -1.19512 \nH  2.67836  4.14659  -1.15201 \nH  1.96266  2.81112  -2.11318 \nH  2.68643  4.01483  1.37774 \nH  1.92663  2.63129  2.24854 \nH  3.47286  2.42615  1.34622 \nH  3.44881  0.86525  -2.58483 \nH  1.78461  0.21583  -2.86759 \nH  3.21105  -0.88655  -2.66141 \nH  4.67625  -0.88045  0.1062 \nH  4.66518  0.90342  0.12037 \nH  3.93068  -0.00805  1.50545 \nH  1.38984  -3.39404  1.65724 \nH  -0.16184  -3.43649  0.80912 \nH  1.04242  -4.66005  0.42477 \nH  -0.13276  -2.69942  -1.82654 \nH  1.44362  -2.35083  -2.57983 \nH  1.04425  -4.01884  -2.06707 \nH  3.63041  -2.57475  -1.20659 \nH  3.52509  -2.96448  0.54839 \nH  3.14138  -4.20815  -0.68976 \nCl  -1.58392  1.58392  0.0 \nCl  -1.58392  -1.58392  0.0 \n",
+    "batch_idx": 6
+}

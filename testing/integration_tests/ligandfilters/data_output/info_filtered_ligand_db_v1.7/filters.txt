@@ -1,48 +1,47 @@
 ================================ FILTER OPTIONS SPECIFIED ===============================
                                                                                                                 Filter options                                                    
 Filter 01: denticities                                                                                                                            {'denticities': [1, 2, 3, 4, 5]}
-Filter 02: remove_ligands_with_adjacent_coordinating_atoms                                                               {'remove_ligands_with_adjacent_coordinating_atoms': True}
-Filter 03: remove_ligands_with_beta_hydrogens                                                                                         {'remove_ligands_with_beta_hydrogens': True}
-Filter 04: number_of_atoms                                                                                                  {'min': 1.0, 'max': 15.0, 'apply_to_denticities': [1]}
-Filter 05: ligand_charges                                                                                              {'ligand_charges': [-1, 0], 'apply_to_denticities': [2, 3]}
+Filter 02: remove_ligands_with_adjacent_coordinating_atoms                            {'remove_ligands_with_adjacent_coordinating_atoms': True, 'apply_to_denticities': [1, 2, 3]}
+Filter 03: remove_ligands_with_beta_hydrogens                                                      {'remove_ligands_with_beta_hydrogens': True, 'apply_to_denticities': [1, 2, 3]}
+Filter 04: number_of_atoms                                                                                                 {'min': 1.0, 'max': 15.0, 'apply_to_denticities': None}
+Filter 05: ligand_charges                                                                                                {'ligand_charges': [-1, 0], 'apply_to_denticities': None}
 Filter 06: metal_ligand_binding_history                     {'metal_ligand_binding_history': ['Fe', 'Mn', 'Cr', 'Ru', 'Co', 'Ni', 'Cu', 'Ir', 'Mo'], 'apply_to_denticities': None}
-Filter 07: coordinating_atoms_composition                               {'elements': ['N', 'N', 'N'], 'instruction': 'must_contain_and_only_contain', 'apply_to_denticities': [3]}
-Filter 08: molecular_weight                                                                                               {'min': 30.1, 'max': 300.2, 'apply_to_denticities': [3]}
-Filter 09: number_of_atoms                                                                                                {'min': 10.0, 'max': 100.0, 'apply_to_denticities': [3]}
-Filter 10: molecular_weight                                                                                              {'min': 10.1, 'max': 300.2, 'apply_to_denticities': None}
-Filter 11: interatomic_distances                                                                                            {'min': 0.5, 'max': 40.0, 'apply_to_denticities': [3]}
-Filter 12: planarity                                                                                                         {'min': 0.2, 'max': 1.0, 'apply_to_denticities': [1]}
-Filter 13: occurrences                                                                                                      {'min': 3.0, 'max': None, 'apply_to_denticities': [4]}
-Filter 14: metal_donor_bond_lengths                                                                                          {'min': 1.0, 'max': 2.5, 'apply_to_denticities': [2]}
-Filter 15: atomic_neighbors                                                                               {'atom': 'C', 'neighbors': ['H', 'H', 'H'], 'apply_to_denticities': [1]}
-Filter 16: smarts                                                                   {'smarts': 'N=N', 'should_contain': False, 'include_metal': True, 'apply_to_denticities': [1]}
-Filter 17: smarts                                                                {'smarts': '[C&H2]', 'should_contain': False, 'include_metal': True, 'apply_to_denticities': [2]}
+Filter 07: coordinating_atoms_composition                              {'elements': ['N', 'N', 'N'], 'instruction': 'must_contain_and_only_contain', 'apply_to_denticities': None}
+Filter 08: molecular_weight                                                                                              {'min': 30.1, 'max': 300.2, 'apply_to_denticities': None}
+Filter 09: interatomic_distances                                                                                           {'min': 0.5, 'max': 40.0, 'apply_to_denticities': None}
+Filter 10: planarity                                                                                                        {'min': 0.2, 'max': 1.0, 'apply_to_denticities': None}
+Filter 11: occurrences                                                                                                     {'min': 3.0, 'max': None, 'apply_to_denticities': None}
+Filter 12: metal_donor_bond_lengths                                                                                         {'min': 1.0, 'max': 2.5, 'apply_to_denticities': None}
+Filter 13: atomic_neighbors                                                                              {'atom': 'C', 'neighbors': ['H', 'H', 'H'], 'apply_to_denticities': None}
+Filter 14: smarts                                                                  {'smarts': 'N=N', 'should_contain': False, 'include_metal': True, 'apply_to_denticities': None}
+Filter 15: smarts                                                               {'smarts': '[C&H2]', 'should_contain': False, 'include_metal': True, 'apply_to_denticities': None}
+Filter 16: remove_ligands_with_missing_bond_orders                                      {'remove_ligands_with_missing_bond_orders': True, 'apply_to_denticities': [1, 2, 3, 4, 5]}
 
 ==================================== FILTER RESULTS ====================================
                                                     Ligands removed  Ligands passed
 Filter 01: denticities                                    100             2900     
-Filter 02: remove_ligands_with_adjacent_coordin...         97             2803     
-Filter 03: remove_ligands_with_beta_hydrogens            1687             1116     
-Filter 04: number_of_atoms                                366              750     
-Filter 05: ligand_charges                                  92              658     
-Filter 06: metal_ligand_binding_history                   139              519     
-Filter 07: coordinating_atoms_composition                  20              499     
-Filter 08: molecular_weight                                21              478     
-Filter 09: number_of_atoms                                  0              478     
-Filter 10: molecular_weight                               203              275     
-Filter 11: interatomic_distances                            0              275     
-Filter 12: planarity                                        2              273     
-Filter 13: occurrences                                      1              272     
-Filter 14: metal_donor_bond_lengths                        10              262     
-Filter 15: atomic_neighbors                                43              219     
-Filter 16: smarts                                           1              218     
-Filter 17: smarts                                          19              199     
+Filter 02: remove_ligands_with_adjacent_coordin...         63             2837     
+Filter 03: remove_ligands_with_beta_hydrogens            1372             1465     
+Filter 04: number_of_atoms                               1250              215     
+Filter 05: ligand_charges                                  47              168     
+Filter 06: metal_ligand_binding_history                    13              155     
+Filter 07: coordinating_atoms_composition                 155                0     
+Filter 08: molecular_weight                                 0                0     
+Filter 09: interatomic_distances                            0                0     
+Filter 10: planarity                                        0                0     
+Filter 11: occurrences                                      0                0     
+Filter 12: metal_donor_bond_lengths                         0                0     
+Filter 13: atomic_neighbors                                 0                0     
+Filter 14: smarts                                           0                0     
+Filter 15: smarts                                           0                0     
+Filter 16: remove_ligands_with_missing_bond_orders          0                0     
 
 ===========   TOTAL   ===========
 Before filtering:  3000 ligands
-Filtered out:      2801 ligands
-Passed:            199 ligands
-Denticities:       1: 109, 2: 81, 3: 6, 4: 3
+Filtered out:      3000 ligands
+Passed:            0 ligands
+Denticities:       
+Passed ligands:    
 
 Done filtering!
-Filtered ligand database with 199 entries was saved to `filtered_ligand_db_v1.7.json`.
+Filtered ligand database with 0 entries was saved to `filtered_ligand_db_v1.7.json`.

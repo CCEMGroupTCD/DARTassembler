@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAFPET-02-a,C18H15N2O2,2,-1,O-O,37,291.3299999999999,0.1911477811,False,False,14.379818404277573,1.9103364440776862,40768afdb845f8ab28f8abe516fdb9d0,6,"PAFPET, PAFPET, MOHBES, IBIQUJ, IBIQUJ, ... (1 more)","Cu(4), Co(2)"
+Ligand 1,unq_CSD-PAMPEB-02-a,C8H14N1O2,2,-1,O-N,25,156.205,0.178324854,False,False,7.322727001602614,2.102011734489985,0e0f197dd54986284ffeb6e0672ac6f4,13,"PAMPEB, PAMPEB, PAPVUY, PAPVUY, PAPWAF, ... (8 more)","Hf(4), Ce(4), Ti(2), Zr(2), Re(1)"
