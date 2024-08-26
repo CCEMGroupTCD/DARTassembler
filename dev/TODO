@@ -9,7 +9,7 @@ Todo before publication:
     - add concat functionality to ligandfilters and add multiple ligand dbs to the tests
     - add failed complexes to DART output on global level
     - remove openbabel warning when using forcefield
-    - optimize printed output, make DART ascii art
+    - optimize printed output for each module
     - print when extracting MetaLig from zip
     - Cian read docs and especially give a more chemical explanation of why to rotate the phenyl ligand in the example
 
