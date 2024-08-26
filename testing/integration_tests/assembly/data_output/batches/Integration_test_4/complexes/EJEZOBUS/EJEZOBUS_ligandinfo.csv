@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PABWIY-04-a,C9H14N6O1S2,4,-2,N-N-N-N,32,286.37199999999996,0.3144126559,False,False,10.472147774453912,1.9035173945281594,af454f9e1c3d0deca4fa16ce8ce5f447,2,"PABWIY, XACGEN",Co(2)
-Ligand 1,unq_CSD-PABPUG-01-a,C1N1S1,1,-1,N,3,58.078,1.0,False,False,2.7569049203771976,1.9306892577522674,8cfb8c37cf16fcbdf2b0b710377c2ea0,6203,"PABPUG, PABPUG, PABPUG, PABPUG, PABQAN, ... (6198 more)","Fe(1210), Ni(1016), Co(983), Zn(518), Cu(500), ... (37 more)"
-Ligand 2,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72337,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72332 more)","Ru(9548), Pd(9384), Pt(6813), Cu(6010), Zn(4576), ... (43 more)"

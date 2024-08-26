@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAPFAO-04-a,C124H124N4O24,4,-2,N-N-N-N,276,2054.3599999999997,0.0181482355,False,False,27.55083325255336,2.012643213810432,41ae64f8f34e1f405ef1b9e98a4e6091,1,PAPFAO,Pd(1)
-Ligand 1,unq_CSD-PATGEW-01-a,C2H4N2,1,0,N,8,56.068,0.3766659373,False,True,3.3034236452504846,2.48854430139389,6d88007b311ad5b36a72559b27f7ed91,1,PATGEW,Mo(1)
-Ligand 2,unq_CSD-PAFWIC-01-c,S1,1,-2,S,1,32.06,1.0,False,False,,2.0997975664334882,0d2567e9cf243e276fa721ccc96d280c,507,"PAFWIC, PEWYIA, PEWYIA, PEWYIA, PEWYIA, ... (502 more)","W(220), Mo(180), Nb(21), Re(21), V(14), ... (12 more)"

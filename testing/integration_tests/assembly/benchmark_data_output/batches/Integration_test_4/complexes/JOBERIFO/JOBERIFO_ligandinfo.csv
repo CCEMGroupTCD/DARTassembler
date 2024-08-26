@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEHNUN-04-a,C18H21N3O2,4,-2,O-N-N-N,44,311.385,0.1520992825,False,True,11.309814657190453,1.9953542863923084,18980dcbec2288b44f1da41e3479f536,1,PEHNUN,Pd(1)
-Ligand 1,unq_CSD-PAWQIO-01-a,C3H5O1,1,-1,C,9,57.071999999999996,0.4567198693,False,False,3.785698967165774,2.090012215275307,e0033680b63588eafebdb87672d4adc4,53,"PAWQIO, SOYSUU, SOYSUU, LEZYIA, BEWPEA, ... (48 more)","Pt(21), Pd(10), Au(10), Hg(4), Ir(3), ... (3 more)"
-Ligand 2,unq_CSD-PADDUU-01-a,C2H6N1,1,-1,N,9,44.077,0.3845908165,False,True,3.9799486240402633,2.0378348043941155,97b5648247763623a711998f95683e70,1179,"PADDUU, PADDUU, PADFAC, PADFAC, PADFIK, ... (1174 more)","Ti(400), Zr(315), Ta(293), Hf(55), Nb(45), ... (7 more)"

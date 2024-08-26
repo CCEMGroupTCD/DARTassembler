@@ -19,6 +19,7 @@ from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry
 from DARTassembler.src.metalig.metalig_utils import get_correct_ligand_db_path_from_input
 
 allowed_topologies = ['mer-3-2-1', 'mer-4-1-1', '5-1', '2-1-1', '2-2']  # list all allowed topologies here, others will be rejected
+allowed_verbosities = [0, 1, 2, 3]
 
 # Define the key names in the assembly input file
 # Global settings
@@ -267,7 +268,7 @@ class BaseInput(object):
 
         return meaning
 
-    def get_int_from_input(self, input: Union[str, int], varname: str, allow_none = False, allow_str: str = None) -> Union[int,None]:
+    def get_int_from_input(self, input: Union[str, int], varname: str, allow_none = False, allow_str: str = None, allow=None) -> Union[int,None]:
         """
         Returns an int from a string or int input.
         """
@@ -286,6 +287,10 @@ class BaseInput(object):
                 output = int(input)
             except ValueError:
                 self.raise_error(message=f"Input '{input}' can not be recognized as int.", varname=varname)
+
+        if not allow is None:
+            if not output in allow:
+                self.raise_error(message=f"Input '{input}' is not allowed. Allowed options: {allow}", varname=varname)
 
         return output
 
@@ -825,7 +830,7 @@ class AssemblyInput(BaseInput):
 
             self.check_correct_input_type(input=self.global_settings[key], types=types, varname=key)
 
-        self.verbose = self.get_int_from_input(self.global_settings[_verbose], varname=_verbose)
+        self.verbose = self.get_int_from_input(self.global_settings[_verbose], varname=_verbose, allow=allowed_verbosities)
         self.optimization_movie = self.get_bool_from_input(self.global_settings[_optimization_movie], varname=_optimization_movie)
         self.concatenate_xyz = self.get_bool_from_input(self.global_settings[_concatenate_xyz], varname=_concatenate_xyz)
         self.Batches =  self.get_batches_from_input(self.global_settings[_batches])

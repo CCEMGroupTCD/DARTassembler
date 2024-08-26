@@ -16,7 +16,7 @@ batches:
   bidentate_rotator: auto
 - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
-  max_num_complexes: 75
+  max_num_complexes: 10
   metal_center: Co
   metal_oxidation_state: 3
   name: Integration_test_2
@@ -42,7 +42,7 @@ batches:
   bidentate_rotator: auto
 - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
-  max_num_complexes: 80
+  max_num_complexes: 15
   metal_center: Fe
   metal_oxidation_state: 4
   name: Integration_test_4
@@ -55,7 +55,7 @@ batches:
   bidentate_rotator: auto
 - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   isomers: lowest_energy
-  max_num_complexes: 25
+  max_num_complexes: 9
   metal_center: Fe
   metal_oxidation_state: 2
   name: Integration_test_5
@@ -70,7 +70,7 @@ batches:
   - ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
   - same_ligand_as_previous
   isomers: all
-  max_num_complexes: 40
+  max_num_complexes: 15
   metal_center: Fe
   metal_oxidation_state: 2
   name: Integration_test_6
@@ -90,7 +90,7 @@ batches:
   metal_center: Ru
   metal_oxidation_state: 2
   total_charge: -1
-  max_num_complexes: 50
+  max_num_complexes: 14
   forcefield: true
   isomers: lowest_energy
   random_seed: 0

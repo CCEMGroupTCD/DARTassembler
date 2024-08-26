@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEKYUC-05-a,C35H47N1S4,5,-2,S-S-S-S-N,87,610.008,0.0646562854,False,True,17.733253545528523,2.260513035564885,a7bea4441a506d29047a463cda43ea8b,8,"PEKYUC, LONQUA, QOMPUD, AYIDAQ, XENMEL, ... (3 more)",Ru(8)
-Ligand 1,unq_CSD-PAKVEF-01-a,N2,1,0,N,2,28.014,1.0,False,False,1.1183807670020074,1.7906916875889054,60aef06530deadddb1333674bfb08b38,432,"PAKVEF, PEMKUQ, PEVJEI, PEXGIL, PIGLEZ, ... (427 more)","Fe(121), Mo(87), Ru(57), Co(50), W(36), ... (9 more)"

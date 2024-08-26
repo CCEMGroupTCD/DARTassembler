@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PATQEG-02-a,C25H26N1O1P1,2,0,P-N,54,387.4627619979999,0.0832886264,False,True,12.26187534800448,2.137480547967022,92d7a696db6738bb3f3adb0563fa74f8,5,"PATQEG, PIBZIM, PIBZIM, WULZAH, WULZAH","Cu(4), Ni(1)"
-Ligand 1,unq_CSD-PAFWIF-01-b,N3,1,-1,N,3,42.021,1.0,False,False,2.2359128001780406,2.0559024952560367,c8ee8cd128934fd2bc20f5cd86dd2192,1728,"PAFWIF, PAFWIF, PAKDAJ, PAKDAJ, PAKTIH, ... (1723 more)","Co(393), Cu(203), Zn(162), Ni(160), Mn(146), ... (28 more)"
-Ligand 2,unq_CSD-PAFWIC-01-c,S1,1,-2,S,1,32.06,1.0,False,False,,2.0997975664334882,0d2567e9cf243e276fa721ccc96d280c,507,"PAFWIC, PEWYIA, PEWYIA, PEWYIA, PEWYIA, ... (502 more)","W(220), Mo(180), Nb(21), Re(21), V(14), ... (12 more)"

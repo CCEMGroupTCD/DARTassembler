@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEBXUP-04-a,C22H18N4O3,4,-2,N-N-N-N,47,386.4109999999999,0.1094425374,False,False,11.442719982154593,1.8348485118850957,055e0b5bea253615672ccbcd3feb22c1,1,PEBXUP,Ni(1)
-Ligand 1,unq_CSD-PACBEB-01-d,C3F5,1,-1,C,8,131.025015815,0.4002253724,False,False,3.819217947433741,2.029285926132639,a556ad6faad5bde10c5e0c1608bdd654,6,"PACBEB, TEJDIY, TEJDIY, TEJDOE, TEJFEW, ... (1 more)","Pt(3), Pd(2), Rh(1)"
-Ligand 2,unq_CSD-OZUZUG-01-a,N1O3,1,-1,O,4,62.004,0.9997438225,False,False,2.1808310090421967,2.401394307480552,59f5bf0cc16306fac3af7cce6344a5ee,2164,"OZUZUG, PAFRAR, PAFRAR, PAFREV, PAFREV, ... (2159 more)","Cu(816), Zn(245), Co(197), Ni(187), Cd(183), ... (31 more)"

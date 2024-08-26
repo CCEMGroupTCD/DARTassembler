@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEGRUO-02-a,C12H9N2,2,-1,N-C,23,181.218,0.6240523214,False,True,11.126604846492931,2.116084247181848,8ba4580c1d154030c0bff3af223d5128,29,"PEGRUO, AZFAPD22, AZFAPD24, BOSQOP, MOZWEG, ... (24 more)","Pd(19), Ru(6), Rh(3), Pt(1)"
-Ligand 1,unq_CSD-OZUJID-01-a,Br1,1,-1,Br,1,79.904,1.0,False,False,,2.4786475122534064,382b07ec1446fddc75f0d2acb55b6e09,14787,"OZUJID, OZUSOT, OZUSOT, OZUZIV, OZUZIV, ... (14782 more)","Cu(1911), Pd(1697), Ni(1678), Zn(1339), Re(1062), ... (41 more)"
-Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,1.9900349645169564,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

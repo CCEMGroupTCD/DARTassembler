@@ -7,7 +7,7 @@ from typing import Union
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
 
-def concatenate_ligand_databases(paths: list[str]) -> None:
+def concat(paths: list[str]) -> None:
     """
     Concatenate multiple ligand databases into one. The output will be saved in the current working directory as `concat_ligand_db.jsonlines`.
     :param paths: Paths to the ligand databases.

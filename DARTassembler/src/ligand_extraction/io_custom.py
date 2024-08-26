@@ -37,6 +37,7 @@ def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
 
             db_dir = Path(zip_file).parent
             try:
+                print(f"Uncompressing MetaLig database file {name}...")
                 uncompress_file(zip_file, db_dir)
             except Exception as e:
                 raise Exception(f"DART Error: Could not uncompress MetaLig database file {name} at {Path(zip_file).resolve()}. Error message: {e}")

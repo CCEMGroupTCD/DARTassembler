@@ -13,11 +13,11 @@ filters:
 
   - filter: remove_ligands_with_beta_hydrogens
     remove_ligands_with_beta_hydrogens: True
-    apply_to_denticities: [1, 2, 3]
+    apply_to_denticities: [4]
 
   - filter: number_of_atoms
     min: 1
-    max: 15
+    max: 80
 
   - filter: ligand_charges
     ligand_charges: [-1, 0]
@@ -26,15 +26,15 @@ filters:
     metal_ligand_binding_history: [Fe, Mn, Cr, Ru, Co, Ni, Cu, Ir, Mo]
 
   - filter: coordinating_atoms_composition
-    elements: [N, N, N]
-    instruction: must_contain_and_only_contain
+    elements: [C]
+    instruction: must_exclude
 
   - filter: molecular_weight
     min: 30.1
     max: 300.2
 
   - filter: interatomic_distances
-    min: 0.5
+    min: 0.7
     max: 40.0
     apply_to_denticities:
 
@@ -44,7 +44,7 @@ filters:
     apply_to_denticities:
 
   - filter: occurrences
-    min: 3
+    min: 5
     max:
     apply_to_denticities:
 

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PADMEM-02-a,C24H22N1P1,2,0,P-N,48,355.420761998,0.0897077288,False,True,11.025371070852898,2.238433893643114,cae450e81e6931c2250f3587d3eba339,1,PADMEM,Pd(1)
-Ligand 1,unq_CSD-PAFWIC-01-c,S1,1,-2,S,1,32.06,1.0,False,False,,2.0997975664334882,0d2567e9cf243e276fa721ccc96d280c,507,"PAFWIC, PEWYIA, PEWYIA, PEWYIA, PEWYIA, ... (502 more)","W(220), Mo(180), Nb(21), Re(21), V(14), ... (12 more)"
-Ligand 2,unq_CSD-PEDXIF-01-f,H1S1,1,-1,S,2,33.068000000000005,1.0,False,False,0.9978869525151637,2.4288253498347716,9788c50e8fb0fe8f3c14b6e8db4af9e9,65,"PEDXIF, PIGTEG, SOFYIY, TELMEE, BIZTOT, ... (60 more)","Ru(11), Ni(10), Pd(8), Mo(6), Re(5), ... (10 more)"

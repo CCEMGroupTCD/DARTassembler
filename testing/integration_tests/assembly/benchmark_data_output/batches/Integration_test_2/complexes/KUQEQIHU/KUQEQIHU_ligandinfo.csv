@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAWYUI-02-a,C5H11O2,2,-1,O-O,18,103.14099999999999,0.2439539828,False,True,5.910397646520917,2.0556444687958715,f95c7f315cde95385646feb3c73e9843,1,PAWYUI,V(1)
-Ligand 1,unq_CSD-PEDXEB-01-f,H2P1,1,-1,P,3,32.989761998,1.0,False,False,2.5291927763616595,2.439452850538415,da0a13a38a6b8866c0389fe26e3700b1,3,"PEDXEB, POGNEG, BAZFIU","Ir(1), U(1), Zr(1)"
-Ligand 2,unq_CSD-OZOJUJ-01-b,C1H3,1,-1,C,4,15.034999999999997,0.7796427081,False,False,1.6011017269367993,2.0491614309272954,a2b7bbb6ca4ce36dc3147760335e7374,4034,"OZOJUJ, OZOKAQ, OZOKIY, OZOZIN, OZOZOT, ... (4029 more)","Pt(1514), Pd(765), Ni(198), Co(160), Ti(146), ... (32 more)"

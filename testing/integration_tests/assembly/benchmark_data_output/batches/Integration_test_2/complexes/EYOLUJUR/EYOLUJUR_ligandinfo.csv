@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAKXAD-02-a,C11H19O3,2,-1,O-O,33,199.27,0.1395563894,False,False,8.770733892326229,1.975595760586756,1c153765e6ce4c2716b124f6c680343b,4,"PAKXAD, PAKXAD, LUNPES, VOHQEP","Pd(2), Pt(1), Cu(1)"
-Ligand 1,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72337,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72332 more)","Ru(9548), Pd(9384), Pt(6813), Cu(6010), Zn(4576), ... (43 more)"
-Ligand 2,unq_CSD-PALKET-01-a,C1N1O1,1,-1,N,3,42.016999999999996,1.0,False,False,2.351696693878697,2.088194095384814,cc47759db1574f650ff7ab82ae512efb,293,"PALKET, PALKET, PALKET, PALKIX, PALKIX, ... (288 more)","Co(65), Cu(45), Ni(31), Ru(23), Mn(21), ... (19 more)"

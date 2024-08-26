@@ -1,10 +1,10 @@
-from DARTassembler.assemble_complexes import assemble_complexes
+from DARTassembler.assembler import assembler
 from pathlib import Path
 
 if __name__ == '__main__':
 
     assembly_input = 'input_assembler_playground.yml'
-    assembly = assemble_complexes(assembly_input_path=assembly_input)
+    assembly = assembler(assembly_input_path=assembly_input)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest

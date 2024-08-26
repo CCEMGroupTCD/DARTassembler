@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEHZIO-02-a,C19H16P1S1,2,-1,S-P,37,307.370761998,0.1021079212,False,False,9.412763008277645,2.196372093494309,0cd643fcfa506e2a5cdf01be5feea743,7,"PEHZIO, PEHZUA, VUFJOX, GUTJUC, GUTKAJ, ... (2 more)","Ni(6), Fe(1)"
-Ligand 1,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72303,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72298 more)","Ru(9546), Pd(9381), Pt(6800), Cu(6008), Zn(4575), ... (43 more)"
-Ligand 2,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72303,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72298 more)","Ru(9546), Pd(9381), Pt(6800), Cu(6008), Zn(4575), ... (43 more)"

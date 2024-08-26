@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PBIUCU-04-a,C10H8N6O4,4,-4,N-N-N-N,28,276.2119999999999,0.4828718896,False,False,9.424207582603431,1.8532806812068745,ee0a6c43a4f7ee448c9b855a4fb52e6a,3,"PBIUCU, PBIUCU01, XIFTUB","Cu(2), Co(1)"
-Ligand 1,unq_CSD-PABWOE-01-b,N1S1,1,1,N,2,46.067,1.0,False,False,1.5386044000976986,1.781863011008422,01582384b3836a9d5c454216728fd370,24,"PABWOE, PINGAU, SOHBEW, TEHSAA, LUVPEZ, ... (19 more)","Os(8), Re(6), Tc(5), Ru(2), Mo(1), ... (2 more)"
-Ligand 2,unq_CSD-PALKET-01-a,C1N1O1,1,-1,N,3,42.016999999999996,1.0,False,False,2.351696693878697,2.088194095384814,cc47759db1574f650ff7ab82ae512efb,293,"PALKET, PALKET, PALKET, PALKIX, PALKIX, ... (288 more)","Co(65), Cu(45), Ni(31), Ru(23), Mn(21), ... (19 more)"

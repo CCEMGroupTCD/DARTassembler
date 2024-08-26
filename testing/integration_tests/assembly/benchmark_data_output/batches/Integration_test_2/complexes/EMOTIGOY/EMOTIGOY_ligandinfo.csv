@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEHBAF-02-a,C19H27N2Si2,2,-1,N-N,50,339.60900000000004,0.0995299572,False,False,12.430486911621765,2.20378657606859,47bd51dcbf3e79b043642a6afd85ef79,2,"PEHBAF, PEHBAF",Mn(2)
-Ligand 1,unq_CSD-PALKET-01-a,C1N1O1,1,-1,N,3,42.016999999999996,1.0,False,False,2.351696693878697,2.088194095384814,cc47759db1574f650ff7ab82ae512efb,293,"PALKET, PALKET, PALKET, PALKIX, PALKIX, ... (288 more)","Co(65), Cu(45), Ni(31), Ru(23), Mn(21), ... (19 more)"
-Ligand 2,unq_CSD-PAXDOI-01-b,C2H5O1,1,-1,C,8,45.06099999999999,0.4156248933,False,False,3.48427717324555,2.086017509514242,5c7293c9177d41c0f1de9bfb841aef70,9,"PAXDOI, PAXFAW, JUJSIQ, JUJTOX, CIYJUP, ... (4 more)","Co(4), Ru(2), Mn(2), Ir(1)"

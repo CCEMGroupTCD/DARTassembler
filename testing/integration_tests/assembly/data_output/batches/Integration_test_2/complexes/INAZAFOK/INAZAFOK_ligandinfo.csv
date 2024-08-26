@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEFSUR-02-a,C10H6Cl3O2,2,-1,O-O,21,264.506,0.2852335532,False,False,10.110825155742729,1.9990125972493562,701381ef944620c5c94fe165aa07c0e0,2,"PEFSUR, PEFSUR",Ti(2)
-Ligand 1,unq_CSD-PAFWIC-01-c,S1,1,-2,S,1,32.06,1.0,False,False,,2.0997975664334882,0d2567e9cf243e276fa721ccc96d280c,507,"PAFWIC, PEWYIA, PEWYIA, PEWYIA, PEWYIA, ... (502 more)","W(220), Mo(180), Nb(21), Re(21), V(14), ... (12 more)"
-Ligand 2,unq_CSD-OZUJEZ-01-c,P4S3,1,0,P,7,220.075047992,0.2661390217,False,False,3.4217744373351078,2.265743427663424,55d9c9119bc39cfbd9167b02c94c5fdc,3,"OZUJEZ, OZUJID, OZUJOJ",Cu(3)

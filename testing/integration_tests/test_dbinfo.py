@@ -1,14 +1,14 @@
 """
 Integration test for outputting a csv file of the ligand database.
 """
-from DARTassembler.make_ligand_db_csv import save_dbinfo
+from DARTassembler.dbinfo import dbinfo
 from DARTassembler.src.constants.Paths import project_path
 from pathlib import Path
 
 
 def test_make_ligand_db_csv(nmax=1000):
     output_path = project_path().extend('testing', 'integration_tests', 'dbinfo', 'data_output', 'MetaLig_v1.7.csv')
-    db = save_dbinfo(input_path='metalig', output_path=output_path, nmax=nmax)
+    db = dbinfo(input_path='metalig', output_path=output_path, nmax=nmax)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest
@@ -16,7 +16,7 @@ def test_make_ligand_db_csv(nmax=1000):
     if old_dir.exists():
         test = IntegrationTest(new_dir=output_path.parent, old_dir=old_dir.parent)
         test.compare_all()
-        print('Test for assembly of complexes passed!')
+        print('Test for dbinfo passed!')
     else:
         print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
 

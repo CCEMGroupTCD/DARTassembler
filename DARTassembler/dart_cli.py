@@ -1,5 +1,5 @@
 import argparse
-from DARTassembler import filter_ligands, assemble_complexes, save_dbinfo, concatenate_ligand_databases, run_installation_test, get_default_config_files_saved
+from DARTassembler import ligandfilters, assembler, dbinfo, concat, installtest, configs
 
 init_cli_output = r"""
 ================================================================================
@@ -10,8 +10,8 @@ init_cli_output = r"""
                         /_____/_/  |_/_/ |_| /_/     
         
           DART - Directed Assembly of Random Transition metal complexes
-================================================================================
-"""
+              Developed by the CCEM group at Trinity College Dublin
+================================================================================"""
 
 
 modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat', 'test', 'configs']
@@ -31,32 +31,32 @@ Usage: dart <module> --path <path>
     args = parser.parse_args()
 
     print(init_cli_output)
-    module_title = f'  Execute module: {args.module}  '
+    module_title = f'  Execute DART module: {args.module}  '
     print(f'{module_title:#^80}')
     if args.path:
-        print(f'Input file: {args.path}')
+        print(f'Input path: {args.path[0] if len(args.path) == 1 else args.path}')
 
     if args.module == 'ligandfilters':
         check_n_args(args.path, 1)
-        filter_ligands(args.path[0])
+        ligandfilters(args.path[0])
     elif args.module == 'assembler':
         check_n_args(args.path, 1)
-        assemble_complexes(args.path[0])
+        assembler(args.path[0])
     elif args.module == 'dbinfo':
         check_n_args(args.path, 1)
-        save_dbinfo(args.path[0])
+        dbinfo(args.path[0])
     elif args.module == 'concat':
-        concatenate_ligand_databases(args.path)
+        concat(args.path)
     elif args.module == 'test':
         if len(args.path) == 0:
             path = None
         else:
             check_n_args(args.path, 1)
             path = args.path[0]
-        run_installation_test(path)
+        installtest(path)
     elif args.module == 'configs':
         check_n_args(args.path, 1)
-        get_default_config_files_saved(args.path[0])
+        configs(args.path[0])
     else:
         raise ValueError(f'Unknown module {args.module}.')
 

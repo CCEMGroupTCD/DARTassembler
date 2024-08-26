@@ -1,13 +1,13 @@
 """
 Integration test for the assembly of complexes.
 """
-from DARTassembler.assemble_complexes import assemble_complexes
+from DARTassembler.assembler import assembler
 from pathlib import Path
 from DARTassembler.src.constants.Paths import project_path
 
 def test_assemble_complexes():
     assembly_input = project_path().extend('testing', 'integration_tests', 'assembly', 'data_input', 'test_assembly_input.yml')   # In this file the user specifies which input they want
-    assembly = assemble_complexes(assembly_input_path=assembly_input)
+    assembly = assembler(assembly_input_path=assembly_input)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest

@@ -16,7 +16,7 @@ batches:                              # List of batches to generate. The first o
 
   - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
-    max_num_complexes: 75
+    max_num_complexes: 10
     metal_center: Co
     metal_oxidation_state: 3
     name: Integration_test_2
@@ -37,7 +37,7 @@ batches:                              # List of batches to generate. The first o
 
   - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
-    max_num_complexes: 80
+    max_num_complexes: 15
     metal_center: Fe
     metal_oxidation_state: 4
     name: Integration_test_4
@@ -48,7 +48,7 @@ batches:                              # List of batches to generate. The first o
 
   - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
     isomers: lowest_energy
-    max_num_complexes: 25
+    max_num_complexes: 9
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_5
@@ -59,7 +59,7 @@ batches:                              # List of batches to generate. The first o
 
   - ligand_db_file: [ ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, same_ligand_as_previous ]
     isomers: all
-    max_num_complexes: 40
+    max_num_complexes: 15
     metal_center: Fe
     metal_oxidation_state: 2
     name: Integration_test_6
@@ -73,7 +73,7 @@ batches:                              # List of batches to generate. The first o
     metal_center: Ru                  # Chemical symbol of the desired metal center.
     metal_oxidation_state: 2          # Oxidation state of the desired metal center.
     total_charge: -1                  # Total charge of the complex.
-    max_num_complexes: 50              # Maximum number of complexes to generate.
+    max_num_complexes: 14              # Maximum number of complexes to generate.
     forcefield: true                  # Whether to optimize the structures after generation with a force field.
     isomers: lowest_energy            # Which isomers to generate. Options: 'lowest_energy', 'all'
     random_seed: 0                    # Random seed for the generation of the complexes.

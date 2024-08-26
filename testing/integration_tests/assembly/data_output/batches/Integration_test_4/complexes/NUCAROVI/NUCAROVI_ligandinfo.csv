@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAZXOG-04-a,C59H64N2O2S6,4,-2,O-N-O-N,133,1025.533,0.0622451164,False,True,35.13731972034862,1.922702472685173,2109d9d7f383744c09fabfd72c40a7bc,1,PAZXOG,Cu(1)
-Ligand 1,unq_CSD-OZOBAJ-01-a,C1O1,1,0,C,2,28.009999999999998,1.0,False,False,1.164694041368805,1.7811924208237584,a25e14e4aa210c45bc02f7030ce16061,40779,"OZOBAJ, OZOBAJ, OZOBEN, OZOBEN, OZOCEO, ... (40774 more)","W(7866), Re(7240), Cr(6363), Fe(4431), Mo(4365), ... (19 more)"
-Ligand 2,unq_CSD-OZULIF-01-a,O1,1,-2,O,1,15.999,1.0,False,False,,1.747565498057226,b1a746e052bbfde6c86e554cbcd4ff39,7551,"OZULIF, OZULIF, OZULOL, OZULOL, OZUWEM, ... (7546 more)","Mo(2386), U(1681), V(1535), Re(933), W(436), ... (16 more)"

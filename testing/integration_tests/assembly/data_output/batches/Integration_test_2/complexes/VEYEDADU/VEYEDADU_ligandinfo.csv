@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PASKOK-02-b,C3H7N2O2,2,-1,N-N,14,103.10099999999998,0.2788383332,False,True,5.031261777129072,1.9709128285768318,7c2550c8205f17657253a8a3eec16765,3,"PASKOK, XAXNOZ, XAXNOZ","Cu(2), Co(1)"
-Ligand 1,unq_CSD-PACBEB-01-d,C3F5,1,-1,C,8,131.025015815,0.4002253724,False,False,3.819217947433741,2.029285926132639,a556ad6faad5bde10c5e0c1608bdd654,6,"PACBEB, TEJDIY, TEJDIY, TEJDOE, TEJFEW, ... (1 more)","Pt(3), Pd(2), Rh(1)"
-Ligand 2,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72337,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72332 more)","Ru(9548), Pd(9384), Pt(6813), Cu(6010), Zn(4576), ... (43 more)"

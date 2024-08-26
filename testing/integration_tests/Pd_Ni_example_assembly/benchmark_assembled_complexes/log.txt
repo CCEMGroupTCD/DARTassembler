@@ -1,11 +1,37 @@
+Starting DART Assembler Module.
+Output directory: `assembled_complexes`
 Running 2 batches...
-
-====================      Batch 0: P_N_Donors_Pd_Metal_Centre      ====================
-
-====================      Batch 1: P_N_Donors_Ni_Metal_Centre      ====================
-
-
-============  Summary per batch  ============
+====================  Batch 0: P_N_Donors_Pd_Metal_Centre  =====================
+User-defined settings for batch 0:
+    ligand_db_file                ['Pd_Ni_example_assembly/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines', 'Pd_Ni_example_assembly/ligand_databases/Br/ligand_db_Br.jsonlines', 'Pd_Ni_example_assembly/ligand_databases/phenyl/ligand_db_phenyl.jsonlines']
+    isomers                       all
+    max_num_complexes             all
+    geometry_modifier_filepath    Pd_Ni_example_assembly/data_input/Pd_phenyl_geometry_modification.xyz
+    bidentate_rotator             slab
+    metal_center                  Pd
+    metal_oxidation_state         2
+    name                          P_N_Donors_Pd_Metal_Centre
+    forcefield                    False
+    random_seed                   0
+    geometry                      2-1-1
+    total_charge                  0
+    complex_name_appendix         _PN_Pd
+====================  Batch 1: P_N_Donors_Ni_Metal_Centre  =====================
+User-defined settings for batch 1:
+    ligand_db_file                ['Pd_Ni_example_assembly/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines', 'Pd_Ni_example_assembly/ligand_databases/Br/ligand_db_Br.jsonlines', 'Pd_Ni_example_assembly/ligand_databases/phenyl/ligand_db_phenyl.jsonlines']
+    isomers                       all
+    max_num_complexes             all
+    geometry_modifier_filepath    Pd_Ni_example_assembly/data_input/Ni_phenyl_geometry_modification.xyz
+    bidentate_rotator             slab
+    metal_center                  Ni
+    metal_oxidation_state         2
+    name                          P_N_Donors_Ni_Metal_Centre
+    forcefield                    False
+    random_seed                   0
+    geometry                      2-1-1
+    total_charge                  0
+    complex_name_appendix         _PN_Ni
+=============================  Summary per batch  ==============================
 Batch 0 ('P_N_Donors_Pd_Metal_Centre'):
   - 346 complexes tried, 314 complexes successfully assembled.
   - 32 complexes failed because of post-filters:
@@ -14,9 +40,9 @@ Batch 1 ('P_N_Donors_Ni_Metal_Centre'):
   - 346 complexes tried, 306 complexes successfully assembled.
   - 40 complexes failed because of post-filters:
     - clashing ligands: 40
-
-============  Total summary of DART assembly  ============
+=====================  Total summary of DART Assembler run =====================
   - 692 complexes tried, 620 complexes successfully assembled.
   - 72 complexes failed because of post-filters:
     - clashing ligands: 72
-Done! All complexes assembled. Exiting DART Assembler.
+DART Assembler output files saved to directory `assembled_complexes`.
+Done! All complexes assembled. Exiting DART Assembler Module.

@@ -57,12 +57,12 @@ def test_Pd_Ni_example(nmax=False, skip_filters=False):
     copy_input_files_from_example_and_adapt_paths(example_input_dir, indir)
 
     if not skip_filters:
-        Br_filter = DARTassembler.filter_ligands(Path(indir, 'ligandfilters_Br.yml'), nmax=100)
-        phenyl_filter = DARTassembler.filter_ligands(Path(indir, 'ligandfilters_phenyl.yml'), nmax=100)
-        P_N_filter = DARTassembler.filter_ligands(Path(indir, 'ligandfilters_P_N_ligands.yml'), nmax=nmax)
+        Br_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_Br.yml'), nmax=100)
+        phenyl_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_phenyl.yml'), nmax=100)
+        P_N_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_P_N_ligands.yml'), nmax=nmax)
     else:
         Br_filter = phenyl_filter = P_N_filter = None
-    assembly = DARTassembler.assemble_complexes(Path(indir, 'Pd_Ni_assembly_input.yml'))
+    assembly = DARTassembler.assembler(Path(indir, 'Pd_Ni_assembly_input.yml'))
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest

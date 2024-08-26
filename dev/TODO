@@ -6,11 +6,9 @@ Todo before publication:
 - modules:
     - refactor modules to take global settings as cli/python input and only filters/batches as yml file
        - make python api, the cli should make use of this api
-    - add concat functionality to ligandfilters and add multiple ligand dbs to the tests
     - add failed complexes to DART output on global level
     - remove openbabel warning when using forcefield
-    - optimize printed output for each module
-    - print when extracting MetaLig from zip
+    - rename 'test' module to 'installtest'
     - Cian read docs and especially give a more chemical explanation of why to rotate the phenyl ligand in the example
 
 Update docs:

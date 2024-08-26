@@ -18,7 +18,7 @@ import pandas as pd
 from DARTassembler.src.assembly.TransitionMetalComplex import TransitionMetalComplex as TMC
 from pathlib import Path
 from typing import Union
-from DARTassembler.src.assembly.Assembly_Input import AssemblyInput, LigandCombinationError
+from DARTassembler.src.assembly.Assembly_Input import AssemblyInput, LigandCombinationError, _isomers
 from DARTassembler.src.assembly.Assembly_Output import AssemblyOutput, BatchAssemblyOutput, _gbl_optimization_movie, \
     ComplexAssemblyOutput, append_global_concatenated_xyz
 import ase
@@ -81,8 +81,10 @@ class DARTAssembly(object):
         self.assembled_complex_names = []
         self.last_ligand_db_path = None     # to avoid reloading the same ligand database in the next batch
 
-        print(f"Starting DART Assembler. Output will be saved to `{self.output_path}`.")    # print to leave path out of log file
-        logging.info(f"Running {self.n_batches} batches...\n")
+        logging.info('Starting DART Assembler Module.')
+        logging.info(f'Output directory: `{self.output_path.name}`')
+        plural = 'es' if self.n_batches > 1 else ''                # print plural or singular in next line
+        logging.info(f"Running {self.n_batches} batch{plural}...")
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
             self.batch_name, self.ligand_json, self.max_num_assembled_complexes, self.generate_isomer_instruction,\
@@ -102,8 +104,9 @@ class DARTAssembly(object):
             elif self.generate_isomer_instruction == 'Generate Lowest Energy':
                 self.multiple_isomers = False
             else:
-                raise ValueError(f"generate_isomer_instruction must be either 'Generate All' or 'Generate Lowest Energy', but is {self.generate_isomer_instruction}.")
+                raise ValueError(f"{_isomers} must be either 'Generate All' or 'Generate Lowest Energy', but is {self.generate_isomer_instruction}.")
 
+            self.print_batch_title_and_settings(batch_settings)
             self.run_batch()  # run the batch assembly
 
         self.runtime = datetime.datetime.now() - start
@@ -118,7 +121,8 @@ class DARTAssembly(object):
         self.gbl_outcontrol.save_settings(self.settings.global_settings)
 
         # Print nice summary per batch
-        logging.info("\n============  Summary per batch  ============")
+        batch_summary_title = '  Summary per batch  '
+        logging.info(f'{batch_summary_title:=^80}')
         for batch_idx, batch in enumerate(self.batches):
             df = self.df_info[self.df_info['batch idx'] == batch_idx]
             batch_name = df['batch name'].iloc[0]
@@ -126,12 +130,13 @@ class DARTAssembly(object):
             self.print_success_rate(df)
 
         # Print total summary of run
-        logging.info("\n============  Total summary of DART assembly  ============")
+        total_summary_title = '  Total summary of DART Assembler run '
+        logging.info(f'{total_summary_title:=^80}')
         self.print_success_rate(self.df_info)
         n_success = self.df_info['success'].sum()
-        print(f"DART Assembler output files saved to {self.output_path}")               # print to leave path out of log file
-        print(f"Total runtime for assembling {n_success} complexes: {self.runtime}")    # print to leave runtime out of log file
-        logging.info('Done! All complexes assembled. Exiting DART Assembler.')
+        logging.info(f"DART Assembler output files saved to directory `{self.output_path.name}`.")
+        print(f"Total runtime for assembling {n_success} complexes: {self.runtime}")    # print to leave runtime out of log file for integration tests
+        logging.info('Done! All complexes assembled. Exiting DART Assembler Module.')
 
         return
 
@@ -149,8 +154,14 @@ class DARTAssembly(object):
 
         return
 
+    def print_batch_title_and_settings(self, batch_settings: dict):
+        batch_title = f'  Batch {self.batch_idx}: {self.batch_name}  '
+        logging.info(f'{batch_title:=^80}')
+        logging.info(f"User-defined settings for batch {self.batch_idx}:")
+        for key, value in batch_settings.items():
+            logging.info(f"    {key: <30}{value}")
+
     def run_batch(self):
-        logging.info(f"====================      Batch {self.batch_idx}: {self.batch_name}      ====================")
 
         random.seed(int(self.random_seed))  # Set random seed for reproducibility
 
@@ -183,7 +194,8 @@ class DARTAssembly(object):
         j = 0  # Assembly iteration we are on
         batch_sum_assembled_complexes = 0  # Number of assembled complexes produced. Note: j is not always equal to batch_sum_assembled_complexes because of filters and isomers.
         while choice.if_make_more_complexes(batch_sum_assembled_complexes):
-            logging.debug(f"###############################__Attempting_Assembly_of_Complex_#_{j}__###############################")
+            complex_title = f'  Attempting_Assembly_of_Complex #{j}  '
+            logging.debug(f'{complex_title:-^80}')
 
             # 1. Choose Ligands for Complex
             try:
@@ -234,7 +246,7 @@ class DARTAssembly(object):
             # 6. Post-Process
             # Post process includes error detection and optimization
             Post_Process_Complex_List = []
-            logging.debug("entering post process")
+            logging.debug("Entering post process")
             for complex, building_blocks in zip(Assembled_Complex_list, Building_Block_list):
                 complex, complex_is_good, ff_movie, note = self.relax_and_check_structure(complex, building_blocks, ligands)
 
@@ -266,12 +278,9 @@ class DARTAssembly(object):
                                    output_directory=self.batch_output_path,
                                    )
 
-            if j == 138746543956439563475683496736:
-                exit()
             j += 1
 
         progressbar.close()
-        logging.info('')
 
         return
 

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PALFEP-04-a,C54H41Cl1N4,4,-2,N-N-N-N,100,781.3999999999999,0.0584677116,False,False,17.285220289600012,1.9149139210404078,139c1899bbafb8334e31f44d71ee55ed,1,PALFEP,Ni(1)
-Ligand 1,unq_CSD-OZUZUG-01-a,N1O3,1,-1,O,4,62.004,0.9997438225,False,False,2.1808310090421967,2.401394307480552,59f5bf0cc16306fac3af7cce6344a5ee,2164,"OZUZUG, PAFRAR, PAFRAR, PAFREV, PAFREV, ... (2159 more)","Cu(816), Zn(245), Co(197), Ni(187), Cd(183), ... (31 more)"
-Ligand 2,unq_CSD-PAYHUU-01-e,C2N3,1,-1,N,5,66.043,0.9812034868,False,False,4.3263691694075295,2.070979251465354,c23b93ee96d3168cb700e3b2c05ca7de,317,"PAYHUU, PAYHUU, PEGZIM, PEGZIM, PEGZOS, ... (312 more)","Cu(76), Ni(60), Co(43), Fe(33), Mn(32), ... (13 more)"

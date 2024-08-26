@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PALDOX-04-a,C60H34N4,4,-2,N-N-N-N,98,810.9599999999998,0.0747624146,False,False,19.536489786294773,1.9357508996336334,38a4211e9d6fc2af62d5f3876c1aacae,1,PALDOX,Ni(1)
-Ligand 1,unq_CSD-PENMOK-01-a,C1H1O2,1,-1,C,4,45.017,0.9049555335,False,True,2.3242935184696445,2.0578249779803923,e7f8435924d4c493f866105dc5bfea6b,9,"PENMOK, PENMON, PUVGES, JUJBIC, GOFPOG, ... (4 more)","Ru(3), Ni(2), Ir(2), Pt(1), Pd(1)"
-Ligand 2,unq_CSD-OZOJUJ-01-b,C1H3,1,-1,C,4,15.034999999999997,0.7796427081,False,False,1.6011017269367993,2.0491614309272954,a2b7bbb6ca4ce36dc3147760335e7374,4034,"OZOJUJ, OZOKAQ, OZOKIY, OZOZIN, OZOZOT, ... (4029 more)","Pt(1514), Pd(765), Ni(198), Co(160), Ti(146), ... (32 more)"

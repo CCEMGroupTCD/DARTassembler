@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEFTAY-02-a,C10H8Br1O2,2,-1,O-O,21,240.076,0.2571521757,False,False,9.3184048656409,1.9902128956129124,ae7a6d69605e08bd852a5457adde7452,2,"PEFTAY, PEFTAY",Ti(2)
-Ligand 1,unq_CSD-PENMOK-01-a,C1H1O2,1,-1,C,4,45.017,0.9049555335,False,True,2.3242935184696445,2.0578249779803923,e7f8435924d4c493f866105dc5bfea6b,9,"PENMOK, PENMON, PUVGES, JUJBIC, GOFPOG, ... (4 more)","Ru(3), Ni(2), Ir(2), Pt(1), Pd(1)"
-Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,1.9900349645169564,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

@@ -45,7 +45,10 @@ class LigandFilters(object):
         self.filter_tracking = []
 
     def get_filtered_db(self) -> LigandDB:
-        print(f"Filtering ligand database: {self.ligand_db_path} --> {self.output_ligand_db_path}...")
+        print(f"Starting DART Ligand Filters Module.")
+        print(f"Input ligand db file: `{self.ligand_db_path.name}`")
+        print(f"Output ligand db file: `{self.output_ligand_db_path.name}`")
+
         db = LigandDB.load_from_json(
             self.ligand_db_path,
             n_max=self.max_number,
@@ -193,18 +196,23 @@ class LigandFilters(object):
         df_filters = df_filters.rename(columns={'n_ligands_removed': 'Ligands removed', 'n_ligands_after': 'Ligands passed', 'unique_filtername': 'Filters', 'full_filter_options': 'Filter options'})
         df_filters = df_filters.set_index('Filters')
 
-        output = "================================ FILTER OPTIONS SPECIFIED ===============================\n"
-        output += df_filters[['Filter options']].to_string(justify='center', index_names=False) + '\n\n'
+        output = f"{'  Filter Options  ':=^80}\n"
+        max_colwidth = 45
+        for filter, filter_options in df_filters['Filter options'].items():
+            if len(filter) > max_colwidth:
+                filter = filter[:max_colwidth-3] + '...'
+            filter_options = ', '.join(f'{option}: {value}' for option, value in filter_options.items())
+            output += f"{filter: <{max_colwidth+2}}{filter_options}\n"
 
-        output += "==================================== FILTER RESULTS ====================================\n"
-        output += df_filters[['Ligands removed', 'Ligands passed']].to_string(justify='center', index_names=False, max_colwidth=50) + '\n\n'
+        output += f"{'  Filter Results  ':=^80}\n"
+        output += df_filters[['Ligands passed', 'Ligands removed']].to_string(justify='center', index_names=False, max_colwidth=max_colwidth) + '\n'
 
         # Count denticities of all passed ligands
         denticity_count = pd.Series(
             [lig.denticity for lig in self.Filter.database.db.values()]).value_counts().to_dict()
         dent_output = ', '.join(sorted([f'{dent}: {count}' for dent, count in denticity_count.items()]))
 
-        output += "===========   TOTAL   ===========\n"
+        output += f"{'  Total summary of DART Ligand Filters run  ':=^80}\n"
         output += f"Before filtering:  {self.n_ligands_before} ligands\n"
         output += f"Filtered out:      {self.n_ligands_before - self.n_ligands_after} ligands\n"
         output += f"Passed:            {self.n_ligands_after} ligands\n"
@@ -215,8 +223,10 @@ class LigandFilters(object):
             stoichiometries = ','.join([ligand.stoichiometry for ligand in self.Filter.database.db.values()])
             output += f'Passed ligands:    {stoichiometries}\n'
 
-        output += "\nDone filtering!\n"
-        output += f"Filtered ligand database with {self.n_ligands_after} entries was saved to `{self.output_ligand_db_path.name}`."
+        output += f"Filtered ligand database with {self.n_ligands_after} ligands was saved to `{self.output_ligand_db_path.name}`.\n"
+        if self.output_info:
+            output += f"Info on filtered ligands saved to directory `{self.outdir.name}`.\n"
+        output += "Done! All ligands filtered. Exiting DART Ligand Filters Module."
 
         return output
 
@@ -225,7 +235,7 @@ class LigandFilters(object):
 
         if not self.output_ligand_db_path.parent.exists():
             self.output_ligand_db_path.parent.mkdir(parents=True)
-        filtered_db.to_json(self.output_ligand_db_path, json_lines=True)
+        filtered_db.to_json(self.output_ligand_db_path, json_lines=True, desc=f'Save ligand db to `{self.output_ligand_db_path.name}`')
 
         self.output = self.get_filter_tracking_string()
 

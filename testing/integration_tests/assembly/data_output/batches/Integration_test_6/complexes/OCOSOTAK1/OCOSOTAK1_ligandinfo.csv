@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEFRIE-02-a,C10H8F1O2,2,-1,O-O,21,179.17040316300003,0.4841536237,False,False,9.186742087922138,1.9579970049804176,9275dc0ce0d94b85675aa22caaee8fa0,4,"PEFRIE, PEFRIE, PEFROK, PEFROK",Ti(4)
-Ligand 1,unq_CSD-PEFRIE-02-a,C10H8F1O2,2,-1,O-O,21,179.17040316300003,0.4841536237,False,False,9.186742087922138,1.9579970049804176,9275dc0ce0d94b85675aa22caaee8fa0,4,"PEFRIE, PEFRIE, PEFROK, PEFROK",Ti(4)

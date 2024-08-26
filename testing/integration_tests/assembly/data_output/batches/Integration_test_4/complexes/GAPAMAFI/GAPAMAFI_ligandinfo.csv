@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAYDIC01-04-a,C20H14N2O2,4,-2,O-O-N-N,38,314.344,0.4655497585,False,True,12.627395362860863,1.9160928879057095,ae445e247fb5c3589b824948428d52c4,81,"PAYDIC01, PSALTQ, SIMCID, SIMCID, SOKQUE, ... (76 more)","Mn(18), Co(14), Fe(7), U(7), Zr(5), ... (12 more)"
-Ligand 1,unq_CSD-OZODUD-01-a,I1,1,-1,I,1,126.90447,1.0,False,False,,2.9637283175082025,5403354a323d4ad250e8cc4f234d5227,7691,"OZODUD, OZODUD, OZODUD, OZODUD, OZOWIK, ... (7686 more)","Pd(1141), Pt(953), Zn(597), Cd(591), Cu(503), ... (42 more)"
-Ligand 2,unq_CSD-PELBIS-01-a,C5F4N1,1,-1,C,10,150.055612652,0.9312311932,False,False,5.337582288827031,1.895261135041818,7b49116bc0386fda57a495d2c458ce36,4,"PELBIS, MAPKIX, MAPKOD, VAWJAF",Ni(4)

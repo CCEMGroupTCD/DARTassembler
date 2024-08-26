@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEKYUC-05-a,C35H47N1S4,5,-2,S-S-S-S-N,87,610.008,0.0646562854,False,True,17.733253545528523,2.260513035564885,a7bea4441a506d29047a463cda43ea8b,8,"PEKYUC, LONQUA, QOMPUD, AYIDAQ, XENMEL, ... (3 more)",Ru(8)
-Ligand 1,unq_CSD-OZOBAJ-01-a,C1O1,1,0,C,2,28.009999999999998,1.0,False,False,1.164694041368805,1.7811924208237584,a25e14e4aa210c45bc02f7030ce16061,40779,"OZOBAJ, OZOBAJ, OZOBEN, OZOBEN, OZOCEO, ... (40774 more)","W(7866), Re(7240), Cr(6363), Fe(4431), Mo(4365), ... (19 more)"
