@@ -1,88 +1,15 @@
 TODO:
 
 Todo before publication:
-- tests:
-    - make test of full assembler, filters etc, everything but ligand extraction
-- modules:
-    - refactor modules to take global settings as cli/python input and only filters/batches as yml file
-       - make python api, the cli should make use of this api
-    - add failed complexes to DART output on global level
-    - remove openbabel warning when using forcefield
-    - rename 'test' module to 'installtest'
     - Cian read docs and especially give a more chemical explanation of why to rotate the phenyl ligand in the example
 
-Update docs:
-- dbinfo has concat xyz files
-- ligandfilters has new output_ligands_info option and describe output
-- ligandfilters has new filters: smarts, atomic neighbors
-    - smarts: recommend to put the smarts in '' to avoid yaml errors
-- concat module
-- added to complex csv: graph hash, ligand donors
+Todo for making DARTassembler available as python package:
+    - make GitHub public
+    - make Readthedocs public
+    - make pip package (https://medium.com/@joel.barmettler/how-to-upload-your-python-package-to-pypi-65edc5fe9c56)
+        - if necessary, reduce MetaLig filesize when compressed to less than 60 MB in order to be installable via pip (atm it's compressed 65MB so that should be possible)
+            - this depends on how good the pip compression is, maybe we don't have to change anything
+            - if we do change the MetaLig, then use this opportunity to reindex ligand graphs if possible
 
-
-
-Should:
-- ligand filtering
-    - add option to filter several ligand db at once so that the full ligand db has to be read in only once
-    - in 'ligands_overview.csv', sort so that passed ligands come first
-    - check if denticity == None gives same results as replacing with list(range(100))
-    - refactor output ligand db path to not overwrite and to only take the folder name, not the whole path
-    - add denticities to each filter where it makes slightly sense
-    - merge ligand composition and coordinating atom composition filter by adding an option 'apply_to' which is either 'ligand_atoms' or 'coordinating_atoms'
-    - add filters:
-        - subgraph filter
-        - merge ligand composition, coordinating atoms and number of atoms filter by providing a list of atoms with keywords such as a * if this atom is coordinating and keywords if if is necessary or optional and also an X if any element is allowed
-        - custom filter for supplying a function that returns true or false based on an input ligand
-- modules:
-    - gaussian module and add it to Pd/Ni example in docs
-    - xtb module
-    - merge ligand databases
-    - relax via forcefield
-output
-- ligand db:
-    - make unique IDs of ligands like Zotrux02 and in case this points to more than one ligand, add a letter to all of them like a, b, c etc.
-    - add molecule planarity with 1.0 being perfectly planar and 0.0 being perfectly non-planar.
-        - change the bidentate planarity checker to adhere to this convention, I think now it's the other way round.
-    - check why some ligands have a 'metal_neighbor' attribute in the graph and some don't and remove or add it for all of them.
-    - reindex ligand graphs
-input:
-    - write input class for gaussian input file, especially make sure that there is an 'others' specified in the basis sets
-    - make sure in input that the indentation is fixed in the yaml file
-    - Remove spin from metal input and add it to gaussian module?
-    - make gaussian input filepath an own module instead of an argument in the assembly input file
-    - make input paths os independent
-example:
-    - refactor and doublecheck the data extraction class
 assembly:
-    - always output ff optimized structures together with original structure
-    - refactor the ligand choice, this seems a little unstable
     - double check the ligand planarity filtering, it is very slow and I'm not sure if it's correct
-    - fix that hydrides can't be assembled
-    - add yml file of input as output
-    - check post-assembly filter
-        - for the oer database, many Ru complexes fail with the OH ligand but not with the H2O ligand and I don't know why
-            - problem might be either in the assembly of monodentates or in the post-assembly filter
-    - implement gfn-ff and fixing coordinating atoms via spring instead of completely fixing them
-
-bugs:
-assembly:
-    - #1_assembler_iterating_ligand_choice: There is a little bug in the assembler, in the ligand choice algorithm. If you assemble multiple batches with the same settings just different metals, the first chosen ligand in the ligand choice always advances one for the next batch, i.e. the each new batch throws away the first ligand from the previous batch. --> Most likely fixed now since the ligand choice algorithm was refactored.
-
-
-
-
-
-
-
-Future developments:
-- remove ligands with missing H from database
-- bimetallic assembler:
-    - only based on having 2 metals bound to each other, without ligands in between
-    - only based on current mono-metallic ligands
-    -
-- database of non-innocent ligands
-    - look of database:
-        - coordinating atoms: elements, distances to metal, partial charges
-
-- charge assignment:
-    - automatically check for charges already assigned in the database

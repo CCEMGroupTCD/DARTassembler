@@ -9,10 +9,10 @@ The organo\ **Meta**\ llic **Lig**\ and database (MetaLig) contains 41,018 ligan
 
 The MetaLig ligand database can be used in a variety of applications:
 
-    - **DART Assembler :** As a source of ligands for the DART Assembler module.
-    - **DART Ligand Filters :** Filter ligands based on their properties to target specific chemical spaces in the Assembler module.
-    - **Ligand Analysis :** To analyze and explore ligands across the CSD.
-    - **Ligand Property Prediction :** As a dataset for training machine learning models.
+   - **DART Assembler :** As a source of ligands for the DART Assembler module.
+   - **DART Ligand Filters :** Filter ligands based on their properties to target specific chemical spaces in the Assembler module.
+   - **Ligand Analysis :** To analyze and explore ligands across the CSD.
+   - **Ligand Property Prediction :** As a dataset for training machine learning models.
 
 .. figure:: /_static/part2/metalig/metalig_fig.png
    :width: 100%
