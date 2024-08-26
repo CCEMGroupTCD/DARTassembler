@@ -19,7 +19,7 @@ def test_module_in_directory(function, input: Union[Path, str], outdir: [Path, s
     prev_cwd = os.getcwd()  # Save the current working directory to return to it after the test
 
     if outdir is None:  # Leave no files saved
-        testing_title = f'  Testing module {function.__name__} in temporary directory'
+        testing_title = f'  Testing module {function.__name__} in temporary directory  '
         print(f'{testing_title:#^80}')
         with tempfile.TemporaryDirectory() as tmpdir:
             os.chdir(tmpdir)

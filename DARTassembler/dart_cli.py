@@ -1,8 +1,7 @@
 import argparse
 from DARTassembler import ligandfilters, assembler, dbinfo, concat, installtest, configs
 
-init_cli_output = r"""
-================================================================================
+init_cli_output = r"""================================================================================
                             ____  ___    ____  ______
                            / __ \/   |  / __ \/_  __/
                           / / / / /| | / /_/ / / /   

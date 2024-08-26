@@ -130,7 +130,7 @@ class DARTAssembly(object):
             self.print_success_rate(df)
 
         # Print total summary of run
-        total_summary_title = '  Total summary of DART Assembler run '
+        total_summary_title = '  Total summary of DART Assembler run  '
         logging.info(f'{total_summary_title:=^80}')
         self.print_success_rate(self.df_info)
         n_success = self.df_info['success'].sum()
