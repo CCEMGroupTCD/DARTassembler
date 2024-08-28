@@ -1,5 +1,8 @@
 from setuptools import setup, find_packages
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 setup(
     name="DARTassembler",
     version="1.0.0",
@@ -8,7 +11,7 @@ setup(
     python_requires=">=3.9",
     author="Timo Sommer, Cian Clarke, Felix Kleuker",
     packages=find_packages(),
-    install_requires=['ase', 'jsonlines', 'networkx', 'numpy', 'openbabel-wheel', 'pandas', 'pyyaml', 'rdkit', 'scipy', 'scikit-learn', 'stk', 'sympy', 'tqdm', 'pysmiles'],
+    install_requires=requirements,
     package_data={
         'DARTassembler': [
             'data/*.csv',

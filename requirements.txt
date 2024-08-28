@@ -1,0 +1,14 @@
+ase
+jsonlines
+networkx
+numpy
+openbabel-wheel
+pandas
+pyyaml
+rdkit
+scipy
+scikit-learn
+stk
+sympy
+tqdm
+pysmiles
