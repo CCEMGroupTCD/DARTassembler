@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-ROBPUT-03-a,C8H12N4O1S1,3,S-N-C,-2,True,f5ba0cb7cdc824b16756fcf20f116ee8,1,ROBPUT,Pt(1)
-Ligand 1,unq_CSD-LAQFAK-02-a,C9H13N3,2,N-N,0,True,f7d749c30801cc500a8dd74de62c18d6,2,"LAQFAK, LAQFAK",Pt(2)
-Ligand 2,unq_CSD-PAHMER-01-f,C7H5N1,1,N,0,True,949ab9427530ed6565beb22bb14b5b37,173,"PAHMER, PASQOR, PASQOR, PAYYET01, PAYYET01, ... (168 more)","Cu(42), Ru(33), Pt(17), Pd(16), W(10), ... (19 more)"

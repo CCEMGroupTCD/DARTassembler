@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-FABBES-03-a,C15H11Cl1N2O2,3,N-O-O,-2,True,6d211d1709cc7ea4df3b1aa9401881af,1,FABBES,V(1)
-Ligand 1,unq_CSD-QAJFIS-02-a,C14H11N3O1,2,N-N,0,True,eb445fa887d8eddb91187fe5c6907d21,5,"QAJFIS, XUPVUB, XUPVUB01, XUPWEM, OQOGIL","Ir(3), Re(1), Cu(1)"
-Ligand 2,unq_CSD-QUGZOK-01-b,C24H29N2P1,1,P,0,True,3de92a3329788ebd0b3f42b4cec7d296,2,"QUGZOK, QUGZOK",Pt(2)

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-ZUFZEH-03-a,C11H10Cl1N2O2,3,N-O-O,-1,True,47139a9a03ead3c4a6fffb01106343eb,2,"ZUFZEH, ZUFZEH",Cd(2)
-Ligand 1,unq_CSD-ZUPCUK-02-a,C18H14Cl1N2O2,2,O-O,-1,True,ad5d7dcb031743dbb8eadb5a2edd6a17,1,ZUPCUK,Cu(1)
-Ligand 2,unq_CSD-LUBHOF-01-c,C7H15B1O1,1,C,0,True,5083632fa65bf08009e0670d2fec4cbc,1,LUBHOF,Co(1)

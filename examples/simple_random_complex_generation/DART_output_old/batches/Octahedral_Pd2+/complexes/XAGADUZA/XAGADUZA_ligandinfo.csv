@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-KONNUZ-03-a,C13H10N4,3,N-N-N,0,True,ba7cc0bac245c7d86bfd1322f4680521,2,"KONNUZ, KONNUZ",Fe(2)
-Ligand 1,unq_CSD-GELPOE-02-a,C6H1F8O2,2,O-O,-1,True,b95ac85aeccc36db64a484da3fd068b7,4,"GELPOE, GELPOE, GELQAR, GELQAR",Cu(4)
-Ligand 2,unq_CSD-CAGHIB-01-c,C9H7,1,C,-1,True,a2b78cd6e81a145a6fba6580ccf5b770,1,CAGHIB,Pt(1)

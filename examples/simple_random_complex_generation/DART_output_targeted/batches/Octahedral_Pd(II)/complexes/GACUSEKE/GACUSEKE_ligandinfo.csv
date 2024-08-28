@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-COGZOQ-03-a,C8H7N3O2S1,3,N-O-S,-2,True,6acaf8718b048aff3c20749e34d0a2f3,2,"COGZOQ, FERXOS","Ni(1), Pd(1)"
-Ligand 1,unq_CSD-PAQQUV-02-a,C6H14N2,2,N-N,0,True,eacf9980be9994344252bece443ce2d9,155,"PAQQUV, SIXYUT, SIXYUT, SUQKOG, TAJJUK, ... (150 more)","Cu(40), Pt(22), Ni(19), Cr(15), Co(13), ... (9 more)"
-Ligand 2,unq_CSD-MUFBIZ-01-b,C9H16N2,1,C,0,True,f147bc9c23a7449532c0d4a4e6486997,3,"MUFBIZ, XAMREJ, APUFEX","Rh(1), Pd(1), Au(1)"

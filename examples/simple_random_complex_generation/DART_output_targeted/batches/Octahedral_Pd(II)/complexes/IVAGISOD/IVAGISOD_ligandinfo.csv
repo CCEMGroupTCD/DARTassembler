@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-YUJKET10-03-a,C8H12N4S2,3,S-S-C,-2,True,31f55fd3732c8ffd8c38e9a67a7ccdc7,2,"YUJKET10, ROBMOK","Pd(1), Pt(1)"
-Ligand 1,unq_CSD-SUTLIC-02-a,C11H13N3,2,N-N,0,True,195c47c306b137bb9eee3834719c7f9d,11,"SUTLIC, SUTLIC, UZAWOI, VOWXIQ, DEHKOS, ... (6 more)","Cu(5), Co(2), W(1), Fe(1), Cd(1), ... (1 more)"
-Ligand 2,unq_CSD-GIBYAT-01-d,C6H14N2,1,N,0,True,f9338d698019e95952a16bf7d297768b,5,"GIBYAT, OQENII, OQENII, OQENII, OQENII","Pd(4), Pt(1)"

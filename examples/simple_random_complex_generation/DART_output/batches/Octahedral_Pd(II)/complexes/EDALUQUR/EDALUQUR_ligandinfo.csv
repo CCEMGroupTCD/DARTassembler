@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LIPJIG-03-a,C32H41N5O3,3,N-N-N,0,True,2e832d2049563b8cea5cd264739cb365,2,"LIPJIG, LIPJIG",Fe(2)
-Ligand 1,unq_CSD-KIRBOC10-02-a,O3S1,2,O-O,-2,True,0731b8026325e24edc2edb2b5ecf7ba4,2,"KIRBOC10, AVAZAY","Ti(1), Re(1)"
-Ligand 2,unq_CSD-VOQMET-01-b,C13H14N4S1,1,S,0,True,e2479486470c7cf792b003160e62666a,2,"VOQMET, VOQMET",Zn(2)

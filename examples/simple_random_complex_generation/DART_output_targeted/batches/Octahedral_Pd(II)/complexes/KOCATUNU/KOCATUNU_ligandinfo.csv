@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-BICQAI-03-a,C11H13N3O1S1,3,O-N-N,-2,True,26ce52ec253b38a95334707503c35e52,1,BICQAI,Ni(1)
-Ligand 1,unq_CSD-BOYBEY-02-a,C10H14N4O1,2,N-N,0,True,24dedc7ead0d5e3695da435774244b87,2,"BOYBEY, XAWWID","Zn(1), Pt(1)"
-Ligand 2,unq_CSD-SUZVOB-01-c,C10H10N2,1,N,0,True,a0e3b90d431a3c6849c9c4720b48f073,44,"SUZVOB, SUZVOB, SUZVOB, SUZVOB, SUZVUH, ... (39 more)","Co(19), Ni(8), Mn(6), Pd(4), Cd(3), ... (3 more)"

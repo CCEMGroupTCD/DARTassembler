@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-WEJKOL-03-a,C7H11N3O1S1,3,N-N-O,-2,True,1994f52a5a2238479341ea6fdead6d8b,1,WEJKOL,Ni(1)
-Ligand 1,unq_CSD-BELVUK-02-a,C6H6N4,2,N-N,0,True,758bec776bc956e85c98117a7a2e6c4e,8,"BELVUK, BELVUK, UPETAL, UPETAL, UPETAL, ... (3 more)","Ni(6), Cu(2)"
-Ligand 2,unq_CSD-PAGDUZ-01-a,C2H7N1,1,N,0,True,69af7bc4fbc97bf018861ee28fbb83af,168,"PAGDUZ, PAGDUZ, PALHER, PALHOB, PAWWOZ, ... (163 more)","Ti(60), Zr(20), V(18), Mo(14), Ta(12), ... (14 more)"

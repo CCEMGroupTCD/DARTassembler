@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-EWIXEP02-03-a,C12H8N5O2,3,N-N-O,-1,True,3d8922f0db9fae29540a1f1c36f8410f,2,"EWIXEP02, EWIXEP02",Ni(2)
-Ligand 1,unq_CSD-CIWDIV10-02-a,C10H7N2O4,2,N-N,-1,True,e756f8d852d9746b39096b1284d85bcd,4,"CIWDIV10, CIWDIV10, DAYPIE, DAYPIE","Pd(2), Ni(2)"
-Ligand 2,unq_CSD-PAVZOE-01-b,C5H8N2,1,N,0,True,fd92b629d189c4951ffbb7805fe1976b,297,"PAVZOE, PAVZOE, PAYZIA, SIPJUX, SIPJUX, ... (292 more)","Cu(76), Pd(39), Re(29), Co(27), Pt(18), ... (20 more)"

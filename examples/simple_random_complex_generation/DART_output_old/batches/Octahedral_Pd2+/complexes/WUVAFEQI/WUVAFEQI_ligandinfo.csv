@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-XAYBAB-03-a,C16H32N2O3,3,O-O-O,0,True,2e678e1cf8fa7e442d512e0b45c39a62,4,"XAYBAB, XAYBAB, XAYBAB, ROCGEW","Yb(3), U(1)"
-Ligand 1,unq_CSD-BIYPUV-02-a,C16H20N1O2S1,2,N-O,-1,True,476b6153106de12ddaf9a25a88d6fcbc,2,"BIYPUV, BIYPUV",Cu(2)
-Ligand 2,unq_CSD-RALXAD-01-c,C6H5I1N1,1,N,-1,True,a775cd8011fcd89334203f5cd8b7ecb6,1,RALXAD,Pt(1)

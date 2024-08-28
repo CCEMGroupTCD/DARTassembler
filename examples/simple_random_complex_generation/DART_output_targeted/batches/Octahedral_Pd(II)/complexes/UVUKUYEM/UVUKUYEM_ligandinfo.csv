@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PACPEP-03-a,C14H10N2O2,3,O-N-O,-2,True,87f909f80ab9500c263072cf98d79bfd,32,"PACPEP, TEHYEM, LOFTIJ, BIQCEM, BIQCEM, ... (27 more)","V(13), Mo(5), Cu(5), Ti(2), Mn(2), ... (5 more)"
-Ligand 1,unq_CSD-YIYKAT-02-a,C13H11N3,2,N-N,0,True,e2fbd20d9f0520982919e0b10a769ce2,11,"YIYKAT, VANNAB, EPUXOE, IJOHUM, IJOHUM, ... (6 more)","Ru(4), Ni(3), Re(2), Pd(1), Ir(1)"
-Ligand 2,unq_CSD-PIDQIE-01-a,C5H6N2,1,N,0,True,e73ab508f524f5a70af95ad79788a5af,61,"PIDQIE, PIDQIE, LOCHAN, BORJEY, MEMSIH, ... (56 more)","Co(21), Mn(8), Ni(8), Zn(7), Cu(6), ... (6 more)"

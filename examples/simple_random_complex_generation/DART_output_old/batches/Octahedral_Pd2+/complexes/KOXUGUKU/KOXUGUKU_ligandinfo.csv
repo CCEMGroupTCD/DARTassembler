@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-GOQSAJ-03-a,C17H14N2O2,3,N-O-O,-2,True,a41a824be440eab546402e0edd5c6f6c,1,GOQSAJ,Ni(1)
-Ligand 1,unq_CSD-QOWWUV-02-a,C11H15N3O2,2,N-N,0,True,3e9e26bcffca1f5dd0c241e6c1df6208,1,QOWWUV,Cu(1)
-Ligand 2,unq_CSD-PAYSAL-01-c,C8H9N1O2,1,N,0,True,9c8cea89b296fb4520ba9d5b3d3e8a32,43,"PAYSAL, PAYSAL, PAYSAL, PAYSAL, PAYSAL01, ... (38 more)","Co(11), Ni(8), Ru(7), Mn(4), Fe(4), ... (5 more)"

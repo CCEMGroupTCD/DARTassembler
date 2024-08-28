@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-FUSFIL-03-a,C14H15N3,3,N-N-N,0,True,aa5741388d825bd77925b7051d83383d,6,"FUSFIL, FUSFIL, FUSFOR, FUSFOR, GOCLOA, ... (1 more)","Fe(4), Cu(2)"
-Ligand 1,unq_CSD-BUZCOP-02-a,C12H13Cl1N1O1,2,N-O,-1,True,339a0ea60681c337305f212a2d02ad9c,3,"BUZCOP, BUZCOP, BUZCOP",Co(3)
-Ligand 2,unq_CSD-LASMUO-01-c,C26H32N3O1,1,N,-1,True,4bfda825f45bbea48d33a6bf3ee45661,1,LASMUO,Ni(1)

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LUGWEQ-03-a,C10H13N5,3,N-N-N,0,True,814d653fd286e081b7d089cfa2052635,18,"LUGWEQ, LUGWEQ, LUGWIU, LUGWIU, LUGWOA, ... (13 more)",Fe(18)
-Ligand 1,unq_CSD-QUVREF-02-a,C15H12F1N3,2,N-N,0,True,6da1a16bcdba0a3fa9c9475243a30ea1,1,QUVREF,Ru(1)
-Ligand 2,unq_CSD-LUGVAL-01-a,C7H6N2,1,N,-2,True,8e4755491ee969bf097dd36cab61fa8c,2,"LUGVAL, DAPNIR","Mo(1), Cr(1)"

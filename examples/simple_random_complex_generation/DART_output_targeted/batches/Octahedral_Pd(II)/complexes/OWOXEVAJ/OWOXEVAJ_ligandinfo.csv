@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LAYYIV-03-a,C6H6N4S1,3,N-N-S,-2,True,de90a9d356470e4ed1f539912de40341,1,LAYYIV,Pd(1)
-Ligand 1,unq_CSD-BUSYOE-02-a,C6H4N2S2,2,N-N,0,True,61c8f9872ee09ac9fb867d5dedcdcb4a,13,"BUSYOE, BUSYOE, BUSYOE, PUSMOI, KOFQAY, ... (8 more)","Ru(5), Fe(5), Cu(1), Pt(1), Pd(1)"
-Ligand 2,unq_CSD-TEFNOJ-01-a,C9H13N1,1,N,0,True,51ce2c95fdaa04c07c61076503ba8a48,6,"TEFNOJ, LIYJUY, UDEPAV, GUQDIG, IFAZOF, ... (1 more)","Cu(2), Ru(2), Re(1), Pd(1)"

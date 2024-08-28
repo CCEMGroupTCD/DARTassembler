@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-TOGROW-03-b,C12H12N2O2,3,O-O-N,-2,True,de8ce5af1e4aa0734381ce7f3d9e2021,15,"TOGROW, XUYFAY, XUYFEC, GAXHUI, GAXHUI, ... (10 more)","V(5), Cu(4), Ni(3), Ti(2), Fe(1)"
-Ligand 1,unq_CSD-ZERHAH-02-a,C11H12N4O2,2,N-N,0,True,07c74bbb988c48f8a1d61dba864b038a,3,"ZERHAH, ZERHOV, APICUY","Zn(1), Cu(1), Pd(1)"
-Ligand 2,unq_CSD-QEKBAM-01-d,C10H8N4,1,N,0,True,01e6eaf50879a13b2211247ea8a49a60,4,"QEKBAM, QEKBAM, IKUNEJ, IKUNEJ","Zn(2), Ni(2)"

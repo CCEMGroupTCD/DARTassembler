@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-WUKKAO-03-a,C13H18N4S1,3,S-N-N,0,True,0ef433e4f28faf7d6e8b985fc0be88df,1,WUKKAO,Cu(1)
-Ligand 1,unq_CSD-UMAVEM-02-a,C9H8N3O2S2,2,O-N,-1,True,e7dae0158d77ca8581c3482a8901c7e2,2,"UMAVEM, UMAVEM",Ni(2)
-Ligand 2,unq_CSD-HUBBAI-01-a,C19H15S2,1,S,-1,True,22f249b9906f7f6fb5ecd3d4282fd70e,2,"HUBBAI, HUBBEM",Zn(2)

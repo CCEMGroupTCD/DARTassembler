@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-BEPNOZ-03-a,C11H11N1O1S1,3,N-O-S,-2,True,44301164ce68101090d13917ab655c3a,2,"BEPNOZ, RISQIW",Ni(2)
-Ligand 1,unq_CSD-KESLIG-02-a,C1H6N4,2,N-N,0,True,e51f30354f477737a72fbb13dc0e858d,20,"KESLIG, KESLIG, WALHAU, WALHAU, JEBTUI, ... (15 more)","Cu(10), Ni(4), Pd(3), Pt(3)"
-Ligand 2,unq_CSD-ZOMHAN-01-b,C7H10N2,1,C,0,True,1f169f20fd4c6ebdfff205c884d92b10,2,"ZOMHAN, ZOMHAN",Pd(2)

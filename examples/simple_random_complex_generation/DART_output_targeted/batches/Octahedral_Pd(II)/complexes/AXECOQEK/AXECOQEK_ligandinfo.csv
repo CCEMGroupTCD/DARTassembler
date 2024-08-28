@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-RARTEM-03-a,C12H12N5,3,N-N-N,-1,True,ba4ccef2b273ad5737adbda3d9c0fbf0,1,RARTEM,Pt(1)
-Ligand 1,unq_CSD-MEBWIC-02-a,C3H7N4O1,2,N-N,-1,True,c42380f6ea04db427e4094e34783e97c,28,"MEBWIC, MEBWIC, MEBWIC01, MEBWIC01, MEBWIC02, ... (23 more)",Ni(28)
-Ligand 2,unq_CSD-XABFAJ-01-a,C5H11N5,1,N,0,True,56a9312313613bfecad73c932376ddfb,2,"XABFAJ, XABFAJ",Pt(2)

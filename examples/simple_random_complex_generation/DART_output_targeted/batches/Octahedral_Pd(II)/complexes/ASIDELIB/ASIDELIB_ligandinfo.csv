@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-CAGHOL-03-a,C11H10N2O4,3,N-O-O,-2,True,25caed00b4b85903cbb45849c9f4ecd7,2,"CAGHOL, CAGHUR",Ni(2)
-Ligand 1,unq_CSD-SIPXIZ-02-b,C12H10N2O1,2,N-N,0,True,314b98b53a44a0d1fbc29c137fcdbc47,33,"SIPXIZ, SUQKIB, BAGFOF, BAGFUL, BAGGAS, ... (28 more)","Mo(10), Mn(4), Pt(4), W(3), Fe(3), ... (6 more)"
-Ligand 2,unq_CSD-GETZAI-01-a,C6H7N3,1,N,0,True,4c06dff052d052e45f2e998f39d9f258,2,"GETZAI, GETZAI",Pt(2)

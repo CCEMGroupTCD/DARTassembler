@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-WEKJON-03-a,C11H15N2O1,3,O-N-N,-1,True,d99aa4ca98f2e6d6fbf4c7c4ed878840,2,"WEKJON, WEKJON",Fe(2)
-Ligand 1,unq_CSD-REXQER-02-a,C22H21O2,2,O-C,-1,True,4c4065bcbac4c7f0deee5e224872ebb9,3,"REXQER, REXQER, REXQER",Co(3)
-Ligand 2,unq_CSD-TANQOP-01-a,C10H14N2O1,1,N,0,True,fb95cf281185697026a5796082763353,5,"TANQOP, TANQOP, TANQOP, EMIYOR, XUQPOO","Cu(3), Fe(1), Ru(1)"

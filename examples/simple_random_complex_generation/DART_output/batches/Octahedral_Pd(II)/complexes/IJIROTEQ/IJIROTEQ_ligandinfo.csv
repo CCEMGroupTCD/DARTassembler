@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-KAFLUA-03-a,C13H9N4O1,3,O-N-N,-1,True,af282426344e5e91609a43cd063e0e93,1,KAFLUA,Fe(1)
-Ligand 1,unq_CSD-AQITOJ-02-a,C6H6F3O3,2,O-O,-1,True,9b52e272c464369a98cd19cba7d9286c,12,"PUTQAW, PUTQAW, PUTQAW, PUTQAW, VAYYID, ... (7 more)","Ce(4), U(4), Cu(4)"
-Ligand 2,unq_CSD-QULQAR-01-c,C12H13N3O1,1,N,0,True,5679439461bc73022722f76578499853,4,"QULQAR, QULQAR, QULQEV, QULQEV","Zn(2), Hg(2)"

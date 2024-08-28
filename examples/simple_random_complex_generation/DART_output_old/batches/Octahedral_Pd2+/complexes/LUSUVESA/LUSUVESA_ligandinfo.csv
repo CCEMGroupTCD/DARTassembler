@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-XACGIR-03-a,C8H11N6O3,3,N-O-N,-1,True,0278a89c9c02711344d998ca31afabdd,1,XACGIR,Cu(1)
-Ligand 1,unq_CSD-PELGIX-02-a,C4H5N2S1,2,S-N,-1,True,456eb2d1d4bd842b258d96df5669220d,18,"PELGIX, MALVEC, YEWDUA, YEWDUA, HACHIG, ... (13 more)","Ru(13), Rh(2), U(1), W(1), Ir(1)"
-Ligand 2,unq_CSD-WUWPUA-01-a,C15H16O1S1,1,S,0,True,baed8e74f26b87a3f6fa0d1dcf30dfaa,2,"WUWPUA, WUWPUA",Pd(2)

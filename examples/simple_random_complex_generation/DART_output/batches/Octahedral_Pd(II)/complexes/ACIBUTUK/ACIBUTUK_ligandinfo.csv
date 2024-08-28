@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PALZOS-03-a,C15H15N5O1,3,O-N-N,-2,True,9340d6b1f9ee52cbdc052f25d6c25eb8,2,"PALZOS, PALZUY",Ni(2)
-Ligand 1,unq_CSD-BEWRED-02-a,C15H13N3,2,N-C,0,True,cf60b4a249eb2416073d0deaca28a8f0,9,"BEWRED, MENYAI, QAKPIE, WAMGUQ, WAMHAX, ... (4 more)","Ru(6), Pd(1), Ir(1), Cu(1)"
-Ligand 2,unq_CSD-SIZVON-01-a,C4H6N2,1,N,0,True,c3cfbd40ede599f6679f67d64ddc9e06,129,"SIZVON, SIZVON, SUBJAC, SUBJEG, TALLAU, ... (124 more)","Fe(28), Zn(20), Co(20), Cu(15), Ni(11), ... (6 more)"

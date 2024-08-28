@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LAYYIV-03-a,C6H6N4S1,3,N-N-S,-2,True,de90a9d356470e4ed1f539912de40341,1,LAYYIV,Pd(1)
-Ligand 1,unq_CSD-PAWTIR-02-a,C8H6N2,2,N-N,0,True,59bc0a1bc9b74840abadba6002330a89,28,"PAWTIR, BOXZEW, FULRIO, FULRIO, ZUFTUS, ... (23 more)","Ru(11), Pr(6), Fe(4), Co(2), Ni(2), ... (3 more)"
-Ligand 2,unq_CSD-PICNCO-01-a,C7H5N1,1,C,0,True,e9acba3b3844967ca301024a90f453c4,112,"PICNCO, PICNCO, PICNCO, PICNCO, PICNCO, ... (107 more)","Cr(18), Mo(16), Fe(15), Au(13), Pt(11), ... (10 more)"

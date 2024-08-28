@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LULMUA-03-a,C19H15N3,3,N-N-N,0,True,66bf790089dac08226bea3e5b37a9cb5,1,LULMUA,Pt(1)
-Ligand 1,unq_CSD-GIGWIC-02-a,C11H10N1S4,2,S-S,-1,True,fe90e135baa71074b9fdc1e319b896ba,2,"GIGWIC, GIGWIC",Ni(2)
-Ligand 2,unq_CSD-UDALAP-01-a,C12H8F2N1O4S2,1,N,-1,True,b51cf1bb8ab7cafa1708bb861f0a27af,6,"UDALAP, UDALAP, XOFYEX, ABEHAT, ABEHEX, ... (1 more)","Au(3), Ag(3)"

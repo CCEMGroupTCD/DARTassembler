@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-JUXBOW-03-a,C20H15N4,3,C-N-N,-1,True,4c60c431b8b38926e68a4175d2d2cde4,8,"JUXBOW, UXIWOQ, UXIWUW, UXIXAD, QEKNED, ... (3 more)",Pt(8)
-Ligand 1,unq_CSD-LOWBEE-02-a,C1F3O3S1,2,O-O,-1,True,1e73e184ac9d6c80d420a00d6ae45f06,37,"PETHUS, LOWBEE, MARQIF, BOJYUX, MINLIE, ... (32 more)","Pd(6), Eu(4), Cr(4), Ag(4), Rh(3), ... (12 more)"
-Ligand 2,unq_CSD-BUTDUQ-01-c,C9H8N4O1,1,N,0,True,5f8fde2b1b291aae22a159b47e31800e,2,"BUTDUQ, BUTDUQ",Zn(2)

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-CAGHOL-03-a,C11H10N2O4,3,N-O-O,-2,True,25caed00b4b85903cbb45849c9f4ecd7,2,"CAGHOL, CAGHUR",Ni(2)
-Ligand 1,unq_CSD-JIYBOJ-02-a,C13H12N2O2,2,N-N,0,True,3d02459d90f33183c7d4b90d714b33d7,2,"JIYBOJ, JIYBOJ",Pd(2)
-Ligand 2,unq_CSD-RIWYUR-01-a,C5H5N5,1,N,0,True,b69935220364329798c3cd52524793ca,2,"RIWYUR, RIWZAY",Pd(2)

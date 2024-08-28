@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-AFIBUN-03-a,C11H12N3O1S2,3,N-N-S,-1,True,809b578e5f9153ac475ac8521320b493,2,"AFIBUN, AFIBUN",Ni(2)
-Ligand 1,unq_CSD-KAKJEP-02-a,C8H11N2,2,N-N,-1,True,e765c31fe06c6dd748253a31dfe76e4c,2,"KAKJEP, KAKJUF",Pt(2)
-Ligand 2,unq_CSD-RUZGAW-01-b,C9H13N1,1,N,0,True,ce32c1718f319d5b9b577391e138fb5f,2,"RUZGAW, RUZGAW",Pd(2)

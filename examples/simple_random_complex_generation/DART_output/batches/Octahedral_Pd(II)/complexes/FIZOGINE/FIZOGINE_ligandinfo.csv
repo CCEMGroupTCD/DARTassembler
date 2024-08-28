@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-TUWMOO-03-a,C23H19N3O2,3,N-N-N,0,True,38b8d74d388ee1ef4caaa54f979b05c5,4,"TUWMOO, TUWMUU, TUWNAB, HUCNAV",Ru(4)
-Ligand 1,unq_CSD-EPMPYP-02-a,C10H16B1N4,2,N-N,-1,True,ba3b54a3293b88fcaf5b21a959d9d779,17,"EPMPYP, EPZBNI, EPZBNI, EPZBNI01, EPZBNI01, ... (12 more)","Ni(16), Pt(1)"
-Ligand 2,unq_CSD-PEWSOA-01-a,C7H4N1O3S1,1,N,-1,True,614db3b6d5361ab61ff04271554ab410,371,"PEWSOA, TABBAA, TABBAA, TAKBEQ, TAKBEQ, ... (366 more)","Cu(73), Pd(58), Zn(47), Pt(37), Cd(36), ... (9 more)"

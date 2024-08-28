@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LOPREO-03-a,C24H31N3,3,N-N-N,0,True,1eba43deb2f11136f1d88afc3529af25,3,"LOPREO, LOPSEP, MONXOD","Co(2), Ru(1)"
-Ligand 1,unq_CSD-VUFPET-02-b,C17H13N1,2,C-C,-2,True,7848f657adbe918744eaf3253131d49c,1,VUFPET,Co(1)
-Ligand 2,unq_CSD-DEGREN-01-b,C7H4N2O2,1,N,0,True,d29579b77464ee93858bdf4a84ea0d17,1,DEGREN,Fe(1)

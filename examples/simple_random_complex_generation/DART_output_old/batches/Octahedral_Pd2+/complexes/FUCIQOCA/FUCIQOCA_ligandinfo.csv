@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-WOTDEQ-03-a,C18H23N3O1,3,O-N-N,0,True,752031f12c801e24324a8dbc2cb9485a,1,WOTDEQ,Cu(1)
-Ligand 1,unq_CSD-YASJAD-02-a,C6H10O2,2,O-O,-2,True,2bd268614c94052831171eb1e3d3f5d9,1,YASJAD,Cu(1)
-Ligand 2,unq_CSD-LIHXEH-01-c,C4H9N1S1,1,N,0,True,715593ca89ab83f2e5b306c576a2cb69,2,"LIHXEH, LIHXEH",Pt(2)

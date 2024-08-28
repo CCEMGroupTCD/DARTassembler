@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-EKICOR-03-a,C12H16N1O4,3,N-O-O,-1,True,8a4aba729adf0687ddf58a3d44845b99,2,"EKICOR, EKICUX",Cu(2)
-Ligand 1,unq_CSD-WABBEI-02-a,C6H7N3,2,N-N,0,True,56f43060dced5d676821347ec83ea393,7,"WABBEI, WABBEI, HUPSIX, HUPSIX, NUVSUV, ... (2 more)","Zn(2), Cu(2), Eu(1), Dy(1), Tb(1)"
-Ligand 2,unq_CSD-XODLIL-01-a,C10H15N2,1,C,-1,True,50a8e712d474b4c9979513ebe22c5fbb,2,"XODLIL, XODLIL",Hg(2)

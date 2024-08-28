@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LUSLER-03-a,C9H9N3O1S1,3,N-O-S,-2,True,da24563e74b6aa2e041ab550ffd7e428,10,"LUSLER, LUSLUH, LUSLUH01, LUSMAO, BEMKEL, ... (5 more)","Ni(5), Cu(4), Ru(1)"
-Ligand 1,unq_CSD-PUGGEF-02-c,C13H10N4,2,N-N,0,True,dcd57cc04f137f0e2a55ed2f77a3bd6a,17,"PUGGEF, CIRCUD, CIRCUD, CIRCUD, KINNON, ... (12 more)","Ru(8), Fe(3), Cu(2), Pd(2), Ir(1), ... (1 more)"
-Ligand 2,unq_CSD-HOJROO-01-c,C6H13N3,1,N,0,True,869a8c3160e98214c647231d7bbe7b70,2,"HOJROO, HOJROO",Pt(2)

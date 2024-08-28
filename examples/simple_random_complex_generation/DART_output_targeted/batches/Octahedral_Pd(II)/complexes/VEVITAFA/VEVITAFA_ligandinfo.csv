@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LUYTOQ-03-a,C13H11N4O1,3,N-N-N,-1,True,411321cde26b743e45ecb51ce86dc0fd,1,LUYTOQ,Pd(1)
-Ligand 1,unq_CSD-BEZKIA-02-b,C2H5N4O2,2,N-N,-1,True,b2bcc6c97f29238feee0e6d9013594d6,18,"BEZKIA, BONYOS, BUKPUS, BUKPUS, CEDXOA, ... (13 more)","Ni(7), Cu(5), Co(4), Pt(2)"
-Ligand 2,unq_CSD-TAWNAI-01-c,C15H12N2,1,N,0,True,98106b9aad06eb2c00b3c8f6cfd8e984,39,"TAWNAI, LUXPUR, LUXPUR, YASBAX, YASBAX, ... (34 more)","Co(13), Zn(8), Ni(8), Cu(6), Ru(2), ... (1 more)"

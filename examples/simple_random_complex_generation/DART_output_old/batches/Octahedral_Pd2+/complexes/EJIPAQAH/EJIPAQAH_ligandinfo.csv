@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-DOSWEN-03-a,C16H15N1O3,3,O-O-N,-2,True,65c103d674db7bdedb6d8bcdf17cf032,1,DOSWEN,Mo(1)
-Ligand 1,unq_CSD-BIPHEP-02-a,C24H20N2S2,2,N-N,0,True,641acd2bed5257d527e3bc236db95dbd,4,"BIPHEP, BIPHEP01, MIHBUC, VALPAC","Fe(3), Eu(1)"
-Ligand 2,unq_CSD-KEYJAB-01-b,C6H13N1,1,N,0,True,b06d861e1cab8c43614498d2f0b29db4,1,KEYJAB,Fe(1)

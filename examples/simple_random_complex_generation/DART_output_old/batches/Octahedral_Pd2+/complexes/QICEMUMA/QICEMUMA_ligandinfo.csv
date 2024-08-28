@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-NUMJIO-03-a,C9H8Br1N2O2,3,N-O-O,-1,True,7cdd9e841d294f8c13bfa4ffc5b064f6,1,NUMJIO,Cu(1)
-Ligand 1,unq_CSD-TAWHAB-02-a,C8H18Si2,2,C-C,0,True,8907f4fcd247761c0fa2006455f8831f,23,"TAWHAB, TAWHIJ, LIWNIQ, QEJHUJ, QEJJAR, ... (18 more)","Fe(6), Ni(5), Ta(3), Cr(2), Cu(2), ... (4 more)"
-Ligand 2,unq_CSD-NUCBEU-01-a,C12H11N2O2,1,N,-1,True,7f6092b1da81b4e24394a4b7b713d655,2,"NUCBEU, NUCBEU",Co(2)

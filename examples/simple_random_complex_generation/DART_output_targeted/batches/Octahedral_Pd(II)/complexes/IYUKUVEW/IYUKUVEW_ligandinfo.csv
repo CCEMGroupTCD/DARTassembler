@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEBLUF-03-a,C10H8N3O1S1,3,N-N-O,-1,True,eeace76b4d40b2b210faa52bbf3cb732,2,"PEBLUF, HOVJAF","Ru(1), Pd(1)"
-Ligand 1,unq_CSD-MEBWIC-02-a,C3H7N4O1,2,N-N,-1,True,c42380f6ea04db427e4094e34783e97c,28,"MEBWIC, MEBWIC, MEBWIC01, MEBWIC01, MEBWIC02, ... (23 more)",Ni(28)
-Ligand 2,unq_CSD-VANPIJ-01-c,C5H11N1,1,N,0,True,d80faebbd7961f694e63f77176b4669e,2,"VANPIJ, YUNROO",Pt(2)

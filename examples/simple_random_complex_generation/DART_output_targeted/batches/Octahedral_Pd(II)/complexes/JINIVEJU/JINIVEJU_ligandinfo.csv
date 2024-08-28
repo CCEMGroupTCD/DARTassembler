@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-YUJKET10-03-a,C8H12N4S2,3,S-S-C,-2,True,31f55fd3732c8ffd8c38e9a67a7ccdc7,2,"YUJKET10, ROBMOK","Pd(1), Pt(1)"
-Ligand 1,unq_CSD-ZUPXUG-02-a,C12H11N3O1,2,N-N,0,True,67e3aabb648fbdb651cd7c25a37005da,2,"ZUPXUG, NIGVEH","Ru(1), Pd(1)"
-Ligand 2,unq_CSD-PAHKEQ-01-b,C6H15N1,1,N,0,True,1edf6e0f8ccf566c16699d01d973b3a8,6,"PAHKEQ, YALHID, YALHID, FIZYUL, ODCHRU, ... (1 more)","Co(2), Pd(2), Ru(2)"

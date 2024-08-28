@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-HAXZIR-03-a,C17H21N3O1,3,O-N-N,0,True,3601482cba9daadab283c56c80cb6292,1,HAXZIR,Ni(1)
-Ligand 1,unq_CSD-LAKWOK-02-a,C9H7O3,2,O-O,-1,True,3bc40fb8eca135d09d59d673deddc286,3,"LAKWOK, LOBRIG, LOBRIG","U(2), Ti(1)"
-Ligand 2,unq_CSD-SUXRUZ-01-a,C2N3,1,N,-1,True,53764b9ed06615308718ce4124b6cea9,13,"SUXRUZ, MULWUL, MULWUL, VAKVUZ, VAKVUZ, ... (8 more)","Cu(7), Co(6)"

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-ULURUP-03-a,C12H11N1O2,3,N-O-C,-2,True,4006c912e8a3c273bdd389f2c5523cfb,4,"ULURUP, ULUSAW, ULUSEA, ULUSIE",Pd(4)
-Ligand 1,unq_CSD-SIPXIZ-02-b,C12H10N2O1,2,N-N,0,True,314b98b53a44a0d1fbc29c137fcdbc47,33,"SIPXIZ, SUQKIB, BAGFOF, BAGFUL, BAGGAS, ... (28 more)","Mo(10), Mn(4), Pt(4), W(3), Fe(3), ... (6 more)"
-Ligand 2,unq_CSD-TUDKOS-01-b,C6H13N1,1,N,0,True,1d5c554edc538db354368fb09e45b168,4,"TUDKOS, TUDKOS, JAGTOB, JAGTOB","Ni(2), Fe(2)"

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-VAPHUR-03-a,C8H10N4S1,3,S-N-N,-2,True,e8120e25d47c378c14c1d01d4cae26c9,1,VAPHUR,Pd(1)
-Ligand 1,unq_CSD-RIZROH-02-a,C11H10N2,2,N-N,0,True,7490cb7620a6d04f8adede3ad9cedb90,2,"RIZROH, RIZROH",Pd(2)
-Ligand 2,unq_CSD-TAZCPD-01-b,C9H9N1,1,N,0,True,2616a868c23a9e9dc4bec67ed999976c,4,"TAZCPD, TAZCPD, BOFHUA, BOFHUA","Pd(2), Re(2)"

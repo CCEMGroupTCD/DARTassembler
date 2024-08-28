@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-NEYSAO-03-a,C11H9N4O1,3,O-N-N,-1,True,20d19092ca27f6d9009808ba73211946,8,"NEYSAO, NEYSAO, NEYSAO01, NEYSAO01, NEYXUN, ... (3 more)",Fe(8)
-Ligand 1,unq_CSD-CEQYII-02-a,C14H10Br1Cl1N1,2,N-C,-1,True,da43f2bce2fb4b1f7985129a7e79991f,1,CEQYII,Pt(1)
-Ligand 2,unq_CSD-ZAZXIJ-01-a,C7H9N1O3S1,1,O,0,True,5b5e4d5bdd42308e52aea551e286d6a9,4,"ZAZXIJ, ZAZXIJ, ZAZXOP, ZAZXOP","Eu(2), Tb(2)"

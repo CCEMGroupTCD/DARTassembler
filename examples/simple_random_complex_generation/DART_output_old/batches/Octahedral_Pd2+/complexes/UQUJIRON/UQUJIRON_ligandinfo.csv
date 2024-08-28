@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LUXYOV-03-a,C25H22N6,3,N-C-C,0,True,d16354566dcf3b6a96f169da20a37611,1,LUXYOV,Ru(1)
-Ligand 1,unq_CSD-OFAGIM-02-b,C4H10Si1,2,C-H,-2,True,d703ffae0b7d2f5f5423d00c9a7f4ced,1,OFAGIM,Ti(1)
-Ligand 2,unq_CSD-ADEHEX-01-b,C11H11N3O2,1,N,0,True,984df26740f9b90d878807dbc999fd2e,2,"ADEHEX, ADEHEX",Co(2)

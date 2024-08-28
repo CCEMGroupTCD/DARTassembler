@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-ETEHOA-03-a,C14H16N3O4,3,N-N-O,-1,True,f57e3f3d1583eaf161766e4ff2e3dbca,2,"ETEHOA, ETEHOA",Ni(2)
-Ligand 1,unq_CSD-RILHEZ-02-a,C6H6N2S2,2,S-S,0,True,98318b82ab1233728908c4743397ae4d,1,RILHEZ,Pd(1)
-Ligand 2,unq_CSD-TABVEY-01-a,C1H3S1,1,S,-1,True,22bfe096e996be37e5a12dd27a7251ee,37,"TABVEY, TABVEY, CIGLAH, CIGLEL, UCUKUA, ... (32 more)","Ni(13), Pt(9), Fe(6), Tc(4), Rh(2), ... (3 more)"

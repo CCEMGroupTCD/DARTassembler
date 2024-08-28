@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-JURGUY-03-a,C22H22N4O2P1S1,3,S-O-N,-1,True,60842dfc84251ee971f1e1fa5fdc374f,1,JURGUY,Pd(1)
-Ligand 1,unq_CSD-TASREM-02-a,C9H5N2O3,2,N-O,-1,True,03b4fafe602e9b329ea683b03ef1798d,38,"TASREM, TASREM, TASREM, TASREM, LIJWIN, ... (33 more)","Zn(8), Cd(8), Re(5), Y(4), Pt(3), ... (6 more)"
-Ligand 2,unq_CSD-MOHSAD-01-a,C12H10N2O1,1,N,0,True,47a51388870bb4def14e190fb8808c41,10,"MOHSAD, MOHSAD, MOHSEH, MOHSEH, MOHSIL, ... (5 more)","Co(4), Ni(2), Zn(2), Mn(2)"

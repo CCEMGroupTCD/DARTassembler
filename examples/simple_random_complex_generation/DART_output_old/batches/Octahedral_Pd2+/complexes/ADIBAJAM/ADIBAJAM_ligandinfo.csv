@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LONRIQ-03-a,C12H12N3,3,N-N-N,-1,True,cb85380c0236b618f3c563bc1fb36b23,2,"LONRIQ, QIXHEL",Cu(2)
-Ligand 1,unq_CSD-UNOGIQ-02-a,C17H18N3O2,2,N-O,-1,True,b74131b2794c6ee23143a757701503bd,1,UNOGIQ,Pd(1)
-Ligand 2,unq_CSD-IYITUH-01-b,C20H14Cl2N2O1S1,1,S,0,True,4f7ef5f735cc6dd9f3792b24c98b4557,1,IYITUH,Cu(1)

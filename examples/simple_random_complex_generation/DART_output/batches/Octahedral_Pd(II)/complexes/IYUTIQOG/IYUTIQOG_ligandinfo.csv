@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-RAJPEZ-03-a,C11H8N4O7,3,N-O-O,-2,True,44c5c28eccd530c756037f2173de2376,1,RAJPEZ,Ni(1)
-Ligand 1,unq_CSD-MUYPOL-02-a,C9H11N1O2,2,N-O,0,True,3e42a2f01fb45c61d1fc452972dc103b,19,"MUYPOL, MUYPOL, MUYPUR, MUYPUR, MUYQAY, ... (14 more)","Co(10), Zn(9)"
-Ligand 2,unq_CSD-BUHDEP-01-c,C10H14N2O1,1,N,0,True,676ad215fc9ba84233e2c111b403d6b4,23,"BUHDEP, CIKGUY, UGEVEK, UGEVEK, UGEVIO, ... (18 more)","Co(8), Zn(7), Cu(3), Mn(2), Ni(2), ... (1 more)"

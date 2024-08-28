@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-WESXOK-03-a,C20H13N2,3,N-N-C,-1,True,b602e1ee33811a281a67e03c8238a179,1,WESXOK,Pt(1)
-Ligand 1,unq_CSD-OCIJAP-02-a,C12H9Cl1N3,2,N-C,-1,True,be3c00b9105ac36de3ecefab92f7cc7f,1,OCIJAP,Ru(1)
-Ligand 2,unq_CSD-DAKNEK-01-a,C17H13N5O2,1,N,0,True,ddff2fbb217d4a52eb9174f275b13ee1,2,"DAKNEK, DAKNEK",Zn(2)

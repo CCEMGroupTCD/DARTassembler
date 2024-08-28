@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-SAHPAT-03-a,C9H11N2O1S1,3,S-N-N,-1,True,d5c1a851bc576a453841c2a33b77575b,1,SAHPAT,Cu(1)
-Ligand 1,unq_CSD-SOQFOU-02-a,C19H22O2S2,2,S-S,0,True,24ea1a6a7fa15d9701b57ad0eb661947,1,SOQFOU,Pd(1)
-Ligand 2,unq_CSD-ZAHCUG-01-a,C14H21S1,1,S,-1,True,abd3ea72e351469c6fd4c9ba3aee857e,2,"ZAHCUG, ZAHCUG",Fe(2)

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-MUFRIR-03-a,C17H25N4,3,N-N-N,-1,True,f40fb01702b6e4b072baf780a7a3cd36,2,"MUFRIR, MUFSIS",Pt(2)
-Ligand 1,unq_CSD-RULJEP-02-a,C10H10N1O2,2,O-O,-1,True,060be5ab8449386f4372440ab3aa8fa1,2,"RULJEP, RULJEP",Mo(2)
-Ligand 2,unq_CSD-BAXMEU-01-c,C6H11O3P1,1,P,0,True,1808c373dd8e4815e821b816fd1820fe,12,"BAXMEU, MUQPUJ, COGVOK, COGVUQ, YOMPAR, ... (7 more)","Ru(7), Mo(3), Ti(2)"

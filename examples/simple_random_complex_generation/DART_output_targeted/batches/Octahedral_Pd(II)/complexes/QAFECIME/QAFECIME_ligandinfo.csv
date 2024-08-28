@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-OWAFUO-03-a,C9H11N4O1,3,N-N-N,-1,True,d623bb02e38cdbf97ee73d60e3966964,1,OWAFUO,Pd(1)
-Ligand 1,unq_CSD-YEHMAZ-02-a,C7H9N2,2,N-N,-1,True,b5a165f0374a4e878c14b7246cb09320,2,"YEHMAZ, YEHMAZ",Ni(2)
-Ligand 2,unq_CSD-PIZKOZ-01-a,C11H9N1,1,N,0,True,1a51cbc3d417e2a884c22f686db61e69,190,"PIZKOZ, PIZKOZ, SUBBUP, SUBBUP, SUBBUP, ... (185 more)","Ni(82), Cu(23), Co(14), Pt(12), Pd(12), ... (11 more)"

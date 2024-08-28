@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-JUXCOX-03-a,C14H10N3,3,C-N-N,-1,True,e0b5a6a3f06781deb2ef3a0b75503289,2,"JUXCOX, RITVOH",Pt(2)
-Ligand 1,unq_CSD-DEMWEB-02-a,C2H5N4O1,2,N-N,-1,True,8a3c83b9e30940a7f54437508e4803d2,2,"DEMWEB, DEMWEB",Ni(2)
-Ligand 2,unq_CSD-TIDVEK-01-a,C7H8N2,1,C,0,True,397990724203790586c845268500da0c,6,"TIDVEK, TIDVIO, FURMEL, FURMEL, FURMIP, ... (1 more)","Pd(4), Ag(2)"

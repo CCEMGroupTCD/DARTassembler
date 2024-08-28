@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LIFKOD-03-a,C21H15N2O2,3,O-N-N,-1,True,b7511d02fbb597a22cc362b9202d09c3,2,"LIFKOD, LIFKOD",Fe(2)
-Ligand 1,unq_CSD-XECKOI-02-c,C16H11F6N4,2,C-C,-1,True,abb61c4d499c4ebcd2ece70ac9557c78,1,XECKOI,Ir(1)
-Ligand 2,unq_CSD-NASPAY-01-a,C14H32N3P1,1,C,0,True,e8965a6167c26597e62be91848a3b8fe,2,"NASPAY, NASPEC","Cr(1), Mo(1)"

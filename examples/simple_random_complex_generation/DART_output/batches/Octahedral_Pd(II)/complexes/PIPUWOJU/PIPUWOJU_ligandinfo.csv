@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-XECQIH-03-a,C11H13N3O1S1,3,O-N-N,-2,True,34e8517d85044b5a990af3bf3213bf02,2,"XECQIH, XECVAE","Ni(1), Mo(1)"
-Ligand 1,unq_CSD-XIRGIQ-02-a,C14H14O2S1,2,C-C,0,True,3fb2b4d505335d86902919087a088cff,2,"XIRGIQ, XIRGOW","Cr(1), W(1)"
-Ligand 2,unq_CSD-CERMUJ-01-b,C11H25P1S1,1,S,0,True,d62226c42ce0f097b78fe306810e9bcd,2,"CERMUJ, SEWZIF",Au(2)

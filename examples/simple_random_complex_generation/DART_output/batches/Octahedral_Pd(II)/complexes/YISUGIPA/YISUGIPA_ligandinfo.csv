@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-JAFFIJ-03-a,C14H11N4O1,3,C-N-N,-1,True,b97bc3e32db65a813fa6a0c6c0b8fee7,2,"JAFFIJ, JAFFOP",Ni(2)
-Ligand 1,unq_CSD-NILMUQ-02-a,C17H21O2,2,O-O,-1,True,dd998e0e8d1333ba947e167995bf4409,2,"NILMUQ, NILMUQ",Cu(2)
-Ligand 2,unq_CSD-ZABHIX-01-d,C8H10N4O2,1,C,0,True,4a8167cb8feabc17998adbb797c61550,2,"ZABHIX, ZABHOD",Pd(2)

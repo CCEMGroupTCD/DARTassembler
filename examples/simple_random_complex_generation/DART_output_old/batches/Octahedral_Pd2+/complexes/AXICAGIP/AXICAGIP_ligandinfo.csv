@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-MENBIQ-03-a,C21H20N2O1P1,3,P-N-N,-1,True,daf192edae21b5d44b4300da59ddb5f0,2,"MENBIQ, MEQZUD",Re(2)
-Ligand 1,unq_CSD-WEFZAJ-02-a,C20H23N3O1,2,N-N,0,True,af1f6e1ea7531916546e47377b38768d,1,WEFZAJ,Pd(1)
-Ligand 2,unq_CSD-REKDOA-01-d,C5H3N2S2,1,S,-1,True,40cacc19a012cc98194bdf26daa82656,2,"REKDOA, REKGIX","Ag(1), Au(1)"

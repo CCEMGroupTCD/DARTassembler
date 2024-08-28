@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-MEHHUF-03-a,C20H13N2O1,3,O-N-N,-1,True,7afc58008b95d0f6d1172f8dc7957f03,19,"MEHHUF, MONFOL, MONFOL, MONFOL01, MONFOL01, ... (14 more)","Fe(15), Cu(1), Re(1), Ni(1), Tc(1)"
-Ligand 1,unq_CSD-TECSOK-02-a,C9H6N1O4S1,2,N-O,-1,True,7d539a275d6d78e41a17b2edb19f6fa1,1,TECSOK,Ag(1)
-Ligand 2,unq_CSD-GIJMAP-01-a,C22H39Cl1O6P2Sn1,1,Sn,0,True,1eeadb67e51202d2995d11b3c5202faa,15,"GIJMAP, GIJMAP, GIJMAP, GIJMET, GIJMET, ... (10 more)","Pt(6), Pd(6), Ru(1), Cr(1), W(1)"

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-ATOMUS-03-a,C14H11N1O2S1,3,N-O-S,-2,True,25e0a8bea4a3df4d9f82b9751e9341ff,1,ATOMUS,Ni(1)
-Ligand 1,unq_CSD-PAJGUE-02-a,C3H10N2,2,N-N,0,True,60c3f0f067d6241022eae405b5007fed,141,"PAJGUE, PAJHAL, PIJBUG, POTJUE, POWDUB, ... (136 more)","Cu(45), Ni(32), Co(24), Cr(11), Pt(11), ... (6 more)"
-Ligand 2,unq_CSD-PIKCET-01-d,C7H11N1,1,C,0,True,7a01f0f9015549dfe7fedfb13e4b14b5,142,"PIKCET, PIQWUH, PIQWUH, PIQWUH, PIQWUH, ... (137 more)","Pd(28), Pt(21), Fe(16), Ru(15), Mo(14), ... (15 more)"

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-CIMNES-03-a,C22H23N3,3,N-N-N,0,True,a46dbc102cbe753201fdc5441bf0173a,2,"CIMNES, CIMNIW",Ni(2)
-Ligand 1,unq_CSD-BUZQEV-02-a,C15H13N2,2,C-C,-1,True,934ffdbaa3e475206b98054f1e6b8d6b,3,"BUZQEV, BUZQEV, BUZQEV",Ir(3)
-Ligand 2,unq_CSD-CIJWAW-01-a,C9H6N3O2,1,N,-1,True,d017db2452b5e49cac0fc5f84d2c10de,13,"CIJWAW, CIJWAW, QOHFAW, QOHFAW, VELJOO, ... (8 more)","Cu(4), Ag(3), Co(2), Mn(2), Ni(2)"

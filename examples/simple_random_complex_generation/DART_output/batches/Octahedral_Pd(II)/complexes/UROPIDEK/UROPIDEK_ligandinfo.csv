@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-QULYOO-03-a,C8H21N3,3,N-N-N,0,True,0615215ea0812844915e1a48ab10776b,1,QULYOO,Pt(1)
-Ligand 1,unq_CSD-ULUDIO-02-a,C15H14O2,2,O-O,-2,True,f23799a4b76fed934c87b83d3c1d5505,3,"ULUDIO, ULUDOU, ULUDOU",W(3)
-Ligand 2,unq_CSD-WABXEG-01-b,C15H9N1,1,C,0,True,fbc992cc1e44df317e9352450a1671e9,1,WABXEG,Au(1)

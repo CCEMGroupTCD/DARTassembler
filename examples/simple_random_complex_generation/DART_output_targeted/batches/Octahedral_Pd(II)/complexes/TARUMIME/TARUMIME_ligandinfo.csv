@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-MONNIN-03-a,C11H9N3O2,3,O-N-N,-2,True,71c0e2bc7a5fb2cb505c458d84c334e4,2,"MONNIN, MONQEM",Ni(2)
-Ligand 1,unq_CSD-LUMSIW-02-a,C10H16N2,2,N-N,0,True,b3c95453ba3c2b09078bb0e4190be44d,4,"LUMSIW, LUMSOC, NOQQOB, NOQQOB","Pd(2), Cu(2)"
-Ligand 2,unq_CSD-SUTWAH-01-f,C7H6N2,1,N,0,True,75dec222c1526a4d47552562ca7582f4,18,"SUTWAH, LUXFER, LUXFER, BIFXAP, BIFXAP, ... (13 more)","Pd(3), Co(3), Pt(3), Ru(2), Zn(2), ... (4 more)"

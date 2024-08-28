@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-DULSAF-03-a,C10H11N2O3,3,O-O-N,-1,True,085f118a52abb62659f2fe2d7ef0d09c,3,"DULSAF, VAPROX, VAPRUD",Cu(3)
-Ligand 1,unq_CSD-LAGHOU-02-a,C6H11N4O1,2,N-N,-1,True,aae92ee3ef16db09363211e9aba8d210,8,"YIQYOP, YIQYOP, LAGHOU, LAGHOU, LAGHUA, ... (3 more)",Ni(8)
-Ligand 2,unq_CSD-FURGAB-01-a,C30H21N2O3P1,1,P,0,True,4aec79327d3ab489b071f38948688638,1,FURGAB,Ru(1)

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-MOXWEE-03-a,C13H9N1S1,3,S-N-C,-2,True,12dd6254533c796188856b82546ff6bc,4,"MOXWEE, MOXWOO, QEHLIY, KORLAH","Pd(1), Pt(1), Rh(1), Fe(1)"
-Ligand 1,unq_CSD-QUNGEO-02-a,C11H12N4,2,N-N,0,True,bfb59cb763c7e962c92bbe3d0c2d7798,3,"QUNGEO, QUNKOC, QUNWUU","Re(2), Pt(1)"
-Ligand 2,unq_CSD-TIDVEK-01-a,C7H8N2,1,C,0,True,397990724203790586c845268500da0c,6,"TIDVEK, TIDVIO, FURMEL, FURMEL, FURMIP, ... (1 more)","Pd(4), Ag(2)"

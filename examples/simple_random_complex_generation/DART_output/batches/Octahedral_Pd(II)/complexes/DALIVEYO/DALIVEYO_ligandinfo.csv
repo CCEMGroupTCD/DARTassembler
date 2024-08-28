@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-ADOFAD-03-a,C22H16N4O1,3,C-N-N,-2,True,8cd466fd39c11c788df8df34a3ca1673,1,ADOFAD,Pd(1)
-Ligand 1,unq_CSD-MIRVOB-02-a,C28H42N2,2,N-N,0,True,468128f82b702c257ae8d2f365fcf1b9,1,MIRVOB,Pt(1)
-Ligand 2,unq_CSD-FERVUW-01-a,C14H11I1N2,1,C,0,True,f207a8a9494fed44ece4c34d3daa99e6,1,FERVUW,Rh(1)

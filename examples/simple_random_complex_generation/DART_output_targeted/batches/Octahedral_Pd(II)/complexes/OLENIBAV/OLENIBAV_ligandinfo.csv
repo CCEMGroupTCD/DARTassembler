@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-ENAKOW-03-a,C12H9N3O1,3,N-N-O,-2,True,ffa73f17f3a410fb9633fe35776612a7,1,ENAKOW,Pd(1)
-Ligand 1,unq_CSD-GEJWOI-02-a,C5H7N3,2,N-N,0,True,5eefc339f77f8e057be9573d7ec554b2,4,"GEJWOI, GEJWOI, GEVNEA, GEVNEA","Pd(2), Cu(2)"
-Ligand 2,unq_CSD-PIKCET-01-d,C7H11N1,1,C,0,True,7a01f0f9015549dfe7fedfb13e4b14b5,142,"PIKCET, PIQWUH, PIQWUH, PIQWUH, PIQWUH, ... (137 more)","Pd(28), Pt(21), Fe(16), Ru(15), Mo(14), ... (15 more)"

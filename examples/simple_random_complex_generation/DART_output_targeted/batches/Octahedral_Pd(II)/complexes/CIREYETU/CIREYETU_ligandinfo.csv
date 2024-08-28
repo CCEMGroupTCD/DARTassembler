@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-ROBPUT-03-a,C8H12N4O1S1,3,S-N-C,-2,True,f5ba0cb7cdc824b16756fcf20f116ee8,1,ROBPUT,Pt(1)
-Ligand 1,unq_CSD-SOSGEN04-02-a,C11H8N4,2,N-N,0,True,4230b04ace849cfa01d30807b8a9a402,20,"SOSGEN04, SOSGEN04, SOSGEN05, SOSGEN05, GELFIN, ... (15 more)","Fe(7), Co(6), Cu(4), Ni(2), Re(1)"
-Ligand 2,unq_CSD-PIDPOJ-01-a,C5H6N2,1,N,0,True,4500a1b8b5ae51a1ef80ddf1e8de7a3b,82,"PIDPOJ, PIDPOJ, SUGVIC, TAGHIT, TAGHOZ, ... (77 more)","Zn(12), Pd(12), Pt(11), Ag(11), Co(10), ... (9 more)"

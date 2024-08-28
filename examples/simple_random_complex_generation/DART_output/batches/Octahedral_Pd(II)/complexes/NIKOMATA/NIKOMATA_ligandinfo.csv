@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-JAFFIJ-03-a,C14H11N4O1,3,C-N-N,-1,True,b97bc3e32db65a813fa6a0c6c0b8fee7,2,"JAFFIJ, JAFFOP",Ni(2)
-Ligand 1,unq_CSD-RUHNEP-02-a,C19H14N3S1,2,S-N,-1,True,cd1e07b632ffde4a66ff899a434f3dff,1,RUHNEP,Pd(1)
-Ligand 2,unq_CSD-PACLIR-01-a,C3H9P1,1,P,0,True,37d5eebc223dfe5b15a840e2a14070f8,4422,"PACLIR, PADNUD, PADNUD01, PADPAL, PADPAL01, ... (4417 more)","Co(710), Fe(525), W(497), Rh(444), Ru(356), ... (22 more)"

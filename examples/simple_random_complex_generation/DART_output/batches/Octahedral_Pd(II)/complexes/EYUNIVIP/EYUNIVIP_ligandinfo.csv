@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-IBUDUG-03-a,C16H19N4O1,3,O-N-N,-1,True,594d6a397232c490d179fb92b779257b,1,IBUDUG,Re(1)
-Ligand 1,unq_CSD-NUHLUX-02-a,C36H28F2P2,2,P-P,0,True,a8dbddd7e5a44f255b66f8ae965baafa,1,NUHLUX,Ni(1)
-Ligand 2,unq_CSD-CICHEC-01-c,C7H6N1O3,1,O,-1,True,abbbaf94b3e14330c385ad8ca954c752,2,"CICHEC, CICHEC",Mn(2)

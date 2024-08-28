@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-MEJJUJ-03-a,C16H14N2O3,3,N-O-O,-2,True,003e4bd0da57cb8fb01ba0b6e5001984,1,MEJJUJ,V(1)
-Ligand 1,unq_CSD-KEJRAS-02-a,C8H8N4,2,N-N,0,True,880faae47a22462804c34c6f1198aa61,4,"KEJRAS, KEJRAS, VOFNIQ, AFACOA",Ru(4)
-Ligand 2,unq_CSD-FUXMUH-01-a,C4H6S1,1,S,0,True,d7fce180da40c54c990c9b443f69f52c,2,"FUXMUH, FUXMUH",Mo(2)

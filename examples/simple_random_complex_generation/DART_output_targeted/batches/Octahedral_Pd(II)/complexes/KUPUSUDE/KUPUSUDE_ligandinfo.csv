@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-NIPMOO-03-a,C9H10N3S2,3,S-N-N,-1,True,5c28e3a7d551bf58c7d9459fd8e7a1df,3,"NIPMOO, NIPMOO, SEDCUA","Ni(2), Pd(1)"
-Ligand 1,unq_CSD-EHOWOP-02-a,C3H7N4O1,2,N-N,-1,True,3663bee499f3d884262d0ebe1408ad79,4,"TATVUH, TATVUH, EHOWOP, EHOWOP","Cu(2), Ni(2)"
-Ligand 2,unq_CSD-BOGXUS-01-a,C10H11N1,1,C,0,True,8439c3bccc3ad38848e85146af088cb6,33,"BOGXUS, BOGXUS, CEWGOD, CEWGUJ, CEWPEC, ... (28 more)","Ru(13), Au(7), Pd(4), Ir(3), Mo(2), ... (2 more)"

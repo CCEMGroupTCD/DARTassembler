@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-VAPCAS-03-a,C14H10N3,3,C-N-N,-1,True,6be2e39a40c064201ba9d87a4db56abc,1,VAPCAS,Pt(1)
-Ligand 1,unq_CSD-WOZXEO-02-a,C8H8N3,2,N-N,-1,True,e99741b9c3c557aaccee0de81d7ef34e,1,WOZXEO,Ni(1)
-Ligand 2,unq_CSD-TEPGIH-01-c,C7H6N4,1,C,0,True,a38f7f2eebf3af8566a63bc2060cd45d,7,"TEPGIH, BOCPEP, BOCPEP, BOCPEP01, BOCPEP01, ... (2 more)","Pd(5), Mo(1), Ru(1)"

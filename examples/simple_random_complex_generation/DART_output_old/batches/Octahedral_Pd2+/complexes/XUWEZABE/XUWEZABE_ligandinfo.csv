@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PESFUP-03-a,C12H15Cl2N2O1,3,O-N-N,-1,True,79f41c11dde1d1c057a4eaff174d2900,2,"PESFUP, PESFUP",Co(2)
-Ligand 1,unq_CSD-YIVZUZ-02-a,C21H25N2,2,C-C,-1,True,b8313c7d7b3a8f111f65310e71acf530,1,YIVZUZ,Pd(1)
-Ligand 2,unq_CSD-MASWOU-01-a,C14H13N3O1S1,1,S,0,True,3ff62851cdf0bc487003a67519a5d26f,4,"MASWOU, QUZYAM, QUZYEQ, QUZYEQ01","Ni(2), Pd(2)"

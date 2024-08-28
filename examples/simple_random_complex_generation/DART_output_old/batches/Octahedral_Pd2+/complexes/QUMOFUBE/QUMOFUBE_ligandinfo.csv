@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-POGZUG-03-a,C9H10N3O2,3,O-N-N,-1,True,5304dfae0215f50b83467ddc2a5b6019,1,POGZUG,V(1)
-Ligand 1,unq_CSD-AYIPIK-02-a,C8H14N4,2,N-N,0,True,3025575546a3333c92163e3224dd6611,34,"AYIPIK, UDENUN, UDENUN, UDENUN, GAHBUO, ... (29 more)","Fe(33), Co(1)"
-Ligand 2,unq_CSD-CELZIF-01-a,C4H9O1,1,O,-1,True,05676ea09fd766e4f1d6303bfd3872af,14,"CELZIF, PUCPEI, UGOMIO, UGOMIO01, GUTCAA, ... (9 more)","Ti(7), Fe(4), Ni(1), Os(1), V(1)"

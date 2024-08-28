@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LILBOY-03-a,C13H11N4S1,3,S-N-N,-1,True,7a67de6acea54d3d3317adc06b5f238e,12,"LILBOY, LILBOY, HECWEU, HECWEU, WONYUW, ... (7 more)","Mn(4), Cd(4), Co(2), Zn(1), Ni(1)"
-Ligand 1,unq_CSD-ZEFPIN-02-a,C5H11N2O1,2,N-N,-1,True,7be4050e1b7b7ce48e8e0560377f5c3e,1,ZEFPIN,Pt(1)
-Ligand 2,unq_CSD-GEFNEN-01-a,C10H14N2,1,N,0,True,03a1a873907d217748c5ef426a053c32,2,"GEFNEN, GEFNEN",Pt(2)

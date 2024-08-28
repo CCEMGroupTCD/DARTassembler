@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LEYYAS-03-a,C16H14N4,3,N-N-N,0,True,bab3950b82fd97d01fadf17f61010e25,1,LEYYAS,Pt(1)
-Ligand 1,unq_CSD-YOBLUZ-02-b,C11H4F6N3,2,C-N,-1,True,bf2afc3b1aa13c1be506f2f17328a910,4,"YOBLUZ, YOBLUZ, VIPLIS, VIPLIS",Ir(4)
-Ligand 2,unq_CSD-TIRDED-01-a,C3H4N1S2,1,S,-1,True,e487acf85cc91c3b0eb85ca3b45b37f7,7,"TIRDED, TIRDED01, TIRDED02, TIRDED03, TOKYID, ... (2 more)","Au(5), Ag(1), Cd(1)"

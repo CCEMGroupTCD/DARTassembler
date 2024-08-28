@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-KETVEL-03-a,C9H11N2O1,3,O-N-N,-1,True,6d947e3cad45bea7dc9b86aeddda284a,10,"KETVEL, KETVEL, YAYWEB, YEXDEL, YEXDEL, ... (5 more)","Fe(2), Cr(2), Co(2), Cu(2), Pd(1), ... (1 more)"
-Ligand 1,unq_CSD-MARTUW-02-a,C12H9N2O3S1,2,N-N,-1,True,29166ac086507e8b4d9c31377e49f955,6,"MARTUW, MARTUW, BAFTEK, BAFTEK, ACOYUO, ... (1 more)","Cu(2), Co(2), Ni(2)"
-Ligand 2,unq_CSD-DANBAX-01-c,C10H17N1,1,N,0,True,009cb0ecb9dc1b7bc00f0cad4325f8c1,12,"DANBAX, UPAWEQ, UPAWUG, WAGFIV, ZAGKUQ, ... (7 more)","Ru(4), Pt(2), Ni(2), Co(2), Pd(1), ... (1 more)"

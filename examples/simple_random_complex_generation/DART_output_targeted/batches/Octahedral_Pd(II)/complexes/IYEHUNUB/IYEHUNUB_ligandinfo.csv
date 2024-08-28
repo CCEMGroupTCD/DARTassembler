@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LUBRAB-03-a,C12H9N2O1,3,O-N-N,-1,True,7c28047279ff6c9fcc9723236246bbc0,20,"LUBRAB, CEPNUJ, CEPPAR, MIDLAM, MIDLAM, ... (15 more)","Pd(7), Cu(7), Cd(2), Ni(2), Fe(2)"
-Ligand 1,unq_CSD-MARTUW-02-a,C12H9N2O3S1,2,N-N,-1,True,29166ac086507e8b4d9c31377e49f955,6,"MARTUW, MARTUW, BAFTEK, BAFTEK, ACOYUO, ... (1 more)","Cu(2), Co(2), Ni(2)"
-Ligand 2,unq_CSD-XUBNIS-01-d,C14H11N1,1,N,0,True,2042dd39e34f59e693348f6f7c44c998,2,"XUBNIS, XUBNIS",Pt(2)

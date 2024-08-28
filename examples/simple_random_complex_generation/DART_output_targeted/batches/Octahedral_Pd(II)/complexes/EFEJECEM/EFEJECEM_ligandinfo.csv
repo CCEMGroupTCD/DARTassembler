@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-ULURUP-03-a,C12H11N1O2,3,N-O-C,-2,True,4006c912e8a3c273bdd389f2c5523cfb,4,"ULURUP, ULUSAW, ULUSEA, ULUSIE",Pd(4)
-Ligand 1,unq_CSD-BCAZFN-02-a,C13H6N2,2,N-N,0,True,12387ea3110872edd529596c66e8623e,1,BCAZFN,Ni(1)
-Ligand 2,unq_CSD-PUWDAP-01-c,C11H14N2,1,N,0,True,c64368ebd23ea02968734f27b1c0a185,9,"PUWDAP, PUWDAP, DAXHES, DAXHES, WUZLAF, ... (4 more)","Ni(2), Pd(2), Cu(2), Co(2), Cd(1)"

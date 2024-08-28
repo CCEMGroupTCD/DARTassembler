@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-LUNFEG-03-a,C23H19N5,3,N-N-N,0,True,382b23ea0e164a1922eaa5911bf48d86,2,"LUNFEG, LUNFEG",Ru(2)
-Ligand 1,unq_CSD-HASBUC-02-a,C15H9O7,2,O-O,-1,True,b330655c1c7639cd9ed739b6a0a63fc4,3,"HASBUC, HASBUC, HASBUC",Fe(3)
-Ligand 2,unq_CSD-UYADAC-01-b,C6H5O1S1,1,S,-1,True,0793aecc05d8ed1bb7bd27ee94c34b84,1,UYADAC,Ni(1)

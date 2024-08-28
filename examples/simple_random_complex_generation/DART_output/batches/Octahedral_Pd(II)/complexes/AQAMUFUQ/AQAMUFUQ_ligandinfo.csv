@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-NINNII-03-a,C24H22N3O1,3,O-N-N,-1,True,3e84a9523801d6a2baf965cbbf512cf7,1,NINNII,Ni(1)
-Ligand 1,unq_CSD-LIXVOD-02-a,C12H9N2O2,2,N-O,-1,True,889946f8bd2772c7821b4cb60a21aeca,2,"LIXVOD, LIXVOD",Cu(2)
-Ligand 2,unq_CSD-AMOZEH-01-a,C14H20N2O1,1,C,0,True,c7e357d8b48c723bc9e94f2ce3bb0c08,1,AMOZEH,Tc(1)

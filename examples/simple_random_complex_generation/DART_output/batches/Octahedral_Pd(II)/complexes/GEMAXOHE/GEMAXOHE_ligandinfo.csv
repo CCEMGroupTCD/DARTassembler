@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PUDNUY-03-a,C38H27N2O1Si1,3,O-N-N,-1,True,8007967e8c460bfc9fca6014e44bd9b8,1,PUDNUY,Cr(1)
-Ligand 1,unq_CSD-UBUNOY-02-a,C11H11N3,2,N-N,0,True,f7af07b4012da5a0d4ba610b9bc70cf4,12,"UBUNOY, UCAMUK, QODXEM, DILQOH, PASKIH, ... (7 more)","Ru(7), Zn(1), Pt(1), Cr(1), Pd(1), ... (1 more)"
-Ligand 2,unq_CSD-SIDNIE-01-a,C10H9,1,C,-1,True,28fb538018c2b3c26a6933516c1e3080,2,"SIDNIE, SIDNIE",Zn(2)

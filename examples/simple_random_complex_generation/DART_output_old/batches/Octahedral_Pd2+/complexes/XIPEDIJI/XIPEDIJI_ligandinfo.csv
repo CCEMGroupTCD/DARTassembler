@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-NUMJIO-03-a,C9H8Br1N2O2,3,N-O-O,-1,True,7cdd9e841d294f8c13bfa4ffc5b064f6,1,NUMJIO,Cu(1)
-Ligand 1,unq_CSD-FUDSED-02-a,C27H28O1P2,2,P-P,0,True,f980af734ae62cfd7451f48250d58e16,2,"FUDSED, FUDSIH",Pt(2)
-Ligand 2,unq_CSD-LUTHUG-01-b,C3H3N2,1,N,-1,True,5a47c582d3d6c5f88d8273d43c102f83,19,"LUTHUG, MEGNAN, MEGNAN, FUDPEA, DOKYAF, ... (14 more)","Ru(7), Ir(5), Pt(3), Rh(2), Au(1), ... (1 more)"

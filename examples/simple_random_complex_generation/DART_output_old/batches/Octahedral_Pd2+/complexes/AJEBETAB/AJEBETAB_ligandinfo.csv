@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-NEWZOH-03-a,C16H12N4O1,3,N-O-N,0,True,25620468ef57fb2ffdb01405361bca6f,1,NEWZOH,Cd(1)
-Ligand 1,unq_CSD-UMEXAM-02-a,C7H6N1,2,C-N,-1,True,2d5938bd6221555b5cfdc052f3cda5e9,3,"UMEXAM, NOGSOU, AMIKEO","Os(2), Ru(1)"
-Ligand 2,unq_CSD-IWOJEK-01-a,C11H12N1O1Se1,1,Se,-1,True,36f9b3d3f0f6e3afa55802f62f16602b,1,IWOJEK,Pd(1)

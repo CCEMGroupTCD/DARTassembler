@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-MIDLAP-03-a,C10H13N2O1S1,3,S-N-N,-1,True,fe3368e3611a8c14b81ebf2869809d63,1,MIDLAP,Pd(1)
-Ligand 1,unq_CSD-PUPDAF-02-a,N3S2,2,N-N,-1,True,1595d25881b7fa4155a1fd4ae73b3ef7,12,"CADFET, PUBBET, PUPDAF, JOZLUF, DANFAZ, ... (7 more)","Mo(6), W(3), Pd(2), V(1)"
-Ligand 2,unq_CSD-KADHUT-01-a,C9H11N1,1,C,0,True,455245060c307025bcdfa26c0417e9e3,1,KADHUT,Ni(1)

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Donors,Predicted Charge,Confident Charge,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-WUZHUW-03-a,C18H29O3,3,O-O-O,-1,True,4df0f4ce8423941ba0182ebf5b91ea55,1,WUZHUW,Ti(1)
-Ligand 1,unq_CSD-CEXJIZ-02-a,C18H12N3,2,N-N,-1,True,8932bf34c26241cef982c24af86a2182,6,"CEXJIZ, CEXJIZ, CEXJIZ, CEXJUL, CEXJUL, ... (1 more)","Co(3), Fe(3)"
-Ligand 2,unq_CSD-DOJPUP-01-b,C17H14N2,1,N,0,True,473deac193579052187aadbe96b7ca2f,2,"DOJPUP, DOJPUP",Pt(2)
