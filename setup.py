@@ -8,18 +8,18 @@ setup(
     python_requires=">=3.9",
     author="Timo Sommer, Cian Clarke, Felix Kleuker",
     packages=find_packages(),
-    include_package_data=True,
+    include_package_data=False,
     install_requires=['ase', 'jsonlines', 'networkx', 'numpy', 'openbabel-wheel', 'pandas', 'pyyaml', 'rdkit', 'scipy', 'scikit-learn', 'stk', 'sympy', 'tqdm', 'pysmiles'],
-    package_data={
-        'DARTassembler': [
-            'data/*.csv',
-            'data/metalig/*.jsonlines.zip',
-            'data/metalig/test*.jsonlines',
-            'data/metalig/*.csv',
-            'data/tests/test_installation/*',
-            'data/default/*'
-        ]
-    },
+    # package_data={
+    #     'DARTassembler': [
+    #         'data/*.csv',
+    #         # 'data/metalig/*.zip',
+    #         # 'data/metalig/test*.jsonlines',
+    #         # 'data/metalig/*.csv',
+    #         'data/tests/test_installation/*',
+    #         'data/default/*'
+    #     ]
+    # },
     entry_points={
         'console_scripts': [
             'DARTassembler=DARTassembler.dart_cli:main',
