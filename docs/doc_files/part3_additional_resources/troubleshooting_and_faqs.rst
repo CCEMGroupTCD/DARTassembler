@@ -17,14 +17,20 @@ What's the terminal?
     - On macOS, open the Applications folder, then Utilities, and double-click on Terminal.
     - On Linux, you can usually find the Terminal in your applications menu or you can use a keyboard shortcut like Ctrl+Alt+T.
 
+What is pip?
+    pip is a widely used package manager for Python that allows you to install and manage Python packages. You can use pip to install DART and its dependencies.
+
+What is a yaml file?
+    YAML is a human-readable file format that is commonly used for configuration files. YAML files are easy to read and write, making them a popular choice for storing settings and options for software applications.
+
+How to edit a yaml file?
+    You can edit a yaml file using a text editor like Notepad, TextEdit, or Visual Studio Code. Simply open the yaml file in your text editor, make the desired changes, and save the file. Be careful with the indentation in yaml files, as it is significant and can affect the structure of the file.
+
 Troubleshooting
 -------------------
-
-The input yaml file cannot be read:
-    Yaml files are quite sensitive to indentation. Make sure that the indentation is correct. You can also use the :ref:`configs module <module_overview>` of DART to get templates for the yaml files.
 
 The input yaml file cannot be found:
     Make sure that the path to the yaml file is correct.
 
-The input yaml file is not valid:
-    Verify that the options in the YAML file are set up correctly to match the criteria desired. Ensure that the syntax of the yaml file, including lists and nested elements, is correct. You can use the :ref:`configs module <module_overview>` of DART to get templates for the yaml files.
+The input yaml file is not valid or cannot be read:
+    Yaml files are quite sensitive to indentation. Make sure that the indentation is correct. Verify that the options in the YAML file are set up correctly to match the criteria desired. In case of any issues with the yaml configuration files, you can use the :ref:`configs module <module_overview>` of DART to get two templates files so that you can fill in the required information without worrying about the syntax.
