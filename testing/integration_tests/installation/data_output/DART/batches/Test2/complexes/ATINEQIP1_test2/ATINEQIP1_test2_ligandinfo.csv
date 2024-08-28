@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PECPAO-03-a,C15H15N1O3,3,-2,O-O-N,34,257.289,0.1698315737,False,True,10.33836613058369,2.04820671861191,2efddf9585fbf2adbf7233917d7be565,2,"PECPAO, KOKKAZ","Mo(1), Re(1)"
-Ligand 1,unq_CSD-PAHJEN-02-a,C7H5O2,2,-1,O-O,14,121.11499999999997,0.849436502,False,True,6.018018493657194,2.0953162181039944,9824d9b63d8555c1639bf6aeb52a8073,70,"PAHJEN, POJSIS, POKCOJ, SINVIV, MAYYUJ, ... (65 more)","Cu(21), Ru(8), Ni(7), Co(6), Mn(6), ... (10 more)"
-Ligand 2,unq_CSD-PECCIK-01-e,C10H8N2,1,0,N,20,156.188,0.4058386801,False,True,7.636585116398559,2.145370394593904,f417a1b3a2aebaca43f7c361b2b133f1,150,"PECCIK, PECCIK, PECCOQ, PECCOQ, PECCUW, ... (145 more)","Zn(35), Co(23), Mn(17), Cu(15), Ni(13), ... (17 more)"

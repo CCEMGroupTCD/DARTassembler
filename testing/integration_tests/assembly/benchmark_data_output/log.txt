@@ -158,7 +158,7 @@ Batch 7 ('Integration_test_8'):
   - 56 complexes tried, 55 complexes successfully assembled.
   - 1 complexes failed because of post-filters:
     - clashing ligands: 1
-=====================  Total summary of DART Assembler run =====================
+====================  Total summary of DART Assembler run  =====================
   - 227 complexes tried, 158 complexes successfully assembled.
   - 69 complexes failed because of post-filters:
     - clashing ligands: 58

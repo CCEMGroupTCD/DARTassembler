@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-WEXYIH-02-a,C10H8N2O2,2,0,O-N,22,188.18600000000004,0.5376530818,False,False,9.982316133543355,2.2320048209056047,89c0bea7f1c5ee0ad6efab55c2c9f0f7,1,WEXYIH,Mn(1)
-Ligand 1,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72303,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72298 more)","Ru(9546), Pd(9381), Pt(6800), Cu(6008), Zn(4575), ... (43 more)"
-Ligand 2,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72303,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72298 more)","Ru(9546), Pd(9381), Pt(6800), Cu(6008), Zn(4575), ... (43 more)"

@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAQREH-02-b,C2H1N9,2,-2,N-N,12,151.093,0.8692496503,False,False,6.565719069530771,2.0085106932656616,c2774da13a08071aa11ea0e7a493080b,29,"PAQREH, PUDBAT, PUDBAT, PUDBIB, PUDBIB, ... (24 more)","Zn(10), Cu(5), La(4), Nd(2), Pr(2), ... (4 more)"
-Ligand 1,unq_CSD-PAXTAM-02-b,C10H8N2O2,2,0,N-N,22,188.18599999999998,0.7012282114,False,True,8.817218713403904,2.0591912734947595,92632e7e6afab48d4e8265fa7cd54bcc,18,"PAXTAM, LEZCOL, LEZCOL, LEZCOL, LEZCUR, ... (13 more)","Ru(7), Zn(5), Co(3), Cu(2), Mn(1)"

@@ -43,7 +43,7 @@ Batch 1 ('Test2'):
     - clashing ligands: 24
     - non-planar tridentate: 2
     - haptic ligand: 1
-=====================  Total summary of DART Assembler run =====================
+====================  Total summary of DART Assembler run  =====================
   - 45 complexes tried, 13 complexes successfully assembled.
   - 32 complexes failed because of post-filters:
     - clashing ligands: 27

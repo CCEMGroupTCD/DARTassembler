@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PARHEX-02-a,C6H2N2S3,2,-2,S-S,13,198.276,0.9619500675,False,False,6.376480938574192,2.1621535718343607,ea9ed9d101c91f8c4d9e4f485e8b639e,4,"PARHEX, PARHEX, OYISEV, OYISEV","Ni(2), Pt(2)"
-Ligand 1,unq_CSD-PEMCIW-02-a,C14H14N2O2,2,0,O-N,32,242.27799999999996,0.1778037821,False,True,11.269535439404768,1.9544760235801446,d8c3d52af7903fe76a758ac7594aec35,2,"PEMCIW, PEMCIW",Cu(2)

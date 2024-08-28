@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PACKOU-02-b,C9H6N1O1,2,-1,O-N,17,144.153,0.913749022,False,True,6.834823209125457,2.13189497454986,5ecd598d7d08bebe8249014dc7767b4b,387,"PACKOU, PACKOU, PAHNAR, PERWIU, PERWUG, ... (382 more)","V(53), Cu(52), Ru(37), Co(24), Rh(21), ... (24 more)"
-Ligand 1,unq_CSD-PEFRIE-02-a,C10H8F1O2,2,-1,O-O,21,179.17040316300003,0.4841536237,False,False,9.186742087922138,1.9579970049804176,9275dc0ce0d94b85675aa22caaee8fa0,4,"PEFRIE, PEFRIE, PEFROK, PEFROK",Ti(4)

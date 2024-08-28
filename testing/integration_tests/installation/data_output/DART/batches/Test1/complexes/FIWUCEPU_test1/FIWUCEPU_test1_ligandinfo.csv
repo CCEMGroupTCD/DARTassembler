@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PANNEY-02-a,C8H7O3,2,-1,O-O,18,151.14100000000002,0.4722065096,False,False,7.849178309224474,1.8973608904540256,622c0c07f672c007a3ea4a40868242bb,2,"PANNEY, PANNEY",Cu(2)
-Ligand 1,unq_CSD-OZURAE-02-a,C21H19F6N2,2,-1,N-N,48,413.387418978,0.0856586301,False,False,12.303186176759255,1.9421791747862183,fe0c6ce74d032bc2434f0dec2d1ee639,9,"OZURAE, OZURIM, FUQQEQ, DUGRAZ, EHEGOP, ... (4 more)","Cu(7), Zn(1), Ru(1)"

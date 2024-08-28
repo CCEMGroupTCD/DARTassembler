@@ -40,7 +40,7 @@ Batch 1 ('P_N_Donors_Ni_Metal_Centre'):
   - 346 complexes tried, 306 complexes successfully assembled.
   - 40 complexes failed because of post-filters:
     - clashing ligands: 40
-=====================  Total summary of DART Assembler run =====================
+====================  Total summary of DART Assembler run  =====================
   - 692 complexes tried, 620 complexes successfully assembled.
   - 72 complexes failed because of post-filters:
     - clashing ligands: 72

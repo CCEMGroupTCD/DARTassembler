@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAJMUK-02-a,C15H15N2S1,2,-1,S-N,33,255.35899999999998,0.1618220182,False,True,12.027116950042515,2.2270838328312004,16ddd056642333f6148847f8c3ecdacf,4,"PAJMUK, SOTDOW, JOHYUC, WAKNII","Ru(3), Pd(1)"
-Ligand 1,unq_CSD-PACYOJ-02-a,C9H10N1S2,2,-1,S-S,22,196.30600000000004,0.184189088,False,False,8.062951548905648,2.2001932043026047,ad092bc796492a3e6a40d9832798e97e,14,"PACYOJ, PACYUP, LIGSAW, LIGSAW, FUGGIY, ... (9 more)","Eu(3), Cu(3), Ni(2), Pd(2), Cd(2), ... (2 more)"
