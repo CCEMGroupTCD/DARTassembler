@@ -13,7 +13,7 @@ init_cli_output = r"""==========================================================
 ================================================================================"""
 
 
-modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat', 'test', 'configs']
+modules = ['ligandfilters', 'assembler', 'dbinfo', 'concat', 'installtest', 'configs']
 
 def check_n_args(args, n):
     if len(args) != n:
@@ -46,7 +46,7 @@ Usage: dart <module> --path <path>
         dbinfo(args.path[0])
     elif args.module == 'concat':
         concat(args.path)
-    elif args.module == 'test':
+    elif args.module == 'installtest':
         if len(args.path) == 0:
             path = None
         else:

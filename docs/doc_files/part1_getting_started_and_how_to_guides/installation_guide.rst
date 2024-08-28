@@ -15,8 +15,8 @@ To verify that DART is installed correctly, run the following command:
 
 .. code-block:: sh
 
-   DARTassembler test --path
+   DARTassembler installtest --path
 
-This command will run a brief test of the ``assembler``, ``ligandfilters`` and ``dbinfo`` module of DART, without saving any files. If you run DART for the very first time, you will also notice that DART takes around 20 seconds to extract the MetaLig database from the .zip file that was downloaded during installation. That is normal and only happens once.
+This command will run a brief test of the ``assembler``, ``ligandfilters`` and ``dbinfo`` module of DART, without saving any files. If you run DART for the very first time, it may be that there is a short delay of around 30s while pip sets up everything. That is normal and only happens once.
 
 Ready to go? Let's start off with the :ref:`quickstart` or check out the :ref:`DART modules <module_overview>`!

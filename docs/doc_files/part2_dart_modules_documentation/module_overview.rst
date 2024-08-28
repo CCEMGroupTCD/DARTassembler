@@ -27,7 +27,7 @@ DART implements a list of commands for the terminal which you can use to interac
 
     Concatenates two or more ligand database files into one. The output will be saved to a file called ``concat_ligand_db.jsonlines``.
 
-.. option:: DARTassembler test --path testdir
+.. option:: DARTassembler installtest --path testdir
 
     Runs a quick test of the ``assembler``, ``ligandfilters`` and ``dbinfo`` module and saves the results in the directory ``testdir``. If no directory is specified, the results will not be saved.
 

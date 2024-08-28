@@ -18,9 +18,9 @@ Confirm DART Installation
 Before starting, ensure DART is correctly installed and configured:
 
 1. Open your terminal.
-2. Type ``DARTassembler --help`` and press Enter.
+2. Type ``DARTassembler installtest --path`` and press Enter.
 
-This command should display information how to use DART. If it throws an error, please consult the :ref:`Troubleshooting section<troubleshooting>`.
+This command runs a quick test of DART. If it throws an error, please consult the :ref:`Troubleshooting section<troubleshooting>`.
 
 Inspect the Ligand Database
 -------------------------------
