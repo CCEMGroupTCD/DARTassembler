@@ -7,8 +7,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'DART'
-copyright = '2023, Timo Sommer, Cian Clarke'
-author = 'Timo Sommer, Cian Clarke'
+copyright = '2023, Timo Sommer, Cian Clarke, Felix Kleuker'
+author = 'Timo Sommer, Cian Clarke, Felix Kleuker'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
