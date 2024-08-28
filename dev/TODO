@@ -7,9 +7,6 @@ Todo for making DARTassembler available as python package:
     - make GitHub public
     - make Readthedocs public
     - make pip package (https://medium.com/@joel.barmettler/how-to-upload-your-python-package-to-pypi-65edc5fe9c56)
-        - if necessary, reduce MetaLig filesize when compressed to less than 60 MB in order to be installable via pip (atm it's compressed 65MB so that should be possible)
-            - this depends on how good the pip compression is, maybe we don't have to change anything
-            - if we do change the MetaLig, then use this opportunity to reindex ligand graphs if possible
 
 assembly:
     - double check the ligand planarity filtering, it is very slow and I'm not sure if it's correct
