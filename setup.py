@@ -12,7 +12,6 @@ setup(
     package_data={
         'DARTassembler': [
             'data/*.csv',
-            # 'data/metalig/*.zip',
             'data/metalig/*.bz2',
             'data/tests/test_installation/*',
             'data/default/*'
