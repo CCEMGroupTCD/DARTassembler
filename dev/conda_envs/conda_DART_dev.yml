@@ -24,6 +24,7 @@ dependencies:
   - sphinx_rtd_theme>=0.5.1   # To avoid bullet-point bug
   - sphinx-toolbox
   - setuptools<67.3           # Gives deprecation warning otherwise
+  - twine                     # Needed for uploading to PyPI
   - pip:
       - pysmiles
       - -e ../../.            # Install DART in editable mode without installing dependencies, these are handled by conda
