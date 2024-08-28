@@ -1,6 +1,7 @@
 """
 Utility functions for input and output.
 """
+import bz2
 import json
 import sys
 import yaml
@@ -28,7 +29,7 @@ def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
     files = [default_ligand_db_path, test_ligand_db_path]
 
     for unzipped_file in files:
-        zip_file = Path(str(unzipped_file) + '.zip')
+        zip_file = Path(str(unzipped_file) + '.bz2')
 
         if not unzipped_file.exists():
             name = Path(zip_file).name
@@ -59,16 +60,29 @@ def compress_file(file_path, output_zip_path=None, compression_level=6):
 
     return
 
-def uncompress_file(zip_file_path, output_dir):
+def uncompress_file(zip_file_path, output_dir = None):
     """
     Uncompress a zip file into a file.
     """
+    zip_file_path = Path(zip_file_path)
+
+    if output_dir is None:
+        output_dir = Path(zip_file_path).parent
+
     # Create a temporary directory to extract the files
     temp_dir = Path(output_dir, 'temp_extract')
+    temp_dir.mkdir(parents=True, exist_ok=True)
 
     # Extract all files to the temporary directory
-    with zipfile.ZipFile(zip_file_path, 'r') as zipf:
-        zipf.extractall(temp_dir)
+    if zip_file_path.suffix == '.zip':
+        with zipfile.ZipFile(zip_file_path, 'r') as zipf:
+            zipf.extractall(temp_dir)
+
+    elif zip_file_path.suffix == '.bz2':
+        newfile = zip_file_path.with_suffix('')
+        with open(newfile, 'wb') as new_file, bz2.BZ2File(zip_file_path, 'rb') as file:
+            for data in iter(lambda: file.read(100 * 1024), b''):
+                new_file.write(data)
 
     # Move the contents of the temporary directory to the output directory
     for filename in os.listdir(temp_dir):
@@ -381,5 +395,7 @@ def read_xyz(path: str):
 
 if __name__ == '__main__':
 
-    metalig = '/Users/timosommer/PhD/projects/RCA/projects/DART/data/final_db_versions/MetaLigDB_v1.0.0.jsonlines'
-    compress_file(metalig)
+    # metalig = '/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/data/metalig/MetaLigDB_v1.0.0.jsonlines.bz2'
+    # # compress_file(metalig)
+    # uncompress_file(metalig)
+    pass
