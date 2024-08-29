@@ -357,14 +357,6 @@ def read_yaml(path: Union[str, Path]) -> dict:
             else:
                 raise Exception(f'There was an error while reading the YAML file {path}. Please make sure the file is a proper yaml file. For example, a common error is that the indentation might be wrong. This is the error message from yaml, please google it if you don\'t know how to fix it: {exc}')
 
-    # try:
-    #     with open(path, 'r') as file:
-    #         data = yaml.load(file, Loader=yaml.FullLoader)
-    # except FileNotFoundError:
-    #     raise FileNotFoundError(f'Could not find file {path}')
-    # except Exception as e:
-    #     raise Exception(f'There was an error while reading the YAML file {path}. Please make sure the file is a proper yaml file. For example, a common error is that the indentation might be wrong. This is the error message from yaml, please google it if you don\'t know how to fix it: {e}')
-
     return data
 
 def safe_read_yaml(data: Union[str, Path, list, dict]) -> Union[dict,list]:
@@ -395,7 +387,7 @@ def read_xyz(path: str):
 
 if __name__ == '__main__':
 
-    # metalig = '/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/data/metalig/MetaLigDB_v1.0.0.jsonlines.bz2'
-    # # compress_file(metalig)
+    # metalig = '/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/data/metalig/MetaLigDB_v1.0.0.jsonlines'
+    test_metalig = '/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/data/metalig/test1000_MetaLigDB_v1.0.0.jsonlines'
+    # compress_file(metalig)
     # uncompress_file(metalig)
-    pass
