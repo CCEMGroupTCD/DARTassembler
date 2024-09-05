@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAPTIK-03-a,C9H12N2S1,3,0,N-N-S,24,180.269,0.2498653193,False,True,9.956482345185975,2.2368432501311553,c2dfbfd3376bbceda7eb96686336ec5a,2,"PAPTIK, PAPTIK",Cu(2)
+Ligand 1,unq_CSD-PAFMOC-02-a,C12H15N2O1S2,2,-1,S-S,32,267.385,0.1810929249,False,False,10.27935985312315,2.29870238868674,a8a2fac1024d42a1412d440854e9abd9,7,"PAFMOC, PAFMOC, UNOYAZ, UNOYON, KOZYIJ, ... (2 more)","Pd(3), Cu(2), Zn(2)"
+Ligand 2,unq_CSD-PAFXOJ-01-a,C18H29S1,1,-1,S,48,277.49,0.1169336084,False,False,9.170621822428402,2.336543898581835,31266dc243076ca0b3c271bb5e44908e,52,"PAFXOJ, PAFXOJ, SUYSUA, SUYSUA, TANLOK, ... (47 more)","U(32), Co(3), La(3), Ce(3), Pr(3), ... (4 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEDKAL-03-a,C8H6Cl1N3S1,3,-2,S-N-C,19,211.667,0.8519412297,False,True,10.512709389115633,2.1616598676795227,811aed8780d72c579421cc5c1fae0e63,2,"PEDKAL, VICDIW","Rh(1), Pd(1)"
+Ligand 1,unq_CSD-PAQHIB-02-a,C16H12N2,2,0,N-N,30,232.286,0.2628119262,False,True,12.970048711165274,1.9405707134784738,4fb76dbf914f35bc45053bfcc0a06bba,7,"PAQHIB, PAQHIB, FUNCIC, FUNCOI, EMIPOH, ... (2 more)","Cu(3), Co(2), Ag(1), Zn(1)"
+Ligand 2,unq_CSD-PAHJIT-01-b,C4H11N1,1,0,N,16,73.139,0.277621656,False,True,5.404264246870244,1.9877620607104864,ef2b3cdad471b84005a27688ac1711ca,31,"PAHJIT, BEYMID, BEYMID01, CICNEH, CICNEH, ... (26 more)","Pt(11), Fe(6), Co(5), Pd(4), Au(2), ... (3 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAGCEF-03-a,C13H9N3O2,3,-2,O-O-N,27,239.234,0.4983521484,False,True,12.58250735743874,2.0617808433780294,cc4c77852ba011aae81745100e4cfb86,6,"PAGCEF, PAGCEF01, JONBIZ, UVAQOY, UVAQUE, ... (1 more)","Mo(4), V(1), W(1)"
+Ligand 1,unq_CSD-PATBAQ-02-a,C25H29N3O2,2,0,N-N,59,403.5259999999999,0.0870069343,False,True,17.044794704835844,1.9979230073459426,afebf00047e53d002bd33aa427442b9f,1,PATBAQ,Pt(1)
+Ligand 2,unq_CSD-OZUBAN-01-a,C1H4O1,1,0,O,6,32.042,0.4742921587,False,True,2.435945414002538,2.317234519853353,0534b11a9d42c1cdd58f7755cc9bb696,2183,"OZUBAN, OZUBER, OZUBOB, OZUZAM, OZUZAM, ... (2178 more)","Co(276), Ni(274), Mo(249), Zn(235), Cu(233), ... (35 more)"

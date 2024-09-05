@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAYMOT-03-a,C15H10Cl1N3,3,0,N-N-N,29,267.716,0.6661868807,False,True,11.122442572564713,2.045200144942108,e1619e79accbdcfabea28a9d7baa5577,72,"PAYMOT, PAYMOT, LOWVAX, MOZGOY, MOZGOY, ... (67 more)","Ru(12), Cu(12), Pt(10), Co(9), Fe(9), ... (4 more)"
+Ligand 1,unq_CSD-PAKCUA-02-a,C9H10N4O1,2,0,N-N,24,190.20600000000002,0.3546147952,False,True,8.675805408721429,2.134227893055636,510d537158cf7f515f398fcede619601,49,"PAKCUA, PAKCUA, PAKCUA, MEGGAH, MEGGAH, ... (44 more)","Fe(25), Co(7), Mn(5), Cu(3), Ni(2), ... (6 more)"
+Ligand 2,unq_CSD-PALTOM-01-a,C13H11N1,1,-2,N,25,181.23799999999997,0.1723612988,False,True,9.139921781941025,1.6875150399329768,a7ab53c35ecadfca4bd2a713bcf72e88,1,PALTOM,Ti(1)

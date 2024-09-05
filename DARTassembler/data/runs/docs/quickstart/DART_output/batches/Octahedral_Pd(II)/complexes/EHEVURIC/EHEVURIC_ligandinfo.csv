@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PARXOY-03-a,C18H15N3O2,3,0,O-N-N,38,305.337,0.1749592923,False,True,13.340207685414796,1.978561486428415,ac86e04c44d1544ae262de510566721d,1,PARXOY,Cu(1)
+Ligand 1,unq_CSD-PAKXAD-02-a,C11H19O3,2,-1,O-O,33,199.27,0.1395563894,False,False,8.770733892326229,1.975595760586756,1c153765e6ce4c2716b124f6c680343b,3,"PAKXAD, PAKXAD, LUNPES","Pd(2), Pt(1)"
+Ligand 2,unq_CSD-PAPVUY-01-a,C4H9O1,1,-1,O,14,73.11500000000001,0.2710202969,False,False,4.13868469564909,1.9451041128947313,c78bc0678ffc88b9fe2a13191f6ae942,453,"PAPVUY, PAPVUY, PAPWAF, PAPWAF, PEHDEM, ... (448 more)","Zr(104), W(63), Hf(50), Mo(43), Ti(28), ... (24 more)"

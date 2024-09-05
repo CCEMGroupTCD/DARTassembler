@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PABSIY-03-a,C39H32O1P2,3,0,O-P-P,74,578.6315239959999,0.0492149466,False,False,13.627361576622233,2.2818697533838317,e6bacfb19805f54c33bd2a1ad1c5dd70,47,"PABSIY, PABTAR, MACJUX, MAJWUT, BOHVOL, ... (42 more)","Ru(18), Rh(17), Pd(6), Ni(2), Ir(2), ... (2 more)"
+Ligand 1,unq_CSD-PAQQAC-02-a,C10H13N2O2,2,-1,O-N,27,193.22600000000003,0.2345936397,False,True,8.617237372267287,1.8664063025236595,f6f5ddb4523ddbe565c86081c8d30de1,2,"PAQQAC, PAQQAC",Ni(2)
+Ligand 2,unq_CSD-PADYOJ-01-a,C6H5S1,1,-1,S,12,109.16599999999997,0.973568291,False,False,5.513802490115149,2.3351236027242757,ef2f131401dd12218f411ca4eb48849d,476,"PADYOJ, PAGLOB, PASMOT, PASMOT, PASMOT, ... (471 more)","Co(82), Ni(48), Fe(43), Zn(35), Re(34), ... (30 more)"

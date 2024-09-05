@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAQJUN-03-a,C11H17N5S1,3,0,S-N-N,34,251.35200000000003,0.1795484718,False,True,12.631923508318122,2.166656004796192,d58d979b294e215ffe405286487b208f,2,"PAQJUN, PAQJUN",Ni(2)
+Ligand 1,unq_CSD-PAMJUL-02-a,C23H24O1P1,2,-1,O-P,49,347.417761998,0.0830931635,False,False,11.75855136060561,2.1522472824265018,76ef8f2cf2ee4ef140b30a7583c1c73f,12,"PAMJUL, SIPGUT, GEBNAF, GEBNAF, GEBNAF, ... (7 more)","Ce(3), U(3), Ni(2), Fe(2), Rh(1), ... (1 more)"
+Ligand 2,unq_CSD-PAGFIQ-01-a,C5F4N1,1,-1,C,10,150.055612652,0.9676228119,False,False,5.324841564779182,1.8834071599099336,8b8e3a68336bd4452f8823eb44d95d49,58,"PAGFIQ, TAYKOU, TAYKUA, TAYLAH, LOBKAP, ... (53 more)","Ir(18), Rh(15), Au(8), Pd(7), Ru(2), ... (5 more)"

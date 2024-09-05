@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAMKIA-03-a,C14H14N6O2,3,0,N-N-N,36,298.306,0.1677335046,False,True,12.421542651780413,1.9985158492615547,f4076ec8db6aead6f115a874b1544c15,1,PAMKIA,Cu(1)
+Ligand 1,unq_CSD-PAFWIC-02-a,C3H6N1S2,2,-1,S-S,12,120.20799999999998,0.3845515107,False,False,4.659254201049777,2.532316096586774,eac4cd02eef0e19c6e93f9e949dd7a3f,282,"PAFWIC, PAFWIC, PEBZUS, PEBZUS, PENLIE, ... (277 more)","Co(45), Re(28), Ru(24), Os(22), Mo(19), ... (24 more)"
+Ligand 2,unq_CSD-PAWQIO-01-a,C3H5O1,1,-1,C,9,57.071999999999996,0.4567198693,False,False,3.785698967165774,2.090012215275307,e0033680b63588eafebdb87672d4adc4,53,"PAWQIO, SOYSUU, SOYSUU, LEZYIA, BEWPEA, ... (48 more)","Pt(21), Pd(10), Au(10), Hg(4), Ir(3), ... (3 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAMFOY-03-a,C12H15N2O1,3,-1,O-N-N,30,203.26500000000004,0.1787431921,False,True,10.129471641699778,1.950737906695674,00d915230c1ee42cb334507bc2e5c857,9,"PAMFOY, QIYWEB, ZEDHIC, ZEDHOI, ZEDHUO, ... (4 more)","Cu(1), Re(1), Nd(1), Sm(1), Gd(1), ... (4 more)"
+Ligand 1,unq_CSD-PATXUE-02-a,C14H16N1O1P2S1,2,-1,O-S,35,308.295523996,0.1363244948,False,False,9.41594349919327,2.35527795146816,94dcf116785074c0b712248ef26559e5,2,"PATXUE, PATXUE",Hg(2)
+Ligand 2,unq_CSD-PAFHIO-01-a,C2H6O1S1,1,0,S,10,78.12899999999999,0.377198416,False,True,4.422735986920313,2.2818992988298157,f41953f80aa3264af4f4ddd81238df83,1138,"PAFHIO, PAHNUJ, PAKFEN, PAKFEN, PAKFOX, ... (1133 more)","Ru(642), Pt(294), Pd(56), Os(56), Rh(54), ... (4 more)"

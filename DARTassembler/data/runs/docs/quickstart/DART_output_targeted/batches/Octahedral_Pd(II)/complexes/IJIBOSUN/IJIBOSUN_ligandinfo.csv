@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PACPEP-03-a,C14H10N2O2,3,-2,O-N-O,28,238.246,0.475986552,False,True,13.141956811677627,2.4062998577404144,87f909f80ab9500c263072cf98d79bfd,32,"PACPEP, TEHYEM, LOFTIJ, BIQCEM, BIQCEM, ... (27 more)","V(13), Mo(5), Cu(5), Ti(2), Mn(2), ... (5 more)"
+Ligand 1,unq_CSD-PAHQOF-02-a,C6H10N4,2,0,N-N,20,138.17400000000004,0.3870956058,False,False,7.253460984247451,2.085615418396208,1cb9f0bd8f20ba85d51d69ce17f00228,11,"PAHQOF, PAHQOF, POCKEZ, DOLZAF11, DOLZAF11, ... (6 more)","Cd(4), Cu(3), Co(2), Ni(2)"
+Ligand 2,unq_CSD-PAVNEG-01-a,C9H8N2,1,0,N,19,144.17700000000002,0.8225334311,False,True,8.240455992844085,2.0182062481322363,243d74c3939484a82fdfd0e0214ae4a3,8,"PAVNEG, PAVNEG, PAVNEG, PAVNEG, PAVNIK, ... (3 more)",Pt(8)

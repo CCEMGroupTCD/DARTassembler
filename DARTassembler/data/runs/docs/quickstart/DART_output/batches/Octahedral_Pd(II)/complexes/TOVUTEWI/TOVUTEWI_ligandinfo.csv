@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PATSIN-03-a,C20H16N5,3,-1,N-N-C,41,326.3829999999999,0.1864611171,False,True,12.436695753293957,2.0367543772561545,9a9f0f7bede90e25554db8e7a2ef5a54,1,PATSIN,Pd(1)
+Ligand 1,unq_CSD-PBIMCU-02-a,C12H9N3,2,0,N-N,24,195.225,0.6900179044,False,True,10.396695901102428,2.0097459839888825,1908a94f3d9eb730c86527b889a0b9ff,70,"PBIMCU, TAVTAM, TAVTEQ, LOGLUR, LOGLUR01, ... (65 more)","Cu(22), Ru(13), Ir(6), Ni(5), Re(4), ... (10 more)"
+Ligand 2,unq_CSD-OZUTEL-01-a,C1H3O1,1,-1,O,5,31.033999999999995,0.4691305624,False,True,1.9426893961722238,1.8282635614155838,ef776a7fbd2f0e4398d061c40124c4c3,547,"OZUTEL, OZUTEL, PADQOC, PAFFEI, PANZAH, ... (542 more)","V(160), Re(40), Fe(36), Mn(30), Mo(29), ... (36 more)"

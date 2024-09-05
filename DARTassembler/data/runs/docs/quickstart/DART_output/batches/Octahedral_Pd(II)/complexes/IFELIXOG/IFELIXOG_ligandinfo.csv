@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PANNUN-03-a,C23H23N2O3,3,-1,O-N-N,51,375.448,0.0982856189,False,True,14.288114386790163,2.016391553301682,4e4f51beaf477b4fa4b618cd11907ccb,1,PANNUN,Pd(1)
+Ligand 1,unq_CSD-PAZWUJ-02-b,C7H4N1S2,2,-1,S-N,14,166.23600000000002,0.8627863955,False,False,7.305470085490734,2.2929783833979345,826183d682ffeb2bc8f45d04fd5565fe,46,"PAZWUJ, PAZWUJ, LEZFOL, LEZFOL, BEGPEI, ... (41 more)","Ru(10), Cd(7), U(4), Sc(3), Ce(3), ... (9 more)"
+Ligand 2,unq_CSD-PAQXUD-01-d,C9H9N1,1,0,C,19,131.178,0.3840204234,False,False,6.529687099700873,1.9951781424223753,0d35a679634955a959df9f1f61fe053d,747,"PAQXUD, PAQYEO, PAQYUE, PAQZAL, PAWQIO, ... (742 more)","Pd(150), Fe(85), Pt(77), Ru(60), Rh(40), ... (18 more)"

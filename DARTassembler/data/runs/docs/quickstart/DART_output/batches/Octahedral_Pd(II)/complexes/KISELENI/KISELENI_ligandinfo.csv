@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAVHOK-03-a,C16H14N3O1,3,-1,N-N-O,34,264.308,0.1938412034,False,True,12.960316632320367,2.060667259538769,43ec51e89c56b50ba672e31beb75af6c,6,"PAVHOK, PAVHUQ, DEBHOJ, YIFDIB, DIFNUD, ... (1 more)","Cu(3), V(2), Mn(1)"
+Ligand 1,unq_CSD-PAFPIY-02-a,C16H16N4O1,2,0,N-C,37,280.33099999999996,0.1512328103,False,True,13.70418533842855,2.0071673376284114,97c2c9b65f2c17e7d1226ad58580ae95,1,PAFPIY,Pd(1)
+Ligand 2,unq_CSD-PAWQIO-01-a,C3H5O1,1,-1,C,9,57.071999999999996,0.4567198693,False,False,3.785698967165774,2.090012215275307,e0033680b63588eafebdb87672d4adc4,53,"PAWQIO, SOYSUU, SOYSUU, LEZYIA, BEWPEA, ... (48 more)","Pt(21), Pd(10), Au(10), Hg(4), Ir(3), ... (3 more)"

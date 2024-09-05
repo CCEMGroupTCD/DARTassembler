@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAYZUN-03-a,C10H6N5O2,3,-1,N-N-N,23,228.191,0.8464842866,False,True,10.96903515766086,2.075359322016674,2509ce4da76e780d9bf087edd3140a1f,14,"PAYZUN, PAYZUN, PAZBOK, PAZBOK, PMCXCN10, ... (9 more)","Co(6), Cu(6), Ni(2)"
+Ligand 1,unq_CSD-OZIYUT-02-b,C11H8N1,2,-1,N-C,20,154.192,0.6781033433,False,True,8.79203097469521,2.035979760613638,831ca3ecca936a445b8bb1360bfea335,1295,"OZIYUT, OZIYUT, OZIZAA, OZIZAA, PARWAG, ... (1290 more)","Ir(927), Pt(166), Ru(53), Pd(49), Au(31), ... (12 more)"
+Ligand 2,unq_CSD-PAFQOD-01-a,C13H14O1S1Te1,1,0,Te,30,345.914,0.1450190857,False,True,11.368104142292154,2.595050007225294,534e487552288eb3d8acd4f1a861713c,2,"PAFQOD, PAFQOD",Pd(2)

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PARXUE-03-a,C17H13N3O1,3,0,O-N-N,34,275.311,0.7579602464,False,True,13.393638747554752,1.9735410686854875,d088bc1d8a3ffa057b8ca700e3a4309e,1,PARXUE,Cu(1)
+Ligand 1,unq_CSD-PAZWUJ-02-b,C7H4N1S2,2,-1,S-N,14,166.23600000000002,0.8627863955,False,False,7.305470085490734,2.2929783833979345,826183d682ffeb2bc8f45d04fd5565fe,46,"PAZWUJ, PAZWUJ, LEZFOL, LEZFOL, BEGPEI, ... (41 more)","Ru(10), Cd(7), U(4), Sc(3), Ce(3), ... (9 more)"
+Ligand 2,unq_CSD-PECBAB-01-a,C3H5O1S2,1,-1,S,11,121.19199999999998,0.2906921139,False,False,5.5643621188775985,2.3914693307671757,48be7dbd7ef5295b71237dc5049754d0,21,"PECBAB, MIRLEE, MUVSOL, QIBTUR, QIBVAZ, ... (16 more)","Zn(12), Hg(4), Au(4), Ru(1)"

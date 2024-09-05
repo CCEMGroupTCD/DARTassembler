@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAWWOA-03-a,C12H16Cl1N2,3,-1,N-N-C,31,223.72400000000007,0.1707155114,False,True,9.556370093817003,2.04534568305102,264c13308a986128ea01fb3674c59c49,1,PAWWOA,Pt(1)
+Ligand 1,unq_CSD-OZUQOS-02-a,C10H8N2,2,0,N-N,20,156.188,0.7190596905,False,True,8.838104807027351,2.1295739078633638,55619172b4b4933ff13c1bd31c17e3a8,4820,"OZUQOS, OZUQOS, OZUQOS, PACDIH, PACDIH, ... (4815 more)","Ru(1631), Cu(506), Ni(271), Co(228), Zn(220), ... (41 more)"
+Ligand 2,unq_CSD-OZUQIK-01-b,C3H7O1,1,-1,O,11,59.088,0.3382485966,False,True,4.005105436814367,1.792459628555131,c7c80507b0c1746db57a5a88292d81a5,707,"OZUQIK, PAMPEB, PAMPEB, PEBWAV, PEBWAV, ... (702 more)","Ti(462), Zr(97), Hf(39), Ta(31), V(18), ... (13 more)"

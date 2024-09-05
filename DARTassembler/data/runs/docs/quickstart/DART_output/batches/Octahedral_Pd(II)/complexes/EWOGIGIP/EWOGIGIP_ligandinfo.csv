@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAPTIK-03-a,C9H12N2S1,3,0,N-N-S,24,180.269,0.2498653193,False,True,9.956482345185975,2.2368432501311553,c2dfbfd3376bbceda7eb96686336ec5a,2,"PAPTIK, PAPTIK",Cu(2)
+Ligand 1,unq_CSD-PAWQUA-02-a,C12H14N1O1,2,-1,O-C,28,188.25,0.1380090672,False,True,8.433740955827373,2.012024185412666,1a85713ca4ea83a84300c062ea387bec,1,PAWQUA,Pd(1)
+Ligand 2,unq_CSD-PACHAE-01-a,C18H13O1,1,-1,O,32,245.301,0.1836021234,False,False,11.729176046082692,1.9582620330282674,abc87eaec62490832e0ddb2c9d08281e,240,"PACHAE, PACHAE, PACHEI, PADNUD, PADNUD, ... (235 more)","Ti(64), Ta(22), W(22), Nd(19), Yb(18), ... (17 more)"

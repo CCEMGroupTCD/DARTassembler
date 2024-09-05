@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PECPAO-03-a,C15H15N1O3,3,-2,O-O-N,34,257.289,0.1698315737,False,True,10.33836613058369,2.04820671861191,2efddf9585fbf2adbf7233917d7be565,2,"PECPAO, KOKKAZ","Mo(1), Re(1)"
+Ligand 1,unq_CSD-PAGHOV-02-a,C27H23N3,2,0,N-N,53,389.50199999999995,0.0831688328,False,True,11.280582049699387,2.0885524281777554,b9bf23c031ebeeb7b5abd4fd8446f2e8,2,"PAGHOV, WUMLEV","Rh(1), Pd(1)"
+Ligand 2,unq_CSD-OZOVOP-01-a,C6H7N1,1,0,N,14,93.12899999999996,0.4743135745,False,False,5.81818277299708,2.070538739072514,207be05f41dfa77f3b7977a5872821bd,112,"OZOVOP, OZOVOP, PIBRIE, SUXVIQ, BEHKOO01, ... (107 more)","Co(28), Ru(17), Zn(13), Pd(9), Rh(9), ... (10 more)"

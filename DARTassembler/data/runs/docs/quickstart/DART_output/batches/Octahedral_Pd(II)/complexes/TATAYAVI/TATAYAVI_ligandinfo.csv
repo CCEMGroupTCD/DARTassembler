@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PABYUN-03-a,C17H11N2O2,3,-1,N-N-C,32,275.287,0.5858628584,False,True,11.141425255774056,2.0369390825467453,a9119df9ff1b3d159dc3cb1012f47fcc,1,PABYUN,Pd(1)
+Ligand 1,unq_CSD-PACVAU-02-a,C6H3N4O4,2,-1,O-N,17,195.114,0.9613816271,False,False,7.038735684766122,2.0633956156245126,caef6a6c6e95b06639e903d18881a088,1,PACVAU,Ru(1)
+Ligand 2,unq_CSD-PACLIO-01-a,C4H6N2,1,0,N,12,82.10599999999998,0.4738828065,False,True,4.994005497594091,1.9405479767323455,fdedc5b82efff597a3d098f6a559e497,994,"PACLIO, PACLIO, PAGNOA, PAJKUJ, PAJKUJ, ... (989 more)","Fe(204), Cu(159), Co(130), Ni(104), Zn(68), ... (26 more)"

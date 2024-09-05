@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PANCIT-03-a,C33H33N5,3,0,N-N-N,71,499.66199999999986,0.0772099489,False,False,15.023242498874867,2.0930490342977577,00ef5270b9e0a168337451bddae3a4ac,4,"PANCIT, NACDUT, NACFAB, NACFEF","Cu(3), Ru(1)"
+Ligand 1,unq_CSD-PAHLOZ-02-a,C28H39N1O2,2,0,O-N,70,421.62499999999994,0.1002640733,False,False,13.855285510591255,2.029781572965207,fb01c2d067a51e38eb5aec383f12e36e,17,"PAHLOZ, UBEKUK, YEXRIC, YEXRIC, YOLZII, ... (12 more)","Co(5), Ni(4), Ru(3), Cu(3), Zn(2)"
+Ligand 2,unq_CSD-PEBNIT-01-d,C1H3N1,1,-2,N,5,29.041999999999998,0.4748139509,False,True,2.039766226801493,1.6657033529413334,bed160728bd859cf36d48ecfda613ec8,12,"PEBNIT, SIRZUP, CEWVUX, CEWVUX, TOVPOJ, ... (7 more)","Mo(4), Re(2), U(2), V(1), Nb(1), ... (2 more)"

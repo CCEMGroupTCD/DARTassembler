@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PATJAW-03-a,C24H16N6,3,0,N-N-N,46,388.43399999999997,0.1514321709,False,True,12.919271393542283,1.9332203202607439,9784ba62eda665422ae2f6111a93ad07,59,"PATJAW, PATJAW, PATJIE, POMSAM, TAPWEO, ... (54 more)","Mn(11), Ni(9), Co(8), Fe(6), Ru(5), ... (9 more)"
+Ligand 1,unq_CSD-PADKEO-02-a,N2O1S1,2,-2,S-O,4,76.07300000000001,0.9852470006,False,False,2.905635147433346,2.101560246490375,cc91b0186a385eeffa60186e79fd76a6,1,PADKEO,Zn(1)
+Ligand 2,unq_CSD-PAYKUW-01-a,C13H13O1P1,1,0,O,28,216.21976199799997,0.1432028594,False,False,8.771584255993897,2.0254452893129455,d081bd32197c447530fd2b8904377b8c,41,"PAYKUW, SUXLIG, SUXLIG, SUXLIG, LUWPUO, ... (36 more)","Mo(21), U(5), W(4), La(3), Y(3), ... (2 more)"

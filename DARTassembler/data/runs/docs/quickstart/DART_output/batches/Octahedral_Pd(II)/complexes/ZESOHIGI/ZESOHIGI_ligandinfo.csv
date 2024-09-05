@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAPKAT-03-a,C14H23N4O2,3,-1,O-N-N,43,279.3639999999999,0.1436319789,False,True,12.64944972439513,2.1576720173381165,6737599a13f537870a0118e443b1f608,4,"PAPKAT, PAPKAT, VEWVAV, VEWVAV","Zn(2), Ni(2)"
+Ligand 1,unq_CSD-PAHJEN-02-a,C7H5O2,2,-1,O-O,14,121.11499999999997,0.849436502,False,True,6.018018493657194,2.0953162181039944,9824d9b63d8555c1639bf6aeb52a8073,70,"PAHJEN, POJSIS, POKCOJ, SINVIV, MAYYUJ, ... (65 more)","Cu(21), Ru(8), Ni(7), Co(6), Mn(6), ... (10 more)"
+Ligand 2,unq_CSD-PAMDUE-01-c,C7H7N1O2,1,0,N,17,137.138,0.655670253,False,False,7.606279251381716,2.1838775904340424,486d02ead5af20968b399fc229d20195,14,"PAMDUE, PAMFOA, PAMFOA01, PAMGAN, YABQAV, ... (9 more)","Ru(4), Cu(2), Zn(2), Co(2), Ni(2), ... (1 more)"

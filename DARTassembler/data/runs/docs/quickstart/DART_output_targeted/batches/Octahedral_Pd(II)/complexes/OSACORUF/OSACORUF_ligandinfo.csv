@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PECTEW-03-a,C17H11N1,3,-2,N-C-C,29,229.282,0.899958107,False,True,11.18673926843743,2.0550074859382583,578e2a50c913a5569ac31b3d80265c91,33,"PECTEW, PECWOJ, TAMJIB, LIYRET, LUPYAY, ... (28 more)","Au(23), Pt(6), Pd(2), Os(1), Ir(1)"
+Ligand 1,unq_CSD-PADTAP-02-a,C8H12N2,2,0,N-N,22,136.19800000000004,0.3142223393,False,False,6.663845242800885,2.1589276493227816,94701f0bf6f43c2182bc0d48d42d8393,4,"PADTAP, CIJGUY, EQAYAY, EQAYAY","Zn(2), V(1), Pd(1)"
+Ligand 2,unq_CSD-PAKHEP-01-c,C4H11N1,1,0,N,16,73.139,0.2050392803,False,False,4.063819063393448,2.232234158864163,af81cb37c17c640566a252c063c7577c,37,"PAKHEP, PATGAV, PATGAV, PATGOJ, PATGOJ, ... (32 more)","Cu(9), U(4), Pt(4), Au(3), Ti(2), ... (10 more)"

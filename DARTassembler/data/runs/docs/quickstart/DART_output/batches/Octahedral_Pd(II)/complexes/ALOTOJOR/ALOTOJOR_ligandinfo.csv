@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PECBEH-03-a,C14H9N3O2,3,-2,N-O-O,28,251.245,0.5400558991,False,False,12.041692295520592,1.9735026361113697,2da03a2238548c77572bb2acf7753d3c,4,"PECBEH, PECBEH, WAWROD, RUZGUQ","Ti(2), U(1), Mo(1)"
+Ligand 1,unq_CSD-PABYID-02-a,C20H20N1P1,2,0,P-N,42,305.360761998,0.0991868972,False,True,9.823246624716292,2.346115797780632,507a5ce292da870bbea584b6581d346d,31,"PABYID, PABYOJ, PABYUP, PAXMAD, PEBQUL, ... (26 more)","Ru(17), Rh(4), Pd(2), Pt(2), Ni(1), ... (5 more)"
+Ligand 2,unq_CSD-OZODUD-01-c,C4H8O2,1,0,O,14,88.10599999999997,0.3078434662,False,True,4.602723552419806,2.3324192654838027,eec288df188a4d7459a1742a83a40ae3,32,"OZODUD, OZODUD, LUJKAE, LURKAL, LURKAL, ... (27 more)","Cu(15), Zn(7), U(3), Fe(2), Hg(1), ... (4 more)"

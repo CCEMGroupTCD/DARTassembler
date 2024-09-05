@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAGXOK-03-a,C12H12N3O1,3,-1,O-N-N,28,214.24800000000005,0.2778460991,False,True,11.239028810800335,2.0513812206986226,9982bfa39c24aece0ca163a652c513c0,10,"PAGXOK, PAGXOK10, PAHJAJ, PAHJEN, PEKVEJ, ... (5 more)","V(6), Cu(2), Fe(2)"
+Ligand 1,unq_CSD-OZOXOS-02-a,C8H8N1O2,2,-1,O-N,19,150.157,0.4283208484,False,True,7.645386897338813,1.8511907088604826,8c42892cc132b3c27f23cba1dd96df9f,8,"OZOXOS, OZOXOS, URUVEK, URUVEK, LEXVUF, ... (3 more)","Ni(6), Cu(2)"
+Ligand 2,unq_CSD-PAQKEA-01-a,C5H10N2Se1,1,0,Se,18,177.12,0.2476228941,False,False,6.159716855505617,2.4029965480624402,ded1ebdd8fc900ee76f1d42eeefa1134,5,"PAQKEA, GANVUP, GANVUP, GANVUP, GANVUP","Pt(4), Au(1)"

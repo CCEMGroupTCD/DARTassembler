@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAGNAP-03-a,C12H17N3,3,0,N-N-N,32,203.289,0.2354554871,False,True,11.094534382749012,2.0142403638033213,62025b42991235688755378398501a78,3,"PAGNAP, ZUYNEP, ZUYNEP","Ni(2), Cu(1)"
+Ligand 1,unq_CSD-PAYLUZ-02-a,C13H8N1S1,2,-1,C-N,23,210.274,0.6568309728,False,True,10.668274286406401,2.032017954230575,85699f3791f8f4ff5c089c5894962a46,101,"PAYLUZ, PAYLUZ, PAYMAG, PAYMAG, SINBID, ... (96 more)","Ir(78), Pt(16), Rh(2), Pd(2), Ru(2), ... (1 more)"
+Ligand 2,unq_CSD-PAFZUR-01-a,C12H27O3S1Si1,1,-1,S,44,279.4899999999999,0.1137973991,False,False,8.46901054728355,2.1395159312330443,a8c13246edab594ca6816d0d02a9d7c8,93,"PAFZUR, PODNEC, PODNEC, PODNIG, PODNIG, ... (88 more)","Co(44), Zn(17), Mn(10), Cd(8), Ni(6), ... (4 more)"

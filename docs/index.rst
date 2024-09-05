@@ -48,20 +48,20 @@ Are you ready to get started? :ref:`Install DART <installation_guide>`, explore 
    :maxdepth: 2
    :caption: How to Use DART
 
-   ./doc_files/part1_getting_started_and_how_to_guides/installation_guide
-   ./doc_files/part1_getting_started_and_how_to_guides/examples/simple_octahedral_assembly/simple_octahedral_assembly
-   ./doc_files/part1_getting_started_and_how_to_guides/tutorials_and_examples
-   ./doc_files/part1_getting_started_and_how_to_guides/understanding_the_dart_workflow
+   ./doc_files/1_installation_guide
+   ./doc_files/1_quickstart
+   ./doc_files/1_Pd_Ni_Cross_Coupling
+   ./doc_files/1_understanding_the_dart_workflow
 
 .. toctree::
    :maxdepth: 2
    :caption: DART Modules
 
-   ./doc_files/part2_dart_modules_documentation/module_overview
-   ./doc_files/part2_dart_modules_documentation/metalig/metalig_database
-   ./doc_files/part2_dart_modules_documentation/ligand_filters/ligand_filters
-   ./doc_files/part2_dart_modules_documentation/assembler/assembler
-.. todo: ./doc_files/part2_dart_modules_documentation/api/api_documentation
+   ./doc_files/2_module_overview
+   ./doc_files/2_metalig_database
+   ./doc_files/2_ligand_filters
+   ./doc_files/2_assembler
+.. todo: ./doc_files/2_TODO_api_documentation
 
 
 
@@ -69,11 +69,9 @@ Are you ready to get started? :ref:`Install DART <installation_guide>`, explore 
    :maxdepth: 1
    :caption: Additional Resources
 
-   ./doc_files/part3_additional_resources/troubleshooting_and_faqs
-   ./doc_files/part3_additional_resources/tips_and_tricks
-   ./doc_files/part3_additional_resources/current_limitations
-   ./doc_files/part3_additional_resources/how_to_cite_dart
-   ./doc_files/part3_additional_resources/version_history
-
-
+   ./doc_files/3_troubleshooting_and_faqs
+   ./doc_files/3_tips_and_tricks
+   ./doc_files/3_current_limitations
+   ./doc_files/3_how_to_cite_dart
+   ./doc_files/3_version_history
 

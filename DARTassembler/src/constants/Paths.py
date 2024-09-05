@@ -52,5 +52,12 @@ default_ligandfilters_yml_path = project_path().extend(*'DARTassembler/data/defa
 # For development only
 charge_benchmark_dir = project_path().extend('testing', 'charge_benchmark', 'internal', 'data_charge_benchmark')
 csd_graph_path = project_path().extend(*'data_input/CSD/graphs'.split('/'))
+# For docs
+docs_run_dirs = {
+    'quickstart_without_filters': project_path().extend(*'DARTassembler/data/runs/docs/quickstart/DART_output/batches/Octahedral_Pd(II)/complexes'.split('/')),
+    'quickstart_with_filters': project_path().extend(*'DARTassembler/data/runs/docs/quickstart/DART_output_targeted/batches/Octahedral_Pd(II)/complexes'.split('/')),
+
+}
+
 
 

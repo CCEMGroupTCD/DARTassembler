@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PCSCUP20-03-b,C13H10N3O2,3,-1,O-N-N,28,240.24200000000002,0.661239485,False,True,12.81484949814082,2.0218785222065265,ba483c8337a3a4207c3ef9869f226f07,19,"PCSCUP20, PIVFAC, PIVFAC, PIYVID, PIYVID, ... (14 more)","Co(4), Ni(4), Cu(3), Dy(3), Zn(2), ... (2 more)"
+Ligand 1,unq_CSD-PANGIW-02-a,C14H7Br1F4N1,2,-1,C-N,27,345.1146126519999,0.1754174949,False,True,11.429589020607871,2.120926259317232,8083e959ee6f2fdc5f976b900679d3c4,2,"PANGIW, ADUMAP",Pt(2)
+Ligand 2,unq_CSD-PACXAV-01-a,H3N1,1,0,N,4,17.031,0.7956694671,False,False,1.454550769138018,2.045079898194689,b783af999da4ccc9cbc786df2abc13c4,1608,"PACXAV, PACXAV, PAJMOC, PAJMOC, PAJMOC, ... (1603 more)","Ru(520), Pt(289), Co(258), Cu(136), Ni(136), ... (20 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PABYUN-03-a,C17H11N2O2,3,-1,N-N-C,32,275.287,0.5858628584,False,True,11.141425255774056,2.0369390825467453,a9119df9ff1b3d159dc3cb1012f47fcc,1,PABYUN,Pd(1)
+Ligand 1,unq_CSD-PEBXAV-02-a,C7H12O4,2,0,O-O,23,160.16900000000007,0.2164006262,False,False,9.148326393936763,2.1068871516409677,d21d1df368c3fdccf5a2cb8e38317b92,1,PEBXAV,Ti(1)
+Ligand 2,unq_CSD-PACCOL-01-a,C1N1,1,-1,C,2,26.018,1.0,False,False,1.1471743285133258,1.8630787047250583,9d88dc32690d837e1d9728f9d6ae3ca0,3361,"PACCOL, PACCOL, PACCOL, PACCOL, PAHCEK, ... (3356 more)","Fe(1045), Pt(340), Co(315), Au(259), Ni(196), ... (22 more)"

@@ -1,0 +1,20 @@
+output_directory: DART_output_targeted
+batches:
+- name: Octahedral_Pd(II)
+  metal_center: Pd
+  metal_oxidation_state: 2
+  total_charge: 0
+  geometry: mer-3-2-1
+  ligand_db_file: filtered_ligand_db.jsonlines
+  max_num_complexes: 100
+  isomers: lowest_energy
+  random_seed: 0
+  forcefield: false
+  complex_name_appendix: null
+  geometry_modifier_filepath: null
+  bidentate_rotator: auto
+verbosity: 2
+ffmovie: false
+concatenate_xyz: true
+complex_name_length: 8
+same_isomer_names: true

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PADDAD-03-a,C16H14N3,3,-1,N-N-C,33,248.309,0.3812716241,False,True,11.901124911956854,2.0376643785199984,f93d02368a14a5a2265c6dd0c3ebac93,1,PADDAD,Pt(1)
+Ligand 1,unq_CSD-PADNEO-02-a,C2H8N2S1,2,0,N-N,13,92.15999999999997,0.3019266909,False,True,4.893156492490302,2.0025229138243485,b9adcdca1af348619042a8b4b53a6b7a,1,PADNEO,Co(1)
+Ligand 2,unq_CSD-PAFJAH-01-b,C2H5O1,1,-1,O,8,45.06099999999999,0.3894442341,False,True,3.1671902137383543,1.8945533141086317,871332cafd9bce70db2e0674a121ab91,267,"PAFJAH, PAFJAH10, PANZEL, PECBUV, PEWWAR, ... (262 more)","V(69), Re(30), Ti(26), Nb(20), Mn(16), ... (24 more)"

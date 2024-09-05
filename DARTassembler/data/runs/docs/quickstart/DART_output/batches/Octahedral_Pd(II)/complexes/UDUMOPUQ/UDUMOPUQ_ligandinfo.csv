@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PASFOF-03-a,C15H11N3,3,0,N-N-N,29,233.27400000000003,0.6668623559,False,True,11.192323542500011,2.054239376008651,17085f9612ad4ac07688f378f711bdf3,967,"PASFOF, PASFUL, PAXFAW, PAXVAM, PEJBOY, ... (962 more)","Ru(334), Co(110), Pt(77), Cu(62), Os(41), ... (36 more)"
+Ligand 1,unq_CSD-PASZIT-02-a,C6H2N3O7,2,-1,O-O,18,228.096,0.440539712,False,False,6.99396669565991,2.47045434433545,01e0a09458559a8de738bb963018c315,318,"PASZIT, PIFCOX, PIFCOX, POMJEH, POMJEH, ... (313 more)","La(61), Gd(35), Sm(29), Nd(28), Eu(28), ... (15 more)"
+Ligand 2,unq_CSD-PABTAR-01-a,C11H8N1O3,1,-1,C,23,202.18899999999996,0.2107974604,False,True,8.66575385064681,1.9683261594563017,ba7820812a1e3d9ba97bfd15e86153f7,1,PABTAR,Pd(1)

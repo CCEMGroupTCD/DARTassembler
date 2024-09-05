@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEDMUH-03-a,C20H15N2S2,3,-1,S-S-C,39,347.474,0.1333015817,False,False,15.784938555471163,2.1743951796069374,39aefdd3393a767671c9d8ca476590a1,1,PEDMUH,Pd(1)
+Ligand 1,unq_CSD-PECTEX-02-a,C8H8N4,2,0,N-N,20,160.18000000000004,0.7865391017,False,True,9.311651394355355,2.0427590688688646,36de3b6782688ea4f109e513235ecee5,10,"PECTEX, PECTEX, PECTIB, PECTIB, DENXEA, ... (5 more)","Cu(6), Mn(2), Fe(2)"
+Ligand 2,unq_CSD-PACHEI-01-b,C14H21O1,1,-1,O,36,205.321,0.1390071126,False,False,9.176576978917574,1.8953773028080714,41edd847f37fbef2975e89a86230e0fd,221,"PACHEI, POVCEJ, LIGBEI, LIGBEI, LIGBIM, ... (216 more)","Sc(36), Zn(23), Dy(23), Zr(20), Cd(15), ... (17 more)"

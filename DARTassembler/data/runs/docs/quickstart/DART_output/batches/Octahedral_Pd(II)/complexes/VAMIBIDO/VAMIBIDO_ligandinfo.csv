@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAQGEW-03-a,C25H33N5,3,0,N-N-N,63,403.57399999999996,0.1887047035,False,True,24.884288187328163,2.1187710347610937,1f89a3becf571c7da513bd2951402617,1,PAQGEW,Co(1)
+Ligand 1,unq_CSD-PAHCAF-02-a,C16H18N1O2,2,-1,O-O,37,256.325,0.1495145057,False,False,13.686795170528415,1.9270690641212593,0f22f1766a36f93eeac3b2d2f4651ce8,2,"PAHCAF, PAHCAF",Cu(2)
+Ligand 2,unq_CSD-PAKJUI-01-a,Cl1O4,1,-1,O,5,99.446,0.3820511267,False,False,2.338802242601969,2.737134905334408,b1a53a0c39b096304aa1d8b8395de8ac,1072,"PAKJUI, PAPFIV, PASFIZ, PASFOE, PEBRIZ, ... (1067 more)","Cu(797), Cd(54), Zn(52), Mn(48), Ag(35), ... (8 more)"

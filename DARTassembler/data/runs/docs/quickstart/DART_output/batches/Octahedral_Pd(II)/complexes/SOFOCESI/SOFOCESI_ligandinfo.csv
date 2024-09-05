@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PARXUE-03-a,C17H13N3O1,3,0,O-N-N,34,275.311,0.7579602464,False,True,13.393638747554752,1.9735410686854875,d088bc1d8a3ffa057b8ca700e3a4309e,1,PARXUE,Cu(1)
+Ligand 1,unq_CSD-PAQQUV-02-a,C6H14N2,2,0,N-N,22,114.19199999999996,0.2338333963,False,True,5.685761877708211,2.055037588787296,eacf9980be9994344252bece443ce2d9,155,"PAQQUV, SIXYUT, SIXYUT, SUQKOG, TAJJUK, ... (150 more)","Cu(40), Pt(22), Ni(19), Cr(15), Co(13), ... (9 more)"
+Ligand 2,unq_CSD-OZOXUX-01-c,C12H17N1,1,-2,N,30,175.27500000000003,0.1547949587,False,False,8.816797741810799,1.958172318770746,dfafd05e1cbee4bc0f84f5a456b12eb7,619,"OZOXUX, PAFWAV, PALHAN, PALHIV, PALSAX, ... (614 more)","Mo(211), W(115), Ti(51), U(48), Re(36), ... (19 more)"

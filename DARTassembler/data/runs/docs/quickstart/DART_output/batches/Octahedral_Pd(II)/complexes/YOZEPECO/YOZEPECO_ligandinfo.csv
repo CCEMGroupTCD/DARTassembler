@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAWTIR-03-a,C17H15N3S1,3,0,N-N-C,36,293.3879999999999,0.3667264018,False,True,12.113074473889775,2.07384085880622,18a75f7f2835e70134166f777f63c90f,2,"PAWTIR, LUXTIH",Ru(2)
+Ligand 1,unq_CSD-PANGIW-02-a,C14H7Br1F4N1,2,-1,C-N,27,345.1146126519999,0.1754174949,False,True,11.429589020607871,2.120926259317232,8083e959ee6f2fdc5f976b900679d3c4,2,"PANGIW, ADUMAP",Pt(2)
+Ligand 2,unq_CSD-PEDXIF-01-f,H1S1,1,-1,S,2,33.068000000000005,1.0,False,False,0.9978869525151637,2.4288253498347716,9788c50e8fb0fe8f3c14b6e8db4af9e9,65,"PEDXIF, PIGTEG, SOFYIY, TELMEE, BIZTOT, ... (60 more)","Ru(11), Ni(10), Pd(8), Mo(6), Re(5), ... (10 more)"

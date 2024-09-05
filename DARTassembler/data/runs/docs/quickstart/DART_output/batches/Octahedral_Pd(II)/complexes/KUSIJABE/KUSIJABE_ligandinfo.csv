@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PECPAO-03-a,C15H15N1O3,3,-2,O-O-N,34,257.289,0.1698315737,False,True,10.33836613058369,2.04820671861191,2efddf9585fbf2adbf7233917d7be565,2,"PECPAO, KOKKAZ","Mo(1), Re(1)"
+Ligand 1,unq_CSD-PAWZAR-02-a,C15H12Br1N2O1,2,-1,N-O,31,316.178,0.1944439858,False,False,14.115742262807153,2.084929752904416,e4564010b082b190c1c7917b76b1fc2c,2,"PAWZAR, AQIZUX",Ru(2)
+Ligand 2,unq_CSD-PABWOE-01-b,N1S1,1,1,N,2,46.067,1.0,False,False,1.5386044000976986,1.781863011008422,01582384b3836a9d5c454216728fd370,24,"PABWOE, PINGAU, SOHBEW, TEHSAA, LUVPEZ, ... (19 more)","Os(8), Re(6), Tc(5), Ru(2), Mo(1), ... (2 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEBQET-03-a,C13H11N2O1,3,-1,O-N-N,27,211.244,0.4694175251,False,True,11.355729737449726,1.9743317707989554,988219a6f097fb22bb695fda63326c62,7,"PEBQET, PEBQET01, BICCEW, CUKLEA, GAFKOP, ... (2 more)","Cu(5), Fe(1), Pt(1)"
+Ligand 1,unq_CSD-PACTUM-02-a,C6H3N4O4,2,-1,O-N,17,195.114,0.808015948,False,False,6.770867569964723,2.0748072856204276,489688c385c371367edf102c4ccba020,1,PACTUM,Ru(1)
+Ligand 2,unq_CSD-PAHWOL-01-b,C6H7N1,1,0,N,14,93.12899999999996,0.4689771424,False,True,5.6110883828362565,1.9514303625802272,9812d016313ed3086dd6f00c1bf74bea,131,"PAHWOL, PAHWOL, TECWEE, LIVMEJ, LONYIX, ... (126 more)","Pt(23), Cu(21), Ag(16), Pd(16), Zn(14), ... (8 more)"

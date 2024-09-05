@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PECBEH-03-a,C14H9N3O2,3,-2,N-O-O,28,251.245,0.5400558991,False,False,12.041692295520592,1.9735026361113697,2da03a2238548c77572bb2acf7753d3c,4,"PECBEH, PECBEH, WAWROD, RUZGUQ","Ti(2), U(1), Mo(1)"
+Ligand 1,unq_CSD-PEBRAS-02-b,C21H22N1P1,2,0,P-N,45,319.387761998,0.08364386,False,True,10.634574046476898,2.3275465901934966,efd82efc2441d21d2c6422c1bfc791e9,13,"PEBRAS, FUTKIR, FUTKOX, ZUXRIT, ZUXROZ, ... (8 more)","Pd(9), Ru(1), Cu(1), Hg(1), Ni(1)"
+Ligand 2,unq_CSD-PAYHOM01-01-a,C13H10,1,0,C,23,166.22300000000004,0.2014288275,False,False,9.258377887081515,1.9427473047208164,1f0a70472df63e7f90c8b293a70c3801,31,"PAYHOM01, PEXXAR, PEXXAR01, PIZGEN, PIZGIR, ... (26 more)","Ru(11), Fe(7), Rh(4), Ir(3), Os(2), ... (4 more)"

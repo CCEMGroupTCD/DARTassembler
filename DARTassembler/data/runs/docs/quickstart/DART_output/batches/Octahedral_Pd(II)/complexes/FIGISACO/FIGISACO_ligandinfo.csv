@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PADHAF-03-a,C10H14N4O2S1,3,0,O-N-N,31,254.30800000000002,0.3174115456,False,True,11.684354449005731,2.0269588151156044,76760f3262eb2cbe3004586418c2f263,3,"PADHAF, LETSIO, XUGJAK","Cu(2), Ni(1)"
+Ligand 1,unq_CSD-OZUHEX-02-a,C22H32N10O2,2,0,N-N,66,468.566,0.0905924942,False,False,15.026380803440329,1.9993498488886976,360382b19f0a5284fdf04a1fb33cc158,2,"OZUHEX, OZUHOH","Ni(1), Pd(1)"
+Ligand 2,unq_CSD-OZULIF-01-a,O1,1,-2,O,1,15.999,1.0,False,False,,1.747565498057226,b1a746e052bbfde6c86e554cbcd4ff39,7544,"OZULIF, OZULIF, OZULOL, OZULOL, OZUWEM, ... (7539 more)","Mo(2386), U(1674), V(1535), Re(933), W(436), ... (16 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAHNUK-03-a,C31H19N3O2,3,0,N-N-N,55,465.512,0.5602564205,False,True,22.05750485934436,1.945606160300894,2c396331abf7c0c65bb93485505b2781,6,"PAHNUK, PAHNUK, PAHPAS, PAHPAS, PAHPEW, ... (1 more)","Fe(2), Ru(2), Zn(2)"
+Ligand 1,unq_CSD-PEBQUI-02-a,C8H16N2,2,0,N-N,26,140.23000000000002,0.2066740835,False,True,8.891997042284707,2.052536146447121,03a2e36184205da88f9dfa4402a996cc,35,"PEBQUI, POZZEJ, LOYZUW, BCPERH, BEPBUT, ... (30 more)","Ru(7), Ta(6), Pd(5), Re(4), Fe(3), ... (6 more)"
+Ligand 2,unq_CSD-PALTOM-01-a,C13H11N1,1,-2,N,25,181.23799999999997,0.1723612988,False,True,9.139921781941025,1.6875150399329768,a7ab53c35ecadfca4bd2a713bcf72e88,1,PALTOM,Ti(1)
