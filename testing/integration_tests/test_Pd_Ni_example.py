@@ -52,7 +52,7 @@ def copy_input_files_from_example_and_adapt_paths(example_input_dir, test_input_
 def test_Pd_Ni_example(nmax=False, skip_filters=False):
     example_input_dir = project_path().extend('examples/Pd_Ni_Cross_Coupling/generate_complexes/input')
     indir = Path('Pd_Ni_example_assembly/data_input')
-    benchmark_dir = project_path().extend('testing/integration_tests/Pd_Ni_example_assembly')
+    benchmark_dir = project_path().extend('examples/Pd_Ni_Cross_Coupling/generate_complexes/output')
 
     copy_input_files_from_example_and_adapt_paths(example_input_dir, indir)
 
@@ -69,7 +69,7 @@ def test_Pd_Ni_example(nmax=False, skip_filters=False):
     benchmarks = ['ligand_databases', 'assembled_complexes'] if not skip_filters else ['assembled_complexes']
     for benchmark in benchmarks:
         print(f'Comparing {benchmark}...')
-        old_dir = Path(benchmark_dir, f'benchmark_{benchmark}')
+        old_dir = Path(benchmark_dir, benchmark)
         new_dir = Path(assembly.output_path.parent, benchmark)
         if old_dir.exists():
             test = IntegrationTest(new_dir=new_dir, old_dir=old_dir)

@@ -1,4 +1,4 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PALFEP-04-a,C54H41Cl1N4,4,-2,N-N-N-N,100,781.3999999999999,0.0584677116,False,False,17.285220289600012,1.9149139210404078,139c1899bbafb8334e31f44d71ee55ed,1,PALFEP,Ni(1)
-Ligand 1,unq_CSD-PAFWIF-01-b,N3,1,-1,N,3,42.021,1.0,False,False,2.2359128001780406,2.0559024952560367,c8ee8cd128934fd2bc20f5cd86dd2192,1728,"PAFWIF, PAFWIF, PAKDAJ, PAKDAJ, PAKTIH, ... (1723 more)","Co(393), Cu(203), Zn(162), Ni(160), Mn(146), ... (28 more)"
-Ligand 2,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,2.327796359220454,8756e7780cb7e3fab0b8bcb31598a04d,72337,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72332 more)","Ru(9548), Pd(9384), Pt(6813), Cu(6010), Zn(4576), ... (43 more)"
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PALFEP-04-a,C54H41Cl1N4,4,-2,N-N-N-N,100,781.3999999999999,0.0584677116,False,False,17.285220289600012,139c1899bbafb8334e31f44d71ee55ed,1,PALFEP,Ni(1)
+Ligand 1,unq_CSD-PAFWIF-01-b,N3,1,-1,N,3,42.021,1.0,False,False,2.2359128001780406,c8ee8cd128934fd2bc20f5cd86dd2192,1728,"PAFWIF, PAFWIF, PAKDAJ, PAKDAJ, PAKTIH, ... (1723 more)","Co(393), Cu(203), Zn(162), Ni(160), Mn(146), ... (28 more)"
+Ligand 2,unq_CSD-OZOCUD-01-a,Cl1,1,-1,Cl,1,35.45,1.0,False,False,,8756e7780cb7e3fab0b8bcb31598a04d,72337,"OZOCUD, OZOLIB, OZOMOI, OZOMOI, OZOZOU, ... (72332 more)","Ru(9548), Pd(9384), Pt(6813), Cu(6010), Zn(4576), ... (43 more)"

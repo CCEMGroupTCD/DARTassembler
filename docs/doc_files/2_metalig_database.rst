@@ -41,17 +41,17 @@ The .csv file displays a range of physical and statistical properties of each li
 
 **Physical properties :**
     - **Ligand ID**
+    - **Stoichiometry**
     - **Denticity**
     - **Donors**
-    - **Stoichiometry**
-    - **Number of Atoms**
     - **Formal Charge**
+    - **Number of Atoms**
+
     - **Molecular Weight** - in g/mol.
     - **Ligand Planarity** - Degree of planarity of all ligand atoms between 0 and 1, where 1.0 represents a perfect plane.
     - **Haptic** - True if the molecular graph has any neighboring donor atoms, False otherwise.
     - **Beta-Hydrogen** - If the ligand has a hydrogen in beta position to the metal center.
     - **Max. Interatomic Distance** - Length of the ligand in Angstrom in the longest direction.
-    - **Avg. M-D Bond Length** - Mean of all bond lengths from metal to donor atoms.
     - **Graph ID** - The ID of the molecular graph in the database, unique for each unique ligand.
 
 **Statistical CSD properties :**

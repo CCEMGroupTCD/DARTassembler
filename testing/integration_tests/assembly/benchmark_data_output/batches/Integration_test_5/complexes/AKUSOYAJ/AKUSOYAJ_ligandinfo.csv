@@ -1,3 +1,3 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEHXEF-05-a,C12H31N6,5,1,N-N-N-N-N,49,259.42199999999997,0.1059482011,False,True,9.186395023620529,2.0717202574385447,9cd2e0031dc62d8b11d3cf3ca0dd1585,2,"PEHXEF, KUWZUX","Ni(1), Co(1)"
-Ligand 1,unq_CSD-PACGOP-01-b,N1,1,-3,N,1,14.007,1.0,False,False,,1.8392864513174658,c49b33437fe70e292200a55b80369110,482,"PACGOP, PAFFUZ, PASICR, PASNCO10, PASNOS, ... (477 more)","Re(93), Cr(85), Mo(78), Os(59), Tc(57), ... (17 more)"
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEHXEF-05-a,C12H31N6,5,1,N-N-N-N-N,49,259.42199999999997,0.1059482011,False,True,9.186395023620529,9cd2e0031dc62d8b11d3cf3ca0dd1585,2,"PEHXEF, KUWZUX","Ni(1), Co(1)"
+Ligand 1,unq_CSD-PACGOP-01-b,N1,1,-3,N,1,14.007,1.0,False,False,,c49b33437fe70e292200a55b80369110,482,"PACGOP, PAFFUZ, PASICR, PASNCO10, PASNOS, ... (477 more)","Re(93), Cr(85), Mo(78), Os(59), Tc(57), ... (17 more)"

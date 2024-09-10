@@ -1289,7 +1289,6 @@ class RCA_Ligand(RCA_Molecule):
             'Haptic': self.has_neighboring_coordinating_atoms,
             'Beta-Hydrogen': self.has_betaH,
             'Max. Interatomic Distance': self.stats['max_atomic_distance'],
-            'Avg. M-D Bond Length': np.mean(self.stats['coordinating_atom_distances_to_metal']),
             'Graph ID': self.graph_hash_with_metal,
             'CSD Occurrences': self.occurrences,
             }

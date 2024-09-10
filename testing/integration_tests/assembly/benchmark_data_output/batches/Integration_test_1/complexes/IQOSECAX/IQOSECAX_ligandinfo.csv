@@ -1,3 +1,3 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAWZAP-02-a,C5H11O2,2,-1,O-O,18,103.14099999999998,0.2528689897,False,True,6.378196092940385,2.062451756428544,6376b139bb6526eaec1a5b17458feff4,12,"PAWZAP, WALYOX, WALYOX, WALYOX, EGOGOW, ... (7 more)","Hf(4), Zr(4), Cr(3), V(1)"
-Ligand 1,unq_CSD-PASLON-02-a,C19H14F2N3O2S1,2,-1,N-N,41,386.396806326,0.0918357594,False,False,10.861928293815975,2.027535525156649,0312ee9ffb29d7c2d7948115148c1870,1,PASLON,Pt(1)
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAWZAP-02-a,C5H11O2,2,-1,O-O,18,103.14099999999998,0.2528689897,False,True,6.378196092940385,6376b139bb6526eaec1a5b17458feff4,12,"PAWZAP, WALYOX, WALYOX, WALYOX, EGOGOW, ... (7 more)","Hf(4), Zr(4), Cr(3), V(1)"
+Ligand 1,unq_CSD-PASLON-02-a,C19H14F2N3O2S1,2,-1,N-N,41,386.396806326,0.0918357594,False,False,10.861928293815975,0312ee9ffb29d7c2d7948115148c1870,1,PASLON,Pt(1)
