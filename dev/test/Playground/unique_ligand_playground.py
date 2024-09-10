@@ -67,10 +67,10 @@ if __name__ == '__main__':
 
 
     # ===== Code for MetaLig documentation =====
-    # from DARTassembler.src.ligand_extraction.DataBase import LigandDB
-    #
-    # # Load the first 1000 out of 41,018 ligands in the MetaLig database.
-    # metalig = LigandDB.load_from_json(path='metalig', n_max=1000)
+    from DARTassembler.src.ligand_extraction.DataBase import LigandDB
+
+    # Load the first 1000 out of 41,018 ligands in the MetaLig database.
+    metalig = LigandDB.load_from_json(path='metalig', n_max=1000)
     #
     # # Set some criteria to filter ligands
     # keep_denticity = 2

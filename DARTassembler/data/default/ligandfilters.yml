@@ -76,6 +76,9 @@ filters:
     include_metal: false                        # If true, the ligand structure will contain a 'Cu' metal center connected to the coordinating atoms when matching the SMARTS pattern.
     apply_to_denticities:                       # List of denticities to apply this filter to. If empty, applies to all denticities.
 
+  - filter: graph_IDs                           # Only keep ligands with specified graph IDs
+    graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]     # List of graph IDs to keep
+
   ####### Statistical CSD Filters #######
 
   - filter: occurrences                         # Filter out ligands based on the number of times they have been observed in the CSD
@@ -87,7 +90,4 @@ filters:
     metal_ligand_binding_history: [Pd, Ni]      # List of metals to keep
     apply_to_denticities:                       # List of denticities to apply this filter to. If empty, applies to all denticities.
 
-  ####### Special Filters #######
 
-  - filter: graph_IDs                           # Only keep ligands with specified graph IDs
-    graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]     # List of graph IDs to keep
