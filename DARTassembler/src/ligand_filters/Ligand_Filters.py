@@ -13,7 +13,7 @@ from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _f
     _metals_of_interest, _denticities_of_interest, _remove_ligands_with_neighboring_coordinating_atoms, \
     _remove_ligands_with_beta_hydrogens, _strict_box_filter, _acount, _acount_min, _acount_max, _denticities, \
     _ligcomp_atoms_of_interest, _ligcomp_instruction, _mw_min, _mw_max, _graph_hash_wm, _stoichiometry, _min, _max, \
-    _md_bond_length, _interatomic_distances, _occurrences, _planarity, _remove_missing_bond_orders, _atm_neighbors, \
+    _interatomic_distances, _occurrences, _planarity, _remove_missing_bond_orders, _atm_neighbors, \
     _atom, _neighbors, _smarts_filter, _smarts, _should_be_present, _include_metal
 
 
@@ -118,12 +118,6 @@ class LigandFilters(object):
                 )
             elif filtername == _occurrences:
                 self.Filter.filter_occurrences(
-                    min=filter[_min],
-                    max=filter[_max],
-                    denticities=filter[_denticities]
-                )
-            elif filtername == _md_bond_length:
-                self.Filter.filter_metal_donor_bond_lengths(
                     min=filter[_min],
                     max=filter[_max],
                     denticities=filter[_denticities]

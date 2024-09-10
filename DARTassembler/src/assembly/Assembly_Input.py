@@ -98,7 +98,6 @@ _mw_max = 'max'
 _interatomic_distances = 'interatomic_distances'
 _planarity = 'planarity'
 _occurrences = 'occurrences'
-_md_bond_length = 'metal_donor_bond_lengths'
 _min = 'min'
 _max = 'max'
 _remove_missing_bond_orders = 'remove_ligands_with_missing_bond_orders'
@@ -148,7 +147,6 @@ ligandfilters_filter_defaults = {
     _interatomic_distances: {_denticities: None},
     _planarity: {_denticities: None},
     _occurrences: {_denticities: None},
-    _md_bond_length: {_denticities: None},
     _remove_missing_bond_orders: {_denticities: None},
     _atm_neighbors: {_denticities: None},
     _smarts_filter: {_denticities: None},
@@ -529,11 +527,6 @@ class LigandFilterInput(BaseInput):
             _max: [int, str, type(None)],
             _denticities: [list, tuple, type(None), int],
             },
-        _md_bond_length: {
-            _min: [float, str, type(None)],
-            _max: [float, str, type(None)],
-            _denticities: [list, tuple, type(None), int],
-            },
         _remove_missing_bond_orders: {
             _remove_missing_bond_orders: [bool, str],
             _denticities: [list, tuple, type(None), int],
@@ -680,8 +673,6 @@ class LigandFilterInput(BaseInput):
                 out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_planarity))
             elif self.filtername == _occurrences:
                 out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_occurrences))
-            elif self.filtername == _md_bond_length:
-                out_filter_settings.update(self.check_min_max_input(filter_values=filter_values, filter_name=_md_bond_length))
             elif self.filtername == _remove_missing_bond_orders:
                 out_filter_settings[_remove_missing_bond_orders] = self.get_bool_from_input(input=filter_values[_remove_missing_bond_orders], varname=_remove_missing_bond_orders)
                 out_filter_settings[_denticities] = self.get_list_of_ints_from_input(input=filter_values[_denticities], varname=f'{_remove_missing_bond_orders}:{_denticities}', allow_none=True)

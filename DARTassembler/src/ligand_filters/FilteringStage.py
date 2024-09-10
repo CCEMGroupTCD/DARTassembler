@@ -277,9 +277,6 @@ class FilterStage:
     def filter_planarity(self, min: float = None, max: float = None, denticities: list = None):
         self.filter_min_max_value(lambda ligand: ligand.calculate_planarity(), min, max, denticities)
 
-    def filter_metal_donor_bond_lengths(self, min: float = None, max: float = None, denticities: list = None):
-        self.filter_min_max_value(lambda ligand: list(ligand.stats['coordinating_atom_distances_to_metal']), min, max, denticities)
-
     def filter_interatomic_distances(self, min: float = None, max: float = None, denticities: list = None):
         self.filter_min_max_value(lambda ligand: ligand.get_all_inter_atomic_distances_as_list(), min, max, denticities)
 

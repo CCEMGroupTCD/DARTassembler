@@ -203,19 +203,6 @@ ligand_filters = {
         },
         'apply_to_denticities': apply_to_denticities
     },
-    'metal_donor_bond_lengths': {
-        'min': {
-            'object': 'float or None',
-            'info': 'Minimum bond length (in Angstrom). If empty, defaults to 0.',
-            'default': 'Placeholder - 1.2',
-        },
-        'max': {
-            'object': 'float or None',
-            'info': 'Maximum bond length (in Angstrom). If empty, defaults to infinity.',
-            'default': None,
-        },
-        'apply_to_denticities': apply_to_denticities
-    },
     'interatomic_distances': {
         'min': {
             'object': 'float or None',

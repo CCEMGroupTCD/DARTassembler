@@ -22,7 +22,6 @@ The following filters are currently implemented:
         - :confval:`ligand_charges`
         - :confval:`ligand_composition`
         - :confval:`coordinating_atoms_composition`
-        - :confval:`metal_donor_bond_lengths`
         - :confval:`number_of_atoms`
         - :confval:`molecular_weight`
         - :confval:`interatomic_distances`
@@ -76,11 +75,6 @@ This template specifies all available filters and examples of their parameters:
         elements: CN                                # Stoichiometry/list of elements to apply this filter to
         instruction: must_contain_and_only_contain  # Instruction for how to apply this filter. Options: 'must_contain_and_only_contain', 'must_at_least_contain', 'must_exclude', 'must_only_contain_in_any_amount'
         apply_to_denticities:                       # List of denticities to apply this filter to. If empty, applies to all denticities.
-
-      - filter: metal_donor_bond_lengths            # Filters ligands by the bond lengths between the metal and the donor atoms (in Angstrom).
-        min: 1.3                                    # If empty, defaults to 0.
-        max: 2.0                                    # If empty, defaults to infinity.
-        apply_to_denticities: [2]                   # List of denticities to apply this filter to. If empty, applies to all denticities.
 
       - filter: number_of_atoms                     # Filters ligands by their total atom count.
         min: 10                                     # If empty, defaults to 0.
@@ -354,33 +348,6 @@ Physical Property Filters
 .. tip::
 
     The :confval:`ligand_composition` and :confval:`coordinating_atoms_composition` filters have four different modes depending on the **instruction** parameter. On first glance, these modes might seem too general to make a useful filter, but by combining the same filter multiple times with different instructions, users can achieve very specific filters.
-
-.. _filter_metal_donor_bond_lengths:
-
-.. confval:: metal_donor_bond_lengths
-
-    Only keeps ligands where all metal-donor bond lengths are within the specified range.
-
-    :options:
-
-        min :
-            Minimum bond length in Angstrom. If empty, will be set to 0.
-
-        max :
-            Maximum bond length in Angstrom. If empty, will be treated as infinity.
-
-        apply_to_denticities :
-
-            Denticity or list of denticities. This filter will be applied only to ligands with the specified denticities. If empty or omitted, will apply to all ligands.
-
-    :example: This filter would remove a bidentate ligand with metal-donor bond lengths of (1.4, 2.2) Angstrom, but keep another bidentate ligand with metal-donor bond lengths of (1.6, 1.8) Angstrom.
-
-        .. code-block:: yaml
-
-            - filter: metal_donor_bond_lengths
-              min: 1.3
-              max: 2.0
-              apply_to_denticities: [2]
 
 .. _filter_number_of_atoms:
 

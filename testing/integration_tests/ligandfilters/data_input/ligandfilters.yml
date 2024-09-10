@@ -48,10 +48,6 @@ filters:
     max:
     apply_to_denticities:
 
-  - filter: metal_donor_bond_lengths
-    min: 1.0
-    max: 2.5
-
   - filter: atomic_neighbors
     atom: C
     neighbors: H3
