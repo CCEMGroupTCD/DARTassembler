@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import Union
 
 
-def assembler(assembly_input_path: Union[str, Path]):
-    assembly = DARTAssembly(assembly_input_path=assembly_input_path)
+def assembler(assembly_input_path: Union[str, Path], delete_output_dir: bool = False) -> DARTAssembly:
+    assembly = DARTAssembly(assembly_input_path=assembly_input_path, delete_output_dir=delete_output_dir)
     assembly.run_all_batches()
 
     return assembly

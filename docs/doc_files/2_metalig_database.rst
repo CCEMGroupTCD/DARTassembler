@@ -41,12 +41,11 @@ The .csv file displays a range of physical and statistical properties of each li
 
 **Physical properties :**
     - **Ligand ID**
-    - **Stoichiometry**
     - **Denticity**
     - **Donors**
-    - **Formal Charge**
+    - **Stoichiometry**
     - **Number of Atoms**
-
+    - **Formal Charge**
     - **Molecular Weight** - in g/mol.
     - **Ligand Planarity** - Degree of planarity of all ligand atoms between 0 and 1, where 1.0 represents a perfect plane.
     - **Haptic** - True if the molecular graph has any neighboring donor atoms, False otherwise.

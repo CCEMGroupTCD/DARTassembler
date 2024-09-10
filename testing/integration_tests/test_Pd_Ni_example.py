@@ -10,12 +10,12 @@ def copy_input_files_from_example_and_adapt_paths(example_input_dir, test_input_
     copy_tree(str(example_input_dir), str(test_input_dir))
 
     replace_paths = {
-        'ligand_db_Br.jsonlines': 'Pd_Ni_example_assembly/ligand_databases/Br/ligand_db_Br.jsonlines',
-        'ligand_db_phenyl.jsonlines': 'Pd_Ni_example_assembly/ligand_databases/phenyl/ligand_db_phenyl.jsonlines',
-        'ligand_db_P_N_donors.jsonlines': 'Pd_Ni_example_assembly/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines',
-        'assembler_output': 'Pd_Ni_example_assembly/assembled_complexes',
-        'input/Pd_phenyl_geometry_modification.xyz': 'Pd_Ni_example_assembly/data_input/Pd_phenyl_geometry_modification.xyz',
-        'input/Ni_phenyl_geometry_modification.xyz': 'Pd_Ni_example_assembly/data_input/Ni_phenyl_geometry_modification.xyz'
+        'ligand_db_Br.jsonlines': 'Pd_Ni_example/ligand_databases/Br/ligand_db_Br.jsonlines',
+        'ligand_db_phenyl.jsonlines': 'Pd_Ni_example/ligand_databases/phenyl/ligand_db_phenyl.jsonlines',
+        'ligand_db_P_N_donors.jsonlines': 'Pd_Ni_example/ligand_databases/P_N_ligands/ligand_db_P_N_donors.jsonlines',
+        'assembler_output': 'Pd_Ni_example/assembled_complexes',
+        'input/Pd_phenyl_geometry_modification.xyz': 'Pd_Ni_example/data_input/Pd_phenyl_geometry_modification.xyz',
+        'input/Ni_phenyl_geometry_modification.xyz': 'Pd_Ni_example/data_input/Ni_phenyl_geometry_modification.xyz'
     }
 
     should_adapt_n_paths = {
@@ -50,19 +50,21 @@ def copy_input_files_from_example_and_adapt_paths(example_input_dir, test_input_
     return
 
 def test_Pd_Ni_example(nmax=False, skip_filters=False):
+
+    test_dir = project_path().extend('testing', 'integration_tests', 'Pd_Ni_example')
+    indir = Path(test_dir, 'data_input')
     example_input_dir = project_path().extend('examples/Pd_Ni_Cross_Coupling/generate_complexes/input')
-    indir = Path('Pd_Ni_example_assembly/data_input')
     benchmark_dir = project_path().extend('examples/Pd_Ni_Cross_Coupling/generate_complexes/output')
 
     copy_input_files_from_example_and_adapt_paths(example_input_dir, indir)
 
     if not skip_filters:
-        Br_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_Br.yml'), nmax=100)
-        phenyl_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_phenyl.yml'), nmax=100)
-        P_N_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_P_N_ligands.yml'), nmax=nmax)
+        Br_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_Br.yml'), nmax=100, delete_output_dir=True)
+        phenyl_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_phenyl.yml'), nmax=100, delete_output_dir=True)
+        P_N_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_P_N_ligands.yml'), nmax=nmax, delete_output_dir=True)
     else:
         Br_filter = phenyl_filter = P_N_filter = None
-    assembly = DARTassembler.assembler(Path(indir, 'Pd_Ni_assembly_input.yml'))
+    assembly = DARTassembler.assembler(Path(indir, 'Pd_Ni_assembly_input.yml'), delete_output_dir=True)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest

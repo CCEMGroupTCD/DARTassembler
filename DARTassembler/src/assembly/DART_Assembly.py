@@ -1,3 +1,4 @@
+import shutil
 import sys
 from unittest.mock import patch
 import datetime
@@ -35,7 +36,8 @@ RDLogger.DisableLog('rdApp.*') # Disable rdkit warnings
 class DARTAssembly(object):
 
     def __init__(self,
-                 assembly_input_path: Union[str, Path] = 'assembly_input.yml'
+                 assembly_input_path: Union[str, Path] = 'assembly_input.yml',
+                 delete_output_dir: bool = False
                  ):
         """
         :param assembly_input_path: Path to the assembly input file.
@@ -54,6 +56,9 @@ class DARTAssembly(object):
         self.batches = self.settings.Batches
         self.n_batches = len(self.batches)
         self.same_isomer_names = self.settings.same_isomer_names
+
+        if delete_output_dir:
+            shutil.rmtree(self.output_path, ignore_errors=True)
 
         self.df_info = None
         self.gbl_outcontrol = AssemblyOutput(outdir=self.output_path)

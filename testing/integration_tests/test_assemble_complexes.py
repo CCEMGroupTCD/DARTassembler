@@ -7,7 +7,9 @@ from DARTassembler.src.constants.Paths import project_path
 
 def test_assemble_complexes():
     assembly_input = project_path().extend('testing', 'integration_tests', 'assembly', 'data_input', 'test_assembly_input.yml')   # In this file the user specifies which input they want
-    assembly = assembler(assembly_input_path=assembly_input)
+
+    # Delete output directory so that the test detects if files are not written.
+    assembly = assembler(assembly_input_path=assembly_input, delete_output_dir=True)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest

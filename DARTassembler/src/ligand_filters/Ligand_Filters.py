@@ -22,15 +22,18 @@ from DARTassembler.src.assembly.Assembly_Input import LigandFilterInput, _mw, _f
 
 class LigandFilters(object):
 
-    def __init__(self, filepath: Union[str, Path], max_number: Union[int, None] = None):
+    def __init__(self, filepath: Union[str, Path], max_number: Union[int, None] = None, output_ligand_db_path: Union[None, str, Path] = None, delete_output_dir: bool = False):
         self.filepath = filepath
         self.max_number = max_number
         self.input = LigandFilterInput(path=self.filepath)
 
         self.ligand_db_path = self.input.ligand_db_path
-        self.output_ligand_db_path = self.input.output_ligand_db_path
+        self.output_ligand_db_path = output_ligand_db_path or self.input.output_ligand_db_path  # Overwrite the output path if specified
         self.output_info = self.input.output_filtered_ligands
         self.filters = self.input.filters
+
+        if delete_output_dir:
+            shutil.rmtree(self.output_ligand_db_path.parent, ignore_errors=True)
 
         # Make a directory for the output if specified
         if self.output_info:

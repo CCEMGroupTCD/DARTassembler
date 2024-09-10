@@ -3,10 +3,14 @@ Integration test for the filtering of ligands.
 """
 from DARTassembler.ligandfilters import ligandfilters
 from DARTassembler.src.constants.Paths import project_path
+from DARTassembler.src.ligand_extraction.io_custom import read_yaml
+from pathlib import Path
+import shutil
 
 def test_filter_ligands(nmax=3000):
     filter_ligands_path = project_path().extend('testing', 'integration_tests', 'ligandfilters', 'data_input', 'ligandfilters.yml')   # In this file the user specifies which input they want
-    filters = ligandfilters(filter_input_path=filter_ligands_path, nmax=nmax)
+
+    filters = ligandfilters(filter_input_path=filter_ligands_path, nmax=nmax, delete_output_dir=True)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest

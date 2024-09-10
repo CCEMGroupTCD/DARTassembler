@@ -7,7 +7,10 @@ import shutil
 
 def test_assemble_complexes():
     outdir = Path('installation/data_output')
+
+    # Delete output directory so that the test detects if files are not written.
     shutil.rmtree(outdir, ignore_errors=True)
+
     installtest(outdir=outdir)
 
     #%% ==============    Doublecheck refactoring    ==================
