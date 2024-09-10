@@ -50,10 +50,10 @@ def dbinfo(input_path: Union[str, Path], output_path: Union[str, Path, None] = N
     print(f'  - Saved .csv to {output_path.name}')
 
     # Save to concatenated xyz file
-    xyz_output_filepath = Path(f'concat_{output_path.with_suffix("").name}.xyz').resolve()
-    xyz_output_path = output_path.parent.joinpath(xyz_output_filepath)
+    xyz_filename = str(Path(f'concat_{output_path.with_suffix("").name}.xyz'))
+    xyz_output_path = output_path.parent.joinpath(xyz_filename)
     db.save_concat_xyz(xyz_output_path, with_metal=True)
-    print(f'  - Saved .xyz to {xyz_output_filepath.name}')
+    print(f'  - Saved .xyz to {xyz_filename}')
 
     print(f"Done! All info files saved. Exiting DART DBinfo Module.")
 
