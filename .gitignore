@@ -29,8 +29,9 @@ __MACOSX
 
 # Ignore the output directories for the tests, but keep the benchmark directories.
 /testing/integration_tests/**/data_output
-/testing/integration_tests/Pd_Ni_example_assembly/ligand_databases
-/testing/integration_tests/Pd_Ni_example_assembly/assembled_complexes
+/testing/integration_tests/Pd_Ni_example/ligand_databases
+/testing/integration_tests/Pd_Ni_example/assembled_complexes
+/testing/integration_tests/Pd_Ni_example/data_input
 
 #/docs/_build
 

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-BECJUQ-02-a,C35H51N2P1,2,0,N-P,89,530.780761998,0.0688691893,False,True,18.28443281072727,e8fba7bf302035bc43ad55e0e97b9026,1,BECJUQ,Pd(1)
-Ligand 1,unq_CSD-OZUJID-01-a,Br1,1,-1,Br,1,79.904,1.0,False,False,,382b07ec1446fddc75f0d2acb55b6e09,14782,"OZUJID, OZUSOT, OZUSOT, OZUZIV, OZUZIV, ... (14777 more)","Cu(1911), Pd(1697), Ni(1678), Zn(1339), Re(1062), ... (41 more)"
-Ligand 2,unq_CSD-OZOWIK-01-c,C6H5,1,-1,C,11,77.10599999999998,0.9168205805,False,True,4.6467725369335655,302bb44378408cbea6071417f1fc7a16,1111,"OZOWIK, OZOWIK, PABWAQ, PABYEW, PABZUN, ... (1106 more)","Pt(255), Ni(170), Pd(127), Ir(67), Zn(65), ... (26 more)"
