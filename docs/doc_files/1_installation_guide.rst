@@ -13,7 +13,7 @@ If you're not sure what is meant with the terminal or pip, please refer to the :
 
 .. tip::
 
-    It is recommended to install DART as regular user, not as sudo user, i.e. please use ``pip install`` but not ``sudo pip install``.
+    It is recommended to install DART as regular user, not as sudo user, i.e. please use ``pip install`` instead of ``sudo pip install``.
 
 To verify that DART is installed correctly, run the following command:
 

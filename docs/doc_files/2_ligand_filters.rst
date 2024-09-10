@@ -5,9 +5,9 @@ Ligand Filters Module
 
 .. contents:: :local:
 
-The Ligand Filters Module enables users to obtain a set of ligands with well-defined properties from the extensive :ref:`MetaLig Database <metalig>`. These filters are invaluable for assembling complexes targeted to a user-defined chemical space.
+The Ligand Filters Module enables users to obtain a set of ligands with well-defined properties from the entire :ref:`MetaLig Database <metalig>`. These filters are invaluable for assembling complexes targeted to a user-defined chemical space.
 
-Users can apply a large range of predefined filters. For those requiring precise control over the structures, the :confval:`smarts` filter allows for the application of powerful SMARTS patterns to filter ligands based on their 2D chemical structure. Furthermore, the :confval:`graph_IDs` filter enables the selection of individual ligands. Alternatively to using the Ligand Filters Module with pre-defined filters, users can also :ref:`use Python to explore the MetaLig and create custom filters <metalig_python_filtering>`.
+Users can apply a large range of predefined filters. For those requiring precise control over the structures, the :confval:`smarts` filter allows for the application of powerful SMARTS patterns to filter ligands based on their 2D chemical structure. Furthermore, the :confval:`graph_IDs` filter enables the selection of individual ligands. Alternatively, instead of using the Ligand Filters Module with pre-defined filters, users can :ref:`explore the MetaLig and create custom filters using Python <metalig_python_filtering>`.
 
 The ligand filters module is run in the terminal by providing a single configuration file:
 
@@ -33,11 +33,10 @@ The following filters are currently implemented:
         - :confval:`remove_ligands_with_missing_bond_orders`
         - :confval:`atomic_neighbors`
         - :confval:`smarts`
+        - :confval:`graph_IDs`
     Statistical CSD Filters:
         - :confval:`occurrences`
         - :confval:`metal_ligand_binding_history`
-    Special Filters:
-        - :confval:`graph_IDs`
 
 Input File
 ~~~~~~~~~~
@@ -128,6 +127,9 @@ This template specifies all available filters and examples of their parameters:
         include_metal: false                        # If true, the ligand structure will contain a 'Cu' metal center connected to the coordinating atoms when matching the SMARTS pattern.
         apply_to_denticities:                       # List of denticities to apply this filter to. If empty, applies to all denticities.
 
+      - filter: graph_IDs                           # Only keep ligands with specified graph IDs
+        graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]     # List of graph IDs to keep
+
       ####### Statistical CSD Filters #######
 
       - filter: occurrences                         # Filter out ligands based on the number of times they have been observed in the CSD
@@ -139,12 +141,6 @@ This template specifies all available filters and examples of their parameters:
         metal_ligand_binding_history: [Pd, Ni]      # List of metals to keep
         apply_to_denticities:                       # List of denticities to apply this filter to. If empty, applies to all denticities.
 
-      ####### Special Filters #######
-
-      - filter: graph_IDs                           # Only keep ligands with specified graph IDs
-        graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]     # List of graph IDs to keep
-
-
 You can also download this template into your current directory by running:
 
 .. code-block:: bash
@@ -153,7 +149,7 @@ You can also download this template into your current directory by running:
 
 .. tip::
 
-    Every filter, except :confval:`denticities` and :confval:`graph_IDs` filter, has an optional parameter **apply_to_denticities**. This parameter allows users to apply the respective filter only to ligands with the specified denticities, which can be very handy. If this parameter is empty or omitted from the file, the filter will be applied to all ligands.
+    Every filter, except :confval:`denticities` and :confval:`graph_IDs`, has an optional parameter **apply_to_denticities**. This parameter allows users to apply the respective filter only to ligands with the specified denticities, which can be very useful. If this parameter is empty or omitted, the filter will be applied to all ligands.
 
 Global Options
 ~~~~~~~~~~~~~~~~~~~~
@@ -442,7 +438,7 @@ Physical Property Filters
 
 .. confval:: interatomic_distances
 
-    Only keeps ligands in which all interatomic distances are within the specified range. The calculated interatomic distances are not only between atoms with a bond, but between all atoms in the ligand, even far-away ones! The maximum interatomic distance can be used as a measure for the size of a ligand, while the minimum interatomic distance can be used as a measure for how close atoms are in the ligand. Therefore, this filter is basically a 2-in-1 filter which can be used to remove ligands which are either too big or have atoms which are too close to each other.
+    Only keeps ligands in which all interatomic distances are within the specified range. The calculated interatomic distances are not only between atoms with a bond, but between all atoms in the ligand. The maximum interatomic distance can be used as a measure for the size of a ligand, while the minimum interatomic distance can be used as a measure for how close atoms are in the ligand. Therefore, this filter is essentially a 2-in-1 filter which can be used to remove ligands which are either too big or have atoms which are too close to each other.
 
     :options:
 
@@ -643,6 +639,23 @@ Molecular Graph Filters
                   include_metal: false
                   apply_to_denticities:
 
+.. _filter_graph_IDs:
+
+.. confval:: graph_IDs
+
+    A filter to keep only individually specified ligands. Graph IDs are unique IDs for each ligand which can be found in all ligand .csv files, generated e.g. by the :ref:`dbinfo module <module_overview>`. Together with :ref:`writing custom filters using python <metalig_python_filtering>`, this filter is very useful for special requirements.
+
+    :options:
+
+        graph_IDs :
+            List of graph IDs of the ligands to keep.
+
+    :example: This example will keep only the 2 ligands with the graph IDs `a2b7bbb6ca4ce36dc3147760335e7374` and `53b7a3d91a1be6e167a3975bb7921206`.
+
+        .. code-block:: yaml
+
+            - filter: graph_IDs
+              graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]
 
 Statistical CSD Filters
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -695,25 +708,3 @@ Statistical CSD Filters
             - filter: metal_ligand_binding_history
               metal_ligand_binding_history: [Pd, Ni]
               apply_to_denticities:
-
-
-Special Filters
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. _filter_graph_IDs:
-
-.. confval:: graph_IDs
-
-    A filter to keep only individually specified ligands. Graph IDs are unique IDs for each ligand which can be found in all ligand .csv files, generated e.g. by the :ref:`dbinfo module <module_overview>`. Together with :ref:`writing custom filters using python <metalig_python_filtering>`, this filter is very useful for special requirements.
-
-    :options:
-
-        graph_IDs :
-            List of graph IDs of the ligands to keep.
-
-    :example: This example will keep only the 2 ligands with the graph IDs `a2b7bbb6ca4ce36dc3147760335e7374` and `53b7a3d91a1be6e167a3975bb7921206`.
-
-        .. code-block:: yaml
-
-            - filter: graph_IDs
-              graph_IDs: [a2b7bbb6ca4ce36dc3147760335e7374, 53b7a3d91a1be6e167a3975bb7921206]

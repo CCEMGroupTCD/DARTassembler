@@ -9,7 +9,7 @@ Assembler Module
 Assembler Input
 """"""""""""""""
 
-The DART Assembler Module is designed for generating novel transition metal complexes by specifying a metal center and coordinating ligands from a ligand database.
+The DART Assembler Module generates 3D structures of novel transition metal complexes from a database of ligands, which can either be the full :ref:`MetaLig database <metalig>` or a subset from a user-defined chemical space. While this page focuses on the input options for the assembler, you can read more about how the DART Assembler Module works :ref:`here <how_assembler_works>`.
 
 The assembler module is run from the command line by providing a single configuration file:
 
@@ -127,7 +127,7 @@ Batch settings are mostly mandatory and specify details concerning the metal cen
     :options: ``lowest_energy``, ``all``
     :required: true
 
-    The assembler will always generate all possible isomers. The option :confval:`isomers` determines which isomers are saved. If ``lowest_energy``, only the lowest energy isomer is saved as determined by a UFF forcefield. If ``all``, all isomers are saved.
+    The assembler will always generate all possible geometric isomers. The option :confval:`isomers` determines which isomers are saved. If ``lowest_energy``, only the lowest energy isomer is saved as determined by a UFF forcefield. If ``all``, all isomers are saved.
 
 **Optional batch settings:**
 
@@ -145,7 +145,7 @@ Batch settings are mostly mandatory and specify details concerning the metal cen
     :required: false
     :default: ``false``
 
-    Whether to relax the generated structures with a force field before the post-assembly filters. Currently, the only available force field is the Universal Force Field (UFF).
+    Whether to relax the generated structures with a Universal Force Field (UFF) as implemented in the ``openbabel`` software. Because force fields often struggle to describe metal atoms, the metal center and the donor atoms are kept fixed and only the rest of the ligand atoms is relaxed.
 
 .. confval:: bidentate_rotator
 
@@ -153,9 +153,11 @@ Batch settings are mostly mandatory and specify details concerning the metal cen
     :required: false
     :default: ``auto``
 
-    How to assemble bidentate ligands in square-planar complexes. Effects only the topologies ``2-2`` or ``2-1-1``. ``horseshoe`` and ``slab`` are the shapes of the underlying potential energy surfaces. ``horseshoe`` works best for ligands with a planar metallacycle, while non-planar ligands often give better results with ``slab``. ``auto`` will choose the shape automatically based on the ligand geometry.
+    This option specifies how to assemble bidentate ligands in square-planar complexes. It effects only the topologies ``2-2`` or ``2-1-1``. ``horseshoe`` and ``slab`` are the shapes of the underlying potential energy surfaces. ``horseshoe`` works best for ligands with a planar metallacycle, while non-planar ligands often give better results with ``slab``. ``auto`` will choose the shape automatically based on the ligand geometry.
 
-    Tip: This option can severely affect the quality of generated complexes and how many make it through the post-assembly filter. For serious applications we recommend to set :confval:`max_num_complexes` to ``100``, try all three options and check how many complexes fail the post-assembly filter for each option (this info is returned at the end of the assembly if :confval:`verbosity` >= ``2``). Whichever option has the least complexes failing the post-assembly filter usually gives the highest quality complexes.
+    .. tip::
+
+        This option can strongly affect the quality of generated complexes and how many make it through the post-assembly filter. For serious applications we recommend to set :confval:`max_num_complexes` to ``100``, try all three options and check how many complexes fail the post-assembly filter for each option (this info is displayed at the end of the assembly). Whichever option has the least number of complexes failing the post-assembly filter usually gives the highest quality geometries. This method takes only a few minutes and is demonstrated in the `advanced example <pd_ni_cross_coupling>`_.
 
 .. confval:: geometry_modifier_filepath
 
@@ -175,7 +177,7 @@ Batch settings are mostly mandatory and specify details concerning the metal cen
     :required: false
     :default: `empty`
 
-    Appends a custom string to the randomly generated name of each assembled complex. For example, if the appendix is set to ``_charge1``, a generated complex will be named 'ZUMUVAMI_charge1' if otherwise it would have been named 'ZUMUVAMI'.
+    Appends a custom string to the randomly generated name of each assembled complex. For example, if the appendix is set to ``_charge1``, a generated complex will be named 'ZUMUVAMI_charge1' if otherwise it would have been named 'ZUMUVAMI'. This can be helpful in organizing DART generated complexes and keeping track which complex belongs to which batch.
 
 Global Options
 -----------------------------------
