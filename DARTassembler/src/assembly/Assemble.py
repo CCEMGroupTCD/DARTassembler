@@ -26,9 +26,8 @@ warnings.simplefilter("always")
 
 
 class PlacementRotation:
-    def __init__(self, database: LigandDB = None, store_path: str = Path('../../..', 'data', 'Assembled_Molecules')):
-        self.ligand_dict = database
-        self.store_path = store_path
+    def __init__(self):
+        pass
 
     @staticmethod
     def visualize(input_complex):

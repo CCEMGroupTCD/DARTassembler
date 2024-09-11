@@ -283,14 +283,19 @@ def load_full_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
 
 def iterate_unique_ligand_db(path: Union[str, Path], molecule: str= 'dict', n_max=None, show_progress: bool=False) -> dict:
     check_molecule_value(molecule)  # Check if the molecule value is valid
-    path = get_correct_ligand_db_path_from_input(path)
-    filename = Path(path).name
-    for name, mol_dict in tqdm(iterate_over_json(path, n_max=n_max, show_progress=False), disable=not show_progress, desc=f'Load ligand db `{filename}`', file=sys.stdout, unit=' ligands'):
+    db_path = get_correct_ligand_db_path_from_input(path)
+    if db_path is None:
+        raise ValueError(f'Invalid ligand database path specified: {path}')
+
+    filename = Path(db_path).name
+    for name, mol_dict in tqdm(iterate_over_json(db_path, n_max=n_max, show_progress=False), disable=not show_progress, desc=f'Load ligand db `{filename}`', file=sys.stdout, unit=' ligands'):
         if molecule == 'class':
             try:
                 mol = RCA_Ligand.read_from_mol_dict(mol_dict)
             except Exception as e:
-                raise ValueError(f"Error: the provided file '{path}' seems to not be a valid ligand database file. Internal error message:\n{e}.")
+                raise ValueError(f"Error: the provided file '{db_path}' seems to not be a valid ligand database file. Internal error message:\n{e}.")
+        else:
+            mol = mol_dict
         yield name, mol
 
 def load_unique_ligand_db(path: Union[str, Path], molecule: str='dict', n_max=None, show_progress: bool=True) -> dict:

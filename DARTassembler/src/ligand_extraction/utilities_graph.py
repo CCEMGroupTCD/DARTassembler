@@ -270,21 +270,20 @@ def get_adjacency_matrix(graph):
     return A
 
 def graph_from_graph_dict(d):
-    # assert d hat keys graph, node_attrib sind eigentlich optional
-    # assete dann aber dass list(G_new.nodes) == list(final_graph_dict["node_attributes"])
 
-    G_new = nx.from_dict_of_dicts(d["graph"])
-    nx.set_node_attributes(G_new, d["node_attributes"])
+    # The input dictionary has the nodes as strings, convert them to integers because everything else is unintuitive
+    d['graph'] = {int(str_node): {int(str_neighbor): d['graph'][str_node][str_neighbor] for str_neighbor in d['graph'][str_node]} for str_node in d['graph']}
+    d['node_attributes'] = {int(str_node): d['node_attributes'][str_node] for str_node in d['node_attributes']}
 
-    G_new = make_graph_labels_integers(G_new)
+    # Create graph from dictionary
+    G = nx.from_dict_of_dicts(d["graph"])
+    nx.set_node_attributes(G, d["node_attributes"])
 
-    #
-    # Bring nodes in canonical order
-    H = nx.Graph()
-    H.add_nodes_from(sorted(G_new.nodes(data=True)))
-    H.add_edges_from(G_new.edges(data=True))
+    # Validate graph
+    assert sorted(list(G.nodes())) == list(G.nodes()), "Nodes are not sorted"
+    assert all(isinstance(node, int) for node in G.nodes), "Nodes are not integers"
 
-    return H
+    return G
 
 def get_reindexed_graph(graph):
     """

@@ -1,19 +1,11 @@
 """
 Playground which reads in the unique ligand db and lets you play with it.
 """
+from pathlib import Path
+
 import numpy as np
-import pandas as pd
-import seaborn as sns
-import matplotlib
-from DARTassembler.src.constants.Paths import project_path
+# from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_jsonlines, load_json
 
-from DARTassembler.src.constants.Periodic_Table import DART_Element
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_jsonlines, load_json
-from DARTassembler.src.constants.Paths import default_ligand_db_path
-
-matplotlib.use('TkAgg')
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
-sns.set_theme()
 
 
 
@@ -27,6 +19,8 @@ def calculate_n_321_complexes_with_OH_fixed(charges_2: np.array, charges_3: np.a
     @param filter_factor: factor to take into account which reduces the number of complexes due to pre and post filtering in the assembly process
     @return: number of possible complexes
     """
+    from DARTassembler.src.constants.Periodic_Table import DART_Element
+
     if not charges_2.ndim == 1:
         raise ValueError('Charges of 2-dentate ligands must be 1D array.')
     if not charges_3.ndim == 1:
@@ -71,9 +65,24 @@ if __name__ == '__main__':
     from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
     # Load the first 1000 out of 41,018 ligands in the MetaLig database.
-    # metalig = LigandDB.load_from_json(path='metalig')
+    metalig = LigandDB.load_from_json(path='metalig', n_max=3000)
 
-    dict_metalig = load_jsonlines(default_ligand_db_path)
+    # Save to .jsonlines file
+    outfile = Path('/Users/timosommer/Downloads/test_DART/speedup_metalig/data_output/metalig_3000.jsonlines')
+    metalig.save_to_file(outfile)
+
+    #%% ==============    Doublecheck refactoring    ==================
+    from dev.test.Integration_Test import IntegrationTest
+    old_dir = Path(outfile.parent.parent, 'benchmark_data_output')
+    if old_dir.exists():
+        test = IntegrationTest(new_dir=outfile.parent, old_dir=old_dir)
+        test.compare_all()
+        print('Test for assembly of complexes passed!')
+    else:
+        print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
+
+
+    # dict_metalig = load_jsonlines(default_ligand_db_path)
 
     #
     # # Set some criteria to filter ligands

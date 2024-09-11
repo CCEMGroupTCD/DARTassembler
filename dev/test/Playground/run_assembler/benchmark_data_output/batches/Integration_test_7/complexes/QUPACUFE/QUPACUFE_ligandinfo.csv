@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Avg. M-D Bond Length,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PASLON-02-a,C19H14F2N3O2S1,2,-1,N-N,41,386.396806326,0.0918357594,False,False,10.861928293815975,2.027535525156649,0312ee9ffb29d7c2d7948115148c1870,1,PASLON,Pt(1)
-Ligand 1,unq_CSD-PALKET-01-a,C1N1O1,1,-1,N,3,42.016999999999996,1.0,False,False,2.351696693878697,2.088194095384814,cc47759db1574f650ff7ab82ae512efb,293,"PALKET, PALKET, PALKET, PALKIX, PALKIX, ... (288 more)","Co(65), Cu(45), Ni(31), Ru(23), Mn(21), ... (19 more)"
-Ligand 2,unq_CSD-PAFJAH-01-b,C2H5O1,1,-1,O,8,45.06099999999999,0.3894442341,False,True,3.1671902137383543,1.8945533141086317,871332cafd9bce70db2e0674a121ab91,267,"PAFJAH, PAFJAH10, PANZEL, PECBUV, PEWWAR, ... (262 more)","V(69), Re(30), Ti(26), Nb(20), Mn(16), ... (24 more)"

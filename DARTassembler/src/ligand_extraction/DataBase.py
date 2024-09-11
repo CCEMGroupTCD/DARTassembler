@@ -241,11 +241,7 @@ class LigandDB(MoleculeDB):
         :param only_core_ligands: Deprecated for the MetaLig database. For other databases, this parameter specifies if outer-sphere ligands should be removed.
         :return: A LigandDB object
         """
-        db_path = get_correct_ligand_db_path_from_input(path)
-        if db_path is None:
-            raise ValueError(f'Invalid ligand database path specified: {path}')
-
-        db = load_unique_ligand_db(path=db_path, n_max=n_max, show_progress=show_progress, molecule='class')
+        db = load_unique_ligand_db(path=path, n_max=n_max, show_progress=show_progress, molecule='class')
 
         if only_core_ligands:
             # Remove all free ligands which were not connected to the metal.
@@ -253,13 +249,14 @@ class LigandDB(MoleculeDB):
 
         return cls(db)
 
-    def get_reduced_df(self, max_entries: int=5) -> pd.DataFrame:
-        ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}
-        df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
-        return df_ligand_info
+    # def get_reduced_df(self, max_entries: int=5, planarity=True) -> pd.DataFrame:
+    #     ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}
+    #     df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
+    #     return df_ligand_info
 
     def save_reduced_csv(self, outpath: Union[str, Path], max_entries: int=5) -> None:
-        df_ligand_info = self.get_reduced_df(max_entries=max_entries)
+        ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}
+        df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
         df_ligand_info.to_csv(outpath, index=False)
         return
 

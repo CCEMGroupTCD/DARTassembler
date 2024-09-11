@@ -8,7 +8,7 @@ complex_name_length: 8                # Length of the complex name. Recommended:
 batches:                              # List of batches to generate. The first option in each batch needs a hyphen and whitespace ('- ') in front of it to mark the start of the batch.
   - name: Integration_test_7          # Name of the batch. Note the hyphen and whitespace in front of it to mark the start of the batch.
     geometry: 2-1-1                   # Geometry of the complexes. Options: '(2, 1, 1)', '(2, 2)', '(3, 2, 1)', '(4, 1, 1)', '(5, 1)'
-    ligand_db_file: INTEGRATION_TEST_LIGAND_DATABASE_270623.json # Path to the ligand database. Either list of paths or single path.
+    ligand_db_file: test_metalig # Path to the ligand database. Either list of paths or single path.
     metal_center: Fe                  # Chemical symbol of the desired metal center.
     metal_oxidation_state: 2          # Oxidation state of the desired metal center.
     total_charge: -1                  # Total charge of the complex.

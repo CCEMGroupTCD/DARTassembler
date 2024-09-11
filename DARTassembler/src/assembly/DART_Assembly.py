@@ -3,7 +3,8 @@ import sys
 from unittest.mock import patch
 import datetime
 
-from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word
+from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word, format_topologies, \
+    get_lig_db_in_old_format
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.assembly.Monkeypatch_stk import MONKEYPATCH_STK_SmartsFunctionalGroupFactory
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
@@ -25,6 +26,8 @@ from DARTassembler.src.assembly.Assembly_Output import AssemblyOutput, BatchAsse
 import ase
 from copy import deepcopy
 import numpy as np
+
+from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
 
 warnings.simplefilter("always")
@@ -173,8 +176,9 @@ class DARTAssembly(object):
         # Here we load the ligand database and avoid reloading the same ligand database if it is the same as the last one
         if self.check_if_reload_database():
             self.ligand_db = self.get_ligand_db()
-        RCA = PlacementRotation(database=self.ligand_db)
-        Topology, Similarity = RCA.format_topologies(self.topology_similarity)
+
+        RCA = PlacementRotation()
+        Topology, Similarity = format_topologies(self.topology_similarity)
 
         # Choose ligands for each complex
         choice = LigandChoice(
@@ -528,18 +532,23 @@ class DARTAssembly(object):
 
         return reload_database
 
-    def get_ligand_db(self) -> Union[LigandDB, list[LigandDB]]:
+    def get_ligand_db(self) -> Union[dict, list[dict]]:
         """
         Load the ligand database from the json files.
         @return: ligand database or list of ligand databases. The db are in the format {denticity: {charge: [ligand, ligand, ...]}}
         """
         if self.multiple_db:
-            ligand_db = [LigandDB.load_from_json(path).get_lig_db_in_old_format() for path in self.ligand_json]
+            ligand_db = []
+            for path in self.ligand_json:
+                ligand_db.append(LigandDB.load_from_json(path).get_lig_db_in_old_format())
+                if len(ligand_db[-1]) == 0:
+                    raise LigandCombinationError(
+                        f"No ligands found in the ligand database {path}. Please check your ligand database files.")
         else:
             ligand_db = LigandDB.load_from_json(self.ligand_json).get_lig_db_in_old_format()
+            if len(ligand_db) == 0:
+                raise LigandCombinationError(
+                    f"No ligands found in the ligand database {self.ligand_json}. Please check your ligand database files.")
         self.last_ligand_db_path = self.ligand_json
-
-        if len(ligand_db) == 0:
-            raise LigandCombinationError(f"No ligands found in the ligand database {self.ligand_json}. Please check your ligand database files.")
 
         return ligand_db

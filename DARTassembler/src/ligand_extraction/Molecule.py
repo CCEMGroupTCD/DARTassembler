@@ -52,6 +52,7 @@ class RCA_Molecule(object):
                  reindex_graph: bool = False,
                  warnings: list = [],
                  other_props: dict={},
+                 validity_check=True,
                  **kwargs
                  ):
         """
@@ -79,9 +80,7 @@ class RCA_Molecule(object):
         # Generate mol from atomic_props if possible and no mol given yet
         self.mol = self.get_mol_from_input(mol)
 
-        self.n_atoms = len(self.atomic_props['atoms'])
-        self.n_hydrogens = sum(1 for atom in self.atomic_props['atoms'] if atom == 'H')
-        self.n_protons = self.get_n_protons()
+
 
         if has_ligands is True:
             # if we expect ligands, we can set up an empty ligand list
@@ -97,13 +96,19 @@ class RCA_Molecule(object):
             if reindex_graph:
                 graph = self.get_reindexed_graph()
             self.graph = graph
-        self.graph_hash = self.get_graph_hash()
 
         # Set kwargs so that they become properties of the molecule
         self.set_other_props_as_properties(other_props=other_props)
 
+        if not hasattr(self, 'n_atoms'):
+            self.n_atoms = len(self.atomic_props['atoms'])
+        if not hasattr(self, 'n_hydrogens'):
+            self.n_hydrogens = sum(1 for atom in self.atomic_props['atoms'] if atom == 'H')
+        if not hasattr(self, 'n_protons'):
+            self.n_protons = self.get_n_protons()
         # Bond and bond order attributes
-        self.n_bonds = len(self.graph.edges)
+        if not hasattr(self, 'n_bonds'):
+            self.n_bonds = len(self.graph.edges)
         if not hasattr(self, 'has_bond_order_attribute'):
             self.has_bond_order_attribute = self.check_for_bond_order_attribute()     # has bond order attribute for all bonds, but some bonds are marked as unknown
         if not hasattr(self, 'has_unknown_bond_orders'):
@@ -111,9 +116,9 @@ class RCA_Molecule(object):
         if not hasattr(self, 'has_good_bond_orders'):
             self.has_good_bond_orders = self.check_for_good_bond_orders()             # has bond orders and all are known
 
-        self.validity_check_created_molecule()
-
         # Different graph hashes
+        if not hasattr(self, 'graph_hash'):
+            self.graph_hash = self.get_graph_hash()
         if not hasattr(self, 'heavy_atoms_graph_hash'):
             self.heavy_atoms_graph_hash = self.get_heavy_atoms_graph_hash()
         if not hasattr(self, 'bond_order_graph_hash'):
@@ -126,6 +131,10 @@ class RCA_Molecule(object):
             self.stoichiometry = self.get_standardized_stoichiometry()
 
         self.add_additional_molecule_information_to_global_props()
+
+        if validity_check:
+            self.validity_check_created_molecule()
+
 
 
 
@@ -261,22 +270,23 @@ class RCA_Molecule(object):
         return
 
     def add_additional_molecule_information_to_global_props(self):
-        n_elements = len(list(np.unique(self.atomic_props['atoms'])))
-        mol_weight = self.mol.get_masses().sum()
-        n_C_H_bonds = self.count_C_H_bonds()
-        info = {
-                    'n_atoms': self.n_atoms,
-                    'n_elements': n_elements,
-                    'molecular_weight': mol_weight,
-                    'n_C_H_bonds': n_C_H_bonds
-                    }
+        if not all(key in self.global_props for key in ['n_atoms', 'n_elements', 'molecular_weight', 'n_C_H_bonds']):
+            n_elements = len(list(np.unique(self.atomic_props['atoms'])))
+            mol_weight = self.mol.get_masses().sum()
+            n_C_H_bonds = self.count_C_H_bonds()
+            info = {
+                        'n_atoms': self.n_atoms,
+                        'n_elements': n_elements,
+                        'molecular_weight': mol_weight,
+                        'n_C_H_bonds': n_C_H_bonds
+                        }
 
-        update_dict_with_warning_inplace(
-                                            dict_to_update=self.global_props,
-                                            dict_with_information=info
-                                        )
+            update_dict_with_warning_inplace(
+                                                dict_to_update=self.global_props,
+                                                dict_with_information=info
+                                            )
 
-        return info
+        return
 
     def get_smiles(self) -> Union[str,None]:
         """
@@ -836,6 +846,7 @@ class RCA_Ligand(RCA_Molecule):
                  graph=None,
                  global_props: dict = None,
                  other_props={},
+                 validity_check=True,
                  **kwargs
                  ):
         """
@@ -851,6 +862,7 @@ class RCA_Ligand(RCA_Molecule):
                          graph=graph,
                          has_ligands=False,
                          other_props=other_props,
+                         validity_check=validity_check,
                          **kwargs
                          )
 
@@ -887,20 +899,20 @@ class RCA_Ligand(RCA_Molecule):
 
         if 'original_metal_os' in kwargs.keys():
             self.original_metal_os = kwargs['original_metal_os']
-        self.is_centrosymmetric, self.centrosymmetry_ang_dev = self.check_if_centrosymmetric(return_ang_dev=True)
 
-        # The graph_hash_with_metal is not calculated with the real original metal, but with a pseudo metal which is always the same, so that only the connections to the metal matter, but different original metals won't give different hashes. This means ligands are considered the same independent of the original metal under this hash.
+        if not hasattr(self, 'is_centrosymmetric') or not hasattr(self, 'centrosymmetry_ang_dev'):
+            self.is_centrosymmetric, self.centrosymmetry_ang_dev = self.check_if_centrosymmetric(return_ang_dev=True)
         if not hasattr(self, 'graph_hash_with_metal'):
+            # The graph_hash_with_metal is not calculated with the real original metal, but with a pseudo metal which is always the same, so that only the connections to the metal matter, but different original metals won't give different hashes. This means ligands are considered the same independent of the original metal under this hash.
             self.graph_hash_with_metal = self.get_graph_hash_with_metal(metal_symbol='Hg')
         if not hasattr(self, 'heavy_atoms_graph_hash_with_metal'):
             self.heavy_atoms_graph_hash_with_metal = self.get_heavy_atoms_graph_hash_with_metal(metal_symbol='Hg')
-
         if not hasattr(self, 'has_betaH'):
             self.has_betaH = self.betaH_check()
-        self.has_neighboring_coordinating_atoms = self.check_for_neighboring_coordinating_atoms()
-
-
-        self.stats = self.get_ligand_stats()
+        if not hasattr(self, 'has_neighboring_coordinating_atoms'):
+            self.has_neighboring_coordinating_atoms = self.check_for_neighboring_coordinating_atoms()
+        if not hasattr(self, 'stats'):
+            self.stats = self.get_ligand_stats()
 
         assert nx.is_connected(self.graph), f'Graph of ligand with name {self.name} is not fully connected.'
 
@@ -1275,7 +1287,7 @@ class RCA_Ligand(RCA_Molecule):
 
         return False
 
-    def get_ligand_output_info(self, max_entries=5, add_confident_charge=False) -> dict:
+    def get_ligand_output_info(self, max_entries=5, add_confident_charge=False, planarity=True) -> dict:
 
         info = {
             'Ligand ID': self.unique_name,
@@ -1285,7 +1297,7 @@ class RCA_Ligand(RCA_Molecule):
             'Donors': '-'.join(self.local_elements),
             'Number of Atoms': self.n_atoms,
             'Molecular Weight': self.global_props['molecular_weight'],
-            'Ligand Planarity': self.calculate_planarity(),
+            'Ligand Planarity': self.calculate_planarity() if planarity else None,
             'Haptic': self.has_neighboring_coordinating_atoms,
             'Beta-Hydrogen': self.has_betaH,
             'Max. Interatomic Distance': self.stats['max_atomic_distance'],
@@ -1294,6 +1306,8 @@ class RCA_Ligand(RCA_Molecule):
             }
         if add_confident_charge:
             info['Charge Confident'] = self.pred_charge_is_confident
+        if not planarity:
+            info.pop('Ligand Planarity')
 
 
         # Currently doesn't work because the ligand doesn't have the attribute 'identical_ligand_info'.
@@ -1361,6 +1375,7 @@ class RCA_Ligand(RCA_Molecule):
             graph=graph,
             warnings=dict_['warnings'],
             other_props=other_props,
+            validity_check=False,   # Skip because takes a bit of time
             **kwargs
         )
 
