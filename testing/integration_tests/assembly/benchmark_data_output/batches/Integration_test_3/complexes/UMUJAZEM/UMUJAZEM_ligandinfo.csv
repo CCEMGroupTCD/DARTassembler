@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PADJAH-03-a,C13H10N3O2,3,-1,O-O-N,28,240.24200000000002,0.6805680097,False,True,13.068816575727123,53148d4bb39c1466e33a7b58dcc12305,4,"PADJAH, LAMLES, AHETEO, AHETIS","Mo(2), Fe(1), V(1)"
+Ligand 1,unq_CSD-PECHIO-02-a,C9H8N3O3,2,-1,N-C,23,206.18100000000007,0.4481745325,False,True,11.21046129024136,3ce5dc188483bbd8dce966afa8405c1f,1,PECHIO,Pd(1)
+Ligand 2,unq_CSD-PABWOE-01-b,N1S1,1,1,N,2,46.067,1.0,False,False,1.5386044000976986,01582384b3836a9d5c454216728fd370,24,"PABWOE, PINGAU, SOHBEW, TEHSAA, LUVPEZ, ... (19 more)","Os(8), Re(6), Tc(5), Ru(2), Mo(1), ... (2 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAZWUL-04-a,C35H28N2O2S4,4,-2,O-N-O-N,71,636.861,0.0805243885,False,True,26.514234954454185,99ee48489efb79c3bf231f8175f68bef,2,"PAZWUL, PAZXEW","V(1), Ni(1)"
+Ligand 1,unq_CSD-OZULIF-01-a,O1,1,-2,O,1,15.999,1.0,False,False,,b1a746e052bbfde6c86e554cbcd4ff39,7544,"OZULIF, OZULIF, OZULOL, OZULOL, OZUWEM, ... (7539 more)","Mo(2386), U(1674), V(1535), Re(933), W(436), ... (16 more)"
+Ligand 2,unq_CSD-PAHWOL-01-b,C6H7N1,1,0,N,14,93.12899999999996,0.4689771424,False,True,5.6110883828362565,9812d016313ed3086dd6f00c1bf74bea,131,"PAHWOL, PAHWOL, TECWEE, LIVMEJ, LONYIX, ... (126 more)","Pt(23), Cu(21), Ag(16), Pd(16), Zn(14), ... (8 more)"

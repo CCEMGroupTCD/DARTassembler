@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAMKIA-03-a,C14H14N6O2,3,0,N-N-N,36,298.306,0.1677335046,False,True,12.421542651780413,f4076ec8db6aead6f115a874b1544c15,1,PAMKIA,Cu(1)
+Ligand 1,unq_CSD-PADNEO-02-a,C2H8N2S1,2,0,N-N,13,92.15999999999997,0.3019266909,False,True,4.893156492490302,b9adcdca1af348619042a8b4b53a6b7a,1,PADNEO,Co(1)
+Ligand 2,unq_CSD-PAFXUP-01-a,C15H23Se1,1,-1,Se,39,282.3199999999998,0.1259103999,False,False,8.847338702118282,f4a62c356ec6124d44c89af27134e66b,3,"PAFXUP, KIDNEQ, DIZQIM","Hg(1), W(1), Mo(1)"

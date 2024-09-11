@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEDJAM-04-a,C52H34F12N4O3,4,-2,N-N-N-N,105,990.849837956,0.0532079414,False,False,19.584727002692684,cb4aa8b9ac58d6edb11f381b61f6ef91,4,"PEDJAM, PEDJIU, PEDJOA, PEDKAN","Cu(1), Zn(1), Pd(1), Ag(1)"
+Ligand 1,unq_CSD-PEDKAK-01-c,C6H6N2O3,1,0,O,17,154.125,0.4067118383,False,False,6.176279251296852,b3d757a63e9426d9f3e1fd4589d08f0a,2,"PEDKAK, PEDKAK",Zn(2)
+Ligand 2,unq_CSD-PECREV-01-a,C18B1F15O1,1,-2,O,35,527.9830474449999,0.1210894979,False,False,10.200371848614145,f743dfbc9e03158e9fa310520f713f6b,35,"PECREV, PESPUB, PESQAI, PESQAI, PESQIQ, ... (30 more)","Re(10), Mo(8), U(7), W(5), Ti(2), ... (3 more)"

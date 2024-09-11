@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEHSEB-02-c,C23H17N2O2,2,-1,O-O,44,353.40099999999995,0.1014967122,False,False,11.309311549338448,81945f3ad543753de7218d344ea6427a,1,PEHSEB,Ir(1)
-Ligand 1,unq_CSD-PEHSEB-02-c,C23H17N2O2,2,-1,O-O,44,353.40099999999995,0.1014967122,False,False,11.309311549338448,81945f3ad543753de7218d344ea6427a,1,PEHSEB,Ir(1)

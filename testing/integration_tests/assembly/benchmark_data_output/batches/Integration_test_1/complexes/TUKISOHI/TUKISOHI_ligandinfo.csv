@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAWZAR-02-a,C15H12Br1N2O1,2,-1,N-O,31,316.178,0.1944439858,False,False,14.115742262807153,e4564010b082b190c1c7917b76b1fc2c,2,"PAWZAR, AQIZUX",Ru(2)
+Ligand 1,unq_CSD-PADKIQ01-02-a,C15H14N1S2,2,-1,S-S,32,272.404,0.1318927538,False,False,8.260899409870573,205e8515f1e479c87c373d3749289c93,43,"PADKIQ01, PADKIQ01, SIQMUD, TAYTOD, TAYTOD, ... (38 more)","Zn(18), Ni(6), Hg(6), Au(3), Pd(3), ... (3 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PADFIK-02-a,C15H17N2,2,-1,N-N,34,225.315,0.1442507421,False,False,11.396129428011951,c06804681177ffe73bb3d1c9306d1296,4,"PADFIK, PADFIK, PADFOQ, PADFOQ",Zr(4)
+Ligand 1,unq_CSD-PASREG-01-e,C6H16N2Si2,1,-2,N,26,172.37800000000004,0.1359173108,False,False,7.612781347838647,2aca00ba74cb7b67803a922a379a4d72,8,"PASREG, PASRIK, YOXGEZ, IDADOI, IDADUO, ... (3 more)","Fe(4), W(3), Mo(1)"
+Ligand 2,unq_CSD-PAFKOY-01-a,C2H3N1,1,0,C,6,41.053000000000004,0.469266057,False,False,3.0542803489529247,4b41a049552163f4b6a218d364d84edd,108,"PAFKOY, POSZEC, POSZEC, TEFPOK, TEFPOK, ... (103 more)","Mo(24), W(20), Fe(16), Pt(14), Pd(12), ... (9 more)"

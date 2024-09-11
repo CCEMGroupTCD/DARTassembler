@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAYTIV-02-b,C20H24,2,-2,C-C,44,264.4119999999999,0.1398690882,False,True,13.566409568489371,e54081e4f640ed4c7b218f46131be2b1,11,"PAYTIV, MIRTAL, DAPDEH, DAPDIL, DAPDOR, ... (6 more)","Au(10), Fe(1)"
+Ligand 1,unq_CSD-OZIZII-01-a,C6H4N1O4S2,1,-1,N,17,218.221,0.2916822296,False,False,6.1870055705486475,b2fb64328cec488dcc532b1fb70e8ac3,14,"OZIZII, UDACAG, UDACAG, VEJQEI, WAKMAW, ... (9 more)","Ag(9), Au(3), Cd(2)"
+Ligand 2,unq_CSD-OZOVOP-01-a,C6H7N1,1,0,N,14,93.12899999999996,0.4743135745,False,False,5.81818277299708,207be05f41dfa77f3b7977a5872821bd,112,"OZOVOP, OZOVOP, PIBRIE, SUXVIQ, BEHKOO01, ... (107 more)","Co(28), Ru(17), Zn(13), Pd(9), Rh(9), ... (10 more)"

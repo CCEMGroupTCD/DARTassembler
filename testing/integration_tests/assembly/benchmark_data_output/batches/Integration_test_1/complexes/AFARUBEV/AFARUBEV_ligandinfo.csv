@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAYRAK-02-a,C5H6Cl1O2,2,-1,O-O,14,133.55100000000002,0.3873517938,False,False,6.50455964612517,9ee6e30b273e5bba802cf2eb1685480b,27,"PAYRAK, PAYRAK, PAYRAK, TASBEW, LIYJOT, ... (22 more)","Co(18), Cu(4), Fe(3), Ru(2)"
-Ligand 1,unq_CSD-PEMYAH10-02-a,C4H7N2O2,2,-1,N-N,15,115.11199999999997,0.3795449567,False,True,6.028773953300953,f38f35848f8f9c579dfd2ad35eaf52f8,617,"PEMYAH10, PEMYAH10, PEMYEL10, PEMYEL10, SSCEBC01, ... (612 more)","Co(562), Rh(36), Cu(9), Ru(6), Ir(2), ... (1 more)"

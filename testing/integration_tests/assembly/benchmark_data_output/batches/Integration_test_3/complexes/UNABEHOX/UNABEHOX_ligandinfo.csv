@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PALKAQ-03-a,C15H14N4,3,0,N-C-N,33,250.30499999999998,0.1415451583,False,True,11.274498262007052,a304d99a4a72de4e2ab76052f66fe408,7,"PALKAQ, PALKEU, PALKEU01, MEGTEA, IBONEV, ... (2 more)","Ru(3), Pd(2), Ni(1), Cu(1)"
+Ligand 1,unq_CSD-PEDTOH-02-a,C6H14O3,2,0,O-O,23,134.17500000000007,0.2491387161,False,True,9.109515632567959,d489a45c6dcb941df78ff52d00bebefa,5,"PEDTOH, PEDTUN, AYUGAC, ZENBAY, JAQKIW","Mo(1), W(1), Ti(1), Y(1), Lu(1)"
+Ligand 2,unq_CSD-PACMOV-01-b,C8H5,1,-1,C,13,101.12799999999997,0.9130169071,False,False,6.407384633374213,041548baa19d4bba12cfa969bb53fa8e,480,"PACMOV, PAGFUA, PAGFUA, PAJLAP, PAJLAP, ... (475 more)","Pt(149), Ru(62), Au(61), Ir(21), Fe(20), ... (30 more)"

@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PECGAG-02-a,C6H3N2O5,2,-1,O-O,16,183.099,0.414608246,False,False,6.660564232105265,6123d0cb3d9957ec0078c9394075dbd1,46,"PECGAG, PECGAG, PECGAG, LOXTUN, LOXTUN, ... (41 more)","Eu(10), Gd(8), Tb(3), Nd(3), Ce(3), ... (7 more)"
+Ligand 1,unq_CSD-PAGLUG-02-a,C24H33N2,2,-1,N-N,59,349.5419999999999,0.0928898789,False,False,14.876481526221175,748dd16af43b45ccd85372919b41fc3f,1,PAGLUG,Zn(1)

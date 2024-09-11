@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PALDEN-04-a,C48H29Cl1N4,4,-2,N-N-N-N,82,697.2379999999999,0.0739526011,False,False,17.177161789422605,7192fad56ed38163bae5eacfe8aa3374,1,PALDEN,Ni(1)
+Ligand 1,unq_CSD-PAXCAS-01-a,C15H23S1,1,-1,S,39,235.40900000000005,0.1248006076,False,False,8.787563868900186,b42fbf08de449b897677502d9b1f2db3,91,"PAXCAS, PAXCAS, PAXCAS, POLZIB, POLZOH, ... (86 more)","Mo(27), W(16), Ru(11), Hg(4), Zn(4), ... (11 more)"
+Ligand 2,unq_CSD-PADJEN-01-b,C7H7,1,-1,C,14,91.13299999999997,0.4686543917,False,True,5.660846757332333,b9c654a0d2784856d2c0a5537c28c98a,108,"PADJEN, PAZGOP, SUJCAB, SUJCAB, SUJCEF, ... (103 more)","Ni(47), Pd(15), Pt(12), Os(9), Re(9), ... (6 more)"

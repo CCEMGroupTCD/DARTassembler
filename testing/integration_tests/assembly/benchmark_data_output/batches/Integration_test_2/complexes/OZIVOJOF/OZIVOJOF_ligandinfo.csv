@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEBGOV-02-a,C11H7F1N1,2,-1,N-C,20,172.182403163,0.715453899,False,True,9.207248366911799,d72fe4676ec83c9ab5d467bf39a9d2a2,39,"PEBGOV, PEBGOV, PEBGUB, PEBGUB, MAFHEI, ... (34 more)","Ir(27), Pt(11), Au(1)"
+Ligand 1,unq_CSD-PAFJAH-01-a,C6H5N1,1,-2,N,12,91.11299999999997,0.8962611756,False,False,5.1039781700160125,e569512d6a34722344c226c1f9fdf4fa,185,"PAFJAH, PAFJAH10, PAZTMP10, PEVPAH, PEVPAH10, ... (180 more)","W(55), Re(45), Mo(29), V(14), Ti(12), ... (7 more)"
+Ligand 2,unq_CSD-PAXTIU-01-b,C6H8N2,1,0,N,16,108.14399999999999,0.3844557683,False,True,6.303200940791908,664d31a9aa0e544d2e13e18d8043702d,21,"PAXTIU, PAXTIU, PAXTIU, PAXTIU, LIQLED, ... (16 more)","Co(8), Cu(6), Ni(4), Zn(2), Mn(1)"

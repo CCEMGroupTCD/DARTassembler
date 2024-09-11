@@ -2,7 +2,7 @@ ffmovie: true                         # Whether to output a movie of the optimiz
 output_directory: assembly/data_output     # Path to the output folder.
 
 batches:                              # List of batches to generate. The first option in each batch needs a hyphen and whitespace ('- ') in front of it to mark the start of the batch.
-  - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - ligand_db_file: test_metalig
     isomers: lowest_energy
     max_num_complexes: 30
     metal_center: Fe
@@ -14,7 +14,7 @@ batches:                              # List of batches to generate. The first o
     total_charge: 0
     geometry_modifier_filepath: ./assembly/data_input/geometry_modifier.xyz
 
-  - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - ligand_db_file: test_metalig
     isomers: lowest_energy
     max_num_complexes: 10
     metal_center: Co
@@ -24,7 +24,7 @@ batches:                              # List of batches to generate. The first o
     geometry: 2-1-1
     total_charge: 0
 
-  - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - ligand_db_file: test_metalig
     isomers: lowest_energy
     max_num_complexes: 10
     metal_center: Cr
@@ -35,7 +35,7 @@ batches:                              # List of batches to generate. The first o
     geometry: mer-3-2-1
     total_charge: 0
 
-  - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - ligand_db_file: test_metalig
     isomers: lowest_energy
     max_num_complexes: 15
     metal_center: Fe
@@ -46,7 +46,7 @@ batches:                              # List of batches to generate. The first o
     total_charge: 0
 
 
-  - ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - ligand_db_file: test_metalig
     isomers: lowest_energy
     max_num_complexes: 9
     metal_center: Fe
@@ -57,7 +57,7 @@ batches:                              # List of batches to generate. The first o
     geometry: 5-1
     total_charge: 0
 
-  - ligand_db_file: [ ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, same_ligand_as_previous ]
+  - ligand_db_file: [test_metalig, same_ligand_as_previous]
     isomers: all
     max_num_complexes: 15
     metal_center: Fe
@@ -69,7 +69,7 @@ batches:                              # List of batches to generate. The first o
 
   - name: Integration_test_7          # Name of the batch. Note the hyphen and whitespace in front of it to mark the start of the batch.
     geometry: 2-1-1                   # Geometry of the complexes. Options: '(2, 1, 1)', '(2, 2)', '(3, 2, 1)', '(4, 1, 1)', '(5, 1)'
-    ligand_db_file: [assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json, assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines, same_ligand_as_previous] # Path to the ligand database. Either list of paths or single path.
+    ligand_db_file: [test_metalig, assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines, same_ligand_as_previous] # Path to the ligand database. Either list of paths or single path.
     metal_center: Ru                  # Chemical symbol of the desired metal center.
     metal_oxidation_state: 2          # Oxidation state of the desired metal center.
     total_charge: -1                  # Total charge of the complex.

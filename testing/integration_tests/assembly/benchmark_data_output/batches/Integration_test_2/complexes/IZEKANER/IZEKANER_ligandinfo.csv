@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEMSAB-02-a,C18H12O1,2,-2,O-C,31,244.2930000000001,0.2066593493,False,True,11.819176195488415,8ee69f30c2d9fb5e5d0e7557a7c6db82,10,"PEMSAB, PEMSEF, POBMOI, POBMOI, GIMFAJ, ... (5 more)","W(6), Ta(3), Ti(1)"
-Ligand 1,unq_CSD-PAXQUA-01-a,C1H5N1,1,0,N,7,31.057999999999996,0.4678486921,False,True,2.723482911640901,d9ab21aa50b2110ca0d901b34609597d,131,"PAXQUA, PAXQUA, SIPLEI, SUDMIN02, SUDMIN02, ... (126 more)","Pt(66), Mn(25), Co(15), Cr(5), Cu(5), ... (6 more)"
-Ligand 2,unq_CSD-PAGFIQ-01-a,C5F4N1,1,-1,C,10,150.055612652,0.9676228119,False,False,5.324841564779182,8b8e3a68336bd4452f8823eb44d95d49,58,"PAGFIQ, TAYKOU, TAYKUA, TAYLAH, LOBKAP, ... (53 more)","Ir(18), Rh(15), Au(8), Pd(7), Ru(2), ... (5 more)"

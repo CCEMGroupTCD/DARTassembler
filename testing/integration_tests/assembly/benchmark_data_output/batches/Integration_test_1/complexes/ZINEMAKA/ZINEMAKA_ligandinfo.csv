@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEDYON-02-a,C13H22N1S2,2,-1,S-S,38,256.446,0.1149874704,False,False,8.696892171919806,3b0d6457fa83a4cfa4b6684c03a4c4bd,19,"PEDYON, PEDYUT, TEBROK, TEBROK, TEBROK, ... (14 more)","Fe(6), Pd(3), Ni(2), Cd(2), Cu(2), ... (2 more)"
-Ligand 1,unq_CSD-PADFIK-02-a,C15H17N2,2,-1,N-N,34,225.315,0.1442507421,False,False,11.396129428011951,c06804681177ffe73bb3d1c9306d1296,4,"PADFIK, PADFIK, PADFOQ, PADFOQ",Zr(4)

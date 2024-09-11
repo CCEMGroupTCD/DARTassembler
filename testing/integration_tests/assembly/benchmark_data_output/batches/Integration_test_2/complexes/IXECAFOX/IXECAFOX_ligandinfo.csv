@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PARHUL-02-a,C9H10N1O2,2,-1,O-N,22,164.18400000000005,0.2816448035,False,True,7.84051990878156,87ba0e53b2e37bf963356e00af8eae5c,6,"PARHUL, PARHUL, YOKWOK01, YOKWOK01, ZIJYIA, ... (1 more)","Cu(2), Ni(2), Pd(2)"
+Ligand 1,unq_CSD-OZUFIZ-01-b,C19H16P1,1,-1,C,36,275.310761998,0.1166857304,False,False,9.372762488188847,55e2fd6018546286c491b3afc1eafd9a,11,"OZUFIZ, BUJFIY, YAJHAS, YAJHAS, DEZFAS, ... (6 more)","W(4), Sc(3), U(2), Lu(1), Th(1)"
+Ligand 2,unq_CSD-PAGGEN-01-c,C6H1F4,1,-1,C,11,149.06761265199998,0.9640543698,False,False,5.429671718437495,d17975d2b56c5fd00b7f0f1f01f701f9,22,"PAGGEN, PAGGIR, BUHYOU, ZEVPUN, ZEVQAU, ... (17 more)","Ni(8), Pt(7), Au(2), Hg(2), Cu(1), ... (2 more)"

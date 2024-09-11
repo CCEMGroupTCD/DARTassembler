@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAGWEZ-04-a,C38H46N4O2,4,-2,N-N-N-N,90,590.8119999999999,0.0952425162,False,False,14.466874003045715,470b5aeb0c5e2f34a54d0499fdc29195,1,PAGWEZ,Fe(1)
+Ligand 1,unq_CSD-PAFVIB-01-a,C11H14N1O1S1,1,-1,S,28,208.29900000000004,0.1796178857,False,False,9.145825559237394,04c2c93228b772841fd4157ac7503c98,18,"PAFVIB, PAFVIB, PAFVIB, PAFVIB, PAFVIB01, ... (13 more)","Fe(8), Co(8), Ni(2)"
+Ligand 2,unq_CSD-PECBAB-01-a,C3H5O1S2,1,-1,S,11,121.19199999999998,0.2906921139,False,False,5.5643621188775985,48be7dbd7ef5295b71237dc5049754d0,21,"PECBAB, MIRLEE, MUVSOL, QIBTUR, QIBVAZ, ... (16 more)","Zn(12), Hg(4), Au(4), Ru(1)"

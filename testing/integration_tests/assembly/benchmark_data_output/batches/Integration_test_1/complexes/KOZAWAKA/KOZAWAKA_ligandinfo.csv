@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PASZIT-02-a,C6H2N3O7,2,-1,O-O,18,228.096,0.440539712,False,False,6.99396669565991,01e0a09458559a8de738bb963018c315,318,"PASZIT, PIFCOX, PIFCOX, POMJEH, POMJEH, ... (313 more)","La(61), Gd(35), Sm(29), Nd(28), Eu(28), ... (15 more)"
+Ligand 1,unq_CSD-PACTUM-02-a,C6H3N4O4,2,-1,O-N,17,195.114,0.808015948,False,False,6.770867569964723,489688c385c371367edf102c4ccba020,1,PACTUM,Ru(1)

@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PABKIP-02-a,C37H26N2,2,0,N-N,65,498.62899999999985,0.101904854,False,True,20.773327937766734,1facb02d03430f76b4bd1dd91110e09d,1,PABKIP,Cu(1)
+Ligand 1,unq_CSD-PECHAH-02-a,C7H5N1S2,2,-2,S-S,15,167.24400000000006,0.5335840277,False,True,7.659528270069901,fe1debf43191ffc0aa2e06c75275bca4,2,"PECHAH, PECHAH",Au(2)

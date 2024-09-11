@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PATKAX-02-a,C17H13N2O2,2,-1,O-O,34,277.303,0.1773071688,False,False,13.191590103547032,f7780b01d1e4bf10e3c4c77b7ec852a9,54,"PATKAX, PATKAX, PATKIF, PATKIF, PATKOL, ... (49 more)","Co(10), Zn(8), Cu(6), U(6), Cd(6), ... (8 more)"
-Ligand 1,unq_CSD-PABQAL-01-a,Cl3Sn1,1,-1,Sn,4,225.06,0.4994355939,False,False,3.5844210369319063,17fc683776618ed7dd2270e532126688,81,"PABQAL, PILHAT, PILHAT01, SNISMO, LUXTAZ, ... (76 more)","Pt(26), Ru(17), Pd(7), Rh(6), Au(4), ... (8 more)"
-Ligand 2,unq_CSD-PAGFIQ-01-b,F1,1,-1,F,1,18.998403163,1.0,False,False,,863df8eac131c790b7c49ff759330253,2046,"PAGFIQ, PAGGAJ, PAGGAJ, PAGGEN, PAGGOX, ... (2041 more)","Ta(337), Ti(247), W(225), Nb(172), V(98), ... (33 more)"

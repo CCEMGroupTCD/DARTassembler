@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEDCOR-02-a,C6H8N3S2,2,-1,S-N,19,186.27100000000004,0.2474986822,False,False,6.659766095742402,d4aef4c01a2b8850cbb789158480f123,2,"PEDCOR, PEDCOR",Ru(2)
+Ligand 1,unq_CSD-PAFQUJ-01-a,C12H14S2Te1,1,0,Te,29,349.964,0.1719845759,False,True,9.766322389722758,409c63165607944124139184240b9507,1,PAFQUJ,Ru(1)
+Ligand 2,unq_CSD-OZOXUX-01-c,C12H17N1,1,-2,N,30,175.27500000000003,0.1547949587,False,False,8.816797741810799,dfafd05e1cbee4bc0f84f5a456b12eb7,619,"OZOXUX, PAFWAV, PALHAN, PALHIV, PALSAX, ... (614 more)","Mo(211), W(115), Ti(51), U(48), Re(36), ... (19 more)"

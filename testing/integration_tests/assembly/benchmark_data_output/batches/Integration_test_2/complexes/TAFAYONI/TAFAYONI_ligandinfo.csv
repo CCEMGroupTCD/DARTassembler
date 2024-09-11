@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PALTAY-02-a,C12H15N1S1,2,-2,S-N,29,205.31900000000005,0.1369340508,False,False,8.854058216433863,5e16ddca4ed05870b9d53d45eba95cbf,1,PALTAY,Ti(1)
+Ligand 1,unq_CSD-PCPCCR01-01-b,C15H10,1,0,C,25,190.24499999999998,0.6691661934,False,False,10.967233679009489,e0d834559591645c4d1622eabbb3fcfb,6,"PCPCCR01, USEVOE, WAHDEO, XIKGOO, XIKGUU, ... (1 more)","Pd(3), Cr(2), Rh(1)"
+Ligand 2,unq_CSD-PABPUG-01-a,C1N1S1,1,-1,N,3,58.078,1.0,False,False,2.7569049203771976,8cfb8c37cf16fcbdf2b0b710377c2ea0,6199,"PABPUG, PABPUG, PABPUG, PABPUG, PABQAN, ... (6194 more)","Fe(1209), Ni(1014), Co(983), Zn(518), Cu(499), ... (37 more)"

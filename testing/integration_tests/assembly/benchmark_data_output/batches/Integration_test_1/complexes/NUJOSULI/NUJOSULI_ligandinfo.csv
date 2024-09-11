@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PACVOI-02-a,C2H6O2,2,0,O-O,10,62.068000000000005,0.3303127804,False,True,3.6858333358956967,774c9ea9a414e8643ac0cb503f2c0b0c,46,"PACVOI, PACVOI, PACVOI, TADKOC, TADKOC, ... (41 more)","Co(12), Ni(10), Cu(10), Zn(6), Mn(2), ... (5 more)"
+Ligand 1,unq_CSD-PADYOJ-02-a,C2H4S2,2,-2,S-S,8,92.17399999999999,0.3640033686,False,True,3.627094898124393,d14c5221df321a6e2786e3f478be933e,58,"PADYOJ, PANFUG, PERLON, PERLON, LUGMAB, ... (53 more)","Ni(14), Re(12), Nb(8), Mn(4), V(4), ... (7 more)"

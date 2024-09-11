@@ -243,7 +243,7 @@ class LigandDB(MoleculeDB):
         """
         db_path = get_correct_ligand_db_path_from_input(path)
         if db_path is None:
-            raise ValueError(f'Invalid ligand database path spedified: {path}')
+            raise ValueError(f'Invalid ligand database path specified: {path}')
 
         db = load_unique_ligand_db(path=db_path, n_max=n_max, show_progress=show_progress, molecule='class')
 

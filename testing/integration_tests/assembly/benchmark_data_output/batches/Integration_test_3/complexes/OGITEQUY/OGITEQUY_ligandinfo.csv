@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAWWIU-03-a,C12H16Cl1N2,3,-1,N-N-C,31,223.72400000000005,0.1776044105,False,True,9.766397054185335,9d1dd24286ef7fbc861c1819d0bcd8d3,5,"PAWWIU, LINLEC, WUFQUK, JEHQUL, JEHREW","Pt(4), Pd(1)"
-Ligand 1,unq_CSD-PEKWOU-02-a,C14H10Br1N3,2,0,N-N,28,300.159,0.6006698547,False,True,13.207370386265392,e30b83d9a7b8d68ece40ea783b55c514,1,PEKWOU,Mn(1)
-Ligand 2,unq_CSD-PAGBEE-01-b,C3H4N2,1,0,N,9,68.079,0.9814616701,False,True,3.974905641647359,66ead66bcc2cf9a8bec894d0055b75a1,1228,"PAGBEE, PAGBEE, PAGBEE, PAGBEE, PANGER, ... (1223 more)","Ni(295), Cu(262), Co(234), Fe(123), Zn(63), ... (16 more)"

@@ -161,7 +161,8 @@ class LigandChoice(object):
 
             # Deepcopy all chosen ligands for safety. Only doing this here at the end instead of at each intermediate step makes for a huge speedup.
             # Note: Huge bottleneck. Leaving out the deepcopy() speeds up the code by a factor of 3. Potentially dangerous though, so if we fix it we should make sure in the code that it is not needed. Preliminary tests with small numbers of complexes show no difference in the results though.
-            ligands_out = {idx: deepcopy(ligand) for idx, ligand in enumerate(ligand_combination)}
+            # ligands_out = {idx: deepcopy(ligand) for idx, ligand in enumerate(ligand_combination)}
+            ligands_out = {idx: ligand for idx, ligand in enumerate(ligand_combination)}    # todo
 
             yield ligands_out
 

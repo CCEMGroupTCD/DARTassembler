@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PACYOJ-02-a,C9H10N1S2,2,-1,S-S,22,196.30600000000004,0.184189088,False,False,8.062951548905648,ad092bc796492a3e6a40d9832798e97e,14,"PACYOJ, PACYUP, LIGSAW, LIGSAW, FUGGIY, ... (9 more)","Eu(3), Cu(3), Ni(2), Pd(2), Cd(2), ... (2 more)"
+Ligand 1,unq_CSD-PASZEQ-02-a,C13H8N1,2,-1,N-C,22,178.214,0.7488184332,False,True,8.766163286181703,636dee79c436ee62a01e794f04085dc2,174,"PASZEQ, PASZEQ, PATBAP, PATBET, PEVHUV, ... (169 more)","Pt(59), Ir(57), Pd(21), Ru(14), Rh(7), ... (6 more)"

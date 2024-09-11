@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PADDUU-02-a,C14H15N2,2,-1,N-N,31,211.28800000000004,0.1466886816,False,False,11.390032629452822,2bf6a2322fce56f9f5d5263577ef1352,2,"PADDUU, PADDUU",Zr(2)
-Ligand 1,unq_CSD-PAPYEL-02-a,C8H6N1O2,2,-1,N-C,17,148.141,0.3213800346,False,False,7.048880209650325,42a53d167436cf785a7d27c5f8e6c2f4,1,PAPYEL,Ir(1)

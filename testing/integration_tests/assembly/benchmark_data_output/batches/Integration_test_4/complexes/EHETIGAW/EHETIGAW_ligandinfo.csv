@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAFFOV-04-a,C48H24N8,4,-2,N-N-N-N,80,712.7759999999998,0.0990043804,False,False,20.54909435425318,12de3e511e95fffde222566198318a46,13,"PAFFOV, POSXOL, VOWTEI, KOGKEX, ICIYEY, ... (8 more)","Zn(7), Cu(2), Co(1), Dy(1), Yb(1), ... (1 more)"
+Ligand 1,unq_CSD-PALTEC-01-a,C16H23N1,1,-2,N,40,229.36699999999996,0.0973881617,False,False,9.93914827085299,af6c99d46ccf2d4c9621c7f60d6beac7,1,PALTEC,Ti(1)
+Ligand 2,unq_CSD-PABNOV-01-c,C8H11As1,1,0,As,20,182.097595,0.2943382056,False,True,7.243469603718925,afea58a670cff1296023daf9c9b52f94,10,"PABNOV, PABNOV, PABNOV, PABNOV, NESFOG, ... (5 more)",Ru(10)

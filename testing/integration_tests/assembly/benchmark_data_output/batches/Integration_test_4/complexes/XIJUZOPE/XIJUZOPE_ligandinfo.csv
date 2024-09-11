@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PALVED-04-a,C56H52N4,4,-2,N-N-N-N,112,781.0599999999996,0.0483782607,False,False,19.057764906987387,63bffd602f9481faa74fb78c54954f17,37,"PALVED, PALVIH, PALVON, PIPHAZ, PIPNUZ, ... (32 more)","Fe(17), Ru(10), Mn(3), Rh(2), Os(2), ... (2 more)"
+Ligand 1,unq_CSD-OZUFIZ-01-b,C19H16P1,1,-1,C,36,275.310761998,0.1166857304,False,False,9.372762488188847,55e2fd6018546286c491b3afc1eafd9a,11,"OZUFIZ, BUJFIY, YAJHAS, YAJHAS, DEZFAS, ... (6 more)","W(4), Sc(3), U(2), Lu(1), Th(1)"
+Ligand 2,unq_CSD-PAGGEN-01-c,C6H1F4,1,-1,C,11,149.06761265199998,0.9640543698,False,False,5.429671718437495,d17975d2b56c5fd00b7f0f1f01f701f9,22,"PAGGEN, PAGGIR, BUHYOU, ZEVPUN, ZEVQAU, ... (17 more)","Ni(8), Pt(7), Au(2), Hg(2), Cu(1), ... (2 more)"

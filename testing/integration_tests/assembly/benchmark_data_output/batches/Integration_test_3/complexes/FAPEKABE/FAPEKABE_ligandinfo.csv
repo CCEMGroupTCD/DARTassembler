@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PASFOF-03-a,C15H11N3,3,0,N-N-N,29,233.27400000000003,0.6668623559,False,True,11.192323542500011,17085f9612ad4ac07688f378f711bdf3,967,"PASFOF, PASFUL, PAXFAW, PAXVAM, PEJBOY, ... (962 more)","Ru(334), Co(110), Pt(77), Cu(62), Os(41), ... (36 more)"
-Ligand 1,unq_CSD-PENBAM-02-b,C12H8N2O1,2,0,O-N,23,196.20900000000003,0.8398629589,False,True,10.320210102512448,a971f36935eefffd5e196a02e6ba8c63,1,PENBAM,Eu(1)
-Ligand 2,unq_CSD-PEDXEB-01-f,H2P1,1,-1,P,3,32.989761998,1.0,False,False,2.5291927763616595,da0a13a38a6b8866c0389fe26e3700b1,3,"PEDXEB, POGNEG, BAZFIU","Ir(1), U(1), Zr(1)"

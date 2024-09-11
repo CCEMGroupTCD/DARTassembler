@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAWTIR-03-a,C17H15N3S1,3,0,N-N-C,36,293.3879999999999,0.3667264018,False,True,12.113074473889775,18a75f7f2835e70134166f777f63c90f,2,"PAWTIR, LUXTIH",Ru(2)
-Ligand 1,unq_CSD-PEGRUO-02-a,C12H9N2,2,-1,N-C,23,181.218,0.6240523214,False,True,11.126604846492931,8ba4580c1d154030c0bff3af223d5128,29,"PEGRUO, AZFAPD22, AZFAPD24, BOSQOP, MOZWEG, ... (24 more)","Pd(19), Ru(6), Rh(3), Pt(1)"
-Ligand 2,unq_CSD-PAXQUA-01-a,C1H5N1,1,0,N,7,31.057999999999996,0.4678486921,False,True,2.723482911640901,d9ab21aa50b2110ca0d901b34609597d,131,"PAXQUA, PAXQUA, SIPLEI, SUDMIN02, SUDMIN02, ... (126 more)","Pt(66), Mn(25), Co(15), Cr(5), Cu(5), ... (6 more)"

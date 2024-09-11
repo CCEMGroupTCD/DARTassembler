@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PARXOY-03-a,C18H15N3O2,3,0,O-N-N,38,305.337,0.1749592923,False,True,13.340207685414796,ac86e04c44d1544ae262de510566721d,1,PARXOY,Cu(1)
+Ligand 1,unq_CSD-PACYOJ-02-a,C9H10N1S2,2,-1,S-S,22,196.30600000000004,0.184189088,False,False,8.062951548905648,ad092bc796492a3e6a40d9832798e97e,14,"PACYOJ, PACYUP, LIGSAW, LIGSAW, FUGGIY, ... (9 more)","Eu(3), Cu(3), Ni(2), Pd(2), Cd(2), ... (2 more)"
+Ligand 2,unq_CSD-OZOSIG-01-a,C4H8O1,1,0,O,13,72.10699999999999,0.2924748348,False,True,3.933944182369648,810143b30ad12a66d3e74f904ff78161,4830,"OZOSIG, OZOSIG, OZOXUX, OZOXUX, OZOXUX, ... (4825 more)","Y(554), Yb(466), Sm(315), U(223), Nd(222), ... (42 more)"

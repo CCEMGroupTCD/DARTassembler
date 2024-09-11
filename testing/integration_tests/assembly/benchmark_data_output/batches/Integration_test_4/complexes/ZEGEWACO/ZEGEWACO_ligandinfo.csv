@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAGYAX-04-a,C32H40N8,4,-2,N-N-N-N,80,536.7279999999998,0.1071280058,False,False,13.83688104631965,5edd9850ad8f064a5281a7e827504ed2,9,"PAGYAX, PITROZ, CUSWUK, QOQPIX, QOQPIX, ... (4 more)","Fe(3), Zr(3), Tb(2), Rh(1)"
+Ligand 1,unq_CSD-PAKHEP-01-b,C3H9O1Si1,1,-1,O,14,89.18899999999998,0.2551739357,False,False,4.603213275528301,946bce41881f283bd837dfc7bc90dc6f,114,"PAKHEP, POXFUG, SONTEW, TACZIH, LIQHUR, ... (109 more)","U(18), Fe(11), Mo(11), Re(9), Dy(6), ... (23 more)"
+Ligand 2,unq_CSD-OZUFIZ-01-b,C19H16P1,1,-1,C,36,275.310761998,0.1166857304,False,False,9.372762488188847,55e2fd6018546286c491b3afc1eafd9a,11,"OZUFIZ, BUJFIY, YAJHAS, YAJHAS, DEZFAS, ... (6 more)","W(4), Sc(3), U(2), Lu(1), Th(1)"

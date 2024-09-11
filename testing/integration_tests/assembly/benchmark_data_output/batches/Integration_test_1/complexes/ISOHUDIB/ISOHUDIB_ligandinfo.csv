@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAQJAV-02-c,C13H7N2O2,2,-1,N-N,24,223.211,0.7909175902,False,True,9.641490410719703,87dfb9fcc35680c0d2e7ccf8b6e1b217,1,PAQJAV,Ir(1)
+Ligand 1,unq_CSD-PAKXAD-02-a,C11H19O3,2,-1,O-O,33,199.27,0.1395563894,False,False,8.770733892326229,1c153765e6ce4c2716b124f6c680343b,3,"PAKXAD, PAKXAD, LUNPES","Pd(2), Pt(1)"

@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAVPOU-02-a,C15H17N2O2,2,-1,O-N,36,257.313,0.1243016609,False,True,8.280217765856163,85d475a280320e315a076c60868a83a4,7,"PAVPOU, PAVPOU, PAVQOV, PAVQOV, KEJTIF, ... (2 more)","Ir(3), Cu(2), Ni(2)"
+Ligand 1,unq_CSD-PEBNEQ-02-a,C24H14N3O2,2,-1,N-N,43,376.395,0.1397180259,False,True,12.37808291861062,11daef5b22e33a27138c9e742e543a04,8,"PEBNEQ, PEBNOA, TANSUY, KAHGUX, YIKGIK, ... (3 more)","Ru(3), Rh(3), Ir(1), Re(1)"

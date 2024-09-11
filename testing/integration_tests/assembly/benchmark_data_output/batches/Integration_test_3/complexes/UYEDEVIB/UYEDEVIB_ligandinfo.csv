@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAPKAT-03-a,C14H23N4O2,3,-1,O-N-N,43,279.3639999999999,0.1436319789,False,True,12.64944972439513,6737599a13f537870a0118e443b1f608,4,"PAPKAT, PAPKAT, VEWVAV, VEWVAV","Zn(2), Ni(2)"
-Ligand 1,unq_CSD-PEKWOU-02-a,C14H10Br1N3,2,0,N-N,28,300.159,0.6006698547,False,True,13.207370386265392,e30b83d9a7b8d68ece40ea783b55c514,1,PEKWOU,Mn(1)
-Ligand 2,unq_CSD-PEDWOK-01-d,H3P1,1,0,P,4,33.997761998,0.7088900113,False,False,2.3202694347855375,bc5f48da633f7aabc9f24b331c93b38d,12,"PEDWOK, DIRHIX, ILOPUV, XIBVUZ, XIBVUZ01, ... (7 more)","Ir(5), W(3), Cr(3), Fe(1)"

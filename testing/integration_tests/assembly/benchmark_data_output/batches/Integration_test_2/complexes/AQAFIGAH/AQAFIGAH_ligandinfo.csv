@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAZFAX-02-a,C21H16N1S1,2,-1,S-N,39,314.426,0.1514947543,False,False,13.378787252213856,e452874026037a98ca89f922dc5b66c9,2,"PAZFAX, PAZFAX",Ni(2)
+Ligand 1,unq_CSD-PAHMER-01-f,C7H5N1,1,0,N,13,103.12399999999998,0.8453360089,False,False,6.20423352880918,949ab9427530ed6565beb22bb14b5b37,173,"PAHMER, PASQOR, PASQOR, PAYYET01, PAYYET01, ... (168 more)","Cu(42), Ru(33), Pt(17), Pd(16), W(10), ... (19 more)"
+Ligand 2,unq_CSD-PALTEC-01-a,C16H23N1,1,-2,N,40,229.36699999999996,0.0973881617,False,False,9.93914827085299,af6c99d46ccf2d4c9621c7f60d6beac7,1,PALTEC,Ti(1)

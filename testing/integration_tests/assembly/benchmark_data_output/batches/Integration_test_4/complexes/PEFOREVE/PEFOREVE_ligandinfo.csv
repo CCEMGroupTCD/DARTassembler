@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZUBAN-04-a,C48H36N4,4,-2,N-N-N-N,88,668.8439999999999,0.1016493899,False,False,19.337165183656058,9c5277ee895c24bb37ed5ad8d052ce0c,127,"OZUBAN, OZUBER, OZUBIV, OZUBOB, PIVXAT, ... (122 more)","Rh(31), Ir(22), Fe(18), Ru(17), Zn(7), ... (14 more)"
+Ligand 1,unq_CSD-PAKVOP-01-b,C10H8N1,1,-1,N,19,142.181,0.8668349471,False,False,6.896974330820726,550a51a11d618347357d824e804d577c,1,PAKVOP,Co(1)
+Ligand 2,unq_CSD-PAJQIA-01-c,C6H4F1,1,-1,C,11,95.09640316299998,0.8196681942,False,True,4.7590686336719275,e0611204ba1e399fca19b66b6c8d6b55,88,"PAJQIA, LILMAX, LILMEB, LIZQAN, LIZQAN, ... (83 more)","Pd(26), Pt(25), Au(13), Ni(9), Cr(7), ... (6 more)"

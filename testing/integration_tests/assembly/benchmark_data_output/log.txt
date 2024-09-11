@@ -3,7 +3,7 @@ Output directory: `data_output`
 Running 8 batches...
 ========================  Batch 0: Integration_test_1  =========================
 User-defined settings for batch 0:
-    ligand_db_file                ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+    ligand_db_file                test_metalig
     isomers                       lowest_energy
     max_num_complexes             30
     metal_center                  Fe
@@ -18,7 +18,7 @@ User-defined settings for batch 0:
     bidentate_rotator             auto
 ========================  Batch 1: Integration_test_2  =========================
 User-defined settings for batch 1:
-    ligand_db_file                ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+    ligand_db_file                test_metalig
     isomers                       lowest_energy
     max_num_complexes             10
     metal_center                  Co
@@ -33,7 +33,7 @@ User-defined settings for batch 1:
     bidentate_rotator             auto
 ========================  Batch 2: Integration_test_3  =========================
 User-defined settings for batch 2:
-    ligand_db_file                ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+    ligand_db_file                test_metalig
     isomers                       lowest_energy
     max_num_complexes             10
     metal_center                  Cr
@@ -48,7 +48,7 @@ User-defined settings for batch 2:
     bidentate_rotator             auto
 ========================  Batch 3: Integration_test_4  =========================
 User-defined settings for batch 3:
-    ligand_db_file                ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+    ligand_db_file                test_metalig
     isomers                       lowest_energy
     max_num_complexes             15
     metal_center                  Fe
@@ -63,7 +63,7 @@ User-defined settings for batch 3:
     bidentate_rotator             auto
 ========================  Batch 4: Integration_test_5  =========================
 User-defined settings for batch 4:
-    ligand_db_file                ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+    ligand_db_file                test_metalig
     isomers                       lowest_energy
     max_num_complexes             9
     metal_center                  Fe
@@ -78,7 +78,7 @@ User-defined settings for batch 4:
     bidentate_rotator             auto
 ========================  Batch 5: Integration_test_6  =========================
 User-defined settings for batch 5:
-    ligand_db_file                ['./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', 'same_ligand_as_previous']
+    ligand_db_file                ['test_metalig', 'same_ligand_as_previous']
     isomers                       all
     max_num_complexes             15
     metal_center                  Fe
@@ -95,7 +95,7 @@ User-defined settings for batch 5:
 User-defined settings for batch 6:
     name                          Integration_test_7
     geometry                      2-1-1
-    ligand_db_file                ['assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json', 'assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines', 'same_ligand_as_previous']
+    ligand_db_file                ['test_metalig', 'assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines', 'same_ligand_as_previous']
     metal_center                  Ru
     metal_oxidation_state         2
     total_charge                  -1
@@ -123,33 +123,37 @@ User-defined settings for batch 7:
     bidentate_rotator             auto
 =============================  Summary per batch  ==============================
 Batch 0 ('Integration_test_1'):
-  - 42 complexes tried, 30 complexes successfully assembled.
-  - 12 complexes failed because of post-filters:
-    - clashing ligands: 12
+  - 60 complexes tried, 30 complexes successfully assembled.
+  - 30 complexes failed because of post-filters:
+    - clashing ligands: 26
+    - haptic ligand: 3
+    - broken bonds: 1
 Batch 1 ('Integration_test_2'):
-  - 13 complexes tried, 10 complexes successfully assembled.
-  - 3 complexes failed because of post-filters:
-    - hydride: 2
-    - clashing ligands: 1
-Batch 2 ('Integration_test_3'):
-  - 34 complexes tried, 10 complexes successfully assembled.
-  - 24 complexes failed because of post-filters:
-    - clashing ligands: 16
-    - non-planar tridentate: 7
-    - hydride: 1
-Batch 3 ('Integration_test_4'):
-  - 18 complexes tried, 15 complexes successfully assembled.
-  - 3 complexes failed because of post-filters:
+  - 14 complexes tried, 10 complexes successfully assembled.
+  - 4 complexes failed because of post-filters:
+    - haptic ligand: 2
     - clashing ligands: 2
-    - hydride: 1
+Batch 2 ('Integration_test_3'):
+  - 58 complexes tried, 10 complexes successfully assembled.
+  - 48 complexes failed because of post-filters:
+    - clashing ligands: 30
+    - non-planar tridentate: 13
+    - haptic ligand: 5
+Batch 3 ('Integration_test_4'):
+  - 31 complexes tried, 15 complexes successfully assembled.
+  - 16 complexes failed because of post-filters:
+    - clashing ligands: 15
+    - haptic ligand: 1
 Batch 4 ('Integration_test_5'):
-  - 23 complexes tried, 9 complexes successfully assembled.
-  - 14 complexes failed because of post-filters:
-    - clashing ligands: 14
+  - 81 complexes tried, 9 complexes successfully assembled.
+  - 72 complexes failed because of post-filters:
+    - clashing ligands: 42
+    - haptic ligand: 30
 Batch 5 ('Integration_test_6'):
-  - 26 complexes tried, 15 complexes successfully assembled.
-  - 11 complexes failed because of post-filters:
-    - clashing ligands: 11
+  - 21 complexes tried, 15 complexes successfully assembled.
+  - 6 complexes failed because of post-filters:
+    - clashing ligands: 5
+    - haptic ligand: 1
 Batch 6 ('Integration_test_7'):
   - 15 complexes tried, 14 complexes successfully assembled.
   - 1 complexes failed because of post-filters:
@@ -159,10 +163,11 @@ Batch 7 ('Integration_test_8'):
   - 1 complexes failed because of post-filters:
     - clashing ligands: 1
 ====================  Total summary of DART Assembler run  =====================
-  - 227 complexes tried, 158 complexes successfully assembled.
-  - 69 complexes failed because of post-filters:
-    - clashing ligands: 58
-    - non-planar tridentate: 7
-    - hydride: 4
+  - 336 complexes tried, 158 complexes successfully assembled.
+  - 178 complexes failed because of post-filters:
+    - clashing ligands: 122
+    - haptic ligand: 42
+    - non-planar tridentate: 13
+    - broken bonds: 1
 DART Assembler output files saved to directory `data_output`.
 Done! All complexes assembled. Exiting DART Assembler Module.

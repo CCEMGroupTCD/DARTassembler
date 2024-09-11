@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAKVIH-03-a,C17H23N3O2,3,0,N-N-N,45,301.39,0.1287304399,False,True,10.910296797062854,547a1f9d69b7993d1fde14f169639ce6,45,"PAKVIH, PAKVON, LOMYUJ, BIHHAB, BIHHIJ, ... (40 more)","Ru(10), Fe(5), Zn(5), Ir(3), Ag(3), ... (12 more)"
+Ligand 1,unq_CSD-PDPESA10-02-a,C12H16N1O1,2,-1,N-O,30,190.26600000000002,0.1663111476,False,True,9.846852444309299,e2206a512adba49a11d0604aada61067,4,"PDPESA10, PDPESA10, NIPESA10, NIPESA10","Pd(2), Ni(2)"
+Ligand 2,unq_CSD-PARFOD-01-c,C12H11P1,1,0,P,24,186.19376199799999,0.1652046281,False,False,8.905120220412522,e75bcd69492cfdc89c83cd74312333d7,79,"PARFOD, SUWVUE, SUWVUE, SUWVUE, SUWVUE, ... (74 more)","Ru(21), Pd(9), W(8), Re(6), Ni(6), ... (10 more)"

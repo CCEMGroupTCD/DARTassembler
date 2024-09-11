@@ -8,7 +8,8 @@ import matplotlib
 from DARTassembler.src.constants.Paths import project_path
 
 from DARTassembler.src.constants.Periodic_Table import DART_Element
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
+from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_jsonlines, load_json
+from DARTassembler.src.constants.Paths import default_ligand_db_path
 
 matplotlib.use('TkAgg')
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
@@ -70,7 +71,10 @@ if __name__ == '__main__':
     from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
     # Load the first 1000 out of 41,018 ligands in the MetaLig database.
-    metalig = LigandDB.load_from_json(path='metalig', n_max=1000)
+    # metalig = LigandDB.load_from_json(path='metalig')
+
+    dict_metalig = load_jsonlines(default_ligand_db_path)
+
     #
     # # Set some criteria to filter ligands
     # keep_denticity = 2

@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEKNEA-02-a,C5H4N1S1,2,-1,S-N,11,110.15399999999998,0.9206087816,False,True,5.406201853427228,bd843c380489a4847cad15b6d5e8f9c0,199,"PEKNEA, PEKNEA, PEMTIL, PEMTIL, PEMTOR, ... (194 more)","Ru(32), Mo(18), Fe(17), W(17), Co(15), ... (20 more)"
-Ligand 1,unq_CSD-PERLOO-02-a,N1O2,2,-1,O-O,3,46.005,1.0,False,False,2.136343279999727,4bba538123384ae3febc049055c13837,242,"PERLOO, POXZAG, POXZAG01, SUFZOL, SUGBAA, ... (237 more)","Cu(70), Ni(34), Zn(23), Co(16), Cd(15), ... (16 more)"

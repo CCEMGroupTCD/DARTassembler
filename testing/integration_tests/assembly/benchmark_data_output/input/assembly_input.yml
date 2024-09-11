@@ -1,7 +1,7 @@
 ffmovie: true
 output_directory: assembly/data_output
 batches:
-- ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+- ligand_db_file: test_metalig
   isomers: lowest_energy
   max_num_complexes: 30
   metal_center: Fe
@@ -14,7 +14,7 @@ batches:
   geometry_modifier_filepath: ./assembly/data_input/geometry_modifier.xyz
   complex_name_appendix: null
   bidentate_rotator: auto
-- ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+- ligand_db_file: test_metalig
   isomers: lowest_energy
   max_num_complexes: 10
   metal_center: Co
@@ -27,7 +27,7 @@ batches:
   complex_name_appendix: null
   geometry_modifier_filepath: null
   bidentate_rotator: auto
-- ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+- ligand_db_file: test_metalig
   isomers: lowest_energy
   max_num_complexes: 10
   metal_center: Cr
@@ -40,7 +40,7 @@ batches:
   complex_name_appendix: null
   geometry_modifier_filepath: null
   bidentate_rotator: auto
-- ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+- ligand_db_file: test_metalig
   isomers: lowest_energy
   max_num_complexes: 15
   metal_center: Fe
@@ -53,7 +53,7 @@ batches:
   complex_name_appendix: null
   geometry_modifier_filepath: null
   bidentate_rotator: auto
-- ligand_db_file: ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+- ligand_db_file: test_metalig
   isomers: lowest_energy
   max_num_complexes: 9
   metal_center: Fe
@@ -67,7 +67,7 @@ batches:
   geometry_modifier_filepath: null
   bidentate_rotator: auto
 - ligand_db_file:
-  - ./assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - test_metalig
   - same_ligand_as_previous
   isomers: all
   max_num_complexes: 15
@@ -84,7 +84,7 @@ batches:
 - name: Integration_test_7
   geometry: 2-1-1
   ligand_db_file:
-  - assembly/data_input/INTEGRATION_TEST_LIGAND_DATABASE_270623.json
+  - test_metalig
   - assembly/data_input/ligand_db_v1.7_only_Cl.jsonlines
   - same_ligand_as_previous
   metal_center: Ru

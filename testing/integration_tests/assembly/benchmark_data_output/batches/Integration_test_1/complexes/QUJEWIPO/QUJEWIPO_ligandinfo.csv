@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAMPEB-02-a,C8H14N1O2,2,-1,O-N,25,156.205,0.178324854,False,False,7.322727001602614,0e0f197dd54986284ffeb6e0672ac6f4,13,"PAMPEB, PAMPEB, PAPVUY, PAPVUY, PAPWAF, ... (8 more)","Hf(4), Ce(4), Ti(2), Zr(2), Re(1)"
+Ligand 1,unq_CSD-OZURAE-02-b,C6H5N2O2,2,-1,O-O,15,137.118,0.518987853,False,False,7.148208975680551,6aedf0701cf842e447a0e06abebd87fb,26,"OZURAE, TANLUP, UBINAY, COBJAE, CUNPHA01, ... (21 more)","Ni(5), Cu(4), Zr(4), Co(4), Rh(3), ... (3 more)"

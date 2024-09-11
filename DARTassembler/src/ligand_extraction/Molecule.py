@@ -1303,7 +1303,7 @@ class RCA_Ligand(RCA_Molecule):
 
         # Truncate lists if there are too many
         truncate_data = {
-                            'CSD Complex IDs': [name.replace('CSD-', '').split('-')[0] for i, name in enumerate(self.all_ligand_names)],
+                            'CSD Complex IDs': self.identical_ligand_info['original_complex_id'],
                             'CSD Metal Count': [f'{el}({count})' for el, count in self.count_metals.items()],
                             # 'CSD Metal OS Count': [f'{el}({count})' for el, count in csd_mos_counts.items()]
                         }

@@ -1,0 +1,3 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PATKON-02-a,C8H7S2,2,-1,S-S,17,167.26399999999998,0.4311518178,False,False,7.174402621821555,6d17acdd24190620285b5bfa61e71f80,1,PATKON,Au(1)
+Ligand 1,unq_CSD-PATKON-02-a,C8H7S2,2,-1,S-S,17,167.26399999999998,0.4311518178,False,False,7.174402621821555,6d17acdd24190620285b5bfa61e71f80,1,PATKON,Au(1)

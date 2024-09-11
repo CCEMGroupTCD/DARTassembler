@@ -562,329 +562,199 @@
                     "node_label": "Fe"
                 },
                 "1": {
-                    "metal_neighbor": false,
-                    "node_label": "O",
-                    "orig_idx": 2
+                    "node_label": "O"
                 },
                 "2": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 3
+                    "node_label": "H"
                 },
                 "3": {
-                    "metal_neighbor": true,
-                    "node_label": "O",
-                    "orig_idx": 4
+                    "node_label": "O"
                 },
                 "4": {
-                    "metal_neighbor": false,
-                    "node_label": "O",
-                    "orig_idx": 5
+                    "node_label": "O"
                 },
                 "5": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 6
+                    "node_label": "H"
                 },
                 "6": {
-                    "metal_neighbor": false,
-                    "node_label": "N",
-                    "orig_idx": 7
+                    "node_label": "N"
                 },
                 "7": {
-                    "metal_neighbor": true,
-                    "node_label": "O",
-                    "orig_idx": 8
+                    "node_label": "O"
                 },
                 "8": {
-                    "metal_neighbor": true,
-                    "node_label": "N",
-                    "orig_idx": 9
+                    "node_label": "N"
                 },
                 "9": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 10
+                    "node_label": "C"
                 },
                 "10": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 11
+                    "node_label": "H"
                 },
                 "11": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 12
+                    "node_label": "C"
                 },
                 "12": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 13
+                    "node_label": "C"
                 },
                 "13": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 14
+                    "node_label": "C"
                 },
                 "14": {
-                    "metal_neighbor": false,
-                    "node_label": "N",
-                    "orig_idx": 15
+                    "node_label": "N"
                 },
                 "15": {
-                    "metal_neighbor": true,
-                    "node_label": "N",
-                    "orig_idx": 16
+                    "node_label": "N"
                 },
                 "16": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 17
+                    "node_label": "C"
                 },
                 "17": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 18
+                    "node_label": "C"
                 },
                 "18": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 19
+                    "node_label": "H"
                 },
                 "19": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 20
+                    "node_label": "H"
                 },
                 "20": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 21
+                    "node_label": "H"
                 },
                 "21": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 22
+                    "node_label": "C"
                 },
                 "22": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 23
+                    "node_label": "H"
                 },
                 "23": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 24
+                    "node_label": "H"
                 },
                 "24": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 25
+                    "node_label": "C"
                 },
                 "25": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 26
+                    "node_label": "H"
                 },
                 "26": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 27
+                    "node_label": "H"
                 },
                 "27": {
-                    "metal_neighbor": true,
-                    "node_label": "N",
-                    "orig_idx": 28
+                    "node_label": "N"
                 },
                 "28": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 29
+                    "node_label": "C"
                 },
                 "29": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 30
+                    "node_label": "C"
                 },
                 "30": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 31
+                    "node_label": "H"
                 },
                 "31": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 32
+                    "node_label": "H"
                 },
                 "32": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 33
+                    "node_label": "C"
                 },
                 "33": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 34
+                    "node_label": "H"
                 },
                 "34": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 35
+                    "node_label": "H"
                 },
                 "35": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 36
+                    "node_label": "C"
                 },
                 "36": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 37
+                    "node_label": "H"
                 },
                 "37": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 38
+                    "node_label": "H"
                 },
                 "38": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 39
+                    "node_label": "H"
                 },
                 "39": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 40
+                    "node_label": "C"
                 },
                 "40": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 41
+                    "node_label": "H"
                 },
                 "41": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 42
+                    "node_label": "C"
                 },
                 "42": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 43
+                    "node_label": "H"
                 },
                 "43": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 44
+                    "node_label": "H"
                 },
                 "44": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 45
+                    "node_label": "C"
                 },
                 "45": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 46
+                    "node_label": "C"
                 },
                 "46": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 47
+                    "node_label": "H"
                 },
                 "47": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 48
+                    "node_label": "C"
                 },
                 "48": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 49
+                    "node_label": "H"
                 },
                 "49": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 50
+                    "node_label": "H"
                 },
                 "50": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 51
+                    "node_label": "C"
                 },
                 "51": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 52
+                    "node_label": "H"
                 },
                 "52": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 53
+                    "node_label": "C"
                 },
                 "53": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 54
+                    "node_label": "C"
                 },
                 "54": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 55
+                    "node_label": "H"
                 },
                 "55": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 56
+                    "node_label": "H"
                 },
                 "56": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 57
+                    "node_label": "C"
                 },
                 "57": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 58
+                    "node_label": "C"
                 },
                 "58": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 59
+                    "node_label": "H"
                 },
                 "59": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 60
+                    "node_label": "H"
                 },
                 "60": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 61
+                    "node_label": "H"
                 },
                 "61": {
-                    "metal_neighbor": false,
-                    "node_label": "C",
-                    "orig_idx": 62
+                    "node_label": "C"
                 },
                 "62": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 63
+                    "node_label": "H"
                 },
                 "63": {
-                    "metal_neighbor": false,
-                    "node_label": "H",
-                    "orig_idx": 64
+                    "node_label": "H"
                 },
                 "64": {
-                    "metal_neighbor": true,
-                    "node_label": "N",
-                    "orig_idx": 2
+                    "node_label": "N"
                 },
                 "65": {
-                    "metal_neighbor": false,
-                    "node_label": "N",
-                    "orig_idx": 3
+                    "node_label": "N"
                 }
             }
         },
@@ -979,7 +849,7 @@
                 ],
                 "stoichiometry": "C23H31N5O4",
                 "denticity": 5,
-                "pred_charge": -2,
+                "pred_charge": -2.0,
                 "pred_charge_is_confident": true,
                 "graph_hash_with_metal": "d2bf10e641a3c88df163c65c216db0b4",
                 "has_good_bond_orders": true,
@@ -1004,11 +874,13 @@
                 ],
                 "stoichiometry": "N2",
                 "denticity": 1,
-                "pred_charge": 0,
+                "pred_charge": 0.0,
                 "pred_charge_is_confident": true,
                 "graph_hash_with_metal": "60aef06530deadddb1333674bfb08b38",
                 "has_good_bond_orders": true,
-                "warnings": [],
+                "warnings": [
+                    "Similar molecule found with different number of hydrogens."
+                ],
                 "occurrences": 432,
                 "n_atoms": 2
             }
@@ -1016,10 +888,10 @@
         "metal_oxi_state": 2,
         "metal": "Fe",
         "metal_idx": 0,
-        "charge": 0,
+        "charge": 0.0,
         "mol_id": "UZENIDAY"
     },
-    "complex_idx": 69,
+    "complex_idx": 66,
     "xyz_structure": "66\n\nFe  0.0  0.0  0.0 \nO  -2.09337  1.71264  4.05414 \nH  -2.09554  0.87644  4.58642 \nO  -0.01093  -1.17238  0.93241 \nO  -2.25639  -5.23378  -1.81184 \nH  -3.18455  -5.14226  -1.476 \nN  -1.72063  -3.88488  2.5805 \nO  -1.92105  -0.33803  -0.82234 \nN  2.25146  -0.03395  -0.62418 \nC  -1.6213  1.92478  1.02467 \nH  -1.52994  2.61045  1.89195 \nC  -2.64574  0.81797  1.1787 \nC  -1.3798  -4.54369  0.31856 \nC  -1.13417  -2.68758  2.36286 \nN  -4.76453  -0.96087  1.33581 \nN  -0.31948  1.54436  0.51411 \nC  -0.80012  -3.26914  0.04111 \nC  2.82909  -0.97735  0.36692 \nH  2.43586  -2.00121  0.21177 \nH  2.51784  -0.72216  1.39784 \nH  3.9415  -1.00213  0.33118 \nC  -1.48486  -5.64999  -0.71832 \nH  -0.46896  -5.92959  -1.07166 \nH  -1.91388  -6.58573  -0.29883 \nC  2.66223  -1.8118  -2.49174 \nH  3.27195  -1.92308  -3.41736 \nH  3.07423  -2.54014  -1.7684 \nN  0.31263  -1.91544  -1.69754 \nC  -3.51709  0.84188  2.30183 \nC  0.71956  2.56992  0.60924 \nH  0.48918  3.26918  1.44357 \nH  0.74372  3.1757  -0.32154 \nC  2.81884  -0.36427  -1.98209 \nH  3.92572  -0.21811  -1.94208 \nH  2.46295  0.35079  -2.75291 \nC  -1.004  -1.72783  3.49427 \nH  -1.44179  -2.15028  4.42554 \nH  -1.55166  -0.80542  3.23629 \nH  0.06425  -1.48108  3.67608 \nC  -4.57466  -0.07427  2.34646 \nH  -5.27038  -0.06875  3.17653 \nC  -3.35944  1.83193  3.4485 \nH  -3.46442  2.86371  3.05902 \nH  -4.14407  1.71248  4.22815 \nC  -0.65675  -2.3475  1.07348 \nC  -0.23593  -3.01736  -1.28484 \nH  -0.10675  -3.9225  -1.86326 \nC  1.24574  -2.2016  -2.85215 \nH  0.96884  -1.74659  -3.82406 \nH  1.29126  -3.26376  -3.18436 \nC  -1.84313  -4.81354  1.60757 \nH  -2.2849  -5.77222  1.84385 \nC  -3.92722  -1.03927  0.26786 \nC  2.76431  1.32314  -0.29614 \nH  2.63673  2.02157  -1.1544 \nH  3.86178  1.27553  -0.09994 \nC  -2.83151  -0.17488  0.17244 \nC  -4.17779  -2.0643  -0.78783 \nH  -5.0922  -2.6484  -0.55628 \nH  -3.31717  -2.75394  -0.85061 \nH  -4.30983  -1.55883  -1.76768 \nC  2.09789  1.99208  0.91686 \nH  2.73492  2.87017  1.1591 \nH  2.07528  1.36051  1.82911 \nN  0.0  0.0  -1.87 \nN  0.0  0.0  -2.98838 \n",
     "batch_idx": 4
 }

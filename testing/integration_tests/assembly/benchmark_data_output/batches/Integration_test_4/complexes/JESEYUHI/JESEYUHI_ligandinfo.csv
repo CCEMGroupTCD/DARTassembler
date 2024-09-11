@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PACLIO-04-a,C44H20Cl8N4,4,-2,N-N-N-N,76,888.2719999999999,0.0819590918,False,False,17.278416220244264,77eba5c27afbcba8cba40603715bc044,11,"PACLIO, QASNUU, QOKKEH, DAFBOC, YIBNIJ, ... (6 more)","Ru(5), Fe(2), Zn(2), Co(1), Mn(1)"
-Ligand 1,unq_CSD-PACCOL-01-a,C1N1,1,-1,C,2,26.018,1.0,False,False,1.1471743285133258,9d88dc32690d837e1d9728f9d6ae3ca0,3399,"PACCOL, PACCOL, PACCOL, PACCOL, PAHCEK, ... (3394 more)","Fe(1045), Pt(372), Co(315), Au(259), Ni(196), ... (22 more)"
-Ligand 2,unq_CSD-PACCOL-01-a,C1N1,1,-1,C,2,26.018,1.0,False,False,1.1471743285133258,9d88dc32690d837e1d9728f9d6ae3ca0,3399,"PACCOL, PACCOL, PACCOL, PACCOL, PAHCEK, ... (3394 more)","Fe(1045), Pt(372), Co(315), Au(259), Ni(196), ... (22 more)"

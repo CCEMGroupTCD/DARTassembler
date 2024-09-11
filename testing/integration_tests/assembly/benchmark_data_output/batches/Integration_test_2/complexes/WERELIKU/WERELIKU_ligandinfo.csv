@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAMJUL-02-a,C23H24O1P1,2,-1,O-P,49,347.417761998,0.0830931635,False,False,11.75855136060561,76ef8f2cf2ee4ef140b30a7583c1c73f,12,"PAMJUL, SIPGUT, GEBNAF, GEBNAF, GEBNAF, ... (7 more)","Ce(3), U(3), Ni(2), Fe(2), Rh(1), ... (1 more)"
+Ligand 1,unq_CSD-PAXCAS-01-d,C13H13P1,1,0,P,27,200.22076199800003,0.1679498374,False,True,9.340184645391119,7bde9ed1a63d2efd2436014b8eadee13,474,"PAXCAS, PECFAE, PECFAE, PETLEG, PETLEG, ... (469 more)","W(80), Re(71), Mo(61), Pt(46), Ni(34), ... (16 more)"
+Ligand 2,unq_CSD-PAFJAH-01-a,C6H5N1,1,-2,N,12,91.11299999999997,0.8962611756,False,False,5.1039781700160125,e569512d6a34722344c226c1f9fdf4fa,185,"PAFJAH, PAFJAH10, PAZTMP10, PEVPAH, PEVPAH10, ... (180 more)","W(55), Re(45), Mo(29), V(14), Ti(12), ... (7 more)"
