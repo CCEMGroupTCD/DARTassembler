@@ -157,7 +157,7 @@ class DARTAssembly(object):
 
         logging.info(f"  - {n_total} complexes tried, {n_success} complexes successfully assembled.")
         if post_filter_notes != '':
-            logging.info(f"  - {n_total - n_success} complexes failed because of post-filters:")
+            logging.info(f"  - {n_total - n_success} complexes failed because of filters:")
             logging.info(post_filter_notes)
 
         return

@@ -34,18 +34,18 @@ User-defined settings for batch 1:
 =============================  Summary per batch  ==============================
 Batch 0 ('Test1'):
   - 10 complexes tried, 5 complexes successfully assembled.
-  - 5 complexes failed because of post-filters:
+  - 5 complexes failed because of filters:
     - clashing ligands: 3
     - haptic ligand: 2
 Batch 1 ('Test2'):
   - 35 complexes tried, 8 complexes successfully assembled.
-  - 27 complexes failed because of post-filters:
+  - 27 complexes failed because of filters:
     - clashing ligands: 24
     - non-planar tridentate: 2
     - haptic ligand: 1
 ====================  Total summary of DART Assembler run  =====================
   - 45 complexes tried, 13 complexes successfully assembled.
-  - 32 complexes failed because of post-filters:
+  - 32 complexes failed because of filters:
     - clashing ligands: 27
     - haptic ligand: 3
     - non-planar tridentate: 2
