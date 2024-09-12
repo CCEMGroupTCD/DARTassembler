@@ -40,7 +40,7 @@ if __name__ == '__main__':
                                     )
     complex = db_complex.get_first_entry()
     complexes_should_have = ['atomic_props', 'global_props', 'graph_dict', 'mol_id', 'stoichiometry',
-       'metal', 'metal_oxi_state', 'charge', 'ligands.py', 'graph_hash']
+       'metal', 'metal_oxi_state', 'charge', 'ligands', 'graph_hash']
     complex_props = list(complex.__dict__.keys())
     diff = set(complexes_should_have).symmetric_difference(complex_props)
     print('Difference of properties:', diff)

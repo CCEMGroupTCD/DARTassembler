@@ -79,7 +79,7 @@ class PlacementRotation:
             output_directory: Union[str,Path,None] = None,
             ):
 
-        #todo: in order to check for duplicates we may need to append a list here
+        # in order to check for duplicates we may need to append a list here
         for complex_ in list_of_complexes_wih_isomers:  # We loop through all the created isomers
             if (complex_ is not None) and (complex_ != (None, None)):
 
@@ -172,9 +172,11 @@ class PlacementRotation:
         # coords specifies the position of the donor atom relative to the metal
         stk_e.Monodentate._ligand_vertex_prototypes[0]._position = np.array(coordinates)
         if len(ligand.atomic_props["atoms"]) == 1:
-            #TODO: RDKIT really does not like H- as ligand. This will throw an error in this case.  !!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!WARNING!!!
-            # This bit of code is quite unstable to be brutally honest. errors are quite prone here
-            # Todo
+            if ligand.atomic_props["atoms"] == ["H"]:
+                # RDKIT really does not like H- as ligand. This will throw an error in this case.
+                raise NotImplementedError('H as a ligand is not supported yet.')
+
+            # This bit of code is a little unstable. Errors are possible here.
             single_atom = ligand.atomic_props['atoms'][0]
             ligand_bb = stk.BuildingBlock(smiles=f"{single_atom}", functional_groups=[stk.SmartsFunctionalGroupFactory(smarts=f"{single_atom}", bonders=(0,), deleters=(), )])
             complex = stk.ConstructedMolecule(
@@ -220,9 +222,15 @@ class PlacementRotation:
                                                                                                             deleters=(), ), ], )
         return final_bb
 
-    def convert_ligand_to_building_block_for_complex(self, ligands: dict[RCA_Ligand], topology, metal: str = None, build_options: dict = {}) -> tuple[dict[int, BuildingBlock], dict[int, Any]]:
-        # Here we pick and choose our ligands and rotate and place them based on our topology
+    def convert_ligand_to_building_block_for_complex(self, ligands: dict[RCA_Ligand], topology, metal: str = None, build_options: dict = None) -> tuple[dict[int, BuildingBlock], dict[int, Any]]:
+        """
+        Here we pick and choose our ligands and rotate and place them based on our topology
+        """
+        if build_options is None:
+            build_options = {}
+
         topology_determining_ligand_planar = self.planar_check_(ligands)  # Check are either the tetra or tri ligands planar
+
         topology_list = topology
         # This ensures we don't enter the same if statement twice if we have to place a ligand of the same denticity twice
         first_lig0_placed = False
@@ -251,9 +259,8 @@ class PlacementRotation:
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Middle_Left()
 
                 else:
-                    raise ValueError(f"!!!Fatal Error!!! -> Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 0) -> Exiting Program ...")
+                    raise ValueError(f"Your newly created geometry {topology_list}, has not been accounted for in the assembly process (denticity = 0).")
                 bb_for_complex = self.Process_Monodentate(ligand=ligand, coordinates=coords)
-
 
             elif ligand.denticity == 1:
 
@@ -274,11 +281,9 @@ class PlacementRotation:
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Bottom()
 
                 else:
-                    raise ValueError(f"!!!Fatal Error!!! -> Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 1) -> Exiting Program ...")
+                    raise ValueError(f"Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 1).")
 
                 bb_for_complex = self.Process_Monodentate(ligand=ligand, coordinates=coords)
-
-
 
 
             elif ligand.denticity == 4:
@@ -299,7 +304,7 @@ class PlacementRotation:
                     # bb_for_complex = nonplanar_tetra_solver(stk_bb=building_block, ligand=ligand)
                     # bb_for_complex = stk.BuildingBlock.init_from_molecule(bb_for_complex, functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg]', bonders=(0,), deleters=(), ), ], )
                 else:
-                    raise ValueError("!!!Fatal Error!!! -> Program unable to determine if the tetradentate ligand is planar or not -> Exiting program")
+                    raise ValueError("Program unable to determine if the tetradentate ligand is planar or not.")
 
 
             elif ligand.denticity == 3:
@@ -327,9 +332,9 @@ class PlacementRotation:
                     if topology_list == [3, 2, 0] or [3, 2, 1]:
                         bb_for_complex = stk.BuildingBlock.init_from_molecule(compl_constructed_mol, functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=())])
                     else:
-                        raise ValueError(f"!!!Fatal Error!!! -> Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 1) -> Exiting Program ...")
+                        raise ValueError(f"Your newly created topology {topology_list}, has not been accounted for in the assembly process (denticity = 1).")
                 else:
-                    raise ValueError("!!!Fatal Error!!! -> the geometry of the tridentate ligand is unresolved -> Exiting Program")
+                    raise ValueError("The planarity of the tridentate ligand is not clear.")
 
 
 
@@ -362,7 +367,7 @@ class PlacementRotation:
                     bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Left", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=bidentate_box_choice_instruction)
 
                 else:
-                    raise ValueError("!!!Fatal_Error!!! -> Topology not accounted for in the context of bidentate ligands.py -> Exiting Program")
+                    raise ValueError("Geometry not accounted for in the context of bidentate ligands.")
 
 
 

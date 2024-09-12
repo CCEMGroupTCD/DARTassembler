@@ -43,7 +43,7 @@ class BuildIsomers:
                 str(self.topology) == "[2, 2]--[1, 2]"):
             # Expect only one isomer from this if statement (so a list of two constructed molecules). Only a single bidentate needs to be flipped 180
             bidentate_already_rotated = False  # This is to ensure we don't enter the same if statement twice
-            building_blocks_rotated = {}  # This will contain all the ligands.py for the isomer of our complex
+            building_blocks_rotated = {}  # This will contain all the ligands for the isomer of our complex
             for j in range(len(self.building_blocks_list)):
                 # We iterate through all the complexes in our input complex
                 if (self.denticity_list[j] == 2) and (bidentate_already_rotated == False):

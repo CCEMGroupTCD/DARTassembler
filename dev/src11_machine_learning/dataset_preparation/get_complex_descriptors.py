@@ -49,7 +49,7 @@ if __name__ == '__main__':
     df = pd.DataFrame.from_dict(db_dict, orient='index')
     df = unroll_dict_into_columns(df, dict_col='global_props', prefix='gbl_')
 
-    db_drop_props = ['atomic_props', 'global_props', 'graph_dict', 'ligands.py']
+    db_drop_props = ['atomic_props', 'global_props', 'graph_dict', 'ligands']
     df = df.drop(columns=db_drop_props)
 
     soap_cols = soap.get_descriptor_names()

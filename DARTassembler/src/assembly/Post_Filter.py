@@ -48,7 +48,7 @@ class PostFilter:
                 values_2 = mercury_remover(values_2)  # Eliminate the temporary Mercury
                 if keys_1 == keys_2:  # Don't compare anything if they are the same ligand
                     pass
-                elif keys_1 != keys_2:  # Compare distance if the ligands.py are not the same ligand
+                elif keys_1 != keys_2:  # Compare distance if the ligands are not the same ligand
                     for point_1, atom_1 in zip(values_1.get_position_matrix(), values_1.get_atoms()):  # we loop through all the positions of the atoms
                         atom_1_type = [str(atom_1).split("(")][0][0]
                         # cov_1 = element(atom_1_type).covalent_radius / 100.0
