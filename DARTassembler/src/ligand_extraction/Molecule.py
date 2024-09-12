@@ -580,9 +580,10 @@ class RCA_Molecule(object):
         return self.atomic_props['atoms']
 
 
-    def calculate_planarity(self) -> float:
+    def calculate_planarity(self, only_donors=False) -> float:
         """
         Calculates the planarity of the molecule.
+        @param only_donors: If True, only the donor atoms are considered for the calculation of the planarity. If False, all atoms are considered.
         @return: Planarity of the molecule as a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
         """
         coordinates = self.get_coordinates_list()
@@ -1258,7 +1259,6 @@ class RCA_Ligand(RCA_Molecule):
         return set(self.get_assembly_dict()["type"]).issubset(set(atoms_of_interest))
 
 
-    # todo: unittests!!
     def planar_check(self, eps=2):
         """
         Checks if the ligand has planar donor atoms. Check is done only for denticity 3 and 4, otherwise False is returned.
@@ -1266,7 +1266,12 @@ class RCA_Ligand(RCA_Molecule):
         eps für (d=4) -> 1
         :return:
         """
-        if not self.denticity in [3, 4]:
+        # Deprecated because this method has a lot of issues. For the tridentate, the calculation is ok but not perfect and for the tetradentate it does not include the metal.
+        raise DeprecationWarning("This method is deprecated. Use if_donors_planar() instead.")
+
+        if self.denticity <= 2:     # ligands with 2 or less coordinating atoms are per definition planar
+            return True
+        elif self.denticity >= 5:   # for 5 or more coordinating atoms, the planarity is not yet implemented
             return False
 
         functional_coords = [[self.atomic_props[key][i] for key in ["x", "y", "z"]] for i in self.ligand_to_metal]
@@ -1287,7 +1292,42 @@ class RCA_Ligand(RCA_Molecule):
 
         return False
 
-    def get_ligand_output_info(self, max_entries=5, add_confident_charge=False, planarity=True) -> dict:
+    def calculate_donors_planarity(self, with_metal: bool=True) -> float:
+        """
+        Calculates the planarity of donors and metal center.
+        @param with_metal: If True, the original metal center is included in the calculation. If False, the metal center is not included.
+        @return: Planarity of the molecule as a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
+        """
+        # Get the coordinates of the donors and the metal
+        coordinates = self.get_coordinates_list()
+        coordinates = [coordinates[donor_idx] for donor_idx in self.ligand_to_metal]
+        if with_metal:
+            coordinates.append(self.original_metal_position)
+
+        # If there are less than 3 atoms, the molecule is planar by definition
+        if len(coordinates) < 3:
+            return 1.0
+
+        deviation = get_max_deviation_from_coplanarity(points=coordinates)  # deviation is a float that is 0 if the molecule is perfectly planar and > 0 if it is not. The higher the value, the less planar the molecule is.
+        planarity = 1/ (1+ deviation)   # planarity is a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
+        planarity = round(planarity, 10)    # round to 10 decimal places to avoid floating point deviation which happen with np.linalg.svd() in different versions of numpy
+
+        return planarity
+
+    def if_donors_planar(self, threshold: float=0.61, with_metal: bool=True) -> bool:
+        """
+        Checks if the donors are planar.
+        @param threshold: Threshold for the planarity. If the planarity is above the threshold, the donors are considered planar. By default, the threshold is set to 0.61 which has empirically been found to be a good value for tridentate and tetradentate ligands.
+        @param with_original_metal: If True, the original metal center is included in the calculation. If False, the metal center is not included.
+        @return: True if the donors are planar, False otherwise.
+        """
+        planarity = self.calculate_donors_planarity(with_metal=with_metal)
+        is_planar = planarity >= threshold
+        is_planar = bool(is_planar)
+
+        return is_planar
+
+    def get_ligand_output_info(self, max_entries=5, add_confident_charge=False) -> dict:
 
         info = {
             'Ligand ID': self.unique_name,
@@ -1297,7 +1337,7 @@ class RCA_Ligand(RCA_Molecule):
             'Donors': '-'.join(self.local_elements),
             'Number of Atoms': self.n_atoms,
             'Molecular Weight': self.global_props['molecular_weight'],
-            'Ligand Planarity': self.calculate_planarity() if planarity else None,
+            'Ligand Planarity': self.calculate_planarity(),
             'Haptic': self.has_neighboring_coordinating_atoms,
             'Beta-Hydrogen': self.has_betaH,
             'Max. Interatomic Distance': self.stats['max_atomic_distance'],
@@ -1306,8 +1346,8 @@ class RCA_Ligand(RCA_Molecule):
             }
         if add_confident_charge:
             info['Charge Confident'] = self.pred_charge_is_confident
-        if not planarity:
-            info.pop('Ligand Planarity')
+        # if not planarity:
+        #     info.pop('Ligand Planarity')
 
 
         # Currently doesn't work because the ligand doesn't have the attribute 'identical_ligand_info'.
@@ -1427,7 +1467,7 @@ class RCA_Ligand(RCA_Molecule):
 
         # Global descriptors
         descriptors['denticiy'] = self.denticity
-        descriptors['planar'] = self.planar_check()
+        # descriptors['planar'] = self.planar_check()
         descriptors['molecular_weight'] = self.global_props['molecular_weight']
         descriptors['n_atoms'] = self.n_atoms
         descriptors['n_bonds'] = self.n_bonds

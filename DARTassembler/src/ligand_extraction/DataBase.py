@@ -75,6 +75,9 @@ class BaselineDB:
         return json_dict
 
     def to_json(self, path, desc: str='Save DB to json', json_lines: bool=False):
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+
         if json_lines:
             with jsonlines.open(path, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as writer:
                 for key, mol in tqdm(self.db.items(), desc, file=sys.stdout):
@@ -249,10 +252,10 @@ class LigandDB(MoleculeDB):
 
         return cls(db)
 
-    # def get_reduced_df(self, max_entries: int=5, planarity=True) -> pd.DataFrame:
-    #     ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}
-    #     df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
-    #     return df_ligand_info
+    def get_ligand_output_df(self, max_entries: int=5) -> pd.DataFrame:
+        ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}
+        df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
+        return df_ligand_info
 
     def save_reduced_csv(self, outpath: Union[str, Path], max_entries: int=5) -> None:
         ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}

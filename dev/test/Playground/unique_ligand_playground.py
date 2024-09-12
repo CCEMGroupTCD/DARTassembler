@@ -2,10 +2,10 @@
 Playground which reads in the unique ligand db and lets you play with it.
 """
 from pathlib import Path
-
+import pandas as pd
 import numpy as np
 # from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_jsonlines, load_json
-
+from tqdm import tqdm
 
 
 
@@ -67,19 +67,54 @@ if __name__ == '__main__':
     # Load the first 1000 out of 41,018 ligands in the MetaLig database.
     metalig = LigandDB.load_from_json(path='metalig', n_max=3000)
 
-    # Save to .jsonlines file
-    outfile = Path('/Users/timosommer/Downloads/test_DART/speedup_metalig/data_output/metalig_3000.jsonlines')
-    metalig.save_to_file(outfile)
+    # Get an overview of all tridentate ligands that were used in projects to try to not make them different in planarity.
+    used_ligands_paths = {
+        'OER': '/Users/timosommer/PhD/projects/OERdatabase/data/testbatch/ligand_db/oer_all_ligands.jsonlines'
+    }
+    used_ligands = {}
+    for project in used_ligands_paths.keys():
+        db_path = used_ligands_paths[project]
+        db_used = LigandDB.load_from_json(path=db_path)
+        for uname, ligand in db_used.db.items():
+            if ligand.denticity == 3:
+                used_ligands[uname] = project
+    df_all_used_ligands = pd.DataFrame.from_dict(used_ligands, orient='index', columns=['where'])
 
-    #%% ==============    Doublecheck refactoring    ==================
-    from dev.test.Integration_Test import IntegrationTest
-    old_dir = Path(outfile.parent.parent, 'benchmark_data_output')
-    if old_dir.exists():
-        test = IntegrationTest(new_dir=outfile.parent, old_dir=old_dir)
-        test.compare_all()
-        print('Test for assembly of complexes passed!')
-    else:
-        print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
+
+    data = {}
+    ligand_names = metalig.db.keys()
+    for uname in tqdm(ligand_names, desc='Calculating donor planarity'):
+        ligand = metalig.db[uname]
+        new_planar = None
+        if ligand.denticity == 3:
+            new_planar = ligand.calculate_donors_planarity(with_metal=True)
+        # if ligand.denticity == 4:
+        #     new_planar = ligand.calculate_donors_planarity(with_metal=True)
+
+        if new_planar is not None:
+            data[uname] = {
+            'denticity': ligand.denticity,
+            'old_planar': ligand.planar_check(),
+            'new_planar': new_planar,
+            }
+    df_planarity = pd.DataFrame.from_dict(data, orient='index')
+
+    df = metalig.get_ligand_output_df()
+    df = df_planarity.join(df, how='inner')
+
+    # # Save to .jsonlines file
+    # outfile = Path('/Users/timosommer/Downloads/test_DART/speedup_metalig/data_output/metalig_3000.jsonlines')
+    # metalig.save_to_file(outfile)
+    #
+    # #%% ==============    Doublecheck refactoring    ==================
+    # from dev.test.Integration_Test import IntegrationTest
+    # old_dir = Path(outfile.parent.parent, 'benchmark_data_output')
+    # if old_dir.exists():
+    #     test = IntegrationTest(new_dir=outfile.parent, old_dir=old_dir)
+    #     test.compare_all()
+    #     print('Test for assembly of complexes passed!')
+    # else:
+    #     print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
 
 
     # dict_metalig = load_jsonlines(default_ligand_db_path)

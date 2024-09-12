@@ -163,7 +163,8 @@ class PlacementRotation:
     def planar_check_(ligands):  # Check if ligands are planar or not
         for ligand in ligands.values():
             if ligand.denticity == 3:
-                return ligand.planar_check()
+                # return ligand.planar_check()
+                return ligand.if_donors_planar(with_metal=True)
             else:
                 pass
         return True
