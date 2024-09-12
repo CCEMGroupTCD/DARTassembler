@@ -162,8 +162,7 @@ class PlacementRotation:
     @staticmethod
     def planar_check_(ligands):  # Check if ligands are planar or not
         for ligand in ligands.values():
-            if ligand.denticity == 3:
-                # return ligand.planar_check()
+            if ligand.denticity in [3, 4]:
                 return ligand.if_donors_planar(with_metal=True)
             else:
                 pass
@@ -222,7 +221,7 @@ class PlacementRotation:
         return final_bb
 
     def convert_ligand_to_building_block_for_complex(self, ligands: dict[RCA_Ligand], topology, metal: str = None, build_options: dict = {}) -> tuple[dict[int, BuildingBlock], dict[int, Any]]:
-        # Here we pick and choose are ligands and rotate and place them based on our topology
+        # Here we pick and choose our ligands and rotate and place them based on our topology
         topology_determining_ligand_planar = self.planar_check_(ligands)  # Check are either the tetra or tri ligands planar
         topology_list = topology
         # This ensures we don't enter the same if statement twice if we have to place a ligand of the same denticity twice
@@ -284,7 +283,7 @@ class PlacementRotation:
 
             elif ligand.denticity == 4:
                 #
-                # If our ligand has denticity of 1 we enter this if statement
+                # If our ligand has denticity of 4 we enter this if statement
                 #
                 building_block = ligand.to_stk_bb()
                 if topology_determining_ligand_planar:

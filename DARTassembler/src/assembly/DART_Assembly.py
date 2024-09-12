@@ -215,7 +215,7 @@ class DARTAssembly(object):
             try:    # Catch errors of individual complexes and continue with the next complex
 
                 # 2. Detect certain conditions which hinder complex assembly, e.g. tridentate non-planar
-                complex_can_be_assembled = self.check_if_complex_can_be_assembled(RCA, ligands)
+                complex_can_be_assembled = self.check_if_complex_can_be_assembled(ligands)
                 if not complex_can_be_assembled:
                     j += 1
                     continue
@@ -489,16 +489,20 @@ class DARTAssembly(object):
 
         return
 
-    def check_if_complex_can_be_assembled(self, RCA, ligands):
+    def check_if_complex_can_be_assembled(self, ligands):
         """
         Check if the complex can be assembled based on certain conditions to avoid errors.
         """
-        # Non-planar tridentate ligands
-        if not RCA.planar_check_(ligands):
-            self.add_batch_info(success=False, reason='non-planar tridentate', ligands=ligands)
-            return False
+        # Non-planar tridentate and tetradentate ligands cannot be assembled
+        dent_names = {3: 'tridentate', 4: 'tetradentate'}
+        for ligand in ligands.values():
+            if ligand.denticity in [3, 4]:
+                is_planar = ligand.if_donors_planar(with_metal=True)
+                if not is_planar:
+                    self.add_batch_info(success=False, reason=f'non-planar {dent_names[ligand.denticity]}', ligands=ligands)
+                    return False
 
-        # Hydride ligand
+        # Hydride ligand cannot be assembled
         hydride_found = False
         for ligand in ligands.values():
             if ((ligand.atomic_props['atoms'][0] == "H") or (ligand.atomic_props['atoms'][0] == "Se")) and (
@@ -510,12 +514,11 @@ class DARTAssembly(object):
             self.add_batch_info(success=False, reason='hydride', ligands=ligands)
             return False
 
-        # Haptic ligands
+        # Haptic ligands cannot be assembled
         for ligand in ligands.values():
             if ligand.has_neighboring_coordinating_atoms:
                 self.add_batch_info(success=False, reason='haptic ligand', ligands=ligands)
                 return False
-
 
         return True
 
