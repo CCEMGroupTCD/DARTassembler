@@ -39,7 +39,7 @@ def read_data_in_input_dict(database_path_, atomic_properties_json_, read_in_gra
     else:
         global_property_dict = {}
 
-    if read_in_graphs_if_exist is True and os.path.exists(f"{database_path_}/graphs"):
+    if read_in_graphs_if_exist and os.path.exists(f"{database_path_}/graphs"):
         # todo: Then we have to run the graph readin stuff
         #   Glaube ich hab was in Dev_Felix -> Graph Comparison (Hoffe das ist noch da)
         #   muessen die uber nx.read_gml einlesen
@@ -91,7 +91,7 @@ if __name__ == '__main__':
                                     'BOSVOU', 'AFATAE', 'AXOTAK', 'BEBFUL', 'BASDAC', 'BOJBAG', 'AYUWAU', 'AGUZAD',
                                     'ACASOO', 'BEBQUW', 'BOTBAP', 'BOQPAZ']
         db_dict = {key_: item_ for key_, item_ in db_dict.items() if key_ in csd_codes_for_testing_20}
-    elif Testing is True:
+    elif Testing == True:
         csd_codes_for_testing_true = ['FONZAJ', 'MAZVIV', 'ODIHUG', 'LEMBOX', 'TIZYUX', 'BEMGEH', 'NOXJAN', 'WAHNOK',
                                       'WUVPOT', 'XEYCOW', 'MOLMEH', 'TEBDOV', 'VOQQAW', 'UCUMEM', 'UQIJEL', 'LEZNIQ',
                                       'PFBGNI', 'MUGHOL', 'YURBAQ', 'AGIGEC', 'KUCXIQ', 'GUDQEB', 'MBSLCO', 'DOMQIH',
@@ -275,7 +275,7 @@ if __name__ == '__main__':
         pd.testing.assert_frame_equal(df[old_df.columns], old_df, check_like=True)
         print('Ligand database same as old database.')
 
-    elif Testing is True:
+    elif Testing == True:
         old_outpath = f'../data/221107_ligand_db_test_Testing={Testing}.csv'
         old_df = pd.read_csv(old_outpath).sort_values('name').reset_index(drop=True)
 

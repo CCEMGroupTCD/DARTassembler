@@ -127,7 +127,7 @@ def check_if_return_entry(i: int, n_max: Union[int, list]=None) -> bool:
     Check if the entry should be returned. It will not be returned if the index i is larger than n_max.
     """
     # Accept False, None or np.inf to disable n_max
-    if n_max is None or n_max is False or n_max is np.inf:
+    if n_max is None or n_max == False or n_max is np.inf:
         return True
 
     # If n_max is an integer, check if the index is smaller than n_max

@@ -63,7 +63,7 @@ class BaselineDB:
         return first_item
 
     def append_DB(self, key, molecule, overwrite=True):
-        if key in self.db and overwrite is False:
+        if key in self.db and not overwrite:
             print("Key already in DB and no overwrite, hence nothing changed")
         else:
             self.db[key] = molecule
@@ -196,7 +196,7 @@ class MoleculeDB(BaselineDB):
         """
         warn('The function `from_json` is deprecated. Please use the function `LigandDB.load_from_json(`path`)` instead to load the ligand database.', DeprecationWarning)
 
-        if max_number is False:
+        if max_number == False:
             max_number = None
 
         db = {}
@@ -445,7 +445,7 @@ class LigandDB(MoleculeDB):
         # -> no longer required as the graph hashes are already computed during the creation of a ligand
         # all_graph_hashes = [lig.graph_hash for lig in all_ligands]
 
-        if self.hash_check() is False:
+        if not self.hash_check():
             # i.e. no exact comparison required
             ligands_by_hash = get_all_ligands_by_graph_hashes(list(self.db.values()))
             grouped_unique_ligands = [ligand_list for ligand_list in ligands_by_hash.values()]

@@ -18,7 +18,7 @@ def load_json(path: Union[str, Path], n_max: int=None) -> dict:
     :return: Dictionary with the contents of the file
     """
     # Accept False, None or np.inf to disable n_max
-    if n_max is None or n_max is False:
+    if n_max is None or (not n_max):
         n_max = np.inf
 
     db = {}

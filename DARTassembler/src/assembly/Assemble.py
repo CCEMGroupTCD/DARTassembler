@@ -234,14 +234,14 @@ class PlacementRotation:
         ligand_denticities = {}
         for i, ligand in enumerate(ligands.values()):
             if ligand.denticity == 0:
-                if (topology_list == [4, 1, 0] and (topology_determining_ligand_planar is True)) or (topology_list == [3, 2, 0]):
+                if (topology_list == [4, 1, 0] and (topology_determining_ligand_planar)) or (topology_list == [3, 2, 0]):
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Top()
 
-                elif (topology_list == [4, 1, 0]) and (topology_determining_ligand_planar is False):
+                elif (topology_list == [4, 1, 0]) and (not topology_determining_ligand_planar):
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Back_Left()
                     first_lig0_placed = True
 
-                elif ((topology_list == [4, 1, 0]) and (topology_determining_ligand_planar is False) and (first_lig0_placed == True)) or (topology_list == [2, 1, 0]):
+                elif ((topology_list == [4, 1, 0]) and (not topology_determining_ligand_planar) and (first_lig0_placed)) or (topology_list == [2, 1, 0]):
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Front_Left()
 
 
@@ -258,20 +258,20 @@ class PlacementRotation:
 
             elif ligand.denticity == 1:
 
-                if ((((topology_list == [4, 1, 1]) and (topology_determining_ligand_planar is False)) or (topology_list == [2, 1, 1])) and (first_lig1_placed == False)) or (
+                if ((((topology_list == [4, 1, 1]) and (not topology_determining_ligand_planar)) or (topology_list == [2, 1, 1])) and (not first_lig1_placed)) or (
                         topology_list == [2, 1, 0]):
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Back_Left()
                     first_lig1_placed = True
 
-                elif ((((topology_list == [4, 1, 1]) or (topology_list == [4, 1, 0])) and (topology_determining_ligand_planar is False)) or (topology_list == [2, 1, 1])) and (
-                        first_lig1_placed == True):
+                elif ((((topology_list == [4, 1, 1]) or (topology_list == [4, 1, 0])) and (not topology_determining_ligand_planar)) or (topology_list == [2, 1, 1])) and (
+                        first_lig1_placed):
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Front_Left()
 
-                elif ((topology_list == [4, 1, 1]) and (topology_determining_ligand_planar is True)) and (first_lig1_placed == False) or (topology_list == [3, 2, 1]):
+                elif ((topology_list == [4, 1, 1]) and topology_determining_ligand_planar) and (not first_lig1_placed) or (topology_list == [3, 2, 1]):
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Top()
                     first_lig1_placed = True
 
-                elif ((topology_list == [4, 1, 1] and (first_lig1_placed == True)) or (topology_list == [4, 1, 0])) and (topology_determining_ligand_planar is True) or (topology_list == [5, 1]):
+                elif ((topology_list == [4, 1, 1] and first_lig1_placed) or (topology_list == [4, 1, 0])) and topology_determining_ligand_planar or (topology_list == [5, 1]):
                     coords = monodentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Bottom()
 
                 else:
@@ -287,7 +287,7 @@ class PlacementRotation:
                 # If our ligand has denticity of 1 we enter this if statement
                 #
                 building_block = ligand.to_stk_bb()
-                if topology_determining_ligand_planar is True:
+                if topology_determining_ligand_planar:
                     # Then some rotation needs to be done
                     building_block = rotate_tetradentate_bb(building_block, ligand_=ligand)
                     tetra_topology_graph = stk.metal_complex.Porphyrin(metals=create_placeholder_Hg_bb(), ligands=building_block)
@@ -295,7 +295,7 @@ class PlacementRotation:
                                                                           functional_groups=[
                                                                               stk.SmartsFunctionalGroupFactory(smarts='[Hg+2]', bonders=(0,), deleters=(), )]
                                                                           )
-                elif topology_determining_ligand_planar is False:
+                elif not topology_determining_ligand_planar:
                     raise NotImplementedError("Non-planar tetradentate complexes are not yet supported")
                     # bb_for_complex = nonplanar_tetra_solver(stk_bb=building_block, ligand=ligand)
                     # bb_for_complex = stk.BuildingBlock.init_from_molecule(bb_for_complex, functional_groups=[stk.SmartsFunctionalGroupFactory(smarts='[Hg]', bonders=(0,), deleters=(), ), ], )
@@ -309,7 +309,7 @@ class PlacementRotation:
                 #
                 building_block = ligand.to_stk_bb()
 
-                if topology_determining_ligand_planar is True:
+                if topology_determining_ligand_planar:
                     building_block = rotate_tridentate_bb(tridentate_bb_=building_block, ligand_=ligand)
                     tridentate_toplogy = stk_e.Tridentate(metals=create_placeholder_Hg_bb(), ligands=building_block)
                     compl_constructed_mol = stk.ConstructedMolecule(topology_graph=tridentate_toplogy)
@@ -353,12 +353,12 @@ class PlacementRotation:
                     coord = Bidentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Bottom()
                     bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Bottom", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=bidentate_box_choice_instruction)
 
-                elif (topology_list == [2, 2] or [2, 1, 1] or [2, 1, 0] or [2, 0]) and (first_lig2_placed == False):
+                elif (topology_list == [2, 2] or [2, 1, 1] or [2, 1, 0] or [2, 0]) and (not first_lig2_placed):
                     coord = Bidentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Right()
                     bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Right", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=bidentate_box_choice_instruction)
                     first_lig2_placed = True
 
-                elif (topology_list == [2, 2] or [2, 1, 1] or [2, 1, 0]) and (first_lig2_placed == True):
+                elif (topology_list == [2, 2] or [2, 1, 1] or [2, 1, 0]) and first_lig2_placed:
                     coord = Bidentate_coordinating_distance(metal=metal, ligand=ligand, offset=0).Left()
                     bb_for_complex = self.Process_Bidentate(ligand=ligand, coordinates=coord, direction="Left", bidentate_placed=first_lig2_placed, top_list=topology_list, build_options=bidentate_box_choice_instruction)
 

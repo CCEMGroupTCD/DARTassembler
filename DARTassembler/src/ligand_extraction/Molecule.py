@@ -82,7 +82,7 @@ class RCA_Molecule(object):
 
 
 
-        if has_ligands is True:
+        if has_ligands:
             # if we expect ligands, we can set up an empty ligand list
             self.ligands = []
 

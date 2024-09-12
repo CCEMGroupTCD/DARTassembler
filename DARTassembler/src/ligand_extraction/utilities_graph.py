@@ -60,7 +60,7 @@ def assert_graph_and_coordinates_are_consistent(graph: nx.Graph, atoms: list[str
 
     # Check if the relabeled graph has the correct coordinating atom indices, for ligands only
     if not ligand_to_metal is None:
-        relabeled_coord_atoms = [i for i, a in graph.nodes(data='metal_neighbor') if a is True]
+        relabeled_coord_atoms = [i for i, a in graph.nodes(data='metal_neighbor') if a == True]
         if len(relabeled_coord_atoms) > 0:
             assert relabeled_coord_atoms == ligand_to_metal, f'Coordinating atoms in relabeled graph and ligand don\'t match: {relabeled_coord_atoms} vs {ligand_to_metal}'
 

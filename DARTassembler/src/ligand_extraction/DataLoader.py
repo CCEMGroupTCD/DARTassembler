@@ -91,7 +91,7 @@ class DataLoader:
         graph_dict = {}
 
         for path in loading_bar(graph_dir_list, desc="Loading Graphs from .gml files"):
-            if path.endswith("gml") is True:
+            if path.endswith("gml"):
                 identifier = path.removesuffix(".gml")
                 graph_dict[identifier] = nx.read_gml(Path(self.graph_path, path))
 
@@ -177,7 +177,7 @@ class DataLoader:
         ATOMIC_PROPERTIES_COLUMN_SEPARATOR, falls man eignen moechte
         """
         json_safe_path = Path(self.path, "atomic_properties", "atomic_properties.json")
-        if os.path.exists(json_safe_path) and overwrite is False:
+        if os.path.exists(json_safe_path) and not overwrite:
             print("atomic_properties.json already exists and no overwriting selected")
             return
 

@@ -94,7 +94,7 @@ if __name__ == '__main__':
         if new_planar is not None:
             data[uname] = {
             'denticity': ligand.denticity,
-            'old_planar': ligand.planar_check(),
+            # 'old_planar': ligand.planar_check(),
             'new_planar': new_planar,
             }
     df_planarity = pd.DataFrame.from_dict(data, orient='index')

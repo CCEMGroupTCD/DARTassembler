@@ -141,7 +141,7 @@ class GraphTester:
         # compute the heuristics
         # which are less important for now at least - only expressive if we make a full run.
         heuristics = {
-            "number_of_unconnected_complexes": len([mol for mol in db.complex_db.db.values() if nx.is_connected(mol.graph) is False]),
+            "number_of_unconnected_complexes": len([mol for mol in db.complex_db.db.values() if not nx.is_connected(mol.graph)]),
             "number_of_total_ligands": len(db.full_ligand_db.db),
             "number_of_isolated_ligands": len([lig for lig in db.full_ligand_db.db.values() if lig.denticity == -1]),
             "number_un_ligands_w_denticity": sum([len(ul.count_denticities) for ul in db.unique_ligand_db.db.values()])

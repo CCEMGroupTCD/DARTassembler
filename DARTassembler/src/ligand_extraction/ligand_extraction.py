@@ -323,7 +323,7 @@ class LigandExtraction:
 
         with jsonlines.open(self.tmp_output_complexes_json, mode='w', dumps=functools.partial(json.dumps, cls=NumpyEncoder)) as complex_writer:
             for idx, (csd_code, comp_dict) in tqdm(enumerate(iterate_over_json(self.input_complexes_json, show_progress=False)), desc='Extracting ligands from complexes'):
-                if self.testing is False or idx < self.testing:
+                if not self.testing or idx < self.testing:
                     self.n_input_complexes_before_filtering += 1
 
                     # Make complex class from dict
