@@ -5,8 +5,10 @@ from DARTassembler.src.ligand_filters.Ligand_Filters import LigandFilters
 from typing import Union
 from pathlib import Path
 import matplotlib
-matplotlib.use('TkAgg') # for visualization of graphs
-
+try:    # Avoid error when running on server
+    matplotlib.use('TkAgg')
+except ImportError:
+    pass
 
 def ligandfilters(filter_input_path: Union[str, Path], nmax: Union[int, None] = None, outpath: Union[str, Path] = None, delete_output_dir: bool = False) -> LigandFilters:
     """

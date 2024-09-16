@@ -5,7 +5,10 @@ import matplotlib
 from DARTassembler.src.constants.Paths import project_path, default_ligand_db_path
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
-matplotlib.use('TkAgg')
+try:    # Avoid error when running on server
+    matplotlib.use('TkAgg')
+except ImportError:
+    pass
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 import matplotlib.pyplot as plt
 plt.rcParams['svg.fonttype'] = 'none' # for correct text rendering in some programs

@@ -6,7 +6,10 @@ import pandas as pd
 import seaborn as sns
 import matplotlib
 from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns
-matplotlib.use('TkAgg')
+try:    # Avoid error when running on server
+    matplotlib.use('TkAgg')
+except ImportError:
+    pass
 import matplotlib.pyplot as plt
 from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
 from pathlib import Path

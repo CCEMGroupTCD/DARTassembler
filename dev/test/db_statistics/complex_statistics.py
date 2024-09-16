@@ -5,7 +5,10 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib
-matplotlib.use('TkAgg')
+try:    # Avoid error when running on server
+    matplotlib.use('TkAgg')
+except ImportError:
+    pass
 import matplotlib.pyplot as plt
 from DARTassembler.src.ligand_extraction.io_custom import load_complex_db
 from pathlib import Path

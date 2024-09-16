@@ -9,7 +9,10 @@ import matplotlib
 
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 
-matplotlib.use('TkAgg')
+try:    # Avoid error when running on server
+    matplotlib.use('TkAgg')
+except ImportError:
+    pass
 import matplotlib.pyplot as plt
 from typing import Union
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
