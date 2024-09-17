@@ -222,7 +222,8 @@ class DARTAssembly(object):
 
                 # 3. Obtain rotated building blocks
                 # Here we pass in our ligands and get out our stk building blocks
-                # The first line is a monkey patch to fix an inconvenience in stk where every molecule is sanitized with rdkit, which throws errors for some of our molecules
+                # The first line is a monkey patch to fix an inconvenience in stk where every molecule is sanitized with rdkit, which throws errors for some of our ligands in which atoms have uncommon valences.
+                # For potentially better fixing of this problem, see https://github.com/lukasturcani/stk/issues/531.
                 with patch('stk.SmartsFunctionalGroupFactory', new=MONKEYPATCH_STK_SmartsFunctionalGroupFactory):  # Monkey patch to fix rdkit sanitization error
                     stk_ligand_building_blocks_list, denticities = RCA.convert_ligand_to_building_block_for_complex(
                                                                                                                     ligands=ligands,
