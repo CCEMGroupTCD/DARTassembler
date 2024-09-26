@@ -68,8 +68,14 @@ class IntegrationTest(object):
         """
         Compares two csv files and prints the differences.
         """
-        df_new = pd.read_csv(new_file)
-        df_old = pd.read_csv(old_file)
+        try:
+            df_new = pd.read_csv(new_file)
+        except pd.errors.EmptyDataError:
+            df_new = pd.DataFrame()
+        try:
+            df_old = pd.read_csv(old_file)
+        except pd.errors.EmptyDataError:
+            df_old = pd.DataFrame()
 
         change = None
         try:
