@@ -9,10 +9,13 @@ IOCHEM_PROJECT="DART_Pd_Ni_intermediate"
 IOCHEM_SHELL_PATH="$HOME/opt/ioChem-BD/shell/start-rep-shell"
 
 
+
+
 # Helper function to extract the complex name from filename
 get_complex_name_from_filename() {
     local filename=$(basename "$1")
-    local name="${filename%_gaussian.log}"
+    local name="${filename//_gaussian/}"  # Remove _gaussian from anywhere in the filename
+    name="${name%.*}"  # Removes anything after the last dot, effectively removing the file extension
     echo "$name"
 }
 
