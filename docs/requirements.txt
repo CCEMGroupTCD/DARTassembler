@@ -2,4 +2,4 @@ sphinx>=4.3.0               # To avoid bullet-point bug
 sphinx_rtd_theme>=0.5.1     # To avoid bullet-point bug
 sphinx-toolbox
 sphinx-copybutton           # For copy button in code blocks
-moldol                      # For 3D rendering of molecules in documentation
+moldoc                      # For 3D rendering of molecules in documentation
