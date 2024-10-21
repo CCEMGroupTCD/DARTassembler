@@ -9,7 +9,7 @@ setup(
     description="Simple to use package for building 3D structures of novel transition metal complexes from a large database of ligands extracted from the Cambridge Structural Database.",
     long_description=open('README.md').read(),
     long_description_content_type='text/plain',
-    url='https://github.com/CCEMGroupTCD/DART',
+    url='https://github.com/CCEMGroupTCD/DARTassembler',
     python_requires=">=3.9",
     author="Timo Sommer, Cian Clarke, Felix Kleuker",
     packages=find_packages(),
