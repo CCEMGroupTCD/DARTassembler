@@ -18,7 +18,7 @@ Using DART is simple. After download, just run the DART assembler and start gene
     DARTassembler assembler --path assembly_input.yml
 
 ## Documentation
-The documentation of DART (TODO: LINK) will show you how to install and use DART.
+The documentation of DART under [https://dartassembler.readthedocs.io](https://dartassembler.readthedocs.io) will show you how to install and use DART.
 
 ## How to cite DART
 Please cite our paper[1].
