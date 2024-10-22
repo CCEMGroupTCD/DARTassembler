@@ -3,13 +3,13 @@
 Installation
 ======================
 
-DART requires about 470MB of space due to the integrated MetaLig database. To install DART please run the following command in your terminal:
+DART requires about 470MB of space due to the integrated MetaLig database. To easily install DART with ``pip``, please run the following command in your terminal:
 
 .. code-block:: sh
 
-    pip install "git+https://github.com/CCEMGroupTCD/DART@master#egg=DARTassembler"
+    pip install DARTassembler
 
-If you're not sure what is meant with the terminal or pip, please refer to the :ref:`troubleshooting`.
+If you're not sure what is meant with the terminal or ``pip``, or if ``pip`` is not yet installed on your computer, please google or refer to the :ref:`troubleshooting`.
 
 .. tip::
 
