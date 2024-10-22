@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = "0.1.0"
+version = "1.0.0"
 
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
@@ -13,7 +13,7 @@ setup(
     long_description_content_type='text/plain',
     url='https://github.com/CCEMGroupTCD/DARTassembler',
     download_url=f'https://github.com/CCEMGroupTCD/DARTassembler/archive/refs/tags/v{version}.tar.gz',
-    python_requires=">=3.9",
+    python_requires=">=3.9",    # Add that probably also <= 3.12
     author="Timo Sommer, Cian Clarke, Felix Kleuker",
     packages=find_packages(),
     install_requires=requirements,
