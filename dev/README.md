@@ -26,6 +26,6 @@ Then follow these steps to release a new version of DART on PyPI (pip):
 5. Upload to TestPyPI: ``twine upload -r testpypi dist/DARTassembler-X.Y.Z*``
 6. Install and test from TestPyPI: ``pip install -i https://test.pypi.org/simple/ --extra-index-url https://testpypi.python.org/pypi DARTassembler==X.Y.Z``
 7. Upload to PyPI Production: ``twine upload dist/DARTassembler-X.Y.Z*``
-
+8. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
 
 
