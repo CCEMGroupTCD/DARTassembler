@@ -197,7 +197,7 @@ You will see that the ``test_metalig`` database is filtered down to 81 ligands t
 
 The Ligand Filters Module outputs a new ligand database file (``filtered_ligand_db.jsonlines``) and a folder with additional information about the filtering process (``info_filtered_ligand_db``). By now, you probably expect to find a concatenated .xyz file to inspect the ligand structures and a .csv file to inspect the ligand properties. And of course you're right!
 
-First, you can check that all passed ligands have no CH\ :sub:`2` units with ``ase gui concat_Passed.xyz`` in the directory ``info_filtered_ligand_db/concat_xyz``. Furthermore, you will find one concatenated .xyz file for each filter, containing all ligands which were filtered out in this step. This is very useful to make sure that the filters are working exactly as you intended. For example, you can check all ligands with CH\ :sub:`2` units that were filtered out in the file ``concat_Filter07:smarts.xyz``.
+First, you can check that all passed ligands have no CH\ :sub:`2` units with ``ase gui concat_Passed.xyz`` in the directory ``info_filtered_ligand_db/concat_xyz``. Furthermore, you will find one concatenated .xyz file for each filter, containing all ligands which were filtered out in this step. This is very useful to make sure that the filters are working exactly as you intended. For example, you can check all ligands with CH\ :sub:`2` units that were filtered out in the file ``concat_Filter07_smarts.xyz``.
 
 **Assembling Complexes with Targeted Chemical Space:**
 

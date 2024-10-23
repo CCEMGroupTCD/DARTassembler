@@ -263,7 +263,7 @@ class LigandFilters(object):
             filtered_ligand_ids = self.df_all_ligands.index[self.df_all_ligands['Filter'] == mode]
 
             # Remove spaces from mode name so that a file has never a space in its name
-            xyz_filename = f"concat_{mode.replace(' ', '')}.xyz"
+            xyz_filename = f"concat_{mode.replace(' ', '').replace(':', '_')}.xyz"  # ":" is not allowed in filenames on Windows
             xyz_filepath = Path(self.xyz_outdir, xyz_filename)
 
             # Write concatenated xyz file
