@@ -21,7 +21,7 @@ Using DART is simple. After download, just run the DART assembler and start gene
 The documentation of DART under [https://dartassembler.readthedocs.io](https://dartassembler.readthedocs.io) will show you how to install and use DART.
 
 ## How to cite DART
-Please cite our paper[1].
+Please cite [our paper](https://chemrxiv.org/engage/chemrxiv/article-details/6717eb4e83f22e4214d2b98b).
 
 ## Reproducing the DART paper
 The documentation contains a section about the Pd/Ni cross coupling example that was used in the paper. It will show you how to reproduce the results of the paper.
@@ -31,7 +31,4 @@ DART is subject to the GPL-3.0-or-later license. See `LICENSE` for more informat
 
 ## Origin of data
 We are grateful to the providers of the [Cambridge Structural Database](https://www.ccdc.cam.ac.uk/structures/), which is the source of all ligands in the ligand database.
-
-## Citations
-1. DART paper # TODO
 
