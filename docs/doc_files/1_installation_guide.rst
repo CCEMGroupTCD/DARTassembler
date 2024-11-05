@@ -15,12 +15,18 @@ If you're not sure what is meant with the terminal or ``pip``, or if ``pip`` is 
 
     It is recommended to install DART as regular user, not as sudo user, i.e. please use ``pip install`` instead of ``sudo pip install``.
 
+If you are using Linux, you also need to install the package ``libxrender1`` if it's not already installed. For example on Ubuntu, you can install it with the following command:
+
+.. code-block:: sh
+
+    sudo apt-get install libxrender1
+
 To verify that DART is installed correctly, run the following command:
 
 .. code-block:: sh
 
    DARTassembler installtest --path
 
-This command will run a brief test of the ``assembler``, ``ligandfilters`` and ``dbinfo`` module of DART, without saving any files. If this command displays any errors, please `let us know immediately so we can fix it. <https://github.com/CCEMGroupTCD/DART/issues>`_ Also, if you run DART for the very first time, it may be that there is a short delay of around 30s while ``pip`` sets up everything. That is normal and only happens once.
+This command will run a brief test of the ``assembler``, ``ligandfilters`` and ``dbinfo`` module of DART. Because the ``--path`` variable is left empty, it will not save any files. If this command displays any errors, please check the :ref:`FAQs <troubleshooting>` and if you don't find the answer, please `let us know so we can fix it. <https://github.com/CCEMGroupTCD/DART/issues>`_ Also, if you run DART for the very first time, it may be that there is a short delay of around 30s while ``pip`` sets up everything. That is normal and only happens once.
 
 Ready to go? Let's start off with the :ref:`quickstart` or check out the :ref:`DART modules <module_overview>`!

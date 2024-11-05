@@ -3,7 +3,17 @@
 Troubleshooting and FAQs
 ============================
 
-Please check out the FAQs below for common issues and solutions. If you encounter a problem that is not listed here, please `let us know. <https://github.com/CCEMGroupTCD/DART/issues>`_
+Please check out this page for common issues and solutions. If you encounter a problem that is not listed here, please `let us know. <https://github.com/CCEMGroupTCD/DART/issues>`_
+
+Issues during installation
+----------------------------
+
+Error: libXrender.so.1: cannot open shared object file: No such file or directory
+    This error occurs when the required library ``libxrender1`` is missing on your system. On Mac, it is usually preinstalled, but on Linux often not. If you get this issue, you can fix it by installing this library. On Ubuntu for example, you can install it by running the following command:
+
+    .. code-block:: bash
+
+        sudo apt-get install libxrender1
 
 FAQs
 -------------------
@@ -34,3 +44,4 @@ The input yaml file cannot be found:
 
 The input yaml file is not valid or cannot be read:
     Yaml files are quite sensitive to indentation. Make sure that the indentation is correct. Verify that the options in the YAML file are set up correctly to match the criteria desired. In case of any issues with the yaml configuration files, you can use the :ref:`configs module <module_overview>` of DART to get two templates files so that you can fill in the required information without worrying about the syntax. You can also use tools like the `online yaml linter <https://www.yamllint.com/>`_ to make sure that your yaml file is valid.
+
