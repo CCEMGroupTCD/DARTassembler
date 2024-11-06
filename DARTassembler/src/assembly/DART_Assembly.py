@@ -212,46 +212,38 @@ class DARTAssembly(object):
             except StopIteration:
                 break # If all ligand combinations are exhausted, stop the batch
 
-            try:    # Catch errors of individual complexes and continue with the next complex
-
-                # 2. Detect certain conditions which hinder complex assembly, e.g. tridentate non-planar
-                complex_can_be_assembled = self.check_if_complex_can_be_assembled(ligands)
-                if not complex_can_be_assembled:
-                    j += 1
-                    continue
-
-                # 3. Obtain rotated building blocks
-                # Here we pass in our ligands and get out our stk building blocks
-                # The first line is a monkey patch to fix an inconvenience in stk where every molecule is sanitized with rdkit, which throws errors for some of our ligands in which atoms have uncommon valences.
-                # For potentially better fixing of this problem, see https://github.com/lukasturcani/stk/issues/531.
-                with patch('stk.SmartsFunctionalGroupFactory', new=MONKEYPATCH_STK_SmartsFunctionalGroupFactory):  # Monkey patch to fix rdkit sanitization error
-                    stk_ligand_building_blocks_list, denticities = RCA.convert_ligand_to_building_block_for_complex(
-                                                                                                                    ligands=ligands,
-                                                                                                                    topology=Topology,
-                                                                                                                    metal=self.metal_type,
-                                                                                                                    build_options=self.build_options,
-                                                                                                                    )
-                # 4. Optionally modify the exact 3D coordinates of the ligands.
-                if self.geometry_modifier_filepath is not None:
-                    stk_ligand_building_blocks_list = self.modify_ligand_geometry(geometry_modifier_path=self.geometry_modifier_filepath, building_blocks=stk_ligand_building_blocks_list)
-
-                # 5. Generate Isomers
-                Isomers = BuildIsomers(topology=self.topology_similarity,
-                                       building_blocks_list=stk_ligand_building_blocks_list,
-                                       metal_input=self.metal_type,
-                                       charge_input=self.metal_ox_state,
-                                       denticity_list=denticities,
-                                       return_all_isomers=self.generate_isomer_instruction,
-                                       opt_choice=self.optimisation_instruction,
-                                       ligand_list=ligands)
-
-                Assembled_Complex_list, Building_Block_list = Isomers.Generate()
-
-            except Exception as e:  # Some error happened during assembly, skip this complex
-                logging.error(f"DARTAssemblyError of complex {j}, skip complex: {e}")
-                self.add_batch_info(success=False, reason=str(e), ligands=ligands)
+            # 2. Detect certain conditions which hinder complex assembly, e.g. tridentate non-planar
+            complex_can_be_assembled = self.check_if_complex_can_be_assembled(ligands)
+            if not complex_can_be_assembled:
                 j += 1
                 continue
+
+            # 3. Obtain rotated building blocks
+            # Here we pass in our ligands and get out our stk building blocks
+            # The first line is a monkey patch to fix an inconvenience in stk where every molecule is sanitized with rdkit, which throws errors for some of our ligands in which atoms have uncommon valences.
+            # For potentially better fixing of this problem, see https://github.com/lukasturcani/stk/issues/531.
+            with patch('stk.SmartsFunctionalGroupFactory', new=MONKEYPATCH_STK_SmartsFunctionalGroupFactory):  # Monkey patch to fix rdkit sanitization error
+                stk_ligand_building_blocks_list, denticities = RCA.convert_ligand_to_building_block_for_complex(
+                                                                                                                ligands=ligands,
+                                                                                                                topology=Topology,
+                                                                                                                metal=self.metal_type,
+                                                                                                                build_options=self.build_options,
+                                                                                                                )
+            # 4. Optionally modify the exact 3D coordinates of the ligands.
+            if self.geometry_modifier_filepath is not None:
+                stk_ligand_building_blocks_list = self.modify_ligand_geometry(geometry_modifier_path=self.geometry_modifier_filepath, building_blocks=stk_ligand_building_blocks_list)
+
+            # 5. Generate Isomers
+            Isomers = BuildIsomers(topology=self.topology_similarity,
+                                   building_blocks_list=stk_ligand_building_blocks_list,
+                                   metal_input=self.metal_type,
+                                   charge_input=self.metal_ox_state,
+                                   denticity_list=denticities,
+                                   return_all_isomers=self.generate_isomer_instruction,
+                                   opt_choice=self.optimisation_instruction,
+                                   ligand_list=ligands)
+
+            Assembled_Complex_list, Building_Block_list = Isomers.Generate()
 
             # 6. Post-Process
             # Post process includes error detection and optimization
