@@ -4,17 +4,4 @@ sphinx-toolbox
 sphinx-copybutton           # For copy button in code blocks
 moldoc                      # For 3D rendering of molecules in documentation
 # Add all the DART dependencies because moldoc calls DART
-ase
-jsonlines
-networkx
-numpy
-openbabel-wheel
-pandas
-pyyaml
-rdkit
-scipy
-scikit-learn
-stk
-sympy
-tqdm
-pysmiles
+DARTassembler
