@@ -20,7 +20,7 @@ Then follow these steps to release a new version of DART on PyPI (pip):
 1. Increment version number
     1. Set ``version=X.Y.Z`` in ``setup.py``
     2. Set ``__version__=X.Y.Z`` in package ``__init__.py``
-2. Push changes to master: ``git push``
+2. Push changes to master: ``git push`` with comment ``Bump to version X.Y.Z``
 3. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
 4. Build package locally: ``python3 -m build --sdist; python3 -m build --wheel``
 5. Upload to TestPyPI: ``twine upload -r testpypi dist/DARTassembler-X.Y.Z*``
