@@ -5,6 +5,7 @@ import bz2
 import json
 import sys
 import yaml
+import tempfile
 
 from DARTassembler.src.metalig.metalig_utils import get_correct_ligand_db_path_from_input
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand, RCA_Complex
@@ -60,36 +61,40 @@ def compress_file(file_path, output_zip_path=None, compression_level=6):
 
     return
 
-def uncompress_file(zip_file_path, output_dir = None):
+def uncompress_file(zip_file_path, output_dir=None):
     """
-    Uncompress a zip file into a file.
+    Uncompress a zip or bz2 file into the output directory using a temporary directory. A temporary directory is used to avoid semi-extracted files in case of errors and interruptions.
     """
     zip_file_path = Path(zip_file_path)
 
     if output_dir is None:
-        output_dir = Path(zip_file_path).parent
+        output_dir = zip_file_path.parent
 
-    # Create a temporary directory to extract the files
-    temp_dir = Path(output_dir, 'temp_extract')
-    temp_dir.mkdir(parents=True, exist_ok=True)
+    output_dir = Path(output_dir)
 
-    # Extract all files to the temporary directory
-    if zip_file_path.suffix == '.zip':
-        with zipfile.ZipFile(zip_file_path, 'r') as zipf:
-            zipf.extractall(temp_dir)
+    # Use tempfile to create a temporary directory
+    with tempfile.TemporaryDirectory() as temp_dir:
+        temp_dir = Path(temp_dir)
 
-    elif zip_file_path.suffix == '.bz2':
-        newfile = zip_file_path.with_suffix('')
-        with open(newfile, 'wb') as new_file, bz2.BZ2File(zip_file_path, 'rb') as file:
-            for data in iter(lambda: file.read(100 * 1024), b''):
-                new_file.write(data)
+        # Extract all files to the temporary directory
+        if zip_file_path.suffix.lower() == '.zip':
+            with zipfile.ZipFile(zip_file_path, 'r') as zipf:
+                zipf.extractall(temp_dir)
+        elif zip_file_path.suffix.lower() == '.bz2':
+            # Write the uncompressed file to temp_dir
+            newfile_name = zip_file_path.with_suffix('').name
+            newfile = Path(temp_dir, newfile_name)
+            with open(newfile, 'wb') as new_file, bz2.BZ2File(zip_file_path, 'rb') as file:
+                shutil.copyfileobj(file, new_file)
+        else:
+            raise ValueError(f"Unsupported file extension: {zip_file_path.suffix}")
 
-    # Move the contents of the temporary directory to the output directory
-    for filename in os.listdir(temp_dir):
-        shutil.move(Path(temp_dir, filename), Path(output_dir, filename))
-
-    # Remove the temporary directory
-    Path(temp_dir).rmdir()
+        # Move the contents of the temporary directory to the output directory
+        for item in temp_dir.iterdir():
+            dest = Path(output_dir, item.name)
+            if dest.exists():
+                dest.unlink()  # Overwrite by deleting the existing file
+            shutil.move(item, dest)
 
     return
 

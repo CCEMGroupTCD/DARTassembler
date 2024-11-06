@@ -64,43 +64,45 @@ if __name__ == '__main__':
     # ===== Code for MetaLig documentation =====
     from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
+    test_path = '/Users/timosommer/PhD/projects/DARTassembler/testing/github_issues/#4 metalig jsonlines cannot be read in on windows/MetaLigDB_v1.0.0.jsonlines'
+
     # Load the first 1000 out of 41,018 ligands in the MetaLig database.
-    metalig = LigandDB.load_from_json(path='metalig', n_max=3000)
+    metalig = LigandDB.load_from_json(path=test_path)
 
-    # Get an overview of all tridentate ligands that were used in projects to try to not make them different in planarity.
-    used_ligands_paths = {
-        'OER': '/Users/timosommer/PhD/projects/OERdatabase/data/testbatch/ligand_db/oer_all_ligands.jsonlines'
-    }
-    used_ligands = {}
-    for project in used_ligands_paths.keys():
-        db_path = used_ligands_paths[project]
-        db_used = LigandDB.load_from_json(path=db_path)
-        for uname, ligand in db_used.db.items():
-            if ligand.denticity == 3:
-                used_ligands[uname] = project
-    df_all_used_ligands = pd.DataFrame.from_dict(used_ligands, orient='index', columns=['where'])
-
-
-    data = {}
-    ligand_names = metalig.db.keys()
-    for uname in tqdm(ligand_names, desc='Calculating donor planarity'):
-        ligand = metalig.db[uname]
-        new_planar = None
-        if ligand.denticity == 3:
-            new_planar = ligand.calculate_donors_planarity(with_metal=True)
-        # if ligand.denticity == 4:
-        #     new_planar = ligand.calculate_donors_planarity(with_metal=True)
-
-        if new_planar is not None:
-            data[uname] = {
-            'denticity': ligand.denticity,
-            # 'old_planar': ligand.planar_check(),
-            'new_planar': new_planar,
-            }
-    df_planarity = pd.DataFrame.from_dict(data, orient='index')
-
-    df = metalig.get_ligand_output_df()
-    df = df_planarity.join(df, how='inner')
+    # # Get an overview of all tridentate ligands that were used in projects to try to not make them different in planarity.
+    # used_ligands_paths = {
+    #     'OER': '/Users/timosommer/PhD/projects/OERdatabase/data/testbatch/ligand_db/oer_all_ligands.jsonlines'
+    # }
+    # used_ligands = {}
+    # for project in used_ligands_paths.keys():
+    #     db_path = used_ligands_paths[project]
+    #     db_used = LigandDB.load_from_json(path=db_path)
+    #     for uname, ligand in db_used.db.items():
+    #         if ligand.denticity == 3:
+    #             used_ligands[uname] = project
+    # df_all_used_ligands = pd.DataFrame.from_dict(used_ligands, orient='index', columns=['where'])
+    #
+    #
+    # data = {}
+    # ligand_names = metalig.db.keys()
+    # for uname in tqdm(ligand_names, desc='Calculating donor planarity'):
+    #     ligand = metalig.db[uname]
+    #     new_planar = None
+    #     if ligand.denticity == 3:
+    #         new_planar = ligand.calculate_donors_planarity(with_metal=True)
+    #     # if ligand.denticity == 4:
+    #     #     new_planar = ligand.calculate_donors_planarity(with_metal=True)
+    #
+    #     if new_planar is not None:
+    #         data[uname] = {
+    #         'denticity': ligand.denticity,
+    #         # 'old_planar': ligand.planar_check(),
+    #         'new_planar': new_planar,
+    #         }
+    # df_planarity = pd.DataFrame.from_dict(data, orient='index')
+    #
+    # df = metalig.get_ligand_output_df()
+    # df = df_planarity.join(df, how='inner')
 
     # # Save to .jsonlines file
     # outfile = Path('/Users/timosommer/Downloads/test_DART/speedup_metalig/data_output/metalig_3000.jsonlines')
