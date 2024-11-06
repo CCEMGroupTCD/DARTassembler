@@ -3,7 +3,7 @@
 Installation
 ======================
 
-DART requires about 470MB of space due to the integrated MetaLig database. DART supports Linux, MacOs and Windows on Python 3.9 to Python 3.12. To easily install DART with ``pip``, please run the following command in your terminal:
+DART requires about 470MB of space due to the integrated MetaLig database. DART supports Linux, MacOs and Windows on Python >=3.9 and <=3.13 (due to `openbabel-wheel <https://pypi.org/project/openbabel-wheel/>`_). To easily install DART with ``pip``, please run the following command in your terminal:
 
 .. code-block:: sh
 
