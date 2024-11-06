@@ -70,7 +70,8 @@ class ForceField(object):
 
         obmol = mol.OBMol
         ff = ob._openbabel.OBForceField_FindType("uff")
-        assert (ff.Setup(obmol))
+        if not ff.Setup(obmol):
+            raise UserWarning('DART Error: openbabel forcefield not found. Please report this issue on the DARTassembler GitHub page.')
         kj_to_kcal = 1.0 / 4.184
         ff.SetCoordinates(mol.OBMol)
         uffE = ff.Energy(False) * kj_to_kcal
