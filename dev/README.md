@@ -18,16 +18,19 @@ As preparation, make sure you installed twine and build, and added the PyPI and 
 
 Then follow these steps to release a new version of DART on PyPI (pip):
 Test on TestPyPI first:
-   1. Build package locally: ``python3 -m build --sdist; python3 -m build --wheel``
-   2. Upload to TestPyPI: ``twine upload -r testpypi dist/DARTassembler-X.Y.Z*``
-   3. Install and test from TestPyPI: ``pip install -i https://test.pypi.org/simple/ --extra-index-url https://testpypi.python.org/pypi DARTassembler==X.Y.Z``
+   1. Append .1 to the end of the version number (i.e. a 'debug' version) in case we need to upload multiple test versions while debugging.
+   2. Build package locally: ``python3 -m build --sdist; python3 -m build --wheel``
+   3. Upload to TestPyPI: ``twine upload -r testpypi dist/DARTassembler-X.Y.Z*``
+   4. Install and test from TestPyPI: ``pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple DARTassembler==X.Y.Z``
+   5. If everything works, continue with the next steps. If not, fix the issue, increment the 'debug' version number and try again.
 If everything works:
-   4. Increment version number
+   6. Increment version number
       1. Set ``version=X.Y.Z`` in ``setup.py``
       2. Set ``__version__=X.Y.Z`` in package ``__init__.py``
-   5. Push changes to master: ``git push`` with comment ``Bump to version X.Y.Z``
-   6. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
-   7. Upload to PyPI Production: ``twine upload dist/DARTassembler-X.Y.Z*``
-   8. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
+   7. Push changes to master: ``git push`` with comment ``Bump to version X.Y.Z``
+   8. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
+   9. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
+   10. Upload to PyPI Production: ``twine upload dist/DARTassembler-X.Y.Z*``
+
 
 
