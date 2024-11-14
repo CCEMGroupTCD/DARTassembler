@@ -236,15 +236,16 @@ Below you can see three randomly picked complexes from the output of the assembl
 
    DART generated complexes with applied ligand filters as specified above.
 
+.. moldoc::
+
+    from DARTassembler.src.docs.docs_utils import get_moldoc_molecule
+
+    run = 'quickstart_with_filters'
+    complex_name = 'CIGIBENA'
+
+    moldoc_display_molecule = get_moldoc_molecule(run=run, complex_name=complex_name)
+
 ..
-    .. moldoc::
-
-        from DARTassembler.src.docs.docs_utils import get_moldoc_molecule
-
-        run = 'quickstart_with_filters'
-        complex_name = 'CIGIBENA'
-
-        moldoc_display_molecule = get_moldoc_molecule(run=run, complex_name=complex_name)
 
     .. moldoc::
 
