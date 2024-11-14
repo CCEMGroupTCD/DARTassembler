@@ -2,6 +2,5 @@ sphinx>=4.3.0               # To avoid bullet-point bug
 sphinx_rtd_theme>=0.5.1     # To avoid bullet-point bug
 sphinx-toolbox
 sphinx-copybutton           # For copy button in code blocks
-moldoc                      # For 3D rendering of molecules in documentation
-# Add all the DART dependencies because moldoc calls DART
-DARTassembler
+moldoc>=3.0.5               # For 3D rendering of molecules in documentation. Latest version fixes bug #2.
+DARTassembler               # Add all the DART dependencies because moldoc calls DARTassembler
