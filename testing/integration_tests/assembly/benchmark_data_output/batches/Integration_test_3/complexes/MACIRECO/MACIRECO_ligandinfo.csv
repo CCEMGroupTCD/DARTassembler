@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEBHUA-03-a,C20H25N4,3,-1,C-C-C,49,321.4479999999999,0.1457722481,False,False,12.22372077274346,e533c1b97e06d12300037266cf2c9b8d,52,"PEBHUA, PEBJEM, PEBJEM01, SUFPEQ, SUFPEQ01, ... (47 more)","Pt(10), Co(9), Zr(6), Ni(6), Ir(6), ... (8 more)"
+Ligand 1,unq_CSD-PANJOF-02-a,C17H18N2,2,0,N-N,37,250.345,0.1478530146,False,False,11.57846256849328,1f8760a6721f0ad29c92b3a5aa06d4a6,9,"PANJOF, PANLAT, UJANEA, UJANIE, HUBWEJ, ... (4 more)","Y(3), Pd(2), Cr(2), Co(1), Fe(1)"
+Ligand 2,unq_CSD-PBTUCU-01-a,C1H4N2S1,1,0,S,8,76.11699999999999,0.9238572057,False,False,3.8086552771286617,32fb7e03a61bce4586319852c4489d61,348,"PBTUCU, PBTUCU, PEKSUT, PEKSUT, PEKSUT01, ... (343 more)","Pt(73), Zn(46), Ni(39), Co(34), Pd(31), ... (13 more)"

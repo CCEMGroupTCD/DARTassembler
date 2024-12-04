@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OZUSOT-03-a,C18H14N4O1,3,0,O-N-N,37,302.337,0.2399507832,False,True,12.852606514244494,606c5c1280cd525db29bd14243e5ed94,6,"OZUSOT, CIRSIG, HIMLEV, SAQFEY, SAQFIC, ... (1 more)","Cd(3), Mn(1), Zn(1), Cu(1)"
+Ligand 1,unq_CSD-PAJPEX-02-a,C22H24N2,2,0,N-N,48,316.448,0.0830721955,False,False,12.801835121965913,b659f095e22e281e45ab19e00c3d79ca,1,PAJPEX,Ni(1)
+Ligand 2,unq_CSD-PARTEH-01-b,C2H3O1,1,-1,C,6,43.04500000000001,0.4643551474,False,True,3.145721527726191,bfb82fc89ef7bdf09f8ea96508153edf,204,"PARTEH, PASFOE, PIKLAY, PIKLAY, PIKLEC, ... (199 more)","Pt(88), Rh(33), Pd(24), Co(16), Re(11), ... (6 more)"

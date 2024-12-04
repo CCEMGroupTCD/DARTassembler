@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAQJUN-03-a,C11H17N5S1,3,0,S-N-N,34,251.35200000000003,0.1795484718,False,True,12.631923508318122,d58d979b294e215ffe405286487b208f,2,"PAQJUN, PAQJUN",Ni(2)
-Ligand 1,unq_CSD-PAGJUC-02-a,C11H25N1O1P1,2,-1,O-N,39,218.30076199800004,0.1313609596,False,True,7.716724743049995,b5244aabfae53f789e05b2728ed693c4,2,"PAGJUC, PAGJUC",Ni(2)
-Ligand 2,unq_CSD-PAMPID-01-a,C12H10N4,1,0,N,26,210.24,0.7331383319,False,True,12.24462857092856,bd33a6735c1faab0e4f3a105929e0e5d,5,"PAMPID, PAMPID, YEGGOJ, ULALEZ, ULALEZ","Zn(3), Cd(2)"

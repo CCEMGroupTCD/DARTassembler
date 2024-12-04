@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAPYOX-03-a,C8H9N3O1,3,0,O-N-N,21,163.18000000000004,0.4650553183,False,True,9.91530760944914,aef4a2e0355c375d0c84c1dc00788094,14,"PAPYOX, PAPYOX, CAJGUS, CAJGUS, TORXIK, ... (9 more)","Cu(6), Zn(2), Eu(2), Pr(2), Ni(2)"
+Ligand 1,unq_CSD-PAGHUB-02-a,C27H23N3O2S1,2,0,N-N,56,453.56,0.0892771903,False,True,13.433271110939435,3c02c3e36fa09b8676574bbdddda1973,2,"PAGHUB, PAGJEN","Rh(1), Pd(1)"
+Ligand 2,unq_CSD-PAFZUR-01-a,C12H27O3S1Si1,1,-1,S,44,279.4899999999999,0.1137973991,False,False,8.46901054728355,a8c13246edab594ca6816d0d02a9d7c8,93,"PAFZUR, PODNEC, PODNEC, PODNIG, PODNIG, ... (88 more)","Co(44), Zn(17), Mn(10), Cd(8), Ni(6), ... (4 more)"

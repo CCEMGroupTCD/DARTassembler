@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PEDKAL-03-a,C8H6Cl1N3S1,3,-2,S-N-C,19,211.667,0.8519412297,False,True,10.512709389115633,811aed8780d72c579421cc5c1fae0e63,2,"PEDKAL, VICDIW","Rh(1), Pd(1)"
-Ligand 1,unq_CSD-PANPIE-02-a,C4H12N2,2,0,N-N,18,88.15399999999998,0.2011001454,False,True,5.200458334608595,e9b8ac229e20f374719cc482374b41ad,6,"PANPIE, BOCFEE, BOCFEE, JAQDOV, JECYAR, ... (1 more)","Ni(3), Pd(2), Ru(1)"
-Ligand 2,unq_CSD-OZOWIK-01-c,C6H5,1,-1,C,11,77.10599999999998,0.9168205805,False,True,4.6467725369335655,302bb44378408cbea6071417f1fc7a16,1111,"OZOWIK, OZOWIK, PABWAQ, PABYEW, PABZUN, ... (1106 more)","Pt(255), Ni(170), Pd(127), Ir(67), Zn(65), ... (26 more)"

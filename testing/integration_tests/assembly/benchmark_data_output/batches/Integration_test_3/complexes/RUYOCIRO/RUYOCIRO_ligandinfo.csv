@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAGWAZ-03-a,C13H14N8O1,3,0,N-N-N,36,298.31,0.2576927827,False,True,10.933153566560748,80e1347bb9988155352442e31fbf12e1,9,"PAGWAZ, SOHKOR, SOHKUX, SOHVES, VEDPIG, ... (4 more)","Cu(5), Ni(1), Cr(1), Mn(1), Co(1)"
+Ligand 1,unq_CSD-PANFUG-02-b,C8H6N4,2,0,N-N,18,158.164,0.8511427659,False,True,8.686779419900105,0ab8581cd10cd5a1dbbfc8aafee0bc60,156,"PANFUG, PEXNEM, PEXNIQ, PEXNIQ01, PEXNIQ02, ... (151 more)","Ru(24), Re(18), Mn(16), Cu(11), Co(11), ... (24 more)"
+Ligand 2,unq_CSD-PAWQIO-01-a,C3H5O1,1,-1,C,9,57.071999999999996,0.4567198693,False,False,3.785698967165774,e0033680b63588eafebdb87672d4adc4,53,"PAWQIO, SOYSUU, SOYSUU, LEZYIA, BEWPEA, ... (48 more)","Pt(21), Pd(10), Au(10), Hg(4), Ir(3), ... (3 more)"

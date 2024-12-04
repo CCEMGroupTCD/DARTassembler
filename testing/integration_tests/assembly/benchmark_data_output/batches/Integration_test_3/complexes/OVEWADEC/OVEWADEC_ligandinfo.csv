@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PANCIT-03-a,C33H33N5,3,0,N-N-N,71,499.66199999999986,0.0772099489,False,False,15.023242498874867,00ef5270b9e0a168337451bddae3a4ac,4,"PANCIT, NACDUT, NACFAB, NACFEF","Cu(3), Ru(1)"
-Ligand 1,unq_CSD-PEDYON-02-a,C13H22N1S2,2,-1,S-S,38,256.446,0.1149874704,False,False,8.696892171919806,3b0d6457fa83a4cfa4b6684c03a4c4bd,19,"PEDYON, PEDYUT, TEBROK, TEBROK, TEBROK, ... (14 more)","Fe(6), Pd(3), Ni(2), Cd(2), Cu(2), ... (2 more)"
-Ligand 2,unq_CSD-PASPEE-01-a,C3H9O3P1,1,0,P,16,124.075761998,0.3063227079,False,False,6.286440400576467,3022cc320c0b1c79e83795eda2858d27,287,"PASPEE, PENTUY, PERZER, PETPTE, PHCMNP10, ... (282 more)","Fe(56), Co(30), Mo(30), W(28), Pt(26), ... (13 more)"

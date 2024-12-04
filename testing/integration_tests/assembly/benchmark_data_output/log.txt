@@ -134,11 +134,11 @@ Batch 1 ('Integration_test_2'):
     - haptic ligand: 2
     - clashing ligands: 2
 Batch 2 ('Integration_test_3'):
-  - 58 complexes tried, 10 complexes successfully assembled.
-  - 48 complexes failed because of filters:
-    - clashing ligands: 31
-    - non-planar tridentate: 12
-    - haptic ligand: 5
+  - 33 complexes tried, 10 complexes successfully assembled.
+  - 23 complexes failed because of filters:
+    - clashing ligands: 15
+    - non-planar tridentate: 6
+    - haptic ligand: 2
 Batch 3 ('Integration_test_4'):
   - 31 complexes tried, 15 complexes successfully assembled.
   - 16 complexes failed because of filters:
@@ -163,12 +163,12 @@ Batch 7 ('Integration_test_8'):
   - 1 complexes failed because of filters:
     - clashing ligands: 1
 ====================  Total summary of DART Assembler run  =====================
-  - 336 complexes tried, 158 complexes successfully assembled.
-  - 178 complexes failed because of filters:
-    - clashing ligands: 113
-    - haptic ligand: 41
-    - non-planar tridentate: 12
+  - 311 complexes tried, 158 complexes successfully assembled.
+  - 153 complexes failed because of filters:
+    - clashing ligands: 97
+    - haptic ligand: 38
     - non-planar tetradentate: 11
+    - non-planar tridentate: 6
     - broken bonds: 1
 DART Assembler output files saved to directory `data_output`.
 Done! All complexes assembled. Exiting DART Assembler Module.

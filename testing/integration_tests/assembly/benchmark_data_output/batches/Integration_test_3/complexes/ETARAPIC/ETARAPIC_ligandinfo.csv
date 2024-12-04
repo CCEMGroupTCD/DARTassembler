@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PANQIF-03-a,C22H17N3,3,0,N-N-N,42,323.399,0.2981004681,False,True,13.103731458634215,2b5a5d6c1c8046701252a60877880cf8,61,"PANQIF, POYPAX, SOSNEW, CIHVOH, TOJVOG, ... (56 more)","Ru(26), Ir(8), Mn(8), Cu(6), Cd(4), ... (4 more)"
-Ligand 1,unq_CSD-PANPEZ-02-a,C4H6N4O1,2,0,O-N,15,126.11899999999997,0.4861051639,False,True,7.00495061295938,96b51064c36c55ed0fec6bb8730a7b98,12,"PANPEZ, PANPEZ, PANPID, PANPID, VANCAO, ... (7 more)","Cu(8), Ni(2), Co(2)"
-Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

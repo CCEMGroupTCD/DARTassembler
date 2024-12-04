@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAMKIA-03-a,C14H14N6O2,3,0,N-N-N,36,298.306,0.1677335046,False,True,12.421542651780413,f4076ec8db6aead6f115a874b1544c15,1,PAMKIA,Cu(1)
-Ligand 1,unq_CSD-OZOPEZ-02-a,C2H8N2,2,0,N-N,12,60.10000000000001,0.2987368183,False,True,4.113385862036285,f33b7d0bb8942bb23fe2c3e8c338909a,1607,"OZOPEZ, PABVUL, PABVUL, PABWAS, PABWAS, ... (1602 more)","Co(475), Ni(282), Cu(258), Zn(88), Ru(82), ... (29 more)"
-Ligand 2,unq_CSD-OZOWAC-01-a,C6H5O1,1,-1,O,12,93.10499999999998,0.8594246175,False,False,5.0776376091643245,f092753c991980a57d075bd19cea78d9,163,"OZOWAC, OZOWAC, PASRUW, PASRUW, PASSAD, ... (158 more)","Pd(22), W(19), Ni(18), Fe(13), Mo(11), ... (20 more)"

@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAGXOK-03-a,C12H12N3O1,3,-1,O-N-N,28,214.24800000000005,0.2778460991,False,True,11.239028810800335,9982bfa39c24aece0ca163a652c513c0,10,"PAGXOK, PAGXOK10, PAHJAJ, PAHJEN, PEKVEJ, ... (5 more)","V(6), Cu(2), Fe(2)"
-Ligand 1,unq_CSD-PAQVOV-02-a,C12H12N2,2,0,N-N,26,184.24200000000002,0.2874007403,False,False,9.11148205178499,37776efa9dc36f8895273fa609d9d027,116,"PAQVOV, PAQVOV, PAQVOV, SURDOB, SURPIH, ... (111 more)","Cu(22), Re(21), Co(11), Ru(10), Ni(9), ... (17 more)"
-Ligand 2,unq_CSD-PAFCIJ-01-b,C2H3N1,1,0,N,6,41.053000000000004,0.4931114442,False,False,3.1726348198303573,2d7dc351d5610f51ec03c0d8c43d387b,4908,"PAFCIJ, PAFGAG, PAGLER, PAHNAQ, PAJSEB, ... (4903 more)","Ru(986), Fe(570), Cu(552), Ni(480), Pd(415), ... (41 more)"
