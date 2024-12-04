@@ -117,7 +117,7 @@ class BuildIsomers:
             else:
                 raise ValueError
             complex_built = stk.ConstructedMolecule(topology_graph=complex)
-            complex_built = mercury_remover(complex_built)
+            complex_built = mercury_remover(complex_built) # This function makes the stk.ConstructedMolecule() into a  stk.BuildingBlock()
             self.ALL_Assembled_complexes.append(complex_built)
 
         if self.return_all_isomers == "Generate All":

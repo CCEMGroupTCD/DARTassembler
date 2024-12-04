@@ -1,0 +1,12 @@
+input_db_file:           # path or nothing. If nothing, the entire MetaLig ligand database will be used as input
+output_db_file: oer_OH.jsonlines   # path or nothing
+output_ligands_info: False
+
+filters:
+  - filter: ligand_composition
+    elements: OH
+    instruction: must_contain_and_only_contain
+    apply_to_denticities:
+
+
+

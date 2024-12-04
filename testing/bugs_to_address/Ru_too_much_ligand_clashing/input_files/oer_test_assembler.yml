@@ -1,0 +1,15 @@
+output_directory: complexes
+batches:
+  - ligand_db_file: [ligand_db/oer_all_ligands.jsonlines, ligand_db/oer_all_ligands.jsonlines, ligand_db/oer_OH.jsonlines]
+    isomers: all
+    max_num_complexes: 100
+    geometry_modifier_filepath: input_files/H_shift.xyz
+    bidentate_rotator: auto
+    metal_center: Ru
+    metal_oxidation_state: 3
+    name: Ru
+    forcefield: false
+    random_seed: 14
+    geometry: mer-3-2-1
+    total_charge: 0
+    complex_name_appendix: _Ru_OH

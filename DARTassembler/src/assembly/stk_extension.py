@@ -441,7 +441,6 @@ class Monodentate_Back_Right(MetalComplex):
 
 class monodentate_coordinating_distance:
     def __init__(self, metal, ligand, offset: float = 0):
-        # todo: it is super important that we cite the source of the covalent radii
         self.metal = metal
         self.ligand = ligand
         self.offset = offset

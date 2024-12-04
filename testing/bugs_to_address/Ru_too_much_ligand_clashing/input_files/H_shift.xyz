@@ -1,0 +1,14 @@
+5
+These 5 H atoms are the origin for shifting all the H atoms of the OH so that the OH is not collinear with the metal. All H for all metal centres are in this file in this order: Cr, Mn, Fe, Co, Ru
+H  0.0  0.0  2.66986096992112 
+H  0.0  0.0  2.63986096992112 
+H  0.0  0.0  2.60986096992112 
+H  0.0  0.0  2.5598609699211203 
+H  0.0  0.0  2.69986096992112 
+5
+These are the target positions of these H atoms for the 5 metal centres, such that angle and distance are like in H2O:
+H  -0.651191718212561  0.10287963460190097  2.2934007294937087 
+H  -0.651191718212561  0.10287963460190097  2.2634007294937084 
+H  -0.6511917182125614  0.10287963460190092  2.233400729493708 
+H  -0.651191718212561  0.10287963460190097  2.183400729493709 
+H  -0.6511917182125614  0.10287963460190092  2.323400729493708 

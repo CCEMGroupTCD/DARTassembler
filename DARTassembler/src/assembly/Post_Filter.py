@@ -42,18 +42,30 @@ class PostFilter:
         # This function will detect and filter out complexes that have clashing between atoms in different ligands but it WILL NOT detect clashing between atoms of the same
         # ligand or the metal centre
         # todo: detect clashing between atoms and the metal centre without taking into account the functional groups maybe an idea for the future
+
+        # Fix issue #5: The geometry in the self.building_blocks is not the same as the geometry in the isomer, there is some shift. I guess the shift comes when stk assembles the complex. Therefore, we will here make sure to compare the ligand geometries based on the isomer and not the building blocks.
+        bbs = {idx: mercury_remover(bb) for idx, bb in enumerate(self.building_blocks.values())} # Get all building blocks without mercury
+        isomer_atoms = list(self.isomer.get_atoms())
+        isomer_positions = self.isomer.get_position_matrix()
+        # Get the indices of the atoms in the isomer that belong to each ligand
+        ligand_indices = {idx: [] for idx in bbs.keys()}
+        n = 1
+        for idx, bb in bbs.items():
+            for atom in bb.get_atoms():
+                assert atom.get_atomic_number() == isomer_atoms[n].get_atomic_number(), 'Error in algorithm: Atoms between ligand and complex do not match.'
+                ligand_indices[idx].append(n)
+                n += 1
+
         for keys_1, values_1 in self.building_blocks.items():  # loop through the building blocks within each isomer
-            values_1 = mercury_remover(values_1)  # Eliminate the temporary Mercury
             for keys_2, values_2 in self.building_blocks.items():  # loop through the building blocks for within each isomer
-                values_2 = mercury_remover(values_2)  # Eliminate the temporary Mercury
                 if keys_1 == keys_2:  # Don't compare anything if they are the same ligand
                     pass
                 elif keys_1 != keys_2:  # Compare distance if the ligands are not the same ligand
-                    for point_1, atom_1 in zip(values_1.get_position_matrix(), values_1.get_atoms()):  # we loop through all the positions of the atoms
+                    for ligand1_idx_in_complex in ligand_indices[keys_1]:  # loop through all the positions of the atoms
+                        atom_1 = isomer_atoms[ligand1_idx_in_complex]
+                        point_1 = isomer_positions[ligand1_idx_in_complex]
                         atom_1_type = [str(atom_1).split("(")][0][0]
-                        # cov_1 = element(atom_1_type).covalent_radius / 100.0
                         cov_1 = elem_cov_radii[atom_1_type]
-                        # cov_metal = element(self.metal).covalent_radius / 100.0
                         cov_metal = elem_cov_radii[self.metal]
                         metal_position = [0, 0, 0]
                         distance_metal = np.linalg.norm(point_1 - metal_position)
@@ -61,9 +73,10 @@ class PostFilter:
                             logging.debug("!!!Warning!!! -> Pre-optimisation filter failed (1)-> Returning None")
                             # self.visualize(self.isomer)
                             return False
-                        for point_2, atom_2 in zip(values_2.get_position_matrix(), values_2.get_atoms()):  # we loop through all the positions of the atoms
+                        for ligand2_idx_in_complex in ligand_indices[keys_2]:
+                            atom_2 = isomer_atoms[ligand2_idx_in_complex]
+                            point_2 = isomer_positions[ligand2_idx_in_complex]
                             atom_2_type = [str(atom_2).split("(")][0][0]
-                            # cov_2 = element(atom_2_type).covalent_radius / 100.0
                             cov_2 = elem_cov_radii[atom_2_type]
                             distance = np.linalg.norm(point_1 - point_2)  # Calculate distance
                             if distance < (cov_1 + cov_2 + self.ligand_atom_offset):  # This function shouldn't take into account ligand metal distances

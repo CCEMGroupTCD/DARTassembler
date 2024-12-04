@@ -1,0 +1,68 @@
+input_db_file:           # path or nothing. If nothing, the entire MetaLig ligand database will be used as input
+output_db_file: oer_nhc.jsonlines   # path or nothing
+output_ligands_info: True
+
+filters:
+  - filter: denticities
+    denticities: [2, 3]
+
+  - filter: remove_ligands_with_adjacent_coordinating_atoms
+    remove_ligands_with_adjacent_coordinating_atoms: True
+
+  - filter: remove_ligands_with_beta_hydrogens
+    remove_ligands_with_beta_hydrogens: True
+
+  - filter: metal_ligand_binding_history
+    metal_ligand_binding_history: [Sc, Ti, V, Cr, Mn, Fe, Co, Ni, Cu, Zn, Mo, W, Tc, Re, Ru, Os, Rh, Ir]  #[Cr, Mn, Fe, Co, Ru]
+    apply_to_denticities:
+
+  - filter: ligand_composition
+    elements: [C, H, N, O, F]
+    instruction: must_only_contain_in_any_amount
+    apply_to_denticities:
+
+  - filter: ligand_composition
+    elements: [C, H]
+    instruction: must_at_least_contain
+    apply_to_denticities:
+
+  - filter: coordinating_atoms_composition
+    elements: [N, O, C]
+    instruction: must_only_contain_in_any_amount
+    apply_to_denticities:
+
+  - filter: remove_ligands_with_missing_bond_orders
+    remove_ligands_with_missing_bond_orders: True
+    apply_to_denticities:
+
+  - filter: smarts  # remove CH2 units only, leave CH3
+    smarts: '[C&H2]'
+    should_contain: False
+    include_metal: True
+    apply_to_denticities:
+
+  - filter: smarts  # remove N~N bonds not in rings with arbitrary bond orders
+    smarts: '[N]~[N!R]'
+    should_contain: False
+    include_metal: False
+    apply_to_denticities:
+
+  # these wo filters are for keeping only NHC ligands
+  - filter: smarts
+    smarts: '[Cu]~[C]'            # keep only ligands with at least one C donor, since other ligands will be contained in the other ligand db
+    include_metal: True
+    should_contain: True
+    apply_to_denticities:
+  - filter: smarts
+    smarts: '[Cu]~[C](~[!N])'    # remove ligand if one of the C donors is connected to something other than N
+    include_metal: True
+    should_contain: False
+    apply_to_denticities:
+
+
+
+
+
+
+
+
