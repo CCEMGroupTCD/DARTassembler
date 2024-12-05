@@ -2,7 +2,7 @@ output_directory: complexes
 batches:
   - ligand_db_file: [ligand_db/oer_all_ligands.jsonlines, ligand_db/oer_all_ligands.jsonlines, ligand_db/oer_OH.jsonlines]
     isomers: all
-    max_num_complexes: 100
+    max_num_complexes: 1000
     geometry_modifier_filepath: input_files/H_shift.xyz
     bidentate_rotator: auto
     metal_center: Ru

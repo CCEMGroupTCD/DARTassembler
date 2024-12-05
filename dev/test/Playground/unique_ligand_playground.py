@@ -6,7 +6,13 @@ import pandas as pd
 import numpy as np
 # from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_jsonlines, load_json
 from tqdm import tqdm
+from copy import deepcopy
+from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
+import ase
+from ase.visualize import view
+from DARTassembler.src.constants.Paths import default_ligand_db_path, test_ligand_db_path
+from DARTassembler.src.ligand_extraction.utilities_graph import get_graph_hash
 
 
 def calculate_n_321_complexes_with_OH_fixed(charges_2: np.array, charges_3: np.array, metals: list[str],
@@ -43,31 +49,89 @@ def calculate_n_321_complexes_with_OH_fixed(charges_2: np.array, charges_3: np.a
     print(f'Total number of possible 321 complexes with filter factor {filter_factor:.1g}: {n_complexes:e}')
     return n_complexes
 
+def rotate_ligand_around_donors_inplace(ligand: ase.Atoms, donors_positions: np.array, metal_position: np.array, angle: float=180) -> None:
+    """
+    Returns the rotated ligand as an ase.Atoms object.
+    """
+    assert np.allclose(metal_position, (0, 0, 0)), f'Metal position is not at (0, 0, 0), but at {metal_position}. This is covered by the code, but it\'s unexpected and possibly a bug.'
+    # The ideal vector to rotate is the average vector from the metal to all donors.
+    rot_vector = (donors_positions - metal_position).sum(axis=0) / len(donors_positions)
+    orig_ligand_positions = deepcopy(ligand.get_positions())
+    ligand.rotate(angle, rot_vector, center=metal_position)
+    if angle == 180:    # Check that rotation by further 180 degrees brings the ligand back to its original position
+        check_back_rotation_ligand = deepcopy(ligand)
+        check_back_rotation_ligand.rotate(angle, rot_vector, center=metal_position)
+        assert np.allclose(check_back_rotation_ligand.get_positions(), orig_ligand_positions)
+
+    return None
+
 
 if __name__ == '__main__':
 
-    # db_version = '1.7'
-    # db_path = project_path().extend(*f'data/final_db_versions/unique_ligand_db_v{db_version}.json'.split('/'))
-    # exclude_unconnected_ligands = True
-    # exclude_uncertain_charges = True
-    # nmax = False
-    #
-    # # for thesis
-    # df_ligands = pd.read_csv(db_path.with_suffix('.csv'), index_col=0)
-    # n_denticities = df_ligands['Denticity'].value_counts()
-    # print(f'Denticities:\n{n_denticities}')
-    # print(f'Total number of ligands: {len(df_ligands)}')
-    # n_solvent = (df_ligands['Denticity'] <= 0).sum()
-    # print(f'Number of solvent molecules/counter ions: {n_solvent}')
+    n_max = 5000
+    denticities = [2, 3]
+
 
 
     # ===== Code for MetaLig documentation =====
-    from DARTassembler.src.ligand_extraction.DataBase import LigandDB
-
-    test_path = '/Users/timosommer/PhD/projects/DARTassembler/testing/github_issues/#4 metalig jsonlines cannot be read in on windows/MetaLigDB_v1.0.0.jsonlines'
 
     # Load the first 1000 out of 41,018 ligands in the MetaLig database.
-    metalig = LigandDB.load_from_json(path=test_path)
+    metalig = LigandDB.load_from_json(path=default_ligand_db_path, n_max=n_max)
+    metalig = metalig.get_db_with_only_certain_denticities(denticities=denticities)
+
+    # Find symmetrical ligands, first for bidentates.
+    # 3D symmetry with SOAP is here outcommented because I want to focus on graph symmetry first.
+    # from dscribe.descriptors import SOAP
+    # from dscribe.kernels import AverageKernel, REMatchKernel
+    # desc = SOAP(species=list(range(1, 100)), r_cut=100.0, n_max=2, l_max=2, sigma=0.2, compression={"mode": "crossover"})
+    # re = REMatchKernel()
+    run = 'DART'
+    data = []
+    for uname, ligand in tqdm(metalig.db.items()):
+        if ligand.denticity in denticities:
+            # Check if ligand graph is symmetrical between donors
+            graph, metal_idx = ligand.get_graph_with_metal(metal_symbol='Hg', return_metal_index=True)
+            # Make two new graphs, each where one bond connected to the metal is removed
+            donor_graphs = []
+            for donor_idx in graph.neighbors(metal_idx):
+                donor_graph = graph.copy()
+                donor_graph.remove_edge(metal_idx, donor_idx)
+                donor_graphs.append(donor_graph)
+            # Calculate graph hashes of these two graphs. If they are identical, the ligand is symmetrical.
+            graph_hashes = [get_graph_hash(donor_graph) for donor_graph in donor_graphs]
+            symmetrical = len(set(graph_hashes)) < len(graph_hashes)
+            data.append({'uname': uname, 'dent': ligand.denticity, 'formula': ligand.stoichiometry, 'symm_graph': symmetrical})
+
+            ### Detect 3D symmetrical ligands. ###
+            ### Quite involved, therefore first I focused on just 2D symmetry. ###
+            # atoms_original = ligand.mol
+            # atoms_flipped = deepcopy(atoms_original)
+            # rotate_ligand_around_donors_inplace(atoms_flipped, donors_positions=ligand.get_donor_positions(), metal_position=ligand.original_metal_position, angle=180)
+            # donor_positions = ligand.get_donor_positions()
+            # # view(atoms_original)
+            # # view(atoms_flipped)
+            # # Choose a point that is close to many atoms so that changes in the ligand structure are captured.
+            # com = ligand.mol.get_center_of_mass()
+            # features1 = desc.create(atoms_original, centers=[com])
+            # features2 = desc.create(atoms_flipped, centers=[com])
+            # re_kernel = re.create([features1, features2])
+            # similarity = re_kernel[0, 1]
+            # dissimilarity = (1 - similarity) * 10000
+            # data[-1]['diss'] = dissimilarity
+
+    df = pd.DataFrame(data)
+    # df = df.sort_values(['symm_graph', 'diss'], ascending=[False, False])
+    # Save as concatenated .xyz file
+    outpath = Path('/Users/timosommer/Downloads/metalig1000.xyz')
+    outpath.unlink(missing_ok=True) # Remove if already exists
+    with open(outpath, 'w') as f:
+        for name in df['uname'].values:
+            lig = metalig.db[name]
+            f.write(lig.get_xyz_file_format_string(comment=name, with_metal=True))
+
+
+
+
 
     # # Get an overview of all tridentate ligands that were used in projects to try to not make them different in planarity.
     # used_ligands_paths = {

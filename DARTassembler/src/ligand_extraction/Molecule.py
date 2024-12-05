@@ -971,7 +971,6 @@ class RCA_Ligand(RCA_Molecule):
 
         return stats
 
-
     def calculate_angular_deviation_from_centrosymmetry(self) -> float:
         """
         Calculate the angular deviation from centrosymmetry. Only defined for monodentate ligands.
@@ -1031,7 +1030,6 @@ class RCA_Ligand(RCA_Molecule):
             return is_coplanar, deviation
         else:
             return is_coplanar
-
 
     def count_atoms_with_n_bonds(self, element: Union[str, None], n_bonds: int, graph_element_label: str='node_label', remember_metal: bool=False) -> int:
         """
@@ -1094,7 +1092,6 @@ class RCA_Ligand(RCA_Molecule):
         """
         return [self.original_metal_position] + self.get_coordinates_list()
 
-
     def get_graph_with_metal(self, metal_symbol: Union[str, None]=None, return_metal_index: bool=False) -> Union[nx.Graph, tuple[nx.Graph, int]]:
         """
         Returns the graph of the ligand but with the specified metal center connected to the coordinating atoms. The metal is connected to the coordinating atoms with a bond type of 1.
@@ -1116,7 +1113,6 @@ class RCA_Ligand(RCA_Molecule):
         else:
             return graph_with_metal
 
-
     def get_graph_hash_with_metal(self, metal_symbol, graph_atom_label:str= 'node_label') -> str:
         """
         Returns the graph hash of the ligand including the metal and the bonds to the metal.
@@ -1134,13 +1130,20 @@ class RCA_Ligand(RCA_Molecule):
         heavy_graph_with_metal = get_heavy_atoms_graph(graph_with_metal)
         return get_graph_hash(heavy_graph_with_metal, node_attr=graph_atom_label)
 
-
     def get_local_elements(self) -> list:
         """
         Calculates the elements in the first coordination sphere from `self.ligand_to_metal`.
         :return: list of elements in first coordination sphere
         """
         return [self.atomic_props["atoms"][i] for i in self.ligand_to_metal]
+
+    def get_donor_positions(self) -> np.array:
+        """
+        Returns the positions of the donor atoms.
+        :return: np.array of donor positions
+        """
+        return np.array([[self.atomic_props["x"][i], self.atomic_props["y"][i], self.atomic_props["z"][i]]
+                         for i in self.ligand_to_metal])
 
     def get_charge_as_int(self) -> Union[float, int]:
         """
@@ -1257,7 +1260,6 @@ class RCA_Ligand(RCA_Molecule):
         elif isinstance(atoms_of_interest, str):
             atoms_of_interest = [atoms_of_interest]
         return set(self.get_assembly_dict()["type"]).issubset(set(atoms_of_interest))
-
 
     def planar_check(self, eps=2):
         """

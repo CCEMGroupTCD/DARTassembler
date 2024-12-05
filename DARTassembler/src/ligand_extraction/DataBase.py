@@ -252,6 +252,16 @@ class LigandDB(MoleculeDB):
 
         return cls(db)
 
+
+    def get_db_with_only_certain_denticities(self, denticities) -> 'LigandDB':
+        """
+        Reduces the ligand database to only contain ligands with the specified denticities.
+        :param denticities: List of denticities to keep.
+        :return: None
+        """
+        reduced_db = {identifier: lig for identifier, lig in self.db.items() if lig.denticity in denticities}
+        return LigandDB(reduced_db)
+
     def get_ligand_output_df(self, max_entries: int=5) -> pd.DataFrame:
         ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}
         df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
