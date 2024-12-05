@@ -17,20 +17,21 @@ As preparation, make sure you installed twine and build, and added the PyPI and 
 * https://stackoverflow.com/questions/53122766/best-workflow-and-practices-for-releasing-a-new-python-package-version-on-github
 
 Then follow these steps to release a new version of DART on PyPI (pip):
-Test on TestPyPI first:
-   1. Append .1 to the end of the version number (i.e. a 'debug' version) in case we need to upload multiple test versions while debugging.
+On your test branch, test on TestPyPI first:
+   1. Append .1 to the end of the version number in ``setup.py`` and ``__init__.py`` (i.e. a 'debug' version ``D``) in case we need to upload multiple test versions while debugging.
    2. Build package locally: ``python3 -m build --sdist; python3 -m build --wheel``
-   3. Upload to TestPyPI: ``twine upload -r testpypi dist/DARTassembler-X.Y.Z*``
-   4. Install and test from TestPyPI: ``pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple DARTassembler==X.Y.Z``
-   5. If everything works, continue with the next steps. If not, fix the issue, increment the 'debug' version number and try again.
+   3. Upload to TestPyPI: ``twine upload -r testpypi dist/DARTassembler-X.Y.Z.D*``
+   4. Make new conda environment to test the new version: ``conda create --name test_DARTassemblerX.Y.Z.D python=3.10 pip``. 
+   5. Activate the new environment, then install and test from TestPyPI: ``pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple DARTassembler==X.Y.Z.D``
+   6. If everything works, continue with the next steps. If not, fix the issue, increment the 'debug' version number and try again.
 If everything works:
-   6. Increment version number
+   7. Increment version number, this time properly:
       1. Set ``version=X.Y.Z`` in ``setup.py``
       2. Set ``__version__=X.Y.Z`` in package ``__init__.py``
-   7. Push changes to master: ``git push`` with comment ``Bump to version X.Y.Z``
-   8. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
-   9. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
-   10. Upload to PyPI Production: ``twine upload dist/DARTassembler-X.Y.Z*``
+   8. Push changes to master: ``git push`` with comment ``Bump to version X.Y.Z``
+   9. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
+   10. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
+   11. Upload to PyPI Production: ``twine upload dist/DARTassembler-X.Y.Z*``
 
 
 
