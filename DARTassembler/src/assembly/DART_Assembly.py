@@ -427,10 +427,10 @@ class DARTAssembly(object):
         # If the name is based on the graph hash AND there are multiple isomers, add a number to the end of each name, otherwise start without a number.
         i = 1
         if self.same_isomer_names and self.multiple_isomers:  # Names based on graph hash
-                total_name = name + str(i)
+            total_name = name + str(i)
         else:
             total_name = name
-        # If the name is already used, add increasing numer to end of name
+        # If the name is already used, add increasing number to end of name
         while total_name in self.assembled_complex_names:
             total_name = name + str(i)
             i += 1

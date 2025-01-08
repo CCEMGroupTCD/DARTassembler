@@ -58,7 +58,6 @@ class ForceField(object):
         """
         from openbabel import openbabel as ob
         from openbabel import pybel
-        pybel.ob.obErrorLog.StopLogging()  # Remove Openbabel warnings
 
         if isinstance(mol, str):
             mol = pybel.readstring("mol", mol)

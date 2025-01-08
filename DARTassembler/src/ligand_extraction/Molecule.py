@@ -1031,6 +1031,34 @@ class RCA_Ligand(RCA_Molecule):
         else:
             return is_coplanar
 
+    def if_graph_donor_symmetrical(self) -> bool:
+        """
+        Checks if ligand graph is symmetrical between donors. Essentially, this checks whether the ligand graph is symmetrical under "flipping" the ligand for generating geometric isomers. However, this does not check for 3D symmetry. Often, planar ligands are 3D symmetrical if they are 2D symmetrical, but the more bulky the ligand, the more likely it is that the ligand is not 3D symmetrical even if it is 2D symmetrical.
+        This function is easy to imagine for bidentate ligands, but it also works for tridentate ligands: e.g. for planar tridentate ligands, the ligand graph might be symmetrical between the outer two donors, but different for the middle donor. This will be picked up, because the function checks if the graph looks symmetrical for any two donors.
+        :return: True if the ligand graph is symmetrical between donors, False otherwise.
+        """
+        # Explanation of algorithm: This function checks if the ligands graph is symmetrical between any of the donors. Essentially, it attaches a pseudo Hg atom to each donor and checks if the resulting ligand graph between any donors is identical. If it is, the ligand is symmetrical under these donors.
+
+        # Get graph where all donors are connected to a pseudo Hg atom.
+        graph, metal_idx = self.get_graph_with_metal(metal_symbol='Hg', return_metal_index=True)
+
+        # Make new graphs which each have one pseudo Hg atom bonding to one donor, i.e. delete all but one donor bond.
+        donor_graphs = []
+        donor_indices = list(graph.neighbors(metal_idx))
+        for donor_idx in donor_indices:
+            donor_graph = graph.copy()
+            # Remove all other donor bonds except this one
+            for donor_idx2 in donor_indices:
+                if donor_idx2 != donor_idx:
+                    donor_graph.remove_edge(metal_idx, donor_idx2)
+            donor_graphs.append(donor_graph)
+
+        # Calculate graph hashes of all graphs. If any of the graph hashes are identical, the ligand is symmetrical between at least two donors.
+        graph_hashes = [get_graph_hash(donor_graph) for donor_graph in donor_graphs]
+        symmetrical = len(set(graph_hashes)) < len(graph_hashes)
+
+        return symmetrical
+
     def count_atoms_with_n_bonds(self, element: Union[str, None], n_bonds: int, graph_element_label: str='node_label', remember_metal: bool=False) -> int:
         """
         Count the number of occurrences of element `element` with exactly `n_bonds` bonds.

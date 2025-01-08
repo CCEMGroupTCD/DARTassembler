@@ -9,6 +9,8 @@ np.seterr(divide='ignore', invalid='ignore')
 import os
 from pathlib import Path
 from openbabel import __file__ as openbabel_file
+from openbabel import pybel
+pybel.ob.obErrorLog.StopLogging()  # Remove Openbabel warnings
 openbabel_path = Path(openbabel_file).parent
 ff_files = ['UFF.prm']  # forcefield parameter files
 babel_datadir = None
