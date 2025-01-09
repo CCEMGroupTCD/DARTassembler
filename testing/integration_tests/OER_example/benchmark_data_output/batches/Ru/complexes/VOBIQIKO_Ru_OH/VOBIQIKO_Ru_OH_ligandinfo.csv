@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-LEJMUJ-03-a,C10H8N3O2,3,-1,N-O-O,23,202.193,0.6950913961,False,False,9.552513567642812,85edca8492f626962cd74abd87ed8587,4,"LEJMUJ, LEJMUJ, NOQPOZ, NOQPOZ","Ni(2), Cu(2)"
+Ligand 1,unq_CSD-YEWWII-02-a,C20H24N3O1,2,-1,O-N,48,322.432,0.1375109951,False,False,12.294345743064166,3e8400b297f84a80e07d4b4e3f884c7e,6,"YEWWII, YEWWII, FORVIT, FORVIT, FORVUF, ... (1 more)","Zr(4), Ti(2)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-QELJUN-03-a,C23H23N3,3,0,N-N-N,49,341.4579999999999,0.0959240501,False,False,12.120630855281417,06186e95eac0d693d3cf56e5681bddd0,1,QELJUN,Fe(1)
+Ligand 1,unq_CSD-KIGXUU-02-a,C6H3N1O4,2,-2,O-O,14,153.093,0.7406089901,False,False,6.180896890419707,1f77d2e77c1f4010c8ca2b00230afe66,3,"KIGXUU, GUPYIB, EXOCID","Cu(2), Mn(1)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

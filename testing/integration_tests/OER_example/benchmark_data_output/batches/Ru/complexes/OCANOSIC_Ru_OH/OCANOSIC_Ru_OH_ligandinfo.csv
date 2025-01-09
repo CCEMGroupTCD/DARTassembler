@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-SEYRIZ-03-a,C50H41F4N3,3,0,N-N-N,98,759.8926126519998,0.0378123194,False,False,14.621113379630158,c2c3947d567f4f2faf07ea32b690bcd0,1,SEYRIZ,Co(1)
+Ligand 1,unq_CSD-UJUCUA-02-a,C12H6N10,2,-2,N-N,28,290.25,0.7291027319,False,False,10.038083648784763,f80e254b4f8ad81017032ae1fcb46db2,2,"UJUCUA, UJUCUA",Fe(2)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

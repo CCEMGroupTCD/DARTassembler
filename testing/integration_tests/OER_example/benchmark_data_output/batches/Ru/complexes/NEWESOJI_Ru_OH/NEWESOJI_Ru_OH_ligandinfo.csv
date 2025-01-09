@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-BEXBOY-03-a,C21H10N2O3,3,-2,O-O-N,36,338.322,0.6227408159,False,False,14.012696586310572,145a9f18d2019a0957809adee58ce199,1,BEXBOY,Cu(1)
+Ligand 1,unq_CSD-PAHLOZ-02-a,C28H39N1O2,2,0,O-N,70,421.62499999999994,0.1002640733,False,False,13.855285510591255,fb01c2d067a51e38eb5aec383f12e36e,17,"PAHLOZ, UBEKUK, YEXRIC, YEXRIC, YOLZII, ... (12 more)","Co(5), Ni(4), Ru(3), Cu(3), Zn(2)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PILCOD-03-a,C27H31N3,3,0,N-N-N,61,397.5659999999999,0.0750534919,False,False,14.608218123029241,8d0a1d8934954f38ae490c06abaff79d,42,"PILCOD, TELVIS, TELVUE, AXIMEA, TIXLIX, ... (37 more)","Ru(17), U(7), Co(4), Fe(4), Nd(3), ... (5 more)"
+Ligand 1,unq_CSD-PETXOD-02-a,C6H5N1O1,2,-2,O-N,13,107.11199999999997,0.8775181385,False,False,5.562447162895122,d063a039c92054e2a22b9b3c1ccc1368,12,"PETXOD, PETYAQ, CEWSON, QILSAF, QILSAF01, ... (7 more)","V(3), Mo(3), Ru(2), Fe(2), Os(1), ... (1 more)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

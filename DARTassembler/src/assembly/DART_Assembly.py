@@ -146,6 +146,15 @@ class DARTAssembly(object):
         print(f"Total runtime for assembling {n_success} complexes: {self.runtime}")    # print to leave runtime out of log file for integration tests
         logging.info('Done! All complexes assembled. Exiting DART Assembler Module.')
 
+        # Some final tests
+        df_test_success = self.df_info[self.df_info['success']]
+        batches = df_test_success['batch idx'].unique()
+        for batch in batches:
+            df_batch = df_test_success[df_test_success['batch idx'] == batch]
+            # Check for duplicate complex names in the batch
+            duplicate_names = df_batch['complex name'][df_batch['complex name'].duplicated()].values
+            assert len(duplicate_names) == 0, f"Duplicate complex names in batch {batch}: {duplicate_names}. Please report this issue to our GitHub page."
+
         return
 
     def print_success_rate(self, df):
@@ -249,6 +258,7 @@ class DARTAssembly(object):
             # Post process includes error detection and optimization
             Post_Process_Complex_List = []
             logging.debug("Entering post process")
+            isomer_idx = 1  # Index for naming the isomer
             for complex, building_blocks in zip(Assembled_Complex_list, Building_Block_list):
                 complex, complex_is_good, ff_movie, note = self.relax_and_check_structure(complex, building_blocks, ligands)
 
@@ -261,9 +271,10 @@ class DARTAssembly(object):
                             )
 
                 if complex_is_good:  # New complex successfully built.
-                    self.save_successfully_assembled_complex(tmc, ff_movie, metal_charge=int(self.metal_ox_state), ligands=ligands, note=note)
+                    self.save_successfully_assembled_complex(tmc, ff_movie, metal_charge=int(self.metal_ox_state), ligands=ligands, note=note, isomer_idx=isomer_idx)
                     Post_Process_Complex_List.append(complex)
                     batch_sum_assembled_complexes += 1
+                    isomer_idx += 1
                     progressbar.update(1)
                 else:
                     self.save_failed_assembled_complex(complex=tmc, ff_movie=ff_movie, ligands=ligands, note=note)
@@ -349,7 +360,7 @@ class DARTAssembly(object):
 
         return complex, complex_is_good, ff_movie, note
 
-    def save_successfully_assembled_complex(self, complex: TMC, ff_movie: str, ligands: dict, note: str, metal_charge: int):
+    def save_successfully_assembled_complex(self, complex: TMC, ff_movie: str, ligands: dict, note: str, metal_charge: int, isomer_idx: int):
         """
         Save the successfully assembled complex to the output files.
         """
@@ -371,7 +382,7 @@ class DARTAssembly(object):
         append_global_concatenated_xyz(xyz_string, outdir=self.output_path)
 
         # Save to complex directory
-        complex_name = self.get_complex_name(complex)
+        complex_name = self.get_complex_name(complex, isomer_idx=isomer_idx)
         complex_dir = Path(self.batch_outcontrol.complex_dir, complex_name)
         complex_outcontrol = ComplexAssemblyOutput(complex_dir)
 
@@ -406,42 +417,59 @@ class DARTAssembly(object):
 
         return
 
-    def get_complex_name(self, complex, decimals=6) -> str:
+    def get_complex_name(self, complex, isomer_idx, decimals=6) -> str:
         """
         Returns the name of the complex.
         """
-        # Get a random name for the complex
-        if self.same_isomer_names:
-            hash_string = complex.graph_hash
+        # Fix subsequent isomer to always have the same name as the first isomer, but counting up.
+        if isomer_idx > 1 and self.same_isomer_names and self.multiple_isomers:  # subsequent isomers
+            n_digits_last_isomer = len(str(isomer_idx - 1))
+            n_digits_appendix = len(self.complex_name_appendix)
+            n_digits_remove = n_digits_last_isomer + n_digits_appendix
+            last_isomers_name = self.assembled_complex_names[-1]
+            last_isomers_stem = last_isomers_name[:-n_digits_remove]
+            # Check that we can reconstruct the last isomers name.
+            assert last_isomers_name == last_isomers_stem + str(isomer_idx - 1) + self.complex_name_appendix, f'The complex name seems to work different than implemented.'
+            # Now construct the new isomers name after the same rules as above.
+            name = last_isomers_stem + str(isomer_idx) + self.complex_name_appendix
+            assert not name in self.assembled_complex_names, f"Complex name {name} already exists in the assembled complex names list even though it is a subsequent isomer. This should be impossible."
         else:
-            xyz = complex.mol.get_xyz_as_array()
-            sorted_indices = np.lexsort((xyz[:, 2], xyz[:, 1], xyz[:, 0]), axis=0)
-            xyz = np.round(xyz, decimals=decimals)  # round to 6 decimals to get rid of numerical noise
-            xyz = xyz[sorted_indices]
-            elements = [el for _, el in sorted(zip(sorted_indices, complex.mol.get_elements_list()))] # sort elements according to xyz
-            hash_string = str(elements) + str(xyz)  # make hash string
+            # Generate new name for new complex.
+            complex_name_length = self.complex_name_length
+            while True:     # emulate a do-while loop
+                # Get a random name for the complex
+                if self.same_isomer_names:
+                    hash_string = complex.graph_hash
+                else:
+                    xyz = complex.mol.get_xyz_as_array()
+                    sorted_indices = np.lexsort((xyz[:, 2], xyz[:, 1], xyz[:, 0]), axis=0)
+                    xyz = np.round(xyz, decimals=decimals)  # round to 6 decimals to get rid of numerical noise
+                    xyz = xyz[sorted_indices]
+                    elements = [el for _, el in sorted(zip(sorted_indices, complex.mol.get_elements_list()))] # sort elements according to xyz
+                    hash_string = str(elements) + str(xyz)  # make hash string
 
-        # Generate a pronounceable word from the hash
-        name = generate_pronounceable_word(length=self.complex_name_length, seed=hash_string)
+                # Generate a pronounceable word from the hash
+                name = generate_pronounceable_word(length=complex_name_length, seed=hash_string)
 
-        # If the name is based on the graph hash AND there are multiple isomers, add a number to the end of each name, otherwise start without a number.
-        i = 1
-        if self.same_isomer_names and self.multiple_isomers:  # Names based on graph hash
-            total_name = name + str(i)
-        else:
-            total_name = name
-        # If the name is already used, add increasing number to end of name
-        while total_name in self.assembled_complex_names:
-            total_name = name + str(i)
-            i += 1
+                # If the name is based on the graph hash AND there are multiple isomers, add a number to the end of each name, otherwise start without a number.
+                if self.same_isomer_names and self.multiple_isomers:  # Names based on graph hash
+                    assert isomer_idx == 1, f'Isomer idx that is {isomer_idx} should be 1 here because subsequent isomers are handled differently.'
+                    name = name + str(1)
 
-        # Add the specified appendix to the name
-        total_name += self.complex_name_appendix
+                # Add the specified appendix to the name
+                name += self.complex_name_appendix
+
+                # If the name is already used, redo name generation with one more character. For the next complex, it starts with the original character length again.
+                if name in self.assembled_complex_names:
+                    complex_name_length += 1
+                    continue
+                else:
+                    break   # name is unique, break the loop
 
         # Add name to complex
-        complex.mol_id = total_name
+        complex.mol_id = name
 
-        return total_name
+        return name
 
     def add_batch_info(self, success, ligands, reason: str = '', complex_idx=None, complex_name=None, complex_graph_hash=None):
         """

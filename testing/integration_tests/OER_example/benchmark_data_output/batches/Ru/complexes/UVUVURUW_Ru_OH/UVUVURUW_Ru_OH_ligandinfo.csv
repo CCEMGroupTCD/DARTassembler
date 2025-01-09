@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-ZAHJEX-03-a,C21H15N1O2,3,-2,O-O-N,39,313.35599999999994,0.2236941321,False,False,15.050489362808108,9803d7c1a10ab68974c21e05bf094eff,2,"ZAHJEX, ZAHJEX",Ti(2)
+Ligand 1,unq_CSD-BOSCOC-02-a,C11H14N4,2,0,N-N,29,202.261,0.2846995617,False,False,9.607086878445516,8bcea733f18e51c09c357632f8bbdfb4,1,BOSCOC,Mo(1)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

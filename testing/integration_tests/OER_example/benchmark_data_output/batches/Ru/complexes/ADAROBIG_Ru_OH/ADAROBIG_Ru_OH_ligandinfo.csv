@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-REKZAK-03-a,C23H21N3O2,3,-2,O-N-N,49,371.44,0.0893704989,False,False,14.512371898142632,4052e586b6910906efee13b5303e8b5e,2,"REKZAK, REKZAK",Co(2)
+Ligand 1,unq_CSD-NOGTIN-02-a,C19H11N3O2,2,0,N-N,35,313.316,0.1957108412,False,False,14.498326168561665,a8fe7e46b9e9fe6d2b52e2131feeaef9,1,NOGTIN,Ru(1)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-OLEPUS-03-a,C25H27N2O1,3,-1,O-N-N,55,371.5039999999999,0.0695135447,False,False,13.136446085604737,0ad2899aab4699085fa16f46e699ae8a,2,"OLEPUS, OLEQAZ",Ti(2)
+Ligand 1,unq_CSD-UVUFIB-02-a,C10H12N5O1,2,-1,O-N,28,218.24,0.2948638071,False,False,9.84739301845925,7ec14078f8114cc2e187c05279c52875,2,"UVUFIB, OVUHIY",Ru(2)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

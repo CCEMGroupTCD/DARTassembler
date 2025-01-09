@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-BUCDEJ-03-a,C26H28N4,3,0,N-N-N,58,396.538,0.0614948409,False,False,13.196751076306622,05160ae0af81c60d59f91b0a44cb7d24,2,"BUCDEJ, IQUGUX","Fe(1), Ni(1)"
+Ligand 1,unq_CSD-EMUFOH-02-a,C25H20N2,2,-2,N-N,47,348.449,0.081498066,False,False,12.04124930644657,d92e1148494fb852451fab5d07813509,2,"EMUFOH, EMUGAU","Ti(1), Zr(1)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

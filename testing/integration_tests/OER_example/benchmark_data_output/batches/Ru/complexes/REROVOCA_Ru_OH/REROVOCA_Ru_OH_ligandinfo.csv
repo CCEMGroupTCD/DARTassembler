@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PIKVEM-03-a,C20H16N5,3,-1,N-N-N,41,326.383,0.2175729965,False,False,11.79174864640525,e9275efce1b35f5821f6a84f711445be,8,"PIKVEM, JUZXOT, XUZMUC, UJAWEK, UJEDUL, ... (3 more)","Ru(4), Fe(2), Cu(1), Ni(1)"
+Ligand 1,unq_CSD-OFAPUJ-02-a,C13H18N1O1,2,-1,O-N,33,204.29299999999998,0.1466702503,False,False,8.1952613417755,b1988d6ec0abe12dc64b3093ee6af9e0,20,"XUHWON, XUHWON, QUHVIZ, QUHVIZ, OFAPUJ, ... (15 more)","Zr(14), Ti(4), Ta(2)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

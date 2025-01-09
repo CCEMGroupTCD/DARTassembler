@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-DOMQUT-03-a,C20H13N4,3,-1,N-N-N,37,309.3519999999999,0.4096872306,False,False,12.701494895877413,39723dd1fa1e1b22b5f3ae5d15e0126c,6,"DOMQUT, DOMQUT, DOMQUT01, DOMQUT01, DOMQUT02, ... (1 more)",Fe(6)
+Ligand 1,unq_CSD-OKARUP-02-a,C14H11N2O2,2,-1,O-N,29,239.25400000000002,0.2844349624,False,False,10.836103833481848,2a6da0cc91e80f8675f736dfe5ceb049,2,"OKARUP, OKASAW",Fe(2)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

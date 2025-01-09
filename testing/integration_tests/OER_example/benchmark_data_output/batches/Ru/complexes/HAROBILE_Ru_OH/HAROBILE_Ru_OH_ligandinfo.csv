@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-MIFMUM-03-a,C27H21N3,3,-2,N-N-N,51,387.48599999999993,0.1678399768,False,False,14.534026297623106,400c0011ecdd1970e2f5f76b4b6398c3,22,"MIFMUM, MIFMUM, YAHBIV, YAHBIV, YAHBUH, ... (17 more)","Mo(8), Cr(6), Zr(4), Ti(4)"
+Ligand 1,unq_CSD-CEPFEI-02-a,C10H10N4,2,0,N-N,24,186.218,0.3773317042,False,False,8.71708207200093,b600d97de003c7095fdae8b8bb7c1cc3,1,CEPFEI,Ni(1)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

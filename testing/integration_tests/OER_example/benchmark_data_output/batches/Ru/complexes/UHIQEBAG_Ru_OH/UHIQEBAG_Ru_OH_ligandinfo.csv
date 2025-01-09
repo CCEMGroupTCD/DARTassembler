@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-QAHTAW-03-a,C19H12N5,3,-1,N-N-N,36,310.34,0.676980868,False,False,13.513224754291626,f2a0dc64cdff46c705a51885099093c2,10,"QAHTAW, EJEBOK01, EJEBOK01, EJEBOK02, EJEBOK02, ... (5 more)","Zn(4), Cd(2), U(2), Cu(1), Ru(1)"
+Ligand 1,unq_CSD-JESXOX-02-a,C8H4F1N2O2,2,-1,N-O,17,179.13040316299998,0.9426021925,False,False,7.151292602739731,566d4fa4866fa64f32f48b075f4aba02,2,"JESXOX, JESXOX",Cu(2)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-UCAKUI-03-a,C11H11N7,3,0,N-N-N,29,241.258,0.3833343821,False,False,10.422350872044175,235997a4f46a606019c33f6b0a24f435,4,"UCAKUI, UCAKUI, UCALET, UCALET",Fe(4)
+Ligand 1,unq_CSD-TAWWEU-02-a,C30H44O2,2,-2,O-O,76,436.67999999999995,0.0726682223,False,False,13.102404578168086,b6e66182c7feef235935091fe171d2e4,20,"TAWWEU, TAWWEU, KAFVUK, KAFVUK, ZATPUH, ... (15 more)","Mo(6), Y(3), V(3), Nb(2), Er(2), ... (2 more)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

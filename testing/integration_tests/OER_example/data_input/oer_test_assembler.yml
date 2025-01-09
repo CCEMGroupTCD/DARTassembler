@@ -1,0 +1,21 @@
+verbosity: 2
+ffmovie: false
+concatenate_xyz: true
+output_directory: OER_example/data_output
+complex_name_length: 8
+same_isomer_names: False
+
+batches:
+  - ligand_db_file: [OER_example/data_input/oer_all_ligands.jsonlines, OER_example/data_input/oer_all_ligands.jsonlines, OER_example/data_input/oer_OH.jsonlines]
+    isomers: all
+    max_num_complexes: 100
+    geometry_modifier_filepath: OER_example/data_input/H_shift.xyz
+    bidentate_rotator: auto
+    metal_center: Ru
+    metal_oxidation_state: 3
+    name: Ru
+    forcefield: false
+    random_seed: 14
+    geometry: mer-3-2-1
+    total_charge: 0
+    complex_name_appendix: _Ru_OH

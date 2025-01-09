@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-QEZDEH-03-a,C22H14N3O2,3,-1,N-N-O,41,352.37299999999993,0.3799399356,False,False,14.974098884740943,95570f338b82476e10f6654f02cc0bba,2,"QEZDEH, QEZDEH",Co(2)
+Ligand 1,unq_CSD-GEQHIT-02-a,C15H12N3O4,2,-1,O-N,34,298.2779999999999,0.1759982696,False,False,14.204185520472477,0becd4f1b5e1e206f6381af9f2da4d91,2,"GEQHIT, GEQHIT",Cu(2)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

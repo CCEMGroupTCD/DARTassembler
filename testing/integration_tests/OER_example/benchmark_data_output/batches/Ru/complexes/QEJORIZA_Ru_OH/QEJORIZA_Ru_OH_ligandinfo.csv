@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-GALVEY-03-a,C27H26N6,3,0,N-C-C,59,434.5469999999999,0.1356311261,False,False,14.891517491847498,f3efd2126258c9174e424fba93a15c4d,3,"GALVEY, GALVEY, GALVUO",Fe(3)
+Ligand 1,unq_CSD-POCMAW-02-a,C10H6O2,2,-2,O-O,18,158.156,0.8753262851,False,False,7.268827281618405,60ed2facfab72922d4d3d8275d07b51e,26,"POCMAW, POCMAW, TATDEZ, TATDEZ, TATDID, ... (21 more)","Mo(7), W(6), V(6), Pd(3), Ti(3), ... (1 more)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

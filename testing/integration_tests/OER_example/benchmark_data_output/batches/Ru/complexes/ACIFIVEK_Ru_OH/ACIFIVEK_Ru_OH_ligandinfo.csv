@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-UGEWIN-03-a,C17H21N5,3,0,N-N-N,43,295.38999999999993,0.2678519892,False,False,12.415189916791446,a971c906b8db5f299e65f95e2c0da639,7,"UGEWIN, UWIGEN, UWIGIR, VOVWIO, DUCVAB, ... (2 more)","Co(2), Fe(1), Zn(1), Hg(1), Ni(1), ... (1 more)"
+Ligand 1,unq_CSD-ISAWUU-02-a,C8H7N1O2,2,-2,N-O,18,149.149,0.3833268762,False,False,7.347172466330159,90cd6fc309a87ec4c448034d0a7b3e1b,1,ISAWUU,Rh(1)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

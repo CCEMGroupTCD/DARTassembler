@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-IVANUR-03-a,C21H13N3O4,3,-2,O-O-N,41,371.3519999999999,0.169232083,False,False,13.232542350584032,f8fee4358babd48fb03a8303e639a73e,2,"IVANUR, IVANUR",Ti(2)
+Ligand 1,unq_CSD-QOHVEP-02-a,C32H20N2,2,0,N-N,54,432.526,0.0834988426,False,False,13.927369209222537,ec1ae9cd1dd3441cf6b4daab27b708de,2,"QOHVEP, AHOSIC","Pd(1), Ni(1)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

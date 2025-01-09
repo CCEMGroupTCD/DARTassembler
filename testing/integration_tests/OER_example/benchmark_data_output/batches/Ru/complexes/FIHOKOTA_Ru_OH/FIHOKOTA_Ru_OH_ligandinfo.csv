@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PEJBUE-03-a,C11H9N2O2,3,-1,O-N-N,24,201.20499999999998,0.45875504,False,False,10.1615523818952,007cf6ce067746aca2a5cb6fed5105c1,2,"PEJBUE, PEJCEP","Co(1), Ni(1)"
+Ligand 1,unq_CSD-GASVED-02-a,C12H11F3N1O1,2,-1,O-N,28,242.22120948900002,0.1624494112,False,False,11.234933362508208,33ad5697f4e85b5ee18ef5eb7217f0dd,2,"GASVED, GASVED",Ti(2)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

@@ -1,0 +1,31 @@
+Starting DART Assembler Module.
+Output directory: `data_output`
+Running 1 batch...
+================================  Batch 0: Ru  =================================
+User-defined settings for batch 0:
+    ligand_db_file                ['OER_example/data_input/oer_all_ligands.jsonlines', 'OER_example/data_input/oer_all_ligands.jsonlines', 'OER_example/data_input/oer_OH.jsonlines']
+    isomers                       all
+    max_num_complexes             100
+    geometry_modifier_filepath    OER_example/data_input/H_shift.xyz
+    bidentate_rotator             auto
+    metal_center                  Ru
+    metal_oxidation_state         3
+    name                          Ru
+    forcefield                    False
+    random_seed                   14
+    geometry                      mer-3-2-1
+    total_charge                  0
+    complex_name_appendix         _Ru_OH
+=============================  Summary per batch  ==============================
+Batch 0 ('Ru'):
+  - 241 complexes tried, 102 complexes successfully assembled.
+  - 139 complexes failed because of filters:
+    - clashing ligands: 126
+    - non-planar tridentate: 13
+====================  Total summary of DART Assembler run  =====================
+  - 241 complexes tried, 102 complexes successfully assembled.
+  - 139 complexes failed because of filters:
+    - clashing ligands: 126
+    - non-planar tridentate: 13
+DART Assembler output files saved to directory `data_output`.
+Done! All complexes assembled. Exiting DART Assembler Module.

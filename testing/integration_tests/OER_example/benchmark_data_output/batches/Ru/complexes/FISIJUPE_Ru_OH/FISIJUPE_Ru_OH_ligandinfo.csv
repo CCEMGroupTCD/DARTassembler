@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-PAFKOZ-03-a,C33H43N3,3,0,N-N-N,79,481.728,0.0532387951,False,False,12.903950544310064,2f8c87cb4ed5ca4ac0d6215fe63068e1,138,"PAFKOZ, PAFKUF, PEKWUY, PEKXAF, PIKGUM, ... (133 more)","Fe(54), Co(16), Ir(12), Mo(11), Rh(8), ... (10 more)"
+Ligand 1,unq_CSD-HAXPAA-02-a,C6H4N2O3,2,-2,N-O,15,152.10899999999998,0.8885488333,False,False,6.201631483730713,a72542256d6a8cc3bd0406fe3049b9d4,2,"HAXPAA, FOJTAB","V(1), Fe(1)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

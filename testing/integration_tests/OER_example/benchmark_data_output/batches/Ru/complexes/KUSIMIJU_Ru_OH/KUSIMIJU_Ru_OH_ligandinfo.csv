@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-CETZEJ-03-a,C17H15N1O2,3,-2,O-N-O,35,265.312,0.2224123732,False,False,13.340232064698126,6f7c49504c2652f589d68409b48c75a7,3,"CETZEJ, CETZIN, CETZOT",Mo(3)
+Ligand 1,unq_CSD-NUYKIC-02-a,C16H12N4,2,0,N-N,32,260.29999999999995,0.3788915613,False,False,14.573038181861737,63c4dfb51c90e5faa4f319df391a8876,1,NUYKIC,Ru(1)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

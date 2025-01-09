@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-CAFVOX-03-a,C22H15N1O2,3,-2,O-O-N,40,325.367,0.1090857039,False,False,11.157861806367741,eada2bcce3851fcc3f68ae589ad80a7b,1,CAFVOX,Ti(1)
+Ligand 1,unq_CSD-BICHEA-02-a,C2H7N5,2,0,N-N,14,101.11299999999997,0.7565213753,False,False,6.136026017708856,d34075cddcdff8f9ccd6d3b36046df5c,14,"BICHEA, BICHEA, BICHEA, GUACOT, GUACOT, ... (9 more)","Co(6), Mn(6), Cu(2)"
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-VOQNEW-03-a,C13H13N5,3,0,N-N-N,31,239.282,0.3763118759,False,False,10.353546563376241,8653da4a6f06116dbb42d8ba77da3906,34,"VOQNEW, VOQNEW, VOQNEW01, VOQNEW01, VOQNEW02, ... (29 more)",Fe(34)
+Ligand 1,unq_CSD-FICVAR-02-a,C5H4N2O2,2,-2,N-O,13,124.09899999999998,0.4711366592,False,False,5.888787907540906,579a240c9c2adfb922a24a5d9618c84d,1,FICVAR,Ru(1)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

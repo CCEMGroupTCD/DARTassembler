@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-UFUDIJ-03-a,C25H24N4O1,3,-2,O-N-N,54,396.494,0.0727122025,False,False,14.272049346187112,616a0b7692db4ac776ca9b83bbb0bb63,2,"UFUDIJ, UFUDIJ",Ti(2)
+Ligand 1,unq_CSD-FATMAP-02-a,C14H6F6N2,2,0,N-N,28,316.2064189780001,0.317644503,False,False,9.389356278787167,d5d017cf771a8cf182b1ec79186adc97,14,"FATMAP, FATMAP, FATMET, FATMET, FATMIX, ... (9 more)",Cu(14)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"

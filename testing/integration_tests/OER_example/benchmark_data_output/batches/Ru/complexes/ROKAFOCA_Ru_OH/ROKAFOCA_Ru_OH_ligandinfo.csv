@@ -1,0 +1,4 @@
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
+Ligand 0,unq_CSD-HUCCOA-03-a,C23H19N5O4,3,-2,N-N-N,51,429.436,0.0618365111,False,False,11.80390106447864,32a710da62e893789854d92bd2526dc5,2,"HUCCOA, XIVGUE",Cu(2)
+Ligand 1,unq_CSD-JUFNAB-02-b,C15H13N3,2,0,N-N,31,235.29000000000002,0.2019532244,False,False,11.486755208499918,3360fcb549dc4085a7636575dbbd24bb,1,JUFNAB,Cu(1)
+Ligand 2,unq_CSD-PAYGIF-01-a,H1O1,1,-1,O,2,17.007,1.0,False,False,0.8198609699211203,2d42f56d9461655876fc065c765b4a8a,523,"PAYGIF, PELNOM, PENMIH, PEQSUA, PEQSUA, ... (518 more)","Pt(89), Ru(47), Mn(44), Cu(44), Co(37), ... (34 more)"
