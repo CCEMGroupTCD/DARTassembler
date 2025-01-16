@@ -1031,7 +1031,7 @@ class RCA_Ligand(RCA_Molecule):
         else:
             return is_coplanar
 
-    def if_graph_donor_symmetrical(self) -> bool:
+    def is_2D_symmetrical(self) -> bool:
         """
         Checks if ligand graph is symmetrical between donors. Essentially, this checks whether the ligand graph is symmetrical under "flipping" the ligand for generating geometric isomers. However, this does not check for 3D symmetry. Often, planar ligands are 3D symmetrical if they are 2D symmetrical, but the more bulky the ligand, the more likely it is that the ligand is not 3D symmetrical even if it is 2D symmetrical.
         This function is easy to imagine for bidentate ligands, but it also works for tridentate ligands: e.g. for planar tridentate ligands, the ligand graph might be symmetrical between the outer two donors, but different for the middle donor. This will be picked up, because the function checks if the graph looks symmetrical for any two donors.
@@ -1042,15 +1042,12 @@ class RCA_Ligand(RCA_Molecule):
         # Get graph where all donors are connected to a pseudo Hg atom.
         graph, metal_idx = self.get_graph_with_metal(metal_symbol='Hg', return_metal_index=True)
 
-        # Make new graphs which each have one pseudo Hg atom bonding to one donor, i.e. delete all but one donor bond.
+        # Make new graphs which each have one pseudo Hg atom bonding to all but one donor, i.e. remove one donor bond.
         donor_graphs = []
         donor_indices = list(graph.neighbors(metal_idx))
         for donor_idx in donor_indices:
             donor_graph = graph.copy()
-            # Remove all other donor bonds except this one
-            for donor_idx2 in donor_indices:
-                if donor_idx2 != donor_idx:
-                    donor_graph.remove_edge(metal_idx, donor_idx2)
+            donor_graph.remove_edge(metal_idx, donor_idx)
             donor_graphs.append(donor_graph)
 
         # Calculate graph hashes of all graphs. If any of the graph hashes are identical, the ligand is symmetrical between at least two donors.

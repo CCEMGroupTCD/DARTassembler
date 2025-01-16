@@ -710,6 +710,8 @@ if __name__ == '__main__':
 
     db = LigandDB.load_from_json(path=db_path, n_max=n_max)
     outpath = f'/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/data/metalig/test{n_max}_MetaLigDB_v1.0.0.jsonlines'
-    db.to_json(outpath, desc='Save ligand db to json', json_lines=True)
+    ligands_2D_sym = [lig for lig in db.db.values() if lig.is_2D_symmetrical()]
+    n_ligands_2D_sym = len(ligands_2D_sym)
+    print(f'Number of 2D symmetrical ligands: {n_ligands_2D_sym}')
     # df_metals = db.calc_number_of_possible_complexes()
     # print(df_metals)
