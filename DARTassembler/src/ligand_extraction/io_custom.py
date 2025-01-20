@@ -6,7 +6,7 @@ import json
 import sys
 import yaml
 import tempfile
-
+from ase.io.xyz import write_xyz
 from DARTassembler.src.metalig.metalig_utils import get_correct_ligand_db_path_from_input
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand, RCA_Complex
 import numpy as np
@@ -393,6 +393,52 @@ def read_xyz(path: str):
     coords = atoms.get_positions()
     elements = atoms.get_chemical_symbols()
     return elements, coords
+
+def save_to_xyz(outpath: Union[str,Path], structures: list[ase.Atoms], comments: list[str]):
+    outpath = Path(outpath)
+    if isinstance(comments, str):
+        comments = [comments]
+    if isinstance(structures, ase.Atoms):
+        structures = [structures]
+    if len(structures) != len(comments):
+        raise ValueError(f"Number of structures ({len(structures)}) and comments ({len(comments)}) do not match.")
+
+    outpath.unlink(missing_ok=True)  # Remove the file if it exists to avoid appending to an existing file.
+    outpath.parent.mkdir(parents=True, exist_ok=True)
+    for structure, comment in zip(structures, comments):
+        with open(outpath, 'a') as f:
+            write_xyz(f, [structure], comment=comment)
+
+    return
+
+def save_multiple_structures_in_same_xyz_file(outpath: Union[str,Path], structures: list[list[ase.Atoms]], comments: list[str], distance = 1):
+    """
+    Save multiple structures in the same xyz file. The structures are shifted by the distance in Angstrom.
+    :param outpath: Path of the concatenated xyz file
+    :param structures: List of lists of structures of aset.Atoms objects
+    :param comments: List of comments for each structure
+    :param distance: Distance in Angstrom by which the structures are separated
+    :return: None
+    """
+    combined_structures = []
+    for structure_list in structures:
+        for idx, structure in enumerate(structure_list):
+            # Shift the nect structure so that there is always a little distance between the right-most atoms of the first structure and the left-most atoms of the second structure.
+            if idx > 0:
+                last_x_position = structure_list[idx-1].get_positions()[:,0].max()
+                new_x_position = structure.get_positions()[:,0].min()
+                shift = last_x_position - new_x_position + distance
+                structure.positions[:,0] += shift
+        # Combine both structures into the same atoms object
+        combined_structure = ase.Atoms()
+        for structure in structure_list:
+            combined_structure.extend(structure)
+        combined_structures.append(combined_structure)
+
+    # Write all complexes to the file
+    save_to_xyz(outpath, combined_structures, comments)
+
+    return
 
 
 if __name__ == '__main__':
