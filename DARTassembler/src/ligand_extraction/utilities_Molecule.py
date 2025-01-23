@@ -1,4 +1,6 @@
 import collections
+from typing import Union
+
 import networkx as nx
 from rdkit import Chem
 import numpy as np
@@ -7,6 +9,26 @@ import re
 
 unknown_rdkit_bond_orders = [0, 20, 21]
 
+
+def get_denticities_and_hapticities_idc(graph: nx.Graph, donor_idc) -> list[Union[int, list[int]]]:
+    """
+    Get the denticities and hapticities of a donor ligand. Return a list in which each element is either an integer (denticity) or a list of integers (hapticity).
+    :param graph: Networkx graph of the ligand
+    :param donor_idc: List of donor atom indices
+    :return: List of denticities and hapticities
+    """
+    # Make a subgraph of only the donor atoms
+    donor_subgraph = graph.subgraph(donor_idc)
+    # Get all interconnected components
+    components = list(nx.connected_components(donor_subgraph))
+    denticities_and_hapticities = [sorted(component) for component in components]
+    # Make them all integers explicitly
+    denticities_and_hapticities = [[int(i) for i in component] for component in denticities_and_hapticities]
+    # If a list has only one element, it's a denticity, take it out of the list
+    denticities_and_hapticities = [component[0] if len(component) == 1 else component for component in
+                                   denticities_and_hapticities]
+
+    return denticities_and_hapticities
 
 def get_rdkit_mol_from_smiles(smiles: str, sanitize: bool=False) -> Chem.Mol:
     """
@@ -80,6 +102,18 @@ def find_smallest_ring_with_specified_nodes(graph, nodes):
 
     # Sort the valid rings based on their length and return the smallest one
     return sorted(valid_rings, key=len)[0]
+
+def get_planarity(coordinates) -> float:
+    """
+    Returns the planarity of the supplied coordinates. Planarity is a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
+    :param coordinates: List of 3D coordinates.
+    :return: Planarity of the molecule.
+    """
+    deviation = get_max_deviation_from_coplanarity(points=coordinates)  # deviation is a float that is 0 if the molecule is perfectly planar and > 0 if it is not. The higher the value, the less planar the molecule is.
+    planarity = 1/ (1+ deviation)   # planarity is a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
+    planarity = round(planarity, 10)    # round to 10 decimal places to avoid floating point deviation which happen with np.linalg.svd() in different versions of numpy
+
+    return planarity
 
 def get_max_deviation_from_coplanarity(points: list[tuple]) -> float:
     """

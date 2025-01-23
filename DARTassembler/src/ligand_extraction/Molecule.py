@@ -10,11 +10,11 @@ import pysmiles
 
 # some special functions which are required
 from DARTassembler.src.ligand_extraction.composition import Composition
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_planarity, get_denticities_and_hapticities_idc
 from ase.visualize import view
 from sympy import Point3D, Plane
 import re
 import pandas as pd
-
 
 # collection of molecule objects of other packages
 from ase import io, Atoms
@@ -1056,6 +1056,12 @@ class RCA_Ligand(RCA_Molecule):
 
         return symmetrical
 
+    def is_mer_tridentate(self) -> bool:
+        return (self.denticity == 3) and (self.if_donors_planar(with_metal=True)) and (not self.has_neighboring_coordinating_atoms)
+
+    def is_mer_tetradentate(self) -> bool:
+        return (self.denticity == 4) and (self.if_donors_planar(with_metal=True)) and (not self.has_neighboring_coordinating_atoms)
+
     def count_atoms_with_n_bonds(self, element: Union[str, None], n_bonds: int, graph_element_label: str='node_label', remember_metal: bool=False) -> int:
         """
         Count the number of occurrences of element `element` with exactly `n_bonds` bonds.
@@ -1242,6 +1248,27 @@ class RCA_Ligand(RCA_Molecule):
 
         return False
 
+    def get_denticities_and_hapticities_idc(self) -> list[Union[int, list[int]]]:
+        """
+        Returns a list of lists of denticities and hapticities of the ligand. If an index is in the outer list, it's a denticity, if indices are together in the inner list, they are hapticities.
+        """
+        graph_indices = [self.atomic_index_to_graph_index[i] for i in self.ligand_to_metal]
+        graph = self.graph
+        denticities_and_hapticities = get_denticities_and_hapticities_idc(graph=graph, donor_idc=graph_indices)
+
+        # Convert back to atomic indices. Keep in mind that some entries are single indices and some are lists of indices
+        atomic_denticities_and_hapticities = []
+        for idc in denticities_and_hapticities:
+            if isinstance(idc, int):    # denticity, therefore integer
+                idc = self.graph_index_to_atomic_index[idc]
+                assert idc in self.ligand_to_metal, f'Index {idc} is not in the ligand to metal indices: {self.ligand_to_metal}'
+            else:                       # hapticity, therefore list
+                idc = [self.graph_index_to_atomic_index[i] for i in idc]
+                assert all([i in self.ligand_to_metal for i in idc]), f'Indices {idc} is not in the ligand to metal indices: {self.ligand_to_metal}'
+            atomic_denticities_and_hapticities.append(idc)
+
+        return atomic_denticities_and_hapticities
+
     def sort_atomic_props_to_have_coordinating_atoms_first(self):
         """
         Sorts the atomic properties such that the atoms that are coordinating are first in the list.
@@ -1335,9 +1362,7 @@ class RCA_Ligand(RCA_Molecule):
         if len(coordinates) < 3:
             return 1.0
 
-        deviation = get_max_deviation_from_coplanarity(points=coordinates)  # deviation is a float that is 0 if the molecule is perfectly planar and > 0 if it is not. The higher the value, the less planar the molecule is.
-        planarity = 1/ (1+ deviation)   # planarity is a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
-        planarity = round(planarity, 10)    # round to 10 decimal places to avoid floating point deviation which happen with np.linalg.svd() in different versions of numpy
+        planarity = get_planarity(coordinates)
 
         return planarity
 

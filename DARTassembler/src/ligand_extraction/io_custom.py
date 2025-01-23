@@ -394,10 +394,12 @@ def read_xyz(path: str):
     elements = atoms.get_chemical_symbols()
     return elements, coords
 
-def save_to_xyz(outpath: Union[str,Path], structures: list[ase.Atoms], comments: list[str]):
+def save_to_xyz(outpath: Union[str,Path], structures: list[ase.Atoms], comments: list[str]=None):
     outpath = Path(outpath)
     if isinstance(comments, str):
         comments = [comments]
+    elif comments is None:
+        comments = ['' for _ in structures]
     if isinstance(structures, ase.Atoms):
         structures = [structures]
     if len(structures) != len(comments):
