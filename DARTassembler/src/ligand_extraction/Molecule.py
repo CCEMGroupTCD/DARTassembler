@@ -2,6 +2,7 @@
 import hashlib
 import warnings
 
+import ase
 import networkx as nx
 import numpy as np
 from copy import deepcopy
@@ -1268,6 +1269,36 @@ class RCA_Ligand(RCA_Molecule):
             atomic_denticities_and_hapticities.append(idc)
 
         return atomic_denticities_and_hapticities
+
+    def get_effective_donor_positions(self) -> np.array:
+        """
+        Returns the mean position of the haptic donor atoms and the real positions of the non-haptic donor atoms.
+        :return: list of mean positions
+        """
+
+
+        return mean_positions
+
+    def get_effective_donor_atoms(self, dummy='Cu') -> ase.Atoms:
+        """
+        Returns an ase.Atoms object with all donor atoms. If the donor atom is a haptic donor, the mean position of the haptic donor atoms is used and the atom is replaced by a dummy atom of the specified element.
+        :param dummy: element of the dummy atoms
+        :return: ase.Atoms object
+        """
+        denticities_and_hapticities = self.get_denticities_and_hapticities_idc()
+        donor_atoms = ase.Atoms()
+        for haptic_group in denticities_and_hapticities:
+            if isinstance(haptic_group, int):
+                donor_atoms.append(self.mol[haptic_group])
+            elif isinstance(haptic_group, list):
+                haptic_coordinates = self.mol[haptic_group].get_positions()
+                mean_position = np.mean(haptic_coordinates, axis=0)
+                effective_donor_atom = ase.Atom(dummy, mean_position)
+                donor_atoms.append(effective_donor_atom)
+            else:
+                raise ValueError(f'Invalid haptic group: {haptic_group}')
+
+        return donor_atoms
 
     def sort_atomic_props_to_have_coordinating_atoms_first(self):
         """
