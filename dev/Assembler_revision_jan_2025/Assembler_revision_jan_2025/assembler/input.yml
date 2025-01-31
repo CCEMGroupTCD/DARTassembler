@@ -1,15 +1,14 @@
-
 batches:
-  - isomers: "test"
+  - isomer_instruction: "all"
     max_num_complexes: 100
     total_charge: 0
-    metal_center: Fe
-    metal_oxidation_state: 2
-    name: Integration_test_1
+    name: "3-2-1"
     random_seed: 0
     geometry:
       - metal_1:
-          coord: [ 0, 0, 0]
+          metal_type: Fe
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0]
       - ligand_1:
           origin : [ 0, 0, 0]
           vector_1: [ 0, 0, 1]
@@ -26,3 +25,13 @@ batches:
           vector_2: [ 0, 1, 0]
           vector_3: [ 0, 0, -1]
           ligand_db: "test"
+
+#
+#batches:
+#  - isomer_instruction: "all"
+#    max_num_complexes: 100
+#    total_charge: 0
+#    name: "3-2-1"
+#    random_seed: 0
+#    geometry: octahedral
+#    geom_options: [ x, -x, y, -y, z, -z]
