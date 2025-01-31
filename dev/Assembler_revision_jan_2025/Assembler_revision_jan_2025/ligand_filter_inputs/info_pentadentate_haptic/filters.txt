@@ -1,0 +1,19 @@
+================================ FILTER OPTIONS SPECIFIED ===============================
+                                                                                  Filter options                      
+Filter 01: denticities                                                                            {'denticities': [5]}
+Filter 02: remove_ligands_with_adjacent_coordinating_atoms  {'remove_ligands_with_adjacent_coordinating_atoms': False}
+
+==================================== FILTER RESULTS ====================================
+                                                    Ligands removed  Ligands passed
+Filter 01: denticities                                    990              10      
+Filter 02: remove_ligands_with_adjacent_coordin...          0              10      
+
+===========   TOTAL   ===========
+Before filtering:  1000 ligands
+Filtered out:      990 ligands
+Passed:            10 ligands
+Denticities:       5: 10
+Passed ligands:    C23H31N5O4,C30H35N6O3,C11H27N5,C13H31N5,C6H5O1,C16H20N2S3,C16H20N2O1S2,C14H28N2O1S2,C23H21N5,C5H5
+
+Done filtering!
+Filtered ligand database with 10 entries was saved to `pentadentate_haptic.json`.

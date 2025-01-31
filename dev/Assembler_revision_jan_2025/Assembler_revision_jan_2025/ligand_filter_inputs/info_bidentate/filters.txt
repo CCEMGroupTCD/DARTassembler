@@ -1,0 +1,18 @@
+================================ FILTER OPTIONS SPECIFIED ===============================
+                                                                                 Filter options                      
+Filter 01: denticities                                                                           {'denticities': [2]}
+Filter 02: remove_ligands_with_adjacent_coordinating_atoms  {'remove_ligands_with_adjacent_coordinating_atoms': True}
+
+==================================== FILTER RESULTS ====================================
+                                                    Ligands removed  Ligands passed
+Filter 01: denticities                                    638              362     
+Filter 02: remove_ligands_with_adjacent_coordin...         18              344     
+
+===========   TOTAL   ===========
+Before filtering:  1000 ligands
+Filtered out:      656 ligands
+Passed:            344 ligands
+Denticities:       2: 344
+
+Done filtering!
+Filtered ligand database with 344 entries was saved to `bidentate.json`.

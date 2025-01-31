@@ -1,0 +1,18 @@
+================================ FILTER OPTIONS SPECIFIED ===============================
+                                                                                  Filter options                      
+Filter 01: denticities                                                                            {'denticities': [1]}
+Filter 02: remove_ligands_with_adjacent_coordinating_atoms  {'remove_ligands_with_adjacent_coordinating_atoms': False}
+
+==================================== FILTER RESULTS ====================================
+                                                    Ligands removed  Ligands passed
+Filter 01: denticities                                    661              339     
+Filter 02: remove_ligands_with_adjacent_coordin...          0              339     
+
+===========   TOTAL   ===========
+Before filtering:  1000 ligands
+Filtered out:      661 ligands
+Passed:            339 ligands
+Denticities:       1: 339
+
+Done filtering!
+Filtered ligand database with 339 entries was saved to `monodentate.json`.
