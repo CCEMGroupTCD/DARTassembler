@@ -1,12 +1,9 @@
-from collections import defaultdict
-from pathlib import Path
 import ase
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 import numpy as np
 import itertools
-from DARTassembler.src.ligand_extraction.io_custom import save_to_xyz
-from tqdm import tqdm
 from scipy.spatial.transform import Rotation as R
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 
 def xy_angle(angle: float) -> np.ndarray:
     """
@@ -24,13 +21,13 @@ z = np.array([0, 0, 1])
 tri1 = xy_angle(0)
 tri2 = xy_angle(120)
 tri3 = xy_angle(240)
-# The trigonal prismatic geometry is defined by the six following vectors.
-trip1 = np.array([1.3, 2/3, -0.5])
-trip2 = np.array([-1/6, 0.53269207, -0.5])
-trip3 = np.array([-1/6, -1.19935874, -0.5])
-trip4 = np.array([1.3, 2/3, 0.5])
-trip5 = np.array([-1/6, 0.53269207, 0.5])
-trip6 = np.array([-1/6, -1.19935874, 0.5])
+# The trigonal prismatic geometry is defined by two parallel triangles sandwiching the metal center.
+trip1 = tri1 - 0.5*z
+trip2 = tri2 - 0.5*z
+trip3 = tri3 - 0.5*z
+trip4 = tri1 + 0.5*z
+trip5 = tri2 + 0.5*z
+trip6 = tri3 + 0.5*z
 # The tetrahedral geometry is defined by four vectors that are 109.5 degrees apart in 3D space.
 tet1 = np.array([1, 1, -1])
 tet2 = np.array([-1, 1, 1])
@@ -41,7 +38,7 @@ mer1 = xy_angle(0)
 mer2 = xy_angle(60)
 mer3 = xy_angle(120)
 mer4 = xy_angle(180)
-# The tetradentate 'monodentate_like' geometry is defined by four planar atoms, all in a 45 degree towards the four bottom corners of a cube
+# The tetradentate 'monodentate like' geometry is defined by four planar atoms, all in a 45 degree towards the four bottom corners of a cube
 tetmono1 = np.array([1, 0, -1])
 tetmono2 = np.array([0, 1, -1])
 tetmono3 = np.array([-1, 0, -1])
@@ -73,10 +70,10 @@ all_geometries = {
         },
     3:
         {
-            '3_meridional': ((y+0.1*(x+z), x, -y+0.1*(x+z)), 1),
-            '3_facial': ((x, y, z), 1),
-            '3_trigonal': ((tri1, tri2, tri3), 1),
-            '3_trigonal_offset': ((tet1, tet2, tet3), 1.05),
+            '3_meridional': ((y, x, -y), 1),
+            '3_facial': ((x, y, z), 1.467),
+            '3_trigonal': ((tri1, tri2, tri3), 1.045),
+            # '3_trigonal_offset': ((trip1, trip2, trip3), 1.5),    # looks extremely close to a facial geometry so leave it out
         },
     4:
         {
@@ -96,11 +93,11 @@ all_geometries = {
     6:
         {
             '6_octahedral': ((x, y, z, -x, -y, -z), 1),
-            '6_hexagonal': ((hex1, hex2, hex3, hex4, hex5, hex6), 0.91),
+            '6_hexagonal': ((hex1, hex2, hex3, hex4, hex5, hex6), 1.30),
             '6_trigonal_prismatic': ((trip1, trip2, trip3, trip4, trip5, trip6), 1),
             '6_pentagonal_pyramidal': ((penta1, penta2, penta3, penta4, penta5, z), 1),
         },
-    # For the other denticities, just make up one random geometry so that the code can assemble them in theory,  but these should only be assembled on their own, without any other ligands, since they are so crowded.
+    # For the other denticities, just make up one random geometry so that the code can assemble them in theory, but these should only be assembled on their own, without any other ligands, since they are so crowded.
     7:
         {
             '7_septadentate': ((x, y, z, -x, -y, -z, hex1), 1),                   # made up
@@ -119,90 +116,168 @@ all_geometries = {
         },
 }
 
-
-def try_all_geometrical_isomer_possibilities(atoms: ase.Atoms, ligand_idc: list[int], target_vectors: list[np.ndarray]):
+def remove_mirrored_isomers_in_planar_ring_like_ligands(best_idc: list[list[int]]) -> list[list[int]]:
     """
-    Tries out all combinations of mapping the provided donor atoms to the target vectors, for each target vector in the list of target vectors.
+    This algorithm affects only planar, ring-like geometries, specifically trigonal, tetragonal, pentagonal and hexagonal ligands. It removes isomers which are simply a rotation of the planar donor atoms around the z-axis. It detects which indices correspond to isomeres mirrored around the z-axis and and only keeps two of them.
+    This algorithm only affects trigonal, tetragonal, pentaonal and hexagonal ligands per construction, since otherwise the constructed "mirrored indices" simply dont exist in the list and l1 and l2 will be empty. However, an exception are bidentate ligands, which would also be affected by this algorithm (since a bidentate ligand is "per definition" a planar, ring-like ligand). Therefore, it is important to apply this algorithm only to ligands with denticity >= 3.
+    :param best_idc: List of the best indices of the donor atoms for each target vector
+    :return: List of the best indices of the donor atoms for each target vector, with mirrored isomers removed.
+    """
+    denticity = len(best_idc[0])
+    # Protect against affecting bidentate ligands
+    if denticity <=2:
+        return best_idc
+
+    l1, l2 = [], []                                 # Fill with indices and mirrored indices
+    for idc in best_idc:
+        if idc not in l1 and idc not in l2:
+            mirrored_idc = [idc[0]] + idc[1:][::-1]   # Flip the direction of going through the "ring" of donor atoms (e.g. clockwise->anti-clockwise), thereby mirroring the isomer.
+            if mirrored_idc in best_idc:
+                l1.append(idc)
+                l2.append(mirrored_idc)
+    if l1 and l2:   # Other geometries will simply pass because l1 and l2 will be empty.
+        best_idc = [l1[0], l2[0]]   # Reduce to only two isomers which are mirrored with regard to each other.
+
+    return best_idc
+
+def get_geometrical_isomers_from_trying_out_all_possibilities(
+                                    atoms: ase.Atoms,
+                                    donor_idc: list[int],
+                                    geometry: str
+                                    ) -> tuple[list[ase.Atoms], list[list[int]], float]:
+
+    # Some geometries have only one possible isomer, so we can skip the whole process of trying out all isomers. We still want to process the monodentate though, because otherwise it would not correspond to the target vector.
+    if geometry in ['7_septadentate', '8_octadentate', '9_nonadentate', '10_decadentate']:
+        best_rssd = np.nan
+        best_isomers = [atoms]
+        best_idc = [donor_idc]
+        return best_isomers, best_idc, best_rssd
+
+
+    # Try out all possible isomers and return all the ones with lowest rssd.
+    target_vectors, weight = all_geometries[len(donor_idc)][geometry]
+    best_isomers, best_idc, best_rssd = try_all_geometrical_isomer_possibilities(
+                                                                                    atoms=atoms,
+                                                                                    donor_idc=donor_idc,
+                                                                                    target_vectors=target_vectors
+                                                                                    )
+    best_rssd *= weight
+
+    # Remove symmetrically equivalent isomers for trigonal, tetragonal, pentagonal and hexagonal ligands.
+    if geometry in ['3_trigonal', '4_tetragonal', '5_pentagonal', '6_hexagonal']:
+        best_idc = remove_mirrored_isomers_in_planar_ring_like_ligands(best_idc)
+
+    # For certain geometries, all generated isomers are equivalent, so we only keep one of them. For tetrahedral, octahedral and trigonal prismatic that is because there will be no other ligands. For square pyramidal, pentagonal pyramidal and trigonal pyramidal, that is because the other isomers are simply rotations of the same isomer around the z-axis (similar to the planar ring-like ligands, just with an additional atom on top).
+    if geometry in ['4_tetrahedral', '4_trigonal_pyramidal', '5_square_pyramidal', '6_trigonal_prismatic', '6_octahedral',  '6_pentagonal_pyramidal']:
+        best_idc = [best_idc[0]]
+
+    # Apply the reduction of isomers to the isomers list.
+    best_isomers = [best_isomers[best_idc.index(idc)] for idc in best_idc]
+
+    return best_isomers, best_idc, best_rssd
+
+
+def try_all_geometrical_isomer_possibilities(
+                                                atoms: ase.Atoms,
+                                                donor_idc: list[int],
+                                                target_vectors: list[np.ndarray]
+                                                ) -> tuple[list[ase.Atoms], list[list[int]], float]:
+    """
+    Tries out all combinations of mapping the provided donor atoms to the target vectors, for each target vector in the list of target vectors. All combinations are tried out and all isomers with the lowest rssd are returned. Usually, there will be several with the same rssd.
     :param atoms: ase.Atoms() object of the ligand
-    :param ligand_idc: Indices of the donor atoms in `atoms`
+    :param donor_idc: Indices of the donor atoms in `atoms`
     :param target_vectors: List of 3D vectors of shape (n,3)
-    :return:
+    :return: Tuple of:
+        - List of ASE Atoms objects of the best isomers
+        - List of lists of indices of the best isomers
+        - The root sum of squared differences (RSSD) of the best isomers
     """
     target_vectors = np.array(target_vectors)
-    assert target_vectors.ndim == 2, f'Wrong shape: {target_vectors.shape}. Must provide a list of 3D target vectors but only provided a single target vector.'
+    if target_vectors.ndim == 1:
+        target_vectors = target_vectors[None, :]
     assert target_vectors.shape[-1] == 3, f'Wrong dimension of target_vectors. It\'s {target_vectors.shape[-1]} but must be 3.'
 
     data = []
     n = len(target_vectors)
-    vector_permutations = itertools.permutations(target_vectors, n)
-    for vector_combo in vector_permutations:
-        isomer, rssd = align_donor_atoms(atoms, ligand_idc=ligand_idc, target_vectors=vector_combo, return_rssd=True)
-        data.append((rssd, vector_combo, isomer))
+    donor_idc_permutations = list(itertools.permutations(donor_idc, n))
+    for idc in donor_idc_permutations:
+        idc = list(idc)   # Convert tuple to list to allow indexing later on with the indices saved in `data`
+        isomer, rssd = align_donor_atoms(atoms, donor_idc=idc, target_vectors=target_vectors, return_rssd=True)
+        data.append((rssd, idc, isomer))
     best_rssd, _, _ = min(data, key=lambda x: x[0])
 
     all_best_rssd = []
-    all_best_vectors = []
+    all_best_idc = []
     all_best_isomers = []
     for rssd, vectors, isomer in data:
         if np.isclose(rssd, best_rssd):
             all_best_rssd.append(rssd)
-            all_best_vectors.append(vectors)
+            all_best_idc.append(vectors)
             all_best_isomers.append(isomer)
     best_rssd = np.mean(all_best_rssd)
 
-    return best_rssd, all_best_vectors, all_best_isomers
+    return all_best_isomers, all_best_idc, best_rssd
 
-def assign_geometry(donor_atoms: ase.Atoms):
+def assign_geometry(atoms: ase.Atoms, donor_idc: list[int]) -> tuple[str, list[ase.Atoms], float, str, float]:
     """
     Assigns the geometry of a ligand.
-    :param donor_atoms: ASE atoms object of the ligand donor atoms, assuming the metal center was at (0,0,0).
-    :return: Geometry of the ligand as a string
+    :param atoms: ASE Atoms object of the ligand.
+    :param donor_idc: Indices of the donor atoms in the ligand.
+    :return: Tuple of:
+        - The assigned geometry
+        - List of ASE Atoms objects of the best isomers
+        - The root sum of squared differences (RSSD) of the assigned geometry
+        - The second best geometry
+        - The weight necessary for a change in geometry
     """
-    denticity = len(donor_atoms)
+    denticity = len(donor_idc)
     try:
         geometries = all_geometries[denticity]
     except KeyError:
         raise ValueError(f'No geometry defined for denticity {denticity}.')
 
-    if len(geometries) == 1:    # Just return the only geometry since there is no choice
-        geometry, (_, _) = list(geometries.items())[0]
-        rssd = 0 if denticity == 1 else np.nan
-        return geometry, rssd, None, np.nan
-    else:
-        all_rssds = []
-        for geometry, (target_vectors, weight) in geometries.items():
-            ligand_idc = list(range(len(donor_atoms)))
-            rssd, _, _ = try_all_geometrical_isomer_possibilities(donor_atoms, ligand_idc=ligand_idc, target_vectors=target_vectors)
-            rssd *= weight
-            all_rssds.append((geometry, rssd))
-        # Find geometry with lowest rssd
-        geometry, rssd = min(all_rssds, key=lambda x: x[1])
-        # Find second best geometry
-        second_best_geometry, second_best_rssd = min([x for x in all_rssds if x[0] != geometry], key=lambda x: x[1])
+    all_rssds = []
+    for geometry in geometries.keys():
+        isomers, best_idc, rssd = get_geometrical_isomers_from_trying_out_all_possibilities(
+                                                                                            atoms=atoms,
+                                                                                            donor_idc=donor_idc,
+                                                                                            geometry=geometry
+                                                                                            )
+        all_rssds.append((geometry, rssd, isomers, best_idc))
+    geometry, rssd, isomers, best_idc = min(all_rssds, key=lambda x: x[1])  # Find geometry with lowest rssd
 
+    # Find second best geometry.
+    if len(all_rssds) == 1:     # There is only one geometry, so there is no second best geometry.
+        second_best_geometry, second_best_rssd = None, np.nan
+    else:
+        second_best_geometry, second_best_rssd, _, _ = min([x for x in all_rssds if x[0] != geometry], key=lambda x: x[1])
+
+    # Calculate the weight necessary for a change in geometry. Useful to see how much the geometry would have to change to be the second best geometry.
     weight_necessary_for_change = second_best_rssd / rssd
 
-    return geometry, rssd, second_best_geometry, weight_necessary_for_change
+    return geometry, isomers, rssd, second_best_geometry, weight_necessary_for_change
 
 def align_donor_atoms(
                         atoms: ase.Atoms,
-                        ligand_idc: list[int],
+                        donor_idc: list[int],
                         target_vectors: list[list[float]],
                         return_rssd: bool = False
                         ):
     """
     Align the donor atoms of a ligand to the target vectors.
     :param atoms: ASE Atoms object of all the atoms of the ligand.
-    :param ligand_idc: Indices of the donor atoms of the ligand.
+    :param donor_idc: Indices of the donor atoms of the ligand.
     :param target_vectors: A list of 3D target vectors to which the donor atoms should be aligned.
     :return: ASE Atoms object of the ligand with the donor atoms aligned to the target vectors.
     """
+    atoms = atoms.copy()    # Make a copy of the original atoms object so that the original is not changed
     target_vectors = np.array(target_vectors)
-    assert len(target_vectors) == len(ligand_idc), 'The number of target vectors must match the number of donor atoms.'
+    assert len(target_vectors) == len(donor_idc), 'The number of target vectors must match the number of donor atoms.'
     assert target_vectors.shape[1] == 3, 'The target vectors must be 3D vectors.'
+    donor_idc = list(donor_idc)   # A tuple wouldn't work for indexing
 
-    donor_vectors = atoms.positions[ligand_idc]
-    # Normalize the donor vectors and target vectors to unit vectors to avoid scaling issues
+    donor_vectors = atoms.positions[donor_idc]
+    # Normalize the donor vectors and target vectors to unit vectors so that only the direction of the vectors counts, not the magnitude.
     donor_vectors = donor_vectors / np.linalg.norm(donor_vectors, axis=1)[:, None]
     target_vectors = target_vectors / np.linalg.norm(target_vectors, axis=1)[:, None]
     # Find the correct rotation to align the donor vectors with the target vectors
@@ -218,51 +293,56 @@ def align_donor_atoms(
 
 
 
-if __name__ == '__main__':
 
-    n_max = None
-    denticities = None  # None for all denticities or list of denticities
-    concat_outdir = 'concat_xyz'
-    plot_outdir = 'plots'
-    remove_haptic = False
-
-    db = LigandDB.load_from_json(n_max=n_max)
-    if remove_haptic:
-        db.db = {name: ligand for name, ligand in db.db.items() if not ligand.has_neighboring_coordinating_atoms}
-    data = defaultdict(list)
-    for name, ligand in tqdm(db.db.items(), total=len(db.db)):
-        donor_atoms = ligand.get_effective_donor_atoms()
-        if denticities is not None and len(donor_atoms) not in denticities:
-            continue
-        geometry, rssd, second_geometry, weight_necessary_for_change = assign_geometry(donor_atoms)
-        data[geometry].append((name, rssd, weight_necessary_for_change, second_geometry))
-    # Sort by weight necessary for change
-    for geometry, names_rssd in data.items():
-        names_rssd.sort(key=lambda x: x[2])
-
-    # Save structures for each geometry in a different concatenated xyz file
-    for geometry, names_rssd in data.items():
-        names, rssds, weights, second_geometries = zip(*names_rssd)
-        atoms = [db.db[name].get_ase_molecule_with_metal('Fe') for name in names]
-        # Round weight always up and to three decimals
-        weights = [np.ceil(weight*1000)/1000 for weight in weights]
-        comments = [f'{name} rssd={rssd:.3f} change:{weight:.3f}->{second_geometry}' for name, rssd, weight, second_geometry in names_rssd]
-        outpath = Path(concat_outdir, f'{geometry}.xyz')
-        print(f'{geometry}: {len(atoms)} structures')
-        save_to_xyz(outpath=outpath, structures=atoms, comments=comments)
-
-    # Plot distribution of rssd values
-    import seaborn as sns
-    import matplotlib.pyplot as plt
-    for geometry, names_rssd in data.items():
-        plt.figure()
-        _, rssds, _, _ = zip(*names_rssd)
-        sns.histplot(rssds, label=geometry, bins=15)
-        plt.title(geometry)
-        plt.xlabel('RSSD')
-        plt.ylabel('Count')
-        outpath = Path(plot_outdir, f'{geometry}.png')
-        plt.savefig(outpath)
-        plt.close()
-
-    print('Done!')
+#
+# if __name__ == '__main__':
+#
+#     n_max = 1500  # None or int. Maximum number of ligands to load
+#     denticities = None  # None for all denticities or list of denticities
+#     concat_outdir = 'concat_xyz'
+#     plot_outdir = 'plots'
+#     remove_haptic = False
+#     sort_by_rssd = False
+#     output_all_isomers = True
+#
+#
+#
+#     concat_outdir = Path(concat_outdir)
+#     plot_outdir = Path(plot_outdir)
+#     db = LigandDB.load_from_json(n_max=n_max)
+#     if remove_haptic:
+#         db.db = {name: ligand for name, ligand in db.db.items() if not ligand.has_neighboring_coordinating_atoms}
+#     db = db.get_db_with_only_certain_denticities(denticities=denticities)
+#
+#     data = db.save_ligand_geometry_concat_xyz_files(
+#                                             outdir=concat_outdir,
+#                                             sort_by_rssd=sort_by_rssd,
+#                                             output_all_isomers=output_all_isomers
+#                                             )
+#
+#     # Plot distribution of rssd values
+#     import seaborn as sns
+#     import matplotlib.pyplot as plt
+#     for geometry, names_rssd in data.items():
+#         plt.figure()
+#         _, rssds, _, _, _ = zip(*names_rssd)
+#         sns.histplot(rssds, label=geometry, bins=15)
+#         plt.title(geometry)
+#         plt.xlabel('RSSD')
+#         plt.ylabel('Count')
+#         outpath = Path(plot_outdir, f'{geometry}.png')
+#         plt.savefig(outpath)
+#         plt.close()
+#
+#     # ==============    Doublecheck refactoring    ==================
+#     from dev.test.Integration_Test import IntegrationTest
+#     new_dir = concat_outdir
+#     old_dir = concat_outdir.parent / f'OLD_n={n_max}_concat_xyz'
+#     if old_dir.exists():
+#         test = IntegrationTest(new_dir=new_dir, old_dir=old_dir)
+#         test.compare_all()
+#         print('Test for ligand geometries passed!')
+#     else:
+#         print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
+#
+#     print('Done!')

@@ -22,6 +22,10 @@ from pathlib import Path
 import jsonlines
 import itertools
 from warnings import warn
+import ase
+from collections import defaultdict
+from DARTassembler.src.assembly.ligand_geometries import assign_geometry
+from DARTassembler.src.ligand_extraction.io_custom import save_to_xyz
 
 class BaselineDB:
     def __init__(self, dict_: dict):
@@ -259,8 +263,54 @@ class LigandDB(MoleculeDB):
         :param denticities: List of denticities to keep.
         :return: None
         """
-        reduced_db = {identifier: lig for identifier, lig in self.db.items() if lig.denticity in denticities}
+        if denticities is None:
+            return self
+        reduced_db = {identifier: lig for identifier, lig in self.db.items() if len(self.get_denticities_and_hapticities_idc()) in denticities}
         return LigandDB(reduced_db)
+
+    def get_ligand_geometries(self, sort_by_rssd: bool=False):
+
+        data = defaultdict(list)
+        for name, ligand in tqdm(self.db.items(), desc='Assigning ligand geometries'):
+            geometry, isomers, rssd, second_geometry, weight_necessary_for_change = ligand.get_ligand_geometry_and_isomers()
+            data[geometry].append((name, rssd, weight_necessary_for_change, second_geometry, isomers))
+
+        # Sort data by geometry name to have geometries of the same denticity together
+        data = dict(sorted(data.items(), key=lambda x: x[0]))
+        if sort_by_rssd:
+            # Sort each geometry by weight necessary for change
+            for geometry, names_rssd in data.items():
+                names_rssd.sort(key=lambda x: x[2])
+
+        return data
+
+    def save_ligand_geometry_concat_xyz_files(self, outdir: Union[str, Path], output_all_isomers: bool=True, sort_by_rssd: bool=False):
+        """
+        Assigns geometries to all ligands in the database and saves the structures with all isomers for each geometry in a different concatenated xyz file.
+        """
+
+        data = self.get_ligand_geometries(sort_by_rssd=sort_by_rssd)
+
+        # Save structures with all isomers for each geometry in a different concatenated xyz file
+        for geometry, names_rssd in data.items():
+            atoms, comments, weights, second_geometries = [], [], [], []
+            for name, rssd, weight, second_geometry, isomers in names_rssd:
+                for isomer_idx, isomer in enumerate(isomers):
+                    if not output_all_isomers and isomer_idx > 0:
+                        continue
+                    assert not 'Cu' in isomer.get_chemical_symbols(), 'There should be no copper atoms in the isomers!'
+                    isomer.append(ase.Atom('Cu', position=(0, 0, 0)))
+                    atoms.append(isomer)
+                    weights.append(weight)
+                    comments.append(f'{name}-{isomer_idx} rssd={rssd:.3f} change:{weight:.3f}->{second_geometry}')
+                    second_geometries.append(second_geometry)
+            outpath = Path(outdir, f'concat_{geometry}.xyz')
+            n_isomers = np.unique([len(isomers) for _, _, _, _, isomers in names_rssd])
+            n_isomers = n_isomers[0] if len(n_isomers) == 1 else n_isomers
+            print(f'{geometry}: {len(atoms)} structures, {n_isomers} isomer{"s" if n_isomers > 1 else ""}')
+            save_to_xyz(outpath=outpath, structures=atoms, comments=comments)
+
+        return data
 
     def get_ligand_output_df(self, max_entries: int=5) -> pd.DataFrame:
         ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}

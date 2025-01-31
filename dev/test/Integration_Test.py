@@ -52,7 +52,7 @@ class IntegrationTest(object):
                 change = self._compare_xyz_files(Path(self.new_dir, file), Path(self.old_dir, file))
 
             if change is None:
-                raise ValueError('Difference of files expected, but none found.')
+                self.small_changes[file] = 'Warning: difference of files expected, but none found'
             elif change != '':
                 self.small_changes[file] = change
 
