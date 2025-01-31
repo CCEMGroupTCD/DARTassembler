@@ -36,6 +36,7 @@ from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardi
     unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center, \
     find_smallest_ring_with_specified_nodes, get_max_deviation_from_coplanarity, if_same_stoichiometries
 from DARTassembler.src.assembly.stk_utils import RCA_Mol_to_stkBB, convert_RCA_to_stk_Molecule
+from DARTassembler.src.assembly.ligand_geometries import assign_geometry
 
 pseudo_metal = 'Cu'     # pseudo metal for display in ligand xyz files and for use in the SMARTS filter.
 
@@ -1253,6 +1254,9 @@ class RCA_Ligand(RCA_Molecule):
         """
         Returns a list of lists of denticities and hapticities of the ligand. If an index is in the outer list, it's a denticity, if indices are together in the inner list, they are hapticities.
         """
+        if hasattr(self, 'denticities_and_hapticities'):
+            return self.denticities_and_hapticities
+
         graph_indices = [self.atomic_index_to_graph_index[i] for i in self.ligand_to_metal]
         graph = self.graph
         denticities_and_hapticities = get_denticities_and_hapticities_idc(graph=graph, donor_idc=graph_indices)
@@ -1268,7 +1272,9 @@ class RCA_Ligand(RCA_Molecule):
                 assert all([i in self.ligand_to_metal for i in idc]), f'Indices {idc} is not in the ligand to metal indices: {self.ligand_to_metal}'
             atomic_denticities_and_hapticities.append(idc)
 
-        return atomic_denticities_and_hapticities
+        self.denticities_and_hapticities = atomic_denticities_and_hapticities
+
+        return self.denticities_and_hapticities
 
     def get_effective_donor_positions(self) -> np.array:
         """
@@ -1279,26 +1285,43 @@ class RCA_Ligand(RCA_Molecule):
 
         return mean_positions
 
-    def get_effective_donor_atoms(self, dummy='Cu') -> ase.Atoms:
+    def get_effective_donor_atoms(self, dummy='Cu', only_haptic=False) -> ase.Atoms:
         """
         Returns an ase.Atoms object with all donor atoms. If the donor atom is a haptic donor, the mean position of the haptic donor atoms is used and the atom is replaced by a dummy atom of the specified element.
         :param dummy: element of the dummy atoms
+        :param only_haptic: If True, only the haptic donor atoms are returned, not the dendicity donor atoms. If False, all effective donor atoms are returned.
         :return: ase.Atoms object
         """
         denticities_and_hapticities = self.get_denticities_and_hapticities_idc()
         donor_atoms = ase.Atoms()
         for haptic_group in denticities_and_hapticities:
-            if isinstance(haptic_group, int):
+            if not only_haptic and isinstance(haptic_group, int):
                 donor_atoms.append(self.mol[haptic_group])
             elif isinstance(haptic_group, list):
                 haptic_coordinates = self.mol[haptic_group].get_positions()
                 mean_position = np.mean(haptic_coordinates, axis=0)
                 effective_donor_atom = ase.Atom(dummy, mean_position)
                 donor_atoms.append(effective_donor_atom)
-            else:
-                raise ValueError(f'Invalid haptic group: {haptic_group}')
 
         return donor_atoms
+
+    def get_all_effective_atoms_with_effective_donor_indices(self, dummy='Cu') -> tuple[ase.Atoms, list[int]]:
+        """
+        Returns an ase.Atoms object containing all atoms in the ligand plus the dummy atoms, and a list of indices of the effective donor atoms.
+        :param dummy: element of the dummy atoms
+        :return: tuple of ase.Atoms object and list of indices
+        """
+        dummy_donor_atoms = self.get_effective_donor_atoms(dummy=dummy, only_haptic=True)
+        all_atoms = self.mol + dummy_donor_atoms
+        # Get the effective donor indices
+        dummy_donor_idc = [len(self.mol) + i for i in range(len(dummy_donor_atoms))]
+        # Get real donor indices
+        denticities_and_hapticities = self.get_denticities_and_hapticities_idc()
+        real_donor_idc = [idx for idx in denticities_and_hapticities if isinstance(idx, int)]
+        # Combine both
+        effective_donor_idc = real_donor_idc + dummy_donor_idc
+
+        return all_atoms, effective_donor_idc
 
     def sort_atomic_props_to_have_coordinating_atoms_first(self):
         """
@@ -1409,6 +1432,27 @@ class RCA_Ligand(RCA_Molecule):
         is_planar = bool(is_planar)
 
         return is_planar
+
+    def get_ligand_geometry_and_isomers(self) -> tuple[str, list[ase.Atoms], float, str, float]:
+        """
+        Returns the geometry of the ligand. The geometry is assigned by the assign_geometry function.
+        :return: Tuple of:
+        - The assigned geometry
+        - List of ASE Atoms objects of the best isomers
+        - The root sum of squared differences (RSSD) of the assigned geometry
+        - The second best geometry
+        - The weight necessary for a change in geometry
+        """
+        eff_ligand_atoms, eff_donor_idc = self.get_all_effective_atoms_with_effective_donor_indices('Cu')
+        geometry, isomers, rssd, second_geometry, weight_necessary_for_change = assign_geometry(eff_ligand_atoms,
+                                                                                                eff_donor_idc)
+        # Remove Cu from the isomers to get the real ligand geometry
+        real_isomers = []
+        for isomer in isomers:
+            real_isomer = isomer[[atom.symbol != 'Cu' for atom in isomer]]
+            real_isomers.append(real_isomer)
+
+        return geometry, real_isomers, rssd, second_geometry, weight_necessary_for_change
 
     def get_ligand_output_info(self, max_entries=5, add_confident_charge=False) -> dict:
 
