@@ -86,7 +86,7 @@ def installtest(outdir: Union[Path, str, None] = None, suppress_stdout: bool = T
     print('Done! All modules tested successfully. Exiting DART InstallTest Module.')
 
 if __name__ == '__main__':
-    installtest()
+    installtest(suppress_stdout=False)
 
 
 

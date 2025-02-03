@@ -11,7 +11,7 @@ def test_assemble_complexes():
     # Delete output directory so that the test detects if files are not written.
     shutil.rmtree(outdir, ignore_errors=True)
 
-    installtest(outdir=outdir)
+    installtest(outdir=outdir, suppress_stdout=False)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest

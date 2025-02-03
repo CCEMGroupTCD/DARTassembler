@@ -4,7 +4,7 @@ Playground which reads in the unique ligand db and lets you play with it.
 from pathlib import Path
 import pandas as pd
 import numpy as np
-# from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_jsonlines, load_json
+from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_jsonlines, load_json
 from tqdm import tqdm
 from copy import deepcopy
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
@@ -66,71 +66,72 @@ def rotate_ligand_around_donors_inplace(ligand: ase.Atoms, donors_positions: np.
     return None
 
 
+
 if __name__ == '__main__':
 
-    n_max = 5000
-    denticities = [2]
+    n_max = 1
+    denticities = None
 
 
     # Load the first 1000 out of 41,018 ligands in the MetaLig database.
-    metalig = LigandDB.load_from_json(path=default_ligand_db_path, n_max=n_max)
-    metalig = metalig.get_db_with_only_certain_denticities(denticities=denticities)
+    # metalig = LigandDB.load_from_json(path=default_ligand_db_path, n_max=n_max)
+    # metalig = metalig.get_db_with_only_certain_denticities(denticities=denticities)
 
-    # Find symmetrical ligands, first for bidentates.
-    # 3D symmetry with SOAP is here outcommented because I want to focus on graph symmetry first.
-    from dscribe.descriptors import SOAP
-    from dscribe.kernels import AverageKernel, REMatchKernel
-    desc = SOAP(species=list(range(1, 100)), r_cut=100.0, n_max=2, l_max=2, sigma=0.2, compression={"mode": "crossover"})
-    re = REMatchKernel()
-    run = 'DART'
-    data = []
-    for uname, ligand in tqdm(metalig.db.items()):
-        if ligand.denticity in denticities:
-            ##### Check if ligand graph is symmetrical between donors
-            graph, metal_idx = ligand.get_graph_with_metal(metal_symbol='Hg', return_metal_index=True)
-            # Make new graphs which each have one pseudo Hg atom bonding to one donor.
-            donor_graphs = []
-            donor_indices = list(graph.neighbors(metal_idx))
-            for donor_idx in donor_indices:
-                donor_graph = graph.copy()
-                # Remove all other donor bonds except this one
-                for donor_idx2 in donor_indices:
-                    if donor_idx2 != donor_idx:
-                        donor_graph.remove_edge(metal_idx, donor_idx2)
-                donor_graphs.append(donor_graph)
-            # Calculate graph hashes of all graphs.
-            graph_hashes = [get_graph_hash(donor_graph) for donor_graph in donor_graphs]
-            # If any of the graph hashes are identical, the ligand is symmetrical.
-            symmetrical = len(set(graph_hashes)) < len(graph_hashes)
-            data.append({'uname': uname, 'dent': ligand.denticity, 'formula': ligand.stoichiometry, 'symm_graph': symmetrical})
-
-            ### Detect 3D symmetrical ligands. ###
-            ### Quite involved, therefore first I focused on just 2D symmetry. ###
-            atoms_original = ligand.mol
-            atoms_flipped = deepcopy(atoms_original)
-            rotate_ligand_around_donors_inplace(atoms_flipped, donors_positions=ligand.get_donor_positions(), metal_position=ligand.original_metal_position, angle=180)
-            donor_positions = ligand.get_donor_positions()
-            # view(atoms_original)
-            # view(atoms_flipped)
-            # Choose a point that is close to many atoms so that changes in the ligand structure are captured.
-            com = ligand.mol.get_center_of_mass()
-            centers = []
-            features1 = desc.create(atoms_original, centers=[com])
-            features2 = desc.create(atoms_flipped, centers=[com])
-            re_kernel = re.create([features1, features2])
-            similarity = re_kernel[0, 1]
-            dissimilarity = (1 - similarity) * 10000
-            data[-1]['diss'] = dissimilarity
-
-    df = pd.DataFrame(data)
-    df = df.sort_values(['symm_graph', 'diss'], ascending=[False, False])
-    # Save as concatenated .xyz file
-    outpath = Path('/Users/timosommer/Downloads/metalig1000.xyz')
-    outpath.unlink(missing_ok=True) # Remove if already exists
-    with open(outpath, 'w') as f:
-        for name in df['uname'].values:
-            lig = metalig.db[name]
-            f.write(lig.get_xyz_file_format_string(comment=name, with_metal=True))
+    # # Find symmetrical ligands, first for bidentates.
+    # # 3D symmetry with SOAP is here outcommented because I want to focus on graph symmetry first.
+    # from dscribe.descriptors import SOAP
+    # from dscribe.kernels import AverageKernel, REMatchKernel
+    # desc = SOAP(species=list(range(1, 100)), r_cut=100.0, n_max=2, l_max=2, sigma=0.2, compression={"mode": "crossover"})
+    # re = REMatchKernel()
+    # run = 'DART'
+    # data = []
+    # for uname, ligand in tqdm(metalig.db.items()):
+    #     if ligand.denticity in denticities:
+    #         ##### Check if ligand graph is symmetrical between donors
+    #         graph, metal_idx = ligand.get_graph_with_metal(metal_symbol='Hg', return_metal_index=True)
+    #         # Make new graphs which each have one pseudo Hg atom bonding to one donor.
+    #         donor_graphs = []
+    #         donor_indices = list(graph.neighbors(metal_idx))
+    #         for donor_idx in donor_indices:
+    #             donor_graph = graph.copy()
+    #             # Remove all other donor bonds except this one
+    #             for donor_idx2 in donor_indices:
+    #                 if donor_idx2 != donor_idx:
+    #                     donor_graph.remove_edge(metal_idx, donor_idx2)
+    #             donor_graphs.append(donor_graph)
+    #         # Calculate graph hashes of all graphs.
+    #         graph_hashes = [get_graph_hash(donor_graph) for donor_graph in donor_graphs]
+    #         # If any of the graph hashes are identical, the ligand is symmetrical.
+    #         symmetrical = len(set(graph_hashes)) < len(graph_hashes)
+    #         data.append({'uname': uname, 'dent': ligand.denticity, 'formula': ligand.stoichiometry, 'symm_graph': symmetrical})
+    #
+    #         ### Detect 3D symmetrical ligands. ###
+    #         ### Quite involved, therefore first I focused on just 2D symmetry. ###
+    #         atoms_original = ligand.mol
+    #         atoms_flipped = deepcopy(atoms_original)
+    #         rotate_ligand_around_donors_inplace(atoms_flipped, donors_positions=ligand.get_donor_positions(), metal_position=ligand.original_metal_position, angle=180)
+    #         donor_positions = ligand.get_donor_positions()
+    #         # view(atoms_original)
+    #         # view(atoms_flipped)
+    #         # Choose a point that is close to many atoms so that changes in the ligand structure are captured.
+    #         com = ligand.mol.get_center_of_mass()
+    #         centers = []
+    #         features1 = desc.create(atoms_original, centers=[com])
+    #         features2 = desc.create(atoms_flipped, centers=[com])
+    #         re_kernel = re.create([features1, features2])
+    #         similarity = re_kernel[0, 1]
+    #         dissimilarity = (1 - similarity) * 10000
+    #         data[-1]['diss'] = dissimilarity
+    #
+    # df = pd.DataFrame(data)
+    # df = df.sort_values(['symm_graph', 'diss'], ascending=[False, False])
+    # # Save as concatenated .xyz file
+    # outpath = Path('/Users/timosommer/Downloads/metalig1000.xyz')
+    # outpath.unlink(missing_ok=True) # Remove if already exists
+    # with open(outpath, 'w') as f:
+    #     for name in df['uname'].values:
+    #         lig = metalig.db[name]
+    #         f.write(lig.get_xyz_file_format_string(comment=name, with_metal=True))
 
 
 

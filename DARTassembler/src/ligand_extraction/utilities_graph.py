@@ -297,6 +297,10 @@ def get_reindexed_graph(graph):
     if not all(isinstance(node, int) for node in graph.nodes):
         warnings.warn(f'Graph nodes are not integers. Proceed reindexing, but results might not be as expected: {graph.nodes}.')
 
+    # Skip reindexing if the nodes are already indexed from 0 to n-1
+    if sorted(list(graph.nodes)) == list(range(len(graph.nodes))):
+        return graph
+
     old_labels = sorted(list(graph.nodes))
     mapping = {old_label: new_label for new_label, old_label in enumerate(old_labels)}
     reindexed_graph = nx.relabel_nodes(graph, mapping)
