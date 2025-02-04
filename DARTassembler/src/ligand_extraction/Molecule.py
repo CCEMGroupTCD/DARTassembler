@@ -929,6 +929,25 @@ class RCA_Ligand(RCA_Molecule):
         self.pred_charge_is_confident = self.global_props['pred_charge_is_confident']
         self.occurrences = self.global_props['n_ligand_instances']
 
+        # Calculate planarity of the ligand and its donors.
+        self.donor_metal_planarity = self.calculate_donors_planarity(with_metal=True)
+        self.donor_planarity = self.calculate_donors_planarity(with_metal=False)
+        self.planarity = self.calculate_planarity()
+        self.global_props['planarity'] = self.planarity
+        self.global_props['donor_planarity'] = self.donor_planarity
+        self.global_props['donor_metal_planarity'] = self.donor_metal_planarity
+
+        # Calculate denticity and hapticity of the ligand
+        self.hapdent_idc = self.get_denticities_and_hapticities_idc()   # list of donor idc with haptic groups in sublists
+        self.elcn = len(self.hapdent_idc)   # effective ligand coordination number
+        self.kappa = sum([1 for el in self.hapdent_idc if isinstance(el, int)])     # denticity of the ligand
+        self.eta = sum([len(sublist) for sublist in self.hapdent_idc if isinstance(sublist, list)])      # hapticity of the ligand
+        assert self.denticity == self.kappa + self.eta, f'Number of donors ({self.denticity}) does not equal number of kappa ({self.kappa}) plus eta ({self.eta}) in ligand {self.unique_name}.'
+        self.global_props['elcn'] = self.elcn
+        self.global_props['kappa'] = self.kappa
+        self.global_props['eta'] = self.eta
+
+
         # self.was_connected_to_metal = len(self.local_elements) > 0
         #
         # if "csd_code" in kwargs.keys():
@@ -1339,6 +1358,7 @@ class RCA_Ligand(RCA_Molecule):
     def get_denticities_and_hapticities_idc(self) -> list[Union[int, list[int]]]:
         """
         Returns a list of lists of denticities and hapticities of the ligand. If an index is in the outer list, it's a denticity, if indices are together in the inner list, they are hapticities.
+        :return: list of indices with haptic groups in sublists
         """
         if hasattr(self, 'denticities_and_hapticities'):
             return self.denticities_and_hapticities
@@ -1579,6 +1599,7 @@ class RCA_Ligand(RCA_Molecule):
         d['donor_idc'] = self.ligand_to_metal
         d['other_ligand_instances'] = self.other_ligand_instances
         d['parent_metal_position'] = self.original_metal_position
+        d['hapdent_idc'] = self.hapdent_idc
 
         # output = ['warnings', 'atomic_props', 'global_props', 'n_atoms', 'n_hydrogens', 'n_protons', 'graph_hash', 'n_bonds', 'has_bond_order_attribute', 'has_unknown_bond_orders', 'has_good_bond_orders', 'heavy_atoms_graph_hash', 'bond_order_graph_hash', 'stoichiometry', 'original_complex_id', 'local_elements', 'was_connected_to_metal', 'original_metal', 'original_metal_position', 'original_metal_symbol', 'original_metal_os', 'is_centrosymmetric', 'centrosymmetry_ang_dev', 'graph_hash_with_metal', 'heavy_atoms_graph_hash_with_metal', 'has_betaH', 'has_neighboring_coordinating_atoms', 'stats', 'unique_name', 'pred_charge', 'pred_charge_is_confident', 'all_ligand_names', 'identical_ligand_info', 'occurrences', 'same_graph_denticities', 'count_metals', 'n_same_graph_denticities', 'n_metals', 'n_same_graphs', 'has_unconnected_ligands', 'all_ligands_metals', 'same_graph_charges', 'n_pred_charges', 'common_graph_with_diff_n_hydrogens', 'n_electrons', 'odd_n_electron_count', 'has_warnings', 'denticity', 'name', 'ligand_to_metal']
         #
@@ -1629,10 +1650,9 @@ class RCA_Ligand(RCA_Molecule):
             other_ligand_instances=dict_['other_ligand_instances'],
             # warnings=dict_['warnings'],
             # other_props=other_props,
-            validity_check=False,   # Skip because takes a bit of time
+            validity_check=True,
         )
 
-    # some stk functionality
     def to_stk_bb(self):
         """
         this is really only designed for ligands as a normal RCA_Molecule doesn't have the required properties
