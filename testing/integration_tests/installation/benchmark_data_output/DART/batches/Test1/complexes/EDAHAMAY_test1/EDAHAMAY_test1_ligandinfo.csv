@@ -1,3 +1,3 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PABYOI-02-a,C11H7Cl1N4,2,0,N-N,23,230.65500000000003,0.4217163653,False,True,10.093905426543285,0977d31df69abbbda681a51e9e4b10e1,1,PABYOI,Ru(1)
-Ligand 1,unq_CSD-PAHMOD-02-b,C10H12,2,-2,C-C,22,132.20600000000002,0.1870686563,False,True,6.948487083531205,9674af6d903eb6938cea192c4a37d172,55,"PAHMOD, PAHMUJ, PAHNAQ, PITBUP, PITBUP, ... (50 more)","Pt(19), Ni(16), Pd(14), Cr(2), Rh(1), ... (3 more)"
+,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count,CSD Metal OS Count
+Ligand 0,unq_CSD-PABYOI-02-a,C11H7Cl1N4,2,0,N-N,23,230.65500000000003,0.4217163653,False,True,10.093905426543285,0977d31df69abbbda681a51e9e4b10e1,1,PABYOI,Ru(1),Ru+2(1)
+Ligand 1,unq_CSD-PAHMOD-02-b,C10H12,2,-2,C-C,22,132.20600000000002,0.1870686563,False,True,6.948487083531205,9674af6d903eb6938cea192c4a37d172,55,"PAHMOD, PAHMUJ, PAHNAQ, PITBUP, PITBUP, ... (50 more)","Pt(19), Ni(16), Pd(14), Cr(2), Co(1), ... (3 more)","Pd+2(8), Pt+4(5), Ni+3(4), Pd+4(4), Ni+2(3), ... (5 more)"

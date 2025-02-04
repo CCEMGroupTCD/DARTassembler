@@ -1,7 +1,6 @@
 """
 Playground which reads in the unique ligand db and lets you play with it.
 """
-from DARTassembler.src.ligand_extraction.io_custom import load_jsonlines
 from copy import deepcopy
 from DARTassembler.src.constants.Paths import default_ligand_db_path
 
@@ -36,6 +35,7 @@ refactor_global_props_dict = {
     "original_complex_id": "parent_complex_id",
     "original_metal_symbol": "parent_metal",
     "original_metal_os": "parent_metal_os",
+    'pred_charge_is_confident': 'pred_charge_is_confident',
     # from stats
     "min_atomic_distance": "min_interatomic_distance",
     "max_atomic_distance": "max_ligand_extension",
@@ -73,7 +73,6 @@ remove_properties = [
     'LCS_pred_charge_exact',
     'same_graph_charges',
     'n_pred_charges',
-    'pred_charge_is_confident',
     'same_graph_denticities',
     'n_same_graph_denticities',
     'n_same_graphs',
@@ -87,24 +86,28 @@ remove_properties = [
 ]
 make_integer = ['n_electrons', 'pred_charge']
 
-def reindex_graph_dict(graph_dict: dict) -> dict:
+def reindex_graph_dict(graph_dict: dict[dict]) -> dict[dict]:
+    """
+    Re-index the graph dictionary such that the indices are integers starting from 0.
+    :param graph_dict: A dictionary with the graph representation of a ligand, containing two subdictionaries: 'graph' and 'node_attributes'.
+    :return: The re-indexed graph dictionary in the same format as the input.
+    """
 
     old_idx_to_new_idx = {old_idx: new_idx for new_idx, old_idx in enumerate(graph_dict['graph'].keys())}
 
-    re_indexed_graph = {}
-    re_indexed_node_attributes = {}
+    graph_bonds_new = {}
+    node_attributes_new = {}
     for old_idx1, bonds in graph_dict['graph'].items():
         # Update node attributes
         new_idx1 = old_idx_to_new_idx[old_idx1]
-        re_indexed_node_attributes[new_idx1] = graph_dict['node_attributes'][old_idx1]
+        node_attributes_new[new_idx1] = graph_dict['node_attributes'][old_idx1]
         # Update bonds
-        for old_idx2, bond in bonds.items():
-            new_idx2 = old_idx_to_new_idx[old_idx2]
-            re_indexed_graph[new_idx1] = {new_idx2: bond}
+        bonds = {old_idx_to_new_idx[old_idx2]: bond for old_idx2, bond in bonds.items()}
+        graph_bonds_new[new_idx1] = bonds
 
     graph_dict_new = {
-        'graph': re_indexed_graph,
-        'node_attributes': re_indexed_node_attributes,
+        'graph': graph_bonds_new,
+        'node_attributes': node_attributes_new,
     }
 
     return graph_dict_new
@@ -195,6 +198,9 @@ def refactor_metalig_entry_from_v1_0_0_to_v1_1_0(ligand: dict) -> dict:
 # todo refactor metalig and DART:
 # MetaLig:
 # - remove denticity and instead use kappa, eta, elcn, n_donors etc.
+# - remove n_ligand_instances and calculate
+# - rename original_complex_indices in atomic_props to parent_complex_idc
+# - improve stoichiometry string. Do this by deleting the stoichiometry property and re-calculating it from the atomic_props
 # - add properties
 #   - kappa
 #   - eta
@@ -210,6 +216,7 @@ def refactor_metalig_entry_from_v1_0_0_to_v1_1_0(ligand: dict) -> dict:
 if __name__ == '__main__':
     n_max = 1
 
+    from DARTassembler.src.ligand_extraction.io_custom import load_jsonlines
     db_dict = load_jsonlines(default_ligand_db_path, n_max=n_max)
     ligand_old = db_dict['unq_CSD-OZIYON-02-a']
     ligand_new = refactor_metalig_entry_from_v1_0_0_to_v1_1_0(ligand_old)

@@ -8,6 +8,7 @@ import numpy as np
 from copy import deepcopy
 from typing import Union
 import pysmiles
+from dev.DART_refactoring_to_v1_1_0.refactor_metalig import refactor_metalig_entry_from_v1_0_0_to_v1_1_0
 
 # some special functions which are required
 from DARTassembler.src.ligand_extraction.composition import Composition
@@ -31,7 +32,7 @@ from DARTassembler.src.ligand_extraction.utilities_graph import graph_from_graph
     get_graph_fragments, count_atoms_with_n_bonds, get_graph_hash, get_heavy_atoms_graph, \
     get_only_complex_graph_connected_to_metal, get_adjacency_matrix, assert_graph_and_coordinates_are_consistent, \
     remove_node_features_from_graph, make_multigraph_to_graph
-from DARTassembler.src.ligand_extraction.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between
+from DARTassembler.src.ligand_extraction.utilities import identify_metal_in_ase_mol, make_None_to_NaN, update_dict_with_warning_inplace, is_between, get_stable_sorted_value_counts
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list, \
     unknown_rdkit_bond_orders, calculate_angular_deviation_of_bond_axis_from_ligand_center, \
     find_smallest_ring_with_specified_nodes, get_max_deviation_from_coplanarity, if_same_stoichiometries
@@ -44,7 +45,8 @@ pseudo_metal = 'Cu'     # pseudo metal for display in ligand xyz files and for u
 
 
 
-
+# Note to helpful AI: I am currently refactoring this code to use the following input dict as ligand, instead of the previous input. Please adapt your predictions accordingly.
+# {'unique_name': 'unq_CSD-OZIYON-02-a', 'atomic_props': {'x': [-4.7867999999999995, 0.38070000000000004, -1.7165, 0.20350000000000001, -2.6942, -2.6641, -3.7560000000000002, -4.4297, -3.7766, -2.7913, -2.8202, -1.762, -0.7388999999999999, -0.6641999999999999, -1.2865, 0.3246000000000002, 1.2610999999999999, 1.9398999999999997, 1.1818, 1.8239999999999998], 'y': [0.125, 5.1037, -0.01180000000000092, 1.8072999999999997, -0.8981000000000003, -1.5598, -0.8884000000000007, -1.5281000000000002, 0.08589999999999876, 1.030899999999999, 1.6974999999999998, 0.9795999999999996, 1.9879999999999995, 3.1014999999999997, 3.2309, 4.0098, 3.826699999999999, 4.449299999999999, 2.7010000000000005, 2.554499999999999], 'z': [-3.9460000000000006, -3.4881, -1.2637999999999998, -1.1483000000000008, -1.222900000000001, -0.5707000000000004, -2.1006, -2.0541, -3.024700000000001, -3.0923, -3.7389, -2.1949000000000005, -2.1061999999999994, -2.9162, -3.5952, -2.7133000000000003, -1.7553999999999998, -1.6243999999999996, -0.9848999999999997, -0.32840000000000025], 'atoms': ['F', 'F', 'N', 'N', 'C', 'H', 'C', 'H', 'C', 'C', 'H', 'C', 'C', 'C', 'H', 'C', 'C', 'H', 'C', 'H'], 'original_complex_indices': [1, 2, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]}, 'global_props': {'charge': 0, 'stoichiometry': 'C10H6F2N2', 'molecular_weight': 192.16880632599998, 'n_donors': 2, 'n_atoms': 20, 'n_elements': 4, 'n_bonds': 21, 'n_electrons': 98, 'n_protons': 98, 'n_hydrogens': 6, 'n_C_H_bonds': 6, 'n_ligand_instances': 1, 'has_haptic_interactions': False, 'has_beta_hydrogens': True, 'has_all_bond_orders_valid': True, 'has_bond_orders': True, 'has_unknown_bond_orders': False, 'parent_complex_id': 'OZIYON', 'parent_metal': 'Ir', 'parent_metal_os': 3.0, 'min_interatomic_distance': 0.9291298778965196, 'max_ligand_extension': 8.745613586821682, 'graph_hash': 'd810e651de6b310aabd5ca7060829beb', 'graph_hash_with_metal': '9cfe1644c35cf7f9ef3b747b268cd586', 'heavy_atoms_graph_hash': 'f76078eb3bbe68614cc779c42ff70282', 'heavy_atoms_graph_hash_with_metal': '8d31df32a8d11ecf0b01db06d7cba93f', 'bond_order_graph_hash': '59194cf8052a23ab8b2e41804249930e'}, 'graph': {'graph': {0: {8: {'bond_type': 1}}, 1: {15: {'bond_type': 1}}, 2: {11: {'bond_type': 12}}, 3: {18: {'bond_type': 12}}, 4: {6: {'bond_type': 12}}, 5: {4: {'bond_type': 1}}, 6: {8: {'bond_type': 12}}, 7: {6: {'bond_type': 1}}, 8: {9: {'bond_type': 12}}, 9: {11: {'bond_type': 12}}, 10: {9: {'bond_type': 1}}, 11: {12: {'bond_type': 1}}, 12: {13: {'bond_type': 12}}, 13: {15: {'bond_type': 12}}, 14: {13: {'bond_type': 1}}, 15: {16: {'bond_type': 12}}, 16: {18: {'bond_type': 12}}, 17: {16: {'bond_type': 1}}, 18: {19: {'bond_type': 1}}, 19: {18: {'bond_type': 1}}}, 'node_attributes': {0: {'node_label': 'F'}, 1: {'node_label': 'F'}, 2: {'node_label': 'N'}, 3: {'node_label': 'N'}, 4: {'node_label': 'C'}, 5: {'node_label': 'H'}, 6: {'node_label': 'C'}, 7: {'node_label': 'H'}, 8: {'node_label': 'C'}, 9: {'node_label': 'C'}, 10: {'node_label': 'H'}, 11: {'node_label': 'C'}, 12: {'node_label': 'C'}, 13: {'node_label': 'C'}, 14: {'node_label': 'H'}, 15: {'node_label': 'C'}, 16: {'node_label': 'C'}, 17: {'node_label': 'H'}, 18: {'node_label': 'C'}, 19: {'node_label': 'H'}}}, 'donor_idc': [2, 3], 'other_ligand_instances': {'ligand_name': ['CSD-OZIYON-02-a'], 'parent_complex_id': ['OZIYON'], 'parent_complex_charge': [0], 'parent_metal': ['Ir'], 'parent_metal_os': [3.0]}, 'parent_metal_position': [0.0, 0.0, 0.0]}
 
 
 def check_equal(val1, val2) -> bool:
@@ -80,7 +82,7 @@ class RCA_Molecule(object):
                  # has_ligands=True,
                  # reindex_graph: bool = False,
                  # warnings: list = None,
-                 other_props: dict = None,
+                 # other_props: dict = None,
                  validity_check = True,
                  node_label: str = 'node_label',
                  bond_label: str = 'bond_type',
@@ -88,8 +90,8 @@ class RCA_Molecule(object):
                  ):
         # if warnings is None:
         #     warnings = []
-        if other_props is None:
-            other_props = {}
+        # if other_props is None:
+        #     other_props = {}
         if atomic_props is None:
             atomic_props = {}
         if global_props is None:
@@ -99,9 +101,9 @@ class RCA_Molecule(object):
         self.atomic_props = atomic_props
         self.global_props = global_props
         self.mol = self.get_ase_molecule()
-        self.graph = get_reindexed_graph(graph)
         self.node_label = node_label  # node label in the graph specifying the atom type
         self.bond_label = bond_label  # edge label in the graph specifying the bond type
+        self.graph = get_reindexed_graph(graph)
 
 
 
@@ -143,9 +145,9 @@ class RCA_Molecule(object):
         #         setattr(self, f'{key}', other_props[key])
 
         # Set properties from the MetaLig database as attributes
-        self.set_other_props_as_properties(other_props=other_props)
+        # self.set_other_props_as_properties(other_props=other_props)
 
-        self.add_additional_molecule_information_to_global_props()
+        # self.add_additional_molecule_information_to_global_props()
 
         if validity_check:
             self.validity_check_created_molecule()
@@ -190,9 +192,9 @@ class RCA_Molecule(object):
     def bond_order_graph_hash(self) -> str:
         return self.get_bond_order_graph_hash()
 
-    @cached_property
-    def hash(self) -> str:
-        return self.get_hash()
+    # @cached_property
+    # def hash(self) -> str:
+    #     return self.get_hash()
 
     @cached_property
     def stoichiometry(self) -> str:
@@ -579,13 +581,13 @@ class RCA_Molecule(object):
     def has_graph_hash(self):
         return False if self.graph_hash is None else True
 
-    @cached_property
-    def has_hash(self):
-        return False if self.hash is None else True
-
-    @cached_property
-    def hash(self):
-        return self.get_hash()
+    # @cached_property
+    # def has_hash(self):
+    #     return False if self.hash is None else True
+    #
+    # @cached_property
+    # def hash(self):
+    #     return self.get_hash()
 
     # def __hash__(self):
     #     if not self.has_hash():
@@ -611,11 +613,11 @@ class RCA_Molecule(object):
 
         return graph_hash
 
-    def get_hash(self):
-        # this hash is not randomized, unlike pythons inbuilt hash()
-        self.hash = int(hashlib.md5(self.graph_hash.encode(encoding='UTF-8', errors='strict')).hexdigest(), 16)
-
-        return self.hash
+    # def get_hash(self):
+    #     # this hash is deterministic, unlike pythons inbuilt hash()
+    #     self.hash = int(hashlib.md5(self.graph_hash.encode(encoding='UTF-8', errors='strict')).hexdigest(), 16)
+    #
+    #     return self.hash
 
     def get_standardized_stoichiometry(self) -> str:
         """
@@ -634,11 +636,10 @@ class RCA_Molecule(object):
         return self.atomic_props['atoms']
 
 
-    def calculate_planarity(self, only_donors=False) -> float:
+    def calculate_planarity(self) -> float:
         """
-        Calculates the planarity of the molecule.
-        @param only_donors: If True, only the donor atoms are considered for the calculation of the planarity. If False, all atoms are considered.
-        @return: Planarity of the molecule as a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
+        Calculates the planarity of all atoms in the molecule.
+        @return: Planarity of the molecule as a float between 0 and 1. 0 means not planar at all (a 3D sphere), 1 means perfectly planar.
         """
         coordinates = self.get_coordinates_list()
         deviation = get_max_deviation_from_coplanarity(points=coordinates)  # deviation is a float that is 0 if the molecule is perfectly planar and > 0 if it is not. The higher the value, the less planar the molecule is.
@@ -870,31 +871,44 @@ class RCA_Ligand(RCA_Molecule):
     """
 
     def __init__(self,
-                 ligand_to_metal: list,
                  atomic_props: dict,
-                 name: str,
-                 graph=None,
+                 ligand_to_metal: list,
+                 graph: nx.Graph,
+                 unique_name: str,
                  global_props: dict = None,
-                 other_props=None,
+                 parent_metal_position: np.array = None,
+                 other_ligand_instances: dict = None,
+                 # other_props=None,
                  validity_check=True,
                  ):
 
-        if other_props is None:
-            other_props = {}
-        coord_list_3D = [[atomic_props[key_][i] for key_ in ["x", "y", "z"]] for i, _ in
-                         enumerate(atomic_props["x"])]
-        atom_list = atomic_props["atoms"]
+        if global_props is None:
+            global_props = {}
+        if other_ligand_instances is None:
+            other_ligand_instances = {
+                'ligand_name': [],
+                'parent_complex_id': [],
+                'parent_complex_charge': [],
+                'parent_metal': [],
+                'parent_metal_os': [],
+            }
+        if not {'ligand_name', 'parent_complex_id', 'parent_complex_charge', 'parent_metal', 'parent_metal_os'}.issubset(set(other_ligand_instances.keys())):  # Check if all necessary keys are present
+            raise ValueError('The dictionary `other_ligand_instances` must contain the keys `ligand_name`, `parent_complex_id`, `parent_complex_charge`, `parent_metal`, `parent_metal_os`.')
+        if parent_metal_position is None:
+            parent_metal_position = np.array([0, 0, 0])
 
         super().__init__(#mol=Atoms(atom_list, positions=coord_list_3D),
                          atomic_props=atomic_props,
                          global_props=global_props,
                          graph=graph,
                          # has_ligands=False,
-                         other_props=other_props,
+                         # other_props=other_props,
                          validity_check=validity_check,
                          # **kwargs
                          )
-
+        coord_list_3D = [[atomic_props[key_][i] for key_ in ["x", "y", "z"]] for i, _ in
+                         enumerate(atomic_props["x"])]
+        atom_list = atomic_props["atoms"]
         self.coordinates = {i: [at, coord_list_3D[i]] for i, at in enumerate(atom_list)}
 
         # This attribute transforms the indices of atoms in the atomic properties (starting with 0 until n-1) to the corresponding indices of self.graph. This is necessary because self.graph has indices not starting at 0 and going to n-1, but it has kept the original indices from the complex. This is a historic issue that has not been solved yet.
@@ -902,13 +916,20 @@ class RCA_Ligand(RCA_Molecule):
         self.graph_index_to_atomic_index = {graph_idx: atm_idx for atm_idx, graph_idx in self.atomic_index_to_graph_index.items()}
 
         # self.denticity = denticity # integer denticity, -1 for unconnected
-        self.name = name # str name of ligand
-        self.original_complex_id = self.global_props['CSD_code']
+        # self.name = name # str name of ligand
+        self.unique_name = unique_name
+        self.original_complex_id = self.global_props['parent_complex_id']
+        self.pred_charge = self.global_props['charge']
+        self.original_metal_position = parent_metal_position
+        self.other_ligand_instances = other_ligand_instances
 
         # the indices and elements where the ligands was bound to the metal
         self.ligand_to_metal = ligand_to_metal
         self.local_elements = self.get_local_elements()
-        self.was_connected_to_metal = len(self.local_elements) > 0
+        self.pred_charge_is_confident = self.global_props['pred_charge_is_confident']
+        self.occurrences = self.global_props['n_ligand_instances']
+
+        # self.was_connected_to_metal = len(self.local_elements) > 0
         #
         # if "csd_code" in kwargs.keys():
         #     self.csd_code = kwargs['csd_code']
@@ -943,11 +964,22 @@ class RCA_Ligand(RCA_Molecule):
         # if not hasattr(self, 'stats'):
         #     self.stats = self.get_ligand_stats()
 
-        assert nx.is_connected(self.graph), f'Graph of ligand with name {self.name} is not fully connected.'
+        assert nx.is_connected(self.graph), f'Graph of ligand with name {self.unique_name} is not fully connected.'
 
     @cached_property
     def denticity(self):
         return len(self.ligand_to_metal)
+
+    @cached_property
+    def count_metals(self):
+        # Sort by count so that the most common metal is first
+        return get_stable_sorted_value_counts(self.other_ligand_instances['parent_metal'])
+
+    @cached_property
+    def mos_counts(self):
+        mos_counts = [f'{el}+{mos:.0f}' if mos > 0 else f'{el}{mos:.0f}' for el, mos in zip(self.other_ligand_instances['parent_metal'], self.other_ligand_instances['parent_metal_os']) if not np.isnan(mos)]
+        # Sort by count so that the most common metal-os combination is first
+        return get_stable_sorted_value_counts(mos_counts)
 
     @cached_property
     def is_centrosymmetric(self):
@@ -972,11 +1004,6 @@ class RCA_Ligand(RCA_Molecule):
     @cached_property
     def has_neighboring_coordinating_atoms(self):
         return self.check_for_neighboring_coordinating_atoms()
-
-    @cached_property
-    def stats(self):
-        return self.get_ligand_stats()
-
 
     def get_smiles(self, with_metal: str=None) -> Union[str,None]:
         """
@@ -1012,23 +1039,23 @@ class RCA_Ligand(RCA_Molecule):
 
         return Chem.MolFromSmiles(smiles, sanitize=sanitize)
 
-    def get_ligand_stats(self) -> dict:
-        """
-        Returns a dictionary with potentially interesting ligand statistics.
-        @return: Dictionary with stats
-        """
-
-        min_distance_to_metal, max_distance_to_metal, coordinating_atom_distances = self.get_atomic_distance_to_original_metal(mode='all')
-        min_dist, max_dist, _ = self.get_atomic_distances_between_atoms()
-        max_dist_per_atoms = max_dist / len(self.atomic_props['atoms'])
-        stats = {
-                    'min_distance_to_metal': min_distance_to_metal,
-                    'max_distance_to_metal': max_distance_to_metal,
-                    'coordinating_atom_distances_to_metal': coordinating_atom_distances,
-                    'min_atomic_distance': min_dist,
-                    'max_atomic_distance': max_dist,
-                    'max_dist_per_atoms': max_dist_per_atoms
-                }
+    # def get_ligand_stats(self) -> dict:
+    #     """
+    #     Returns a dictionary with potentially interesting ligand statistics.
+    #     @return: Dictionary with stats
+    #     """
+    #
+    #     min_distance_to_metal, max_distance_to_metal, coordinating_atom_distances = self.get_atomic_distance_to_original_metal(mode='all')
+    #     min_dist, max_dist, _ = self.get_atomic_distances_between_atoms()
+    #     max_dist_per_atoms = max_dist / len(self.atomic_props['atoms'])
+    #     stats = {
+    #                 'min_distance_to_metal': min_distance_to_metal,
+    #                 'max_distance_to_metal': max_distance_to_metal,
+    #                 'coordinating_atom_distances_to_metal': coordinating_atom_distances,
+    #                 'min_atomic_distance': min_dist,
+    #                 'max_atomic_distance': max_dist,
+    #                 'max_dist_per_atoms': max_dist_per_atoms
+    #             }
 
         return stats
 
@@ -1516,26 +1543,19 @@ class RCA_Ligand(RCA_Molecule):
             'Ligand Planarity': self.calculate_planarity(),
             'Haptic': self.has_neighboring_coordinating_atoms,
             'Beta-Hydrogen': self.has_betaH,
-            'Max. Interatomic Distance': self.stats['max_atomic_distance'],
+            'Max. Interatomic Distance': self.global_props['max_ligand_extension'],
             'Graph ID': self.graph_hash_with_metal,
-            'CSD Occurrences': self.occurrences,
+            'CSD Occurrences': self.global_props['n_ligand_instances'],
             }
         if add_confident_charge:
             info['Charge Confident'] = self.pred_charge_is_confident
         # if not planarity:
         #     info.pop('Ligand Planarity')
 
-        # todo: this should be working now, include it
-        # Currently doesn't work because the ligand doesn't have the attribute 'identical_ligand_info'.
-        # For future bug search: This bug is only present when running the assembler, not the dbinfo module
-        # csd_mos_counts = [f'{el}+{mos:.0f}' if mos > 0 else f'{el}+{mos:.0f}' for el, mos in zip(self.identical_ligand_info['original_metal_symbol'], self.identical_ligand_info['original_metal_os']) if not np.isnan(mos)]
-        # csd_mos_counts = pd.value_counts(pd.Series(csd_mos_counts)).to_dict()
-
-        # Truncate lists if there are too many
         truncate_data = {
-                            'CSD Complex IDs': self.identical_ligand_info['original_complex_id'],
+                            'CSD Complex IDs': self.other_ligand_instances['parent_complex_id'],
                             'CSD Metal Count': [f'{el}({count})' for el, count in self.count_metals.items()],
-                            # 'CSD Metal OS Count': [f'{el}({count})' for el, count in csd_mos_counts.items()]
+                            'CSD Metal OS Count': [f'{el}({count})' for el, count in self.mos_counts.items()],
                         }
         for key, data in truncate_data.items():
             n_data = len(data)
@@ -1548,17 +1568,24 @@ class RCA_Ligand(RCA_Molecule):
         return info
 
     def write_to_mol_dict(self, include_graph_dict: bool=True) -> dict:
-        d = {}
-        # Manually initialize special fields
+        d = {
+                'unique_name': self.unique_name,
+                'atomic_props': self.atomic_props,
+                'global_props': self.global_props,
+        }
         if include_graph_dict:
-            d['graph_dict'] = graph_to_dict_with_node_labels(self.graph)
+            d['graph'] = graph_to_dict_with_node_labels(self.graph)
 
-        output = ['warnings', 'atomic_props', 'global_props', 'n_atoms', 'n_hydrogens', 'n_protons', 'graph_hash', 'n_bonds', 'has_bond_order_attribute', 'has_unknown_bond_orders', 'has_good_bond_orders', 'heavy_atoms_graph_hash', 'bond_order_graph_hash', 'stoichiometry', 'original_complex_id', 'local_elements', 'was_connected_to_metal', 'original_metal', 'original_metal_position', 'original_metal_symbol', 'original_metal_os', 'is_centrosymmetric', 'centrosymmetry_ang_dev', 'graph_hash_with_metal', 'heavy_atoms_graph_hash_with_metal', 'has_betaH', 'has_neighboring_coordinating_atoms', 'stats', 'unique_name', 'pred_charge', 'pred_charge_is_confident', 'all_ligand_names', 'identical_ligand_info', 'occurrences', 'same_graph_denticities', 'count_metals', 'n_same_graph_denticities', 'n_metals', 'n_same_graphs', 'has_unconnected_ligands', 'all_ligands_metals', 'same_graph_charges', 'n_pred_charges', 'common_graph_with_diff_n_hydrogens', 'n_electrons', 'odd_n_electron_count', 'has_warnings', 'denticity', 'name', 'ligand_to_metal']
+        d['donor_idc'] = self.ligand_to_metal
+        d['other_ligand_instances'] = self.other_ligand_instances
+        d['parent_metal_position'] = self.original_metal_position
 
-        # do_not_output_automatically = ['mol', 'node_label', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
-        for prop in output:
-            # if not prop in do_not_output_automatically:
-            d[prop] = getattr(self, prop)
+        # output = ['warnings', 'atomic_props', 'global_props', 'n_atoms', 'n_hydrogens', 'n_protons', 'graph_hash', 'n_bonds', 'has_bond_order_attribute', 'has_unknown_bond_orders', 'has_good_bond_orders', 'heavy_atoms_graph_hash', 'bond_order_graph_hash', 'stoichiometry', 'original_complex_id', 'local_elements', 'was_connected_to_metal', 'original_metal', 'original_metal_position', 'original_metal_symbol', 'original_metal_os', 'is_centrosymmetric', 'centrosymmetry_ang_dev', 'graph_hash_with_metal', 'heavy_atoms_graph_hash_with_metal', 'has_betaH', 'has_neighboring_coordinating_atoms', 'stats', 'unique_name', 'pred_charge', 'pred_charge_is_confident', 'all_ligand_names', 'identical_ligand_info', 'occurrences', 'same_graph_denticities', 'count_metals', 'n_same_graph_denticities', 'n_metals', 'n_same_graphs', 'has_unconnected_ligands', 'all_ligands_metals', 'same_graph_charges', 'n_pred_charges', 'common_graph_with_diff_n_hydrogens', 'n_electrons', 'odd_n_electron_count', 'has_warnings', 'denticity', 'name', 'ligand_to_metal']
+        #
+        # # do_not_output_automatically = ['mol', 'node_label', 'rdkit_mol', 'graph', 'coordinates', 'hash', 'csd_code', 'graph_with_metal', 'atomic_index_to_graph_index', 'graph_index_to_atomic_index']
+        # for prop in output:
+        #     # if not prop in do_not_output_automatically:
+        #     d[prop] = getattr(self, prop)
 
         return d
 
@@ -1567,20 +1594,27 @@ class RCA_Ligand(RCA_Molecule):
         """
         Reads the ligand from a provided dictionary.
         """
-        necessary_props = ["atomic_props", "global_props", "graph_dict", "denticity", "name", 'ligand_to_metal']
-        assert set(necessary_props).issubset(set(dict_.keys())), f'Any of the necessary keys {necessary_props} is not present.'
+        # In the old format, these properties were in the dict_ dictionary, instead of in the global_props as in the new format.
+        old_props = ['n_hydrogens', 'n_atoms', 'n_protons']
+        if all([prop in dict_ for prop in old_props]):
+            # The input dictionary is in the old format. Convert it to the new format.
+            dict_ = refactor_metalig_entry_from_v1_0_0_to_v1_1_0(dict_)
+
+        necessary_props = ['unique_name', 'atomic_props', 'global_props', 'graph', 'donor_idc', 'parent_metal_position', 'other_ligand_instances']
+        different_props = set(dict_.keys()).symmetric_difference(necessary_props)
+        assert not different_props, f"Unexpected or missing properties in the dictionary: {different_props}"
 
         # Add default properties for properties not in the json. This is useful for properties which have been introduced in later versions of the code.
-        optional_props = {'warnings': []}
-        for prop, default in optional_props.items():
-            if not prop in dict_:
-                dict_[prop] = default
+        # optional_props = {'warnings': []}
+        # for prop, default in optional_props.items():
+        #     if not prop in dict_:
+        #         dict_[prop] = default
 
-        other_props = {key: val for key, val in dict_.items() if not key in necessary_props}
+        # other_props = {key: val for key, val in dict_.items() if not key in necessary_props}
 
         # # Optionally add graph if it is present in the dictionary
         # if 'graph_dict' in dict_ and not (dict_['graph_dict'] is None):
-        graph = graph_from_graph_dict(dict_['graph_dict'])
+        graph = graph_from_graph_dict(dict_['graph'])
         # else:
         #     graph = None
 
@@ -1588,11 +1622,13 @@ class RCA_Ligand(RCA_Molecule):
             atomic_props=dict_["atomic_props"],
             global_props=dict_["global_props"],
             # denticity=dict_["denticity"],
-            name=dict_["name"],
-            ligand_to_metal=dict_['ligand_to_metal'],
+            unique_name=dict_['unique_name'],
+            ligand_to_metal=dict_['donor_idc'],
             graph=graph,
+            parent_metal_position=dict_['parent_metal_position'],
+            other_ligand_instances=dict_['other_ligand_instances'],
             # warnings=dict_['warnings'],
-            other_props=other_props,
+            # other_props=other_props,
             validity_check=False,   # Skip because takes a bit of time
         )
 
@@ -1607,10 +1643,7 @@ class RCA_Ligand(RCA_Molecule):
         """
         Get ASE molecule with metal at original metal location. If no metal is specified, the original metal is used.
         """
-        # Get ASE molecule
-        ase_mol = self.get_ase_molecule(add_atoms=[(metal, self.original_metal_position)])
-
-        return ase_mol
+        return self.get_ase_molecule(add_atoms=[(metal, self.original_metal_position)])
 
     def get_xtb_descriptors(self):
         """

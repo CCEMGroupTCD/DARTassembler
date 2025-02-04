@@ -378,12 +378,7 @@
                 "H"
             ]
         },
-        "global_props": {
-            "n_atoms": 92,
-            "n_elements": 6,
-            "molecular_weight": 876.988,
-            "n_C_H_bonds": 34
-        },
+        "global_props": {},
         "graph_dict": {
             "graph": {
                 "0": {
@@ -1053,180 +1048,14 @@
             }
         },
         "ligand_props": {
-            "0": {
-                "unique_name": "unq_CSD-OZOPUQ-03-a",
-                "ligand_indices_in_complex": [
-                    1,
-                    2,
-                    3,
-                    4,
-                    5,
-                    6,
-                    7,
-                    8,
-                    9,
-                    10,
-                    11,
-                    12,
-                    13,
-                    14,
-                    15,
-                    16,
-                    17,
-                    18,
-                    19,
-                    20,
-                    21,
-                    22,
-                    23,
-                    24,
-                    25,
-                    26,
-                    27,
-                    28,
-                    29,
-                    30,
-                    31,
-                    32,
-                    33,
-                    34
-                ],
-                "donor_indices": [
-                    1,
-                    2,
-                    5
-                ],
-                "donor_elements": [
-                    "N",
-                    "O",
-                    "N"
-                ],
-                "donor_bond_lengths": [
-                    1.9694314763403176,
-                    2.1711466786009637,
-                    2.283319681954326
-                ],
-                "stoichiometry": "C17H12N3O2",
-                "denticity": 3,
-                "pred_charge": -1.0,
-                "pred_charge_is_confident": true,
-                "graph_hash_with_metal": "75ce8701f94009eeecba3d27e8ef0a37",
-                "has_good_bond_orders": true,
-                "warnings": [],
-                "occurrences": 2,
-                "n_atoms": 34
-            },
-            "1": {
-                "unique_name": "unq_CSD-PAZFAX-02-a",
-                "ligand_indices_in_complex": [
-                    35,
-                    36,
-                    37,
-                    38,
-                    39,
-                    40,
-                    41,
-                    42,
-                    43,
-                    44,
-                    45,
-                    46,
-                    47,
-                    48,
-                    49,
-                    50,
-                    51,
-                    52,
-                    53,
-                    54,
-                    55,
-                    56,
-                    57,
-                    58,
-                    59,
-                    60,
-                    61,
-                    62,
-                    63,
-                    64,
-                    65,
-                    66,
-                    67,
-                    68,
-                    69,
-                    70,
-                    71,
-                    72,
-                    73
-                ],
-                "donor_indices": [
-                    72,
-                    73
-                ],
-                "donor_elements": [
-                    "S",
-                    "N"
-                ],
-                "donor_bond_lengths": [
-                    2.149236013098609,
-                    1.9325033738651012
-                ],
-                "stoichiometry": "C21H16N1S1",
-                "denticity": 2,
-                "pred_charge": -1.0,
-                "pred_charge_is_confident": true,
-                "graph_hash_with_metal": "e452874026037a98ca89f922dc5b66c9",
-                "has_good_bond_orders": true,
-                "warnings": [],
-                "occurrences": 2,
-                "n_atoms": 39
-            },
-            "2": {
-                "unique_name": "unq_CSD-PAKHOB-01-c",
-                "ligand_indices_in_complex": [
-                    74,
-                    75,
-                    76,
-                    77,
-                    78,
-                    79,
-                    80,
-                    81,
-                    82,
-                    83,
-                    84,
-                    85,
-                    86,
-                    87,
-                    88,
-                    89,
-                    90,
-                    91
-                ],
-                "donor_indices": [
-                    74
-                ],
-                "donor_elements": [
-                    "O"
-                ],
-                "donor_bond_lengths": [
-                    2.0943944088924606
-                ],
-                "stoichiometry": "C7H7O3S1",
-                "denticity": 1,
-                "pred_charge": -1.0,
-                "pred_charge_is_confident": true,
-                "graph_hash_with_metal": "8f0ac0457896e200dcbdf1915f42b7b0",
-                "has_good_bond_orders": true,
-                "warnings": [],
-                "occurrences": 116,
-                "n_atoms": 18
-            }
+            "0": {},
+            "1": {},
+            "2": {}
         },
         "metal_oxi_state": 3,
         "metal": "Ru",
         "metal_idx": 0,
-        "charge": 0.0,
+        "charge": 0,
         "mol_id": "OSIFAWIQ1_test2"
     },
     "complex_idx": 11,

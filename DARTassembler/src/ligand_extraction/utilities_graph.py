@@ -294,8 +294,7 @@ def get_reindexed_graph(graph):
     @param graph: graph to reindex.
     @return: reindexed graph with indices from  0 to n-1 in the same numerical order as before.
     """
-    if not all(isinstance(node, int) for node in graph.nodes):
-        warnings.warn(f'Graph nodes are not integers. Proceed reindexing, but results might not be as expected: {graph.nodes}.')
+    assert all(isinstance(node, int) for node in graph.nodes), f'Graph nodes are not integers: {list(graph.nodes)}.'
 
     # Skip reindexing if the nodes are already indexed from 0 to n-1
     if sorted(list(graph.nodes)) == list(range(len(graph.nodes))):
