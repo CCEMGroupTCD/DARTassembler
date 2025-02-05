@@ -1,6 +1,6 @@
 input_db_file:           # path or nothing
 output_db_file: ligandfilters/data_output/filtered_ligand_db_v1.7.json   # path or nothing
-#output_ligands_info: True   # True or False. If True, an overview of the filtered and passed ligands will be saved.
+output_ligands_info: True   # True or False. If True, an overview of the filtered and passed ligands will be saved.
 
 filters:
 

@@ -272,8 +272,8 @@ class LigandDB(MoleculeDB):
 
         data = defaultdict(list)
         for name, ligand in tqdm(self.db.items(), desc='Assigning ligand geometries'):
-            geometry, isomers, rssd, second_geometry, weight_necessary_for_change = ligand.get_ligand_geometry_and_isomers()
-            data[geometry].append((name, rssd, weight_necessary_for_change, second_geometry, isomers))
+            geometry, isomers, isomer_idc, rssd, second_geometry, weight_necessary_for_change = ligand.get_ligand_geometry_and_isomers()
+            data[geometry].append((name, rssd, weight_necessary_for_change, second_geometry, isomers, isomer_idc))
 
         # Sort data by geometry name to have geometries of the same denticity together
         data = dict(sorted(data.items(), key=lambda x: x[0]))
@@ -292,20 +292,20 @@ class LigandDB(MoleculeDB):
         data = self.get_ligand_geometries(sort_by_rssd=sort_by_rssd)
 
         # Save structures with all isomers for each geometry in a different concatenated xyz file
-        for geometry, names_rssd in data.items():
+        for geometry, info in data.items():
             atoms, comments, weights, second_geometries = [], [], [], []
-            for name, rssd, weight, second_geometry, isomers in names_rssd:
-                for isomer_idx, isomer in enumerate(isomers):
+            for name, rssd, weight, second_geometry, isomers, isomer_idc in info:
+                for isomer_idx, (isomer, idc) in enumerate(zip(isomers, isomer_idc)):
                     if not output_all_isomers and isomer_idx > 0:
                         continue
-                    assert not 'Cu' in isomer.get_chemical_symbols(), 'There should be no copper atoms in the isomers!'
+                    assert not 'Cu' in isomer.get_chemical_symbols(), 'There should be no Cu atoms in the isomers!'
                     isomer.append(ase.Atom('Cu', position=(0, 0, 0)))
                     atoms.append(isomer)
                     weights.append(weight)
-                    comments.append(f'{name}-{isomer_idx} rssd={rssd:.3f} change:{weight:.3f}->{second_geometry}')
+                    comments.append(f'{name}-{isomer_idx} rssd={rssd:.3f} change:{weight:.3f}->{second_geometry} idc={idc}')
                     second_geometries.append(second_geometry)
             outpath = Path(outdir, f'concat_{geometry}.xyz')
-            n_isomers = np.unique([len(isomers) for _, _, _, _, isomers in names_rssd])
+            n_isomers = np.unique([len(isomers) for _, _, _, _, isomers, _ in info])
             n_isomers = n_isomers[0] if len(n_isomers) == 1 else n_isomers
             print(f'{geometry}: {len(atoms)} structures, {n_isomers} isomer{"s" if n_isomers > 1 else ""}')
             save_to_xyz(outpath=outpath, structures=atoms, comments=comments)

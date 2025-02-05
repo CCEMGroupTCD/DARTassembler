@@ -8,11 +8,10 @@ import numpy as np
 from copy import deepcopy
 from typing import Union
 import pysmiles
-from dev.DART_refactoring_to_v1_1_0.refactor_metalig import refactor_metalig_entry_from_v1_0_0_to_v1_1_0
-
+from DARTassembler.src.metalig.refactor_v1_0_0 import refactor_metalig_entry_from_v1_0_0_to_v1_1_0
 # some special functions which are required
 from DARTassembler.src.ligand_extraction.composition import Composition
-from DARTassembler.src.ligand_extraction.utilities_Molecule import get_planarity, get_denticities_and_hapticities_idc
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_planarity, get_denticities_and_hapticities_idc, get_isomers_effective_ligand_atoms_with_effective_donor_indices, get_all_effective_ligand_atoms_with_effective_donor_indices
 from ase.visualize import view
 from sympy import Point3D, Plane
 import re
@@ -878,6 +877,8 @@ class RCA_Ligand(RCA_Molecule):
                  global_props: dict = None,
                  parent_metal_position: np.array = None,
                  other_ligand_instances: dict = None,
+                 hapdent_idc: list = None,
+                 geometric_isomers_hapdent_idc: list = None,
                  # other_props=None,
                  validity_check=True,
                  ):
@@ -922,6 +923,10 @@ class RCA_Ligand(RCA_Molecule):
         self.pred_charge = self.global_props['charge']
         self.original_metal_position = parent_metal_position
         self.other_ligand_instances = other_ligand_instances
+        if hapdent_idc is not None:
+            self.hapdent_idc = hapdent_idc
+        if geometric_isomers_hapdent_idc is not None:
+            self.geometric_isomers_hapdent_idc = geometric_isomers_hapdent_idc
 
         # the indices and elements where the ligands was bound to the metal
         self.ligand_to_metal = ligand_to_metal
@@ -938,10 +943,10 @@ class RCA_Ligand(RCA_Molecule):
         self.global_props['donor_metal_planarity'] = self.donor_metal_planarity
 
         # Calculate denticity and hapticity of the ligand
-        self.hapdent_idc = self.get_denticities_and_hapticities_idc()   # list of donor idc with haptic groups in sublists
+        self.denticity = len(self.ligand_to_metal)
         self.elcn = len(self.hapdent_idc)   # effective ligand coordination number
         self.kappa = sum([1 for el in self.hapdent_idc if isinstance(el, int)])     # denticity of the ligand
-        self.eta = sum([len(sublist) for sublist in self.hapdent_idc if isinstance(sublist, list)])      # hapticity of the ligand
+        self.eta = sum([len(sublist) for sublist in self.hapdent_idc if isinstance(sublist, tuple)])      # hapticity of the ligand
         assert self.denticity == self.kappa + self.eta, f'Number of donors ({self.denticity}) does not equal number of kappa ({self.kappa}) plus eta ({self.eta}) in ligand {self.unique_name}.'
         self.global_props['elcn'] = self.elcn
         self.global_props['kappa'] = self.kappa
@@ -986,8 +991,51 @@ class RCA_Ligand(RCA_Molecule):
         assert nx.is_connected(self.graph), f'Graph of ligand with name {self.unique_name} is not fully connected.'
 
     @cached_property
-    def denticity(self):
-        return len(self.ligand_to_metal)
+    def hapdent_idc(self):
+        return self.get_denticities_and_hapticities_idc()
+
+    @cached_property
+    def _geometry_and_geometrical_isomers(self):
+        """Cache all the geometry and isomer information when required."""
+        geometry, _, isomer_hapdent_idc, rssd, _, geometry_confidence = self.get_ligand_geometry_and_isomers()
+        d = {
+            'geometry': geometry,                                                       # str
+            'geometric_isomers_hapdent_idc': isomer_hapdent_idc,                        # list of hapdent_idc
+            'geometry_rssd': rssd,                                                      # float >= 0.0
+            'geometry_confidence': geometry_confidence                                  # float > 1.0
+        }
+
+        # Add to global_props so that the information is saved when the ligand is written to a file
+        self.global_props['geometry'] = geometry
+        self.global_props['geometry_rssd'] = rssd
+        self.global_props['geometry_confidence'] = geometry_confidence
+
+        return d
+
+    @cached_property
+    def geometry(self):
+        try:
+            return self.global_props['geometry']
+        except KeyError:
+            return self._geometry_and_geometrical_isomers['geometry']
+
+    @cached_property
+    def geometric_isomers_hapdent_idc(self):
+        return self._geometry_and_geometrical_isomers['geometric_isomers_hapdent_idc']
+
+    @cached_property
+    def geometry_rssd(self):
+        try:
+            return self.global_props['geometry_rssd']
+        except KeyError:
+            return self._geometry_and_geometrical_isomers['geometry_rssd']
+
+    @cached_property
+    def geometry_confidence(self):
+        try:
+            return self.global_props['geometry_confidence']
+        except KeyError:
+            return self._geometry_and_geometrical_isomers['geometry_confidence']
 
     @cached_property
     def count_metals(self):
@@ -1140,7 +1188,7 @@ class RCA_Ligand(RCA_Molecule):
 
     def is_2D_symmetrical(self) -> bool:
         """
-        Checks if ligand graph is symmetrical between donors. Essentially, this checks whether the ligand graph is symmetrical under "flipping" the ligand for generating geometric isomers. However, this does not check for 3D symmetry. Often, planar ligands are 3D symmetrical if they are 2D symmetrical, but the more bulky the ligand, the more likely it is that the ligand is not 3D symmetrical even if it is 2D symmetrical.
+        Checks if the ligand graph is symmetrical between donors. Essentially, this checks whether the ligand graph is symmetrical under "flipping" the ligand for generating geometric isomers. However, this does not check for 3D symmetry. Often, planar ligands are 3D symmetrical if they are 2D symmetrical, but the more bulky the ligand, the more likely it is that the ligand is not 3D symmetrical even if it is 2D symmetrical.
         This function is easy to imagine for bidentate ligands, but it also works for tridentate ligands: e.g. for planar tridentate ligands, the ligand graph might be symmetrical between the outer two donors, but different for the middle donor. This will be picked up, because the function checks if the graph looks symmetrical for any two donors.
         :return: True if the ligand graph is symmetrical between donors, False otherwise.
         """
@@ -1355,70 +1403,72 @@ class RCA_Ligand(RCA_Molecule):
 
         return False
 
-    def get_denticities_and_hapticities_idc(self) -> list[Union[int, list[int]]]:
+    def get_denticities_and_hapticities_idc(self) -> tuple[Union[int, tuple[int]]]:
         """
-        Returns a list of lists of denticities and hapticities of the ligand. If an index is in the outer list, it's a denticity, if indices are together in the inner list, they are hapticities.
-        :return: list of indices with haptic groups in sublists
+        Returns a tuple with the donor indicesof the ligand in which haptic groups are in sub-tuples.
+        :return: Tuple of indices with haptic groups in sub-tuples.
         """
-        if hasattr(self, 'denticities_and_hapticities'):
-            return self.denticities_and_hapticities
-
         graph_indices = [self.atomic_index_to_graph_index[i] for i in self.ligand_to_metal]
         graph = self.graph
-        denticities_and_hapticities = get_denticities_and_hapticities_idc(graph=graph, donor_idc=graph_indices)
+        hapdent_idc = get_denticities_and_hapticities_idc(graph=graph, donor_idc=graph_indices)
 
-        # Convert back to atomic indices. Keep in mind that some entries are single indices and some are lists of indices
-        atomic_denticities_and_hapticities = []
-        for idc in denticities_and_hapticities:
+        # Convert back to atomic indices. Keep in mind that some entries are single indices and some are tuples of indices.
+        atomic_hapdent_idc = []
+        for idc in hapdent_idc:
             if isinstance(idc, int):    # denticity, therefore integer
                 idc = self.graph_index_to_atomic_index[idc]
                 assert idc in self.ligand_to_metal, f'Index {idc} is not in the ligand to metal indices: {self.ligand_to_metal}'
-            else:                       # hapticity, therefore list
-                idc = [self.graph_index_to_atomic_index[i] for i in idc]
+            elif isinstance(idc, tuple):
+                idc = tuple([self.graph_index_to_atomic_index[i] for i in idc])
                 assert all([i in self.ligand_to_metal for i in idc]), f'Indices {idc} is not in the ligand to metal indices: {self.ligand_to_metal}'
-            atomic_denticities_and_hapticities.append(idc)
+            else:
+                raise ValueError(f'Invalid type of hapdent_idc: {type(idc)}')
+            atomic_hapdent_idc.append(idc)
 
-        self.denticities_and_hapticities = atomic_denticities_and_hapticities
-
-        return self.denticities_and_hapticities
+        return tuple(atomic_hapdent_idc)
 
     def get_effective_donor_atoms(self, dummy='Cu', only_haptic=False) -> ase.Atoms:
         """
-        Returns an ase.Atoms object with all donor atoms. If the donor atom is a haptic donor, the mean position of the haptic donor atoms is used and the atom is replaced by a dummy atom of the specified element.
-        :param dummy: element of the dummy atoms
-        :param only_haptic: If True, only the haptic donor atoms are returned, not the dendicity donor atoms. If False, all effective donor atoms are returned.
-        :return: ase.Atoms object
+        Returns an ase.Atoms with all effective donor atoms: if an atom is non-haptic, it is returned as is. If a group of donor atoms is haptic, the entire haptic group is replaced by a single dummy atom at the mean position of the haptic group.
+        :param only_haptic: If True, only dummy atoms representing haptic groups are returned. If False, all effective donor atoms are returned, the dummy atoms and the normal non-haptic atoms.
+        :param dummy: Element symbol of the dummy atom.
+        :return: ase.Atoms object with effective donor atoms of the same length as hapdent_idc.
         """
-        denticities_and_hapticities = self.get_denticities_and_hapticities_idc()
-        donor_atoms = ase.Atoms()
-        for haptic_group in denticities_and_hapticities:
-            if not only_haptic and isinstance(haptic_group, int):
-                donor_atoms.append(self.mol[haptic_group])
-            elif isinstance(haptic_group, list):
-                haptic_coordinates = self.mol[haptic_group].get_positions()
-                mean_position = np.mean(haptic_coordinates, axis=0)
-                effective_donor_atom = ase.Atom(dummy, mean_position)
-                donor_atoms.append(effective_donor_atom)
+        return get_effective_donor_atoms(
+                                            hapdent_idc=self.hapdent_idc,
+                                            ligand_atoms=self.mol,
+                                            dummy=dummy,
+                                            only_haptic=only_haptic,
+                                            )
 
-        return donor_atoms
-
-    def get_all_effective_atoms_with_effective_donor_indices(self, dummy='Cu') -> tuple[ase.Atoms, list[int]]:
+    def get_all_effective_ligand_atoms_with_effective_donor_indices(self, dummy='Cu') -> tuple[ase.Atoms, list[int]]:
         """
-        Returns an ase.Atoms object containing all atoms in the ligand plus the dummy atoms, and a list of indices of the effective donor atoms.
-        :param dummy: element of the dummy atoms
-        :return: tuple of ase.Atoms object and list of indices
+        Returns an ase.Atoms object containing all atoms in the ligand plus the dummy atoms plus a list of effective donor indices of this ase.Atoms object.
+        :param dummy: Element symbol of the dummy atom.
+        :return: Tuple of ase.Atoms object and list of effective donor indices.
         """
-        dummy_donor_atoms = self.get_effective_donor_atoms(dummy=dummy, only_haptic=True)
-        all_atoms = self.mol + dummy_donor_atoms
-        # Get the effective donor indices
-        dummy_donor_idc = [len(self.mol) + i for i in range(len(dummy_donor_atoms))]
-        # Get real donor indices
-        denticities_and_hapticities = self.get_denticities_and_hapticities_idc()
-        real_donor_idc = [idx for idx in denticities_and_hapticities if isinstance(idx, int)]
-        # Combine both
-        effective_donor_idc = real_donor_idc + dummy_donor_idc
+        return get_all_effective_ligand_atoms_with_effective_donor_indices(
+                                                                            ligand_atoms=self.mol,
+                                                                            hapdent_idc=self.hapdent_idc,
+                                                                            dummy='Cu'
+                                                                            )
 
-        return all_atoms, effective_donor_idc
+    def get_isomers_effective_ligand_atoms_with_effective_donor_indices(self, dummy='Cu') -> tuple[ase.Atoms, list[list[int]]]:
+        """
+        For each geometric isomer of this ligand, returns the effective donor atoms in which a dummy donor atom is placed at the mean position of each haptic group. Also returns the effective donor indices of each isomer. In total, the resulting ase.Atoms and indices can be used like any other ligand without haptic interactions.
+        :param dummy: Element symbol of the dummy atom.
+        :return: Tuple of ase.Atoms object and list of effective donor indices for each isomer.
+        """
+        eff_atoms, isomers_eff_donor_idc = get_isomers_effective_ligand_atoms_with_effective_donor_indices(
+                                                    ligand_atoms=self.mol,
+                                                    geometric_isomers_hapdent_idc=self.geometric_isomers_hapdent_idc,
+                                                    dummy=dummy
+                                                    )
+        # Doublechecking that the effective atoms are the same as the original atoms if there are no haptic interactions
+        if not self.has_neighboring_coordinating_atoms:
+            assert eff_atoms == self.mol, f'Error in isomer generation for ligand {self.unique_name}.'
+
+        return eff_atoms, isomers_eff_donor_idc
 
     # def sort_atomic_props_to_have_coordinating_atoms_first(self):
     #     """
@@ -1529,26 +1579,42 @@ class RCA_Ligand(RCA_Molecule):
 
         return is_planar
 
-    def get_ligand_geometry_and_isomers(self) -> tuple[str, list[ase.Atoms], float, str, float]:
+    def get_ligand_geometry_and_isomers(self) -> tuple[str, list[ase.Atoms], tuple[Union[int, tuple[int]]], float, str, float]:
         """
-        Returns the geometry of the ligand. The geometry is assigned by the assign_geometry function.
+        Returns the geometry of the ligand, the best isomers and some other potentially interesting information. This function is the go-to function for the ligand geometry assignment, even able to handle ligands with haptic interactions.
         :return: Tuple of:
         - The assigned geometry
         - List of ASE Atoms objects of the best isomers
+        - List of hapdent tuples for each isomer
         - The root sum of squared differences (RSSD) of the assigned geometry
         - The second best geometry
         - The weight necessary for a change in geometry
         """
-        eff_ligand_atoms, eff_donor_idc = self.get_all_effective_atoms_with_effective_donor_indices('Cu')
-        geometry, isomers, rssd, second_geometry, weight_necessary_for_change = assign_geometry(eff_ligand_atoms,
-                                                                                                eff_donor_idc)
+        eff_ligand_atoms, eff_donor_idc = self.get_all_effective_ligand_atoms_with_effective_donor_indices('Cu')
+        geometry, eff_isomers, eff_isomer_donor_idc, rssd, second_geometry, weight_necessary_for_change = assign_geometry(eff_ligand_atoms, eff_donor_idc)
         # Remove Cu from the isomers to get the real ligand geometry
         real_isomers = []
-        for isomer in isomers:
+        for isomer in eff_isomers:
             real_isomer = isomer[[atom.symbol != 'Cu' for atom in isomer]]
             real_isomers.append(real_isomer)
 
-        return geometry, real_isomers, rssd, second_geometry, weight_necessary_for_change
+        # Convert the effective donor indices to the real donor indices with denticities and hapticities as sublists
+        hapdent_isomer_idc = []
+        for eff_isomer_idc in eff_isomer_donor_idc:
+            hapdent_donor_idc = []
+            for eff_idx in eff_isomer_idc:
+                # Look up the list index of each effective index and mirror this to the hapdent index
+                list_idx = eff_donor_idc.index(eff_idx)
+                hapdent_idx = self.hapdent_idc[list_idx]
+                hapdent_donor_idc.append(hapdent_idx)
+            hapdent_donor_idc = tuple(hapdent_donor_idc)
+            # Assert that the resulting indices are correct apart from the order
+            # immutable_hapdent_idc = [tuple(idc) if isinstance(idc, tuple) else idc for idc in hapdent_donor_idc]
+            # immutable_original_hapdent_idc = [tuple(idc) if isinstance(idc, tuple) else idc for idc in self.hapdent_idc]
+            assert set(hapdent_donor_idc) == set(self.hapdent_idc), f"Error in conversion of effective donor indices to hapdent donor indices: {hapdent_isomer_idc} vs. {self.hapdent_idc}"
+            hapdent_isomer_idc.append(hapdent_donor_idc)
+
+        return geometry, real_isomers, hapdent_isomer_idc, rssd, second_geometry, weight_necessary_for_change
 
     def get_ligand_output_info(self, max_entries=5, add_confident_charge=False) -> dict:
 
@@ -1600,6 +1666,7 @@ class RCA_Ligand(RCA_Molecule):
         d['other_ligand_instances'] = self.other_ligand_instances
         d['parent_metal_position'] = self.original_metal_position
         d['hapdent_idc'] = self.hapdent_idc
+        d['geometric_isomers_hapdent_idc'] = self.geometric_isomers_hapdent_idc
 
         # output = ['warnings', 'atomic_props', 'global_props', 'n_atoms', 'n_hydrogens', 'n_protons', 'graph_hash', 'n_bonds', 'has_bond_order_attribute', 'has_unknown_bond_orders', 'has_good_bond_orders', 'heavy_atoms_graph_hash', 'bond_order_graph_hash', 'stoichiometry', 'original_complex_id', 'local_elements', 'was_connected_to_metal', 'original_metal', 'original_metal_position', 'original_metal_symbol', 'original_metal_os', 'is_centrosymmetric', 'centrosymmetry_ang_dev', 'graph_hash_with_metal', 'heavy_atoms_graph_hash_with_metal', 'has_betaH', 'has_neighboring_coordinating_atoms', 'stats', 'unique_name', 'pred_charge', 'pred_charge_is_confident', 'all_ligand_names', 'identical_ligand_info', 'occurrences', 'same_graph_denticities', 'count_metals', 'n_same_graph_denticities', 'n_metals', 'n_same_graphs', 'has_unconnected_ligands', 'all_ligands_metals', 'same_graph_charges', 'n_pred_charges', 'common_graph_with_diff_n_hydrogens', 'n_electrons', 'odd_n_electron_count', 'has_warnings', 'denticity', 'name', 'ligand_to_metal']
         #
@@ -1621,9 +1688,11 @@ class RCA_Ligand(RCA_Molecule):
             # The input dictionary is in the old format. Convert it to the new format.
             dict_ = refactor_metalig_entry_from_v1_0_0_to_v1_1_0(dict_)
 
-        necessary_props = ['unique_name', 'atomic_props', 'global_props', 'graph', 'donor_idc', 'parent_metal_position', 'other_ligand_instances']
-        different_props = set(dict_.keys()).symmetric_difference(necessary_props)
-        assert not different_props, f"Unexpected or missing properties in the dictionary: {different_props}"
+        necessary_props = {'unique_name', 'atomic_props', 'global_props', 'graph', 'donor_idc', 'parent_metal_position', 'other_ligand_instances', 'hapdent_idc', 'geometric_isomers_hapdent_idc'}
+        different_props = necessary_props.symmetric_difference(set(dict_.keys()))
+        assert not different_props, f"Missing or unexpected properties in the ligand input dictionary: {different_props}"
+
+
 
         # Add default properties for properties not in the json. This is useful for properties which have been introduced in later versions of the code.
         # optional_props = {'warnings': []}
@@ -1648,6 +1717,8 @@ class RCA_Ligand(RCA_Molecule):
             graph=graph,
             parent_metal_position=dict_['parent_metal_position'],
             other_ligand_instances=dict_['other_ligand_instances'],
+            hapdent_idc=dict_['hapdent_idc'],
+            geometric_isomers_hapdent_idc=dict_['geometric_isomers_hapdent_idc'],
             # warnings=dict_['warnings'],
             # other_props=other_props,
             validity_check=True,
@@ -2282,13 +2353,6 @@ class RCA_Complex(RCA_Molecule):
 
 
         return descriptors
-
-
-
-
-
-
-
 
     def write_to_mol_dict(self, include_graph_dict: bool=True, include_ligands: bool=True) -> dict:
         d = {}
