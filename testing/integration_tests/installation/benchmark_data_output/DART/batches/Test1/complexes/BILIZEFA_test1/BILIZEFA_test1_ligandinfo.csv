@@ -1,3 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-PAGJUC-02-a,C11H25N1O1P1,2,-1,O-N,39,218.30076199800004,0.1313609596,False,True,7.716724743049995,b5244aabfae53f789e05b2728ed693c4,2,"PAGJUC, PAGJUC",Ni(2)
-Ligand 1,unq_CSD-PAKXAD-02-a,C11H19O3,2,-1,O-O,33,199.27,0.1395563894,False,False,8.770733892326229,1c153765e6ce4c2716b124f6c680343b,3,"PAKXAD, PAKXAD, LUNPES","Pd(2), Pt(1)"

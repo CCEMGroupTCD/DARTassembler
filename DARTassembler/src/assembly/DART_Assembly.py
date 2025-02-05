@@ -3,8 +3,7 @@ import sys
 from unittest.mock import patch
 import datetime
 
-from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word, format_topologies, \
-    get_lig_db_in_old_format
+from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word, format_topologies, get_lig_db_in_old_format
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.assembly.Monkeypatch_stk import MONKEYPATCH_STK_SmartsFunctionalGroupFactory
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB

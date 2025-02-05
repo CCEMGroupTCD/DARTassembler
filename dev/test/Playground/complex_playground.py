@@ -23,9 +23,9 @@ if __name__ == '__main__':
     db_version = '1.7'
     db_path = project_path().extend(f'data/final_db_versions/complex_db_v{db_version}.json')
 
-    # nmax = False
+    # n_max = False
     #
-    # complexes = ComplexDB.load_from_json(db_path, n_max=nmax)
+    # complexes = ComplexDB.load_from_json(db_path, n_max=n_max)
     # df = complexes.to_dataframe()
     #
     # csvpath = db_path.with_suffix('.csv')

@@ -1,0 +1,160 @@
+batches:
+  - isomer_instruction: "all"
+    max_num_complexes: 1
+    total_charge: 0
+    name: "3-2-1"
+    random_seed: 0
+    geometry:
+      - metal_1:
+          metal_type: Fe
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0]
+      - ligand_1:
+          origin : [ 0, 0, 0]
+          vector_1: [ 0, 0, 1]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/ligand_filter_inputs/monodentate.json
+      - ligand_2:
+          origin : [ 0, 0, 0]
+          vector_1: [ -1, 0, 0]
+          vector_2: [ 0, 0, -1]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/ligand_filter_inputs/bidentate.json
+      - ligand_3:
+          origin : [ 0, 0, 0]
+          vector_1: [ 0, -1, 0]
+          vector_2: [ 0, 1, 0]
+          vector_3: [ 1, 0, 0]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/testing/integration_tests/assembly/data_input/oer_ligands.jsonlines # it will be a good test to use very different ligand databases
+
+  - isomer_instruction: "all"
+    max_num_complexes: 1
+    total_charge: 0
+    name: "3-3"
+    random_seed: 0
+    geometry:
+      - metal_1:
+          metal_type: Ru
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, -1, 0 ]
+          vector_2: [ 0, 1, 0 ]
+          vector_3: [ 1, 0, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/testing/integration_tests/assembly/data_input/oer_ligands.jsonlines # it will be a good test to use very different ligand databases
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          vector_2: [ 0, 0, -1]
+          vector_3: [ -1, 0, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/testing/integration_tests/assembly/data_input/oer_ligands.jsonlines # it will be a good test to use very different ligand databases
+
+  - isomer_instruction: "all"
+    max_num_complexes: 3
+    total_charge: 0
+    name: "1-1-1-1-1-1"
+    random_seed: 8
+    geometry:
+      - metal_1:
+          metal_type: Mo
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 1, 0, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ -1, 0, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_3:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 1, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_4:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, -1, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_5:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_6:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, -1 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+
+  - isomer_instruction: "all"
+    max_num_complexes: 3
+    total_charge: 0
+    name: "1-1-1-1-1-1"
+    random_seed: 8
+    geometry:
+      - metal_1:
+          metal_type: Mo
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 1, 0, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ -1, 0, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_3:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 1, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_4:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, -1, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_5:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_6:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, -1 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+
+  - isomer_instruction: "all"
+    max_num_complexes: 3
+    total_charge: 0
+    name: "Bimetallic"
+    random_seed: 8
+    geometry:
+      - metal_1:
+          metal_type: Mo
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - metal_2:
+          metal_type: Mo
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 1, 0, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ -1, 0, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_3:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 1, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_4:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, -1, 0 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_5:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+      - ligand_6:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, -1 ]
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/Assembler_revision_jan_2025/assembler/ligand_filtering/small_mono.json
+
+

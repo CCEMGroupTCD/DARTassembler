@@ -1,4 +1,0 @@
-,Ligand ID,Stoichiometry,Denticity,Formal Charge,Donors,Number of Atoms,Molecular Weight,Ligand Planarity,Haptic,Beta-Hydrogen,Max. Interatomic Distance,Graph ID,CSD Occurrences,CSD Complex IDs,CSD Metal Count
-Ligand 0,unq_CSD-OZOPUQ-03-a,C17H12N3O2,3,-1,N-O-N,34,290.30199999999996,0.6480558767,False,True,15.563519098841367,75ce8701f94009eeecba3d27e8ef0a37,2,"OZOPUQ, OZOPUQ",Cu(2)
-Ligand 1,unq_CSD-PAZFAX-02-a,C21H16N1S1,2,-1,S-N,39,314.426,0.1514947543,False,False,13.378787252213856,e452874026037a98ca89f922dc5b66c9,2,"PAZFAX, PAZFAX",Ni(2)
-Ligand 2,unq_CSD-PAKHOB-01-c,C7H7O3S1,1,-1,O,18,171.19,0.3274194887,False,False,7.146087683481081,8f0ac0457896e200dcbdf1915f42b7b0,116,"PAKHOB, PAKHOB, PAKHUH, PAKHUH, PAKJAP, ... (111 more)","Ag(33), Cu(16), Fe(10), Pd(9), Zn(9), ... (14 more)"
