@@ -1,9 +1,9 @@
 import ase
 import numpy as np
 import itertools
-from scipy.spatial.transform import Rotation as R
 import warnings
-warnings.filterwarnings("ignore", category=UserWarning)
+from scipy.spatial.transform import Rotation as R
+
 
 def xy_angle(angle: float) -> np.ndarray:
     """
@@ -218,7 +218,7 @@ def try_all_geometrical_isomer_possibilities(
 
     return all_best_isomers, all_best_idc, best_rssd
 
-def assign_geometry(atoms: ase.Atoms, donor_idc: list[int]) -> tuple[str, list[ase.Atoms], float, str, float]:
+def assign_geometry(atoms: ase.Atoms, donor_idc: list[int]) -> tuple[str, list[ase.Atoms], list[list[int]], float, str, float]:
     """
     Assigns the geometry of a ligand.
     :param atoms: ASE Atoms object of the ligand.
@@ -226,8 +226,9 @@ def assign_geometry(atoms: ase.Atoms, donor_idc: list[int]) -> tuple[str, list[a
     :return: Tuple of:
         - The assigned geometry
         - List of ASE Atoms objects of the best isomers
+        - List of lists of indices of the best isomers
         - The root sum of squared differences (RSSD) of the assigned geometry
-        - The second best geometry
+        - The second-best geometry
         - The weight necessary for a change in geometry
     """
     denticity = len(donor_idc)
@@ -238,24 +239,24 @@ def assign_geometry(atoms: ase.Atoms, donor_idc: list[int]) -> tuple[str, list[a
 
     all_rssds = []
     for geometry in geometries.keys():
-        isomers, best_idc, rssd = get_geometrical_isomers_from_trying_out_all_possibilities(
+        isomers, isomer_donor_idc, rssd = get_geometrical_isomers_from_trying_out_all_possibilities(
                                                                                             atoms=atoms,
                                                                                             donor_idc=donor_idc,
                                                                                             geometry=geometry
                                                                                             )
-        all_rssds.append((geometry, rssd, isomers, best_idc))
-    geometry, rssd, isomers, best_idc = min(all_rssds, key=lambda x: x[1])  # Find geometry with lowest rssd
+        all_rssds.append((geometry, rssd, isomers, isomer_donor_idc))
+    geometry, rssd, isomers, isomer_donor_idc = min(all_rssds, key=lambda x: x[1])  # Find geometry with lowest rssd
 
-    # Find second best geometry.
-    if len(all_rssds) == 1:     # There is only one geometry, so there is no second best geometry.
+    # Find second-best geometry.
+    if len(all_rssds) == 1:     # There is only one geometry, so there is no second-best geometry.
         second_best_geometry, second_best_rssd = None, np.nan
     else:
         second_best_geometry, second_best_rssd, _, _ = min([x for x in all_rssds if x[0] != geometry], key=lambda x: x[1])
 
-    # Calculate the weight necessary for a change in geometry. Useful to see how much the geometry would have to change to be the second best geometry.
+    # Calculate the weight necessary for a change in geometry. Useful to see how much the geometry would have to change to be the second-best geometry.
     weight_necessary_for_change = second_best_rssd / rssd
 
-    return geometry, isomers, rssd, second_best_geometry, weight_necessary_for_change
+    return geometry, isomers, isomer_donor_idc, rssd, second_best_geometry, weight_necessary_for_change
 
 def align_donor_atoms(
                         atoms: ase.Atoms,
@@ -280,8 +281,10 @@ def align_donor_atoms(
     # Normalize the donor vectors and target vectors to unit vectors so that only the direction of the vectors counts, not the magnitude.
     donor_vectors = donor_vectors / np.linalg.norm(donor_vectors, axis=1)[:, None]
     target_vectors = target_vectors / np.linalg.norm(target_vectors, axis=1)[:, None]
-    # Find the correct rotation to align the donor vectors with the target vectors
-    rot, rssd = R.align_vectors(a=target_vectors, b=donor_vectors)  # the a and b are unintuitive but correct
+    # Find the correct rotation to align the donor vectors with the target vectors. Suppress warnings because we use this function a lot with bad rotations simply because we are trying to find the best rotation.
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        rot, rssd = R.align_vectors(a=target_vectors, b=donor_vectors)  # the a and b are unintuitive but correct
     # Apply the rotation to all the atoms of the ligand
     rotated_coords = rot.apply(atoms.positions)
     atoms.set_positions(rotated_coords)

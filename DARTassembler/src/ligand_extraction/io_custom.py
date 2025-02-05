@@ -295,10 +295,10 @@ def iterate_unique_ligand_db(path: Union[str, Path], molecule: str= 'dict', n_ma
     filename = Path(db_path).name
     for name, mol_dict in tqdm(iterate_over_json(db_path, n_max=n_max, show_progress=False), disable=not show_progress, desc=f'Load ligand db `{filename}`', file=sys.stdout, unit=' ligands'):
         if molecule == 'class':
-            try:
-                mol = RCA_Ligand.read_from_mol_dict(mol_dict)
-            except Exception as e:
-                raise ValueError(f"Error: the provided file '{db_path}' seems to not be a valid ligand database file. Internal error message:\n{e}.")
+            # try:
+            mol = RCA_Ligand.read_from_mol_dict(mol_dict)
+            # except Exception as e:
+            #     raise ValueError(f"Error: the provided file '{db_path}' seems to not be a valid ligand database file. Internal error message:\n{e}.")
         else:
             mol = mol_dict
         yield name, mol

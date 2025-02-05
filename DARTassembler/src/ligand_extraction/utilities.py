@@ -9,6 +9,15 @@ import pandas as pd
 from collections import namedtuple
 from typing import Tuple, Union, List, Dict
 
+def get_stable_sorted_value_counts(values: list, ascending=False) -> dict:
+    """
+    Returns a dictionary of value counts sorted by the value in ascending order. The sorting is stable, i.e. the order of equal values is preserved by ordering first by the values and second by the alphabetical order of the keys.
+    :param values: list of values
+    :param ascending: Whether to sort the indices in ascending order (True) or descending order (False)
+    :return: Dictionary of value counts sorted by the value in ascending order
+    """
+    # Using mergesort is important to make this sorting stable
+    return pd.Series(values).value_counts().sort_index().sort_values(ascending=ascending, kind='mergesort').to_dict()
 
 def angle_between_ab_ac_vectors(a: list, b: list, c: list, degrees: bool=True) -> float:
     """

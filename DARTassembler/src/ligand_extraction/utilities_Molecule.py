@@ -1,6 +1,6 @@
 import collections
 from typing import Union
-
+import ase
 import networkx as nx
 from rdkit import Chem
 import numpy as np
@@ -9,13 +9,61 @@ import re
 
 unknown_rdkit_bond_orders = [0, 20, 21]
 
-
-def get_denticities_and_hapticities_idc(graph: nx.Graph, donor_idc) -> list[Union[int, list[int]]]:
+def get_isomers_effective_ligand_atoms_with_effective_donor_indices(
+                                                                    ligand_atoms: ase.Atoms,
+                                                                    geometric_isomers_hapdent_idc: list,
+                                                                    dummy='Cu'
+                                                                    ) -> tuple[ase.Atoms, list[list[int]]]:
     """
-    Get the denticities and hapticities of a donor ligand. Return a list in which each element is either an integer (denticity) or a list of integers (hapticity).
+    For each geometric isomer of this ligand, returns the effective donor atoms in which a dummy donor atom is placed at the mean position of each haptic group. Also returns the effective donor indices of each isomer. In total, the resulting ase.Atoms and indices can be used like any other ligand without haptic interactions.
+    :param dummy: Element symbol of the dummy atom.
+    :return: Tuple of ase.Atoms object and list of effective donor indices for each isomer.
+    """
+    # Get the effective donor atoms and indices with always the same hapdent_idc.
+    ref_hapdent_idc = geometric_isomers_hapdent_idc[0]
+    eff_atoms, eff_idc = get_all_effective_ligand_atoms_with_effective_donor_indices(
+        ligand_atoms=ligand_atoms,
+        hapdent_idc=ref_hapdent_idc,
+        dummy=dummy
+    )
+
+    isomers_eff_donor_idc = []
+    for hapdent_idc in geometric_isomers_hapdent_idc:
+        # Make the effective indices reflect the order of hapdent_idc in self.geometric_isomers_hapdent_idc.
+        eff_idc_ordered = [eff_idc[ref_hapdent_idc.index(i)] for i in hapdent_idc]
+        isomers_eff_donor_idc.append(eff_idc_ordered)
+
+    return eff_atoms, isomers_eff_donor_idc
+
+def get_all_effective_ligand_atoms_with_effective_donor_indices(ligand_atoms: ase.Atoms, hapdent_idc: list, dummy: str= 'Cu') -> tuple[ase.Atoms, list[int]]:
+    """
+    Returns an ase.Atoms object containing all normal atoms in the ligand plus the dummy atoms plus a list of effective donor indices of this ase.Atoms object.
+    :param ligand_atoms: ase.Atoms object of the ligand.
+    :param hapdent_idc: List of donor indices with haptic groups in sublists.
+    :param dummy: Element symbol of the dummy atom.
+    :return: Tuple of ase.Atoms object and list of effective donor indices.
+    """
+    all_atoms = ligand_atoms.copy()
+    eff_donor_idc = []
+    for haptic_group in hapdent_idc:
+        if isinstance(haptic_group, int):
+            eff_donor_idc.append(haptic_group)
+        elif isinstance(haptic_group, tuple):
+            haptic_coordinates = ligand_atoms[haptic_group].get_positions()
+            mean_position = np.mean(haptic_coordinates, axis=0)
+            effective_donor_atom = ase.Atom(dummy, mean_position)
+            all_atoms.append(effective_donor_atom)
+            eff_donor_idx = len(all_atoms) - 1
+            eff_donor_idc.append(eff_donor_idx)
+
+    return all_atoms, eff_donor_idc
+
+def get_denticities_and_hapticities_idc(graph: nx.Graph, donor_idc) -> tuple[Union[int, tuple[int]]]:
+    """
+    Get the denticities and hapticities of a donor ligand. Return a tuple in which each element is either an integer (denticity) or a tuple of integers (hapticity).
     :param graph: Networkx graph of the ligand
     :param donor_idc: List of donor atom indices
-    :return: List of denticities and hapticities
+    :return: Tuple of donor indices with haptic groups as sub-tuples.
     """
     # Make a subgraph of only the donor atoms
     donor_subgraph = graph.subgraph(donor_idc)
@@ -23,12 +71,12 @@ def get_denticities_and_hapticities_idc(graph: nx.Graph, donor_idc) -> list[Unio
     components = list(nx.connected_components(donor_subgraph))
     denticities_and_hapticities = [sorted(component) for component in components]
     # Make them all integers explicitly
-    denticities_and_hapticities = [[int(i) for i in component] for component in denticities_and_hapticities]
-    # If a list has only one element, it's a denticity, take it out of the list
+    denticities_and_hapticities = [tuple([int(i) for i in component]) for component in denticities_and_hapticities]
+    # If a tuple has only one element, it's a denticity, take it out of the list
     denticities_and_hapticities = [component[0] if len(component) == 1 else component for component in
                                    denticities_and_hapticities]
 
-    return denticities_and_hapticities
+    return tuple(denticities_and_hapticities)
 
 def get_rdkit_mol_from_smiles(smiles: str, sanitize: bool=False) -> Chem.Mol:
     """

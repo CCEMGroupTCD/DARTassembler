@@ -1,4 +1,7 @@
 from pathlib import Path
+
+import pandas as pd
+
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 import warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -29,6 +32,13 @@ if __name__ == '__main__':
                                             sort_by_rssd=sort_by_rssd,
                                             output_all_isomers=output_all_isomers
                                             )
+
+    # Load data into pandas DataFrame
+    long_data = []
+    for geometry, info in data.items():
+        for name, rssd, _, _, _, idc in info:
+            long_data.append([geometry, name, rssd, idc])
+    df = pd.DataFrame(long_data, columns=['geometry', 'name', 'rssd', 'idc'])
 
     # # Plot distribution of rssd values
     # import seaborn as sns

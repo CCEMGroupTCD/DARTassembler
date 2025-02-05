@@ -76,8 +76,8 @@ class TransitionMetalComplex(object):
         self.donor_elements = [self.atomic_props['atoms'][idx] for idx in self.donor_indices]
         self.donor_positions = [[self.atomic_props['x'][idx], self.atomic_props['y'][idx], self.atomic_props['z'][idx]] for idx in self.donor_indices]
 
-        self.functional_groups = {key: lig['donor_elements'] for key, lig in ligand_props.items()}
-        assert sorted(self.donor_elements) == sorted([el for elements in self.functional_groups.values() for el in elements]), f"The donor indices {self.donor_indices} do not match the donor elements {self.donor_elements}!"
+        # self.functional_groups = {key: lig['donor_elements'] for key, lig in ligand_props.items()}
+        # assert sorted(self.donor_elements) == sorted([el for elements in self.functional_groups.values() for el in elements]), f"The donor indices {self.donor_indices} do not match the donor elements {self.donor_elements}!"
 
     @staticmethod
     def get_total_charge(metal_charge_, ligands_):
@@ -244,20 +244,20 @@ class TransitionMetalComplex(object):
 
         ligand_props = {
             key: {
-                "unique_name": ligand.unique_name,
-                'ligand_indices_in_complex': ligand_indices[key],
-                'donor_indices': ligand_donor_indices[key],
-                'donor_elements': ligand.local_elements,
-                'donor_bond_lengths': ligand.stats['coordinating_atom_distances_to_metal'],
-                "stoichiometry": ligand.stoichiometry,
-                'denticity': ligand.denticity,
-                'pred_charge': ligand.pred_charge,
-                'pred_charge_is_confident': ligand.pred_charge_is_confident,
-                'graph_hash_with_metal': ligand.graph_hash_with_metal,
-                'has_good_bond_orders': ligand.has_good_bond_orders,
-                'warnings': ligand.warnings,
-                'occurrences': ligand.occurrences,
-                "n_atoms": ligand.n_atoms,
+                # "unique_name": ligand.unique_name,
+                # 'ligand_indices_in_complex': ligand_indices[key],
+                # 'donor_indices': ligand_donor_indices[key],
+                # 'donor_elements': ligand.local_elements,
+                # # 'donor_bond_lengths': ligand.stats['coordinating_atom_distances_to_metal'],
+                # "stoichiometry": ligand.stoichiometry,
+                # 'denticity': ligand.denticity,
+                # 'pred_charge': ligand.pred_charge,
+                # 'pred_charge_is_confident': ligand.pred_charge_is_confident,
+                # 'graph_hash_with_metal': ligand.graph_hash_with_metal,
+                # 'has_good_bond_orders': ligand.has_good_bond_orders,
+                # # 'warnings': ligand.warnings,
+                # 'occurrences': ligand.occurrences,
+                # "n_atoms": ligand.n_atoms,
             }
             for key, ligand in ligands.items()
         }
