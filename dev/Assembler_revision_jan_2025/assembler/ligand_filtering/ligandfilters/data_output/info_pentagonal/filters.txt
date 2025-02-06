@@ -1,0 +1,15 @@
+===============================  Filter Options  ===============================
+Filter 01: denticities                         denticities: [6]
+Filter 02: remove_ligands_with_missing_bon...  remove_ligands_with_missing_bond_orders: True, apply_to_denticities: [6]
+===============================  Filter Results  ===============================
+                                               Ligands passed  Ligands removed
+Filter 01: denticities                              1230            39788     
+Filter 02: remove_ligands_with_missing_bon...       1209               21     
+==================  Total summary of DART Ligand Filters run  ==================
+Before filtering:  41018 ligands
+Filtered out:      39809 ligands
+Passed:            1209 ligands
+Denticities:       6: 1209
+Filtered ligand database with 1209 ligands was saved to `pentagonal.json`.
+Info on filtered ligands saved to directory `info_pentagonal`.
+Done! All ligands filtered. Exiting DART Ligand Filters Module.

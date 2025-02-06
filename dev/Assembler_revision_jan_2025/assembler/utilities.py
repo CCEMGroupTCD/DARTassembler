@@ -280,7 +280,7 @@ class BatchInput:
 
 class AssemblyComplex(object):
 
-    def __init__(self, ligands: Dict[int, MoleculeDB], target_vectors: List[Dict[Any, List[float]]], ligand_origins: List[List[float]], metal_origins: List[List[float]],
+    def __init__(self, ligands: Dict[int, RCA_Ligand], target_vectors: List[Dict[Any, List[float]]], ligand_origins: List[List[float]], metal_origins: List[List[float]],
                  metal_types: List[str], monometallic: bool = False):
         """
         Generates novel transition metal complexes from ligands and metals
@@ -328,18 +328,21 @@ class AssemblyComplex(object):
         """
         rotated_ligands = []
         for ligand, target_vectors, origin in zip(self.ligands, self.target_vectors, self.ligand_origins):
-            ligand: RCA_Ligand
-            ase_ligand = ligand.get_ase_molecule()
-            _, donor_atom_idx = ligand.get_all_effective_atoms_with_effective_donor_indices()
-            target_vectors_2 = [np.array(v) for v in target_vectors.values()]
-            # todo: implement the following method in the RCA_Ligand class
-            #RCA_Ligand.get_ligand_geometry_and_isomers()
-            ligand_isomers, donor_atoms_ordered, rssd = try_all_geometrical_isomer_possibilities(atoms=ase_ligand,
-                                                                                                 donor_idc=donor_atom_idx,
-                                                                                                 target_vectors=target_vectors_2)
+            # Extract the geometry and donor atoms of the ligand
+            geometry, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
+            # cast the target vectors to numpy arrays
+            target_vectors = [np.array(v) for v in target_vectors.values()]
+            # Align the donor atoms of the ligand to the target vectors
+            ligand_isomers, donor_atoms_ordered, rssd = try_all_geometrical_isomer_possibilities(atoms=geometry,
+                                                                                                 donor_idc=donor_atoms[0],
+                                                                                                 target_vectors=target_vectors)
+            if ligand.eta != 0:
+                # If the ligand has a haptic coordination we must remove the dummy donor atom
+                for isomer in ligand_isomers:
+                    self._remove_haptic_dummy_atom(atoms=isomer, dummy_atom="Cu", index_list=donor_atoms[0])
+            # append the ligand isomers to the list of rotated ligands
             rotated_ligands.append(ligand_isomers)
 
-        # Generate all possible isomers
         all_isomers = self._gen_all_isomers(rotated_ligands)
 
         return all_isomers
@@ -357,7 +360,7 @@ class AssemblyComplex(object):
     def _gen_all_isomers(self, ligands: List[List[Atoms]]):
         """
         Generate all possible isomers from a list of ligands which have multiple isomers
-        :param ligands: list: [[ligand1_isomer1, Ligand1_isomer2], [ligand2_isomer1, ligand2_isomer2] ...]
+        :param ligands: list: [[ligand1_isomer1, Ligand1_isomer2], [ligand2_isomer1, ligand2_isomer2], [ligand3_isomer1, ligand3_isomer2, ligand3_isomer3], ...]
         :return: list of ase objects
         """
         # Generate all combinations; each combination is a tuple with one isomer per ligand.
@@ -379,3 +382,29 @@ class AssemblyComplex(object):
         :return:
         """
         return self.assembled_complexes
+
+    def _remove_haptic_dummy_atom(self, atoms: ase.Atoms, dummy_atom: str, index_list: List[int]) -> None:
+        """
+        Removes the dummy atom from the ligand
+        :param dummy_atom: The dummy atom to remove
+        """
+        # Find the index of the dummy atom
+        dummy_index = [i for i, atom in enumerate(atoms) if atom.symbol == dummy_atom][0]
+        # Remove the dummy atom from the index list
+        index_list.remove(dummy_index)
+        # Remove the dummy atom from the atoms object
+        del atoms[dummy_index]
+
+
+# Generate all possible isomers
+# todo: How the following method needs to be modified to account for swapping ligands of a same coordination mode (e.g. 1-1-1-1-1-1 or 2-2-2 or 3-3 (but the 3-3 case kind of doesn't apply))
+# todo: 1. we need a measure of ligand coordination similarity. should probs use string: "monodentate", "trigonal", "tetragonal offset", etc.
+# todo: 2. For example, lets say we have Ligands A, B, C and D
+    # todo: A: monodentate
+    # todo: B: monodentate
+    # todo: C: monodenate
+    # todo: D: tridenate
+# todo: 3. We need to generate all possible isomers, enantiomers of the complex
+# todo: 4. not only can the tridentate be flipped but the monodentates can be exchaged as well
+# todo: 5. to swap ligands we need to transform (rotate) them based on their origin and target vectors (translate based on vector between origins and rotate based on the angle between the target vectors)
+# todo: 6. this needs to be done for every possible combination of "swappable" ligands

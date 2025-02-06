@@ -1,13 +1,9 @@
 from pathlib import Path
 import yaml
 import random
-
-from ase.visualize import view
 from utilities import BatchInput, AssemblyComplex
-
 from DARTassembler.src.assembly.ligands import LigandChoice
-
-
+from ase.visualize import view
 
 if __name__ == "__main__":
 
@@ -74,6 +70,6 @@ if __name__ == "__main__":
 # 8. todo what about the 2-2-1-1 mirror image case i.e. [Co(en)2Cl2]+ (https://crunchchemistry.co.uk/isomerism-in-transition-metal-complexes/)
 # 9. todo optimize the TMCs
 # 10. todo geometry assignment -> ligands
-
+# 11. todo load from json does not seem to work (assert self.denticity == self.kappa + self.eta, f'Number of donors ({self.denticity}) does not equal number of kappa ({self.kappa}) plus eta ({self.eta}) in ligand {self.unique_name}. I commented out this assert statement)
 
 
