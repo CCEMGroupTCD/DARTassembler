@@ -37,7 +37,6 @@ class BaselineDB:
         """
         self.db = dict_
         self.names = list(self.db.keys())
-        self.reduced_df = self.get_reduced_df()
 
     def __len__(self):
         return len(self.db)
@@ -318,8 +317,7 @@ class LigandDB(MoleculeDB):
         return df_ligand_info
 
     def save_reduced_csv(self, outpath: Union[str, Path], max_entries: int=5) -> None:
-        ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}
-        df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
+        df_ligand_info = self.get_ligand_output_df(max_entries=max_entries)
         df_ligand_info.to_csv(outpath, index=False)
         return
 
@@ -596,7 +594,7 @@ class LigandDB(MoleculeDB):
         n_ligands = len(geometry)
         geometry = sorted(geometry)
 
-        df = self.reduced_df.query('denticity in @geometry and not pred_charge.isnull()')[['denticity', 'pred_charge']].astype(int)
+        df = self.get_reduced_df().query('denticity in @geometry and not pred_charge.isnull()')[['denticity', 'pred_charge']].astype(int)
 
         df = df.groupby(['denticity', 'pred_charge']).size().reset_index().rename(columns={0: 'count'})
         count = 0

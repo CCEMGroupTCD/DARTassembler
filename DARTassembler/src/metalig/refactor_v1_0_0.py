@@ -2,7 +2,6 @@ from copy import deepcopy
 
 
 refactor_ligand_dict = {
-    "unique_name": "unique_name",
     "atomic_props": "atomic_props",
     "global_props": "global_props",
     "graph_dict": "graph",
@@ -11,8 +10,8 @@ refactor_ligand_dict = {
     "original_metal_position": "parent_metal_position",
 }
 refactor_global_props_dict = {
+    "unique_name": "unique_name",
     "pred_charge": "charge",
-    "stoichiometry": "stoichiometry",
     "molecular_weight": "molecular_weight",
     "denticity": "n_donors",
     "n_atoms": "n_atoms",
@@ -51,6 +50,7 @@ refactor_other_ligand_instances_dict = {
 }
 remove_properties = [
     'all_ligand_names',
+    'stoichiometry',
     'n_metals',
     'odd_n_electron_count',
     'is_centrosymmetric',
@@ -183,6 +183,9 @@ def refactor_metalig_entry_from_v1_0_0_to_v1_1_0(ligand: dict) -> dict:
     all_real_props = set(ligand.keys()).union(set(ligand['global_props'].keys())).union(
         set(ligand['other_ligand_instances'].keys()))
     assert all_props_after_expected_new == all_real_props, f'Not all properties are covered by the refactoring. Missing: {all_props_after_expected_new - all_real_props}'
+
+    # Rename some special properties
+    ligand['atomic_props']['parent_complex_idc'] = ligand['atomic_props'].pop('original_complex_indices')
 
     # Reindex graph and make indices integers
     ligand['graph'] = reindex_graph_dict(ligand['graph'])

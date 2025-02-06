@@ -413,9 +413,15 @@ def get_standardized_stoichiometry_from_atoms_list(atoms: list) -> str:
         if 'H' in elements:
             elements = ["H"] + [el for el in elements if el != "H"]
 
-    # formula = [f"{el}{(c[el]) if c[el] != 1 else ''}" for el in elements] # drop the 1 if an element occurs only once
-    formula = [f"{el}{(c[el])}" for el in elements]
-    return "".join(formula)
+    # Make metals come first
+    metals = [el for el in elements if DART_Element(el).is_metal]
+    non_metals = [el for el in elements if el not in metals]
+    elements = metals + non_metals
+
+    formula = [f"{el}{(c[el]) if c[el] != 1 else ''}" for el in elements] # drop the 1 if an element occurs only once
+    formula = "".join(formula)
+
+    return formula
 
 
 def get_concatenated_xyz_string_from_coordinates(coord_list: list[np.array], element_list: list[list[str]], comment: str = "") -> str:

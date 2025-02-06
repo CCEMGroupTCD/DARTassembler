@@ -1,4 +1,6 @@
 from copy import deepcopy
+from pathlib import Path
+
 import pandas as pd
 from tqdm import tqdm
 
@@ -6,25 +8,14 @@ from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
 # todo refactor metalig and DART:
 # MetaLig:
-# - remove denticity and instead use kappa, eta, elcn, n_donors etc.
-# - rename original_complex_indices in atomic_props to parent_complex_idc
-# - improve stoichiometry string. Do this by deleting the stoichiometry property and re-calculating it from the atomic_props
-# - add properties
-#   - kappa
-#   - eta
-#   - elcn
-#   - hapdent_idc
-#   - isomers_hapdent_idc
-#   - ligand_planarity
-#   - donor_planarity
-# DART
+# DART:
 # refactor ligandinfo output to include only relevant output
 
 
 if __name__ == '__main__':
     n_max = 100
 
-    outpath = 'ligand_db_v1_1_0.jsonlinesd'
+    outpath = 'data/ligand_db_v1_1_0.jsonlines'
     db = LigandDB.load_from_json(path='metalig', n_max=n_max)
     data = []
     for uname, ligand in tqdm(db.db.items(), desc='Refactoring ligands'):
@@ -37,6 +28,7 @@ if __name__ == '__main__':
     df_haptic.sort_values(by=['geometry', 'uname'], inplace=True)
 
     db.save_to_file(outpath)
+    df0 = db.save_reduced_csv(Path(outpath).with_suffix('.csv'))
 
     # from DARTassembler.src.ligand_extraction.io_custom import load_jsonlines
     # db_dict = load_jsonlines(default_ligand_db_path, n_max=n_max)

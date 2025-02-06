@@ -180,7 +180,7 @@ class LigandFilters(object):
 
         # Clean up the ligand df
         self.df_all_ligands.fillna({'Filter': 'Passed'}, inplace=True)      # fill in 'Passed' for ligands that were not filtered out
-        self.df_all_ligands.set_index('Ligand ID', inplace=True)    # set index to ligand ID, making sure that the column in the csv is named 'Ligand ID'
+        self.df_all_ligands.set_index('unique_name', inplace=True)    # set index to ligand ID, making sure that the column in the csv is named 'Ligand ID'
         columns = ['Filter'] + [col for col in self.df_all_ligands.columns if col != 'Filter']
         self.df_all_ligands = self.df_all_ligands[columns]                # move 'Filter' column to the front
         self.df_all_ligands = self.df_all_ligands.sort_values(by='Filter')# sort by filter name

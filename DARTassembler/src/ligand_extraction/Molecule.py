@@ -197,7 +197,12 @@ class RCA_Molecule(object):
 
     @cached_property
     def stoichiometry(self) -> str:
-        return self.get_standardized_stoichiometry()
+        try:
+            stoichiometry = self.global_props['stoichiometry']
+        except KeyError:
+            stoichiometry = self.get_standardized_stoichiometry()
+            self.global_props['stoichiometry'] = stoichiometry
+        return stoichiometry
 
     def validity_check_created_molecule(self) -> None:
         """
@@ -620,7 +625,7 @@ class RCA_Molecule(object):
 
     def get_standardized_stoichiometry(self) -> str:
         """
-        Returns a string with the stoichiometry in a standardized way. We use the Hill notation, except that for elements with stoichiometry 1 this 1 is written as well.
+        Returns a string with the stoichiometry. Metals come first, then C, then H, then other elements. If an element exists only once, the count of 1 is not written.
         :return: stoichiometry (str)
         """
         formula = get_standardized_stoichiometry_from_atoms_list(self.get_elements_list())
@@ -923,6 +928,8 @@ class RCA_Ligand(RCA_Molecule):
         self.pred_charge = self.global_props['charge']
         self.original_metal_position = parent_metal_position
         self.other_ligand_instances = other_ligand_instances
+
+        # Saving the hapdent_idc as json converts the tuples to lists, so we need to convert them back to tuples
         if hapdent_idc is not None:
             self.hapdent_idc = format_hapdent_idc(hapdent_idc)
         if geometric_isomers_hapdent_idc is not None:
@@ -951,6 +958,11 @@ class RCA_Ligand(RCA_Molecule):
         self.global_props['elcn'] = self.elcn
         self.global_props['kappa'] = self.kappa
         self.global_props['eta'] = self.eta
+
+        # Mention some properties so it's certain they are stored in global_props and computed if they don't exist yet.
+        self.geometry
+        self.smiles
+        self.stoichiometry
 
 
         # self.was_connected_to_metal = len(self.local_elements) > 0
@@ -1036,6 +1048,15 @@ class RCA_Ligand(RCA_Molecule):
             return self.global_props['geometry_confidence']
         except KeyError:
             return self._geometry_and_geometrical_isomers['geometry_confidence']
+
+    @cached_property
+    def smiles(self):
+        try:
+            smiles = self.global_props['smiles']
+        except KeyError:
+            smiles = self.get_smiles()
+            self.global_props['smiles'] = smiles
+        return smiles
 
     @cached_property
     def count_metals(self):
@@ -1616,27 +1637,9 @@ class RCA_Ligand(RCA_Molecule):
 
         return geometry, real_isomers, hapdent_isomer_idc, rssd, second_geometry, weight_necessary_for_change
 
-    def get_ligand_output_info(self, max_entries=5, add_confident_charge=False) -> dict:
+    def get_ligand_output_info(self, max_entries=5) -> dict:
 
-        info = {
-            'Ligand ID': self.unique_name,
-            'Stoichiometry': self.stoichiometry,
-            'Denticity': self.denticity,
-            'Formal Charge': int(self.pred_charge) if not np.isnan(self.pred_charge) else self.pred_charge,
-            'Donors': '-'.join(self.local_elements),
-            'Number of Atoms': self.n_atoms,
-            'Molecular Weight': self.global_props['molecular_weight'],
-            'Ligand Planarity': self.calculate_planarity(),
-            'Haptic': self.has_neighboring_coordinating_atoms,
-            'Beta-Hydrogen': self.has_betaH,
-            'Max. Interatomic Distance': self.global_props['max_ligand_extension'],
-            'Graph ID': self.graph_hash_with_metal,
-            'CSD Occurrences': self.global_props['n_ligand_instances'],
-            }
-        if add_confident_charge:
-            info['Charge Confident'] = self.pred_charge_is_confident
-        # if not planarity:
-        #     info.pop('Ligand Planarity')
+        info = self.global_props.copy()
 
         truncate_data = {
                             'CSD Complex IDs': self.other_ligand_instances['parent_complex_id'],
@@ -1688,13 +1691,9 @@ class RCA_Ligand(RCA_Molecule):
             # The input dictionary is in the old format. Convert it to the new format.
             dict_ = refactor_metalig_entry_from_v1_0_0_to_v1_1_0(dict_)
 
-        necessary_props = {'unique_name', 'atomic_props', 'global_props', 'graph', 'donor_idc', 'parent_metal_position', 'other_ligand_instances', 'hapdent_idc', 'geometric_isomers_hapdent_idc'}
+        necessary_props = {'atomic_props', 'global_props', 'graph', 'donor_idc', 'parent_metal_position', 'other_ligand_instances', 'hapdent_idc', 'geometric_isomers_hapdent_idc'}
         different_props = necessary_props.symmetric_difference(set(dict_.keys()))
         assert not different_props, f"Missing or unexpected properties in the ligand input dictionary: {different_props}"
-
-
-
-
 
         # Add default properties for properties not in the json. This is useful for properties which have been introduced in later versions of the code.
         # optional_props = {'warnings': []}
@@ -1714,7 +1713,7 @@ class RCA_Ligand(RCA_Molecule):
             atomic_props=dict_["atomic_props"],
             global_props=dict_["global_props"],
             # denticity=dict_["denticity"],
-            unique_name=dict_['unique_name'],
+            unique_name=dict_['global_props']['unique_name'],
             ligand_to_metal=dict_['donor_idc'],
             graph=graph,
             parent_metal_position=dict_['parent_metal_position'],
