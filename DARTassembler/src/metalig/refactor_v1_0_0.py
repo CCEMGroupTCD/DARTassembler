@@ -113,6 +113,7 @@ def refactor_metalig_entry_from_v1_0_0_to_v1_1_0(ligand: dict) -> dict:
     Refactor the MetaLig ligand database from version 1.0.0 to 1.1.0. This includes renaming, moving and removing some properties.
     """
     ligand = deepcopy(ligand)
+
     # Expand the properties from stats into global_props
     for prop in ligand['stats']:
         ligand['global_props'][prop] = ligand['stats'][prop]

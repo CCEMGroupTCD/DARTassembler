@@ -11,7 +11,7 @@ import pysmiles
 from DARTassembler.src.metalig.refactor_v1_0_0 import refactor_metalig_entry_from_v1_0_0_to_v1_1_0
 # some special functions which are required
 from DARTassembler.src.ligand_extraction.composition import Composition
-from DARTassembler.src.ligand_extraction.utilities_Molecule import get_planarity, get_denticities_and_hapticities_idc, get_isomers_effective_ligand_atoms_with_effective_donor_indices, get_all_effective_ligand_atoms_with_effective_donor_indices
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_planarity, get_denticities_and_hapticities_idc, get_isomers_effective_ligand_atoms_with_effective_donor_indices, get_all_effective_ligand_atoms_with_effective_donor_indices, format_hapdent_idc
 from ase.visualize import view
 from sympy import Point3D, Plane
 import re
@@ -924,9 +924,9 @@ class RCA_Ligand(RCA_Molecule):
         self.original_metal_position = parent_metal_position
         self.other_ligand_instances = other_ligand_instances
         if hapdent_idc is not None:
-            self.hapdent_idc = hapdent_idc
+            self.hapdent_idc = format_hapdent_idc(hapdent_idc)
         if geometric_isomers_hapdent_idc is not None:
-            self.geometric_isomers_hapdent_idc = geometric_isomers_hapdent_idc
+            self.geometric_isomers_hapdent_idc = [format_hapdent_idc(isomer_idc) for isomer_idc in geometric_isomers_hapdent_idc]
 
         # the indices and elements where the ligands was bound to the metal
         self.ligand_to_metal = ligand_to_metal
@@ -1691,6 +1691,8 @@ class RCA_Ligand(RCA_Molecule):
         necessary_props = {'unique_name', 'atomic_props', 'global_props', 'graph', 'donor_idc', 'parent_metal_position', 'other_ligand_instances', 'hapdent_idc', 'geometric_isomers_hapdent_idc'}
         different_props = necessary_props.symmetric_difference(set(dict_.keys()))
         assert not different_props, f"Missing or unexpected properties in the ligand input dictionary: {different_props}"
+
+
 
 
 
