@@ -1,5 +1,7 @@
 from copy import deepcopy
 import pandas as pd
+from tqdm import tqdm
+
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
 # todo refactor metalig and DART:
@@ -22,10 +24,10 @@ from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 if __name__ == '__main__':
     n_max = 10000
 
-    outpath = 'ligand_db_v1_1_0.jsonlines'
+    outpath = 'ligand_db_v1_1_0.jsonlinesd'
     db = LigandDB.load_from_json(path='metalig', n_max=n_max)
     data = []
-    for uname, ligand in db.db.items():
+    for uname, ligand in tqdm(db.db.items(), desc='Refactoring ligands'):
         eff_atoms, isomers_eff_idc = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
         for i, eff_idc in enumerate(isomers_eff_idc):
             donor_positions = list(eff_atoms[eff_idc].get_positions())
@@ -34,7 +36,7 @@ if __name__ == '__main__':
     df_haptic = df[df['haptic']]
     df_haptic.sort_values(by=['geometry', 'uname'], inplace=True)
 
-    # db.save_to_file(outpath)
+    db.save_to_file(outpath)
 
     # from DARTassembler.src.ligand_extraction.io_custom import load_jsonlines
     # db_dict = load_jsonlines(default_ligand_db_path, n_max=n_max)

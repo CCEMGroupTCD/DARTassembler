@@ -1,5 +1,5 @@
 import collections
-from typing import Union
+from typing import Union, Tuple
 import ase
 import networkx as nx
 from rdkit import Chem
@@ -8,6 +8,28 @@ from DARTassembler.src.constants.Periodic_Table import DART_Element
 import re
 
 unknown_rdkit_bond_orders = [0, 20, 21]
+
+def format_hapdent_idc(hapdent_idc) -> tuple[int, tuple[int]]:
+    """
+    Formats hapdent_idc so that it is a tuple containing integers or tuples of integers.
+    :param hapdent_idc: Iterable (list/tuple) of donor indices with haptic groups in sub-lists/sub-tuples.
+    :return: Tuple of donor indices with haptic groups as sub-tuples.
+    """
+    out_hapdent_idc = []
+    for idx in hapdent_idc:
+        try:
+            # If idx is an integer it should stay an integer. Convert to integer here in case it is something like a np.int64 or so.
+            idx = int(idx)
+        except TypeError:
+            # If idx is an iterable like a list or tuple, it should be converted to a tuple
+            if not (isinstance(idx, tuple) or isinstance(idx, list)):
+                raise TypeError(f'hapdent_idc must contain integers or tuples of integers, got {type(idx)}.')
+            idx = tuple(idx)
+        out_hapdent_idc.append(idx)
+
+    out_hapdent_idc = tuple(out_hapdent_idc)    # Convert the entire hapdent_idc to a tuple
+
+    return out_hapdent_idc
 
 def get_isomers_effective_ligand_atoms_with_effective_donor_indices(
                                                                     ligand_atoms: ase.Atoms,
