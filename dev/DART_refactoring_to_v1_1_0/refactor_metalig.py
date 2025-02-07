@@ -8,8 +8,10 @@ from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
 # todo refactor metalig and DART:
 # MetaLig:
+    # - smiles_with_metal
 # DART:
 # refactor ligandinfo output to include only relevant output
+
 
 
 if __name__ == '__main__':

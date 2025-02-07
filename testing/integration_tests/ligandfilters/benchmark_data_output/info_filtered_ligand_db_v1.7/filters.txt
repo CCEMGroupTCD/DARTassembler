@@ -1,33 +1,34 @@
 ===============================  Filter Options  ===============================
-Filter 01: number_of_atoms                     min: 1.0, max: 80.0, apply_to_denticities: None
-Filter 02: ligand_charges                      ligand_charges: [-2, -1, 0], apply_to_denticities: None
-Filter 03: metal_ligand_binding_history        metal_ligand_binding_history: ['Fe', 'Mn', 'Cr', 'Ru', 'Co', 'Ni', 'Cu', 'Ir', 'Mo'], apply_to_denticities: None
-Filter 04: coordinating_atoms_composition      elements: ['O'], instruction: must_exclude, apply_to_denticities: None
-Filter 05: molecular_weight                    min: 30.1, max: 300.2, apply_to_denticities: None
-Filter 06: planarity                           min: 0.2, max: 1.0, apply_to_denticities: None
-Filter 07: occurrences                         min: 5.0, max: None, apply_to_denticities: None
-Filter 08: remove_ligands_with_missing_bon...  remove_ligands_with_missing_bond_orders: True, apply_to_denticities: None
-Filter 09: smarts                              smarts: N=N, should_contain: False, include_metal: True, apply_to_denticities: None
-Filter 10: smarts                              smarts: [C&H2], should_contain: False, include_metal: True, apply_to_denticities: None
-Filter 11: remove_ligands_with_beta_hydrogens  remove_ligands_with_beta_hydrogens: True, apply_to_denticities: None
+Filter 01: property has_all_bond_orders_valid  name: has_all_bond_orders_valid, values: [True]
+Filter 02: property n_atoms                    name: n_atoms, range: [1, 80]
+Filter 03: property charge                     name: charge, values: [-2, -1, 0]
+Filter 04: parent_complexes                    metal_centers: ['Fe', 'Mn', 'Cr', 'Ru', 'Co', 'Ni', 'Cu', 'Ir', 'Mo']
+Filter 05: composition                         elements: ['O'], instruction: must_exclude, only_donors: True
+Filter 06: property molecular_weight           name: molecular_weight, range: [30.1, 300.2]
+Filter 07: property planarity                  name: planarity, range: [0.2, 1.0]
+Filter 08: property n_ligand_instances         name: n_ligand_instances, range: [5, 999999999]
+Filter 09: smarts                              smarts: N=N, should_contain: False, include_metal: True
+Filter 10: smarts                              smarts: [C&H2], should_contain: False, include_metal: True
+Filter 11: property n_beta_hydrogens           name: n_beta_hydrogens, range: [0, 0]
 ===============================  Filter Results  ===============================
                                                Ligands passed  Ligands removed
-Filter 01: number_of_atoms                           461             39       
-Filter 02: ligand_charges                            447             14       
-Filter 03: metal_ligand_binding_history              355             92       
-Filter 04: coordinating_atoms_composition            278             77       
-Filter 05: molecular_weight                          199             79       
-Filter 06: planarity                                 133             66       
-Filter 07: occurrences                               120             13       
-Filter 08: remove_ligands_with_missing_bon...        117              3       
+Filter 01: property has_all_bond_orders_valid        480             20       
+Filter 02: property n_atoms                          443             37       
+Filter 03: property charge                           430             13       
+Filter 04: parent_complexes                          342             88       
+Filter 05: composition                               266             76       
+Filter 06: property molecular_weight                 191             75       
+Filter 07: property planarity                        130             61       
+Filter 08: property n_ligand_instances               117             13       
 Filter 09: smarts                                    115              2       
 Filter 10: smarts                                     89             26       
-Filter 11: remove_ligands_with_beta_hydrogens         40             49       
+Filter 11: property n_beta_hydrogens                  40             49       
 ==================  Total summary of DART Ligand Filters run  ==================
-Before filtering:  500 ligands
-Filtered out:      460 ligands
-Passed:            40 ligands
-Denticities:       1: 33, 2: 7
+Before filtering:           500 ligands
+Filtered out:               460 ligands
+Passed:                     40 ligands
+Passed geometries:          1_monodentate (33), 2_cis (7)
+Passed stoichiometries:     Cl, I, C7H9N, C6H7N, C6H6N, ...
 Filtered ligand database with 40 ligands was saved to `filtered_ligand_db_v1.7.json`.
 Info on filtered ligands saved to directory `info_filtered_ligand_db_v1.7`.
 Done! All ligands filtered. Exiting DART Ligand Filters Module.

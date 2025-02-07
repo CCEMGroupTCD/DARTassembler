@@ -1,78 +1,44 @@
-input_db_file: test_metalig     # path or nothing
-#output_db_file: filtered_ligand_db.jsonlines    # path or nothing
-#output_ligands_info: true       # true or false
+################## Settings for the DART ligand filters module. ##################
+# Everything after '#' is ignored by the program and only there for the user.
+
+input_db_file: test_metalig                     # path, 'metalig' or 'test_metalig'. Default: 'metalig'
+output_db_file: filtered_ligand_db.jsonlines    # path. Default: 'filtered_ligand_db.jsonlines'
+output_ligands_info: true                       # true or false. If true, an overview of the filtered and passed ligands will be saved. Default: true
 
 filters:
+  - filter: property
+    name: n_donors
+    values : [1,2,3,4]
 
-  - filter: denticities
-    denticities: [1, 2, 3, 4, 5]
+  - filter: property
+    name: charge
+    values: [-1, 0, 1]
 
-  - filter: remove_ligands_with_adjacent_coordinating_atoms
-    remove_ligands_with_adjacent_coordinating_atoms: True
-    apply_to_denticities: [1, 2, 3]
+  - filter: composition
+    elements: ['C', 'H', 'N', 'O', 'F', 'Cl', 'Br', 'I']
+    instruction: must_only_contain_in_any_amount
 
-  - filter: remove_ligands_with_beta_hydrogens
-    remove_ligands_with_beta_hydrogens: True
-    apply_to_denticities: [1, 2, 3]
+  - filter: property
+    name: n_atoms
+    range: [10, 100]
 
-  - filter: number_of_atoms
-    min: 1
-    max: 15
-    apply_to_denticities: 1
+  - filter: property
+    name: molecular_weight
+    range: [0, 300]
 
-  - filter: ligand_charges
-    ligand_charges: [-1, 0]
-    apply_to_denticities: [2, 3]
+  - filter: property
+    name: planarity
+    range: [0.5, 1.0]
 
-  - filter: metal_ligand_binding_history
-    metal_ligand_binding_history: [Fe, Mn, Cr, Ru, Co, Ni, Cu, Ir, Mo]
+  - filter: property
+    name: eta
+    range: [0,0]
 
-  - filter: coordinating_atoms_composition
-    elements: [N, N, N]
-    instruction: must_contain_and_only_contain
-    apply_to_denticities: 3
+  - filter: property
+    name: n_beta_hydrogens
+    range: [0,0]
 
-  - filter: molecular_weight
-    min: 30.1
-    max: 300.2
-    apply_to_denticities: [3]
-
-  - filter: number_of_atoms
-    min: 10
-    max: 100
-    apply_to_denticities: [3]
-
-  - filter: molecular_weight
-    min: 10.1
-    max: 300.2
-
-  - filter: interatomic_distances
-    min: 0.5
-    max: 40.0
-    apply_to_denticities: [3]
-
-  - filter: planarity
-    min: 0.2
-    max: 1.0
-    apply_to_denticities: [1]
-
-  - filter: occurrences
-    min: 3
-    max:
-    apply_to_denticities: [4]
-
-  - filter: atomic_neighbors
-    atom: C
-    neighbors: H3
-    apply_to_denticities: 1
-
-  - filter: remove_ligands_with_missing_bond_orders
-    remove_ligands_with_missing_bond_orders: true
-
-  - filter: smarts
-    smarts: '[C&H2]'
-    should_contain: False
-    include_metal: True
-
-
-
+  - filter: smarts                              # Filter ligands using SMARTS patterns. Recommended to be used with filter:remove_ligands_with_missing_bond_orders
+    smarts: '[C&H2]'                            # SMARTS pattern to match. Important: use single quotes around the SMARTS pattern.
+    should_contain: false                       # If true, the ligand must contain the SMARTS pattern to pass the filter. If false, the ligand must not contain the SMARTS pattern to pass.
+    include_metal: false                        # If true, the ligand structure will contain a 'Cu' metal center connected to the coordinating atoms when matching the SMARTS pattern.

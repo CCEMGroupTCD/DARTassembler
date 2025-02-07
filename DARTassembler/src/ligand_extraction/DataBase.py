@@ -717,6 +717,10 @@ class LigandDB(MoleculeDB):
 
 
 
+
+
+
+
 class ComplexDB(MoleculeDB):
     type = 'Complex'
     def __init__(self, dict_):

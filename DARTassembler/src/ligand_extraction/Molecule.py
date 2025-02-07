@@ -11,7 +11,7 @@ import pysmiles
 from DARTassembler.src.metalig.refactor_v1_0_0 import refactor_metalig_entry_from_v1_0_0_to_v1_1_0
 # some special functions which are required
 from DARTassembler.src.ligand_extraction.composition import Composition
-from DARTassembler.src.ligand_extraction.utilities_Molecule import get_planarity, get_denticities_and_hapticities_idc, get_isomers_effective_ligand_atoms_with_effective_donor_indices, get_all_effective_ligand_atoms_with_effective_donor_indices, format_hapdent_idc
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_planarity, get_denticities_and_hapticities_idc, get_isomers_effective_ligand_atoms_with_effective_donor_indices, get_all_effective_ligand_atoms_with_effective_donor_indices, format_hapdent_idc, has_smarts_pattern
 from ase.visualize import view
 from sympy import Point3D, Plane
 import re
@@ -961,9 +961,10 @@ class RCA_Ligand(RCA_Molecule):
 
         # Mention some properties so it's certain they are stored in global_props and computed if they don't exist yet.
         self.geometry
-        self.smiles
         self.stoichiometry
-
+        self.n_beta_hydrogens
+        self.smiles
+        self.smiles_with_metal
 
         # self.was_connected_to_metal = len(self.local_elements) > 0
         #
@@ -1070,6 +1071,15 @@ class RCA_Ligand(RCA_Molecule):
         return get_stable_sorted_value_counts(mos_counts)
 
     @cached_property
+    def smiles_with_metal(self):
+        try:
+            smiles = self.global_props['smiles_with_metal']
+        except KeyError:
+            smiles = self.get_smiles(with_metal='Hg')
+            self.global_props['smiles_with_metal'] = smiles
+        return smiles
+
+    @cached_property
     def is_centrosymmetric(self):
         return self.check_if_centrosymmetric()
 
@@ -1088,6 +1098,15 @@ class RCA_Ligand(RCA_Molecule):
     @cached_property
     def has_betaH(self):
         return self.betaH_check()
+
+    @cached_property
+    def n_beta_hydrogens(self):
+        try:
+            n = self.global_props['n_beta_hydrogens']
+        except KeyError:
+            n = self.get_n_beta_hydrogens()
+            self.global_props['n_beta_hydrogens'] = n
+        return n
 
     @cached_property
     def has_neighboring_coordinating_atoms(self):
@@ -1274,6 +1293,98 @@ class RCA_Ligand(RCA_Molecule):
         elif mode == 'all':
             return distances.min(), distances.max(), distances[self.ligand_to_metal].tolist()
 
+    def is_in_global_props(self, name, range: list = None, values: list = None) -> bool:
+        """
+        Checks whether the value of the given property is within the specified range or in the specified list, if either of these are given.
+        :param name: name of the property in `global_props`
+        :param range: List of ranges (min, max) the property should be in. Several ranges can be specified or a single range.
+        :param values: list of values the property should be in.
+        :return: True if the value of the given property is within the specified range or in the specified list, False otherwise
+        """
+        try:
+            value = self.global_props[name]
+        except KeyError:
+            raise ValueError(f'Property {name} is not in `global_props`.')
+
+        # If the value is specified in the list return always True.
+        value_in_list = values is not None and value in values
+        if value_in_list:
+            return True
+
+        # If the value is not specified in the list, check if it is in the range. Several ranges can be specified.
+        if range is not None:
+            if not isinstance(value, (int, float)):
+                raise ValueError(f'Property {name} is not numerical, but {value}. Please do not specify a range for non-numerical properties.')
+            if not isinstance(range[0], (tuple, list)):
+                range = [range]
+
+            # Check if all ranges are valid, i.e. numerical and of length 2.
+            for r in range:
+                correct_length = len(r) == 2
+                if not correct_length:
+                    raise ValueError(f'Ranges must be specified as tuples of two values (min & max), but got {len(r)} values: {r}.')
+                numerical = all([isinstance(val, (int, float)) for val in r])
+                if not numerical:
+                    raise ValueError(f'Ranges must be specified as numerical values, but got {r}.')
+
+            for min_, max_ in range:
+                if min_ <= value <= max_:
+                    return True
+
+        return False
+
+    def has_specified_stoichiometry(self, elements, instruction, only_donors: bool=False) -> bool:
+        """
+        Checks if the ligand has the specified stoichiometry.
+        :param elements: List of chemical elements the ligand should contain.
+        :param instruction: Instruction for the stoichiometry. Can be any of ['must_contain_and_only_contain', 'must_at_least_contain', 'must_exclude', 'must_only_contain_in_any_amount']
+        :param only_donors: If True, only the donor atoms are considered.
+        :return: True if the ligand has the specified stoichiometry, False otherwise.
+        """
+        atoms_of_interest = [DART_Element(el).symbol for el in elements]
+        if only_donors:
+            atoms = self.local_elements
+        else:
+            atoms = self.atomic_props['atoms']
+
+        if ((sorted(list(atoms)) == sorted(
+                atoms_of_interest)) and instruction == "must_contain_and_only_contain") or \
+                (all(elem in list(atoms) for elem in
+                     atoms_of_interest) and instruction == "must_at_least_contain") or \
+                ((any(elem in list(atoms) for elem in
+                      atoms_of_interest) == False) and instruction == "must_exclude") or \
+                ((all(elem in atoms_of_interest for elem in
+                      list(atoms))) and instruction == "must_only_contain_in_any_amount"):
+            atoms_present = True
+        else:
+            atoms_present = False
+
+        return atoms_present
+
+    def has_specified_metal_centers(self, metal_centers) -> bool:
+        """
+        Checks if the ligand has the specified metal centers. The metal centers are checked against the original metal center of the ligand.
+        :param metal_centers: List of metal centers to check for.
+        :return: True if the ligand has the specified metal centers, False otherwise.
+        """
+        return any([metal in list(self.count_metals.keys()) for metal in metal_centers])
+
+    def has_specified_smarts(self, smarts, should_contain, include_metal=None) -> bool:
+        """
+        Checks if the ligand contains the specified SMARTS pattern. If the ligand has no valid SMILES string, it always fails the check.
+        :param smarts: SMARTS pattern to check for.
+        :param should_contain: If True, the ligand should contain the SMARTS pattern. If False, the ligand should not contain the SMARTS pattern.
+        :param include_metal: If True, the metal center is included in the SMARTS pattern. If False, the metal center is not included in the SMARTS pattern.
+        :return:
+        """
+        include_metal = False if include_metal is None else include_metal
+        smiles = self.smiles_with_metal if include_metal else self.smiles
+        if smiles is None:  # If the ligand has no valid SMILES string, always fail the ligand.
+            return False
+
+        has_pattern = has_smarts_pattern(smarts=smarts, smiles=smiles)
+        return has_pattern == should_contain
+
     def get_atomic_distance_to_original_metal(self, mode: str= 'min'):
         """
         Returns the distance of the ligand from the metal. Can also be used to get the maximum distance of an atom in the ligand to the metal or the distances of all coordinating elements.
@@ -1387,6 +1498,28 @@ class RCA_Ligand(RCA_Molecule):
             str_ += f"{self.atomic_props['atoms'][i]}  {self.atomic_props['x'][i]}  {self.atomic_props['y'][i]}  {self.atomic_props['z'][i]} \n"
 
         return str_
+
+    def get_n_beta_hydrogens(self) -> int:
+        """
+        Calculates the number of beta-Hydrogen atoms. Alpha H is ignored. Beta H is defined as a H atom which is exactly two bonds away from a coordinating atom, i.e. three bonds away from the metal.
+        @return: Number of beta Hydrogen atoms
+        """
+        graph = self.get_reindexed_graph()     # historical issue
+        A = get_adjacency_matrix(graph)
+        # The second power of the adjacency matrix, i.e. A^2[i,j] represents the number of paths of length two from i to j. Hence, as we are only interested in Hydrogen which has a distance of two to our coordinating atoms.
+        B = np.matmul(A, A)
+
+        beta_h_indices = set()  # Using the set we avoid double counting of beta H atoms
+        for donor_idx in self.ligand_to_metal:
+            for idx, element in graph.nodes(data=self.node_label):
+                if element == "H":
+                    # search for beta H while excluding alpha H
+                    if B[donor_idx, idx] > 0 and A[donor_idx, idx] == 0:
+                        beta_h_indices.add(idx)
+
+        n_beta_hydrogens = len(beta_h_indices)
+
+        return n_beta_hydrogens
 
     def betaH_check(self) -> bool:
         """
