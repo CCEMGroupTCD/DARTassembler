@@ -19,7 +19,6 @@ class LigandChoice(object):
         self.total_charge = total_complex_charge
         self.max_num_assembled_complexes = max_num_assembled_complexes  # int or "all"
         self.ligand_choice = 'all' if max_num_assembled_complexes == "all" else 'random'
-
         self.continue_assembly = True   # If set to False, the assembler will stop
         self.max_rejected_ligand_combinations = 1_000  # If this many ligand combinations are rejected in a row, the random choice of ligands is exhausted and will be switched to iterative mode
         self.switched_to_iterative = False  # Flag to output a warning if the ligand choice method was switched to "all"
@@ -107,7 +106,6 @@ class LigandChoice(object):
                     has_similarity.append(counter)
                     counter += 1
         assert has_similarity == self.instruction, f"The similarity lists are not consistent with the ligand combination {ligand_combination} and the topology {self.topology}! This should not happen!"
-
         return
 
     def choose_ligands(self) -> Union[dict,None]:
@@ -187,7 +185,7 @@ class LigandChoice(object):
                     correct_dent_ligands = database[idx][dent]
                 except KeyError:
                     raise LigandCombinationError(
-                        f'The provided ligand database doesn\'t contain the denticity {dent} in the topology {self.topology} at the {idx + 1}th site! Please check your ligand database and/or your assembly input file')
+                        f'The provided ligand database doesn\'t contain the denticity {dent} in the topology {topology} at the {idx + 1}th site! Please check your ligand database and/or your assembly input file')
                 relevant_db.append(correct_dent_ligands)
             else:
                 relevant_db.append('same_as_previous')
@@ -219,8 +217,7 @@ class LigandChoice(object):
             database = new_database
 
         # Double check
-        assert len(database) == len(
-            topology), f"The number of topologies and the number of ligand databases are not consistent: {len(topology)} != {len(database)}"
+        assert len(database) == len(topology), f"The number of topologies and the number of ligand databases are not consistent: {len(topology)} != {len(database)}"
 
         database = self._get_only_relevant_denticities_in_db(database=database, topology=topology)
         return database

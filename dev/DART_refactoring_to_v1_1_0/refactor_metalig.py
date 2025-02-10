@@ -12,6 +12,7 @@ from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
 
 if __name__ == '__main__':
+
     n_max = None
 
     outpath = 'data/ligand_db_v1_1_0.jsonlines'

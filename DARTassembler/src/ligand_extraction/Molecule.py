@@ -732,10 +732,10 @@ class RCA_Molecule(object):
     # helper method for the de-assembly
     def ligand_naming(self, denticity: int, ligand_list) -> (str, str):
         try:
-            lig_key = f'CSD-{self.global_props['parent_complex_id']}'
+            lig_key = f"CSD-{self.global_props['parent_complex_id']}"
             csd = self.global_props["CSD_code"]
         except KeyError:
-            lig_key = f'CSD-{self.global_props['parent_complex_id']}'
+            lig_key = f"CSD-{self.global_props['parent_complex_id']}"
             csd = self.global_props["CSD_code"]
 
         from DARTassembler.src.constants.constants import mini_alphabet

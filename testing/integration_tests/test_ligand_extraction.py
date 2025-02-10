@@ -45,7 +45,7 @@ from dev.test.Charge_Benchmark import ChargeBenchmark
 
 def test_ligand_extraction(nmax=500):
     """
-    nmax=False for full  run.
+    n_max=False for full  run.
     """
     # example databases, choose between: tmqm, tmqmG, CSD
     database_path = project_path().extend('data_input', 'CSD')  # in github
@@ -162,7 +162,7 @@ def test_ligand_extraction(nmax=500):
                 print(f'Mostly successful refactoring. All data is still the same when excluding {drop_cols}.')
 
         #%% Checks if db is still the same after writing to and re-reading from json.
-        # Slow, should only be used with nmax <= 100.
+        # Slow, should only be used with n_max <= 100.
         # print(f'\nCheck if db is equal after reading in from json:')
         # same_ulig_db = db.unique_ligand_db.check_db_equal(db=db.unique_ligands_json)
         # if not same_ulig_db:

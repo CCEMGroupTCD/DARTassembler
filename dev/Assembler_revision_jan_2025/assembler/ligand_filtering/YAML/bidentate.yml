@@ -1,0 +1,13 @@
+input_db_file:
+output_db_file: ligandfilters/data_output/bidentate.json  # path or nothing
+
+filters:
+
+  - filter: denticities
+    denticities: [2]
+
+  - filter: coordinating_atoms_composition
+    elements: [ N, N ]
+    instruction: must_contain_and_only_contain
+
+
