@@ -1,0 +1,186 @@
+#########################################################################################
+# Input file for the assembly module of DART.                                           #
+#########################################################################################
+batches:
+  - isomer_instruction: "all" # This currently does nothing but in the future will be used to determine which isomers can be assembled
+    max_num_complexes: 4
+    total_charge: 0
+    name: "2-2-1-1-bimetallic"
+    random_seed: 4
+    geometry:
+      - metal_1:
+          metal_type: Cu
+          metal_oxidation_state: 2
+          origin: [ 1.5, 0, 0 ]
+      - metal_2:
+          metal_type: Cu
+          metal_oxidation_state: 2
+          origin: [ -1.5, 0, 0 ]
+      - ligand_1:
+          origin: [0, 0, 0 ]
+          vector_1: [0, 0, 1 ]
+          temp_dent: 1 # todo WARNING: this is a temporary denticity, (i.e. in the future it should not need to be specified here). In the future I would hope that the Num. of vectors is enough for LigandChoice
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/OH.json
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [0, 0, -1 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/OH.json
+      - ligand_3:
+          origin: [ 1.5, 0, 0 ]
+          vector_1: [ 1, 1, 0 ]
+          vector_2: [ 1, -1, 0 ]
+          temp_dent: 2
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/bidentate_NN.json
+      - ligand_4:
+          origin: [ -1.5, 0, 0 ]
+          vector_1: [ -1, 1, 0 ]
+          vector_2: [ -1, -1, 0 ]
+          temp_dent: 2
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/bidentate_NN.json
+
+  - isomer_instruction: "all"
+    max_num_complexes: 2
+    total_charge: 0
+    name: "6-6-Ferocene"
+    random_seed: 8
+    geometry:
+      - metal_1:
+          metal_type: Mo
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          temp_dent: 6
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, -1 ]
+          temp_dent: 6
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
+
+  - isomer_instruction: "all"
+    max_num_complexes: 1
+    total_charge: 0
+    name: "3-3"
+    random_seed: 4
+    geometry:
+      - metal_1:
+          metal_type: Ru
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, -1, 0 ]
+          vector_2: [ 0, 1, 0 ]
+          vector_3: [ 1, 0, 0 ]
+          temp_dent: 3
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/testing/integration_tests/assembly/data_input/oer_ligands.jsonlines # it will be a good test to use very different ligand databases
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          vector_2: [ 0, 0, -1 ]
+          vector_3: [ -1, 0, 0 ]
+          temp_dent: 3
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/testing/integration_tests/assembly/data_input/oer_ligands.jsonlines # it will be a good test to use very different ligand databases
+
+  - isomer_instruction: "all"
+    max_num_complexes: 3
+    total_charge: 0
+    name: "1-1-1-1-1-1"
+    random_seed: 8
+    geometry:
+      - metal_1:
+          metal_type: Mo
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 1, 0, 0 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ -1, 0, 0 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+      - ligand_3:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 1, 0 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+      - ligand_4:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, -1, 0 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+      - ligand_5:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+      - ligand_6:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, -1 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+
+  - isomer_instruction: "all"
+    max_num_complexes: 0
+    total_charge: 0
+    name: "6-6-Ferocene"
+    random_seed: 23
+    geometry:
+      - metal_1:
+          metal_type: Mo
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          temp_dent: 6  # todo WARNING: this is a temporary denticity, (i.e. in the future it should not need to be specified here)
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, -1 ]
+          temp_dent: 6
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
+
+  - isomer_instruction: "all"
+    max_num_complexes: 0
+    total_charge: 0
+    name: "3-3"
+    random_seed: 4
+    geometry:
+      - metal_1:
+          metal_type: Ru
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, -1, 0 ]
+          vector_2: [ 0, 1, 0 ]
+          vector_3: [ 1, 0, 0 ]
+          temp_dent: 3
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/testing/integration_tests/assembly/data_input/oer_ligands.jsonlines # it will be a good test to use very different ligand databases
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          vector_2: [ 0, 0, -1 ]
+          vector_3: [ -1, 0, 0 ]
+          temp_dent: 3
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/testing/integration_tests/assembly/data_input/oer_ligands.jsonlines # it will be a good test to use very different ligand databases
+
+
+
+
+
+
+
+
+
+
+
+
+

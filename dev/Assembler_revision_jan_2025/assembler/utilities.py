@@ -1,62 +1,28 @@
-import ase
-from scipy.spatial.transform import Rotation as R
-from DARTassembler.src.ligand_extraction.DataBase import MoleculeDB, RCA_Ligand, LigandDB
-from DARTassembler.src.constants import Periodic_Table as PerTab
+#########################################################################################
+# This file contains the classes and methods that are used to process the input data    #
+# and generate the assembled transition metal complexes                                 #
+#########################################################################################
 from DARTassembler.src.assembly.ligand_geometries import try_all_geometrical_isomer_possibilities
-from typing import Dict, Any, List, Optional, Union
-from ase import Atoms
+from DARTassembler.src.ligand_extraction.DataBase import RCA_Ligand, LigandDB
+from DARTassembler.src.constants import Periodic_Table as PerTab
+from typing import Dict, Any, List, Optional, Tuple
 from ase.visualize import view
-import itertools
+from ase import Atoms
 import numpy as np
+import itertools
+import ase
 
-
-def align_donor_atoms(
-        atoms: ase.Atoms,
-        donor_idc: list[int],
-        target_vectors: list[list[float]],
-        origin: list[float],
-        return_rssd: bool = False
-):
-    """
-    Align the donor atoms of a ligand to the target vectors.
-    :param return_rssd: #todo add description
-    :param origin: The origin of the ligand.
-    :param atoms: ASE Atoms object of all the atoms of the ligand.
-    :param donor_idc: Indices of the donor atoms of the ligand.
-    :param target_vectors: A list of 3D target vectors to which the donor atoms should be aligned.
-    :return: ASE Atoms object of the ligand with the donor atoms aligned to the target vectors.
-    """
-    atoms = atoms.copy()  # Make a copy of the original atoms object so that the original is not changed
-    target_vectors = np.array(target_vectors)
-    assert len(target_vectors) == len(donor_idc), 'The number of target vectors must match the number of donor atoms.'
-    assert target_vectors.shape[1] == 3, 'The target vectors must be 3D vectors.'
-    donor_idc = list(donor_idc)  # A tuple wouldn't work for indexing
-
-    donor_vectors = atoms.positions[donor_idc]
-    # Normalize the donor vectors and target vectors to unit vectors so that only the direction of the vectors counts, not the magnitude.
-    donor_vectors = donor_vectors / np.linalg.norm(donor_vectors, axis=1)[:, None]
-    target_vectors = target_vectors / np.linalg.norm(target_vectors, axis=1)[:, None]
-    # Find the correct rotation to align the donor vectors with the target vectors
-    rot, rssd = R.align_vectors(a=target_vectors, b=donor_vectors)  # the a and b are unintuitive but correct
-    # Apply the rotation to all the atoms of the ligand
-    rotated_coords = rot.apply(atoms.positions - origin) + origin
-    atoms.set_positions(rotated_coords)
-
-    if return_rssd:
-        return atoms, rssd
-    else:
-        return atoms
 
 
 class LigandSpec:
     """
     Represents a ligand entry in the batch file's geometry section
-    Handles different numbers of vectors dynamically
+    It can handle different numbers of vectors dynamically and unique ligand specific input options
+    LigandSpec --> Ligand Specification
     """
-
     def __init__(self, name: str, data: Dict[str, Any]):
         """
-        Initializes a Ligand object
+        Initializes a LigandSpec object
         :param name: The ligand's identifier (e.g., 'ligand_1')
         :param data: Dictionary containing ligand properties
         :raises ValueError: If required keys are missing
@@ -66,6 +32,7 @@ class LigandSpec:
         self.origin = self._get_vector(key="origin", required=True)
         self.vectors = self._extract_vectors()
         self.ligand_db_path = data.get("ligand_db", None)
+        self.temp_dent = data.get("temp_dent", None)  # TODO: WARNING this is a temporary fix and will need to be removed in the future
         self.ligand_db = LigandDB.load_from_json(path=self.ligand_db_path)
         self.update_geometry = data.get("update_geometry", None)
 
@@ -107,7 +74,7 @@ class LigandSpec:
 class MetalSpec:
     def __init__(self, name: str, data: Dict[str, Any]):
         """
-        Initializes a Metal object
+        Initializes a MetalSpec object. This object is used to store input instructions concerning a metal atom
         :param name: The metal's identifier (e.g., 'metal_1')
         :param data: Dictionary containing metal properties
         :raises ValueError: If required keys are missing
@@ -157,7 +124,7 @@ class BatchInput:
 
     def __init__(self, batch: Dict[str, Any]):
         """
-        This class will parse the input of the assembly YAML file and store, check and return the information
+        This class will parse the input of the assembly YAML file, store, check and return the information
         """
 
         self.batch = batch
@@ -284,20 +251,20 @@ class AssemblyComplex(object):
                  metal_types: List[str], monometallic: bool = False):
         """
         Generates novel transition metal complexes from ligands and metals
-        :param ligands:
-        :param target_vectors:
-        :param ligand_Origins:
-        :param metal_origins:
-        :param metal_types:
-        :param monometallic:
+        :param ligands:         Dictionary of ligand objects
+        :param target_vectors:  List of dictionaries containing target vectors for each ligand
+        :param ligand_origins:  List of ligand origins
+        :param metal_origins:   List of metal origins
+        :param metal_types:     List of metal types
+        :param monometallic:    Boolean flag for monometallic complexes
         """
         # Define the class variables
-        self.ligands = ligands.values()         # for each
+        self.ligands = ligands.values()         # for each ligand, get the ligand object
         self.target_vectors = target_vectors    # List of target vectors i.e [[0, 0, 0], [0, 0, 1], ...]
         self.ligand_origins = ligand_origins    # List of ligand_origins i.e [[0, 0, 0], [0, 0, 1], ...]
         self.metal_origins = metal_origins      # List of metal_origins i.e [[0, 0, 0], [0, 0, 1], ...]
         self.metal_types = metal_types          # List of metal types i.e ['Ru', 'Mn', ...]
-        self.mono_metallic = monometallic
+        self.mono_metallic = monometallic       # Boolean flag for monometallic complexes
 
         # Validate the input
         self._validate_input()
@@ -336,13 +303,13 @@ class AssemblyComplex(object):
             ligand_isomers, donor_atoms_ordered, rssd = try_all_geometrical_isomer_possibilities(atoms=geometry,
                                                                                                  donor_idc=donor_atoms[0],
                                                                                                  target_vectors=target_vectors)
-            if ligand.eta != 0:
-                # If the ligand has a haptic coordination we must remove the dummy donor atom
-                for isomer in ligand_isomers:
-                    self._remove_haptic_dummy_atom(atoms=isomer, dummy_atom="Cu", index_list=donor_atoms[0])
-            # append the ligand isomers to the list of rotated ligands
+            # Remove the dummy atom from the haptic ligands
+            ligand_isomers = self._remove_haptic_dummy_atom(atoms_list=ligand_isomers, dummy_atom="Cu", donor_atoms_idc=ligand.hapdent_idc)
+
+            # Append the rotated ligands to the list
             rotated_ligands.append(ligand_isomers)
 
+        # Use the rotated ligands to generate all (for now it is most) possible isomers
         all_isomers = self._gen_all_isomers(rotated_ligands)
 
         return all_isomers
@@ -356,7 +323,6 @@ class AssemblyComplex(object):
             ligand_structure += metal
         return ligand_structure
 
-
     def _gen_all_isomers(self, ligands: List[List[Atoms]]):
         """
         Generate all possible isomers from a list of ligands which have multiple isomers
@@ -368,11 +334,11 @@ class AssemblyComplex(object):
         isomers = []
 
         for combo in combinations:
-            combined = Atoms()  # Start with an empty Atoms object.
-            for ligand in combo:
-                combined += ligand  # Assuming the '+' operator works for combining Atoms objects.
-            combined = self._add_metals(ligand_structure=combined)
-            isomers.append(combined)
+            combined = Atoms()                                          # Start with an empty Atoms object.
+            for ligand in combo:                                        # Iterate over the ligands in the combination.
+                combined += ligand                                      # combining Atoms objects.
+            combined = self._add_metals(ligand_structure=combined)      # Add the metals to the complex
+            isomers.append(combined)                                    # Store all the new isomers
 
         return isomers
 
@@ -383,28 +349,142 @@ class AssemblyComplex(object):
         """
         return self.assembled_complexes
 
-    def _remove_haptic_dummy_atom(self, atoms: ase.Atoms, dummy_atom: str, index_list: List[int]) -> None:
+    @staticmethod
+    def _remove_haptic_dummy_atom(atoms_list: List[Atoms], dummy_atom: str, donor_atoms_idc: Tuple[Tuple[int]]):
         """
-        Removes the dummy atom from the ligand
-        :param dummy_atom: The dummy atom to remove
+        Removes the dummy atom from the generated isomers
+        :return: List[Atoms]
         """
-        # Find the index of the dummy atom
-        dummy_index = [i for i, atom in enumerate(atoms) if atom.symbol == dummy_atom][0]
-        # Remove the dummy atom from the index list
-        index_list.remove(dummy_index)
-        # Remove the dummy atom from the atoms object
-        del atoms[dummy_index]
+        # Check to see if there is haptic coordination
+        haptic_coordination = False
+        for donor_atoms in donor_atoms_idc:
+            if type(donor_atoms) == tuple:
+                haptic_coordination = True
+                break
+            else:
+                pass
+
+        # If there is no haptic coordination, return the atoms list as is
+        if not haptic_coordination:
+            return atoms_list
+
+        # If there is haptic coordination, remove the dummy atom from the donor atoms
+        else:
+            for atoms in atoms_list:
+                dummy_idc = [i for i, atom in enumerate(atoms) if atom.symbol == dummy_atom]
+                dummy_idc.sort(reverse=True)  # This is important so that the larger index is removed first so as not to change the index of the other atoms
+                for dummy_idx in dummy_idc:
+                    atoms.pop(dummy_idx)
+            return atoms_list
 
 
-# Generate all possible isomers
+class ReduceIsomers:
+    """
+    This class will take a list of ASE Atoms objects and reduce the number of isomers to the minimum number of unique isomers
+    """
+
+    def __init__(self, isomers: List[Atoms], rssd_threshold: float = 0.01):
+        """
+        Initializes the ReduceIsomers object
+        :param isomers: List of ASE Atoms objects
+        """
+        raise NotImplementedError("Fatal Error !!! This class is not yet implemented and is currently under construction. Please do not use !!!")
+        self.isomers = isomers
+        self.rssd_threshold = rssd_threshold
+        self.unique_isomers = self._reduce_isomers()
+
+    def get_unique_isomers(self) -> List[Atoms]:
+        """
+        Get the unique isomers
+        :return: List[Atoms]
+        """
+        return self.unique_isomers
+
+    def _reduce_isomers(self) -> List[Atoms]:
+        """
+        takes a list of 'isomers' and identifies which are super-imposable and removes duplicates
+        :return: List[Atoms]
+        """
+        unique_isomers = []
+        """
+        for isomer in self.isomers:
+            # Check if this isomer is already in the list within the threshold
+            if not any(self.align_molecules(isomer, u) < self.rssd_threshold for u in unique_isomers):
+                unique_isomers.append(isomer)"""
+
+        for i, isomer1 in enumerate(self.isomers):
+            for j, isomer2 in enumerate(self.isomers):
+                view(isomer1)
+                view(isomer2)
+                print(i, j, self.align_molecules(isomer1, isomer2))
+                print("stop")
+        return unique_isomers
+
+    @staticmethod
+    def align_molecules(
+            atoms1: ase.Atoms,
+            atoms2: ase.Atoms,
+    ):
+        """
+        Computes the Root Mean Square Deviation (RMSD) between two ASE Atoms objects
+        after optimally aligning A onto B using the Kabsch algorithm.
+
+        Assumes both Atoms objects have the same number of atoms and are correspondingly ordered.
+
+        Parameters:
+        ase_atoms_A (Atoms): The Atoms object to be rotated (aligned).
+        ase_atoms_B (Atoms): The reference Atoms object.
+
+        Returns:
+        float: The RMSD value after optimal alignment.
+        """
+        assert len(atoms1) == len(atoms2), "Both Atoms objects must have the same number of atoms."
+
+        # todo: I am pretty sure the issue is that the OH is not perfectly the same across isomers
+
+        # Extract coordinates
+        A = atoms1.get_positions()
+        B = atoms2.get_positions()
+
+        # Compute centroids
+        centroid_A = np.mean(A, axis=0)
+        centroid_B = np.mean(B, axis=0)
+
+        # Center the coordinates
+        A_centered = A - centroid_A
+        B_centered = B - centroid_B
+
+        # Compute covariance matrix
+        H = A_centered.T @ B_centered
+
+        # Perform Singular Value Decomposition
+        U, S, Vt = np.linalg.svd(H)
+
+        # Compute the optimal rotation matrix
+        R = Vt.T @ U.T
+
+        # Ensure a proper rotation (avoiding reflection)
+        if np.linalg.det(R) < 0:
+            Vt[-1, :] *= -1
+            R = Vt.T @ U.T
+
+        # Apply rotation to A
+        A_aligned = (A - centroid_A) @ R + centroid_B
+
+        # Compute RMSD
+        rmsd = np.sqrt(np.mean(np.sum((A_aligned - B) ** 2, axis=1)))
+
+        return rmsd
+
+# todo: Notes for Cian (need to review as some of these are now outdated)
 # todo: How the following method needs to be modified to account for swapping ligands of a same coordination mode (e.g. 1-1-1-1-1-1 or 2-2-2 or 3-3 (but the 3-3 case kind of doesn't apply))
 # todo: 1. we need a measure of ligand coordination similarity. should probs use string: "monodentate", "trigonal", "tetragonal offset", etc.
 # todo: 2. For example, lets say we have Ligands A, B, C and D
-    # todo: A: monodentate
-    # todo: B: monodentate
-    # todo: C: monodenate
-    # todo: D: tridenate
+# todo: A: monodentate
+# todo: B: monodentate
+# todo: C: monodentate
+# todo: D: tridentate
 # todo: 3. We need to generate all possible isomers, enantiomers of the complex
-# todo: 4. not only can the tridentate be flipped but the monodentates can be exchaged as well
+# todo: 4. not only can the tridentate be flipped but the monodentate ligands can be exchanged as well
 # todo: 5. to swap ligands we need to transform (rotate) them based on their origin and target vectors (translate based on vector between origins and rotate based on the angle between the target vectors)
 # todo: 6. this needs to be done for every possible combination of "swappable" ligands

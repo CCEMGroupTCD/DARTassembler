@@ -1,7 +1,0 @@
-input_db_file:
-output_db_file: ligandfilters/data_output/pentagonal.json  # path or nothing
-
-filters:
-
-  - filter: denticities
-    denticities: [6]
