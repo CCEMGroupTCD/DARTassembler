@@ -31,7 +31,7 @@ if __name__ == '__main__':
     nmax = False
 
 
-    # ligands = LigandDB.load_from_json(db_path, n_max=nmax)
+    # ligands = LigandDB.load_from_json(db_path, n_max=n_max)
     # df_ligands = pd.DataFrame.from_dict({name: lig.get_ligand_output_info(add_confident_charge=True) for name, lig in ligands.db.items()}, orient='index'
     metalig_csv_path = Path(default_ligand_db_path).with_suffix('.csv')
     df_metalig = pd.read_csv(metalig_csv_path, index_col=0)

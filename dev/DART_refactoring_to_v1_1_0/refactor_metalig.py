@@ -15,7 +15,7 @@ from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
 
 if __name__ == '__main__':
-    n_max = 100
+    n_max = 10000
 
     outpath = 'data/ligand_db_v1_1_0.jsonlines'
     db = LigandDB.load_from_json(path='metalig', n_max=n_max)
