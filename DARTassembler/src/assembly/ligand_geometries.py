@@ -250,11 +250,10 @@ def assign_geometry(atoms: ase.Atoms, donor_idc: list[int]) -> tuple[str, list[a
     # Find second-best geometry.
     if len(all_rssds) == 1:     # There is only one geometry, so there is no second-best geometry.
         second_best_geometry, second_best_rssd = None, np.nan
+        weight_necessary_for_change = 0  # Set to 0 to indicate that there is no second-best geometry.
     else:
         second_best_geometry, second_best_rssd, _, _ = min([x for x in all_rssds if x[0] != geometry], key=lambda x: x[1])
-
-    # Calculate the weight necessary for a change in geometry. Useful to see how much the geometry would have to change to be the second-best geometry.
-    weight_necessary_for_change = second_best_rssd / rssd
+        weight_necessary_for_change = second_best_rssd / rssd
 
     return geometry, isomers, isomer_donor_idc, rssd, second_best_geometry, weight_necessary_for_change
 

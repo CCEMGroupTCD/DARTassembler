@@ -71,7 +71,7 @@ oer_ligand_filters = [
     },
     {
         'filter': 'property',
-        'name': 'eta',
+        'name': 'n_haptic_atoms',
         'range': (0, 0)
     },
     {

@@ -1,12 +1,13 @@
 from copy import deepcopy
 
+from DARTassembler.src.ligand_extraction.utilities import check_equal
 
 refactor_ligand_dict = {
     "atomic_props": "atomic_props",
     "global_props": "global_props",
     "graph_dict": "graph",
     "ligand_to_metal": "donor_idc",
-    "identical_ligand_info": "other_ligand_instances",
+    "identical_ligand_info": "ligand_instances",
     "original_metal_position": "parent_metal_position",
 }
 refactor_global_props_dict = {
@@ -19,21 +20,12 @@ refactor_global_props_dict = {
     "n_bonds": "n_bonds",
     "n_electrons": "n_electrons",
     "n_protons": "n_protons",
-    "n_hydrogens": "n_hydrogens",
-    "n_C_H_bonds": "n_C_H_bonds",
     "occurrences": "n_ligand_instances",
-    "has_neighboring_coordinating_atoms": "has_haptic_interactions",
-    "has_betaH": "has_beta_hydrogens",
     "has_good_bond_orders": "has_all_bond_orders_valid",
-    "has_bond_order_attribute": "has_bond_orders",
-    "has_unknown_bond_orders": "has_unknown_bond_orders",
+    'pred_charge_is_confident': 'has_confident_charge',
     "original_complex_id": "parent_complex_id",
     "original_metal_symbol": "parent_metal",
     "original_metal_os": "parent_metal_os",
-    'pred_charge_is_confident': 'pred_charge_is_confident',
-    # from stats
-    "min_atomic_distance": "min_interatomic_distance",
-    "max_atomic_distance": "max_ligand_extension",
     # graph hashes
     "graph_hash": "graph_hash",
     "graph_hash_with_metal": "graph_hash_with_metal",
@@ -50,7 +42,13 @@ refactor_other_ligand_instances_dict = {
 }
 remove_properties = [
     'all_ligand_names',
+    "n_C_H_bonds",
+    "n_hydrogens",
+    "has_neighboring_coordinating_atoms",
+    "has_betaH",
     'stoichiometry',
+    "has_bond_order_attribute",
+    "has_unknown_bond_orders",
     'n_metals',
     'odd_n_electron_count',
     'is_centrosymmetric',
@@ -79,6 +77,8 @@ remove_properties = [
     'max_distance_to_metal',
     'coordinating_atom_distances_to_metal',
     'max_dist_per_atoms',
+    "min_atomic_distance",
+    "max_atomic_distance",
 ]
 make_integer = ['n_electrons', 'pred_charge']
 
@@ -113,6 +113,15 @@ def refactor_metalig_entry_from_v1_0_0_to_v1_1_0(ligand: dict) -> dict:
     Refactor the MetaLig ligand database from version 1.0.0 to 1.1.0. This includes renaming, moving and removing some properties.
     """
     ligand = deepcopy(ligand)
+
+    # Change the order of the properties in identical_ligand_info so that the current ligand is the first entry
+    idx = ligand['identical_ligand_info']['name'].index(ligand['name'])
+    for prop in ligand['identical_ligand_info']:
+        ligand['identical_ligand_info'][prop] = [ligand['identical_ligand_info'][prop][idx]] + [ligand['identical_ligand_info'][prop][i] for i in range(len(ligand['identical_ligand_info'][prop])) if i != idx]
+    # Assert ["original_complex_id", "original_metal_symbol", "original_metal_os"] are also in other instances
+    assert check_equal(ligand['original_complex_id'], ligand['identical_ligand_info']['original_complex_id'][0])
+    assert check_equal(ligand['original_metal_symbol'], ligand['identical_ligand_info']['original_metal_symbol'][0])
+    assert check_equal(ligand['original_metal_os'], ligand['identical_ligand_info']['original_metal_os'][0])
 
     # Expand the properties from stats into global_props
     for prop in ligand['stats']:
@@ -159,8 +168,8 @@ def refactor_metalig_entry_from_v1_0_0_to_v1_1_0(ligand: dict) -> dict:
             ligand[new_prop] = ligand.pop(prop)
     # Rename properties in identical_ligand_info
     for prop, new_prop in refactor_other_ligand_instances_dict.items():
-        if prop in ligand['other_ligand_instances']:
-            ligand['other_ligand_instances'][new_prop] = ligand['other_ligand_instances'].pop(prop)
+        if prop in ligand['ligand_instances']:
+            ligand['ligand_instances'][new_prop] = ligand['ligand_instances'].pop(prop)
     # Rename properties in global_props
     for prop, new_prop in refactor_global_props_dict.items():
         if prop in ligand['global_props']:
@@ -181,8 +190,14 @@ def refactor_metalig_entry_from_v1_0_0_to_v1_1_0(ligand: dict) -> dict:
             raise ValueError(f'Property "{prop}" is not covered by the refactoring.')
     all_props_after_expected_new = set(all_props_after_expected_new)
     all_real_props = set(ligand.keys()).union(set(ligand['global_props'].keys())).union(
-        set(ligand['other_ligand_instances'].keys()))
-    assert all_props_after_expected_new == all_real_props, f'Not all properties are covered by the refactoring. Missing: {all_props_after_expected_new - all_real_props}'
+        set(ligand['ligand_instances'].keys()))
+    assert all_props_after_expected_new == all_real_props, f'Not all properties are covered by the refactoring. Uncovered: {all_props_after_expected_new.symmetric_difference(all_real_props)}'
+
+    # Remove some more properties which would throw an error in the last assertion because they have the same name as properties in the ligand_instances.
+    ligand['global_props'].pop('parent_complex_id')
+    ligand['global_props'].pop('parent_metal')
+    ligand['global_props'].pop('parent_metal_os')
+    ligand.pop('parent_metal_position')
 
     # Rename some special properties
     ligand['atomic_props']['parent_complex_idc'] = ligand['atomic_props'].pop('original_complex_indices')
@@ -195,5 +210,6 @@ def refactor_metalig_entry_from_v1_0_0_to_v1_1_0(ligand: dict) -> dict:
     for prop, default in optional_props.items():
         if not prop in ligand:
             ligand[prop] = default
+    ligand['ligand_instances']['parent_metal_position'] = [[0., 0., 0.] for _ in range(len(ligand['ligand_instances']['ligand_name']))]
 
     return ligand

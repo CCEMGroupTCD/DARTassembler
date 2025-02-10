@@ -34,8 +34,8 @@ if __name__ == "__main__":
     ligand_filter_path = project_path().extend('src05_Assembly_Refactor', 'ligandfilters.yml')
     max_number = 5000
 
-    filter = LigandFilters(filepath=ligand_filter_path, max_number=max_number)
-    filter.save_filtered_ligand_db()
+    # filter = LigandFilters(filepath=ligand_filter_path, max_number=max_number)
+    # filter.save_filtered_ligand_db()
 
     # Check if the new filtered db is the same as the old one
     benchmark_dir = project_path().extend("src14_Assembly_Unit_Test", 'ligandfilters_benchmark')

@@ -32,7 +32,7 @@ filters:
     range: [0.5, 1.0]
 
   - filter: property
-    name: eta
+    name: n_haptic_atoms
     range: [0,0]
 
   - filter: property

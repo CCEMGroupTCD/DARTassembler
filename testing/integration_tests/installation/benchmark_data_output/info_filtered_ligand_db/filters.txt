@@ -6,7 +6,7 @@ Filter 04: composition                         elements: ['C', 'H', 'N', 'O', 'F
 Filter 05: property n_atoms                    name: n_atoms, range: [10, 100]
 Filter 06: property molecular_weight           name: molecular_weight, range: [0, 300]
 Filter 07: property planarity                  name: planarity, range: [0.5, 1.0]
-Filter 08: property eta                        name: eta, range: [0, 0]
+Filter 08: property n_haptic_atoms             name: n_haptic_atoms, range: [0, 0]
 Filter 09: property n_beta_hydrogens           name: n_beta_hydrogens, range: [0, 0]
 Filter 10: smarts                              smarts: [C&H2], should_contain: False, include_metal: False
 ===============================  Filter Results  ===============================
@@ -18,7 +18,7 @@ Filter 04: composition                               508             267
 Filter 05: property n_atoms                          472              36      
 Filter 06: property molecular_weight                 366             106      
 Filter 07: property planarity                         89             277      
-Filter 08: property eta                               87               2      
+Filter 08: property n_haptic_atoms                    87               2      
 Filter 09: property n_beta_hydrogens                  28              59      
 Filter 10: smarts                                     27               1      
 ==================  Total summary of DART Ligand Filters run  ==================

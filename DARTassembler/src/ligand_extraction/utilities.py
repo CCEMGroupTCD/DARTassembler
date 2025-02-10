@@ -303,3 +303,29 @@ def get_duration_string(start: datetime, without_microseconds=True) -> str:
         duration = str(duration)
 
     return duration
+
+
+def check_equal(val1, val2) -> bool:
+    """
+    Checks if two values are equal. Respects None, np.nan and empty arrays. None and np.nan are compared as equal.
+    :return: bool
+    """
+    # Handle the case that either value is None or np.nan. Use pd.isna() so that both None and np.nan are treated as equal.
+    nan_val1 = pd.isna(val1)
+    nan_val2 = pd.isna(val2)
+    if nan_val1 and nan_val2:
+        return True
+    if nan_val1 or nan_val2:
+        return False
+
+    # Handle the case that both values are empty arrays. They are equal.
+    if isinstance(val1, np.ndarray) and isinstance(val2, np.ndarray):
+        if len(val1) == 0 and len(val2) == 0:
+            return True
+        return np.array_equal(val1, val2)
+
+    # Handle the case of floats. Use np.isclose to compare floats.
+    if isinstance(val1, float) and isinstance(val2, float):
+        return np.isclose(val1, val2)
+
+    return val1 == val2
