@@ -5,14 +5,18 @@
 from DARTassembler.src.assembly.ligand_geometries import try_all_geometrical_isomer_possibilities
 from DARTassembler.src.ligand_extraction.DataBase import RCA_Ligand, LigandDB
 from DARTassembler.src.constants import Periodic_Table as PerTab
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional, Tuple, Union
 from ase.visualize import view
 from ase import Atoms
 import numpy as np
 import itertools
 import ase
 
-
+def are_atoms_equal(atom1: ase.Atom, atom2: ase.Atom) -> bool:
+    """
+    Compares two atoms to see if they are equal.
+    """
+    return atom1.symbol == atom2.symbol and np.allclose(atom1.position, atom2.position)
 
 class LigandSpec:
     """
@@ -247,58 +251,88 @@ class BatchInput:
 
 class AssemblyComplex(object):
 
-    def __init__(self, ligands: Dict[int, RCA_Ligand], target_vectors: List[Dict[Any, List[float]]], ligand_origins: List[List[float]], metal_origins: List[List[float]],
-                 metal_types: List[str], monometallic: bool = False):
+    def __init__(self,
+                 ligands: List[RCA_Ligand],
+                 target_vectors: List[List[float]],
+                 metal_centers: Union[List[List[ase.Atom]], str],
+                 ligand_origins: List[List[float]] = None,
+                 ):
         """
-        Generates novel transition metal complexes from ligands and metals
-        :param ligands:         Dictionary of ligand objects
-        :param target_vectors:  List of dictionaries containing target vectors for each ligand
-        :param ligand_origins:  List of ligand origins
-        :param metal_origins:   List of metal origins
-        :param metal_types:     List of metal types
-        :param monometallic:    Boolean flag for monometallic complexes
+        Generates novel transition metal complexes from ligands and metal centers.
+        :param ligands: List of RCA_Ligand objects from the MetaLig database.
+        :param target_vectors: List of target vectors for each ligand.
+        :param metal_centers: List of ase.Atom metal centers for each ligand or string of chemical symbol.
+        :param ligand_origins: List of the origin for each ligand.
+
+        Example usage for assembling a bi-metallic complex with three monodentate ligands, one of them bridging:
+        target_vectors = [
+                            [[1, 0, 0]],
+                            [[0, 0, 1]],
+                            [[-1, 0, 0]],
+                         ]
+        ligand_origins = [
+                            [0, 0, 0],
+                            [0, 0, 0],
+                            [0, 0, 0]
+                            ] # if all are at the origin like here, the `ligand_origins` can also be omitted
+        ru = ase.Atom(symbol='Ru', position=[1, 0, 0])
+        fe = ase.Atom(symbol='Fe', position=[-1, 0, 0])
+        metal_centers = [
+                            [ru],       # metal center for the first ligand
+                            [ru, fe],   # metal centers for the second, bridging ligand
+                            [fe]        # metal center for the third ligand
+                        ]
+        complex = AssemblyComplex(
+                                    ligands=ligands,
+                                    target_vectors=target_vectors,
+                                    ligand_origins=ligand_origins,
+                                    metal_centers=metal_centers,
+                                    )
+        isomers = complex.get_isomers()
         """
-        # Define the class variables
-        self.ligands = ligands.values()         # for each ligand, get the ligand object
-        self.target_vectors = target_vectors    # List of target vectors i.e [[0, 0, 0], [0, 0, 1], ...]
-        self.ligand_origins = ligand_origins    # List of ligand_origins i.e [[0, 0, 0], [0, 0, 1], ...]
-        self.metal_origins = metal_origins      # List of metal_origins i.e [[0, 0, 0], [0, 0, 1], ...]
-        self.metal_types = metal_types          # List of metal types i.e ['Ru', 'Mn', ...]
-        self.mono_metallic = monometallic       # Boolean flag for monometallic complexes
+        # Handle default values
+        if ligand_origins is None:
+            ligand_origins = [[0.0, 0.0, 0.0] for _ in ligands]
+        if isinstance(metal_centers, str):
+            # If the metal center is provided as a chemical element, it's a mono-metallic complex at the origin
+            metal_centers = [[ase.Atom(symbol=metal_centers, position=[0, 0, 0])] for _ in ligands]
+
+        # Cache the input. Each input is a list of the same length.
+        self.ligands = ligands
+        self.target_vectors = target_vectors
+        self.ligand_origins = ligand_origins
+        self.metal_centers = metal_centers
+
+        # Other attributes
+        self.n_ligands = len(ligands)
+        self.unique_metal_centers = self._get_all_unique_metal_centers()
+
+        # Initialize attributes which will be set later
+        self.assembled_complexes = None
 
         # Validate the input
         self._validate_input()
-
-        # Assemble the complex
-        self.assembled_complexes = self._assemble_complex()
 
     def _validate_input(self) -> None:
         """
         Validates the input to the AssemblyComplex class
         :raises ValueError: If the input is invalid
         """
-        if len(self.ligands) != len(self.target_vectors) or len(self.ligands) != len(self.ligand_origins):
-            raise ValueError(
-                f"Fatal Error: Ligand objects [{len(self.ligands)}], target vectors [{len(self.target_vectors)}], and Ligand_Origins [{len(self.ligand_origins)}] must have the same length")
-
-        if self.mono_metallic:
-            if (len(self.metal_origins) != 1) or (len(self.metal_types) != 1):
-                raise ValueError("Fatal Error: Monometallic complexes must have exactly one metal origin and type.")
-        else:
-            if len(self.metal_origins) != len(self.metal_types):
-                raise ValueError(f"Fatal Error: Metal origins [length: {self.metal_origins}] and metal types [length: {self.metal_types}] must have the same length for multi-metallic systems.")
+        all_same_length = len(self.ligands) == len(self.target_vectors) == len(self.ligand_origins) == len(self.metal_centers)
+        if not all_same_length:
+            raise ValueError("The input of ligands, target vectors, ligand origins and metal centers must have the same length.")
 
     def _assemble_complex(self) -> List[Atoms]:
         """
-        Assembles the complex using the provided geometry and ligands
-        :return: ASE Atoms object representing the complex
+        Assembles the complex using the provided geometry and ligands.
+        :return: ASE Atoms object representing the complex.
         """
         rotated_ligands = []
         for ligand, target_vectors, origin in zip(self.ligands, self.target_vectors, self.ligand_origins):
             # Extract the geometry and donor atoms of the ligand
             geometry, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
             # cast the target vectors to numpy arrays
-            target_vectors = [np.array(v) for v in target_vectors.values()]
+            target_vectors = [np.array(v) for v in target_vectors]
             # Align the donor atoms of the ligand to the target vectors
             ligand_isomers, donor_atoms_ordered, rssd = try_all_geometrical_isomer_possibilities(atoms=geometry,
                                                                                                  donor_idc=donor_atoms[0],
@@ -318,10 +352,24 @@ class AssemblyComplex(object):
         """
         Adds the metals to the complex
         """
-        for metal_type, metal_origin in zip(self.metal_types, self.metal_origins):
-            metal = Atoms(symbols=metal_type, positions=[metal_origin])
-            ligand_structure += metal
+        for atom in self.unique_metal_centers:
+            ligand_structure += atom
         return ligand_structure
+
+    def _get_all_unique_metal_centers(self) -> List[ase.Atom]:
+        """
+        Get a list of all unique metal centers.
+        :return: List of ase.Atom objects
+        """
+        metal_centers = [self.metal_centers[0][0]]
+        for metal_list in self.metal_centers:
+            for metal in metal_list:
+                metal_in_list = any([are_atoms_equal(metal, m) for m in metal_centers])
+                if not metal_in_list:
+                    metal_centers.append(metal)
+
+        return metal_centers
+
 
     def _gen_all_isomers(self, ligands: List[List[Atoms]]):
         """
@@ -332,12 +380,12 @@ class AssemblyComplex(object):
         # Generate all combinations; each combination is a tuple with one isomer per ligand.
         combinations = list(itertools.product(*ligands))
         isomers = []
-
         for combo in combinations:
             combined = Atoms()                                          # Start with an empty Atoms object.
+            # @Cian: I always found it extremely handy in DART that the metal center came first, so I have changed the order here. Pls remove comment if ok.
+            combined = self._add_metals(ligand_structure=combined)      # Add the metals to the complex
             for ligand in combo:                                        # Iterate over the ligands in the combination.
                 combined += ligand                                      # combining Atoms objects.
-            combined = self._add_metals(ligand_structure=combined)      # Add the metals to the complex
             isomers.append(combined)                                    # Store all the new isomers
 
         return isomers
@@ -347,6 +395,7 @@ class AssemblyComplex(object):
         Get the assembled complexes
         :return:
         """
+        self.assembled_complexes = self._assemble_complex()
         return self.assembled_complexes
 
     @staticmethod

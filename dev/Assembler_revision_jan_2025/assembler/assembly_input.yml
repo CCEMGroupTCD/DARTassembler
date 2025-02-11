@@ -20,24 +20,24 @@ batches:
           origin: [0, 0, 0 ]
           vector_1: [0, 0, 1 ]
           temp_dent: 1 # todo WARNING: this is a temporary denticity, (i.e. in the future it should not need to be specified here). In the future I would hope that the Num. of vectors is enough for LigandChoice
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/OH.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/OH.json
       - ligand_2:
           origin: [ 0, 0, 0 ]
           vector_1: [0, 0, -1 ]
           temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/OH.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/OH.json
       - ligand_3:
           origin: [ 1.5, 0, 0 ]
           vector_1: [ 1, 1, 0 ]
           vector_2: [ 1, -1, 0 ]
           temp_dent: 2
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/bidentate_NN.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/bidentate_NN.json
       - ligand_4:
           origin: [ -1.5, 0, 0 ]
           vector_1: [ -1, 1, 0 ]
           vector_2: [ -1, -1, 0 ]
           temp_dent: 2
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/bidentate_NN.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/bidentate_NN.json
 
   - isomer_instruction: "all"
     max_num_complexes: 2
@@ -53,12 +53,12 @@ batches:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, 0, 1 ]
           temp_dent: 6
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
       - ligand_2:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, 0, -1 ]
           temp_dent: 6
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
 
   - isomer_instruction: "all"
     max_num_complexes: 1
@@ -99,32 +99,32 @@ batches:
           origin: [ 0, 0, 0 ]
           vector_1: [ 1, 0, 0 ]
           temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
       - ligand_2:
           origin: [ 0, 0, 0 ]
           vector_1: [ -1, 0, 0 ]
           temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
       - ligand_3:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, 1, 0 ]
           temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
       - ligand_4:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, -1, 0 ]
           temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
       - ligand_5:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, 0, 1 ]
           temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
       - ligand_6:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, 0, -1 ]
           temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
 
   - isomer_instruction: "all"
     max_num_complexes: 0
@@ -140,12 +140,12 @@ batches:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, 0, 1 ]
           temp_dent: 6  # todo WARNING: this is a temporary denticity, (i.e. in the future it should not need to be specified here)
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
       - ligand_2:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, 0, -1 ]
           temp_dent: 6
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
+          ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
 
   - isomer_instruction: "all"
     max_num_complexes: 0
