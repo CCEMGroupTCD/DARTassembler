@@ -11,7 +11,8 @@ import numpy as np
 from DARTassembler.src.ligand_extraction.io_custom import save_to_xyz
 import warnings
 
-from dev.Assembler_revision_jan_2025.assembler.utilities import AssemblyComplex
+from dev.Assembler_revision_jan_2025.assembler.utilities import AssembledIsomer
+from dev.test.Integration_Test import IntegrationTest
 
 warnings.filterwarnings("ignore", category=UserWarning)
 # warnings.simplefilter('error')    # Make warnings raise exceptions
@@ -171,7 +172,7 @@ def angle_between_vectors(v1, v2, degrees=True) -> float:
 #     #     return self.atoms
 #
 #
-# class AssemblyComplex(object):
+# class AssembledIsomer(object):
 #
 #     def __init__(
 #                     self,
@@ -248,7 +249,7 @@ if __name__ == '__main__':
     oer_ligand_db_path = '/Users/timosommer/PhD/projects/OERdatabase/data/testbatch/ligand_db/oer_all_ligands.jsonlines'
     OH_ligand_db_path = '/Users/timosommer/PhD/projects/OERdatabase/data/testbatch/ligand_db/oer_OH.jsonlines'
     oer_complexes_csv = '/Users/timosommer/PhD/projects/OERdatabase/data/testbatch/oerdb/oerdb_testbatch_v0.5/Ru_updated/info_table.csv'
-    save_concat_xyz = 'data/assembler/test_new_assembler/concat_complexes.xyz'
+    save_concat_xyz = 'data/assembler/test_new_assembler/data_output/concat_complexes.xyz'
     n_max = 10
     n_max_ligands = 300
     global_concat_atoms = []
@@ -292,16 +293,16 @@ if __name__ == '__main__':
             [ase.Atom(symbol='Fe', position=[1, 0, 0])]
         ]
         ligands = [ligand for ligand in [monodentate, bidentate, tridentate]]
-        ChemBuild = AssemblyComplex(ligands=ligands,
-                                    target_vectors=target_vectors,
-                                    ligand_origins=ligand_origins,
-                                    metal_centers=metal_centers,
-                                    )
+        isomers = AssembledIsomer.from_ligands_and_metal_centers(
+                                                                    ligands=ligands,
+                                                                    target_vectors=target_vectors,
+                                                                    ligand_origins=ligand_origins,
+                                                                    metal_centers=metal_centers,
+                                                                    )
 
-        isomers = ChemBuild.get_isomers()
         for c_idx, isomer in enumerate(isomers):
             name = f'{complex_name}_{c_idx}'
-            global_concat_atoms.append([isomer, complex_name])
+            global_concat_atoms.append([isomer.mol, complex_name])
             # ase.visualize.view(atoms) # Uncomment to visualize each assembled complex in ASE
 
             if idx >= n_max:
@@ -312,7 +313,19 @@ if __name__ == '__main__':
     structures = [atoms for atoms, _ in global_concat_atoms]
     comments = [name for _, name in global_concat_atoms]
     save_to_xyz(outpath=save_concat_xyz, structures=structures, comments=comments)
+    print(f'Saved {len(global_concat_atoms)} complexes to {save_concat_xyz}')
     print('Done!')
+
+
+    #%% ==============    Doublecheck refactoring    ==================
+    save_concat_xyz = Path(save_concat_xyz)
+    old_dir = save_concat_xyz.parent.parent / Path('benchmark_data_output')
+    if old_dir.exists():
+        test = IntegrationTest(new_dir=save_concat_xyz.parent, old_dir=old_dir)
+        test.compare_all()
+        print('Test for installation passed!')
+    else:
+        print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
 
 
 

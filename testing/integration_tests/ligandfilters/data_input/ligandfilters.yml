@@ -1,4 +1,5 @@
 output_db_file: ligandfilters/data_output/filtered_ligand_db_v1.7.json   # path or nothing
+n_max_ligands: 500
 
 filters:
   - filter: 'property'
@@ -10,10 +11,10 @@ filters:
     values: [-2, -1, 0]
 
   - filter: 'parent_complexes'
-    metal_centers: ['Fe', 'Mn', 'Cr', 'Ru', 'Co', 'Ni', 'Cu', 'Ir', 'Mo']
+    metal_centers: ['Pt+2', 'Pt+4', 'Ni0', 'Pd', 'Mn', 'Cr', 'Ru', 'Co', 'Cu', 'Ir', 'Mo']
 
   - filter: 'composition'
-    elements: ['O']
+    elements: ['O', 'O']
     instruction: 'must_exclude'
     only_donors: True
 

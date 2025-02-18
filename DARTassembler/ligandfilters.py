@@ -6,20 +6,19 @@ from typing import Union
 from pathlib import Path
 from dev.DART_refactoring_to_v1_1_0.refactor_ligandfilters import NewLigandFilters
 
-def ligandfilters(filter_input_path: Union[str, Path], nmax: Union[int, None] = None, delete_output_dir: bool = False) -> NewLigandFilters:
+def ligandfilters(filter_input_path: Union[str, Path], pre_delete: bool = False) -> NewLigandFilters:
     """
     Filter the full ligand database according to the specified filters. Should be run before assembly to reduce the number of ligands considered in the assembly to the ones that are interesting to the user.
     :param filter_input_path: Path to the filter input file
-    :param nmax: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.
-    :param outpath: Path to the output ligand database. If None, the output ligand database is saved in the same directory as the input filter file.
-    :param delete_output_dir: If True, the output ligand db file and the output ligand info directory are deleted before the new files are written. This is useful for testing purposes.
+    :param pre_delete: If True, the output ligand db file and the output ligand info directory are deleted before the new files are written. This is useful for testing purposes.
     :return: LigandFilters object
     """
     input_dict = read_yaml(filter_input_path)
     input_db_file = input_dict.pop('input_db_file', None)
+    n_max_ligands = input_dict.pop('n_max_ligands', None)
 
-    filter = NewLigandFilters(input_db_file=input_db_file, n_max=nmax)
-    filter.get_filtered_db(**input_dict, pre_delete=delete_output_dir)
+    filter = NewLigandFilters(input_db_file=input_db_file, n_max_ligands=n_max_ligands)
+    filter.get_filtered_db(**input_dict, pre_delete=pre_delete)
 
     return filter
 

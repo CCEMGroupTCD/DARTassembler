@@ -3,7 +3,7 @@
 # and generate the assembled transition metal complexes                                 #
 #########################################################################################
 from DARTassembler.src.assembly.ligands import LigandChoice
-from utilities import BatchInput, AssemblyComplex
+from utilities import BatchInput, AssembledIsomer
 from ase.visualize import view
 from pathlib import Path
 import random
@@ -47,7 +47,7 @@ if __name__ == "__main__":
         # Now we will loop through each of the unique ligand combinations and generate all the isomers for each combination
         all_geom = []
         for idx, ligand_combination in enumerate(ligand_combinations):
-            ChemBuild = AssemblyComplex(ligands=ligand_combination,
+            ChemBuild = AssembledIsomer(ligands=ligand_combination,
                                         target_vectors=ligand_target_vectors,
                                         ligand_origins=ligand_origin,
                                         metal_types=metal_type_list,
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
 # Todo: Suggestions by Timo for other projects with high priority:
 # High priority:
-# 1. slight refactoring of input of the AssemblyComplex() class, since the code doesn't actually need dictionaries but lists, so it would be good to reflect this in the actual input as well. This should be a quick fix.
+# 1. slight refactoring of input of the AssembledIsomer() class, since the code doesn't actually need dictionaries but lists, so it would be good to reflect this in the actual input as well. This should be a quick fix.
 # 2. Automatically adjust bond lengths of the rotated ligands depending on the metal type. For now, I suggest to keep this simple, e.g. simply taking the parent metal of the ligand (e.g. Fe) and the current metal for the assembly (e.g. Ru) and then adjusting the mean bond length of the ligand by shift=(DART_Element('Fe').covalent_radius - DART_Element('Ru').covalent_radius) and the shift all the ligand atoms in the direction of the mean of the donor vectors. This would still make the ligand always rotatable around the metal center, but in the correct distance. In a later stage, we could potentially also implement more complex things here, like looking at other ligand instances with the desired metal and os, but this information is currently not in the metalig database, since the metalig only records some basic information about all ligand instances (specifically parent complex id, parent metal os, parent metal type, parent complex charge) but not all the ligand instances themselves, because that would make the file much larger.
 # Medium priority:
 # 2. monodentate rotater using ff (we can use the openbabel ff for now and if we do decide to get rid of it, maybe use the rdkit ff, which should be ok since it's only singlepoint calculations and only needs to be rough)
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 #     [ru1, ru2],
 #     [ru2]
 # ]
-# ChemBuild = AssemblyComplex(
+# ChemBuild = AssembledIsomer(
 #     ligands=ligands,
 #     target_vectors=target_vectors,
 #     metal_centers=metal_centers,

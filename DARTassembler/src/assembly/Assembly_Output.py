@@ -2,11 +2,14 @@ import shutil
 from pathlib import Path
 from typing import Union
 import json
+
+import ase
 import pandas as pd
 import numpy as np
 import yaml
 
 from DARTassembler.src.assembly.Assembly_Input import AssemblyInput
+from dev.Assembler_revision_jan_2025.assembler.utilities import AssembledIsomer
 
 _gbl_optimization_movie = 'ffmovie.xyz'
 _gbl_concatenated_xyz = 'concat_passed_complexes.xyz'
@@ -177,6 +180,16 @@ class BatchAssemblyOutput(object):
         """
         self.save_file(xyz_string, self.failed_xyz_path, append=append)
 
+    def save_xyz(self, xyz_string: str, success: bool, append=False) -> None:
+        """
+        Saves the successful complexes as a concatenated .xyz file.
+        @param xyz_string: The concatenated .xyz string.
+        """
+        if success:
+            self.save_file(xyz_string, self.passed_xyz_path, append=append)
+        else:
+            self.save_file(xyz_string, self.failed_xyz_path, append=append)
+
     def save_output(self, string: str, append=False) -> None:
         """
         Appends the given string to the batch output file.
@@ -225,52 +238,25 @@ class ComplexAssemblyOutput(object):
 
     def save_all_complex_data(self,
                               complex,
-                              complex_idx: int,
-                              xyz_structure: str,
-                              ff_movie: Union[str, None] = None,
-                              assembly_input_path: [str, Path, None] = None,
-                              batch_idx: Union[int, None] = None,
-                              ligands: Union[dict, None] = None,
                               ) -> None:
+        self.save_ligand_info(complex.ligands)      # Save the ligand info
+        self.save_data_json(complex=complex)
 
-        self.save_structure(xyz_structure)      # Save the structure as xyz
-        if ff_movie is not None:
-            self.save_ff_movie(ff_movie)        # Save the force field movie
-        if assembly_input_path is not None:
-            self.save_settings(assembly_input_path)     # Save the assembly input settings
-        if ligands is not None:
-            self.save_ligand_info(ligands)      # Save the ligand info
-        self.save_data_json(
-                            complex=complex,
-                            complex_idx=complex_idx,
-                            xyz_structure=xyz_structure,
-                            batch_idx=batch_idx,
-                            )
+    def get_ligand_info_dict(self, ligands: list, max_entries: int=np.inf) -> dict:
+        return {f'Ligand {i}': lig.get_ligand_output_info(max_entries=max_entries) for i, lig in enumerate(ligands)}
 
-    def get_ligand_info_dict(self, ligands: dict, max_entries: int=np.inf) -> dict:
-        return {f'Ligand {i}': lig.get_ligand_output_info(max_entries=max_entries) for i, lig in enumerate(ligands.values())}
-
-    def save_ligand_info(self, ligands: dict) -> None:
+    def save_ligand_info(self, ligands: list) -> None:
         ligand_infos = self.get_ligand_info_dict(ligands, max_entries=5)
         df = pd.DataFrame.from_dict(ligand_infos, orient='index')
         df.to_csv(self.ligand_output_path)
 
     def save_data_json(self,
-                        complex,
-                        complex_idx: int,
-                        xyz_structure: str,
-                        batch_idx: Union[int,None] = None,
+                        complex: AssembledIsomer,
                         ) -> None:
         """
         Saves all data in a contained json file.
         """
-        data = {
-                'complex': complex.to_data_dict(),
-                'complex_idx': complex_idx,
-                'xyz_structure': xyz_structure,
-                'batch_idx': batch_idx,
-                }
-        self.save_file(data, self.data_path)
+        self.save_file(complex.to_dict(), self.data_path)
 
     def save_structure(self, xyz_string: str) -> None:
         """

@@ -10,7 +10,8 @@ import pysmiles
 from DARTassembler.src.metalig.refactor_v1_0_0 import refactor_metalig_entry_from_v1_0_0_to_v1_1_0
 # some special functions which are required
 from DARTassembler.src.ligand_extraction.composition import Composition
-from DARTassembler.src.ligand_extraction.utilities_Molecule import get_planarity, get_denticities_and_hapticities_idc, get_isomers_effective_ligand_atoms_with_effective_donor_indices, get_all_effective_ligand_atoms_with_effective_donor_indices, format_hapdent_idc, has_smarts_pattern
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_planarity, get_denticities_and_hapticities_idc, get_isomers_effective_ligand_atoms_with_effective_donor_indices, get_all_effective_ligand_atoms_with_effective_donor_indices, format_hapdent_idc, has_smarts_pattern, check_metal_center_format, get_atomic_props_from_ase_mol
+
 from ase.visualize import view
 import re
 import pandas as pd
@@ -42,11 +43,6 @@ from DARTassembler.src.assembly.ligand_geometries import assign_geometry
 pseudo_metal = 'Cu'     # pseudo metal for display in ligand xyz files and for use in the SMARTS filter.
 ligand_global_props_order = ['unique_name', 'stoichiometry', 'geometry', 'charge', 'smiles', 'smiles_with_metal', 'n_donors', 'n_eff_denticities', 'n_denticities', 'n_haptic_atoms', 'n_haptic_groups', 'n_atoms', 'n_elements', 'n_bonds', 'n_electrons', 'n_protons', 'n_beta_hydrogens', 'molecular_weight', 'planarity', 'donor_planarity', 'donor_metal_planarity', 'min_interatomic_distance', 'max_ligand_extension', 'geometry_rssd', 'geometry_confidence', 'has_all_bond_orders_valid', 'has_confident_charge', 'graph_hash', 'graph_hash_with_metal', 'heavy_atoms_graph_hash', 'heavy_atoms_graph_hash_with_metal', 'bond_order_graph_hash', 'n_ligand_instances', 'csd_complex_ids', 'csd_metal_count', 'csd_metal_os_count']
 
-
-# Note to helpful AI: I am currently refactoring this code to use the following input dict as ligand, instead of the previous input. Please adapt your predictions accordingly.
-# {'unique_name': 'unq_CSD-OZIYON-02-a', 'atomic_props': {'x': [-4.7867999999999995, 0.38070000000000004, -1.7165, 0.20350000000000001, -2.6942, -2.6641, -3.7560000000000002, -4.4297, -3.7766, -2.7913, -2.8202, -1.762, -0.7388999999999999, -0.6641999999999999, -1.2865, 0.3246000000000002, 1.2610999999999999, 1.9398999999999997, 1.1818, 1.8239999999999998], 'y': [0.125, 5.1037, -0.01180000000000092, 1.8072999999999997, -0.8981000000000003, -1.5598, -0.8884000000000007, -1.5281000000000002, 0.08589999999999876, 1.030899999999999, 1.6974999999999998, 0.9795999999999996, 1.9879999999999995, 3.1014999999999997, 3.2309, 4.0098, 3.826699999999999, 4.449299999999999, 2.7010000000000005, 2.554499999999999], 'z': [-3.9460000000000006, -3.4881, -1.2637999999999998, -1.1483000000000008, -1.222900000000001, -0.5707000000000004, -2.1006, -2.0541, -3.024700000000001, -3.0923, -3.7389, -2.1949000000000005, -2.1061999999999994, -2.9162, -3.5952, -2.7133000000000003, -1.7553999999999998, -1.6243999999999996, -0.9848999999999997, -0.32840000000000025], 'atoms': ['F', 'F', 'N', 'N', 'C', 'H', 'C', 'H', 'C', 'C', 'H', 'C', 'C', 'C', 'H', 'C', 'C', 'H', 'C', 'H'], 'original_complex_indices': [1, 2, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26]}, 'global_props': {'charge': 0, 'stoichiometry': 'C10H6F2N2', 'molecular_weight': 192.16880632599998, 'n_donors': 2, 'n_atoms': 20, 'n_elements': 4, 'n_bonds': 21, 'n_electrons': 98, 'n_protons': 98, 'n_hydrogens': 6, 'n_C_H_bonds': 6, 'n_ligand_instances': 1, 'has_haptic_interactions': False, 'has_beta_hydrogens': True, 'has_all_bond_orders_valid': True, 'has_bond_orders': True, 'has_unknown_bond_orders': False, 'parent_complex_id': 'OZIYON', 'parent_metal': 'Ir', 'parent_metal_os': 3.0, 'min_interatomic_distance': 0.9291298778965196, 'max_ligand_extension': 8.745613586821682, 'graph_hash': 'd810e651de6b310aabd5ca7060829beb', 'graph_hash_with_metal': '9cfe1644c35cf7f9ef3b747b268cd586', 'heavy_atoms_graph_hash': 'f76078eb3bbe68614cc779c42ff70282', 'heavy_atoms_graph_hash_with_metal': '8d31df32a8d11ecf0b01db06d7cba93f', 'bond_order_graph_hash': '59194cf8052a23ab8b2e41804249930e'}, 'graph': {'graph': {0: {8: {'bond_type': 1}}, 1: {15: {'bond_type': 1}}, 2: {11: {'bond_type': 12}}, 3: {18: {'bond_type': 12}}, 4: {6: {'bond_type': 12}}, 5: {4: {'bond_type': 1}}, 6: {8: {'bond_type': 12}}, 7: {6: {'bond_type': 1}}, 8: {9: {'bond_type': 12}}, 9: {11: {'bond_type': 12}}, 10: {9: {'bond_type': 1}}, 11: {12: {'bond_type': 1}}, 12: {13: {'bond_type': 12}}, 13: {15: {'bond_type': 12}}, 14: {13: {'bond_type': 1}}, 15: {16: {'bond_type': 12}}, 16: {18: {'bond_type': 12}}, 17: {16: {'bond_type': 1}}, 18: {19: {'bond_type': 1}}, 19: {18: {'bond_type': 1}}}, 'node_attributes': {0: {'node_label': 'F'}, 1: {'node_label': 'F'}, 2: {'node_label': 'N'}, 3: {'node_label': 'N'}, 4: {'node_label': 'C'}, 5: {'node_label': 'H'}, 6: {'node_label': 'C'}, 7: {'node_label': 'H'}, 8: {'node_label': 'C'}, 9: {'node_label': 'C'}, 10: {'node_label': 'H'}, 11: {'node_label': 'C'}, 12: {'node_label': 'C'}, 13: {'node_label': 'C'}, 14: {'node_label': 'H'}, 15: {'node_label': 'C'}, 16: {'node_label': 'C'}, 17: {'node_label': 'H'}, 18: {'node_label': 'C'}, 19: {'node_label': 'H'}}}, 'donor_idc': [2, 3], 'ligand_instances': {'ligand_name': ['CSD-OZIYON-02-a'], 'parent_complex_id': ['OZIYON'], 'parent_complex_charge': [0], 'parent_metal': ['Ir'], 'parent_metal_os': [3.0]}, 'parent_metal_position': [0.0, 0.0, 0.0]}
-
-
 class RCA_Molecule(object):
     """
     This is a base class for a molecule, which can be either a ligand or a complex.
@@ -54,7 +50,7 @@ class RCA_Molecule(object):
 
     def __init__(self,
                  # mol: Atoms = None,
-                 atomic_props: dict = None,
+                 atomic_props: Union[dict[list], ase.Atoms] = None,
                  global_props: dict = None,
                  graph = None,
                  # has_ligands=True,
@@ -72,6 +68,8 @@ class RCA_Molecule(object):
         #     other_props = {}
         if atomic_props is None:
             atomic_props = {}
+        elif isinstance(atomic_props, ase.Atoms):
+            atomic_props = get_atomic_props_from_ase_mol(atomic_props)
         if global_props is None:
             global_props = {}
 
@@ -169,10 +167,6 @@ class RCA_Molecule(object):
     @cached_property
     def bond_order_graph_hash(self) -> str:
         return self.get_bond_order_graph_hash()
-
-    # @cached_property
-    # def hash(self) -> str:
-    #     return self.get_hash()
 
     @cached_property
     def stoichiometry(self) -> str:
@@ -564,24 +558,6 @@ class RCA_Molecule(object):
     def has_graph_hash(self):
         return False if self.graph_hash is None else True
 
-    @cached_property
-    def min_interatomic_distance(self):
-        try:
-            min = self.global_props['min_interatomic_distance']
-        except KeyError:
-            min, _, _ = self.get_atomic_distances_between_atoms()
-            self.global_props['min_interatomic_distance'] = min
-        return min
-
-    @cached_property
-    def max_ligand_extension(self):
-        try:
-            max = self.global_props['max_ligand_extension']
-        except KeyError:
-            _, max, _ = self.get_atomic_distances_between_atoms()
-            self.global_props['max_ligand_extension'] = max
-        return max
-
     # @cached_property
     # def has_hash(self):
     #     return False if self.hash is None else True
@@ -881,7 +857,7 @@ class RCA_Ligand(RCA_Molecule):
                  hapdent_idc: list = None,
                  geometric_isomers_hapdent_idc: list = None,
                  # other_props=None,
-                 validity_check=True,
+                 validity_check=False,
                  ):
 
         if global_props is None:
@@ -1091,6 +1067,24 @@ class RCA_Ligand(RCA_Molecule):
             return self.global_props['geometry_confidence']
         except KeyError:
             return self._geometry_and_geometrical_isomers['geometry_confidence']
+
+    @cached_property
+    def min_interatomic_distance(self):
+        try:
+            min = self.global_props['min_interatomic_distance']
+        except KeyError:
+            min, _, _ = self.get_atomic_distances_between_atoms()
+            self.global_props['min_interatomic_distance'] = min
+        return min
+
+    @cached_property
+    def max_ligand_extension(self):
+        try:
+            max = self.global_props['max_ligand_extension']
+        except KeyError:
+            _, max, _ = self.get_atomic_distances_between_atoms()
+            self.global_props['max_ligand_extension'] = max
+        return max
 
     @cached_property
     def smiles(self):
@@ -1345,7 +1339,7 @@ class RCA_Ligand(RCA_Molecule):
         elif mode == 'all':
             return distances.min(), distances.max(), distances[self.ligand_to_metal].tolist()
 
-    def is_in_global_props(self, name, range: list = None, values: list = None) -> bool:
+    def has_global_property_in_range(self, name, range: list = None, values: list = None) -> bool:
         """
         Checks whether the value of the given property is within the specified range or in the specified list, if either of these are given.
         :param name: name of the property in `global_props`
@@ -1423,7 +1417,15 @@ class RCA_Ligand(RCA_Molecule):
         :param metal_centers: List of metal centers to check for.
         :return: True if the ligand has the specified metal centers, False otherwise.
         """
-        return any([metal in list(self.count_metals.keys()) for metal in metal_centers])
+        for metal_center in metal_centers:
+            check_metal_center_format(metal_center)
+
+        parent_metals = list(self.count_metals.keys())
+        parent_mos = list(self.mos_counts.keys())
+        all_parent_metal_centers = parent_metals + parent_mos
+        has_metal_centers = any(metal in all_parent_metal_centers for metal in metal_centers)
+
+        return has_metal_centers
 
     def has_specified_smarts(self, smarts, should_contain, include_metal=None) -> bool:
         """

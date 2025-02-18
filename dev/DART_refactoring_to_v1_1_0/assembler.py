@@ -11,6 +11,7 @@ from DARTassembler.src.assembly.Assemble import PlacementRotation
 from DARTassembler.src.assembly.ligands import LigandChoice
 from DARTassembler.src.assembly.Isomer import BuildIsomers
 from DARTassembler.src.assembly.Optimise import OPTIMISE
+from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
 from DARTassembler.src.ligand_extraction.io_custom import load_json
 from DARTassembler.src.assembly.Post_Filter import PostFilter
 from tqdm import tqdm
@@ -29,7 +30,7 @@ import numpy as np
 
 from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
 from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
-from dev.Assembler_revision_jan_2025.assembler.utilities import AssemblyComplex
+from dev.Assembler_revision_jan_2025.assembler.utilities import AssembledIsomer
 
 warnings.simplefilter("always")
 import logging
@@ -130,8 +131,8 @@ class DARTAssembly(object):
         batch_summary_title = '  Summary per batch  '
         logging.info(f'{batch_summary_title:=^80}')
         for batch_idx, batch in enumerate(self.batches):
-            df = self.df_info[self.df_info['batch idx'] == batch_idx]
-            batch_name = df['batch name'].iloc[0]
+            df = self.df_info[self.df_info['batch_idx'] == batch_idx]
+            batch_name = df['batch_name'].iloc[0]
             logging.info(f"Batch {batch_idx} ('{batch_name}'):")
             self.print_success_rate(df)
 
@@ -146,11 +147,11 @@ class DARTAssembly(object):
 
         # Some final tests
         df_test_success = self.df_info[self.df_info['success']]
-        batches = df_test_success['batch idx'].unique()
+        batches = df_test_success['batch_idx'].unique()
         for batch in batches:
-            df_batch = df_test_success[df_test_success['batch idx'] == batch]
+            df_batch = df_test_success[df_test_success['batch_idx'] == batch]
             # Check for duplicate complex names in the batch
-            duplicate_names = df_batch['complex name'][df_batch['complex name'].duplicated()].values
+            duplicate_names = df_batch['complex_name'][df_batch['complex_name'].duplicated()].values
             assert len(duplicate_names) == 0, f"Duplicate complex names in batch {batch}: {duplicate_names}. Please report this issue to our GitHub page."
 
         return
@@ -184,7 +185,6 @@ class DARTAssembly(object):
         if self.check_if_reload_database():
             self.ligand_db = self.get_ligand_db()
 
-        RCA = PlacementRotation()
         Topology, Similarity = format_topologies(self.topology_similarity)
 
         # Choose ligands for each complex
@@ -206,23 +206,19 @@ class DARTAssembly(object):
             # If we know the final number of assembled complexes, we set the total number of iterations for the progress bar
             progressbar = tqdm(total=self.max_num_assembled_complexes, desc='Assembling complexes', unit=' complexes', file=sys.stdout)
 
-
-        j = 0  # Assembly iteration we are on
-        batch_sum_assembled_complexes = 0  # Number of assembled complexes produced. Note: j is not always equal to batch_sum_assembled_complexes because of filters and isomers.
+        batch_sum_assembled_complexes = 0  # Number of assembled complexes produced.
         while choice.if_make_more_complexes(batch_sum_assembled_complexes):
-            complex_title = f'  Attempting_Assembly_of_Complex #{j}  '
-            logging.debug(f'{complex_title:-^80}')
 
             # 1. Choose Ligands for Complex
             try:
                 ligands = next(ligand_combinations)
             except StopIteration:
                 break # If all ligand combinations are exhausted, stop the batch
+            ligands = list(ligands.values())
 
             # 2. Detect certain conditions which hinder complex assembly, e.g. tridentate non-planar
             complex_can_be_assembled = self.check_if_complex_can_be_assembled(ligands)
             if not complex_can_be_assembled:
-                j += 1
                 continue
 
             ligand_origins = [[0,0,0] for _ in ligands]
@@ -231,54 +227,25 @@ class DARTAssembly(object):
                 [-1, 0, 0],
                 [0, -1, 0],
             ]
-            ChemBuild = AssemblyComplex(ligands=list(ligands.values()),
-                                        target_vectors=ligand_target_vectors,
-                                        ligand_origins=ligand_origins,
-                                        metal_centers=[self.metal_type],
-                                        metal_origins=[[0,0,0]]
-                                        )
-            isomers = ChemBuild.get_isomers()
+            isomers, warnings = AssembledIsomer.from_ligands_and_metal_centers(
+                                                                        ligands=ligands,
+                                                                        target_vectors=ligand_target_vectors,
+                                                                        ligand_origins=ligand_origins,
+                                                                        metal_centers=self.metal_type
+                                                                        )
 
-            # 6. Post-Process
-            # Post process includes error detection and optimization
-            Post_Process_Complex_List = []
+            # Post-processing of isomers
             logging.debug("Post-processing isomers...")
             isomer_idx = 1  # Index for naming the isomer
-            for complex in isomers:
-                # complex, complex_is_good, ff_movie, note = self.relax_and_check_structure(complex, building_blocks, ligands)
-                complex_is_good = True
-                note = ''
+            for isomer, warning in zip(isomers, warnings):
+                success = True if warning == '' else False
+                self.save_assembled_isomer(isomer=isomer, success=success, ligands=ligands, isomer_idx=isomer_idx, note=warning)
+                isomer_idx += 1
 
-                # tmc = TMC.from_stkBB(
-                #             compl=complex,
-                #             ligands=ligands,
-                #             metal=self.metal_type,
-                #             metal_idx=0,
-                #             metal_charge=int(self.metal_ox_state),
-                #             )
-
-                if complex_is_good:  # New complex successfully built.
-                    self.save_successfully_assembled_complex(complex, metal_charge=int(self.metal_ox_state), ligands=ligands, note=note, isomer_idx=isomer_idx)
-                    Post_Process_Complex_List.append(complex)
+                if success:  # New complex successfully built.
                     batch_sum_assembled_complexes += 1
-                    isomer_idx += 1
                     progressbar.update(1)
-                else:
-                    self.save_failed_assembled_complex(complex=tmc, ff_movie=ff_movie, ligands=ligands, note=note)
             logging.debug("Leaving post process")
-
-            # 7. Format Outputs
-            # Todo: this function should not be used anymore. It is only used for the old output format.
-            RCA.output_controller_(list_of_complexes_wih_isomers=Post_Process_Complex_List,
-                                   ligands=ligands,
-                                   metal=self.metal_type,
-                                   metal_ox_state=int(self.metal_ox_state),
-                                   view_complex=False,
-                                   write_gaussian_input_files=False,
-                                   output_directory=self.batch_output_path,
-                                   )
-
-            j += 1
 
         progressbar.close()
 
@@ -347,40 +314,32 @@ class DARTAssembly(object):
 
         return complex, complex_is_good, ff_movie, note
 
-    def save_successfully_assembled_complex(self, complex: ase.Atoms, ligands: dict, note: str, metal_charge: int, isomer_idx: int):
+    def save_assembled_isomer(self, isomer: AssembledIsomer, success: bool, ligands: list, isomer_idx: int, note: str):
         """
         Save the successfully assembled complex to the output files.
         """
-        # Save to concatenated xyz file of this batch
-        # xyz_string = complex.mol.get_xyz_file_format_string()
-        # complex_total_charge = complex.get_total_charge(metal_charge, ligands)
-        # self.batch_outcontrol.save_passed_xyz(xyz_string, append=True)
-
-        # This is the old way of saving the concatenated xyz file to the global file.
-        # append_global_concatenated_xyz(xyz_string, outdir=self.output_path)
+        name = self.get_complex_name(complex=isomer, isomer_idx=isomer_idx)
+        isomer.global_props['name'] = name
 
         # Save to complex directory
-        complex_name = self.get_complex_name(complex, isomer_idx=isomer_idx)
-        complex_dir = Path(self.batch_outcontrol.complex_dir, complex_name)
-        complex_outcontrol = ComplexAssemblyOutput(complex_dir)
+        if success:
+            complex_dir = Path(self.batch_outcontrol.complex_dir, name)
+            complex_outcontrol = ComplexAssemblyOutput(complex_dir)
+            complex_outcontrol.save_all_complex_data(complex=isomer)
 
+        # Save to concatenated xyz file of this batch
+        self.batch_outcontrol.save_xyz(isomer.get_xyz_file_format_string(), success=success, append=True)
+
+        # Save data for csv file
         complex_idx = len(self.assembled_complex_names)
-        complex_outcontrol.save_all_complex_data(
-                                                complex=complex,
-                                                complex_idx=complex_idx,
-                                                xyz_structure=xyz_string,
-                                                ff_movie=ff_movie,
-                                                assembly_input_path=None,   # don't save the assembly input file to the complex directory
-                                                batch_idx=self.batch_idx,
-                                                ligands=ligands,
-                                                )
-        graph_hash = complex.graph_hash
-        self.add_batch_info(success=True, reason=note, ligands=ligands, complex_idx=complex_idx, complex_name=complex_name, complex_graph_hash=graph_hash)
-        self.assembled_complex_names.append(complex_name)
+        self.add_batch_info(success=success, reason=note, ligands=ligands, complex_idx=complex_idx, complex_name=name, complex_graph_hash=isomer.graph_hash)
+
+        # Keep track of number and names of assembled complexes
+        self.assembled_complex_names.append(name)
 
         return
 
-    def save_failed_assembled_complex(self, complex: TMC, ff_movie: str, ligands: dict, note: str):
+    def save_failed_assembled_complex(self, complex: TMC, ligands: dict, note: str):
         """
         Save the successfully assembled complex to the output files.
         """
@@ -389,9 +348,6 @@ class DARTAssembly(object):
         # Save to concatenated xyz file of this batch
         xyz_string = complex.mol.get_xyz_file_format_string()
         self.batch_outcontrol.save_failed_xyz(xyz_string, append=True)
-
-        if not ff_movie is None:
-            self.batch_outcontrol.save_failed_ff_movie(ff_movie)
 
         return
 
@@ -444,57 +400,50 @@ class DARTAssembly(object):
                 else:
                     break   # name is unique, break the loop
 
-        # Add name to complex
-        complex.mol_id = name
-
         return name
 
-    def add_batch_info(self, success, ligands, reason: str = '', complex_idx=None, complex_name=None, complex_graph_hash=None):
+    def add_batch_info(self, success, ligands: list[RCA_Ligand], reason: str = '', complex_idx=None, complex_name: str=None, complex_graph_hash: str=None):
         """
         Add information about the batch to the batch info variable which will be saved to the batch info file.
         """
-        ligand_names = tuple(ligand.unique_name for ligand in ligands.values())
-        ligand_stoichiometries = tuple(ligand.stoichiometry for ligand in ligands.values())
-        ligand_charges = tuple(ligand.pred_charge for ligand in ligands.values())
-        ligand_donors = tuple('-'.join(sorted(ligand.local_elements)) for ligand in ligands.values())
-        topology = f'({self.topology_similarity.split("--")[0].strip("[]")})'
-        similarity = f'({self.topology_similarity.split("--")[1].strip("[]")})'
-        atoms = [self.metal_type] + [atom for ligand in ligands.values() for atom in ligand.atomic_props['atoms']]
+        ligand_names = tuple(ligand.unique_name for ligand in ligands)
+        ligand_stoichiometries = tuple(ligand.stoichiometry for ligand in ligands)
+        ligand_charges = tuple(ligand.pred_charge for ligand in ligands)
+        ligand_donors = tuple('-'.join(sorted(ligand.local_elements)) for ligand in ligands)
+        atoms = [self.metal_type] + [atom for ligand in ligands for atom in ligand.atomic_props['atoms']]
         stoichiometry = get_standardized_stoichiometry_from_atoms_list(atoms)
 
         data = {
             "success": success,
-            "complex idx": complex_idx,
-            'complex name': complex_name,
+            "complex_idx": complex_idx,
+            'complex_name': complex_name,
             "stoichiometry": stoichiometry,
-            'graph hash': complex_graph_hash,
+            'graph_hash': complex_graph_hash,
             "note": reason,
-            "ligand names": ligand_names,
-            "ligand stoichiometries": ligand_stoichiometries,
-            "ligand charges": ligand_charges,
-            "ligand donors": ligand_donors,
-            "batch idx": self.batch_idx,
-            "batch name": self.batch_name,
+            "ligand_names": ligand_names,
+            "ligand_stoichiometries": ligand_stoichiometries,
+            "ligand_charges": ligand_charges,
+            "ligand_donors": ligand_donors,
+            "batch_idx": self.batch_idx,
+            "batch_name": self.batch_name,
             "metal": self.metal_type,
-            "oxi state": self.metal_ox_state,
-            "topology": topology,
-            "similarity": similarity,
-            "total charge": self.total_charge,
+            "oxi_state": self.metal_ox_state,
+            "total_charge": self.total_charge,
             "optimization": self.optimisation_instruction,
             "isomers": self.generate_isomer_instruction,
-            "random seed": self.random_seed,
+            "random_seed": self.random_seed,
         }
         self.df_info.append(data)
 
         return
 
-    def check_if_complex_can_be_assembled(self, ligands):
+    def check_if_complex_can_be_assembled(self, ligands: list[RCA_Ligand]):
         """
         Check if the complex can be assembled based on certain conditions to avoid errors.
         """
         # Non-planar tridentate and tetradentate ligands cannot be assembled
         dent_names = {3: 'tridentate', 4: 'tetradentate'}
-        for ligand in ligands.values():
+        for ligand in ligands:
             if ligand.denticity in [3, 4]:
                 is_planar = ligand.if_donors_planar(with_metal=True)
                 if not is_planar:
@@ -503,7 +452,7 @@ class DARTAssembly(object):
 
         # Hydride ligand cannot be assembled
         hydride_found = False
-        for ligand in ligands.values():
+        for ligand in ligands:
             if ((ligand.atomic_props['atoms'][0] == "H") or (ligand.atomic_props['atoms'][0] == "Se")) and (
                     len(ligand.atomic_props['atoms']) == 1):
                 hydride_found = True
@@ -514,7 +463,7 @@ class DARTAssembly(object):
             return False
 
         # Haptic ligands cannot be assembled
-        for ligand in ligands.values():
+        for ligand in ligands:
             if ligand.has_neighboring_coordinating_atoms:
                 self.add_batch_info(success=False, reason='haptic ligand', ligands=ligands)
                 return False
@@ -586,20 +535,22 @@ if __name__ == '__main__':
     # Set the path to the assembly input file
     assembly_input_path = 'assembler.yml'
 
-    out_json = load_json('/Users/timosommer/PhD/projects/DARTassembler/dev/DART_refactoring_to_v1_1_0/data/ABERUZUN1_data.json')
+    out_json = load_json('/Users/timosommer/PhD/projects/DARTassembler/dev/DART_refactoring_to_v1_1_0/data/ABAFIFUQ_Ru_OH_data.json')
 
     dart = DARTAssembly(assembly_input_path=assembly_input_path, pre_delete=True)
     dart.run_all_batches()
 
-    #%% ==============    Doublecheck refactoring    ==================
-    from dev.test.Integration_Test import IntegrationTest
-    old_dir = dart.output_path.parent / Path('benchmark_data_output')
-    if old_dir.exists():
-        test = IntegrationTest(new_dir=dart.output_path, old_dir=old_dir)
-        test.compare_all()
-        print('Test for installation passed!')
-    else:
-        print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
+    out_json2 = load_json('/Users/timosommer/PhD/projects/DARTassembler/dev/DART_refactoring_to_v1_1_0/data/assembler/data_output/batches/First_batch/complexes/ACIJESIQ1/ACIJESIQ1_data.json')
+
+    # #%% ==============    Doublecheck refactoring    ==================
+    # from dev.test.Integration_Test import IntegrationTest
+    # old_dir = dart.output_path.parent / Path('benchmark_data_output')
+    # if old_dir.exists():
+    #     test = IntegrationTest(new_dir=dart.output_path, old_dir=old_dir)
+    #     test.compare_all()
+    #     print('Test for installation passed!')
+    # else:
+    #     print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
 
 
     print('Done')

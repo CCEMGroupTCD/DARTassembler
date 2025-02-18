@@ -7,10 +7,10 @@ from DARTassembler.src.ligand_extraction.io_custom import read_yaml
 from pathlib import Path
 import shutil
 
-def test_filter_ligands(nmax=3000):
+def test_filter_ligands():
     filter_ligands_path = project_path().extend('testing', 'integration_tests', 'ligandfilters', 'data_input', 'ligandfilters.yml')   # In this file the user specifies which input they want
 
-    filters = ligandfilters(filter_input_path=filter_ligands_path, nmax=nmax, delete_output_dir=True)
+    filters = ligandfilters(filter_input_path=filter_ligands_path, pre_delete=True)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest
@@ -26,5 +26,4 @@ def test_filter_ligands(nmax=3000):
 
 
 if __name__ == "__main__":
-    nmax = 500
-    filters = test_filter_ligands(nmax=nmax)
+    filters = test_filter_ligands()

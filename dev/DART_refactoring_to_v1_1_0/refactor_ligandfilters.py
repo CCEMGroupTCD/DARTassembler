@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Union
 import pandas as pd
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
+from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardized_stoichiometry_from_atoms_list
 from DARTassembler.src.metalig.metalig_utils import get_correct_ligand_db_path_from_input
 
 filters = [
@@ -173,14 +174,15 @@ possible_filters = {
 # Refactor the LigandFilters class
 class NewLigandFilters(object):
 
-    def __init__(self, input_db_file: Union[str, Path], n_max: int):
-        self.n_max = n_max
+    def __init__(self, input_db_file: Union[str, Path], n_max_ligands: Union[int, None] = None):
+        self.n_max_ligands = n_max_ligands
         self.input_ligand_db_path = get_correct_ligand_db_path_from_input(input_db_file)
-        self.db = LigandDB.load_from_json(path=input_db_file, n_max=n_max)
+        self.db = LigandDB.load_from_json(path=input_db_file, n_max=n_max_ligands)
 
     def _apply_filters(self, filters: list[dict]) -> list[str]:
         self.filter_tracking = []
         filters = deepcopy(filters)
+
         # Prepend a bond-order filter if a SMARTS filter is used to make sure the SMARTS filter can be applied.
         filters = self._add_filter_for_valid_bond_orders_if_smarts(filters)
 
@@ -192,21 +194,24 @@ class NewLigandFilters(object):
         for idx, filter in enumerate(filters):
             n_ligands_before = len(self.unames)
             filtername = filter.pop('filter')
-            filter_addon = f" {filter['name']}" if filtername == 'property' else ''
-            unique_filtername = f"Filter {idx + 1:02d}: {filtername}{filter_addon}"
             if filtername == 'property':
-                self.unames = [uname for uname in self.unames if self.db.db[uname].is_in_global_props(**filter)]
+                self.unames = [uname for uname in self.unames if self.db.db[uname].has_global_property_in_range(**filter)]
+                name_appendix = filter['name']
             elif filtername == 'composition':
                 self.unames = [uname for uname in self.unames if self.db.db[uname].has_specified_stoichiometry(**filter)]
+                name_appendix = get_standardized_stoichiometry_from_atoms_list(filter['elements'])
             elif filtername == 'parent_complexes':
                 self.unames = [uname for uname in self.unames if self.db.db[uname].has_specified_metal_centers(**filter)]
+                name_appendix = ', '.join(filter['metal_centers'])
             elif filtername == 'smarts':
                 self.unames = [uname for uname in self.unames if self.db.db[uname].has_specified_smarts(**filter)]
+                name_appendix = filter['smarts']
             else:
                 raise ValueError(f'Filter "{filtername}" not recognized!')
 
             n_ligands_after = len(self.unames)
             ligand_was_filtered = ~self.df_all_ligands.index.isin(self.unames) & (self.df_all_ligands['filter'].isna())
+            unique_filtername = f"Filter {idx + 1:02d}: {filtername}: {name_appendix}"
             self.df_all_ligands.loc[ligand_was_filtered, 'filter'] = unique_filtername
 
             self.filter_tracking.append({

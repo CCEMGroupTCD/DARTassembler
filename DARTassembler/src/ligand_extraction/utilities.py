@@ -190,7 +190,6 @@ def coordinates_to_xyz_str(coordinates: dict):
 
     return str_
 
-
 def atomic_props_dict_to_lists(prop: dict, flatten=False) -> list:
     """
     Converts an atomic property (e.g. partial charge, coordinates) from format {0: ['La', [1, 2, 3]], ...} into three lists of indices, atoms, values.

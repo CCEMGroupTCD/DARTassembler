@@ -2,12 +2,35 @@ import collections
 from typing import Union, Tuple
 import ase
 import networkx as nx
+from ase import Atoms
 from rdkit import Chem
 import numpy as np
 from DARTassembler.src.constants.Periodic_Table import DART_Element
 import re
 
 unknown_rdkit_bond_orders = [0, 20, 21]
+
+
+def check_metal_center_format(metal_center: str) -> None:
+    """
+    Check if the metal centers have the correct format, e.g. 'Fe', 'Ni-2', 'Pt0', 'Au+1'. Otherwise raises a ValueError.
+    :param metal_center: The metal center to check.
+    :return: None
+    :raises: ValueError if the metal center format is incorrect.
+    """
+    # Check if the general format is correct
+    pattern = r'^[A-Z][a-z]*[+-]*[0-9]*$'
+    if not re.match(pattern, metal_center):
+        raise ValueError(
+            f'Invalid metal center format: {metal_center}. Examples for correct format: "Pd+2", "Pt0", "Ni-2", "Fe"')
+
+    # Check if the letters provided are a valid metal
+    pattern_chemical_element = r'^[A-Z][a-z]*'
+    element = re.match(pattern_chemical_element, metal_center).group()
+    if not DART_Element(element).is_metal:
+        raise ValueError(f'Invalid metal "{element}" in metal center "{metal_center}".')
+
+    return None
 
 def format_hapdent_idc(hapdent_idc) -> tuple[int, tuple[int]]:
     """
@@ -281,6 +304,20 @@ def rdkit_mol_to_graph(mol: Chem.Mol, element_label: str='node_label', bond_labe
         G.add_edge(u, v, **{bond_label: label})
 
     return G
+
+def get_atomic_props_from_ase_mol(atoms: Atoms) -> dict:
+    """
+    Extracts atomic properties from an ASE molecule object.
+    :param atoms: ASE molecule object
+    :return: Dictionary of atomic properties
+    """
+    atomic_props = {}
+    atomic_props['x'] = [atom.position[0] for atom in atoms]
+    atomic_props['y'] = [atom.position[1] for atom in atoms]
+    atomic_props['z'] = [atom.position[2] for atom in atoms]
+    atomic_props['atoms'] = [atom.symbol for atom in atoms]
+
+    return atomic_props
 
 def get_all_ligands_by_graph_hashes(all_ligands: list) -> dict:
     """
