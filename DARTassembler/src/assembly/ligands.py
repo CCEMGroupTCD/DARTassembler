@@ -5,16 +5,19 @@ import itertools
 from typing import Union
 import logging
 from DARTassembler.src.assembly.Assembly_Input import LigandCombinationError
+from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
+
 
 class LigandChoice(object):
 
-    def __init__(self, database, topology, instruction, metal_oxidation_state: int, total_complex_charge: int, max_num_assembled_complexes: Union[int,str]):
+    def __init__(self, database, metal_oxidation_state: int, total_complex_charge: int, max_num_assembled_complexes: Union[int,str]):
         """
         This class is used to choose ligands for the assembly of complexes. It supports both random and iterative ligand choice methods.
         """
-        self.ligand_lists = self._get_relevant_ligand_db(database=database, topology=topology, instruction=instruction)
-        self.topology = topology
-        self.instruction = instruction
+        self.ligand_lists = database
+        # self.ligand_lists = self._get_relevant_ligand_db(database=database, topology=topology, instruction=instruction)
+        # self.topology = topology
+        # self.instruction = instruction
         self.metal_ox = metal_oxidation_state
         self.total_charge = total_complex_charge
         self.max_num_assembled_complexes = max_num_assembled_complexes  # int or "all"
@@ -47,7 +50,11 @@ class LigandChoice(object):
         ligand_combination = []
         for ligand_list in self.ligand_lists:
             # Choose ligands randomly and respect the "same_as_previous" instruction
-            chosen_ligand = random.choice(ligand_list) if ligand_list != 'same_as_previous' else ligand_combination[-1]
+            if ligand_list == 'same_as_previous':
+                chosen_ligand = ligand_combination[-1]
+            else:
+                ligand_list = list(ligand_list.db.values())
+                chosen_ligand = random.choice(ligand_list)
             ligand_combination.append(chosen_ligand)
 
         return ligand_combination
@@ -73,7 +80,7 @@ class LigandChoice(object):
 
         return ligand_combination
 
-    def _final_assertions_for_ligand_combination(self, ligand_combination: list) -> None:
+    def _final_assertions_for_ligand_combination(self, ligand_combination: list[RCA_Ligand]) -> None:
         """
         Doublechecks the ligand combination for consistency with all constraints.
         """
@@ -82,30 +89,10 @@ class LigandChoice(object):
         assert sum_of_charges == self.total_charge - self.metal_ox, f"The sum of charges of the ligand combination {ligand_combination} is not equal to the total charge {self.total_charge} - the metal oxidation state {self.metal_ox} = {self.total_charge - self.metal_ox}! This should not happen!"
 
         for idx, ligand in enumerate(ligand_combination):
-            # Correct denticities
-            assert ligand.denticity == self.topology[idx], f"The denticity of ligand {ligand} at index {idx} is not equal to the desired denticity {self.topology[idx]}! This should not happen!"
-
-            # Correct same_as_previous
+            # Correct `same_as_previous`
             if self.ligand_lists[idx] == 'same_as_previous':
                 assert ligand.unique_name == ligand_combination[idx-1].unique_name, f"The ligand {ligand.unique_name} at index {idx} is not the same as the ligand {ligand_combination[idx-1].unique_name} at index {idx-1}! This should not happen!"
-            if idx > 0 and (self.instruction[idx] == self.instruction[idx-1]):
-                assert ligand.unique_name == ligand_combination[idx-1].unique_name, f"The ligand {ligand.unique_name} at index {idx} is not the same as the ligand {ligand_combination[idx-1].unique_name} at index {idx-1}! This should not happen!"
 
-        # Another doublecheck for the similarity lists.
-        # Build the similarity list from the ligand combination and check if it is consistent with the input similarity list.
-        has_similarity = []
-        counter = 1
-        for idx, ligand in enumerate(ligand_combination):
-            if idx == 0:    # First ligand always has similarity 1
-                has_similarity.append(counter)
-                counter += 1
-            else:
-                if self.ligand_lists[idx] == 'same_as_previous':
-                    has_similarity.append(has_similarity[-1])
-                else:
-                    has_similarity.append(counter)
-                    counter += 1
-        assert has_similarity == self.instruction, f"The similarity lists are not consistent with the ligand combination {ligand_combination} and the topology {self.topology}! This should not happen!"
         return
 
     def choose_ligands(self) -> Union[dict,None]:
@@ -117,7 +104,7 @@ class LigandChoice(object):
 
         # Setup all ligand combinations as iterable. Needed for the iterative ligand choice method.
         assert self.ligand_lists[-1] == 'same_as_previous' if 'same_as_previous' in self.ligand_lists else True, "The 'same_as_previous' instruction must always come last in the list of ligand lists!" # HARDCODED: If the 'same_as_previous' instruction is used, it always comes last in the list of ligand lists
-        all_valid_lists = [ligands for ligands in self.ligand_lists if ligands != 'same_as_previous']
+        all_valid_lists = [ligands.db for ligands in self.ligand_lists if ligands != 'same_as_previous']
         all_ligand_combinations = itertools.product(*all_valid_lists)
 
         chosen_ligand_combinations = set()  # Store all chosen ligand combinations to avoid duplicates
@@ -151,18 +138,13 @@ class LigandChoice(object):
                 count_rejected_ligand_combinations_in_a_row += 1
                 continue
             else:
-                count_rejected_ligand_combinations_in_a_row = 0
+                count_rejected_ligand_combinations_in_a_row = 0     # novel ligand comb, reset counter
                 chosen_ligand_combinations.add(ligand_names)
 
             # Final check if the ligand combination fulfills all constraints
             self._final_assertions_for_ligand_combination(ligand_combination)
 
-            # Deepcopy all chosen ligands for safety. Only doing this here at the end instead of at each intermediate step makes for a huge speedup.
-            # Note: Huge bottleneck. Leaving out the deepcopy() speeds up the code by a factor of 3. Potentially dangerous though, so if we fix it we should make sure in the code that it is not needed. Preliminary tests with small numbers of complexes show no difference in the results though.
-            # ligands_out = {idx: deepcopy(ligand) for idx, ligand in enumerate(ligand_combination)}
-            ligands_out = {idx: ligand for idx, ligand in enumerate(ligand_combination)}    # todo
-
-            yield ligands_out
+            yield ligand_combination
 
         if len(chosen_ligand_combinations) == 0: # Output error because no valid ligand combinations found
             raise LigandCombinationError(

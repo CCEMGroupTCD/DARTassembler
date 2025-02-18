@@ -25,21 +25,18 @@ def ligandfilters(filter_input_path: Union[str, Path], pre_delete: bool = False)
 
 
 
-# Integration test, to check if everything is working and the same as before.
 if __name__ == "__main__":
-    from DARTassembler.src.constants.Paths import project_path
-    from dev.test.Integration_Test import IntegrationTest
 
-    ligand_filter_path = project_path().extend('src05_Assembly_Refactor', 'ligandfilters.yml')
-    max_number = 5000
+    ligand_filter_path = '/Users/timosommer/PhD/projects/DARTassembler/dev/DART_refactoring_to_v1_1_0/data/assembler/example_ligand_db/ligandfilters_monodentate.yml'
 
-    # filter = LigandFilters(filepath=ligand_filter_path, max_number=max_number)
-    # filter.save_filtered_ligand_db()
+    filter = ligandfilters(ligand_filter_path)
 
-    # Check if the new filtered db is the same as the old one
-    benchmark_dir = project_path().extend("src14_Assembly_Unit_Test", 'ligandfilters_benchmark')
-    if benchmark_dir.exists():
-        test = IntegrationTest(new_dir=filter.output_ligand_db_path.parent, old_dir=benchmark_dir)
-        test.compare_all()
-    else:
-        print("No benchmark directory found. Could not perform integration test.")
+    # # Check if the new filtered db is the same as the old one
+    # from DARTassembler.src.constants.Paths import project_path
+    # from dev.test.Integration_Test import IntegrationTest
+    # benchmark_dir = project_path().extend("src14_Assembly_Unit_Test", 'ligandfilters_benchmark')
+    # if benchmark_dir.exists():
+    #     test = IntegrationTest(new_dir=filter.output_ligand_db_path.parent, old_dir=benchmark_dir)
+    #     test.compare_all()
+    # else:
+    #     print("No benchmark directory found. Could not perform integration test.")

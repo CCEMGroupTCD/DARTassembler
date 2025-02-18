@@ -41,9 +41,6 @@ class BaselineDB:
     def __len__(self):
         return len(self.db)
 
-    def __eq__(self, other):
-        return self.db == other.db
-
     def get_reduced_df(self):
         important_columns = ['name', 'stoichiometry', 'denticity', 'graph_hash_with_metal', 'unique_name', 'pred_charge', 'pred_charge_is_confident']
         data = []

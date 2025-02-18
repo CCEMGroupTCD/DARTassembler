@@ -239,7 +239,6 @@ class ComplexAssemblyOutput(object):
     def save_all_complex_data(self,
                               complex,
                               ) -> None:
-        self.save_ligand_info(complex.ligands)      # Save the ligand info
         self.save_data_json(complex=complex)
 
     def get_ligand_info_dict(self, ligands: list, max_entries: int=np.inf) -> dict:
@@ -248,7 +247,7 @@ class ComplexAssemblyOutput(object):
     def save_ligand_info(self, ligands: list) -> None:
         ligand_infos = self.get_ligand_info_dict(ligands, max_entries=5)
         df = pd.DataFrame.from_dict(ligand_infos, orient='index')
-        df.to_csv(self.ligand_output_path)
+        df.to_csv(self.ligand_output_path, index=False)
 
     def save_data_json(self,
                         complex: AssembledIsomer,

@@ -1,6 +1,8 @@
 from pathlib import Path
 import os
 
+def projectpath(*relpaths):
+    return project_path().extend(*relpaths)
 
 def split_paths_on_unix_and_windows(relpaths: str) -> tuple:
     return tuple(p for paths in relpaths.split('\\') for p in paths.split('/'))
