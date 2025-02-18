@@ -56,13 +56,17 @@ if __name__ == "__main__":
             if idx >= assembly_input.max_num_complexes:
                 break   # If we have reached the maximum number of complexes we will break the loop
 
+            # Here all isomers that involve rotations of one ligand within a fixed coordination are generated (i.e. the position of each ligand does not change but the ligand can rotate)
             isomers = ChemBuild.get_isomers()
+
             #isomers = ReduceIsomers(isomers, rssd_threshold=0.01).get_unique_isomers()
             all_geom.extend(isomers)
 
         # For the time being we will view each of the geometries for testing using a for loop and view
+        a = input("Press q to quit or any other key to continue")
         for geom in all_geom:
-            #input("Press Enter to view the next geometry")
+            if a == "q":
+                break
             view(geom)
 
 

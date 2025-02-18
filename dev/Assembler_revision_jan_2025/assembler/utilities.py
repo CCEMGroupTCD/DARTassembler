@@ -6,6 +6,8 @@ from DARTassembler.src.assembly.ligand_geometries import try_all_geometrical_iso
 from DARTassembler.src.ligand_extraction.DataBase import RCA_Ligand, LigandDB
 from DARTassembler.src.constants import Periodic_Table as PerTab
 from typing import Dict, Any, List, Optional, Tuple
+from scipy.optimize import differential_evolution, brute
+from scipy.spatial.transform import Rotation as R
 from ase.visualize import view
 from ase import Atoms
 import numpy as np
@@ -270,7 +272,7 @@ class AssemblyComplex(object):
         self._validate_input()
 
         # Assemble the complex
-        self.assembled_complexes = self._assemble_complex()
+        self.assembled_complexes = self._assemble_complex_new_new()
 
     def _validate_input(self) -> None:
         """
@@ -288,31 +290,152 @@ class AssemblyComplex(object):
             if len(self.metal_origins) != len(self.metal_types):
                 raise ValueError(f"Fatal Error: Metal origins [length: {self.metal_origins}] and metal types [length: {self.metal_types}] must have the same length for multi-metallic systems.")
 
-    def _assemble_complex(self) -> List[Atoms]:
-        """
-        Assembles the complex using the provided geometry and ligands
-        :return: ASE Atoms object representing the complex
-        """
-        rotated_ligands = []
-        for ligand, target_vectors, origin in zip(self.ligands, self.target_vectors, self.ligand_origins):
-            # Extract the geometry and donor atoms of the ligand
-            geometry, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
-            # cast the target vectors to numpy arrays
-            target_vectors = [np.array(v) for v in target_vectors.values()]
-            # Align the donor atoms of the ligand to the target vectors
-            ligand_isomers, donor_atoms_ordered, rssd = try_all_geometrical_isomer_possibilities(atoms=geometry,
-                                                                                                 donor_idc=donor_atoms[0],
-                                                                                                 target_vectors=target_vectors)
-            # Remove the dummy atom from the haptic ligands
-            ligand_isomers = self._remove_haptic_dummy_atom(atoms_list=ligand_isomers, dummy_atom="Cu", donor_atoms_idc=ligand.hapdent_idc)
+    def _assemble_complex_new_new(self) -> List[Atoms]:
+        # --- Step 1: Partition ligands based on the shape of the target vectors ---
+        ligand_lists = self._assign_ligands_to_vectors(
+            ligands=list(self.ligands),
+            vectors=self.target_vectors
+        )
 
-            # Append the rotated ligands to the list
-            rotated_ligands.append(ligand_isomers)
+        # --- Step 2: Loop through the swapped ligand permutations and generate the isomers ---
+        all_isomers = []
+        for ligand_swapped_combo in ligand_lists:
+            aligned_ligands = []    # This will contain one complexes ligands [l1, l2, [l3-i1, l3-i2], l4, ...]
+            for idx, (ligand, ligand_target_vectors, origin) in enumerate(zip(ligand_swapped_combo, self.target_vectors, self.ligand_origins)):
+                # Retrieve the ligand's geometry and donor atom indices.
+                geometry, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
 
-        # Use the rotated ligands to generate all (for now it is most) possible isomers
-        all_isomers = self._gen_all_isomers(rotated_ligands)
+                # Set the tags for the ligand atoms
+                # geometry.set_tags([ligand.elcn for _ in range(len(geometry))])
+                geometry.new_array('multi_tags', np.full((len(geometry), 2), [ligand.elcn, idx+1], dtype=int))
+
+                # Convert target vector dictionary values to numpy arrays.
+                target_vectors = [np.array(v) for v in ligand_target_vectors.values()]
+
+                # Align the donor atoms of the ligand to the target vectors
+                ligand_isomers, donor_atoms_ordered, rssd = try_all_geometrical_isomer_possibilities(atoms=geometry,
+                                                                                                     donor_idc=donor_atoms[0],
+                                                                                                     target_vectors=target_vectors)
+
+                # Translate the ligand to its correct location in the complex
+                for isomer in ligand_isomers:
+                    isomer.set_positions(isomer.get_positions() + np.array(origin))
+
+                # Remove dummy atoms (e.g., "Cu") from haptic ligands.
+                cleaned_isomers = self._remove_haptic_dummy_atom(
+                    atoms_list=ligand_isomers,
+                    dummy_atom="Cu",
+                    donor_atoms_idc=ligand.hapdent_idc
+                )
+                # Append the rotated ligands to the list
+                aligned_ligands.append(cleaned_isomers)
+
+            all_isomers.append(aligned_ligands)
+
+        # --- Step 3: Assemble the complexes using the ligand permutations ---
+        all_isomers = self._gen_all_isomers(all_isomers)
+
+        # --- Step 4: optimize the rotation of each mono-coordinating ligand around their respective coordination axis simultaneously ---
+        optimizer = AxialOpt(complexes=all_isomers, target_vectors=self.target_vectors, ligand_origins=self.ligand_origins)
+        optimizer.opt_mono_rotation()
 
         return all_isomers
+
+    def _flatten(self, nested_list: list):
+        """
+        Helper function to flatten a nested list
+        :param nested_list:
+        :return a generator object that can be used to iterate over the flattened list
+        """
+        for item in nested_list:
+            if isinstance(item, list):
+                yield from self._flatten(item)
+            else:
+                yield item
+
+    def _assign_ligands_to_vectors(self, ligands: List[RCA_Ligand], vectors: List[Dict[str, List[float]]]) -> List[List[RCA_Ligand]]:
+        """
+        Assigns groups of ligands to vector entries based on the number of keys in each vector dictionary.
+        For each unique key count (in order of first appearance in the vectors list), this function
+        partitions the ligand list into contiguous groups. Each group’s size is determined by the number
+        of vector entries that have that key count. Then, every vector entry is mapped to the corresponding
+        ligand group.
+
+        For example, given:
+          ligands = ["L1", "L2", "L3", "L4"]
+          vectors = [
+              {'a': [0, 1]},                      # key count 1
+              {'b': [1, 0]},                      # key count 1
+              {'c': [1, 1], 'd': [2, 2]},           # key count 2
+              {'e': [3, 3], 'f': [4, 4], 'g': [5, 5]}  # key count 3
+          ]
+        The unique key counts are 1, 2, and 3 with frequencies 2, 1, and 1 respectively. Thus,
+        the ligand groups would be:
+          Group for key count 1: ["L1", "L2"]
+          Group for key count 2: ["L3"]
+          Group for key count 3: ["L4"]
+        and the output would be:
+          [['L1', 'L2'], ['L1', 'L2'], ['L3'], ['L4']]
+
+        :param: ligands (list): A list of ligand identifiers.
+        :param: vectors (list of dict): A list of dictionaries, each representing a vector with arbitrary keys.
+
+        :return: list: A list of ligand groups corresponding to each vector entry.
+
+        :raise: ValueError: If there are not enough ligands to assign to all vector groups.
+        """
+        # Step 1: Determine the order of unique key counts and the frequency of each.
+        unique_key_counts = []  # Order in which each unique key count first appears.
+        frequency_by_key_count = {}  # Frequency of each key count.
+
+        for vec in vectors:
+            key_count = len(vec)
+            if key_count not in frequency_by_key_count:
+                unique_key_counts.append(key_count)
+                frequency_by_key_count[key_count] = 0
+            frequency_by_key_count[key_count] += 1
+
+        # Verify that we have enough ligands.
+        total_required_ligands = sum(frequency_by_key_count.values())
+        if total_required_ligands > len(ligands):
+            raise ValueError("Not enough ligands provided to assign to all vector entries.")
+
+        # Step 2: Partition the ligand list into groups based on the frequency of each unique key count.
+        ligand_groups = {}  # Maps key count to its corresponding ligand group.
+        start_index = 0
+        for key_count in unique_key_counts:
+            group_size = frequency_by_key_count[key_count]
+            ligand_groups[key_count] = ligands[start_index:start_index + group_size]
+            start_index += group_size
+
+        # Step 3: Create the output mapping: for each vector entry, select the ligand group that corresponds
+        # to its number of keys.
+        _list = [ligand_groups[len(vec)] for vec in vectors]
+
+        results = []
+        current_permutation = []
+        used = set()
+
+        def backtrack(index: int):
+            # When all positions have been assigned, store the permutation.
+            if index == len(_list):
+                results.append(current_permutation.copy())
+                return
+
+            # Iterate over allowed ligands for the current position.
+            for ligand in _list[index]:
+                if ligand in used:
+                    continue  # Skip if already used.
+                # Choose this ligand.
+                used.add(ligand)
+                current_permutation.append(ligand)
+                backtrack(index + 1)
+                # Backtrack: remove the ligand and mark it as available.
+                current_permutation.pop()
+                used.remove(ligand)
+
+        backtrack(0)
+        return results
 
     def _add_metals(self, ligand_structure: Atoms):
         """
@@ -320,25 +443,26 @@ class AssemblyComplex(object):
         """
         for metal_type, metal_origin in zip(self.metal_types, self.metal_origins):
             metal = Atoms(symbols=metal_type, positions=[metal_origin])
+            metal.new_array('multi_tags', np.full((len(metal), 2), [0, 0], dtype=int))
             ligand_structure += metal
         return ligand_structure
 
-    def _gen_all_isomers(self, ligands: List[List[Atoms]]):
+    def _gen_all_isomers(self, ligands: List[Any]):
         """
         Generate all possible isomers from a list of ligands which have multiple isomers
         :param ligands: list: [[ligand1_isomer1, Ligand1_isomer2], [ligand2_isomer1, ligand2_isomer2], [ligand3_isomer1, ligand3_isomer2, ligand3_isomer3], ...]
         :return: list of ase objects
         """
-        # Generate all combinations; each combination is a tuple with one isomer per ligand.
-        combinations = list(itertools.product(*ligands))
         isomers = []
-
-        for combo in combinations:
-            combined = Atoms()                                          # Start with an empty Atoms object.
-            for ligand in combo:                                        # Iterate over the ligands in the combination.
-                combined += ligand                                      # combining Atoms objects.
-            combined = self._add_metals(ligand_structure=combined)      # Add the metals to the complex
-            isomers.append(combined)                                    # Store all the new isomers
+        for ligand_lists in ligands:
+            # Generate all combinations; each combination is a tuple with one isomer per ligand.
+            combinations = list(itertools.product(*ligand_lists))
+            for combo in combinations:
+                combined = Atoms()                                          # Start with an empty Atoms object.
+                for ligand in combo:                                        # Iterate over the ligands in the combination.
+                    combined += ligand                                      # combining Atoms objects.
+                combined = self._add_metals(ligand_structure=combined)      # Add the metals to the complex
+                isomers.append(combined)                                    # Store all the new isomers
 
         return isomers
 
@@ -376,6 +500,131 @@ class AssemblyComplex(object):
                 for dummy_idx in dummy_idc:
                     atoms.pop(dummy_idx)
             return atoms_list
+
+class AxialOpt:
+    def __init__(self, complexes: List[Atoms], target_vectors: List[Dict[str, List[float]]], ligand_origins: List[List[float]]):
+        """
+        This class will take a list of ASE Atoms objects and optimize mono-coordinating ligands around their coordination axis
+        """
+        self.input_complexes = complexes
+        self.target_vectors = target_vectors
+        self.ligand_origins = ligand_origins
+        self.output_complexes = []
+
+    def tag_mono_coordinating_ligands(self):
+        """
+        Tag the mono-coordinating ligands in the complex
+        """
+        for tmc in self.input_complexes:
+            pass
+
+    def opt_mono_rotation(self, opt_target: str = "max_atomic_distance"):
+        """
+        Optimize the rotation of each mono-coordinating ligand around their respective coordination axis simultaneously
+        """
+        np.random.seed(42) # todo don't remove this as it is important to make sure the optimizer is deterministic
+        # Specify bounds for each parameter: (lower, upper) for x and y respectively.
+        bounds = [[0, 360] for _ in self.target_vectors]
+        # Loop through each of the inputted complexes
+        for tmc in self.input_complexes:
+            view(tmc)
+
+            # Run the global optimizer.
+            result = differential_evolution(self.objective_function, bounds=bounds, args=(self.target_vectors, self.ligand_origins, tmc))
+
+            # Retrieve the multi_tags array
+            multi_tags = tmc.get_array("multi_tags")
+
+            # Get the unique set of all second tags
+            unique_ligand_idc_set = np.unique(multi_tags[:, 1])
+            unique_ligand_idc_set = unique_ligand_idc_set[unique_ligand_idc_set != 0]
+
+            # Loop through the unique second tags
+            for angle, axis, origin, tag in zip(list(result.x), self.target_vectors, self.ligand_origins, unique_ligand_idc_set):
+                # Get indices where the second tag is the current tag
+                indices = np.where(multi_tags[:, 1] == tag)[0]
+
+                # Check if any of these indices have a first tag not equal to 1, if so, skip
+                if np.any(multi_tags[indices, 0] != 1):
+                    continue
+
+                tmc = self.rotate(atoms=tmc, vector=np.array(list(axis.values())[0]), origin=np.array(origin), idc=indices, angle=angle).copy()
+
+            self.output_complexes.append(tmc)
+            view(tmc)
+            print("done")
+
+
+
+    def objective_function(self, x: np.ndarray, vectors_in: List[np.array], origins_in: List[np.array], TMC_in: Atoms,):
+        """
+        Objective function to optimize the position of the ligands in the TMC complex.
+        :param x:
+        :param vectors_in:
+        :param origins_in:
+        :param TMC_in:
+        :return:
+        """
+        # Generate a copy of the input complex
+        TMC_worker = TMC_in.copy()
+
+        # Retrieve the multi_tags array
+        multi_tags = TMC_worker.get_array("multi_tags")
+
+        # Get the unique set of all nonzero second tags (each tag represents a ligand, the zero tag represents the metals).
+        unique_tags = [tag for tag in np.unique(multi_tags[:, 1]) if tag != 0]
+
+        for tag, angle, axis, origin in zip(unique_tags, list(x), vectors_in, origins_in):
+
+            # Get indices where the second tag is the current tag (essentially the indices of the atoms in this particular ligand)
+            indices = np.where(multi_tags[:, 1] == tag)[0]
+
+            # Check if any of these indices have a first tag not equal to 1, if so, skip
+            if np.any(multi_tags[indices, 0] != 1):
+                continue  # Skip this ligand group
+
+            TMC_worker = self.rotate(atoms=TMC_worker, vector=np.array(list(axis.values())[0]), origin=np.array(origin), idc=indices, angle=angle).copy()
+
+        # Get the interatomic distance matrix
+        distance_matrix = TMC_worker.get_all_distances()
+
+        # Set the diagonal to a large number to avoid self-interaction (or np.inf)
+        np.fill_diagonal(distance_matrix, np.inf)
+
+
+        # Calculate the penalty: for each pair with d <= 4, add 1/d^2 to the penalty
+        penalty = np.sum(1.0 / (distance_matrix ** 2))
+
+        return penalty
+    @staticmethod
+    def rotate(atoms: Atoms, vector: np.array, origin: np.array, idc: List[int], angle: int):
+        """
+        Rotate the atoms in the Atoms object (only atoms with indices=idc) around the vector by the specified angle.
+        :param atoms: Atoms object to rotate.
+        :param vector: vector to rotate around.
+        :param origin: origin of the rotation.
+        :param idc: indices of the atoms to rotate.
+        :param angle: the angle to rotate the atoms by in degrees.
+        :return: an ase.Atoms object with the rotated atoms.
+        """
+
+        # Normalize rotation vector
+        vector = np.asarray(vector, dtype=float)
+        vector /= np.linalg.norm(vector)
+
+        # Create rotation object
+        rotation = R.from_rotvec(np.radians(angle) * vector)
+
+        # Copy the atoms object to avoid modifying the original
+        rotated_atoms = atoms.copy()
+
+        # Apply rotation to selected atoms
+        for i in idc:
+            pos = atoms.positions[i] - origin  # Translate to origin
+            rotated_pos = rotation.apply(pos) + origin  # Rotate and translate back
+            rotated_atoms.positions[i] = rotated_pos
+
+        return rotated_atoms
 
 
 class ReduceIsomers:

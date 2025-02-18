@@ -2,6 +2,47 @@
 # Input file for the assembly module of DART.                                           #
 #########################################################################################
 batches:
+  - isomer_instruction: "all"
+    max_num_complexes: 3
+    total_charge: 0
+    name: "1-1-1-1-1-1"
+    random_seed: 9
+    geometry:
+      - metal_1:
+          metal_type: Mo
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 1, 0, 0 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ -1, 0, 0 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+      - ligand_3:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 1, 0 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+      - ligand_4:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, -1, 0 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+      - ligand_5:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+      - ligand_6:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, -1 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+
   - isomer_instruction: "all" # This currently does nothing but in the future will be used to determine which isomers can be assembled
     max_num_complexes: 4
     total_charge: 0
@@ -84,47 +125,6 @@ batches:
           vector_3: [ -1, 0, 0 ]
           temp_dent: 3
           ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/testing/integration_tests/assembly/data_input/oer_ligands.jsonlines # it will be a good test to use very different ligand databases
-
-  - isomer_instruction: "all"
-    max_num_complexes: 3
-    total_charge: 0
-    name: "1-1-1-1-1-1"
-    random_seed: 8
-    geometry:
-      - metal_1:
-          metal_type: Mo
-          metal_oxidation_state: 2
-          origin: [ 0, 0, 0 ]
-      - ligand_1:
-          origin: [ 0, 0, 0 ]
-          vector_1: [ 1, 0, 0 ]
-          temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
-      - ligand_2:
-          origin: [ 0, 0, 0 ]
-          vector_1: [ -1, 0, 0 ]
-          temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
-      - ligand_3:
-          origin: [ 0, 0, 0 ]
-          vector_1: [ 0, 1, 0 ]
-          temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
-      - ligand_4:
-          origin: [ 0, 0, 0 ]
-          vector_1: [ 0, -1, 0 ]
-          temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
-      - ligand_5:
-          origin: [ 0, 0, 0 ]
-          vector_1: [ 0, 0, 1 ]
-          temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
-      - ligand_6:
-          origin: [ 0, 0, 0 ]
-          vector_1: [ 0, 0, -1 ]
-          temp_dent: 1
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
 
   - isomer_instruction: "all"
     max_num_complexes: 0
