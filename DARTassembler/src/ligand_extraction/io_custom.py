@@ -12,7 +12,7 @@ from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand, RCA_Complex
 import numpy as np
 from datetime import datetime, date, timedelta
 from DARTassembler.src.ligand_extraction.utilities import get_duration_string
-from typing import Union
+from typing import Union, Dict
 from pathlib import Path, PurePath
 import jsonlines
 from tqdm import tqdm
@@ -98,6 +98,53 @@ def uncompress_file(zip_file_path, output_dir=None):
 
     return
 
+import bz2
+import jsonlines
+from pathlib import Path
+from typing import Union, Iterator
+from tqdm import tqdm
+
+class JSONLinesReader:
+    """
+    Context manager for reading JSON Lines files, supporting both regular and bz2-compressed files.
+
+    Example:
+        with JSONLinesReader("data.jsonlines.bz2", n_max=10) as reader:
+            for key, value in reader:
+                print(key, value)
+    """
+    def __init__(self, path: Union[str, Path], n_max: int = None, show_progress: bool = True):
+        self.path = ensure_path_exists(path)
+        self.n_max = n_max
+        self.show_progress = show_progress
+        self.file_obj = None
+        self.reader = None
+
+    def __enter__(self) -> Iterator[tuple[str, Dict]]:
+        """Opens the file and returns an iterator over JSON entries."""
+        if str(self.path).endswith('.bz2'):
+            self.file_obj = bz2.open(self.path, 'rt', encoding='utf-8')
+        else:
+            self.file_obj = open(self.path, 'r', encoding='utf-8')
+
+        self.reader = jsonlines.Reader(self.file_obj)
+        return self._iterator()
+
+    def _iterator(self) -> Iterator[tuple[str, Dict]]:
+        """Internal generator function to iterate over JSON lines."""
+        for i, line in tqdm(enumerate(self.reader), disable=not self.show_progress, desc='Load jsonlines'):
+            key, value = line['key'], line['value']
+            if check_if_return_entry(i, self.n_max):
+                yield key, value
+            else:
+                return
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        """Ensures the file and reader are properly closed, even on error."""
+        if self.reader:
+            self.reader.close()
+        if self.file_obj:
+            self.file_obj.close()
 
 class NumpyEncoder(json.JSONEncoder):
     """Special json encoder. This is important to use in json.dump so that if json encounters a np.array, it converts it to a list automatically, otherwise errors arise. Use like this:
@@ -203,14 +250,9 @@ def iterate_over_jsonlines(path: Union[str, Path], n_max: int=None, show_progres
     :param path: Path to the JSON Lines file
     :return: Tuple with the key and value of each entry
     """
-    path = ensure_path_exists(path)
-    with jsonlines.open(path, 'r') as reader:
-        for i, line in tqdm(enumerate(reader), disable=not show_progress, desc='Load jsonlines'):
-            key, value = line['key'], line['value']
-            if check_if_return_entry(i, n_max):
-                yield key, value
-            else:
-                return
+    with JSONLinesReader(path, n_max=n_max, show_progress=show_progress) as reader:
+        for key, value in reader:
+            yield key, value
 
     return
 
@@ -446,6 +488,7 @@ def save_multiple_structures_in_same_xyz_file(outpath: Union[str,Path], structur
 if __name__ == '__main__':
 
     # metalig = '/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/data/metalig/MetaLigDB_v1.0.0.jsonlines'
-    test_metalig = '/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/data/metalig/test1000_MetaLigDB_v1.0.0.jsonlines'
+    test_metalig = '/Users/timosommer/PhD/projects/DARTassembler/DARTassembler/data/metalig/MetaLigDB_v1.1.0.jsonlines.bz2'
     # compress_file(metalig)
     # uncompress_file(metalig)
+    data = load_jsonlines(test_metalig, n_max=None)

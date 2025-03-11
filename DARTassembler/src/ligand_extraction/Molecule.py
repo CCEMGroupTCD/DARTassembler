@@ -41,7 +41,51 @@ from DARTassembler.src.assembly.ligand_geometries import assign_geometry
 # warnings.simplefilter('error')
 
 pseudo_metal = 'Cu'     # pseudo metal for display in ligand xyz files and for use in the SMARTS filter.
-ligand_global_props_order = ['unique_name', 'stoichiometry', 'geometry', 'charge', 'smiles', 'smiles_with_metal', 'n_donors', 'n_eff_denticities', 'n_denticities', 'n_haptic_atoms', 'n_haptic_groups', 'n_atoms', 'n_elements', 'n_bonds', 'n_electrons', 'n_protons', 'n_beta_hydrogens', 'molecular_weight', 'planarity', 'donor_planarity', 'donor_metal_planarity', 'min_interatomic_distance', 'max_ligand_extension', 'geometry_rssd', 'geometry_confidence', 'has_all_bond_orders_valid', 'has_confident_charge', 'graph_hash', 'graph_hash_with_metal', 'heavy_atoms_graph_hash', 'heavy_atoms_graph_hash_with_metal', 'bond_order_graph_hash', 'n_ligand_instances', 'csd_complex_ids', 'csd_metal_count', 'csd_metal_os_count']
+ligand_global_props_order = [
+    # General properties
+    'unique_name',
+    'stoichiometry',
+    'geometry',
+    'charge',
+    'smiles',
+    'smiles_with_metal',
+    # Integer numerical properties
+    'n_donors',
+    'n_eff_denticities',
+    'n_denticities',
+    'n_haptic_atoms',
+    'n_haptic_groups',
+    'n_atoms',
+    'n_elements',
+    'n_bonds',
+    'n_electrons',
+    'n_protons',
+    'n_beta_hydrogens',
+    # Float numerical properties
+    'molecular_weight',
+    'planarity',
+    'donor_planarity',
+    'donor_metal_planarity',
+    'min_interatomic_distance',
+    'max_ligand_extension',
+    'geometry_rssd',
+    'geometry_confidence',
+    # Boolean properties
+    'is_2D_symmetrical',
+    'has_all_bond_orders_valid',
+    'has_confident_charge',
+    # Graph hashes
+    'graph_hash',
+    'graph_hash_with_metal',
+    'heavy_atoms_graph_hash',
+    'heavy_atoms_graph_hash_with_metal',
+    'bond_order_graph_hash',
+    # Parent complex properties from CSD
+    'n_ligand_instances',
+    'csd_complex_ids',
+    'csd_metal_count',
+    'csd_metal_os_count'
+]
 
 class RCA_Molecule(object):
     """
@@ -933,6 +977,7 @@ class RCA_Ligand(RCA_Molecule):
         self.smiles_with_metal
         self.min_interatomic_distance
         self.max_ligand_extension
+        self.is_2D_symmetrical
 
 
         # self.was_connected_to_metal = len(self.local_elements) > 0
@@ -1116,6 +1161,15 @@ class RCA_Ligand(RCA_Molecule):
         return smiles
 
     @cached_property
+    def is_2D_symmetrical(self):
+        try:
+            is_symmetrical = self.global_props['is_2D_symmetrical']
+        except KeyError:
+            is_symmetrical = self.check_if_2D_symmetrical()
+            self.global_props['is_2D_symmetrical'] = is_symmetrical
+        return is_symmetrical
+
+    @cached_property
     def is_centrosymmetric(self):
         return self.check_if_centrosymmetric()
 
@@ -1272,7 +1326,7 @@ class RCA_Ligand(RCA_Molecule):
         else:
             return is_coplanar
 
-    def is_2D_symmetrical(self) -> bool:
+    def check_if_2D_symmetrical(self) -> bool:
         """
         Checks if the ligand graph is symmetrical between donors. Essentially, this checks whether the ligand graph is symmetrical under "flipping" the ligand for generating geometric isomers. However, this does not check for 3D symmetry. Often, planar ligands are 3D symmetrical if they are 2D symmetrical, but the more bulky the ligand, the more likely it is that the ligand is not 3D symmetrical even if it is 2D symmetrical.
         This function is easy to imagine for bidentate ligands, but it also works for tridentate ligands: e.g. for planar tridentate ligands, the ligand graph might be symmetrical between the outer two donors, but different for the middle donor. This will be picked up, because the function checks if the graph looks symmetrical for any two donors.
