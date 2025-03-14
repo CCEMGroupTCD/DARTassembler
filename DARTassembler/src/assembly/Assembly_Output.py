@@ -1,14 +1,13 @@
 import shutil
-from pathlib import Path
+from pathlib import Path, PurePath
 from typing import Union
 import json
-
-import ase
 import pandas as pd
 import numpy as np
 import yaml
 
 from DARTassembler.src.assembly.Assembly_Input import AssemblyInput
+from DARTassembler.src.ligand_extraction.io_custom import write_yaml
 from dev.Assembler_revision_jan_2025.assembler.utilities import AssembledIsomer
 
 _gbl_optimization_movie = 'ffmovie.xyz'
@@ -121,18 +120,11 @@ class AssemblyOutput(object):
 
     def save_settings(self, settings: dict):
         """
-        Save settings as yaml file. Try to save them in the original order if possible (Pyyaml version >= 5.1).
+        Save settings as yaml file.
         """
         # Make sure the directory exists
         self.settings_path.parent.mkdir(parents=True, exist_ok=True)
-
-        # Save the settings dictionary as yaml
-        with open(self.settings_path, 'w') as f:
-            try:
-                yaml.dump(settings, f, sort_keys=False)
-            except Exception:   # If the keyword sort_keys is not yet supported in this yaml version
-                yaml.dump(settings, f)
-
+        write_yaml(path=self.settings_path, data=settings)
 
 class BatchAssemblyOutput(object):
 

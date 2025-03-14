@@ -1,5 +1,6 @@
 output_db_file: ligandfilters/data_output/filtered_ligand_db_v1.7.json   # path or nothing
 n_max_ligands: 500
+pre_delete: True
 
 filters:
   - filter: 'property'

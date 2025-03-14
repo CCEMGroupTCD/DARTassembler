@@ -6,7 +6,7 @@ from typing import Union
 from pathlib import Path
 from dev.DART_refactoring_to_v1_1_0.refactor_ligandfilters import NewLigandFilters
 
-def ligandfilters(filter_input_path: Union[str, Path], pre_delete: bool = False) -> NewLigandFilters:
+def ligandfilters(filter_input_path: Union[str, Path]) -> NewLigandFilters:
     """
     Filter the full ligand database according to the specified filters. Should be run before assembly to reduce the number of ligands considered in the assembly to the ones that are interesting to the user.
     :param filter_input_path: Path to the filter input file
@@ -16,6 +16,7 @@ def ligandfilters(filter_input_path: Union[str, Path], pre_delete: bool = False)
     input_dict = read_yaml(filter_input_path)
     input_db_file = input_dict.pop('input_db_file', None)
     n_max_ligands = input_dict.pop('n_max_ligands', None)
+    pre_delete = input_dict.pop('pre_delete', False)
 
     filter = NewLigandFilters(input_db_file=input_db_file, n_max_ligands=n_max_ligands)
     filter.get_filtered_db(**input_dict, pre_delete=pre_delete)

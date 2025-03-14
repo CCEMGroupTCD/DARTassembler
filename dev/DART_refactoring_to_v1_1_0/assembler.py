@@ -23,7 +23,7 @@ from DARTassembler.src.constants.Periodic_Table import DART_Element
 from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 from DARTassembler.src.assembly.ligands import LigandChoice
 from DARTassembler.src.ligand_extraction.Molecule import RCA_Ligand
-from DARTassembler.src.ligand_extraction.io_custom import load_json
+from DARTassembler.src.ligand_extraction.io_custom import load_json, read_yaml
 from DARTassembler.src.assembly.Assembly_Input import LigandCombinationError
 from DARTassembler.src.assembly.Assembly_Output import AssemblyOutput, BatchAssemblyOutput, ComplexAssemblyOutput
 from dev.Assembler_revision_jan_2025.assembler.utilities import AssembledIsomer
@@ -33,7 +33,7 @@ from DARTassembler.src.ligand_extraction.utilities_Molecule import get_standardi
 
 
 
-class DARTAssembly(object):
+class Assembler(object):
 
     def __init__(
                     self,
@@ -53,10 +53,6 @@ class DARTAssembly(object):
         self.n_max_ligands = n_max_ligands
         self.pre_delete = pre_delete
 
-        # Initialize some necessary variables for later
-        self.df_info = None
-        self.random_seed = None
-
         # Keep track of the input arguments
         self.init_args = {**locals()}
         self.init_args.pop('self')
@@ -75,13 +71,14 @@ class DARTAssembly(object):
         # Print to stdout
         logging.basicConfig(level=verbosity2logging[self.verbosity], format='%(message)s', handlers=[logging.FileHandler(self.gbl_outcontrol.log_path, mode='w'), stream_handler])
 
-
     def run_batches(self, batches: list[dict]) -> None:
         """
         Runs the whole assembly for all batches specified in the assembly input file.
         @param batches: list of dictionaries with the batch settings. See the documentation for more information.
         @:return None
         """
+        self._check_batch_settings(batches)
+
         # Save yml file with input arguments to output directory
         self.batches_args = {**locals()}
         self.batches_args.pop('self')
@@ -93,7 +90,7 @@ class DARTAssembly(object):
         self.df_info = []
         self.assembled_complex_names = []
         self.assembled_complex_json_paths = []
-        self.last_ligand_db_path = None     # to avoid reloading the same ligand database in the next batch
+        self._loaded_ligand_databases = {}    # to avoid reloading the same ligand database multiple times
 
         self._log_global_info()
 
@@ -101,8 +98,8 @@ class DARTAssembly(object):
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
             self.batch_name = batch_settings['name']
-            self.ligand_db_files = batch_settings['ligand_db_files']
-            self.max_num_complexes = batch_settings['max_num_complexes']
+            self.ligand_db_files = [Path(filepath).resolve() for filepath in batch_settings['ligand_db_files']]
+            self.n_max_complexes = batch_settings['n_max_complexes']
             self.random_seed = batch_settings['random_seed']
             self.total_charge = batch_settings['total_charge']
             self.total_metal_oxidation_state = batch_settings['total_metal_oxidation_state']
@@ -110,7 +107,6 @@ class DARTAssembly(object):
             self.ligand_origins = batch_settings['ligand_origins']
             self.metal_centers = batch_settings['metal_centers']
             self.complex_name_appendix = batch_settings['complex_name_appendix']
-            self.geometry_modifier_filepath = batch_settings['geometry_modifier_filepath']
 
             self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
             self.batch_outcontrol = BatchAssemblyOutput(self.batch_output_path)
@@ -126,12 +122,27 @@ class DARTAssembly(object):
 
         return
 
+    @staticmethod
+    def _check_batch_settings(batches: list) -> None:
+        # Check all batch names are unique
+        batch_names = [batch['name'] for batch in batches]
+        if not len(batch_names) == len(set(batch_names)):
+            raise ValueError(f"DART batch names must be unique. The following batch names are not unique: {batch_names}")
+
+        return
+
     def _make_and_save_output_csv(self) -> None:
         """Save output info csv of all attempts."""
         self.df_info = pd.DataFrame(self.df_info)
         self.df_info['attempt'] = self.df_info.index
         self.df_info = self.df_info[['attempt'] + [col for col in self.df_info.columns if col != 'attempt']]  # Move attempt column to front
-        self.gbl_outcontrol.save_run_info_table(self.df_info)
+
+        outdf = self.df_info.copy()
+        # Make lists in the dataframe to strings for saving to csv
+        for col in outdf.columns:
+            if isinstance(outdf[col].iloc[0], list):
+                outdf[col] = outdf[col].apply(lambda x: f'({", ".join(str(el) for el in x)})' if isinstance(x, list) else x)
+        self.gbl_outcontrol.save_run_info_table(outdf)
 
         return
 
@@ -176,7 +187,7 @@ class DARTAssembly(object):
     def _log_global_info(self) -> None:
         """Log global information about the run."""
         logging.info('Starting DART Assembler Module.')
-        logging.info(f'Output directory: `{self.output_directory.name}`')
+        logging.info(f'Output directory: {self.output_directory}')
         plural = 'es' if self.n_batches > 1 else ''                # print plural or singular in next line
         logging.info(f"Running {self.n_batches} batch{plural}...")
         logging.info(f"User-defined global settings:")
@@ -216,21 +227,20 @@ class DARTAssembly(object):
         # Set random seed for reproducibility. Do this batch-wise so every batch is reproducible independently.
         random.seed(self.random_seed)
 
-        # Here we load the ligand database and avoid reloading the same ligand database if it is the same as the last one
-        if self._check_if_reload_database():
-            self.ligand_db = self._get_ligand_db()
+        # Load the ligand databases and cache them for later use
+        self.ligand_dbs = self._get_ligand_databases()
 
         # Set up an iterator for the ligand combinations
         ligand_choice = LigandChoice(
-                                database=self.ligand_db,
+                                database=self.ligand_dbs,
                                 metal_oxidation_state=self.total_metal_oxidation_state,
                                 total_complex_charge=self.total_charge,
-                                max_num_assembled_complexes=self.max_num_complexes,
+                                max_num_assembled_complexes=self.n_max_complexes,
                                 )
         ligand_combinations = ligand_choice.choose_ligands()
 
         # Set progress bar with or without final number of assembled complexes
-        total = self.max_num_complexes if self.max_num_complexes == 'all' else None
+        total = self.n_max_complexes if self.n_max_complexes == 'all' else None
         progressbar = tqdm(desc='Assembling complexes', unit=' complexes', file=sys.stdout, total=total)
 
         batch_sum_assembled_complexes = 0  # Number of assembled complexes in this batch
@@ -250,10 +260,10 @@ class DARTAssembly(object):
                                                                         )
 
             # Post-processing of isomers
-            logging.debug("Post-processing isomers...")
+            logging.debug("Post-processing isomers")
             isomer_idx = 1  # Index for naming the isomer
             for isomer, warning in zip(isomers, warnings):
-                self._save_assembled_isomer(isomer=isomer, ligands=ligands, isomer_idx=isomer_idx, note=warning)
+                self._save_assembled_isomer(isomer=isomer, isomer_idx=isomer_idx, note=warning)
                 isomer_idx += 1
 
             # Update counters if at least one isomer was successfully assembled for this complex
@@ -266,6 +276,15 @@ class DARTAssembly(object):
         progressbar.close()
 
         return
+
+    def _get_ligand_databases(self) -> list[LigandDB]:
+        for ligand_db_filepath in self.ligand_db_files:
+            if not ligand_db_filepath in self._loaded_ligand_databases:
+                self._loaded_ligand_databases[ligand_db_filepath] = LigandDB.load_from_json(ligand_db_filepath)
+        ligand_databases = [self._loaded_ligand_databases[ligand_db_filepath] for ligand_db_filepath in
+                          self.ligand_db_files]
+
+        return ligand_databases
 
     def _modify_ligand_geometry(self, geometry_modifier_path: Union[str, Path], building_blocks: dict):
         old_mol, new_mol = ase.io.read(geometry_modifier_path, index=':', format='xyz')
@@ -294,7 +313,7 @@ class DARTAssembly(object):
 
         return new_stk_ligand_building_blocks_list
 
-    def _save_assembled_isomer(self, isomer: AssembledIsomer, ligands: list[RCA_Ligand], isomer_idx: int, note: str):
+    def _save_assembled_isomer(self, isomer: AssembledIsomer, isomer_idx: int, note: str):
         """
         Save the successfully assembled complex to the output files.
         """
@@ -310,20 +329,24 @@ class DARTAssembly(object):
         isomer.global_props['graph_hash'] = isomer.graph_hash
         isomer.global_props['batch_name'] = self.batch_name
 
+        # Add a comment to the xyz file with complex and ligand names for easier identification
+        xyz_comment = f'complex_name: {name}, ligand_unique_names: ({", ".join(isomer.ligand_info["unique_names"])}), note: {note}'
+        xyz_string = isomer.get_xyz_file_format_string(comment=xyz_comment)
+
         # Save to complex directory
         if success:
             complex_dir = Path(self.batch_outcontrol.complex_dir, name)
             complex_outcontrol = ComplexAssemblyOutput(complex_dir)
             complex_outcontrol.save_all_complex_data(complex=isomer)
-            complex_outcontrol.save_ligand_info(ligands)  # Save the ligand info
-            complex_outcontrol.save_structure(isomer.get_xyz_file_format_string())
+            complex_outcontrol.save_structure(xyz_string)
 
             # Keep track of number and names of assembled complexes
             self.assembled_complex_names.append(name)
             self.assembled_complex_json_paths.append(complex_outcontrol.data_path)
 
         # Save to concatenated xyz file of this batch
-        self.batch_outcontrol.save_xyz(isomer.get_xyz_file_format_string(), success=success, append=True)
+        if self.concatenate_xyz:
+            self.batch_outcontrol.save_xyz(xyz_string, success=success, append=True)
 
         # Save data for csv file.
         complex_idx = ( len(self.assembled_complex_names) - 1 ) if success else None
@@ -355,11 +378,11 @@ class DARTAssembly(object):
                 if self.same_isomer_names:
                     hash_string = complex.graph_hash
                 else:
-                    xyz = complex.mol.get_xyz_as_array()
+                    xyz = complex.get_xyz_as_array()
                     sorted_indices = np.lexsort((xyz[:, 2], xyz[:, 1], xyz[:, 0]), axis=0)
                     xyz = np.round(xyz, decimals=decimals)  # round to 6 decimals to get rid of numerical noise
                     xyz = xyz[sorted_indices]
-                    elements = [el for _, el in sorted(zip(sorted_indices, complex.mol.get_elements_list()))] # sort elements according to xyz
+                    elements = [el for _, el in sorted(zip(sorted_indices, complex.get_elements_list()))] # sort elements according to xyz
                     hash_string = str(elements) + str(xyz)  # make hash string
 
                 # Generate a pronounceable word from the hash
@@ -411,40 +434,20 @@ class DARTAssembly(object):
 
         return
 
-    def _check_if_reload_database(self) -> bool:
+    @classmethod
+    def run_from_yaml(cls, yaml_file: Union[str, Path]) -> 'Assembler':
         """
-        Check if the ligand database needs to be reloaded because any of the ligand json files have changed. Only for performance.
+        Run the assembler from a yaml file. See the documentation for the input format. The Assembler is run and the output is saved to the specified output directory. The Assembler object is returned.
+        :param yaml_file: Path to the yml file with the input settings.
+        :return: Assembler object.
         """
-        if isinstance(self.ligand_db_files, Path) and isinstance(self.last_ligand_db_path, Path):
-            reload_database = self.last_ligand_db_path.resolve() != self.ligand_db_files.resolve()
-        elif isinstance(self.ligand_db_files, list) and isinstance(self.last_ligand_db_path, list):
-            reload_database = len(self.ligand_db_files) != len(self.last_ligand_db_path) or any([last_path.resolve() != path.resolve() for path, last_path in zip(self.ligand_db_files, self.last_ligand_db_path)])
-        else:
-            reload_database = True
+        options = read_yaml(yaml_file)
+        batches = options.pop('batches')
 
-        return reload_database
+        assembler = Assembler(**options)
+        assembler.run_batches(batches=batches)
 
-    def _get_ligand_db(self) -> Union[LigandDB, list[LigandDB]]:
-        """
-        Load the ligand database from the json files.
-        @return: ligand database or list of ligand databases.
-        """
-        multiple_db = isinstance(self.ligand_db_files, list)
-        if multiple_db:
-            ligand_db = []
-            for path in self.ligand_db_files:
-                ligand_db.append(LigandDB.load_from_json(path))
-                if len(ligand_db[-1]) == 0:
-                    raise LigandCombinationError(
-                        f"No ligands found in the ligand database {path}. Please check your ligand database files.")
-        else:
-            ligand_db = LigandDB.load_from_json(self.ligand_db_files)
-            if len(ligand_db) == 0:
-                raise LigandCombinationError(
-                    f"No ligands found in the ligand database {self.ligand_db_files}. Please check your ligand database files.")
-        self.last_ligand_db_path = self.ligand_db_files
-
-        return ligand_db
+        return assembler
 
 
 if __name__ == '__main__':
@@ -461,6 +464,7 @@ if __name__ == '__main__':
         "same_isomer_names": True,
         "complex_name_length": 8,
         "n_max_ligands": 100,
+        "pre_delete": True,
         "batches": [{
                     "name": "First_batch",
                     "total_metal_oxidation_state": 2,
@@ -477,17 +481,37 @@ if __name__ == '__main__':
                                         [['Ru', [0, 0, 0]]],
                                         [['Ru', [0, 0, 0]]]
                                         ],
-                    "max_num_complexes": 100,
+                    "n_max_complexes": 100,
                     "random_seed": 0,
-                    "geometry_modifier_filepath": None,
-                    "complex_name_appendix": 'test',
-            }],
+                    "complex_name_appendix": '_Ru',
+            },
+            {
+                "name": "Second_batch",
+                "total_metal_oxidation_state": 1,
+                "total_charge": 0,
+                "ligand_db_files": [bidentpath, monopath, haptic_path],
+                "target_vectors": [
+                    [[1, 0, 0], [0, 1, 0]],
+                    [-1, 0, 0],
+                    [0, -1, 0],
+                ],
+                "ligand_origins": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+                "metal_centers": [
+                    [['Fe', [0, 0, 0]]],
+                    [['Fe', [0, 0, 0]]],
+                    [['Fe', [0, 0, 0]]]
+                ],
+                "n_max_complexes": 100,
+                "random_seed": 1,
+                "complex_name_appendix": '_Fe',
+            }
+        ],
     }
 
     # out_json = load_json('/Users/timosommer/PhD/projects/DARTassembler/dev/DART_refactoring_to_v1_1_0/data/ABAFIFUQ_Ru_OH_data.json')
 
     batches = options.pop('batches')
-    dart = DARTAssembly(**options, pre_delete=True)
+    dart = Assembler(**options)
     dart.run_batches(batches=batches)
 
     # Check if the code can read in a complex json file

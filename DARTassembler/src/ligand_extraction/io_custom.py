@@ -380,8 +380,22 @@ def save_unique_ligand_db(db: dict, path: Union[str, Path]):
     return
 
 def write_yaml(path: Union[str, Path], data: dict) -> None:
-    with open(path, 'w') as file:
-        yaml.dump(data, file)
+    """
+    Write a dictionary to a YAML file. Path objects are represented as strings. Try to save the keys in the original order if possible (Pyyaml version >= 5.1).
+    :param path: Path to the YAML file
+    :param data: Dictionary to write
+    :return: None
+    """
+    # Output path objects as string
+    def path_representer(dumper, data):
+        return dumper.represent_scalar(u'tag:yaml.org,2002:str', str(data))
+    yaml.add_multi_representer(PurePath, path_representer)
+
+    with open(path, 'w') as f:
+        try:
+            yaml.dump(data, f, sort_keys=False) # sort_keys=False is important to keep the order of the keys
+        except Exception:  # If the keyword sort_keys is not yet supported in this yaml version
+            yaml.dump(data, f)
 
     return
 
@@ -491,4 +505,4 @@ if __name__ == '__main__':
     test_metalig = '/Users/timosommer/PhD/projects/DARTassembler/DARTassembler/data/metalig/MetaLigDB_v1.1.0.jsonlines.bz2'
     # compress_file(metalig)
     # uncompress_file(metalig)
-    data = load_jsonlines(test_metalig, n_max=None)
+    data = load_jsonlines(test_metalig, n_max=1000)

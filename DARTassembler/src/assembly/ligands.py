@@ -15,9 +15,6 @@ class LigandChoice(object):
         This class is used to choose ligands for the assembly of complexes. It supports both random and iterative ligand choice methods.
         """
         self.ligand_lists = database
-        # self.ligand_lists = self._get_relevant_ligand_db(database=database, topology=topology, instruction=instruction)
-        # self.topology = topology
-        # self.instruction = instruction
         self.metal_ox = metal_oxidation_state
         self.total_charge = total_complex_charge
         self.max_num_assembled_complexes = max_num_assembled_complexes  # int or "all"

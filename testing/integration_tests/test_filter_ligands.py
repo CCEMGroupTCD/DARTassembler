@@ -10,7 +10,7 @@ import shutil
 def test_filter_ligands():
     filter_ligands_path = project_path().extend('testing', 'integration_tests', 'ligandfilters', 'data_input', 'ligandfilters.yml')   # In this file the user specifies which input they want
 
-    filters = ligandfilters(filter_input_path=filter_ligands_path, pre_delete=True)
+    filters = ligandfilters(filter_input_path=filter_ligands_path)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest

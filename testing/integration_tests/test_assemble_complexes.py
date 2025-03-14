@@ -1,21 +1,20 @@
 """
 Integration test for the assembly of complexes.
 """
-from DARTassembler.assembler import assembler
 from pathlib import Path
 from DARTassembler.src.constants.Paths import project_path
+from dev.DART_refactoring_to_v1_1_0.assembler import Assembler
+
 
 def test_assemble_complexes():
-    assembly_input = project_path().extend('testing', 'integration_tests', 'assembly', 'data_input', 'test_assembly_input.yml')   # In this file the user specifies which input they want
-
-    # Delete output directory so that the test detects if files are not written.
-    assembly = assembler(assembly_input_path=assembly_input, delete_output_dir=True)
+    assembly_input = project_path().extend('testing', 'integration_tests', 'assembly', 'data_input', 'test_assembly_input.yml')
+    assembly = Assembler.run_from_yaml(assembly_input)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest
-    old_dir = Path(assembly.output_path.parent, 'benchmark_data_output')
+    old_dir = Path(assembly.output_directory.parent, 'benchmark_data_output')
     if old_dir.exists():
-        test = IntegrationTest(new_dir=assembly.output_path, old_dir=old_dir)
+        test = IntegrationTest(new_dir=assembly.output_directory, old_dir=old_dir)
         test.compare_all()
         print('Test for assembly of complexes passed!')
     else:
