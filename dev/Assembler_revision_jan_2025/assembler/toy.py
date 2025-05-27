@@ -30,21 +30,3 @@ def _reduce_isomers(isomers, threshold) -> List[str]:
 a = _reduce_isomers(isomers, threshold=0.1)
 a.sort()
 print(a)
-
-
-from ase import Atoms
-
-# Define two separate Atoms objects with different info attributes
-atoms1 = Atoms('H2', positions=[[0, 0, 0], [0.7, 0, 0]])
-atoms1.info['1'] = 1
-
-atoms2 = Atoms('O2', positions=[[1.5, 0, 0], [2.2, 0, 0]])
-atoms2.info['cool'] = {0: ['oxygen'], 1: ['oxygen', 'terminal']}
-atoms2.info["2"] = 2
-
-# Merge the two Atoms objects
-#merged_atoms = atoms1 + atoms2
-atoms1.append(atoms2)
-
-# Check the .info attribute after merging
-print(atoms1.info)  # Only retains atoms1's info!

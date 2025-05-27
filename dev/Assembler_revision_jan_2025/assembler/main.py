@@ -12,18 +12,18 @@ import yaml
 
 if __name__ == "__main__":
 
-    # we will open the input file and read the instructions
+    # Load input instructions from the input YAML file
     input_file = Path("assembly_input.yml")
     with open(input_file, "r") as yaml_file:
         yaml_dict = yaml.safe_load(yaml_file)
 
-    # Next we should loop through all the batches and generate the instructions object
+    # Loop through all the batches from the input file
     for batch in yaml_dict["batches"]:
 
-        # We should first create the batch input object
+        # The BatchInput object is used to store all the information about the assembly input
         assembly_input: BatchInput = BatchInput(batch)
 
-        # Set the random seed
+        # The random seed is set to ensure reproducibility of the results
         random.seed(assembly_input.random_seed)
 
         # To make your life Timo hopefully a little easier Timo I have formatted the Assembly inputs as lists in case you don't want to use the BatchInput object
@@ -53,14 +53,15 @@ if __name__ == "__main__":
                                         metal_types=metal_type_list,
                                         metal_origins=metal_origin_list,
                                         monometallic=False)
-            if idx >= assembly_input.max_num_complexes:
-                break   # If we have reached the maximum number of complexes we will break the loop
 
             # Here all isomers that involve rotations of one ligand within a fixed coordination are generated (i.e. the position of each ligand does not change but the ligand can rotate)
             isomers = ChemBuild.get_isomers()
 
-            #isomers = ReduceIsomers(isomers, rssd_threshold=0.01).get_unique_isomers()
+            # Add the isomers to our list
             all_geom.extend(isomers)
+
+            if idx >= assembly_input.max_num_complexes:
+                break   # If we have reached the maximum number of complexes we will break the loop
 
         # For the time being we will view each of the geometries for testing using a for loop and view
         a = input("Press q to quit or any other key to continue")

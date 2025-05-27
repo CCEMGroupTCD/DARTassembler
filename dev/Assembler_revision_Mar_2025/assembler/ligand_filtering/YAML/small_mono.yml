@@ -1,0 +1,16 @@
+input_db_file:           # path or nothing
+output_db_file: "small_mono.json"   # path or nothing
+#output_ligands_info: True   # True or False. If True, an overview of the filtered and passed ligands will be saved.
+
+filters:
+
+  - filter: denticities
+    denticities: [1]
+
+  - filter: number_of_atoms
+    min: 1
+    max: 20
+
+  - filter: remove_ligands_with_missing_bond_orders
+    remove_ligands_with_missing_bond_orders: true
+    apply_to_denticities: [1]

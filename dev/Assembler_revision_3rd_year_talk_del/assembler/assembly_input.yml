@@ -1,0 +1,62 @@
+#########################################################################################
+# Input file for the assembly module of DART.                                           #
+#########################################################################################
+batches:
+  - isomer_instruction: "all" # This currently does nothing but in the future will be used to determine which isomers can be assembled
+    max_num_complexes: 1
+    total_charge: 0
+    name: "2-2-1-1-monometalic"
+    random_seed: 5
+    geometry:
+      - metal_1:
+          metal_type: Fe
+          metal_oxidation_state: 2
+          origin: [ 0, 0, 0 ]
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          temp_dent: 6
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_3rd_year_talk_del/assembler/ligand_filtering/JSON/hexagonal_eta.json
+      - ligand_3:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, -1 ]
+          temp_dent: 6
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_3rd_year_talk_del/assembler/ligand_filtering/JSON/hexagonal_eta.json
+
+  - isomer_instruction: "all" # This currently does nothing but in the future will be used to determine which isomers can be assembled
+    max_num_complexes: 1
+    total_charge: 0
+    name: "2-2-1-1-monometalic"
+    random_seed: 5
+    geometry:
+      - metal_1:
+          metal_type: Mn
+          metal_oxidation_state: 2
+          origin: [ -1.5, 0, 0 ]
+      - metal_2:
+          metal_type: Mn
+          metal_oxidation_state: 2
+          origin: [ 1.5, 0, 0 ]
+      - ligand_1:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, 1 ]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_3rd_year_talk_del/assembler/ligand_filtering/JSON/pph2.json
+      - ligand_2:
+          origin: [ 0, 0, 0 ]
+          vector_1: [ 0, 0, -1]
+          temp_dent: 1
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_3rd_year_talk_del/assembler/ligand_filtering/JSON/pph2.json
+      - ligand_3:
+          origin: [ -1.5, 0, 0 ]
+          vector_1: [-2, 2, 0 ]
+          vector_2: [ -2, -2, 0 ]
+          temp_dent: 2
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_3rd_year_talk_del/assembler/ligand_filtering/JSON/bidentate_NN.json
+      - ligand_4:
+          origin: [ 1.5, 0, 0 ]
+          vector_1: [ 2, 2, 0 ]
+          vector_2: [ 2, -2, 0 ]
+          temp_dent: 2
+          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_3rd_year_talk_del/assembler/ligand_filtering/JSON/bidentate_NN.json
+

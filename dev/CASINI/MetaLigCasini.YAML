@@ -1,0 +1,18 @@
+input_db_file:
+output_db_file: dev/Casini_db/ligs.json
+output_ligands_info: True   # True or False. If True, an overview of the filtered and passed ligands will be saved.
+
+filters:
+  - filter: denticities
+    denticities: [2]
+
+  - filter: remove_ligands_with_adjacent_coordinating_atoms
+    remove_ligands_with_adjacent_coordinating_atoms: True
+    apply_to_denticities: [2]
+
+  - filter: ligand_charges
+    ligand_charges: [-1]
+
+  - filter: coordinating_atoms_composition
+    elements: [C,N]
+    instruction: must_contain_and_only_contain

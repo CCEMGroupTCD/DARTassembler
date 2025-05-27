@@ -1,0 +1,9 @@
+# molSimplify input file generated from CLI input -lig tryptophanB_flipped pentacyanopentadienide proline
+-core Fe
+-oxstate 2
+-geo oct
+-lig water proline ammonia bromide chloride iodide
+-ligocc 1 1 1 1 1 1
+-skipANN
+-ffoption BA
+-isomers true

@@ -1,0 +1,19 @@
+input_db_file:
+output_db_file: ligandfilters/data_output/pph2.json  # path or nothing
+
+filters:
+
+  - filter: denticities
+    denticities: [1]
+
+  - filter: coordinating_atoms_composition
+    elements: [P]
+    instruction: must_contain_and_only_contain
+
+  - filter: ligand_composition
+    elements: [ C, H, P]
+    instruction: must_only_contain_in_any_amount
+
+  - filter: molecular_weight
+    min: 180.0
+    max: 190.0
