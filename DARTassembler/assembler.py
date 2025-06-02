@@ -1,16 +1,13 @@
 """
 This module is a wrapper for the assembly code. It takes in an assembly input file and returns an assembly object.
 """
-from DARTassembler.src.assembly.DART_Assembly import DARTAssembly
 from pathlib import Path
 from typing import Union
+from dev.DART_refactoring_to_v1_1_0.assembler import Assembler
 
 
-def assembler(assembly_input_path: Union[str, Path], delete_output_dir: bool = False) -> DARTAssembly:
-    assembly = DARTAssembly(assembly_input_path=assembly_input_path, delete_output_dir=delete_output_dir)
-    assembly.run_all_batches()
-
-    return assembly
+def assembler(assembly_input_path: Union[str, Path]) -> Assembler:
+    return Assembler.run_from_yaml(assembly_input_path)
 
 
 # Integration test, to check if everything is working and the same as before.

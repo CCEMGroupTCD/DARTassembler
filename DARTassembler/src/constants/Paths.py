@@ -1,6 +1,8 @@
 from pathlib import Path
 import os
 
+def projectpath(*relpaths):
+    return project_path().extend(*relpaths)
 
 def split_paths_on_unix_and_windows(relpaths: str) -> tuple:
     return tuple(p for paths in relpaths.split('\\') for p in paths.split('/'))
@@ -42,8 +44,8 @@ class project_path:
 
 
 # Fixed paths in the project
-default_ligand_db_path = project_path().extend(*'DARTassembler/data/metalig/MetaLigDB_v1.0.0.jsonlines'.split('/'))
-test_ligand_db_path = project_path().extend(*'DARTassembler/data/metalig/test1000_MetaLigDB_v1.0.0.jsonlines'.split('/'))
+default_ligand_db_path = project_path().extend(*'DARTassembler/data/metalig/MetaLigDB_v1.1.0.jsonlines'.split('/'))
+test_ligand_db_path = project_path().extend(*'DARTassembler/data/metalig/test1000_MetaLigDB_v1.1.0.jsonlines'.split('/'))
 element_data_path = project_path().extend(*'DARTassembler/data/element_data_table.csv'.split('/'))
 test_installation_dirpath = project_path().extend(*'DARTassembler/data/tests/test_installation'.split('/'))
 full_ligand_db_csv = project_path().extend(*'data/final_db_versions/unique_ligand_db_v1.7.csv'.split('/'))

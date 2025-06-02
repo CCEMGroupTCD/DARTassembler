@@ -9,7 +9,6 @@ Contains the path to the source directory of this paper.
 """
 import os 
 import inspect
-import src11_machine_learning
 from pathlib import Path
 
 source_dir = '//'

@@ -1,0 +1,24 @@
+################## Settings for the DART assembler module. ##################
+# Everything after '#' is ignored by the program and only there for the user.
+
+output_directory: data/assembler/data_output                # Path to a directory for the output files.
+batches:                              # List of batches to generate.
+  - name: First_batch                 # Name of the batch.
+    metal_center: Fe                  # Chemical symbol of the desired metal center.
+    metal_oxidation_state: 2          # Oxidation state of the desired metal center.
+    total_charge: 0                   # Total charge of the complex.
+    geometry: 2-1-1                   # Geometry of the complexes. Options: `2-1-1`, `2-2`, `mer-3-2-1`, `mer-4-1-1`, `5-1`
+    ligand_db_file: test_metalig           # Path to the ligand db file. Options: `metalig`, `test_metalig`, filepath or list of paths/keywords (see documentation).
+    max_num_complexes: 100            # Maximum number of complexes/isomers to generate. Integer or `all`.
+    isomers: all                      # Which isomers to save for each complex. Options: `lowest_energy`, `all`
+    random_seed: 0                   # Optional. Random seed for reproducibility of results. Choose any integer.
+    #forcefield: false                # Optional. Whether to optimize the structures after generation with a UFF force field. Recommended: `false`.
+    #bidentate_rotator: auto          # Optional. How to rotate bidentate ligands in square-planar complexes. Options: `auto`, `horseshoe`, `slab`. Recommended: `auto`.
+    #geometry_modifier_filepath:      # Optional. Path to a geometry modifier file to shift atoms in complexes.
+    #complex_name_appendix:           # Optional. String to append to each randomly generated complex name for labeling purposes.
+
+#ffmovie: false                       # Optional. Whether to output a movie (concatenated xyz file) of the forcefield optimization process.
+#concatenate_xyz: true                # Optional. Whether to save concatenated xyz files with all passed/failed complexes respectively.
+#verbosity: 2                         # Optional. Output verbosity level (0-3), recommended: `2`.
+#same_isomer_names: true              # Optional. Whether to give the same name to isomers of the same complex and then to number them.
+#complex_name_length: 8               # Optional. Length for generated complex names, recommended: 8.

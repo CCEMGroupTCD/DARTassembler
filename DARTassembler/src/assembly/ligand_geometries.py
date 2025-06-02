@@ -250,11 +250,14 @@ def assign_geometry(atoms: ase.Atoms, donor_idc: list[int]) -> tuple[str, list[a
     # Find second-best geometry.
     if len(all_rssds) == 1:     # There is only one geometry, so there is no second-best geometry.
         second_best_geometry, second_best_rssd = None, np.nan
+        weight_necessary_for_change = 0  # Set to 0 to indicate that there is no second-best geometry.
     else:
         second_best_geometry, second_best_rssd, _, _ = min([x for x in all_rssds if x[0] != geometry], key=lambda x: x[1])
+        weight_necessary_for_change = second_best_rssd / rssd
 
-    # Calculate the weight necessary for a change in geometry. Useful to see how much the geometry would have to change to be the second-best geometry.
-    weight_necessary_for_change = second_best_rssd / rssd
+    # Round to 10 decimal places to avoid floating point inconsistencies which happen with np.linalg.svd() in different versions of numpy
+    rssd = round(rssd, 10)
+    weight_necessary_for_change = round(weight_necessary_for_change, 10)
 
     return geometry, isomers, isomer_donor_idc, rssd, second_best_geometry, weight_necessary_for_change
 
@@ -262,7 +265,8 @@ def align_donor_atoms(
                         atoms: ase.Atoms,
                         donor_idc: list[int],
                         target_vectors: list[list[float]],
-                        return_rssd: bool = False
+                        return_rssd: bool = False,
+                        weights = None
                         ):
     """
     Align the donor atoms of a ligand to the target vectors.
@@ -284,7 +288,7 @@ def align_donor_atoms(
     # Find the correct rotation to align the donor vectors with the target vectors. Suppress warnings because we use this function a lot with bad rotations simply because we are trying to find the best rotation.
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        rot, rssd = R.align_vectors(a=target_vectors, b=donor_vectors)  # the a and b are unintuitive but correct
+        rot, rssd = R.align_vectors(a=target_vectors, b=donor_vectors, weights=weights)  # the a and b are unintuitive but correct
     # Apply the rotation to all the atoms of the ligand
     rotated_coords = rot.apply(atoms.positions)
     atoms.set_positions(rotated_coords)

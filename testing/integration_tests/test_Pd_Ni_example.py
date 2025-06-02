@@ -59,9 +59,9 @@ def test_Pd_Ni_example(nmax=False, skip_filters=False):
     copy_input_files_from_example_and_adapt_paths(example_input_dir, indir)
 
     if not skip_filters:
-        Br_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_Br.yml'), nmax=100, delete_output_dir=True)
-        phenyl_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_phenyl.yml'), nmax=100, delete_output_dir=True)
-        P_N_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_P_N_ligands.yml'), nmax=nmax, delete_output_dir=True)
+        Br_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_Br.yml'), pre_delete=True)
+        phenyl_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_phenyl.yml'), pre_delete=True)
+        P_N_filter = DARTassembler.ligandfilters(Path(indir, 'ligandfilters_P_N_ligands.yml'), pre_delete=True)
     else:
         Br_filter = phenyl_filter = P_N_filter = None
     assembly = DARTassembler.assembler(Path(indir, 'Pd_Ni_assembly_input.yml'), delete_output_dir=True)

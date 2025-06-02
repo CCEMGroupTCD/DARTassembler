@@ -37,13 +37,9 @@ class BaselineDB:
         """
         self.db = dict_
         self.names = list(self.db.keys())
-        self.reduced_df = self.get_reduced_df()
 
     def __len__(self):
         return len(self.db)
-
-    def __eq__(self, other):
-        return self.db == other.db
 
     def get_reduced_df(self):
         important_columns = ['name', 'stoichiometry', 'denticity', 'graph_hash_with_metal', 'unique_name', 'pred_charge', 'pred_charge_is_confident']
@@ -318,8 +314,7 @@ class LigandDB(MoleculeDB):
         return df_ligand_info
 
     def save_reduced_csv(self, outpath: Union[str, Path], max_entries: int=5) -> None:
-        ligands = {uname: ligand.get_ligand_output_info(max_entries=max_entries) for uname, ligand in self.db.items()}
-        df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
+        df_ligand_info = self.get_ligand_output_df(max_entries=max_entries)
         df_ligand_info.to_csv(outpath, index=False)
         return
 
@@ -596,7 +591,7 @@ class LigandDB(MoleculeDB):
         n_ligands = len(geometry)
         geometry = sorted(geometry)
 
-        df = self.reduced_df.query('denticity in @geometry and not pred_charge.isnull()')[['denticity', 'pred_charge']].astype(int)
+        df = self.get_reduced_df().query('denticity in @geometry and not pred_charge.isnull()')[['denticity', 'pred_charge']].astype(int)
 
         df = df.groupby(['denticity', 'pred_charge']).size().reset_index().rename(columns={0: 'count'})
         count = 0
@@ -719,6 +714,10 @@ class LigandDB(MoleculeDB):
 
 
 
+
+
+
+
 class ComplexDB(MoleculeDB):
     type = 'Complex'
     def __init__(self, dict_):
@@ -760,7 +759,7 @@ if __name__ == '__main__':
 
     db = LigandDB.load_from_json(path=db_path, n_max=n_max)
     outpath = f'/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/data/metalig/test{n_max}_MetaLigDB_v1.0.0.jsonlines'
-    ligands_2D_sym = [lig for lig in db.db.values() if lig.is_2D_symmetrical()]
+    ligands_2D_sym = [lig for lig in db.db.values() if lig.check_if_2D_symmetrical()]
     n_ligands_2D_sym = len(ligands_2D_sym)
     print(f'Number of 2D symmetrical ligands: {n_ligands_2D_sym}')
     # df_metals = db.calc_number_of_possible_complexes()
