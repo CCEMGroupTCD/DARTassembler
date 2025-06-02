@@ -2,7 +2,7 @@ import logging
 import pathlib as pl
 
 
-def setup_logger(name: str = "DARTassembler", log_file: pl.Path = pl.Path("assembly.log"), level=logging.INFO) -> logging.Logger:
+def setup_logger(name: str = "DARTassembler", log_file: pl.Path = pl.Path("assembly.log"), level=logging.DEBUG) -> logging.Logger:
     """
     Sets up a logger for the DART assembly process.
     :param name: The name of the logger, defaults to "DART"

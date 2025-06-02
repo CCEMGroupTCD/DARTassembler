@@ -2,11 +2,22 @@
 # Input file for the assembly module of DART.                                           #
 #########################################################################################
 batches:
-  - isomer_instruction: "all" # This currently does nothing but in the future will be used to determine which isomers can be assembled
+  - debug: true                                       # Describes whether the assembly should be run in debug mode: Optional # default: False
     max_num_complexes: 4
     total_charge: 0
     name: "2-2-1-1-monometalic"
     random_seed: 5
+    opt_mono_rot: true                                # Describes weather the optimal rotation for a mono-coordinating ligand should be found:                    Optional # default: True
+    filter_duplicate_isomers: true                    # Describes whether duplicate isomers should be filtered out:                                               Optional # default: True
+    filter_duplicate_isomers_method: "fingerprint"    # Describes the method used to filter duplicate isomers:                                                    Optional # default: "fingerprint"
+    filter_duplicate_isomers_grid_size: 9             # Describes the grid size used to align the structures if "alignment" is selected:                          Optional # default: 9
+    filter_clashing_structures: true                  # Describes whether ligand clashes should be filtered out:                                                  Optional # default: True
+    filter_clashing_structures_cov_radii_buffer: 0.0  # Describes  buffer applied when clashing structures. Larger: more restrictive, smaller: less restrictive.  Optional # default: -0.3
+    isomer_comparison_mode: "max_diff"                # Describes the method used to compare isomers ("max_diff", "sum_diff", "mean_diff", rmsd):                 Optional # default: "max_diff"
+    isomer_comparison_grouping_mode: "cluster"        # Describes the method used to group isomers (cluster or cut-off):                                          Optional # default: "cluster"
+    isomer_comparison_grouping_cutoff: 1.0            # Describes the cutoff used to group isomers if "cut-off" is selected:                                      Optional # default: 1.0
+    check_metal_clashes: false                        # Describes whether clashes between metals should be checked:                                               Optional # default: True
+    auxiliary_structure_path:                         # Describes the path to an auxiliary structure to be used in the assembly:                                  Optional # default: None
     geometry:
       - metal_1:
           metal_type: Ir
@@ -14,30 +25,34 @@ batches:
           origin: [ 0, 0, 0 ]
       - ligand_1:
           origin: [ 0, 0, 0 ]
-          vector_1: [ 0, 0, 1 ]
+          vector_1: z
           temp_dent: 1
-          n_max: 30
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+          n_max: 30                                   # The first {n_max} of {ligand_db} will be used for assembly # Optional # default: all
+          swap_group: 1                               # ligands with the same swap group will be exchanged to generate unique isomers: Optional # default: not specified
+          ligand_db: ./ligand_filtering/JSON/small_mono.json
       - ligand_2:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, 1, 0]
           temp_dent: 1
           n_max: 30
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/small_mono.json
+          swap_group: 1
+          ligand_db: ./ligand_filtering/JSON/small_mono.json
       - ligand_3:
           origin: [ 0, 0, 0 ]
           vector_1: [-1, 0, 0 ]
-          vector_2: [ 0, -1, 0 ]
+          vector_2: -y
           temp_dent: 2
           n_max: 30
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/bidentate_NN.json
+          swap_group: 2
+          ligand_db: ./ligand_filtering/JSON/bidentate_NN.json
       - ligand_4:
           origin: [ 0, 0, 0 ]
           vector_1: [ 1, 0, 0 ]
           vector_2: [ 0, 0, -1 ]
           temp_dent: 2
           n_max: 30
-          ligand_db: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/bidentate_NN.json
+          swap_group: 2
+          ligand_db: ./ligand_filtering/JSON/bidentate_NN.json
 
 
 
