@@ -1,4 +1,4 @@
-output_directory: assembly/data_output
+output_directory: assembler/data_output
 concatenate_xyz: true
 verbosity: 2
 same_isomer_names: true
@@ -10,9 +10,9 @@ batches:
   total_metal_oxidation_state: 2
   total_charge: 0
   ligand_db_files:
-  - assembly/data_input/bidentate.jsonlines
-  - assembly/data_input/monodentate.jsonlines
-  - assembly/data_input/haptic.jsonlines
+  - assembler/data_input/bidentate.jsonlines
+  - assembler/data_input/monodentate.jsonlines
+  - assembler/data_input/haptic.jsonlines
   target_vectors:
   - - - 1
       - 0
@@ -56,9 +56,9 @@ batches:
   total_metal_oxidation_state: 1
   total_charge: 0
   ligand_db_files:
-  - assembly/data_input/bidentate.jsonlines
-  - assembly/data_input/monodentate.jsonlines
-  - assembly/data_input/haptic.jsonlines
+  - assembler/data_input/bidentate.jsonlines
+  - assembler/data_input/monodentate.jsonlines
+  - assembler/data_input/haptic.jsonlines
   target_vectors:
   - - - 1
       - 0

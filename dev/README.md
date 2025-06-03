@@ -1,14 +1,83 @@
 # DART - Notes for developers
 
-- The conda environment for development is `conda_envs/conda_DART_dev.yml`, see the README in that directory for more information.
+- The conda environment for development is `dev/conda_envs/conda_DART_dev.yml`, see the README in that directory for more information.
 - The documentation is built with Sphinx, see the README in the `docs` directory for more information.
 - The tests are integration tests, which run an entire module and then check that the output is as expected.
 
+## Refactoring for version 1.1 (rca_ligand_refactor branch):
+- The `rca_ligand_refactor` branch is the `master` branch for the completely re-vamped version of DART, which will then be version 1.1.0.
+    - Active developing should be done on other branches, which are then merged into the `rca_ligand_refactor` branch once the feature is complete and all tests pass.
+
+
+## Tests
+
+During the entire development process, the code should be continually tested to check if the output is as expected. The tests are integration tests, which run an entire module and then check that the output files are the same as in a benchmark directory. If they are not, the tests will print information about the differences. All tests are located in the `tests/integration_tests/` directory. The following tests are available:
+
+Very fast (a few seconds):
+- `test_installation.py`: A very fast test that checks the `ligandfilters`, `assembler` and `dbinfo` module with a very small set of ligands.
+- `test_ligandfilters.py`: Tests the `ligandfilters` module by reading in a limited set of ligands from the MetaLig database, applying a few filters and saving an output ligand db file.
+- `test_dbinfo.py`: Tests the `dbinfo` database information module, which reads in a ligand database and outputs information files such as a csv and a few concatenated .xyz files.
+
+Fast (less than 30s):
+- `test_assembler.py`: Tests the `assembler` module which is the DART workflow, from reading in a yaml file, loading small sample ligand databases, assembling a few geometries and saving the output complexes.
+
+A bit slower (a few minutes):
+- `test_Pd_Ni_example.py`: A test which runs the `ligandfilters` and `assembler` modules for the Pd-Ni case study.
+- `test_OER_example.py`: A test which runs the `ligandfilters` and `assembler` modules for the OER database.
+
+```Note: During the currently ongoing refactoring process, the Pd-Ni and OER tests are not yet fully functional, because I believe it will make more sense to adapt them once at the end.```
+
+### How to test your code whenever you make any edits
+When developing new features, it is important to test the code to ensure that the output is as expected. The tests are integration tests, which run an entire module and then check that the output files are the same as in a benchmark directory. If they are not, the tests will print information about the differences. This is a good way to ensure that the code is working as expected and that no unintended changes have been made.
+As an example, let's imagine we want to develop a new feature in our assembler module. From experience, the following steps are a good practice to follow:
+1. Make sure you have the latest version of the code by pulling (either from `master` or now from the `rca_ligand_refactor` branch).
+2. Make sure you are in a git branch for testing and feature development.
+3. Before making any edits, run all tests that contain the module we want to edit (or simply all of them) to make sure the benchmark outputs are correct. This will give us a baseline to compare against.
+    - In our case, we edit the assembler module, so the most important test to run is `test_assembler.py`. 
+    - The `test_installation.py` test should also always be run since it is very fast and covers a good bit of DART, including the assembler module.
+    - The `test_Pd_Ni_example.py` and `test_OER_example.py` tests should also be run since the assembler module is used in these tests as well.
+4. Check that all the tests pass successfully. This should normally be the case, but if not, first we need to fix the benchmark directories before we can continue. You should see the following output:
+```
+Integration test: check if the new output is the same as the old output.
+Integration test successful: all good!
+Test for ligand filters passed!
+```
+5. Now that we have a baseline, we can start editing the assembler module. Let's say we want to make a simple change such as changing the printed output, which should have no effect on the output files except the file `log.txt` which logs the output. So, knowing that, we will make the change and re-run the assembler test. The final output now looks like this:
+```
+Integration test: check if the new output is the same as the old output.
+Changed: 1 item(s)
+  /log.txt
+==========    WARNING: INTEGRATION TEST FOUND ISSUES    ==========
+	# changed files: 1
+Test for assembly of complexes passed!
+```
+6. Now we need to check what has changed and if that is expected. The testing module will print a list of files which have changed. Here, we see that the `log.txt` file has changed, which is expected since we changed the printed output. We can also see that no other file has been changed because no other file is listed. So, depending on the complexity of the change we made, we can either continue now or we can use the `diff` functionality of PyCharm (see tips below) to further inspect the changes in the old and new `log.txt` file. Once we think that all changes are consistent with our expectations, we can continue with the next step.
+7. If we are satisfied with the changes, we need to update the benchmark directory with the new output files in order to reflect the new gold standard output. For this, you simply go to the directory `tests/integration_tests/assembler/`. You find there three directories:
+- `data_input`: This directory contains the input files for the test, which should not be changed.
+- `data_output`: This directory contains the output files of the test, which have just been generated. 
+- `benchmark_data_output`: This directory contains the benchmark output files, which were used to compare against the new output files.
+Now, you can simply delete the `benchmark_data_output` directory and rename the `data_output` directory to `benchmark_data_output`. That way, the next time you run the test, it will make a new `data_output` directory and compare against the new `benchmark_data_output`.
+8. Run the test again to make sure everything is working as expected. You should see the following output, indicating that the test passed successfully without any changes:
+```
+Integration test: check if the new output is the same as the old output.
+Integration test successful: all good!
+Test for ligand filters passed!
+```
+
+### Best practice: interactively testing your code during development
+Above, I have described how to test the code and make sure that the output is as expected. However, this should usually not only be done once at the end, but rather continuously during the development process. This is a good practice to ensure that the code is working as expected at every step of the way. It helps to catch bugs early and makes it easier to debug the code since you can always see exactly the impact the code changes have on the output files. Apart from the Pd-Ni and OER example tests, the tests are made to be very fast, so you can run them interactively while developing the code. 
+
+This approach is especially powerful if you make changes in the code that should not change the output files, such as refactoring, since you can immediately spot any issues. However, also when developing new features, I personally use the tests continually. Usually, I try to divide the development process into small steps, each of which can be tested individually. This way, I can run the tests after each step and see if the output is as expected. If not, I can immediately debug the code and fix the issue. Only once I'm satisfied with the output, I update the benchmark directory if necessary and continue with the next step. This way, I have a very strong control over the changes I introduce. 
+
+Initially, this testing process might seem like a lot, but one gets used to it very quickly, and it will become a very powerful feeling to have such tight control over the output files and to always be able to spot any issue right from the bat. 
+
+### Further tips
+- The `diff` functionality of PyCharm is very powerful and I found it way to late. In the project tab, you can mark two files and then right-click to select "Compare Files". This will show you the differences between the two files in a very nice way, highlighting the changes.
+
+
 ## Installation
 
-DART is installed via pip. One issue with DART is the installation of the MetaLig database, since this database is very big (393 MB). This file size is too big to upload for both GitHub and PyPI. Therefore, the MetaLig database is compressed via bzip2 and uploaded as compressed file. Once the installation is done, the database is decompressed and stored in the same directory as the compressed database.
-
-**Potential issue:** The installation procedure was tested on Mac and seems to work, but it requires that python has the permission to write to the directory where the database is stored. This might be an issue on some systems, especially if people would install their python packages with sudo. However, right now I don't think it's a major issue, if it comes up we might have to install the database in a different way.
+DART is installed via pip (`pip install DARTassembler`). One issue with DART is the installation of the MetaLig database, since this database is very big (360MB). Therefore, the pip package includes a compressed version of the database (`MetaLigDB_v{VERSION}.jsonlines.bz2`) which is only 38MB big, which fits with the PyPI size limit of 50MB. The code that reads in the file will automatically detect if it's compressed and will uncompress it on-the-fly, line-by-line. Note that the database is never decompressed and written to disk because writing to the directory where something is installed after the installation is not a good practice and can lead to issues such as permission errors. Instead, the database is read directly from the compressed file. Only in the first version of DAT (up until version 1.1.0), the database was uncompressed and written to disk once at the beginning, which is not the case anymore.
 
 ## Release
 

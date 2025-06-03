@@ -52,7 +52,7 @@ full_ligand_db_csv = project_path().extend(*'data/final_db_versions/unique_ligan
 default_assembler_yml_path = project_path().extend(*'DARTassembler/data/default/assembler.yml'.split('/'))
 default_ligandfilters_yml_path = project_path().extend(*'DARTassembler/data/default/ligandfilters.yml'.split('/'))
 # For development only
-charge_benchmark_dir = project_path().extend('testing', 'charge_benchmark', 'internal', 'data_charge_benchmark')
+charge_benchmark_dir = project_path().extend('tests', 'charge_benchmark', 'internal', 'data_charge_benchmark')
 csd_graph_path = project_path().extend(*'data_input/CSD/graphs'.split('/'))
 # For docs
 docs_run_dirs = {
