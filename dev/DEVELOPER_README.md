@@ -5,27 +5,99 @@
 - The tests are integration tests, which run an entire module and then check that the output is as expected.
 
 ## Refactoring for version 1.1 (rca_ligand_refactor branch):
-- The `rca_ligand_refactor` branch is the `master` branch for the completely re-vamped version of DART, which will then be version 1.1.0.
+- The `rca_ligand_refactor` branch is the `master` branch for the completely revamped version of DART, which will then be version 1.1.0.
     - Active developing should be done on other branches, which are then merged into the `rca_ligand_refactor` branch once the feature is complete and all tests pass.
+      - Note: During the currently ongoing refactoring process, the installation, Pd-Ni and OER tests (see `Tests`) are not yet fully functional, because I believe it will make more sense to adapt them once at the end. All the other tests though are functional and should be used.
+    - Some of the classes etc mentioned here, e.g. the RCA_Ligand(), will be renamed at a later stage in the refactoring
 
+## Code structure of the `DARTassembler` package
+The DART workflow has several important Python classes that need to be maintained. One re-ocurring feature is that for all DART modules that are accessible via the CLI, there should be a function to call this class from a yaml file. However, all classes themselves should take only Python objects (lists, dictionaries, strings, ase.Atoms etc) as input, since this makes the development much simpler. 
+
+As such, the following Python classes need the ability to be accessed via the CLI and a yaml file:
+- `Assembler()` -> the full DART workflow, from loading the ligand db files to saving the output 3D TMC structures
+- `NewLigandFilters()` -> the ligand filters
+- `dbinfo()` a function to get a csv and concatenated .xyz files from a ligand db .jsonlines file
+
+The following Python classes do not need to be accessed via yaml since they will never be called from the CLI
+- `AssembledIsomer()` -> the class that assembles 3D TMCs from a list of ligands
+- `RCA_Ligand()` -> the class representing a ligand from the MetaLig
+
+### Assembler() 
+This class runs the full DART assembly workflow and is maintained mostly by Timo. It currently has the following inputs (and a few more options will still be added):
+```python
+class Assembler(object):
+    def __init__(
+                    self,
+                    output_directory: Union[str, Path] = 'DARTassembler',
+                    concatenate_xyz: bool = True,
+                    verbosity: int = 2,
+                    same_isomer_names: bool = True,
+                    complex_name_length: int = 8,
+                    n_max_ligands: Union[int,None] = None,
+                    pre_delete: bool = False
+                 ):
+```
+
+It implements the following functionalities:
+- Run from a list of keywords (called in Python) or from a yaml file
+- Load all required ligand databases
+- Generate combinations of ligands to be assembled together in the same complex
+- Call the `AssembledIsomer()` class to generate a list of 3D geometries from the specified ligands and metal centers
+- Save all generated isomers and accompanying information to an output directory
+
+### AssembledIsomer()
+This class is used to assemble the 3D geometries of the ligands and is maintained mostly by Cian. It currently has the following inputs (and a few more options will still be added):
+```python
+class AssembledIsomer(RCA_Molecule):
+    def __init__(self,
+                    atomic_props: Union[ase.Atoms, Dict[str, Any]],
+                    graph: nx.Graph,
+                    metal_idc: List[int],
+                    donor_idc: List[List[int]],
+                    ligand_idc: List[List[int]],
+                    ligand_info: Dict[str, Any] = None,
+                    global_props: Dict[str, Any] = None,
+                    validity_check: bool = False,
+                    ):
+```
+In the `Assembler()` class it is used like this:
+```python
+isomers, warnings = AssembledIsomer.from_ligands_and_metal_centers(
+                                                                    ligands=ligands,
+                                                                    target_vectors=self.target_vectors,
+                                                                    ligand_origins=self.ligand_origins,
+                                                                    metal_centers=self.metal_centers
+                                                                    )
+```
+The input of this class are mostly Python lists of ligands, metal centers etc, which it uses to assemble a list of 3D geometries, which it returns together with a list of warnings (see above). It does not require to be run from a yaml file since it will not be called from the CLI, but instead it is a flexible and powerful Python class to be used for the general assembly of 3D transition metal complexes from a list of given ligands, metal centers, target vectors and origins (so it can also be used independently of the `Assembler()` class). It implements the following functionalities:
+- Assemble a list of isomers from a set of ligands, metal centers, target vectors and origins
+- Support for multi-metallic systems by associating ligands with each metal center in the input lists
+- Support for haptic systems by treating a haptic group as a single effective donor atom situated in the center of the haptic group
+- Check if two isomers are equivalent
+- Check if ligands clash
+
+### RCA_Ligand()
+This class is used to represent a ligand from the MetaLig database and is maintained mostly by Timo. It has a wide range of properties to filter for in the ligandfilters module. It also has important properties for the `AssembledIsomer()` class such as the ligand geometry (`self.geometry`) and a list of list of indices of it's effective donor atoms, where the outer list are the possible (not-equivalent) possible orientations of the ligand (`self.geometric_isomers_hapdent_idc`).
+
+### NewLigandFilters()
+A class that loads a ligand database file and call be called from a yaml in order to filter down the ligand database based on certain filters.
+
+### dbinfo()
+A function that loads a ligand database and outputs information files such as a csv and a few concatenated .xyz files.
 
 ## Tests
 
 During the entire development process, the code should be continually tested to check if the output is as expected. The tests are integration tests, which run an entire module and then check that the output files are the same as in a benchmark directory. If they are not, the tests will print information about the differences. All tests are located in the `tests/integration_tests/` directory. The following tests are available:
 
 Very fast (a few seconds):
-- `test_installation.py`: A very fast test that checks the `ligandfilters`, `assembler` and `dbinfo` module with a very small set of ligands.
 - `test_ligandfilters.py`: Tests the `ligandfilters` module by reading in a limited set of ligands from the MetaLig database, applying a few filters and saving an output ligand db file.
-- `test_dbinfo.py`: Tests the `dbinfo` database information module, which reads in a ligand database and outputs information files such as a csv and a few concatenated .xyz files.
-
-Fast (less than 30s):
+- `test_dbinfo.py`: Tests the `dbinfo` module.
 - `test_assembler.py`: Tests the `assembler` module which is the DART workflow, from reading in a yaml file, loading small sample ligand databases, assembling a few geometries and saving the output complexes.
 
-A bit slower (a few minutes):
+Currently not functional during the refactoring:
+- `test_installation.py`: A very fast test that checks the `ligandfilters`, `assembler` and `dbinfo` module with a very small set of ligands.
 - `test_Pd_Ni_example.py`: A test which runs the `ligandfilters` and `assembler` modules for the Pd-Ni case study.
 - `test_OER_example.py`: A test which runs the `ligandfilters` and `assembler` modules for the OER database.
-
-```Note: During the currently ongoing refactoring process, the Pd-Ni and OER tests are not yet fully functional, because I believe it will make more sense to adapt them once at the end.```
 
 ### How to test your code whenever you make any edits
 When developing new features, it is important to test the code to ensure that the output is as expected. The tests are integration tests, which run an entire module and then check that the output files are the same as in a benchmark directory. If they are not, the tests will print information about the differences. This is a good way to ensure that the code is working as expected and that no unintended changes have been made.
@@ -71,7 +143,7 @@ This approach is especially powerful if you make changes in the code that should
 
 Initially, this testing process might seem like a lot, but one gets used to it very quickly, and it will become a very powerful feeling to have such tight control over the output files and to always be able to spot any issue right from the bat. 
 
-### Further tips
+### Further tips for testing and debugging
 - The `diff` functionality of PyCharm is very powerful and I found it way to late. In the project tab, you can mark two files and then right-click to select "Compare Files". This will show you the differences between the two files in a very nice way, highlighting the changes.
 
 
@@ -79,7 +151,7 @@ Initially, this testing process might seem like a lot, but one gets used to it v
 
 DART is installed via pip (`pip install DARTassembler`). One issue with DART is the installation of the MetaLig database, since this database is very big (360MB). Therefore, the pip package includes a compressed version of the database (`MetaLigDB_v{VERSION}.jsonlines.bz2`) which is only 38MB big, which fits with the PyPI size limit of 50MB. The code that reads in the file will automatically detect if it's compressed and will uncompress it on-the-fly, line-by-line. Note that the database is never decompressed and written to disk because writing to the directory where something is installed after the installation is not a good practice and can lead to issues such as permission errors. Instead, the database is read directly from the compressed file. Only in the first version of DAT (up until version 1.1.0), the database was uncompressed and written to disk once at the beginning, which is not the case anymore.
 
-## Release
+## Release of a new DART version on PyPI
 
 As preparation, make sure you installed twine and build, and added the PyPI and TestPyPI API credentials to your ``~/.pypirc`` file. These are helpful links:
 * https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/
