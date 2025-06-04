@@ -630,7 +630,7 @@ SDD\n
 if __name__ == '__main__':
 
     # old_complex_path = '/Users/timosommer/PhD/projects/RCA/projects/DART/examples/Pd_Ni_Cross_Coupling/dev/output/data_before_restarts/DART_Example_Pd_Ni_Complexes/batches/P_N_Donors_Ni_Metal_Centre/complexes/ABADEZIX_PN_Ni/ABADEZIX_PN_Ni_data.json'
-    # new_complex_path = '/Users/timosommer/PhD/projects/RCA/projects/DART/testing/integration_tests/assembly/data_output/batches/Integration_test_1/complexes/AZEPOBOB/AZEPOBOB_data.json'
+    # new_complex_path = '/Users/timosommer/PhD/projects/RCA/projects/DART/tests/integration_tests/assembly/data_output/batches/Integration_test_1/complexes/AZEPOBOB/AZEPOBOB_data.json'
     # old_complex = TransitionMetalComplex.from_json(old_complex_path)
     # new_complex = TransitionMetalComplex.from_json(new_complex_path)
     # bite_angle2 = old_complex.get_bite_angle(['P', 'N'])

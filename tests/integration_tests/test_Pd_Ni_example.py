@@ -51,7 +51,7 @@ def copy_input_files_from_example_and_adapt_paths(example_input_dir, test_input_
 
 def test_Pd_Ni_example(nmax=False, skip_filters=False):
 
-    test_dir = project_path().extend('testing', 'integration_tests', 'Pd_Ni_example')
+    test_dir = project_path().extend('tests', 'integration_tests', 'Pd_Ni_example')
     indir = Path(test_dir, 'data_input')
     example_input_dir = project_path().extend('examples/Pd_Ni_Cross_Coupling/generate_complexes/input')
     benchmark_dir = project_path().extend('examples/Pd_Ni_Cross_Coupling/generate_complexes/output')

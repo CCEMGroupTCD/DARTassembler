@@ -1,8 +1,8 @@
 Starting DART Assembler Module.
-Output directory: /Users/timosommer/PhD/projects/DARTassembler/testing/integration_tests/assembly/data_output
+Output directory: /Users/timosommer/PhD/projects/DARTassembler/tests/integration_tests/assembler/data_output
 Running 2 batches...
 User-defined global settings:
-    output_directory              assembly/data_output
+    output_directory              assembler/data_output
     concatenate_xyz               True
     verbosity                     2
     same_isomer_names             True
@@ -14,7 +14,7 @@ User-defined settings for batch 0:
     name                          First_batch
     total_metal_oxidation_state   2
     total_charge                  0
-    ligand_db_files               ['assembly/data_input/bidentate.jsonlines', 'assembly/data_input/monodentate.jsonlines', 'assembly/data_input/haptic.jsonlines']
+    ligand_db_files               ['assembler/data_input/bidentate.jsonlines', 'assembler/data_input/monodentate.jsonlines', 'assembler/data_input/haptic.jsonlines']
     target_vectors                [[[1, 0, 0], [0, 1, 0]], [-1, 0, 0], [0, -1, 0]]
     ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
     metal_centers                 [[['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]]]
@@ -26,7 +26,7 @@ User-defined settings for batch 1:
     name                          Second_batch
     total_metal_oxidation_state   1
     total_charge                  0
-    ligand_db_files               ['assembly/data_input/bidentate.jsonlines', 'assembly/data_input/monodentate.jsonlines', 'assembly/data_input/haptic.jsonlines']
+    ligand_db_files               ['assembler/data_input/bidentate.jsonlines', 'assembler/data_input/monodentate.jsonlines', 'assembler/data_input/haptic.jsonlines']
     target_vectors                [[[1, 0, 0], [0, 1, 0]], [-1, 0, 0], [0, -1, 0]]
     ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
     metal_centers                 [[['Fe', [0, 0, 0]]], [['Fe', [0, 0, 0]]], [['Fe', [0, 0, 0]]]]

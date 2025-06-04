@@ -6,7 +6,7 @@ from pathlib import Path
 from DARTassembler.src.constants.Paths import project_path
 
 def test_OER_example():
-    assembly_input = project_path().extend('testing', 'integration_tests', 'OER_example', 'data_input', 'oer_test_assembler.yml')   # In this file the user specifies which input they want
+    assembly_input = project_path().extend('tests', 'integration_tests', 'OER_example', 'data_input', 'oer_test_assembler.yml')   # In this file the user specifies which input they want
 
     # Delete output directory so that the test detects if files are not written.
     assembly = assembler(assembly_input_path=assembly_input, delete_output_dir=True)
