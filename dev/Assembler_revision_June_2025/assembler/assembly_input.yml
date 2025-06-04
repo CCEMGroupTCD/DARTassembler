@@ -29,14 +29,14 @@ batches:
           temp_dent: 1
           n_max: 30                                   # The first {n_max} of {ligand_db} will be used for assembly # Optional # default: all
           swap_group: 1                               # ligands with the same swap group will be exchanged to generate unique isomers: Optional # default: not specified
-          ligand_db: ./ligand_filtering/JSON/small_mono.json
+          ligand_db: ./new_ligands/small_mono.json
       - ligand_2:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, 1, 0]
           temp_dent: 1
           n_max: 30
           swap_group: 1
-          ligand_db: ./ligand_filtering/JSON/small_mono.json
+          ligand_db: ./new_ligands/small_mono.json
       - ligand_3:
           origin: [ 0, 0, 0 ]
           vector_1: [-1, 0, 0 ]
@@ -44,7 +44,7 @@ batches:
           temp_dent: 2
           n_max: 30
           swap_group: 2
-          ligand_db: ./ligand_filtering/JSON/bidentate_NN.json
+          ligand_db: ./new_ligands/bidentate.json
       - ligand_4:
           origin: [ 0, 0, 0 ]
           vector_1: [ 1, 0, 0 ]
@@ -52,7 +52,7 @@ batches:
           temp_dent: 2
           n_max: 30
           swap_group: 2
-          ligand_db: ./ligand_filtering/JSON/bidentate_NN.json
+          ligand_db: ./new_ligands/bidentate.json
 
 
 

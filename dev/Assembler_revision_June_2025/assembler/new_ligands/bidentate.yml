@@ -1,0 +1,11 @@
+input_db_file:
+output_db_file: bidentate.json
+
+filters:
+  - filter: 'composition'
+    elements: [ 'N', 'N' ]
+    instruction: 'must_contain_and_only_contain'
+    only_donors: True
+
+
+

@@ -1,0 +1,14 @@
+===============================  Filter Options  ===============================
+Filter 01: composition: N2                     elements: ['N', 'N'], instruction: must_contain_and_only_contain, only_donors: True
+===============================  Filter Results  ===============================
+                            Ligands passed  Ligands removed
+Filter 01: composition: N2       5451            35567     
+==================  Total summary of DART Ligand Filters run  ==================
+Before filtering:           41018 ligands
+Filtered out:               35567 ligands
+Passed:                     5451 ligands
+Passed geometries:          1_monodentate (22), 2_cis (5353), 2_trans (76)
+Passed stoichiometries:     C10H6F2N2, C12H6N4, C12H12N2O2, C6H16N2, C2H8N2, ...
+Filtered ligand database with 5451 ligands was saved to `bidentate.json`.
+Info on filtered ligands saved to directory `info_bidentate`.
+Done! All ligands filtered. Exiting DART Ligand Filters Module.

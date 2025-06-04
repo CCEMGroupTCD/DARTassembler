@@ -29,7 +29,7 @@ if __name__ == "__main__":
         # todo remove the list casting and implement tighter integration with the code base
         # todo in the input file we need to identify which ligands are connected and which ligands are not connected also which ligands can be swapped and which ligands can not be swapped
         # todo need to redo ligand choice to not rely on the denticity of the ligands but rather the number of vectors supplied by the user
-        ligand_db_list = [ligand.ligand_db.get_lig_db_in_old_format() for ligand in assembly_input.ligands]
+        ligand_db_list = [ligand.ligand_db for ligand in assembly_input.ligands]
         ligand_CN_list = [ligand.temp_dent for ligand in assembly_input.ligands]
         ligand_similarity_list = [i + 1 for i in range(len(assembly_input.ligands))]  # Essentially all ligands are currently treated as "unique"
 

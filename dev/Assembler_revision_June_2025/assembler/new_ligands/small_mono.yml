@@ -1,0 +1,15 @@
+input_db_file:
+output_db_file: "small_mono.json"
+
+filters:
+  - filter: property
+    name: n_donors
+    values: [1]
+
+  - filter: property
+    name: n_atoms
+    range: [1, 20]
+
+  - filter: property
+    name: has_all_bond_orders_valid
+    values: [true]

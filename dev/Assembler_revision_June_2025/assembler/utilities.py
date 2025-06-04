@@ -501,7 +501,7 @@ class AssemblyComplex(object):
 
         """
         # Define the class variables
-        self.ligands = ligands.values()  # for each ligand, get the ligand object
+        self.ligands = ligands  # for each ligand, get the ligand object
         self.target_vectors = target_vectors  # List of target vectors i.e [[0, 0, 0], [0, 0, 1], ...]
         self.ligand_origins = ligand_origins  # List of ligand_origins i.e [[0, 0, 0], [0, 0, 1], ...]
         self.metal_origins = metal_origins  # List of metal_origins i.e [[0, 0, 0], [0, 0, 1], ...]
@@ -629,7 +629,7 @@ class AssemblyComplex(object):
                 #   [1] = position of the ligand in the coordination sequence (1-based index)
                 # This enables downstream tracking of ligand identity and spatial assignment during isomer generation and filtering.
 
-                geometry.new_array('multi_tags', np.full((len(geometry), 2), [ligand.elcn, idx + 1], dtype=int))
+                geometry.new_array('multi_tags', np.full((len(geometry), 2), [ligand.n_eff_denticities, idx + 1], dtype=int))
 
                 # Convert target vector dictionary values to numpy arrays.
                 target_vectors = [np.array(v) for v in ligand_target_vectors.values()]

@@ -1,0 +1,18 @@
+===============================  Filter Options  ===============================
+Filter 01: property: n_donors                  name: n_donors, values: [1]
+Filter 02: property: n_atoms                   name: n_atoms, range: [1, 20]
+Filter 03: property: has_all_bond_orders_v...  name: has_all_bond_orders_valid, values: [True]
+===============================  Filter Results  ===============================
+                                               Ligands passed  Ligands removed
+Filter 01: property: n_donors                       9078            31940     
+Filter 02: property: n_atoms                        2858             6220     
+Filter 03: property: has_all_bond_orders_v...       2834               24     
+==================  Total summary of DART Ligand Filters run  ==================
+Before filtering:           41018 ligands
+Filtered out:               38184 ligands
+Passed:                     2834 ligands
+Passed geometries:          1_monodentate (2834)
+Passed stoichiometries:     C6H4NO4S2, C6H7N, CO, H, C7H7S, ...
+Filtered ligand database with 2834 ligands was saved to `small_mono.json`.
+Info on filtered ligands saved to directory `info_small_mono`.
+Done! All ligands filtered. Exiting DART Ligand Filters Module.
