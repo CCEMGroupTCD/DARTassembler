@@ -8,13 +8,13 @@ from pathlib import Path
 import shutil
 
 def test_filter_ligands():
-    filter_ligands_path = project_path().extend('testing', 'integration_tests', 'ligandfilters', 'data_input', 'ligandfilters.yml')   # In this file the user specifies which input they want
+    filter_ligands_path = project_path().extend('tests', 'integration_tests', 'ligandfilters', 'data_input', 'ligandfilters.yml')   # In this file the user specifies which input they want
 
     filters = ligandfilters(filter_input_path=filter_ligands_path)
 
     #%% ==============    Doublecheck refactoring    ==================
     from dev.test.Integration_Test import IntegrationTest
-    old_dir = project_path().extend('testing', 'integration_tests', 'ligandfilters', 'benchmark_data_output')
+    old_dir = project_path().extend('tests', 'integration_tests', 'ligandfilters', 'benchmark_data_output')
     if old_dir.exists():
         test = IntegrationTest(new_dir=filters.output_ligand_db_path.parent, old_dir=old_dir)
         test.compare_all()

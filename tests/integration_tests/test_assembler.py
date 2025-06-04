@@ -6,8 +6,8 @@ from DARTassembler.src.constants.Paths import project_path
 from dev.DART_refactoring_to_v1_1_0.assembler import Assembler
 
 
-def test_assemble_complexes():
-    assembly_input = project_path().extend('testing', 'integration_tests', 'assembly', 'data_input', 'test_assembly_input.yml')
+def test_assembler():
+    assembly_input = project_path().extend('tests', 'integration_tests', 'assembler', 'data_input', 'test_assembly_input.yml')
     assembly = Assembler.run_from_yaml(assembly_input)
 
     #%% ==============    Doublecheck refactoring    ==================
@@ -24,4 +24,4 @@ def test_assemble_complexes():
 
 
 if __name__ == "__main__":
-    assembly = test_assemble_complexes()
+    assembly = test_assembler()

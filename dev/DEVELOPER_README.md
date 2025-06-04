@@ -1,0 +1,180 @@
+# DART - Notes for developers
+
+- The conda environment for development is `dev/conda_envs/conda_DART_dev.yml`, see the README in that directory for more information.
+- The documentation is built with Sphinx, see the README in the `docs` directory for more information.
+- The tests are integration tests, which run an entire module and then check that the output is as expected.
+
+## Refactoring for version 1.1 (rca_ligand_refactor branch):
+- The `rca_ligand_refactor` branch is the `master` branch for the completely revamped version of DART, which will then be version 1.1.0.
+    - Active developing should be done on other branches, which are then merged into the `rca_ligand_refactor` branch once the feature is complete and all tests pass.
+      - Note: During the currently ongoing refactoring process, the installation, Pd-Ni and OER tests (see `Tests`) are not yet fully functional, because I believe it will make more sense to adapt them once at the end. All the other tests though are functional and should be used.
+    - Some of the classes etc mentioned here, e.g. the RCA_Ligand(), will be renamed at a later stage in the refactoring
+
+## Code structure of the `DARTassembler` package
+The DART workflow has several important Python classes that need to be maintained. One re-ocurring feature is that for all DART modules that are accessible via the CLI, there should be a function to call this class from a yaml file. However, all classes themselves should take only Python objects (lists, dictionaries, strings, ase.Atoms etc) as input, since this makes the development much simpler. 
+
+As such, the following Python classes need the ability to be accessed via the CLI and a yaml file:
+- `Assembler()` -> the full DART workflow, from loading the ligand db files to saving the output 3D TMC structures
+- `NewLigandFilters()` -> the ligand filters
+- `dbinfo()` a function to get a csv and concatenated .xyz files from a ligand db .jsonlines file
+
+The following Python classes do not need to be accessed via yaml since they will never be called from the CLI
+- `AssembledIsomer()` -> the class that assembles 3D TMCs from a list of ligands
+- `RCA_Ligand()` -> the class representing a ligand from the MetaLig
+
+### Assembler() 
+This class runs the full DART assembly workflow and is maintained mostly by Timo. It currently has the following inputs (and a few more options will still be added):
+```python
+class Assembler(object):
+    def __init__(
+                    self,
+                    output_directory: Union[str, Path] = 'DARTassembler',
+                    concatenate_xyz: bool = True,
+                    verbosity: int = 2,
+                    same_isomer_names: bool = True,
+                    complex_name_length: int = 8,
+                    n_max_ligands: Union[int,None] = None,
+                    pre_delete: bool = False
+                 ):
+```
+
+It implements the following functionalities:
+- Run from a list of keywords (called in Python) or from a yaml file
+- Load all required ligand databases
+- Generate combinations of ligands to be assembled together in the same complex
+- Call the `AssembledIsomer()` class to generate a list of 3D geometries from the specified ligands and metal centers
+- Save all generated isomers and accompanying information to an output directory
+
+### AssembledIsomer()
+This class is used to assemble the 3D geometries of the ligands and is maintained mostly by Cian. It currently has the following inputs (and a few more options will still be added):
+```python
+class AssembledIsomer(RCA_Molecule):
+    def __init__(self,
+                    atomic_props: Union[ase.Atoms, Dict[str, Any]],
+                    graph: nx.Graph,
+                    metal_idc: List[int],
+                    donor_idc: List[List[int]],
+                    ligand_idc: List[List[int]],
+                    ligand_info: Dict[str, Any] = None,
+                    global_props: Dict[str, Any] = None,
+                    validity_check: bool = False,
+                    ):
+```
+In the `Assembler()` class it is used like this:
+```python
+isomers, warnings = AssembledIsomer.from_ligands_and_metal_centers(
+                                                                    ligands=ligands,
+                                                                    target_vectors=self.target_vectors,
+                                                                    ligand_origins=self.ligand_origins,
+                                                                    metal_centers=self.metal_centers
+                                                                    )
+```
+The input of this class are mostly Python lists of ligands, metal centers etc, which it uses to assemble a list of 3D geometries, which it returns together with a list of warnings (see above). It does not require to be run from a yaml file since it will not be called from the CLI, but instead it is a flexible and powerful Python class to be used for the general assembly of 3D transition metal complexes from a list of given ligands, metal centers, target vectors and origins (so it can also be used independently of the `Assembler()` class). It implements the following functionalities:
+- Assemble a list of isomers from a set of ligands, metal centers, target vectors and origins
+- Support for multi-metallic systems by associating ligands with each metal center in the input lists
+- Support for haptic systems by treating a haptic group as a single effective donor atom situated in the center of the haptic group
+- Check if two isomers are equivalent
+- Check if ligands clash
+
+### RCA_Ligand()
+This class is used to represent a ligand from the MetaLig database and is maintained mostly by Timo. It has a wide range of properties to filter for in the ligandfilters module. It also has important properties for the `AssembledIsomer()` class such as the ligand geometry (`self.geometry`) and a list of list of indices of it's effective donor atoms, where the outer list are the possible (not-equivalent) possible orientations of the ligand (`self.geometric_isomers_hapdent_idc`).
+
+### NewLigandFilters()
+A class that loads a ligand database file and call be called from a yaml in order to filter down the ligand database based on certain filters.
+
+### dbinfo()
+A function that loads a ligand database and outputs information files such as a csv and a few concatenated .xyz files.
+
+## Tests
+
+During the entire development process, the code should be continually tested to check if the output is as expected. The tests are integration tests, which run an entire module and then check that the output files are the same as in a benchmark directory. If they are not, the tests will print information about the differences. All tests are located in the `tests/integration_tests/` directory. The following tests are available:
+
+Very fast (a few seconds):
+- `test_ligandfilters.py`: Tests the `ligandfilters` module by reading in a limited set of ligands from the MetaLig database, applying a few filters and saving an output ligand db file.
+- `test_dbinfo.py`: Tests the `dbinfo` module.
+- `test_assembler.py`: Tests the `assembler` module which is the DART workflow, from reading in a yaml file, loading small sample ligand databases, assembling a few geometries and saving the output complexes.
+
+Currently not functional during the refactoring:
+- `test_installation.py`: A very fast test that checks the `ligandfilters`, `assembler` and `dbinfo` module with a very small set of ligands.
+- `test_Pd_Ni_example.py`: A test which runs the `ligandfilters` and `assembler` modules for the Pd-Ni case study.
+- `test_OER_example.py`: A test which runs the `ligandfilters` and `assembler` modules for the OER database.
+
+### How to test your code whenever you make any edits
+When developing new features, it is important to test the code to ensure that the output is as expected. The tests are integration tests, which run an entire module and then check that the output files are the same as in a benchmark directory. If they are not, the tests will print information about the differences. This is a good way to ensure that the code is working as expected and that no unintended changes have been made.
+As an example, let's imagine we want to develop a new feature in our assembler module. From experience, the following steps are a good practice to follow:
+1. Make sure you have the latest version of the code by pulling (either from `master` or now from the `rca_ligand_refactor` branch).
+2. Make sure you are in a git branch for testing and feature development.
+3. Before making any edits, run all tests that contain the module we want to edit (or simply all of them) to make sure the benchmark outputs are correct. This will give us a baseline to compare against.
+    - In our case, we edit the assembler module, so the most important test to run is `test_assembler.py`. 
+    - The `test_installation.py` test should also always be run since it is very fast and covers a good bit of DART, including the assembler module.
+    - The `test_Pd_Ni_example.py` and `test_OER_example.py` tests should also be run since the assembler module is used in these tests as well.
+4. Check that all the tests pass successfully. This should normally be the case, but if not, first we need to fix the benchmark directories before we can continue. You should see the following output:
+```
+Integration test: check if the new output is the same as the old output.
+Integration test successful: all good!
+Test for ligand filters passed!
+```
+5. Now that we have a baseline, we can start editing the assembler module. Let's say we want to make a simple change such as changing the printed output, which should have no effect on the output files except the file `log.txt` which logs the output. So, knowing that, we will make the change and re-run the assembler test. The final output now looks like this:
+```
+Integration test: check if the new output is the same as the old output.
+Changed: 1 item(s)
+  /log.txt
+==========    WARNING: INTEGRATION TEST FOUND ISSUES    ==========
+	# changed files: 1
+Test for assembly of complexes passed!
+```
+6. Now we need to check what has changed and if that is expected. The testing module will print a list of files which have changed. Here, we see that the `log.txt` file has changed, which is expected since we changed the printed output. We can also see that no other file has been changed because no other file is listed. So, depending on the complexity of the change we made, we can either continue now or we can use the `diff` functionality of PyCharm (see tips below) to further inspect the changes in the old and new `log.txt` file. Once we think that all changes are consistent with our expectations, we can continue with the next step.
+7. If we are satisfied with the changes, we need to update the benchmark directory with the new output files in order to reflect the new gold standard output. For this, you simply go to the directory `tests/integration_tests/assembler/`. You find there three directories:
+- `data_input`: This directory contains the input files for the test, which should not be changed.
+- `data_output`: This directory contains the output files of the test, which have just been generated. 
+- `benchmark_data_output`: This directory contains the benchmark output files, which were used to compare against the new output files.
+Now, you can simply delete the `benchmark_data_output` directory and rename the `data_output` directory to `benchmark_data_output`. That way, the next time you run the test, it will make a new `data_output` directory and compare against the new `benchmark_data_output`.
+8. Run the test again to make sure everything is working as expected. You should see the following output, indicating that the test passed successfully without any changes:
+```
+Integration test: check if the new output is the same as the old output.
+Integration test successful: all good!
+Test for ligand filters passed!
+```
+
+### Best practice: interactively testing your code during development
+Above, I have described how to test the code and make sure that the output is as expected. However, this should usually not only be done once at the end, but rather continuously during the development process. This is a good practice to ensure that the code is working as expected at every step of the way. It helps to catch bugs early and makes it easier to debug the code since you can always see exactly the impact the code changes have on the output files. Apart from the Pd-Ni and OER example tests, the tests are made to be very fast, so you can run them interactively while developing the code. 
+
+This approach is especially powerful if you make changes in the code that should not change the output files, such as refactoring, since you can immediately spot any issues. However, also when developing new features, I personally use the tests continually. Usually, I try to divide the development process into small steps, each of which can be tested individually. This way, I can run the tests after each step and see if the output is as expected. If not, I can immediately debug the code and fix the issue. Only once I'm satisfied with the output, I update the benchmark directory if necessary and continue with the next step. This way, I have a very strong control over the changes I introduce. 
+
+Initially, this testing process might seem like a lot, but one gets used to it very quickly, and it will become a very powerful feeling to have such tight control over the output files and to always be able to spot any issue right from the bat. 
+
+### Further tips for testing and debugging
+- The `diff` functionality of PyCharm is very powerful and I found it way to late. In the project tab, you can mark two files and then right-click to select "Compare Files". This will show you the differences between the two files in a very nice way, highlighting the changes.
+
+
+## Installation
+
+DART is installed via pip (`pip install DARTassembler`). One issue with DART is the installation of the MetaLig database, since this database is very big (360MB). Therefore, the pip package includes a compressed version of the database (`MetaLigDB_v{VERSION}.jsonlines.bz2`) which is only 38MB big, which fits with the PyPI size limit of 50MB. The code that reads in the file will automatically detect if it's compressed and will uncompress it on-the-fly, line-by-line. Note that the database is never decompressed and written to disk because writing to the directory where something is installed after the installation is not a good practice and can lead to issues such as permission errors. Instead, the database is read directly from the compressed file. Only in the first version of DAT (up until version 1.1.0), the database was uncompressed and written to disk once at the beginning, which is not the case anymore.
+
+## Release of a new DART version on PyPI
+
+As preparation, make sure you installed twine and build, and added the PyPI and TestPyPI API credentials to your ``~/.pypirc`` file. These are helpful links:
+* https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/
+* https://stackoverflow.com/questions/53122766/best-workflow-and-practices-for-releasing-a-new-python-package-version-on-github
+
+Then follow these steps to release a new version of DART on PyPI (pip):
+On your test branch, test on TestPyPI first:
+   1. Append .1 to the end of the version number in ``setup.py`` and ``__init__.py`` (i.e. a 'debug' version ``D``) in case we need to upload multiple test versions while debugging.
+   2. Build package locally: ``python3 -m build --sdist; python3 -m build --wheel``
+   3. Upload to TestPyPI: ``twine upload -r testpypi dist/DARTassembler-X.Y.Z.D*``
+   4. Make new conda environment to test the new version: ``conda create --name test_DARTassemblerX.Y.Z.D python=3.10 pip``. 
+   5. Activate the new environment, then install and test from TestPyPI: ``pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple DARTassembler==X.Y.Z.D``
+   6. If everything works, continue with the next steps. If not, fix the issue, increment the 'debug' version number and try again.
+If everything works:
+   7. Increment version number, this time properly:
+      1. Set ``version=X.Y.Z`` in ``setup.py``
+      2. Set ``__version__=X.Y.Z`` in package ``__init__.py``
+   8. Push changes to master: ``git push`` with comment ``Bump to version X.Y.Z.``
+   9. Build package locally again: ``python3 -m build --sdist; python3 -m build --wheel``
+   10. Upload to PyPI Production: ``twine upload dist/DARTassembler-X.Y.Z*``
+   11. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
+   12. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
+   
+
+
+

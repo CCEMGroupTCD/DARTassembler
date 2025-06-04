@@ -289,7 +289,7 @@ class LigandFilters(object):
 
 
 if __name__ == "__main__":
-    ligand_filter_path = project_path().extend(*'testing/integration_tests/ligand_filters/data_input/ligandfilters.yml'.split('/'))
+    ligand_filter_path = project_path().extend(*'tests/integration_tests/ligand_filters/data_input/ligandfilters.yml'.split('/'))
     max_number = 1000
 
 
