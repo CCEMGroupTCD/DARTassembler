@@ -369,6 +369,14 @@
             "P"
         ]
     },
+    "global_props": {
+        "complex_name": "OGAXOTIP2_Fe",
+        "stoichiometry": "FeC24H59N2P4",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "32116dbff454ad718ccf7aa6e14f8f1e",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1006,14 +1014,6 @@
                 "node_label": "P"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "OGAXOTIP2_Fe",
-        "stoichiometry": "FeC24H59N2P4",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "32116dbff454ad718ccf7aa6e14f8f1e",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

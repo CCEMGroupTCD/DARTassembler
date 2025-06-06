@@ -193,12 +193,12 @@ ligand_filters = {
     'molecular_weight': {
         'min': {
             'object': 'float or None',
-            'info': 'Minimum molecular weight (in g/mol). If empty, defaults to 0.',
+            'info': 'Minimum molecular weight (in g/atoms). If empty, defaults to 0.',
             'default': 'Placeholder - 0',
         },
         'max': {
             'object': 'float or None',
-            'info': 'Maximum molecular weight (in g/mol). If empty, defaults to infinity.',
+            'info': 'Maximum molecular weight (in g/atoms). If empty, defaults to infinity.',
             'default': 'Placeholder - 500',
         },
         'apply_to_denticities': apply_to_denticities
@@ -229,15 +229,15 @@ ligand_filters = {
         },
         'apply_to_denticities': apply_to_denticities
     },
-    'occurrences': {
+    'n_ligand_instances': {
         'min': {
             'object': 'int or None',
-            'info': 'Minimum number of occurrences. If empty, defaults to 0.',
+            'info': 'Minimum number of n_ligand_instances. If empty, defaults to 0.',
             'default': 'Placeholder - 0',
         },
         'max': {
             'object': 'int or None',
-            'info': 'Maximum number of occurrences. If empty, defaults to infinity.',
+            'info': 'Maximum number of n_ligand_instances. If empty, defaults to infinity.',
             'default': None,
         },
         'apply_to_denticities': apply_to_denticities

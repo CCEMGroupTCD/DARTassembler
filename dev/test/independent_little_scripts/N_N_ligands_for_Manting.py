@@ -1,7 +1,7 @@
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
+from DARTassembler.src.misc.io import load_unique_ligand_db
 from pathlib import Path
 import pandas as pd
-from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns
+from DARTassembler.src.metalig.utils import unroll_dict_into_columns
 
 if __name__ == '__main__':
 
@@ -20,9 +20,9 @@ if __name__ == '__main__':
     #%% Filter correct ligands
     correct_ligands = {}
     for name, mol in db.items():
-        correct_denticity = mol.denticity == denticity
-        correct_coordinating_atoms = sorted(mol.local_elements) == sorted(coordinating_atoms)
-        correct_charge = (mol.pred_charge == charge) and (mol.pred_charge_is_confident if only_confident_charges else True)
+        correct_denticity = mol.n_donors == denticity
+        correct_coordinating_atoms = sorted(mol.donor_elements) == sorted(coordinating_atoms)
+        correct_charge = (mol.charge == charge) and (mol.has_confident_charge if only_confident_charges else True)
         correct_elements = (not any([el not in only_allow_elements for el in mol.atomic_props['atoms']])) and all([el in mol.atomic_props['atoms'] for el in must_have_elements])
         correct = correct_denticity and correct_coordinating_atoms and correct_charge and correct_elements
         if correct:
@@ -35,13 +35,13 @@ if __name__ == '__main__':
         save_file = Path(save_xyz_path, f'{i}.xyz')
         # Sort coordinating atoms to be the first ones in atomic props
         mol.sort_atomic_props_to_have_coordinating_atoms_first()
-        xyz_string = mol.get_xyz_file_format_string(comment=name)
+        xyz_string = mol.get_xyz_string(comment=name)
         with open(save_file, 'w') as file:
             file.write(xyz_string)
 
     # Save csv with these ligands and some information.
     df = pd.DataFrame.from_dict(
-                                {name: mol.write_to_mol_dict() for name, mol in correct_ligands.items()},
+                                {name: mol.to_dict() for name, mol in correct_ligands.items()},
                                 orient='index')
     df = df.drop(columns=['graph_dict', 'atomic_props'])
     df = unroll_dict_into_columns(df, dict_col='global_props', prefix='gbl_', delete_dict=True)

@@ -1,15 +1,12 @@
-import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib
-from DARTassembler.src.constants.Paths import project_path, default_ligand_db_path
-from DARTassembler.src.constants.Periodic_Table import DART_Element
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
+from DARTassembler.src.constants.paths import project_path, default_ligand_db_path
+
 try:    # Avoid error when running on server
     matplotlib.use('TkAgg')
 except ImportError:
     pass
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 import matplotlib.pyplot as plt
 plt.rcParams['svg.fonttype'] = 'none' # for correct text rendering in some programs
 plt.rcParams['savefig.facecolor'] = 'white'
@@ -31,8 +28,8 @@ if __name__ == '__main__':
     nmax = False
 
 
-    # ligands = LigandDB.load_from_json(db_path, n_max=n_max)
-    # df_ligands = pd.DataFrame.from_dict({name: lig.get_ligand_output_info(add_confident_charge=True) for name, lig in ligands.db.items()}, orient='index'
+    # ligands = LigandDB.from_json(db_path, n_max=n_max)
+    # df_ligands = pd.DataFrame.from_dict({name: lig.get_csv_info(add_confident_charge=True) for name, lig in ligands.db.items()}, orient='index'
     metalig_csv_path = Path(default_ligand_db_path).with_suffix('.csv')
     df_metalig = pd.read_csv(metalig_csv_path, index_col=0)
 
@@ -66,7 +63,7 @@ if __name__ == '__main__':
 
     # METALIG
 
-    # histogram of denticity
+    # histogram of n_donors
     plt.figure()
     sns.histplot(data=df_metalig, x='Denticity', discrete=True)
     plt.yscale('log')

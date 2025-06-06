@@ -301,6 +301,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ONIBUMIK1_Ru",
+        "stoichiometry": "RuC28H40N2OSi",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "f33ad278f3341898cc1c1526958c6f0e",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -823,14 +831,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ONIBUMIK1_Ru",
-        "stoichiometry": "RuC28H40N2OSi",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "f33ad278f3341898cc1c1526958c6f0e",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

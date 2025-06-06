@@ -265,6 +265,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "HUBAGAFU1_Ru",
+        "stoichiometry": "RuC32H26NO3P",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "d8ade8087864cd4f727ffc7e6650bb9f",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -730,14 +738,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "HUBAGAFU1_Ru",
-        "stoichiometry": "RuC32H26NO3P",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "d8ade8087864cd4f727ffc7e6650bb9f",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

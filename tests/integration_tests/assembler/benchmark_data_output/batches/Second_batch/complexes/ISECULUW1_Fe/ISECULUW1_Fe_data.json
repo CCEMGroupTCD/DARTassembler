@@ -577,6 +577,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ISECULUW1_Fe",
+        "stoichiometry": "FeC54H68BF3N10O4P",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "bb983e672359207ab8bfd8cf7725eafa",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1604,14 +1612,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ISECULUW1_Fe",
-        "stoichiometry": "FeC54H68BF3N10O4P",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "bb983e672359207ab8bfd8cf7725eafa",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

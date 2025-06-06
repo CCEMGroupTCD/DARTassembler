@@ -229,6 +229,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UJIREJED1_Fe",
+        "stoichiometry": "FeC20H31N2O",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "d7d8d275fe8b0035af40c0b118f71b68",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -633,14 +641,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UJIREJED1_Fe",
-        "stoichiometry": "FeC20H31N2O",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "d7d8d275fe8b0035af40c0b118f71b68",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

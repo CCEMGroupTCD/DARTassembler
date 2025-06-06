@@ -71,7 +71,7 @@ First, read in the MetaLig. To speed things up in this example, let's only load 
     from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
     # Load the first 1000 out of 41,018 ligands in the MetaLig database.
-    metalig = LigandDB.load_from_json(path='metalig', n_max=1000)
+    metalig = LigandDB.from_json(path='metalig', n_max=1000)
 
 Now, you can filter the MetaLig database based on your requirements. For example, let's filter the MetaLig so that we retain only ligands with a formal charge of -1, with denticity of 2 and with a maximum of 50 atoms:
 
@@ -105,7 +105,7 @@ We can also save an overview table of the filtered ligand database as .csv file:
 
 .. code-block:: python
 
-    filtered_metalig.save_reduced_csv('filtered_metalig.csv')
+    filtered_metalig.save_to_csv('filtered_metalig.csv')
 
 By opening the .csv file with a program like Excel, you will see that this table displays 136 bidentate ligands with a formal charge of -1 and a maximum of 50 atoms. In this way, you can use Python to filter the MetaLig database to your exact requirements and then save the filtered database to a .jsonlines file for use in the DART Assembler module.
 

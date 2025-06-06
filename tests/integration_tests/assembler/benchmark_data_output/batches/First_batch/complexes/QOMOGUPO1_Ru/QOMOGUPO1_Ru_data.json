@@ -389,6 +389,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "QOMOGUPO1_Ru",
+        "stoichiometry": "RuC40H50NO2P",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "cd4b0da35895afff5d666d7f36e28218",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1077,14 +1085,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "QOMOGUPO1_Ru",
-        "stoichiometry": "RuC40H50NO2P",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "cd4b0da35895afff5d666d7f36e28218",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

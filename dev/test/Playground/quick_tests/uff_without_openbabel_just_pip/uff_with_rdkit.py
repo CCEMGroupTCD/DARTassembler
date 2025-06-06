@@ -56,7 +56,7 @@ def get_positions(mol):
 
 if __name__ == '__main__':
 
-    # Load SMILES as mol obj
+    # Load SMILES as atoms obj
     mol = Chem.MolFromSmiles('[Zn]([NH])([NH])([NH])N1C=C(Cl)N=C1')
     mol = AllChem.AddHs(mol) # make sure to add explicit hydrogens
     constrained_indices = (0, 1)

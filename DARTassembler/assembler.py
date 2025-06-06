@@ -3,7 +3,7 @@ This module is a wrapper for the assembly code. It takes in an assembly input fi
 """
 from pathlib import Path
 from typing import Union
-from dev.DART_refactoring_to_v1_1_0.assembler import Assembler
+from DARTassembler.src.assembler.assembler import Assembler
 
 
 def assembler(assembly_input_path: Union[str, Path]) -> Assembler:
@@ -12,7 +12,7 @@ def assembler(assembly_input_path: Union[str, Path]) -> Assembler:
 
 # Integration test, to check if everything is working and the same as before.
 if __name__ == "__main__":
-    from DARTassembler.src.constants.Paths import project_path
+    from DARTassembler.src.constants.paths import project_path
 
     USER_INPUT = project_path().extend('dev/oerdata/testbatch_data/input_files/oer_test_assembler.yml')  # In this file the user specifies which input they want
     assembly = assembler(assembly_input_path=USER_INPUT)

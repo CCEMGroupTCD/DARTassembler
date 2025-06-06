@@ -233,6 +233,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "JIFUHUTI1_Ru",
+        "stoichiometry": "RuC19H33NOSi",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "2a172638daf7bf549b348d3a88a05536",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -634,14 +642,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "JIFUHUTI1_Ru",
-        "stoichiometry": "RuC19H33NOSi",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "2a172638daf7bf549b348d3a88a05536",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

@@ -3,8 +3,7 @@ This module concatenates multiple ligand databases into one.
 """
 import warnings
 from pathlib import Path
-from typing import Union
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
+from DARTassembler.src.metalig.db import LigandDB
 
 
 def concat(paths: list[str]) -> None:
@@ -21,7 +20,7 @@ def concat(paths: list[str]) -> None:
             raise FileNotFoundError(f"File `{path}` not found.")
 
     # Load all ligand databases
-    ligand_dbs = [LigandDB.load_from_json(path) for path in paths]
+    ligand_dbs = [LigandDB.from_json(path) for path in paths]
 
     # Print number of ligands in each database
     for i, db in enumerate(ligand_dbs):
@@ -41,7 +40,7 @@ def concat(paths: list[str]) -> None:
 
     # Save concatenated ligand database
     outpath = 'concat_ligand_db.jsonlines'
-    full_db.to_json(outpath)
+    full_db._to_json(outpath)
 
     print(f"Concatenated ligand databases saved to `{outpath}`.")
     print(f"Done! Exiting concat module.")
@@ -49,6 +48,4 @@ def concat(paths: list[str]) -> None:
 
 # Integration test, to check if everything is working and the same as before.
 if __name__ == "__main__":
-    from DARTassembler.src.constants.Paths import project_path
-
     print('Done!')

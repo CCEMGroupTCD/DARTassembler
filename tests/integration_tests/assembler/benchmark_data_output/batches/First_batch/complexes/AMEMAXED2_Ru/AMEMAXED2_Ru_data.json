@@ -245,6 +245,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "AMEMAXED2_Ru",
+        "stoichiometry": "RuC22H29N3O2SSi",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "54b4ad09c2274e3e5e54de5ab763da7b",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -673,14 +681,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "AMEMAXED2_Ru",
-        "stoichiometry": "RuC22H29N3O2SSi",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "54b4ad09c2274e3e5e54de5ab763da7b",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

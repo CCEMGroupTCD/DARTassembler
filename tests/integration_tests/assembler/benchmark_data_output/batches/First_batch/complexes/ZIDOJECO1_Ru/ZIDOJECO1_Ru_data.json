@@ -421,6 +421,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ZIDOJECO1_Ru",
+        "stoichiometry": "RuC44H54N3P",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "1be89c699ca217a158c9bd79f6c4a3a6",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1161,14 +1169,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ZIDOJECO1_Ru",
-        "stoichiometry": "RuC44H54N3P",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "1be89c699ca217a158c9bd79f6c4a3a6",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

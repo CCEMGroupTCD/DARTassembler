@@ -1,8 +1,7 @@
 import numpy as np
 
-from DARTassembler.src.constants.Paths import default_ligand_db_path
-from DARTassembler.src.ligand_extraction.io_custom import iterate_unique_ligand_db, iterate_complex_db
-from DARTassembler.src.constants.Paths import project_path
+from DARTassembler.src.misc.io import iterate_complex_db
+from DARTassembler.src.constants.paths import project_path
 import pandas as pd
 
 if __name__ == '__main__':
@@ -14,15 +13,15 @@ if __name__ == '__main__':
         metal_os = c['metal_oxi_state']
         if not np.isnan(metal_os):
             ligands = c['ligands']
-            confident_charges = [lig['pred_charge_is_confident'] for lig in ligands]
+            confident_charges = [lig['has_confident_charge'] for lig in ligands]
 
             if sum(confident_charges) == len(ligands) -1:   # if only one ligand charge is missing and all others known
                 nilig = [lig for conf, lig in zip(confident_charges, ligands) if not conf]
                 assert len(nilig) == 1, confident_charges
                 nilig = nilig[0]
 
-                if nilig['denticity'] > 0:  # skip unconnected ligands
-                    sum_lig_charges = sum(lig['pred_charge'] for lig in ligands if lig['pred_charge_is_confident'])
+                if nilig['n_donors'] > 0:  # skip unconnected ligands
+                    sum_lig_charges = sum(lig['charge'] for lig in ligands if lig['has_confident_charge'])
                     nilig['inno_charge'] = c['charge'] - metal_os - sum_lig_charges
                     assert not np.isnan(nilig['inno_charge']), (c['charge'], metal_os, sum_lig_charges)
                     all_ligands[nilig['name']] = nilig
@@ -35,12 +34,12 @@ if __name__ == '__main__':
        'heavy_atoms_graph_hash', 'stoichiometry',
        'graph_hash_with_metal',
        'heavy_atoms_graph_hash_with_metal', 'has_betaH',
-       'has_neighboring_coordinating_atoms','denticity', 'unique_name',
-       'pred_charge', 'pred_charge_is_confident']
+       'is_haptic','n_donors', 'unique_name',
+       'charge', 'has_confident_charge']
     changing_props = ['has_bond_order_attribute', 'has_unknown_bond_orders',
-       'has_good_bond_orders', 'bond_order_graph_hash', 'original_complex_id', 'local_elements', 'was_connected_to_metal', 'original_metal',
-       'original_metal_position', 'original_metal_symbol', 'original_metal_os',
-       'is_centrosymmetric', 'centrosymmetry_ang_dev', 'ligand_to_metal']
+       'has_all_bond_orders_valid', 'bond_order_graph_hash', 'parent_complex_id', 'donor_elements', 'was_connected_to_metal', 'original_metal',
+       'parent_metal_position', 'original_metal_symbol', 'original_metal_os',
+       'is_centrosymmetric', 'centrosymmetry_ang_dev', 'donor_idc']
     df_ligands = df_all_ligands.groupby('unique_name')[['inno_charge'] + unique_props].agg(list)
     df_ligands['inno_charge'] = df_ligands['inno_charge'].apply(np.unique)
     df_ligands['n_charges'] = df_ligands['inno_charge'].apply(len)

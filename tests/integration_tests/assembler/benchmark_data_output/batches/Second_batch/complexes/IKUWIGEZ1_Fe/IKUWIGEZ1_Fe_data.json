@@ -345,6 +345,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "IKUWIGEZ1_Fe",
+        "stoichiometry": "FeC39H34BF5N2PSi",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "8e059d08359ec1009134dab45c2761a9",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -952,14 +960,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "IKUWIGEZ1_Fe",
-        "stoichiometry": "FeC39H34BF5N2PSi",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "8e059d08359ec1009134dab45c2761a9",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

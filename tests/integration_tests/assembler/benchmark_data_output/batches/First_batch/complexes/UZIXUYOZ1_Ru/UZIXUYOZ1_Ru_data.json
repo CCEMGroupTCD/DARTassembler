@@ -285,6 +285,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UZIXUYOZ1_Ru",
+        "stoichiometry": "RuC35H31NO",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "dcaa6884886d4f9d8df5d9d98edf480a",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -785,14 +793,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UZIXUYOZ1_Ru",
-        "stoichiometry": "RuC35H31NO",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "dcaa6884886d4f9d8df5d9d98edf480a",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

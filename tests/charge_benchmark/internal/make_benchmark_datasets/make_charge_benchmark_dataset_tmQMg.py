@@ -51,13 +51,13 @@ if __name__ == '__main__':
                                 'stoichiometry': stoichiometry,
                                 'metal': c['metal'],
                                 'charge': np.nan,
-                                'denticity': np.nan,
+                                'n_donors': np.nan,
                                 'confidence': np.nan,
                                 'comment': np.nan,
                                 'unique_name': lig['unique_name'],
                                 'name': lig['name'],
                                 'graph_hash': lig['graph_hash'],
-                                # 'orig_d': lig['denticity']
+                                # 'orig_d': lig['n_donors']
                             })
 
     df = pd.DataFrame(all_ligands)

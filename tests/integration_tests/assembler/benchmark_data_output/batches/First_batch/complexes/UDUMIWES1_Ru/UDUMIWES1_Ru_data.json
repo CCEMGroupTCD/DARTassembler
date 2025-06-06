@@ -189,6 +189,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UDUMIWES1_Ru",
+        "stoichiometry": "RuC18H22ClNO2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "421674fb40387f450aa6111d812d1bda",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -523,14 +531,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UDUMIWES1_Ru",
-        "stoichiometry": "RuC18H22ClNO2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "421674fb40387f450aa6111d812d1bda",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

@@ -501,6 +501,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "IHETICIN1_Ru",
+        "stoichiometry": "RuC46H70NO2PSi2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "b9ee14911c74d6285603c9f62f544b9c",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1385,14 +1393,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "IHETICIN1_Ru",
-        "stoichiometry": "RuC46H70NO2PSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "b9ee14911c74d6285603c9f62f544b9c",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

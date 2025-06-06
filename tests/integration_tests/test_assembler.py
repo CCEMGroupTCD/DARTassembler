@@ -2,8 +2,8 @@
 Integration test for the assembly of complexes.
 """
 from pathlib import Path
-from DARTassembler.src.constants.Paths import project_path
-from dev.DART_refactoring_to_v1_1_0.assembler import Assembler
+from DARTassembler.src.constants.paths import project_path
+from DARTassembler.src.assembler.assembler import Assembler
 
 
 def test_assembler():
@@ -11,7 +11,7 @@ def test_assembler():
     assembly = Assembler.run_from_yaml(assembly_input)
 
     #%% ==============    Doublecheck refactoring    ==================
-    from dev.test.Integration_Test import IntegrationTest
+    from DARTassembler.src.misc.tests import IntegrationTest
     old_dir = Path(assembly.output_directory.parent, 'benchmark_data_output')
     if old_dir.exists():
         test = IntegrationTest(new_dir=assembly.output_directory, old_dir=old_dir)

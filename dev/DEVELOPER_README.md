@@ -8,19 +8,19 @@
 - The `rca_ligand_refactor` branch is the `master` branch for the completely revamped version of DART, which will then be version 1.1.0.
     - Active developing should be done on other branches, which are then merged into the `rca_ligand_refactor` branch once the feature is complete and all tests pass.
       - Note: During the currently ongoing refactoring process, the installation, Pd-Ni and OER tests (see `Tests`) are not yet fully functional, because I believe it will make more sense to adapt them once at the end. All the other tests though are functional and should be used.
-    - Some of the classes etc mentioned here, e.g. the RCA_Ligand(), will be renamed at a later stage in the refactoring
+    - Some of the classes etc mentioned here, e.g. the Ligand(), will be renamed at a later stage in the refactoring
 
 ## Code structure of the `DARTassembler` package
 The DART workflow has several important Python classes that need to be maintained. One re-ocurring feature is that for all DART modules that are accessible via the CLI, there should be a function to call this class from a yaml file. However, all classes themselves should take only Python objects (lists, dictionaries, strings, ase.Atoms etc) as input, since this makes the development much simpler. 
 
 As such, the following Python classes need the ability to be accessed via the CLI and a yaml file:
 - `Assembler()` -> the full DART workflow, from loading the ligand db files to saving the output 3D TMC structures
-- `NewLigandFilters()` -> the ligand filters
+- `LigandFilters()` -> the ligand filters
 - `dbinfo()` a function to get a csv and concatenated .xyz files from a ligand db .jsonlines file
 
 The following Python classes do not need to be accessed via yaml since they will never be called from the CLI
 - `AssembledIsomer()` -> the class that assembles 3D TMCs from a list of ligands
-- `RCA_Ligand()` -> the class representing a ligand from the MetaLig
+- `Ligand()` -> the class representing a ligand from the MetaLig
 
 ### Assembler() 
 This class runs the full DART assembly workflow and is maintained mostly by Timo. It currently has the following inputs (and a few more options will still be added):
@@ -48,7 +48,7 @@ It implements the following functionalities:
 ### AssembledIsomer()
 This class is used to assemble the 3D geometries of the ligands and is maintained mostly by Cian. It currently has the following inputs (and a few more options will still be added):
 ```python
-class AssembledIsomer(RCA_Molecule):
+class AssembledIsomer(BaseMolecule):
     def __init__(self,
                     atomic_props: Union[ase.Atoms, Dict[str, Any]],
                     graph: nx.Graph,
@@ -76,10 +76,10 @@ The input of this class are mostly Python lists of ligands, metal centers etc, w
 - Check if two isomers are equivalent
 - Check if ligands clash
 
-### RCA_Ligand()
+### Ligand()
 This class is used to represent a ligand from the MetaLig database and is maintained mostly by Timo. It has a wide range of properties to filter for in the ligandfilters module. It also has important properties for the `AssembledIsomer()` class such as the ligand geometry (`self.geometry`) and a list of list of indices of it's effective donor atoms, where the outer list are the possible (not-equivalent) possible orientations of the ligand (`self.geometric_isomers_hapdent_idc`).
 
-### NewLigandFilters()
+### LigandFilters()
 A class that loads a ligand database file and call be called from a yaml in order to filter down the ligand database based on certain filters.
 
 ### dbinfo()

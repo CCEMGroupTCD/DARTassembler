@@ -261,6 +261,14 @@
             "Si"
         ]
     },
+    "global_props": {
+        "complex_name": "ONUFUHEH2_Ru",
+        "stoichiometry": "RuC25H33OPSSi",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "fe86151a677d798e8dde4f6e4c3b47fb",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -721,14 +729,6 @@
                 "node_label": "Si"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ONUFUHEH2_Ru",
-        "stoichiometry": "RuC25H33OPSSi",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "fe86151a677d798e8dde4f6e4c3b47fb",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

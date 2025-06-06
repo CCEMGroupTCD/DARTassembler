@@ -1,18 +1,10 @@
 """
 Playground which reads in the unique ligand db and lets you play with it.
 """
-from pathlib import Path
-import pandas as pd
 import numpy as np
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_jsonlines, load_json
-from tqdm import tqdm
 from copy import deepcopy
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
 import ase
-from ase.visualize import view
-from DARTassembler.src.constants.Paths import default_ligand_db_path, test_ligand_db_path
-from DARTassembler.src.ligand_extraction.utilities_graph import get_graph_hash
 
 
 def calculate_n_321_complexes_with_OH_fixed(charges_2: np.array, charges_3: np.array, metals: list[str],
@@ -25,7 +17,7 @@ def calculate_n_321_complexes_with_OH_fixed(charges_2: np.array, charges_3: np.a
     @param filter_factor: factor to take into account which reduces the number of complexes due to pre and post filtering in the assembly process
     @return: number of possible complexes
     """
-    from DARTassembler.src.constants.Periodic_Table import DART_Element
+    from DARTassembler.src.constants.chem import Element
 
     if not charges_2.ndim == 1:
         raise ValueError('Charges of 2-dentate ligands must be 1D array.')
@@ -40,7 +32,7 @@ def calculate_n_321_complexes_with_OH_fixed(charges_2: np.array, charges_3: np.a
     print('Calculate number of possible complexes for 321 topology with one OH fixed:')
     n_complexes = 0
     for metal in metals:
-        for os in DART_Element(metal).common_oxidation_states:
+        for os in Element(metal).common_oxidation_states:
             n_possible_complexes = (charge_combinations == - os).sum()
             n_complexes += n_possible_complexes
             print(f'\t{metal} {os}+: {n_possible_complexes:e}')
@@ -74,7 +66,7 @@ if __name__ == '__main__':
 
 
     # Load the first 1000 out of 41,018 ligands in the MetaLig database.
-    # metalig = LigandDB.load_from_json(path=default_ligand_db_path, n_max=n_max)
+    # metalig = LigandDB.from_json(path=default_ligand_db_path, n_max=n_max)
     # metalig = metalig.get_db_with_only_certain_denticities(denticities=denticities)
 
     # # Find symmetrical ligands, first for bidentates.
@@ -86,7 +78,7 @@ if __name__ == '__main__':
     # run = 'DART'
     # data = []
     # for uname, ligand in tqdm(metalig.db.items()):
-    #     if ligand.denticity in denticities:
+    #     if ligand.n_donors in denticities:
     #         ##### Check if ligand graph is symmetrical between donors
     #         graph, metal_idx = ligand.get_graph_with_metal(metal_symbol='Hg', return_metal_index=True)
     #         # Make new graphs which each have one pseudo Hg atom bonding to one donor.
@@ -103,18 +95,18 @@ if __name__ == '__main__':
     #         graph_hashes = [get_graph_hash(donor_graph) for donor_graph in donor_graphs]
     #         # If any of the graph hashes are identical, the ligand is symmetrical.
     #         symmetrical = len(set(graph_hashes)) < len(graph_hashes)
-    #         data.append({'uname': uname, 'dent': ligand.denticity, 'formula': ligand.stoichiometry, 'symm_graph': symmetrical})
+    #         data.append({'uname': uname, 'dent': ligand.n_donors, 'formula': ligand.stoichiometry, 'symm_graph': symmetrical})
     #
     #         ### Detect 3D symmetrical ligands. ###
     #         ### Quite involved, therefore first I focused on just 2D symmetry. ###
-    #         atoms_original = ligand.mol
+    #         atoms_original = ligand.atoms
     #         atoms_flipped = deepcopy(atoms_original)
-    #         rotate_ligand_around_donors_inplace(atoms_flipped, donors_positions=ligand.get_donor_positions(), metal_position=ligand.original_metal_position, angle=180)
+    #         rotate_ligand_around_donors_inplace(atoms_flipped, donors_positions=ligand.get_donor_positions(), metal_position=ligand.parent_metal_position, angle=180)
     #         donor_positions = ligand.get_donor_positions()
     #         # view(atoms_original)
     #         # view(atoms_flipped)
     #         # Choose a point that is close to many atoms so that changes in the ligand structure are captured.
-    #         com = ligand.mol.get_center_of_mass()
+    #         com = ligand.atoms.get_center_of_mass()
     #         centers = []
     #         features1 = desc.create(atoms_original, centers=[com])
     #         features2 = desc.create(atoms_flipped, centers=[com])
@@ -131,7 +123,7 @@ if __name__ == '__main__':
     # with open(outpath, 'w') as f:
     #     for name in df['uname'].values:
     #         lig = metalig.db[name]
-    #         f.write(lig.get_xyz_file_format_string(comment=name, with_metal=True))
+    #         f.write(lig.get_xyz_string(comment=name, with_metal=True))
 
 
 
@@ -144,9 +136,9 @@ if __name__ == '__main__':
     # used_ligands = {}
     # for project in used_ligands_paths.keys():
     #     db_path = used_ligands_paths[project]
-    #     db_used = LigandDB.load_from_json(path=db_path)
+    #     db_used = LigandDB.from_json(path=db_path)
     #     for uname, ligand in db_used.db.items():
-    #         if ligand.denticity == 3:
+    #         if ligand.n_donors == 3:
     #             used_ligands[uname] = project
     # df_all_used_ligands = pd.DataFrame.from_dict(used_ligands, orient='index', columns=['where'])
     #
@@ -156,20 +148,20 @@ if __name__ == '__main__':
     # for uname in tqdm(ligand_names, desc='Calculating donor planarity'):
     #     ligand = metalig.db[uname]
     #     new_planar = None
-    #     if ligand.denticity == 3:
-    #         new_planar = ligand.calculate_donors_planarity(with_metal=True)
-    #     # if ligand.denticity == 4:
-    #     #     new_planar = ligand.calculate_donors_planarity(with_metal=True)
+    #     if ligand.n_donors == 3:
+    #         new_planar = ligand._get_donors_planarity(with_metal=True)
+    #     # if ligand.n_donors == 4:
+    #     #     new_planar = ligand._get_donors_planarity(with_metal=True)
     #
     #     if new_planar is not None:
     #         data[uname] = {
-    #         'denticity': ligand.denticity,
+    #         'n_donors': ligand.n_donors,
     #         # 'old_planar': ligand.planar_check(),
     #         'new_planar': new_planar,
     #         }
     # df_planarity = pd.DataFrame.from_dict(data, orient='index')
     #
-    # df = metalig.get_ligand_output_df()
+    # df = metalig.get_df()
     # df = df_planarity.join(df, how='inner')
 
     # # Save to .jsonlines file
@@ -197,8 +189,8 @@ if __name__ == '__main__':
     #
     # ligands_to_keep = []
     # for ligand_name, ligand in metalig.db.items():
-    #     correct_denticity = ligand.denticity == keep_denticity
-    #     correct_charge = ligand.pred_charge == keep_charge
+    #     correct_denticity = ligand.n_donors == keep_denticity
+    #     correct_charge = ligand.charge == keep_charge
     #     correct_n_atoms = ligand.n_atoms <= max_n_atoms
     #     if correct_denticity and correct_charge and correct_n_atoms:
     #         ligands_to_keep.append(ligand_name)
@@ -211,7 +203,7 @@ if __name__ == '__main__':
     # filtered_metalig.save_to_file('filtered_metalig.jsonlines')
     #
     # # Save an overview table of the filtered ligand database as csv file.
-    # filtered_metalig.save_reduced_csv('filtered_metalig.csv')
+    # filtered_metalig.save_to_csv('filtered_metalig.csv')
 
 
 
@@ -224,15 +216,15 @@ if __name__ == '__main__':
 
     # df_ligands['has_metal_neighbors'] = df_ligands['graph_dict'].apply(lambda graph_dict: 'metal_neighbor' in str(graph_dict))
     #
-    # planarity = [ligand.calculate_planarity() for ligand in ligands.db.values()]
+    # planarity = [ligand._get_planarity() for ligand in ligands.db.values()]
     # df_ligands['planarity'] = planarity
 
     # has_identical_ligand_info = [hasattr(ligand, 'identical_ligand_info') for ligand in ligands.db.values()]
     # df_ligands['has_identical_ligand_info'] = has_identical_ligand_info
-    # df_ligands = df_ligands[['has_identical_ligand_info', 'pred_charge', 'pred_charge_is_confident', 'denticity', 'n_atoms', 'stoichiometry', 'heavy_atoms_graph_hash_with_metal']]
+    # df_ligands = df_ligands[['has_identical_ligand_info', 'charge', 'has_confident_charge', 'n_donors', 'n_atoms', 'stoichiometry', 'heavy_atoms_graph_hash_with_metal']]
 
-    # df_ligands = df_ligands[(df_ligands['denticity'] > 0) & df_ligands['pred_charge_is_confident']]
-    # # df_ligands = df_ligands.groupby(['heavy_atoms_graph_hash_with_metal', 'pred_charge']).agg(lambda subdf: )
+    # df_ligands = df_ligands[(df_ligands['n_donors'] > 0) & df_ligands['has_confident_charge']]
+    # # df_ligands = df_ligands.groupby(['heavy_atoms_graph_hash_with_metal', 'charge']).agg(lambda subdf: )
     # z = df_ligands[df_ligands['atomic_props'].apply(lambda props: 'C' in props['atoms'] and not 'H' in props['atoms'])]
     # z_all = df_ligands[df_ligands['atomic_props'].apply(lambda props: len(pd.unique(props['atoms'])) == 1) & (df_ligands['n_atoms'] >= 3)]
     # df = df_ligands[df_ligands['stoichiometry'] == 'C6']
@@ -243,7 +235,7 @@ if __name__ == '__main__':
     # ligands.filter_ligands_with_neighboring_coordinating_atoms()
     # ligands.filter_non_centrosymmetric_monodentates()
     # ligands.filter_n_atoms(max_n_atoms=15, denticities=[1])
-    # df_num_possible_complexes = ligands.calc_number_of_possible_complexes()
+    # df_num_possible_complexes = ligands._calc_number_of_possible_complexes()
     # df = ligands.get_df_of_all_ligands()
 
 

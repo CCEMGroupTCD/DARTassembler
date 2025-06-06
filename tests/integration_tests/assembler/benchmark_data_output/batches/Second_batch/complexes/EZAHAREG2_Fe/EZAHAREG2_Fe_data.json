@@ -461,6 +461,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "EZAHAREG2_Fe",
+        "stoichiometry": "FeC42H60N3O5Si2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "9606e78fa4df1a25016291f2bdef3484",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1269,14 +1277,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "EZAHAREG2_Fe",
-        "stoichiometry": "FeC42H60N3O5Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "9606e78fa4df1a25016291f2bdef3484",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

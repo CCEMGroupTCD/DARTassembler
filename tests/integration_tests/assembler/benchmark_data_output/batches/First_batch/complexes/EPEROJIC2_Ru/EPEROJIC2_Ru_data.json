@@ -145,6 +145,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "EPEROJIC2_Ru",
+        "stoichiometry": "RuC15H16O2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "5f15057315da959f00a1daeb7cced519",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -402,14 +410,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "EPEROJIC2_Ru",
-        "stoichiometry": "RuC15H16O2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "5f15057315da959f00a1daeb7cced519",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

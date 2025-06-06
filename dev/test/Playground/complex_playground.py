@@ -1,20 +1,15 @@
 """
 Playground which reads in the unique ligand db and lets you play with it.
 """
-import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib
-from DARTassembler.src.constants.Paths import project_path
-
-from DARTassembler.src.constants.Periodic_Table import DART_Element
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
+from DARTassembler.src.constants.paths import project_path
 
 try:  # Avoid error when running on server
     matplotlib.use('TkAgg')
 except ImportError:
     pass
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB, ComplexDB
 sns.set_theme()
 
 
@@ -25,7 +20,7 @@ if __name__ == '__main__':
 
     # n_max = False
     #
-    # complexes = ComplexDB.load_from_json(db_path, n_max=n_max)
+    # complexes = ComplexDB.from_json(db_path, n_max=n_max)
     # df = complexes.to_dataframe()
     #
     # csvpath = db_path.with_suffix('.csv')

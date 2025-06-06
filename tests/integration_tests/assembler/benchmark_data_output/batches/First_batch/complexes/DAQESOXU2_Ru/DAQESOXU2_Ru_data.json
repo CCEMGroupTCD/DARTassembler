@@ -309,6 +309,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "DAQESOXU2_Ru",
+        "stoichiometry": "RuC28H42N2O2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "4434a3e1d5b372e83b20a88d008b1a99",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -853,14 +861,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "DAQESOXU2_Ru",
-        "stoichiometry": "RuC28H42N2O2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "4434a3e1d5b372e83b20a88d008b1a99",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

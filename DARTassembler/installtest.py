@@ -7,9 +7,9 @@ import sys
 from pathlib import Path
 import tempfile
 from typing import Union
-from DARTassembler import ligandfilters, assembler, dbinfo
-from DARTassembler.src.constants.Paths import test_installation_dirpath
 from contextlib import redirect_stdout
+from DARTassembler import ligandfilters, assembler, dbinfo
+from DARTassembler.src.constants.paths import test_installation_dirpath
 
 
 def test_module_in_directory(function, input: Union[Path, str], outdir: [Path, str, None], suppress_stdout: bool = True) -> None:
@@ -64,8 +64,6 @@ def test_dbinfo_installation(outdir: Union[Path, str, None], suppress_stdout: bo
     :return: None
     """
     test_module_in_directory(function=dbinfo, input='test_metalig', outdir=outdir, suppress_stdout=suppress_stdout)
-
-
 
 def installtest(outdir: Union[Path, str, None] = None, suppress_stdout: bool = True) -> None:
 

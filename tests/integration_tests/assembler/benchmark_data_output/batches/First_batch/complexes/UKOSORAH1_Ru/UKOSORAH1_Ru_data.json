@@ -385,6 +385,14 @@
             "P"
         ]
     },
+    "global_props": {
+        "complex_name": "UKOSORAH1_Ru",
+        "stoichiometry": "RuC34H51NO3P4",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "eb1d9a7f3d90a1b20c43e21a47108c30",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1056,14 +1064,6 @@
                 "node_label": "P"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UKOSORAH1_Ru",
-        "stoichiometry": "RuC34H51NO3P4",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "eb1d9a7f3d90a1b20c43e21a47108c30",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

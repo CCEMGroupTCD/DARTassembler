@@ -425,6 +425,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "CUHIHESI1_Ru",
+        "stoichiometry": "RuC36H53N11O3",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "76aaa5c0d7e918973a1c69e59f62cf4c",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1174,14 +1182,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "CUHIHESI1_Ru",
-        "stoichiometry": "RuC36H53N11O3",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "76aaa5c0d7e918973a1c69e59f62cf4c",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

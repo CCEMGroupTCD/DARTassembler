@@ -1,0 +1,1 @@
+The extraction code is not yet refactored because it was important only for building the MetaLig, but it is not important now for running the DARTassembler code. Therefore, this directory is considered private. It will be refactored at a later stage together with a full update of the MetaLig.

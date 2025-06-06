@@ -245,6 +245,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "EDENANIY2_Ru",
+        "stoichiometry": "RuC21H33NO2Si",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "5d22b25128e9221120b6be6dc5767175",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -667,14 +675,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "EDENANIY2_Ru",
-        "stoichiometry": "RuC21H33NO2Si",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "5d22b25128e9221120b6be6dc5767175",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

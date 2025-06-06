@@ -3,8 +3,8 @@ This script is for generating a dataset for machine learning of the input comple
 """
 import numpy as np
 import pandas as pd
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, save_full_ligand_db, save_complex_db
-from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns
+from DARTassembler.src.misc.io import load_complex_db
+from DARTassembler.src.metalig.utils import unroll_dict_into_columns
 from src11_machine_learning.dataset_preparation.descriptors import SOAP_3D
 
 if __name__ == '__main__':
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     db = {key: val for key, val in db.items() if not np.isnan(val.metal_oxi_state)}
 
     print('Start creating SOAP descriptors for each complex.')
-    ase_complexes = [c.mol for c in db.values()]
+    ase_complexes = [c.atoms for c in db.values()]
     r_cut = 10.0
     n_max= 2
     l_max= 1
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     soap_desc = soap.calculate_descriptors(only_from_metal=True)
     print('Created SOAP descriptors successfully.')
 
-    db_dict = {name: mol.write_to_mol_dict() for name, mol in db.items()}
+    db_dict = {name: mol.to_dict() for name, mol in db.items()}
     df = pd.DataFrame.from_dict(db_dict, orient='index')
     df = unroll_dict_into_columns(df, dict_col='global_props', prefix='gbl_')
 

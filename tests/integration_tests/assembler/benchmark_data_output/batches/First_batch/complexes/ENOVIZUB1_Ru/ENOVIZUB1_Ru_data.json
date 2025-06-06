@@ -449,6 +449,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ENOVIZUB1_Ru",
+        "stoichiometry": "RuC51H53N2P3",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "d1d859acf47cdd64bf06ed0c999edff5",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1252,14 +1260,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ENOVIZUB1_Ru",
-        "stoichiometry": "RuC51H53N2P3",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "d1d859acf47cdd64bf06ed0c999edff5",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

@@ -385,6 +385,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "OHOVINEV2_Fe",
+        "stoichiometry": "FeC33H46IN10O2Si",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "475d8d75a75c98ee9827ef27a7e30d1c",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1062,14 +1070,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "OHOVINEV2_Fe",
-        "stoichiometry": "FeC33H46IN10O2Si",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "475d8d75a75c98ee9827ef27a7e30d1c",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

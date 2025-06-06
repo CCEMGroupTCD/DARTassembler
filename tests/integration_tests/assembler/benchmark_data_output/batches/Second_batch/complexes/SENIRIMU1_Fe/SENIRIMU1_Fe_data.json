@@ -393,6 +393,14 @@
             "P"
         ]
     },
+    "global_props": {
+        "complex_name": "SENIRIMU1_Fe",
+        "stoichiometry": "FeC30H59N3P3",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "e3f8f81bd8ef7f62510effcf9a01ddf0",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1080,14 +1088,6 @@
                 "node_label": "P"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "SENIRIMU1_Fe",
-        "stoichiometry": "FeC30H59N3P3",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "e3f8f81bd8ef7f62510effcf9a01ddf0",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

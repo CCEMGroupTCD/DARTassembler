@@ -233,6 +233,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "LILAMERA1_Ru",
+        "stoichiometry": "RuC25H26O2SSi",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "5e8ed0931dd80664de470f6336aae8db",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -638,14 +646,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "LILAMERA1_Ru",
-        "stoichiometry": "RuC25H26O2SSi",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "5e8ed0931dd80664de470f6336aae8db",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

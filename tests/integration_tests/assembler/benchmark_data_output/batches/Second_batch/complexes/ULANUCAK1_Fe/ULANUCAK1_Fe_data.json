@@ -433,6 +433,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ULANUCAK1_Fe",
+        "stoichiometry": "FeC34H56N11O2Si2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "4d5386809cf752c7f27d658ca1305974",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1202,14 +1210,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ULANUCAK1_Fe",
-        "stoichiometry": "FeC34H56N11O2Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "4d5386809cf752c7f27d658ca1305974",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

@@ -361,6 +361,14 @@
             "P"
         ]
     },
+    "global_props": {
+        "complex_name": "ADIYOWOZ2_Ru",
+        "stoichiometry": "RuC32H49N2OP3",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "6e659ae7962392dd1fe2bd8efdda0bf1",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -990,14 +998,6 @@
                 "node_label": "P"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ADIYOWOZ2_Ru",
-        "stoichiometry": "RuC32H49N2OP3",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "6e659ae7962392dd1fe2bd8efdda0bf1",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

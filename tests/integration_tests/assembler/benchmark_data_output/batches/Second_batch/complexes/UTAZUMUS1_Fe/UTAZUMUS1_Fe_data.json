@@ -373,6 +373,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UTAZUMUS1_Fe",
+        "stoichiometry": "FeC45H40N3P2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "f10205ea68cdcc4b90a0d36f92b8a77c",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1031,14 +1039,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UTAZUMUS1_Fe",
-        "stoichiometry": "FeC45H40N3P2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "f10205ea68cdcc4b90a0d36f92b8a77c",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

@@ -17,7 +17,7 @@ force_tol = 1e-4
 
 # Function for UFF optimization with RDKit
 def optimize_with_rdkit(mol, nsteps, fixed_atom_indices):
-    # mol = Chem.AddHs(mol)
+    # atoms = Chem.AddHs(atoms)
 
     # Create the UFF force field and fix the specified atoms
     ff = AllChem.UFFGetMoleculeForceField(mol)
@@ -35,7 +35,7 @@ def optimize_with_rdkit(mol, nsteps, fixed_atom_indices):
 # Function for UFF optimization with Open Babel
 def optimize_with_openbabel(mol, nsteps, fixed_atom_indices):
     obconversion = openbabel.OBConversion()
-    obconversion.SetInAndOutFormats("mol", "xyz")
+    obconversion.SetInAndOutFormats("atoms", "xyz")
 
     obmol = openbabel.OBMol()
     # input_coords, _ = get_coordinates_and_elements_from_OpenBabel_mol(obmol)

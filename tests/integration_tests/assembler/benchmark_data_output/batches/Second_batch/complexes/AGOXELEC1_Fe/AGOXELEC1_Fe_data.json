@@ -185,6 +185,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "AGOXELEC1_Fe",
+        "stoichiometry": "FeC11H28BrN2Si",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "538c0d5bc037ad11f65db021916bc6b9",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -500,14 +508,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "AGOXELEC1_Fe",
-        "stoichiometry": "FeC11H28BrN2Si",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "538c0d5bc037ad11f65db021916bc6b9",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

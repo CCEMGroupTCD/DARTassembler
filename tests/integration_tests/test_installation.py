@@ -14,7 +14,7 @@ def test_assemble_complexes():
     installtest(outdir=outdir, suppress_stdout=False)
 
     #%% ==============    Doublecheck refactoring    ==================
-    from dev.test.Integration_Test import IntegrationTest
+    from DARTassembler.src.misc.tests import IntegrationTest
     old_dir = Path(outdir.parent, 'benchmark_data_output')
     if old_dir.exists():
         test = IntegrationTest(new_dir=outdir, old_dir=old_dir)

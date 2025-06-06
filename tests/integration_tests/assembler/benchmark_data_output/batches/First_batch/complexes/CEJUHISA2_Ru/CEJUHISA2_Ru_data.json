@@ -405,6 +405,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "CEJUHISA2_Ru",
+        "stoichiometry": "RuC40H52N3O2P",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "fb4ad5782bea74281d944beab856a1a9",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1115,14 +1123,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "CEJUHISA2_Ru",
-        "stoichiometry": "RuC40H52N3O2P",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "fb4ad5782bea74281d944beab856a1a9",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

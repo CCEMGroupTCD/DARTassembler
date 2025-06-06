@@ -241,6 +241,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "SIPAQAME2_Fe",
+        "stoichiometry": "FeC24H27N4OS",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "65e0bfe0da0bdd0f591981410e647732",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -662,14 +670,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "SIPAQAME2_Fe",
-        "stoichiometry": "FeC24H27N4OS",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "65e0bfe0da0bdd0f591981410e647732",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

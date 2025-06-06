@@ -8,13 +8,13 @@ import pandas as pd
 from pathlib import Path
 import json
 import os
-from DARTassembler.src.ligand_extraction.DataBase import MoleculeDB, LigandDB
+from DARTassembler.src.metalig.db import BaseDB, LigandDB
 
 
 def read_data_in_input_dict(database_path_, atomic_properties_json_, read_in_graphs_if_exist: bool = True):
     """
     From the desired input folder structure we are now going to read in the properties
-    in the format, which is required to generate a MoleculeDB
+    in the format, which is required to generate a BaseDB
     """
 
     # todo:
@@ -224,12 +224,12 @@ if __name__ == '__main__':
                                       'DOFVEB', 'CAYCAH', 'FIZTIT', 'VIZJUM', 'EREXIJ', 'KIJDEN', 'YIPXEB']
         db_dict = {key_: item_ for key_, item_ in db_dict.items() if key_ in csd_codes_for_testing_true}
 
-    tmQM_DB = MoleculeDB.from_json(json_=db_dict, type_="Molecule")
-    tmQM_DB.to_json(path='../data/New_DB_jsons/tmQM.json')
+    tmQM_DB = BaseDB.from_json(json_=db_dict, type_="Molecule")
+    tmQM_DB._to_json(path='../data/New_DB_jsons/tmQM.json')
 
     # example:
-    # mol = tmQM_DB.db["AFATAE"]
-    # mol.pre_rotate_and_shift_molecule()
+    # atoms = tmQM_DB.db["AFATAE"]
+    # atoms.pre_rotate_and_shift_molecule()
 
     tmQM_Ligands = LigandDB.from_MoleculeDB(molDB=tmQM_DB,
                                             denticity_numbers_of_interest=denticity_numbers_of_interest,
@@ -240,13 +240,13 @@ if __name__ == '__main__':
                                                                 'Ni', 'Au', 'Cu', 'Ag', 'Zn', 'Hg', 'Cd'],
                                             Testing=True
                                             )
-    tmQM_Ligands.to_json(path='../data/New_DB_jsons/tmQM_ligands_full.json')
+    tmQM_Ligands._to_json(path='../data/New_DB_jsons/tmQM_ligands_full.json')
 
     print(f"Number of ligands: {len(tmQM_Ligands.db)}")
     #
-    unique_ligands = tmQM_Ligands.filter_duplicates()
+    unique_ligands = tmQM_Ligands._filter_duplicates()
     tmQM_unique_Ligands = LigandDB(unique_ligands)
-    # tmQM_unique_Ligands.to_json(path='../data/New_DB_jsons/tmQM_ligands_unique.json')
+    # tmQM_unique_Ligands._to_json(path='../data/New_DB_jsons/tmQM_ligands_unique.json')
 
     #
     #
@@ -292,7 +292,7 @@ if __name__ == '__main__':
         #
         # Als naechstes muessen wir die rausschmeissen, wo die Anzahl Liganden auf Basis anderer Graph
         # Das kann ich leider nicht mehr rekonstruieren, weil das totaler muell war
-        # die denticity wurde auf basis von skin=0.2 ermittelt
+        # die n_donors wurde auf basis von skin=0.2 ermittelt
         # aber die liganden selber dann wieder mit skin=0.3
         # das war unglaublich inkonsistent
         for csd_code in set(df["csd_code"]):
@@ -342,7 +342,7 @@ if __name__ == '__main__':
                 new_list.append(f"{key}-{mini_alphabet[i]}")
 
         for name in new_list:
-            tmQM_Ligands.db[name].view_3d()
+            tmQM_Ligands.db[name].view_3D()
             input("Press enter to cont")
 
         """

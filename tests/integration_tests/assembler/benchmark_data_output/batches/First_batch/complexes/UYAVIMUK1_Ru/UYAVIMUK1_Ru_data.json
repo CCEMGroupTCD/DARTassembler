@@ -257,6 +257,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UYAVIMUK1_Ru",
+        "stoichiometry": "RuC22H35NO2Si",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "8cd73104aff85e312d5f8884a118f396",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -700,14 +708,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UYAVIMUK1_Ru",
-        "stoichiometry": "RuC22H35NO2Si",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "8cd73104aff85e312d5f8884a118f396",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

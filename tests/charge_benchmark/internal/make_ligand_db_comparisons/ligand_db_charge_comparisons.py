@@ -8,10 +8,9 @@ import ast
 import pysmiles
 import logging
 logging.getLogger('pysmiles').setLevel(logging.CRITICAL)  # Anything higher than warning
-import ase
 
-from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist
-from DARTassembler.src.ligand_extraction.utilities_graph import get_graph_hash
+from DARTassembler.src.metalig.utils_molecule import stoichiometry2atomslist
+from DARTassembler.src.metalig.utils_graph import get_graph_hash
 
 #%%
 def get_graph_hash_from_smiles(smiles: str, smiles_metal_bond_node_idx_groups: list[list[int]] = None) -> str:

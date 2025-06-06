@@ -169,6 +169,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "EHAZUPOG1_Fe",
+        "stoichiometry": "FeC18H14F2N3O2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "38415f1499056bf9cc82ba3c6fbac346",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -462,14 +470,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "EHAZUPOG1_Fe",
-        "stoichiometry": "FeC18H14F2N3O2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "38415f1499056bf9cc82ba3c6fbac346",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

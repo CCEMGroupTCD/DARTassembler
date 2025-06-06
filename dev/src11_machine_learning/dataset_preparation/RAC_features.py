@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from pymatgen.core.periodic_table import Element as Pymatgen_Element
 from tqdm import tqdm
-from DARTassembler.src.ligand_extraction.utilities_graph import get_reindexed_graph, get_sorted_atoms_and_indices_from_graph
+from DARTassembler.src.metalig.utils_graph import get_reindexed_graph, get_sorted_atoms_and_indices_from_graph
 
 def warn_if_nan_values(df):
     nan_columns = df.columns[df.isna().any()].tolist()
@@ -40,7 +40,7 @@ class RAC:
                               (4, {'node_label': 'C'}),
                               (5, {'node_label': 'C'})])
             G.add_edges_from([(0, 1), (0, 2), (0, 3), (1, 4), (3, 5)])
-            features, labels = RAC(depth=4).molecule_autocorrelation(mol=G, return_labels=True)
+            features, labels = RAC(depth=4).molecule_autocorrelation(atoms=G, return_labels=True)
         ```
         """
         self.depth = depth
@@ -52,14 +52,14 @@ class RAC:
 
     def input_molecule_to_graph(self, mol) -> nx.Graph:
         """
-        Convert input molecule to graph. Input molecule can be a graph or a RCA_Molecule object.
+        Convert input molecule to graph. Input molecule can be a graph or a BaseMolecule object.
         """
         if isinstance(mol, nx.Graph):
-            # mol is already a graph
+            # atoms is already a graph
             graph = mol
         else:
             try:
-                # mol can be made to graph
+                # atoms can be made to graph
                 graph = nx.Graph(mol)
             except TypeError:
                 try:
@@ -188,7 +188,7 @@ class RAC:
                               (4, {'node_label': 'C', 'charge': -0.5}),
                               (5, {'node_label': 'C', 'charge': -0.5})])
             G.add_edges_from([(0, 1), (0, 2), (0, 3), (1, 4), (3, 5)])
-            features, labels = RAC(depth=4).molecule_autocorrelation(mol=G, properties=['charge'], return_labels=True)
+            features, labels = RAC(depth=4).molecule_autocorrelation(atoms=G, properties=['charge'], return_labels=True)
         ```
         """
         graph = self.input_molecule_to_graph(mol)

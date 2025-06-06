@@ -393,6 +393,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ZUDATOYU2_Fe",
+        "stoichiometry": "FeC48H40F2N3P2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "511c1483fab0b303da8df17292114302",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1096,14 +1104,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ZUDATOYU2_Fe",
-        "stoichiometry": "FeC48H40F2N3P2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "511c1483fab0b303da8df17292114302",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

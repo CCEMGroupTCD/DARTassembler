@@ -297,6 +297,14 @@
             "P"
         ]
     },
+    "global_props": {
+        "complex_name": "WIGIHUZU2_Ru",
+        "stoichiometry": "RuC18H44N3O3P3",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "06930fe819b15bd221c35ebb09b7f8ca",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -808,14 +816,6 @@
                 "node_label": "P"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "WIGIHUZU2_Ru",
-        "stoichiometry": "RuC18H44N3O3P3",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "06930fe819b15bd221c35ebb09b7f8ca",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

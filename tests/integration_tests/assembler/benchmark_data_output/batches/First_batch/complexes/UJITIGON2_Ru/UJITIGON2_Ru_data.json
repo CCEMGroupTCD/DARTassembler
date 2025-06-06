@@ -273,6 +273,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UJITIGON2_Ru",
+        "stoichiometry": "RuC26H28F6N4O",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "52bab7e84d7dab96838fd6de30eea06a",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -748,14 +756,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UJITIGON2_Ru",
-        "stoichiometry": "RuC26H28F6N4O",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "52bab7e84d7dab96838fd6de30eea06a",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

@@ -277,6 +277,14 @@
             "Si"
         ]
     },
+    "global_props": {
+        "complex_name": "YAJEWUCI1_Ru",
+        "stoichiometry": "RuC29H31N2OPSSi",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "299ef6c694d6ecfd4028a9427dd9d519",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -763,14 +771,6 @@
                 "node_label": "Si"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "YAJEWUCI1_Ru",
-        "stoichiometry": "RuC29H31N2OPSSi",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "299ef6c694d6ecfd4028a9427dd9d519",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

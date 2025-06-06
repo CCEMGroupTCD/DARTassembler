@@ -7,7 +7,7 @@ if __name__ == '__main__':
     assembly = assembler(assembly_input_path=assembly_input)
 
     #%% ==============    Doublecheck refactoring    ==================
-    from dev.test.Integration_Test import IntegrationTest
+    from DARTassembler.src.misc.tests import IntegrationTest
     old_dir = Path(assembly.output_path.parent, 'benchmark_data_output')
     if old_dir.exists():
         test = IntegrationTest(new_dir=assembly.output_path, old_dir=old_dir)

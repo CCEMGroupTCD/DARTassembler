@@ -317,6 +317,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ASOZEBUW1_Fe",
+        "stoichiometry": "FeC32H39N4O",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "056d3dac4569373e2ef37b866c2454d0",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -871,14 +879,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ASOZEBUW1_Fe",
-        "stoichiometry": "FeC32H39N4O",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "056d3dac4569373e2ef37b866c2454d0",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

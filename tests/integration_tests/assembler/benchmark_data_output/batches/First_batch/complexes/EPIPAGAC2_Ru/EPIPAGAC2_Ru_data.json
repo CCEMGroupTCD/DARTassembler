@@ -165,6 +165,14 @@
             "O"
         ]
     },
+    "global_props": {
+        "complex_name": "EPIPAGAC2_Ru",
+        "stoichiometry": "RuC16H16N2O4",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "4702582d0b41132949ac3e9c5535a9a7",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -453,14 +461,6 @@
                 "node_label": "O"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "EPIPAGAC2_Ru",
-        "stoichiometry": "RuC16H16N2O4",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "4702582d0b41132949ac3e9c5535a9a7",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0
