@@ -249,6 +249,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "IBOCAWAZ1_Ru",
+        "stoichiometry": "RuC21H34INO2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "e5fd88cbb806addcf84521c45a7dc5f4",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -686,14 +694,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "IBOCAWAZ1_Ru",
-        "stoichiometry": "RuC21H34INO2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "e5fd88cbb806addcf84521c45a7dc5f4",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

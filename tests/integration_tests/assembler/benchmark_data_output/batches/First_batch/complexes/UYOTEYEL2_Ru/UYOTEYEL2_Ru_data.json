@@ -221,6 +221,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UYOTEYEL2_Ru",
+        "stoichiometry": "RuC22H21NO6S2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "7f446cf505f97ca854a0d633ac5ebbe2",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -613,14 +621,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UYOTEYEL2_Ru",
-        "stoichiometry": "RuC22H21NO6S2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "7f446cf505f97ca854a0d633ac5ebbe2",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

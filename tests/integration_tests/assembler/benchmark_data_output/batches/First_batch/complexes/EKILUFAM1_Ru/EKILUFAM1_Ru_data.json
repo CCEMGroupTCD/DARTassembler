@@ -169,6 +169,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "EKILUFAM1_Ru",
+        "stoichiometry": "RuC18H16N2O3",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "aa986494f046f017a12fa857baaff8cc",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -462,14 +470,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "EKILUFAM1_Ru",
-        "stoichiometry": "RuC18H16N2O3",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "aa986494f046f017a12fa857baaff8cc",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

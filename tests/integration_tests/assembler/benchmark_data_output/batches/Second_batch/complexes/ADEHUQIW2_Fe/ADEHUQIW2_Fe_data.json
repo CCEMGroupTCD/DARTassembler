@@ -197,6 +197,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ADEHUQIW2_Fe",
+        "stoichiometry": "FeC23H19N4",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "c864cc00fc641998b93ce76703fe87ab",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -539,14 +547,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ADEHUQIW2_Fe",
-        "stoichiometry": "FeC23H19N4",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "c864cc00fc641998b93ce76703fe87ab",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

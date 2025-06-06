@@ -165,6 +165,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ZUVOXIXU2_Fe",
+        "stoichiometry": "FeC13H23OSi",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "af374c4cae1d113dc0270cc27f91d147",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -455,14 +463,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ZUVOXIXU2_Fe",
-        "stoichiometry": "FeC13H23OSi",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "af374c4cae1d113dc0270cc27f91d147",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

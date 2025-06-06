@@ -1,11 +1,11 @@
 """
 I always needed a file where, which could simply be run in the debugger
 mode to get quick acess to the tmQM and its ligands
-in the RCA_Molecule and RCA_Ligand format respecitvely
+in the BaseMolecule and Ligand format respecitvely
 and here it is
 """
-from DARTassembler.src.ligand_extraction.DataBase import MoleculeDB
-from DARTassembler.src.ligand_extraction.DataLoader import DataLoader
+from DARTassembler.src.metalig.db import BaseDB
+from DARTassembler.src.ligand_extraction.dataloader import DataLoader
 
 
 def csd_graphs_not_usable_yet():
@@ -17,16 +17,16 @@ def csd_graphs_not_usable_yet():
     and hence, as the graph has more nodes than the list of 3D coordinates, this will reaise
     an error, as this script shows.
     """
-    tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
-                                   type_="Molecule",
-                                   max_number=100,
-                                   )
+    tmQM_DB = BaseDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
+                               type_="Molecule",
+                               max_number=100,
+                               )
 
-    tmQM_DB2 = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
-                                    type_="Molecule",
-                                    max_number=100,
-                                    graph_strategy="CSD"
-                                    )
+    tmQM_DB2 = BaseDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
+                                type_="Molecule",
+                                max_number=100,
+                                graph_strategy="CSD"
+                                )
 
     b_mol = list(tmQM_DB2.db.values())[1]
 
@@ -46,13 +46,13 @@ if __name__ == "__main__":
    
 
     #
-    tmQM_DB = MoleculeDB.from_json(json_=f'{data_path}/tmQMG.json', type_="Molecule", n_max=["NIBTAT"])
+    tmQM_DB = BaseDB.from_json(json_=f'{data_path}/tmQMG.json', type_="Molecule", n_max=["NIBTAT"])
 
     # Create the LigandDB from the tmQM
     tmQM_Ligands = LigandDB.from_json(json_=f'{data_path}/tmQMG_Ligands_full.json', type_="Ligand", n_max=["CSD-NIBTAT-03-a"])
 
     lig = list(tmQM_Ligands.db.values())[0]
-    mol = list(tmQM_DB.db.values())[0]
+    atoms = list(tmQM_DB.db.values())[0]
 
     tmQM_unique_Ligands = LigandDB.from_json(json_='../data/New_DB_jsons/tmQM_ligands_unique.json', type_="Ligand")
 
@@ -67,23 +67,23 @@ if __name__ == "__main__":
     """
     database_path = '../data_input/tmQM'
 
-    DB = MoleculeDB.from_json(json_="../../data_output/CSD_MM_G_Jsons/tmQMG.json",
-                              type_="Molecule",
-                              max_number=100,
-                              graph_strategy="CSD"
-                              )
+    DB = BaseDB.from_json(json_="../../data_output/CSD_MM_G_Jsons/tmQMG.json",
+                          type_="Molecule",
+                          max_number=100,
+                          graph_strategy="CSD"
+                          )
 
-    tmQM_DB = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
-                                   type_="Molecule",
-                                   max_number=100,
-                                   graph_strategy="CSD"
-                                   )
+    tmQM_DB = BaseDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
+                               type_="Molecule",
+                               max_number=100,
+                               graph_strategy="CSD"
+                               )
 
-    tmQM_DB2 = MoleculeDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
-                                    type_="Molecule",
-                                    max_number=100,
-                                    graph_strategy="CSD"
-                                    )
+    tmQM_DB2 = BaseDB.from_json(json_=DataLoader(database_path_=database_path).data_for_molDB,
+                                type_="Molecule",
+                                max_number=100,
+                                graph_strategy="CSD"
+                                )
 
     """
 

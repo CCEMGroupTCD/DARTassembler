@@ -3,7 +3,7 @@ Integration test for the assembly of complexes.
 """
 from DARTassembler.assembler import assembler
 from pathlib import Path
-from DARTassembler.src.constants.Paths import project_path
+from DARTassembler.src.constants.paths import project_path
 
 def test_OER_example():
     assembly_input = project_path().extend('tests', 'integration_tests', 'OER_example', 'data_input', 'oer_test_assembler.yml')   # In this file the user specifies which input they want
@@ -12,7 +12,7 @@ def test_OER_example():
     assembly = assembler(assembly_input_path=assembly_input, delete_output_dir=True)
 
     #%% ==============    Doublecheck refactoring    ==================
-    from dev.test.Integration_Test import IntegrationTest
+    from DARTassembler.src.misc.tests import IntegrationTest
     old_dir = Path(assembly.output_path.parent, 'benchmark_data_output')
     if old_dir.exists():
         test = IntegrationTest(new_dir=assembly.output_path, old_dir=old_dir)

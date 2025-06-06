@@ -413,6 +413,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UKEXADUM1_Fe",
+        "stoichiometry": "FeC38H48BF3N2O4PSSi2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "c5170db845731d3fba189fdd1e35a4ee",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1137,14 +1145,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UKEXADUM1_Fe",
-        "stoichiometry": "FeC38H48BF3N2O4PSSi2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "c5170db845731d3fba189fdd1e35a4ee",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

@@ -1,4 +1,4 @@
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
+from DARTassembler.src.metalig.db import LigandDB
 import seaborn as sns
 import matplotlib.pyplot as plt
 from pathlib import Path
@@ -9,15 +9,15 @@ if __name__ == '__main__':
     plot_dir = 'plots'
 
 
-    metalig = LigandDB.load_from_json(n_max=n_max)
+    metalig = LigandDB.from_json(n_max=n_max)
 
     #%% Plot a histogram of the ligand geometries
     plot_dir = Path(plot_dir)
     plot_dir.mkdir(exist_ok=True, parents=True)
 
-    df = metalig.get_ligand_output_df()
+    df = metalig.get_df()
     df['haptic'] = df['n_haptic_atoms'].apply(lambda n_haptic: 'haptic' if n_haptic > 0 else 'non-haptic')
-    # For each denticity, sort first by name and then by occurrence of the geometries
+    # For each n_donors, sort first by name and then by occurrence of the geometries
     order = []
     for dent in range(1, 11):
         df_dent = df[df['n_eff_denticities'] == dent]

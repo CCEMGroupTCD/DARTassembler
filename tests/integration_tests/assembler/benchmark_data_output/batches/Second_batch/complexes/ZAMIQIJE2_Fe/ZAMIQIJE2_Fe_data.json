@@ -297,6 +297,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ZAMIQIJE2_Fe",
+        "stoichiometry": "FeC20H43N2O4Si2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "950cb3aeebf68ed5ff32b317b5580770",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -808,14 +816,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ZAMIQIJE2_Fe",
-        "stoichiometry": "FeC20H43N2O4Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "950cb3aeebf68ed5ff32b317b5580770",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

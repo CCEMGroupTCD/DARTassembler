@@ -43,7 +43,7 @@ filters:
     max: 1.0
     apply_to_denticities:
 
-  - filter: occurrences
+  - filter: n_ligand_instances
     min: 5
     max:
     apply_to_denticities:

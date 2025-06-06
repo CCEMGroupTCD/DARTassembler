@@ -1,9 +1,6 @@
-import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib
-from DARTassembler.src.constants.Paths import project_path
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
+from DARTassembler.src.constants.paths import project_path
+from DARTassembler.src.misc.io import load_unique_ligand_db
 
 
 if __name__ == '__main__':
@@ -14,10 +11,10 @@ if __name__ == '__main__':
     exclude_uncertain_charges = True
     nmax = 1000
 
-    important_cols = {'stoichiometry': 'Stoichiometry', 'local_elements': 'Donors', 'denticity': 'Denticity', 'pred_charge': 'Formal Charge',  'n_atoms': 'Num. Atoms', 'n_electrons': 'Num. Electrons', 'original_complex_id': 'CSD Complex ID', 'original_metal_symbol': 'CSD Metal', 'original_metal_os': 'CSD Metal OS', 'has_betaH': 'Beta Hydrogen', 'has_neighboring_coordinating_atoms': 'Haptic',  'occurrences': 'CSD Occurrences'}
+    important_cols = {'stoichiometry': 'Stoichiometry', 'donor_elements': 'Donors', 'n_donors': 'Denticity', 'charge': 'Formal Charge',  'n_atoms': 'Num. Atoms', 'n_electrons': 'Num. Electrons', 'parent_complex_id': 'CSD Complex ID', 'original_metal_symbol': 'CSD Metal', 'original_metal_os': 'CSD Metal OS', 'has_betaH': 'Beta Hydrogen', 'is_haptic': 'Haptic',  'n_ligand_instances': 'CSD Occurrences'}
 
     df = pd.DataFrame.from_dict(load_unique_ligand_db(path=db_path ,n_max=nmax), orient='index')
-    df = df.query('pred_charge_is_confident == True and denticity > 0')
+    df = df.query('has_confident_charge == True and n_donors > 0')
     df = df[important_cols.keys()]
     df = df.rename(columns=important_cols)
 

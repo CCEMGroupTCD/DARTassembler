@@ -1,9 +1,7 @@
 import pandas as pd
-from pathlib import Path
 from sklearn.metrics import accuracy_score
-from pysmiles import read_smiles
 from networkx import weisfeiler_lehman_graph_hash as graph_hash
-from DARTassembler.src.ligand_extraction.utilities_graph import smiles2nx
+from DARTassembler.src.metalig.utils_graph import smiles2nx
 from pymatgen.core.composition import Composition
 
 
@@ -26,10 +24,10 @@ if __name__ == '__main__':
 
     df_uligs = pd.read_json(f'../../data/final_db_versions/unique_ligand_db_v{ulig_db_version}.json', orient='index')
     if only_confident_charges:
-        df_uligs = df_uligs.query('pred_charge_is_confident')
+        df_uligs = df_uligs.query('has_confident_charge')
     if exclude_unconnected_ligands:
-        df_uligs = df_uligs.query('denticity > 0')
-    df_uligs = remove_entries_with_multiple_charges_per_graph_hash_and_remove_duplicate_graph_hashes(df_uligs, charge_col='pred_charge')
+        df_uligs = df_uligs.query('n_donors > 0')
+    df_uligs = remove_entries_with_multiple_charges_per_graph_hash_and_remove_duplicate_graph_hashes(df_uligs, charge_col='charge')
 
     df_ms = pd.read_csv(ms_lig_path)
     df_ms['graph'] = df_ms['SMILES'].apply(smiles2nx)
@@ -41,20 +39,20 @@ if __name__ == '__main__':
     assert len(df_same_graph.drop_duplicates('graph_hash')) == len(df_same_graph.drop_duplicates(['graph_hash', 'charge'])), 'Graph hash -> charge mapping is not unique.'
     df_same_graph
     assert (df_same_graph['stoichiometry'].apply(Composition) == df_same_graph['formula'].apply(Composition)).all(), 'Stoichiometries are different for the same graph hash!'
-    df_same_graph['same_catoms'] = df_same_graph['local_elements'].apply(sorted) == df_same_graph['catoms'].apply(lambda s: sorted(s.split(',')))
+    df_same_graph['same_catoms'] = df_same_graph['donor_elements'].apply(sorted) == df_same_graph['catoms'].apply(lambda s: sorted(s.split(',')))
     df_same_graph = df_same_graph[df_same_graph['same_catoms']]
     assert df_same_graph['diff_catoms'].all()
     assert all(df_same_graph['denticity_x'] == df_same_graph['denticity_y'])
-    df_same_graph['diff_charge'] = df_same_graph['pred_charge'] == df_same_graph['charge']
+    df_same_graph['diff_charge'] = df_same_graph['charge'] == df_same_graph['charge']
 
-    df_same_graph = df_same_graph[['stoichiometry',  'graph_hash', 'pred_charge', 'charge',  'radicals', 'occurrences', 'diff_charge','all_ligand_names',
+    df_same_graph = df_same_graph[['stoichiometry',  'graph_hash', 'charge', 'charge',  'radicals', 'n_ligand_instances', 'diff_charge','all_ligand_names',
         'n_protons', 'denticity_x', 'name_x',
-       'ligand_to_metal', 'local_elements', 'was_connected_to_metal',
-       'original_metal_position', 'graph_hash_with_metal', 'stats',
-       'unique_name',  'same_graph_denticities', 'count_metals',
+       'donor_idc', 'donor_elements', 'was_connected_to_metal',
+       'parent_metal_position', 'graph_hash_with_metal', 'stats',
+       'unique_name',  'same_graph_denticities', 'metal_counts',
        'n_same_graph_denticities', 'n_metals', 'n_same_graphs',
        'has_unconnected_ligands',
-       'pred_charge_is_confident', 'all_charges_x', 'graph_dict', 'atomic_props', 'global_props',  'name_y', 'SMILES',
+       'has_confident_charge', 'all_charges_x', 'graph_dict', 'atomic_props', 'global_props',  'name_y', 'SMILES',
        '_id', 'n_heavy_atoms', 'T1', 'TAE', 'max(t1)',
        'C0^2', 'nHOMO_CAS', 'nLUMO_CAS', 'IND_PBE', 'rND_PBE', 'IND_b3lyp',
        'rND_b3lyp', 'B1', 'A25PBE', 'nHOMO_MP2', 'nLUMO_MP2', '%Ecorr[(T)]',
@@ -70,7 +68,7 @@ if __name__ == '__main__':
 
     ms_lig = df_ms.iloc[0,:].to_dict()
 
-    acc = accuracy_score(y_true=df_same_graph['pred_charge'], y_pred=df_same_graph['charge'])
+    acc = accuracy_score(y_true=df_same_graph['charge'], y_pred=df_same_graph['charge'])
 
 
 

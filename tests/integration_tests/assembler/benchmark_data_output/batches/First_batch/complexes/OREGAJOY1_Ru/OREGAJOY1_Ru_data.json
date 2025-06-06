@@ -261,6 +261,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "OREGAJOY1_Ru",
+        "stoichiometry": "RuC18H37NO4Si2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "2ecda3db2a0825315043b2fa493382e2",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -709,14 +717,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "OREGAJOY1_Ru",
-        "stoichiometry": "RuC18H37NO4Si2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "2ecda3db2a0825315043b2fa493382e2",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

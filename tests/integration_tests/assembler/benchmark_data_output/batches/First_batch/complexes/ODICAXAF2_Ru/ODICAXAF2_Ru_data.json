@@ -225,6 +225,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ODICAXAF2_Ru",
+        "stoichiometry": "RuC16H30N2O3Si2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "8efd566d815ea00783aa95cd5541039b",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -614,14 +622,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ODICAXAF2_Ru",
-        "stoichiometry": "RuC16H30N2O3Si2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "8efd566d815ea00783aa95cd5541039b",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

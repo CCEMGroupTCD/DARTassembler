@@ -361,6 +361,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UXIVILIK2_Fe",
+        "stoichiometry": "FeC36H38BF5N2O2PSi2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "7182c822de37de71e01c6c215df3fd0a",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -994,14 +1002,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UXIVILIK2_Fe",
-        "stoichiometry": "FeC36H38BF5N2O2PSi2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "7182c822de37de71e01c6c215df3fd0a",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

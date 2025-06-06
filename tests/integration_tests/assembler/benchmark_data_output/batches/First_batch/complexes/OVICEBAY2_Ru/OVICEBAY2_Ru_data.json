@@ -193,6 +193,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "OVICEBAY2_Ru",
+        "stoichiometry": "RuC17H24N2OSi",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "29f2dd6868e4febc90af8b691065f77a",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -528,14 +536,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "OVICEBAY2_Ru",
-        "stoichiometry": "RuC17H24N2OSi",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "29f2dd6868e4febc90af8b691065f77a",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

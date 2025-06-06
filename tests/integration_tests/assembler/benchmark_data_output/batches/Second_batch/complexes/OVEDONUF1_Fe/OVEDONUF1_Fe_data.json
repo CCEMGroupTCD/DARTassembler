@@ -249,6 +249,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "OVEDONUF1_Fe",
+        "stoichiometry": "FeC18H36NO3Si",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "c70f418bf4c17759bf3776625cde200f",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -678,14 +686,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "OVEDONUF1_Fe",
-        "stoichiometry": "FeC18H36NO3Si",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "c70f418bf4c17759bf3776625cde200f",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

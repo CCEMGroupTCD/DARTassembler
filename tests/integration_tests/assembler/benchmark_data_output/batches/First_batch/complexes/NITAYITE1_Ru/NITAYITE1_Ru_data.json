@@ -569,6 +569,14 @@
             "P"
         ]
     },
+    "global_props": {
+        "complex_name": "NITAYITE1_Ru",
+        "stoichiometry": "RuC59H72N3P5",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "1c1777f2b4ba7a094e305209acf78df6",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1570,14 +1578,6 @@
                 "node_label": "P"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "NITAYITE1_Ru",
-        "stoichiometry": "RuC59H72N3P5",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "1c1777f2b4ba7a094e305209acf78df6",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

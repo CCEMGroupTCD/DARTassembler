@@ -2,7 +2,7 @@ import os
 
 import DARTassembler
 from pathlib import Path
-from DARTassembler.src.constants.Paths import project_path
+from DARTassembler.src.constants.paths import project_path
 from distutils.dir_util import copy_tree
 
 
@@ -67,7 +67,7 @@ def test_Pd_Ni_example(nmax=False, skip_filters=False):
     assembly = DARTassembler.assembler(Path(indir, 'Pd_Ni_assembly_input.yml'), delete_output_dir=True)
 
     #%% ==============    Doublecheck refactoring    ==================
-    from dev.test.Integration_Test import IntegrationTest
+    from DARTassembler.src.misc.tests import IntegrationTest
     benchmarks = ['ligand_databases', 'assembled_complexes'] if not skip_filters else ['assembled_complexes']
     for benchmark in benchmarks:
         print(f'Comparing {benchmark}...')

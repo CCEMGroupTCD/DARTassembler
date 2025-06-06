@@ -173,6 +173,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "IHUGAMUM1_Fe",
+        "stoichiometry": "FeC13H24ClN2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "128b8155d1df1718f7a3c619509589b7",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -469,14 +477,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "IHUGAMUM1_Fe",
-        "stoichiometry": "FeC13H24ClN2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "128b8155d1df1718f7a3c619509589b7",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

@@ -229,6 +229,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "WISELACO2_Fe",
+        "stoichiometry": "FeC16H29P4S3Si2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "2b16034e59465ed86c3e797a888a6aec",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -637,14 +645,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "WISELACO2_Fe",
-        "stoichiometry": "FeC16H29P4S3Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "2b16034e59465ed86c3e797a888a6aec",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

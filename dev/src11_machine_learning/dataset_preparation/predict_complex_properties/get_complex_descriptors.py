@@ -2,8 +2,7 @@
 This script is for generating a dataset for machine learning of the input complexes.
 """
 import pandas as pd
-import numpy as np
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
+from DARTassembler.src.metalig.db import LigandDB
 from tqdm import tqdm
 
 if __name__ == '__main__':
@@ -22,7 +21,7 @@ if __name__ == '__main__':
 
     print('Load tmqm and ligand database.')
     df_tmqm = pd.read_csv(tmqm_csv, index_col='CSD_code').to_dict(orient='index')
-    ligands = LigandDB.load_from_json(path=ligand_dataset, n_max=50, only_core_ligands=only_core_complex)
+    ligands = LigandDB.from_json(path=ligand_dataset, n_max=50, only_core_ligands=only_core_complex)
     xtbs = []
     for ulig in tqdm(ligands.db.values(), desc='Generate descriptors for ligands'):
         xtbs.append(ulig.get_xtb_descriptors())
@@ -50,7 +49,7 @@ if __name__ == '__main__':
     #     soaps = []
     #     for lig in c.ligands:
     #         uname = lig.unique_name
-    #         if lig.denticity > 0 or not only_core_complex:
+    #         if lig.n_donors > 0 or not only_core_complex:
     #             soap_labels = list(soap_features[uname].keys())
     #             soap_values = list(soap_features[uname].values())
     #             soaps.append(soap_values)

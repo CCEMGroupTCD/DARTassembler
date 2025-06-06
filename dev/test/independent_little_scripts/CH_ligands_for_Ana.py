@@ -1,9 +1,8 @@
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
+from DARTassembler.src.metalig.db import LigandDB
 from pathlib import Path
 import pandas as pd
-from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns
-from DARTassembler.src.constants.Paths import project_path
+from DARTassembler.src.metalig.utils import unroll_dict_into_columns
+from DARTassembler.src.constants.paths import project_path
 
 if __name__ == '__main__':
 
@@ -16,24 +15,24 @@ if __name__ == '__main__':
     n_max = False
 
     db = LigandDB.from_json(ligand_db_path, molecule='class', max_number=n_max).db
-    db = {key: mol for key, mol in db.items() if mol.denticity > 0 and mol.pred_charge_is_confident}
+    db = {key: mol for key, mol in db.items() if mol.n_donors > 0 and mol.has_confident_charge}
 
     # Filter correct ligands
     correct_ligands = {}
     filtered_out = []
     for name, mol in db.items():
-        # if mol.denticity <= 0 or (not mol.pred_charge_is_confident):
+        # if atoms.n_donors <= 0 or (not atoms.has_confident_charge):
         #     continue
-        correct_denticity = mol.denticity == denticity
+        correct_denticity = mol.n_donors == denticity
         correct_composition = set(mol.atomic_props['atoms']) == set(composition_only)
-        correct_charge = mol.pred_charge == charge and mol.pred_charge_is_confident
+        correct_charge = mol.charge == charge and mol.has_confident_charge
         correct_molweight = mol.global_props['molecular_weight'] > 400
-        correct_n_Carbons = True#mol.atomic_props['atoms'].count('C') == 40
+        correct_n_Carbons = True#atoms.atomic_props['atoms'].count('C') == 40
         if not correct_composition:
             filtered_out.append('composition')
             continue
         if not correct_denticity:
-            filtered_out.append('denticity')
+            filtered_out.append('n_donors')
             continue
         if not correct_charge:
             filtered_out.append('charge')
@@ -54,13 +53,13 @@ if __name__ == '__main__':
     print(f'Saving {len(correct_ligands)} ligands to {save_xyz_path} as individual .xyz files.')
     for i, (name, mol) in enumerate(correct_ligands.items()):
         save_file = Path(save_xyz_path, f'{i}.xyz')
-        xyz_string = mol.get_xyz_file_format_string(comment=name)
+        xyz_string = mol.get_xyz_string(comment=name)
         with open(save_file, 'w') as file:
             file.write(xyz_string)
 
     # Save csv with these ligands and some information.
     df = pd.DataFrame.from_dict(
-                                {name: mol.write_to_mol_dict() for name, mol in correct_ligands.items()},
+                                {name: mol.to_dict() for name, mol in correct_ligands.items()},
                                 orient='index')
     df = df.drop(columns=['graph_dict', 'atomic_props'])
     df = unroll_dict_into_columns(df, dict_col='global_props', prefix='gbl_', delete_dict=True)

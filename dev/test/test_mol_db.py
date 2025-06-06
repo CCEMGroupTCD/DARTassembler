@@ -1,7 +1,9 @@
 """
 This script is for testing the molecule databases. Currently it just reads them in.
 """
-from DARTassembler.src.ligand_extraction.DataBase import MoleculeDB, LigandDB, ComplexDB
+from DARTassembler.src.metalig.db import BaseDB, LigandDB
+from DARTassembler.src._extraction.ligand_extraction import ComplexDB
+
 # from src02_Pre_Assembly_Filtering.FilteringStage import FilterStage
 
 if __name__ == '__main__':
@@ -20,12 +22,12 @@ if __name__ == '__main__':
     lig = db_ulig.get_first_entry()
 
     lig_props = list(lig.__dict__.keys())
-    lig_should_have = ['stoichiometry', 'atomic_props', 'global_props', 'graph_dict', 'denticity', 'ligand_to_metal', 'local_elements', 'name', 'CSD_code', 'graph_hash', 'unique_name', 'occurrences', 'count_denticities', 'count_metals', 'n_denticities', 'n_metals', 'chosen_denticity_fraction', 'all_ligand_names', 'pred_charge', 'pred_charge_is_confident']
+    lig_should_have = ['stoichiometry', 'atomic_props', 'global_props', 'graph_dict', 'n_donors', 'donor_idc', 'donor_elements', 'name', 'CSD_code', 'graph_hash', 'unique_name', 'n_ligand_instances', 'count_denticities', 'metal_counts', 'n_denticities', 'n_metals', 'chosen_denticity_fraction', 'all_ligand_names', 'charge', 'has_confident_charge']
     diff = set(lig_should_have).symmetric_difference(lig_props)
     print('Difference of properties:', diff)
 
     # Molecules
-    db_mol = MoleculeDB.from_json(
+    db_mol = BaseDB.from_json(
                                     json_=unique_ligands_path,
                                     type_='Molecule',
                                     max_number=n_test
@@ -53,17 +55,17 @@ if __name__ == '__main__':
     # lig = db_ulig.get_first_entry()
     #
     # lig_props = list(lig.__dict__.keys())
-    # lig_should_have = ['stoichiometry', 'atomic_props', 'global_props', 'graph_dict', 'denticity', 'ligand_to_metal', 'local_elements', 'name', 'CSD_code', 'graph_hash', 'unique_name', 'occurrences', 'count_denticities', 'count_metals', 'n_denticities', 'n_metals', 'chosen_denticity_fraction', 'all_ligand_names', 'pred_charge', 'pred_charge_is_confident']
+    # lig_should_have = ['stoichiometry', 'atomic_props', 'global_props', 'graph_dict', 'n_donors', 'donor_idc', 'donor_elements', 'name', 'CSD_code', 'graph_hash', 'unique_name', 'n_ligand_instances', 'count_denticities', 'metal_counts', 'n_denticities', 'n_metals', 'chosen_denticity_fraction', 'all_ligand_names', 'charge', 'has_confident_charge']
     # diff = set(lig_should_have).symmetric_difference(lig_props)
     # print('Difference of properties:', diff)
     #
     # # Molecules
-    # db_mol = MoleculeDB.from_json(
+    # db_mol = BaseDB.from_json(
     #                                 json_=unique_ligands_path,
     #                                 type_='Molecule',
     #                                 max_number=n_test
     #                                 )
-    # mol = db_mol.get_first_entry()
+    # atoms = db_mol.get_first_entry()
     #
     # # Complexes
     # db_complex = ComplexDB.from_json(

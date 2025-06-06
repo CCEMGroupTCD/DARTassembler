@@ -621,6 +621,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UGISOQUL1_Ru",
+        "stoichiometry": "RuC63H76N2P6S3Si2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "cf2fe1b16a18100b6b73762f88c3c7ea",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1733,14 +1741,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UGISOQUL1_Ru",
-        "stoichiometry": "RuC63H76N2P6S3Si2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "cf2fe1b16a18100b6b73762f88c3c7ea",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

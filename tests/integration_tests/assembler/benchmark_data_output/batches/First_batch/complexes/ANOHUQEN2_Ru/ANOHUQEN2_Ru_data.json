@@ -309,6 +309,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ANOHUQEN2_Ru",
+        "stoichiometry": "RuC30H39N3O2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "3cdde776260447d57d886214a76c72b2",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -849,14 +857,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ANOHUQEN2_Ru",
-        "stoichiometry": "RuC30H39N3O2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "3cdde776260447d57d886214a76c72b2",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

@@ -3,12 +3,9 @@ This module reads in a ligand db from file and saves a .csv file with an overvie
 """
 from typing import Union
 from pathlib import Path
+from DARTassembler.src.misc.io import get_correct_ligand_db_path_from_input
+from DARTassembler.src.metalig.db import LigandDB
 
-from DARTassembler.src.metalig.metalig_utils import get_correct_ligand_db_path_from_input
-from DARTassembler.src.constants.Paths import default_ligand_db_path
-
-import DARTassembler.src.constants.Paths
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
 
 def get_ligand_csv_output_path(output_path: Union[str, Path], input_path: Union[str, Path]):
     """
@@ -35,18 +32,16 @@ def dbinfo(input_path: Union[str, Path], output_path: Union[str, Path, None] = N
     :return: LigandDB object
     """
     input_path = get_correct_ligand_db_path_from_input(input_path)
-    if input_path is None:
-        raise ValueError(f"Invalid ligand database path.")
 
     print(f"Starting DART DBinfo Module.")
     print(f'Input ligand database: {input_path.name}')
-    db = LigandDB.load_from_json(input_path, n_max=nmax)
+    db = LigandDB.from_json(input_path, n_max=nmax)
 
     print('Saving ligand info and structures...')
 
     # Save to csv
     output_path = get_ligand_csv_output_path(output_path, input_path)
-    db.save_reduced_csv(output_path)
+    db.save_to_csv(output_path)
     print(f'  - Saved .csv to {output_path.name}')
 
     # Save to concatenated xyz file

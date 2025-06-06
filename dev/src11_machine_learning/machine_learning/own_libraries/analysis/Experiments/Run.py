@@ -525,7 +525,7 @@ class MLRun():
         elemental_data = pd.DataFrame(elemental_data)
         # Take mean per element.
         els = elemental_data.groupby('element')
-        df = els.size().reset_index().rename(columns={0: 'occurrences of element'})
+        df = els.size().reset_index().rename(columns={0: 'n_ligand_instances of element'})
         df[score] = list(els[score].mean())
         df['std'] = list(els[score].std())
 
@@ -533,10 +533,10 @@ class MLRun():
         plt.figure()
 
         # Plot scatter plot.
-        ax = plt.errorbar(x=df['occurrences of element'], y=df[score], yerr=df['std'], fmt='.')
+        ax = plt.errorbar(x=df['n_ligand_instances of element'], y=df[score], yerr=df['std'], fmt='.')
 
         # Add axis labels.
-        plt.xlabel('occurrences of element')
+        plt.xlabel('n_ligand_instances of element')
         plt.ylabel(score)
 
         # Add title.

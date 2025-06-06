@@ -385,6 +385,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "OJICELAN1_Ru",
+        "stoichiometry": "RuC46H41F2NOP2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "7a3efe261e402076687c138510073354",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1072,14 +1080,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "OJICELAN1_Ru",
-        "stoichiometry": "RuC46H41F2NOP2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "7a3efe261e402076687c138510073354",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

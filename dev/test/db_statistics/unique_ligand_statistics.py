@@ -5,18 +5,17 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib
-from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns
+from DARTassembler.src.metalig.utils import unroll_dict_into_columns
 try:    # Avoid error when running on server
     matplotlib.use('TkAgg')
 except ImportError:
     pass
 import matplotlib.pyplot as plt
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
+from DARTassembler.src.misc.io import load_unique_ligand_db
 from pathlib import Path
 sns.set_theme()
 plt.rcParams['svg.fonttype'] = 'none' # for correct text rendering in some programs
-import pysmiles
-from DARTassembler.src.constants.Paths import project_path
+from DARTassembler.src.constants.paths import project_path
 
 
 def flatten(l):
@@ -42,28 +41,28 @@ if __name__ == '__main__':
 
     data = data_raw.copy()
     if exclude_unconnected_ligands:
-        data = data[data['denticity'] > 0]
+        data = data[data['n_donors'] > 0]
     if exclude_uncertain_charges:
-        data = data[data['pred_charge_is_confident']]
+        data = data[data['has_confident_charge']]
     data = unroll_dict_into_columns(data, dict_col='global_props', prefix='gbl_', delete_dict=True)
     data = unroll_dict_into_columns(data, dict_col='stats', prefix='stats_', delete_dict=True)
-    data['n_electrons'] = data['n_protons'] - data['pred_charge']
+    data['n_electrons'] = data['n_protons'] - data['charge']
     data['odd_n_electrons'] = data['n_electrons'].apply(lambda n: n%2 == 1)
 
     data_same_graph = data.groupby('graph_hash', sort=False).agg(list)
-    data_same_graph['n_same_graph_charges'] = data_same_graph.apply(lambda row: len(pd.unique([charge for conf, charge in zip(row['pred_charge_is_confident'], row['pred_charge']) if conf])), axis=1)
+    data_same_graph['n_same_graph_charges'] = data_same_graph.apply(lambda row: len(pd.unique([charge for conf, charge in zip(row['has_confident_charge'], row['charge']) if conf])), axis=1)
 
 
 
     #%% plot histograms
     props = {
-                'denticity': {'xlog': False, 'ylog': False},
-                'occurrences': {'xlog': True, 'ylog': True, 'bins': 20, 'discrete': False},
+                'n_donors': {'xlog': False, 'ylog': False},
+                'n_ligand_instances': {'xlog': True, 'ylog': True, 'bins': 20, 'discrete': False},
                 'n_same_graph_denticities': {'xlog': False, 'ylog': True},
                 'n_same_graphs': {'xlog': False, 'ylog': True},
                 'stats_min_distance_to_metal': {'xlog': True, 'ylog': True, 'discrete': False},
                 'n_metals': {'xlog': False, 'ylog': True},
-                'pred_charge': {'xlog': False, 'ylog': False},
+                'charge': {'xlog': False, 'ylog': False},
                 'gbl_n_atoms': {'xlog': False, 'ylog': False},
                 'gbl_molecular_weight': {'xlog': False, 'ylog': False},
                 'gbl_LCS_pred_charge_confidence': {'xlog': False, 'ylog': False, 'discrete': False},
@@ -83,9 +82,9 @@ if __name__ == '__main__':
 
     #%% Make histogram of denticities comparing with/without confident charge
     plt.figure()
-    prop = 'denticity'
+    prop = 'n_donors'
     ax = sns.histplot(data=data, x=prop, discrete=True, label='all', legend=False)
-    sns.histplot(data=data[data['pred_charge_is_confident']], x=prop, discrete=True, label='confident charge', legend=False, ax=ax)
+    sns.histplot(data=data[data['has_confident_charge']], x=prop, discrete=True, label='confident charge', legend=False, ax=ax)
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(handles[::2], labels[::2])
     plt.title(f'Distribution of {prop} in unique ligands with/without confident charges')
@@ -94,7 +93,7 @@ if __name__ == '__main__':
     plt.close()
 
     #%% Make histogram of all coordinated elements
-    all_ligand_to_metal_elements = data['local_elements'].apply(lambda x: np.unique(x).tolist()).apply(pd.Series).stack()
+    all_ligand_to_metal_elements = data['donor_elements'].apply(lambda x: np.unique(x).tolist()).apply(pd.Series).stack()
     elements_hist = all_ligand_to_metal_elements.value_counts().rename('Count').to_frame().reset_index(names='coordinated_elements')
     plt.figure()
     sns.barplot(data=elements_hist, x='coordinated_elements', y='Count', color='b')
@@ -133,11 +132,11 @@ if __name__ == '__main__':
             print(f'Property {prop} not in atomic_props, it is skipped.')
 
     #%% Make pie plot of where unique ligands are lost/ filtered
-    pie_data = data_raw[data_raw['denticity'] > 0]
+    pie_data = data_raw[data_raw['n_donors'] > 0]
     uligs_numbers = {
-                        'no oxidation state\nof complex': pie_data['pred_charge'].isna().sum(),
-                        'charge not confident': ((~pie_data['pred_charge_is_confident']) & pie_data['pred_charge'].notna()).sum(),
-                        'confident charge assigned': pie_data['pred_charge_is_confident'].sum()
+                        'no oxidation state\nof complex': pie_data['charge'].isna().sum(),
+                        'charge not confident': ((~pie_data['has_confident_charge']) & pie_data['charge'].notna()).sum(),
+                        'confident charge assigned': pie_data['has_confident_charge'].sum()
     }
     assert sum(uligs_numbers.values()) == len(pie_data)
     plt.figure()
@@ -152,7 +151,7 @@ if __name__ == '__main__':
 
     #%% Occurrences of unique ligands for which no oxidation state was given.
     plt.figure()
-    sns.histplot(data=data[data['pred_charge'].isna()], x='occurrences', discrete=True)
+    sns.histplot(data=data[data['charge'].isna()], x='n_ligand_instances', discrete=True)
     plt.yscale('log')
     plt.title(f'Occurrences of unique ligands of complexes without OS')
     save_path = Path(save_plots_dir, f'hist_occurrences_without_os.svg')
@@ -174,18 +173,18 @@ if __name__ == '__main__':
     _, ax = plt.subplots()
     top_n = 8
     denticities = [1, 2, 3, 4, 5]
-    data['donors'] = data['local_elements'].apply(lambda el: '-'.join(sorted(el)))
-    donors = data[data['denticity'].isin(denticities)]
-    top_donors = donors.groupby('denticity')['donors'].agg(lambda x: pd.value_counts(x).index.tolist()[:top_n-1])
-    donors['donors'] = donors.apply(lambda row: row['donors'] if row['donors'] in top_donors.loc[row['denticity']] else 'others', axis=1)
-    donor_dict = donors.groupby('denticity')['donors'].agg(lambda x: pd.value_counts(x).to_dict()).to_dict()
+    data['donors'] = data['donor_elements'].apply(lambda el: '-'.join(sorted(el)))
+    donors = data[data['n_donors'].isin(denticities)]
+    top_donors = donors.groupby('n_donors')['donors'].agg(lambda x: pd.value_counts(x).index.tolist()[:top_n-1])
+    donors['donors'] = donors.apply(lambda row: row['donors'] if row['donors'] in top_donors.loc[row['n_donors']] else 'others', axis=1)
+    donor_dict = donors.groupby('n_donors')['donors'].agg(lambda x: pd.value_counts(x).to_dict()).to_dict()
     for dent, dons in donor_dict.items():
         order = [don for don in dons if not don == 'others'] + ['others']
         donor_dict[dent] = {don: dons[don] for don in order}
     donor_data = []
     for dent, dons in donor_dict.items():
         for name, count in dons.items():
-            donor_data.append({'denticity': dent, 'donors': name, 'count': count})
+            donor_data.append({'n_donors': dent, 'donors': name, 'count': count})
     donor_data = pd.DataFrame(donor_data)
     bottom = np.zeros(len(denticities))
     for idx in range(top_n):
@@ -208,7 +207,7 @@ if __name__ == '__main__':
     #%% Make histogram of original metals
     plt.figure(figsize=(11.6, 5))
     sns.set(font_scale=0.8)
-    metals = data['count_metals'].apply(lambda x: list(x.keys())).explode().value_counts().rename('Number of ligands').to_frame().reset_index(names='Originating metal')
+    metals = data['metal_counts'].apply(lambda x: list(x.keys())).explode().value_counts().rename('Number of ligands').to_frame().reset_index(names='Originating metal')
     sns.barplot(data=metals, x='Originating metal', y='Number of ligands', color='b')
     plt.title(f'Original metals in unique ligands')
     # plt.yscale('log')
@@ -220,7 +219,7 @@ if __name__ == '__main__':
 
     #%% Make histogram of charges
     plt.figure()
-    sns.histplot(data=data, x='pred_charge', discrete=True)
+    sns.histplot(data=data, x='charge', discrete=True)
     save_path = Path(save_plots_dir, f'hist_pred_charge.svg')
     plt.xlabel('Predicted formal ligand charge')
     plt.savefig(fname=save_path)

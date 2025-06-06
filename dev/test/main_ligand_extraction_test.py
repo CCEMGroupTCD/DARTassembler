@@ -1,9 +1,9 @@
 """
 This is the main script for the extraction of ligands from a database.
 """
-from DARTassembler.src.ligand_extraction.io_custom import load_json, load_full_ligand_db
+from DARTassembler.src.misc.io import load_json, load_full_ligand_db
 from DARTassembler.src.ligand_extraction.main_ligand_extraction import main
-from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns, sort_dict_recursively_inplace
+from DARTassembler.src.metalig.utils import unroll_dict_into_columns, sort_dict_recursively_inplace
 from pathlib import Path
 import pandas as pd
 from dev.test.Charge_Benchmark import ChargeBenchmark

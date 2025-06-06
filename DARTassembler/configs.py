@@ -2,9 +2,9 @@
 This module returns the default configuration files the ligand filters and the assembler. These files can be used as templates for the user to adapt to their specific needs.
 """
 from pathlib import Path
-from typing import Union
-from DARTassembler.src.constants.Paths import default_assembler_yml_path, default_ligandfilters_yml_path
 from shutil import copyfile
+from DARTassembler.src.constants.paths import default_assembler_yml_path, default_ligandfilters_yml_path
+
 
 def configs(outdir: str) -> None:
     """

@@ -429,6 +429,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "HUFIGIMA2_Ru",
+        "stoichiometry": "AlRuC44H55N2P2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "3ae7c065f160f29e69e996c52cac36df",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1193,14 +1201,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "HUFIGIMA2_Ru",
-        "stoichiometry": "AlRuC44H55N2P2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "3ae7c065f160f29e69e996c52cac36df",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

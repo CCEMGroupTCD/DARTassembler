@@ -1,15 +1,13 @@
-import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib
-from DARTassembler.src.constants.Paths import project_path, default_ligand_db_path
-from DARTassembler.src.constants.Periodic_Table import DART_Element
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db
+from DARTassembler.src.constants.paths import project_path, default_ligand_db_path
+
 try:    # Avoid error when running on server
     matplotlib.use('TkAgg')
 except ImportError:
     pass
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
+from DARTassembler.src.metalig.db import LigandDB
 import matplotlib.pyplot as plt
 plt.rcParams['svg.fonttype'] = 'none' # for correct text rendering in some programs
 plt.rcParams['savefig.facecolor'] = 'white'
@@ -29,8 +27,8 @@ if __name__ == '__main__':
     nmax = None
 
 
-    ligands = LigandDB.load_from_json(default_ligand_db_path, n_max=nmax)
-    df_ligands = pd.DataFrame.from_dict({name: lig.get_ligand_output_info() for name, lig in ligands.db.items()}, orient='index')
+    ligands = LigandDB.from_json(default_ligand_db_path, n_max=nmax)
+    df_ligands = pd.DataFrame.from_dict({name: lig.get_csv_info() for name, lig in ligands.db.items()}, orient='index')
     metalig_csv_path = Path(default_ligand_db_path).with_suffix('.csv')
     df_metalig = pd.read_csv(metalig_csv_path, index_col=0)
 

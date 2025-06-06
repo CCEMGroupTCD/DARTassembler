@@ -26,7 +26,7 @@
           The reason is that this is already used in the assembly. Since we had to decide between one, we should just go for the simpler one now. Besides, Cian's charge assignment has an input controller so this is very simple to fix, and in the linear charge solver, I don't think it is even used.
     - the properties `original_metal` and `original_metal_symbol` were deleted from each ligand in the database of unique ligands.
         The metal of origin is not a property that makes sense for unique ligands, since they will usually come from many different metals.
-        Instead, the property `count_metals` was added to backtrack which unique ligand occurs in which metals, see below.
+        Instead, the property `metal_counts` was added to backtrack which unique ligand occurs in which metals, see below.
         The ligands in the database of all (not only unique) ligands of course still have these properties. This should break only the assembly.
     - for ligands and unique ligands, most `global_props` information except `CSD_code` was deleted
 	    - so far, global_props were inherited from the complex when generating the ligand. Mostly this information is stuff like electronic properties of the complex from the tmQMg, which don't make sense for the ligand. Therefore this information is not inherited anymore. As far as I am aware, this should not break anything since this information would not be useful in the first place.
@@ -48,9 +48,9 @@ tmQM_Ligands_unique.json:
         - `local_elements` (list) 	    --> elements coordinated to metal, in the same order as `ligand_to_metal`
         - `occurrences` (int) 		    --> how often this unique ligand occurs in the complex_db
         - `count_denticities` (dict) 	--> the distribution of how often this unique ligand has which denticity in the format {denticity: count}
-        - `count_metals` (dict) 	    --> the distribution of how often this unique ligand was detected with which metal in the format {metal: count}
+        - `metal_counts` (dict) 	    --> the distribution of how often this unique ligand was detected with which metal in the format {metal: count}
         - `n_denticities` (int) 	    --> how many different denticities this unique ligand has (equals len(count_denticities))
-        - `n_metals` (int) 		        --> how many different metals this unique ligand has (equals len(count_metals))
+        - `n_metals` (int) 		        --> how many different metals this unique ligand has (equals len(metal_counts))
         - `all_ligand_names` (list) 	--> all `name` attributes of this ligand in the complex_db
         - atomic_props:
             - original_complex_indices (list of int) 	--> the original indices of the atoms in the complex where this ligand came from
@@ -67,13 +67,13 @@ tmQM_Ligands_full.json:
         - `unique_ligand_information` (dict) 	    --> properties from the unique ligand that might be interesting for debugging
             - `occurrences` (int)
             - `count_denticities` (dict)
-            - `count_metals` (dict)
+            - `metal_counts` (dict)
             - `n_denticities` (int)
             - `n_metals` (int)
 
 ### CODE:
 
-RCA_Molecule:
+BaseMolecule:
     - added attribute `stoichiometry` in init which is a string of the stoichiometry in Hill notation (the default in ase).
         - added method `get_standardized_stoichiometry()` which outputs the stoichiometry as a string in Hill notation.
         - removed (i.e. block-commented) method `get_stoichiometry()`
@@ -87,15 +87,15 @@ RCA_Molecule:
             - `orig_idx` (int) --> original index of atom in complex (is always the same as the index in the not re-indexed graph)
             - `metal_neighbor` (bool) --> a flag indicating if this atom was connected to the metal
 
-RCA_Ligand:
+Ligand:
     - added attribute `local_elements` (elements in the first coordination sphere).
-        - added function `self.get_local_elements()`
-    - added output properties to write_to_mol_dict():
+        - added function `self.get_donor_elements()`
+    - added output properties to to_dict():
         - `stoichiometry`
         - `local_elements`
         - `original_metal_symbol`
     - removed all properties except CSD_code from `global_properties` (which previously were inherited from the complex, which doesn't make sense for most of them)
-    - refactored `self.read_from_mol_dict()` using `**kwargs` instead of `if... else`.
+    - refactored `self.from_dict()` using `**kwargs` instead of `if... else`.
 
 main_tmQMG_test:
     - not yet finished - everything is done only from the point on where tmQMG.json exists. This will be improved after christmas.

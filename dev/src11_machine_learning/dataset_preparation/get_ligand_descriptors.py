@@ -1,14 +1,11 @@
 """
 This script is for generating a dataset for machine learning of the input complexes.
 """
-import numpy as np
 import pandas as pd
 from copy import deepcopy
-import networkx as nx
-from DARTassembler.src.ligand_extraction.bond_orders import graph_to_smiles
-from DARTassembler.src.ligand_extraction.io_custom import load_unique_ligand_db, load_complex_db, load_full_ligand_db, save_unique_ligand_db, save_full_ligand_db, save_complex_db
-from DARTassembler.src.ligand_extraction.utilities import unroll_dict_into_columns
-from dev.src11_machine_learning.dataset_preparation.descriptors import SOAP_3D, RDKit_2D
+from DARTassembler.src.metalig.utils_graph import graph_to_smiles
+from DARTassembler.src.misc.io import load_unique_ligand_db
+from dev.src11_machine_learning.dataset_preparation.descriptors import RDKit_2D
 import random
 
 if __name__ == '__main__':
@@ -22,7 +19,7 @@ if __name__ == '__main__':
     db = load_unique_ligand_db(dataset, 'class', n_max=n_molecules)
 
     # print('Start creating SOAP descriptors for each complex.')
-    # ase_mols = [lig.get_ase_molecule(remove_elements=['H']) for lig in db.values()]
+    # ase_mols = [lig.get_ase_atoms(remove_elements=['H']) for lig in db.values()]
     # r_cut = 10.0
     # n_max= 2
     # l_max= 1
@@ -47,9 +44,9 @@ if __name__ == '__main__':
     for name, mol in db.items():
         db_dict.append({
                         'name': name,
-                        'denticity': mol.denticity,
-                        'pred_charge': mol.pred_charge,
-                        'pred_charge_is_confident': mol.pred_charge_is_confident,
+                        'n_donors': mol.n_donors,
+                        'charge': mol.charge,
+                        'has_confident_charge': mol.has_confident_charge,
                         'n_hydrogens': mol.n_hydrogens,
                         'n_missing_H': 0,
                         'graph': deepcopy(mol.graph)
@@ -58,7 +55,7 @@ if __name__ == '__main__':
 
     # Filter out unwanted molecules
     # Filter ligands with not confident charge prediction
-    df_real = df_real[df_real['pred_charge_is_confident']]
+    df_real = df_real[df_real['has_confident_charge']]
     # Filter ligands consisting only of H
     df_real = df_real[df_real['graph'].apply(lambda graph: pd.unique([el for _, el in graph.nodes(data='node_label')]).tolist() != ['H'])]
 
@@ -82,9 +79,9 @@ if __name__ == '__main__':
         db_dict.append(mol.to_dict())
         db_dict.append({
                         'name': name,
-                        'denticity': mol.denticity,
-                        'pred_charge': mol.pred_charge,
-                        'pred_charge_is_confident': mol.pred_charge_is_confident,
+                        'n_donors': mol.n_donors,
+                        'charge': mol.charge,
+                        'has_confident_charge': mol.has_confident_charge,
                         'n_hydrogens': mol.n_hydrogens - n_actual_removed_H,
                         'n_missing_H': n_actual_removed_H,
                         'graph': graph

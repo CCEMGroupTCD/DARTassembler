@@ -289,6 +289,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UXOMOKAZ2_Fe",
+        "stoichiometry": "FeC22H44PSi2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "5325e07fb47613eceb70cc99b4ff9cb7",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -796,14 +804,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UXOMOKAZ2_Fe",
-        "stoichiometry": "FeC22H44PSi2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "5325e07fb47613eceb70cc99b4ff9cb7",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

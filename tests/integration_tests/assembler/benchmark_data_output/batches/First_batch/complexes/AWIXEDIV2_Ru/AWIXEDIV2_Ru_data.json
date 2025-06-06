@@ -277,6 +277,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "AWIXEDIV2_Ru",
+        "stoichiometry": "RuC29H28F6N2O",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "f6e7e09fb4dc58c8b654089d0e584997",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -759,14 +767,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "AWIXEDIV2_Ru",
-        "stoichiometry": "RuC29H28F6N2O",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "f6e7e09fb4dc58c8b654089d0e584997",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

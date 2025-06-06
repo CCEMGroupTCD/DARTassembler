@@ -1,0 +1,426 @@
+import collections
+from typing import Union
+import ase
+import networkx as nx
+from ase import Atoms
+from rdkit import Chem
+import numpy as np
+import re
+from DARTassembler.src.constants.chem import Element
+
+
+# List of integers that RDKit considers as invalid bond orders.
+unknown_rdkit_bond_orders = [0, 20, 21]
+
+def check_metal_center_format(metal_center: str) -> None:
+    """
+    Check if the metal centers have the correct format, e.g. 'Fe', 'Ni-2', 'Pt0', 'Au+1'. Otherwise raises a ValueError.
+    :param metal_center: The metal center to check.
+    :return: None
+    :raises: ValueError if the metal center format is incorrect.
+    """
+    # Check if the general format is correct
+    pattern = r'^[A-Z][a-z]*[+-]*[0-9]*$'
+    if not re.match(pattern, metal_center):
+        raise ValueError(
+            f'Invalid metal center format: {metal_center}. Examples for correct format: "Pd+2", "Pt0", "Ni-2", "Fe"')
+
+    # Check if the letters provided are a valid metal
+    pattern_chemical_element = r'^[A-Z][a-z]*'
+    element = re.match(pattern_chemical_element, metal_center).group()
+    if not Element(element).is_metal:
+        raise ValueError(f'Invalid metal "{element}" in metal center "{metal_center}".')
+
+    return None
+
+def format_hapdent_idc(hapdent_idc) -> tuple[int, tuple[int]]:
+    """
+    Formats hapdent_idc so that it is a tuple containing integers or tuples of integers.
+    :param hapdent_idc: Iterable (list/tuple) of donor indices with haptic groups in sub-lists/sub-tuples.
+    :return: Tuple of donor indices with haptic groups as sub-tuples.
+    """
+    out_hapdent_idc = []
+    for idx in hapdent_idc:
+        try:
+            # If idx is an integer it should stay an integer. Convert to integer here in case it is something like a np.int64 or so.
+            idx = int(idx)
+        except TypeError:
+            # If idx is an iterable like a list or tuple, it should be converted to a tuple
+            if not (isinstance(idx, tuple) or isinstance(idx, list)):
+                raise TypeError(f'hapdent_idc must contain integers or tuples of integers, got {type(idx)}.')
+            idx = tuple(idx)
+        out_hapdent_idc.append(idx)
+
+    out_hapdent_idc = tuple(out_hapdent_idc)    # Convert the entire hapdent_idc to a tuple
+
+    return out_hapdent_idc
+
+def get_isomers_effective_ligand_atoms_with_effective_donor_indices(
+                                                                    ligand_atoms: ase.Atoms,
+                                                                    geometric_isomers_hapdent_idc: list,
+                                                                    dummy='Cu'
+                                                                    ) -> tuple[ase.Atoms, list[list[int]]]:
+    """
+    For each geometric isomer of this ligand, returns the effective donor atoms in which a dummy donor atom is placed at the mean position of each haptic group. Also returns the effective donor indices of each isomer. In total, the resulting ase.Atoms and indices can be used like any other ligand without haptic interactions.
+    :param dummy: Element symbol of the dummy atom.
+    :return: Tuple of ase.Atoms object and list of effective donor indices for each isomer.
+    """
+    # Get the effective donor atoms and indices with always the same hapdent_idc.
+    ref_hapdent_idc = geometric_isomers_hapdent_idc[0]
+    eff_atoms, eff_idc = get_all_effective_ligand_atoms_with_effective_donor_indices(
+        ligand_atoms=ligand_atoms,
+        hapdent_idc=ref_hapdent_idc,
+        dummy=dummy
+    )
+
+    isomers_eff_donor_idc = []
+    for hapdent_idc in geometric_isomers_hapdent_idc:
+        # Make the effective indices reflect the order of hapdent_idc in self.geometric_isomers_hapdent_idc.
+        eff_idc_ordered = [eff_idc[ref_hapdent_idc.index(i)] for i in hapdent_idc]
+        isomers_eff_donor_idc.append(eff_idc_ordered)
+
+    return eff_atoms, isomers_eff_donor_idc
+
+def get_all_effective_ligand_atoms_with_effective_donor_indices(ligand_atoms: ase.Atoms, hapdent_idc: list, dummy: str= 'Cu') -> tuple[ase.Atoms, list[int]]:
+    """
+    Returns an ase.Atoms object containing all normal atoms in the ligand plus the dummy atoms plus a list of effective donor indices of this ase.Atoms object.
+    :param ligand_atoms: ase.Atoms object of the ligand.
+    :param hapdent_idc: List of donor indices with haptic groups in sublists.
+    :param dummy: Element symbol of the dummy atom.
+    :return: Tuple of ase.Atoms object and list of effective donor indices.
+    """
+    all_atoms = ligand_atoms.copy()
+    eff_donor_idc = []
+    for haptic_group in hapdent_idc:
+        if isinstance(haptic_group, int):
+            eff_donor_idc.append(haptic_group)
+        elif isinstance(haptic_group, tuple):
+            haptic_coordinates = ligand_atoms[haptic_group].get_positions()
+            mean_position = np.mean(haptic_coordinates, axis=0)
+            effective_donor_atom = ase.Atom(dummy, mean_position)
+            all_atoms.append(effective_donor_atom)
+            eff_donor_idx = len(all_atoms) - 1
+            eff_donor_idc.append(eff_donor_idx)
+
+    return all_atoms, eff_donor_idc
+
+def get_denticities_and_hapticities_idc(graph: nx.Graph, donor_idc) -> tuple[Union[int, tuple[int]]]:
+    """
+    Get the denticities and hapticities of a donor ligand. Return a tuple in which each element is either an integer (n_donors) or a tuple of integers (hapticity).
+    :param graph: Networkx graph of the ligand
+    :param donor_idc: List of donor atom indices
+    :return: Tuple of donor indices with haptic groups as sub-tuples.
+    """
+    # Make a subgraph of only the donor atoms
+    donor_subgraph = graph.subgraph(donor_idc)
+    # Get all interconnected components
+    components = list(nx.connected_components(donor_subgraph))
+    denticities_and_hapticities = [sorted(component) for component in components]
+    # Make them all integers explicitly
+    denticities_and_hapticities = [tuple([int(i) for i in component]) for component in denticities_and_hapticities]
+    # If a tuple has only one element, it's a n_donors, take it out of the list
+    denticities_and_hapticities = [component[0] if len(component) == 1 else component for component in
+                                   denticities_and_hapticities]
+
+    return tuple(denticities_and_hapticities)
+
+def get_rdkit_mol_from_smiles(smiles: str, sanitize: bool=False) -> Chem.Mol:
+    """
+    Get an RDKit molecule from a SMILES string. If sanitize is set to False, the molecule will not be sanitized but an attempt will be made to calculate properties important for other functions.
+    """
+    mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
+    if not sanitize:
+        # Let rdkit calculate properties important for other functions, especially HasSubstructMatch(). Usually, those properties would be called by the sanitization process, but here we need to do that manually so that the right properties are set.
+        Chem.FastFindRings(mol)
+        mol.UpdatePropertyCache(strict=False)
+
+    return mol
+
+def has_smarts_pattern(smarts: str, smiles: str) -> bool:
+    """
+    Checks whether the molecule matches the given SMARTS pattern.
+    @param smarts: SMARTS pattern to match.
+    @return: True if the molecule matches the SMARTS pattern, False otherwise.
+    """
+    mol = get_rdkit_mol_from_smiles(smiles)
+
+    # Check if the molecule matches the SMARTS pattern.
+    pattern = Chem.MolFromSmarts(smarts)
+    if pattern is None:
+        raise ValueError(f'Invalid SMARTS pattern: {smarts}')
+    match = mol.HasSubstructMatch(pattern)
+
+    return match
+
+def stoichiometry2atomslist(stoichiometry: str) -> list[str]:
+    """
+    Convert a stoichiometry string to a list of atoms. For example, "C2H6F" becomes ["C", "C", "H", "H", "H", "H", "H", "H", "F"]. Note that the order of the atoms is not necessarily the same as in the stoichiometry string.
+    """
+    atoms_list = []
+    # Use a regular expression to find all elements and their counts
+    for element, count in re.findall(r'([A-Z][a-z]*)(\d*)', stoichiometry):
+        # If no count is given, assume it's 1
+        count = int(count) if count else 1
+        # Extend the list by count times the element
+        atoms_list.extend([element] * count)
+    return atoms_list
+
+def if_same_stoichiometries(stoichiometry1: str, stoichiometry2: str) -> bool:
+    """
+    Check if two stoichiometries are the same. Stable against different order of elements in the stoichiometry string and the convention of writing or not writing a count of 1.
+    """
+    atoms_list1 = sorted(stoichiometry2atomslist(stoichiometry1))
+    atoms_list2 = sorted(stoichiometry2atomslist(stoichiometry2))
+
+    return atoms_list1 == atoms_list2
+
+def get_planarity(coordinates) -> float:
+    """
+    Returns the planarity of the supplied coordinates. Planarity is a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
+    :param coordinates: List of 3D coordinates.
+    :return: Planarity of the molecule.
+    """
+    deviation = get_max_deviation_from_coplanarity(points=coordinates)  # deviation is a float that is 0 if the molecule is perfectly planar and > 0 if it is not. The higher the value, the less planar the molecule is.
+    planarity = 1/ (1+ deviation)   # planarity is a float between 0 and 1. 0 means not planar at all (a sphere), 1 means perfectly planar.
+    planarity = round(planarity, 10)    # round to 10 decimal places to avoid floating point deviation which happen with np.linalg.svd() in different versions of numpy
+
+    return planarity
+
+def get_max_deviation_from_coplanarity(points: list[tuple]) -> float:
+    """
+    Check if a list of 3D coordinates are approximately coplanar based on a specified cutoff.
+
+    :param points: List of tuples, each tuple being a 3D point (x, y, z).
+    :return: deviation from coplanarity. 0 if perfectly coplanar and > 0 otherwise.
+    """
+    # We need at least 3 points to define a plane, everything else is per definition coplanar
+    if len(points) <= 3:
+        return 0
+
+    # Center the points
+    points_np = np.array(points)
+    centroid = np.mean(points_np, axis=0)
+    centered_points = points_np - centroid
+
+    # Compute the SVD
+    _, s, _ = np.linalg.svd(centered_points)
+
+    # The smallest singular value is the maximum distance from the plane
+    max_dist = s[-1]
+
+    return max_dist
+
+def are_points_coplanar(points, dist=0.1):
+    """
+    Check if a list of 3D coordinates are approximately coplanar based on a specified cutoff.
+    :param points: List of tuples, each tuple being a 3D point (x, y, z).
+    :param cutoff: Maximum allowed distance of a point from the plane to be considered coplanar.
+    :return: True if points are approximately coplanar, False otherwise.
+    """
+    max_dist = get_max_deviation_from_coplanarity(points)
+
+    return max_dist <= dist
+
+def rdkit_mol_to_graph(mol: Chem.Mol, element_label: str='node_label', bond_label: str= 'bond_type') -> nx.Graph:
+    """
+    Create a graph from an rdkit atoms object
+    @param atoms: RDKit atoms object
+    @param element_label: element label for node dictionary
+    @param bond_label: bond type label for edge dictionary
+    @return: networkx graph of the molecule
+    """
+    G = nx.Graph()
+
+    for atom in mol.GetAtoms():
+        node = atom.GetIdx()
+        label = atom.GetSymbol()
+        G.add_node(node, **{element_label: label})
+
+    for bond in mol.GetBonds():
+        u = bond.GetBeginAtomIdx()
+        v = bond.GetEndAtomIdx()
+        label = bond.GetBondTypeAsDouble()
+        G.add_edge(u, v, **{bond_label: label})
+
+    return G
+
+def get_atomic_props_from_ase_atoms(atoms: Atoms) -> dict:
+    """
+    Get atomic properties from an ase.Atoms object.
+    :param atoms: ase.Atoms object of the molecule.
+    :return: Dictionary of atomic properties with keys "x", "y", "z" and "atoms".
+    """
+    atomic_props = {}
+    atomic_props['x'] = [atom.position[0] for atom in atoms]
+    atomic_props['y'] = [atom.position[1] for atom in atoms]
+    atomic_props['z'] = [atom.position[2] for atom in atoms]
+    atomic_props['atoms'] = [atom.symbol for atom in atoms]
+
+    return atomic_props
+
+def get_ase_atoms_from_atomic_props(atomic_props: dict, remove_elements=None, add_atoms=None) -> Atoms:
+    """
+    Get an ase.Atoms object from atomic properties.
+    :param atomic_props: dictionary of atomic properties with keys "x", "y", "z" and "atoms".
+    :param remove_elements: list of elements to optionally remove from the molecule.
+    :param add_atoms: list of tuples of the form [(element, (x,y,z))] to add atoms to the molecule.
+    :return: ASE Atoms object of the molecule.
+    """
+    if add_atoms is None:
+        add_atoms = []
+    if remove_elements is None:
+        remove_elements = []
+
+    for el, coords in add_atoms:
+        if len(coords) != 3:
+            raise ValueError(f"Coordinates for element {el} are not of length 3: {coords}")
+        if not isinstance(el, str):
+            raise ValueError(f"Element {el} is not a string")
+        else:
+            Element(el) # Raise error if not valid chemical element
+
+    coord_list_3D = [[atomic_props[key_][i] for key_ in ["x", "y", "z"]] for i, _ in enumerate(atomic_props["x"])]
+    atom_list = atomic_props["atoms"]
+
+    # Remove specified elements
+    if remove_elements:
+        for i, (el, coords) in enumerate(zip(atom_list, coord_list_3D)):
+            if el in remove_elements:
+                del atom_list[i]
+                del coord_list_3D[i]
+
+    # Add specified elements
+    for el, coords in add_atoms:
+        atom_list.append(el)
+        coord_list_3D.append(coords)
+
+    atoms = Atoms(atom_list, positions=coord_list_3D)
+
+    return atoms
+
+def get_all_ligands_by_graph_hashes(all_ligands: list) -> dict:
+    """
+    Get dictionary of graph hashes with list of ligands with this graph hash
+    :param all_ligands: list of all ligands with graph hashes
+    :return: dictionary of graph hash: list_of_ligands
+    """
+    all_hashes = list(set([lig.graph_hash for lig in all_ligands]))
+    all_ligands_by_hashes = {h: [] for h in all_hashes}
+    for ligand in all_ligands:
+        all_ligands_by_hashes[ligand.graph_hash].append(ligand)
+
+    return all_ligands_by_hashes
+
+def group_list_without_hashing(ligand_list: list) -> list:
+    """
+    Returns a list of list with unique elements grouped together. Works without hashing, just using equity.
+    :param ligand_list: list of elements
+    :return: list of lists of grouped elements
+    """
+    groupings = {}
+    counter = 0
+    for lig1 in ligand_list:
+
+        tmp_groupings = {}
+        equal = False
+
+        for i, lig_list in groupings.items():
+            lig_representative = lig_list[0]
+            equal = lig_representative == lig1
+
+            if equal:
+
+                if i in tmp_groupings:
+                    tmp_groupings[i].append(lig1)
+                else:
+                    tmp_groupings[i] = lig1
+
+                break
+
+        if not equal:
+            tmp_groupings[counter] = [lig1]
+            counter += 1
+
+        for i in tmp_groupings.keys():
+
+            if i in groupings:
+                groupings[i].append(tmp_groupings[i])
+            else:
+                groupings[i] = tmp_groupings[i]
+
+    groupings = [group for group in groupings.values()]
+    return groupings
+
+
+def original_metal_ligand(ligand):
+    """
+    We try to find the original metal of a ligand and return None if we couldnt find any
+    """
+
+    if hasattr(ligand, "original_metal"):
+        return ligand.original_metal_symbol
+    elif ligand.global_props is not None:
+        try:
+            return ligand.global_props['metal_name']
+        except KeyError:
+            pass
+    else:
+        return None
+
+def get_standardized_stoichiometry_from_atoms_list(atoms: list) -> str:
+    c = collections.Counter(atoms)
+    elements = sorted(el for el in c.keys())
+    if "C" in elements:
+        if 'H' in elements:
+            elements = ["C", 'H'] + [el for el in elements if el not in ["C", 'H']]
+        else:
+            elements = ["C"] + [el for el in elements if el != "C"]
+    else:
+        if 'H' in elements:
+            elements = ["H"] + [el for el in elements if el != "H"]
+
+    # Make metals come first
+    metals = [el for el in elements if Element(el).is_metal]
+    non_metals = [el for el in elements if el not in metals]
+    elements = metals + non_metals
+
+    formula = [f"{el}{(c[el]) if c[el] != 1 else ''}" for el in elements] # drop the 1 if an element occurs only once
+    formula = "".join(formula)
+
+    return formula
+
+def get_concatenated_xyz_string_from_coordinates(coord_list: list[np.array], element_list: list[list[str]], comment: str = "") -> str:
+    """
+    Returns a string in xyz format from a list of numpy arrays of coordinates and a list of lists of chemical elements.
+    @param coord_list: A list of numpy arrays of coordinates.
+    @param element_list: A list of lists of chemical elements.
+    @param comment: A comment to be added to the xyz file.
+    @return: A string in xyz format.
+    """
+    if isinstance(coord_list, np.ndarray) and coord_list.ndim == 2: # If only one set of coordinates is given
+        coord_list = [coord_list]
+    if isinstance(element_list[0], str):
+        element_list = [element_list]
+
+    xyz = ''
+    for coord, elements in zip(coord_list, element_list):
+        xyz += xyz_string_from_coordinates(coord=coord, elements=elements, comment=comment)
+
+    return xyz
+
+def xyz_string_from_coordinates(coord: np.ndarray, elements: list[str], comment: str = "") -> str:
+    """
+    Returns a string in xyz format from a numpy array of coordinates and a list of chemical elements.
+    """
+    if coord.shape[1] != 3:
+        raise ValueError(f"The coordinates do not have the correct shape: {coord.shape}")
+    if len(elements) != coord.shape[0]:
+        raise ValueError(f"The number of elements does not match the number of coordinates: {len(elements)} != {coord.shape[0]}")
+
+    n_atoms = coord.shape[0]
+    xyz = f"{n_atoms}\n"
+    xyz += comment + '\n'
+    for el, (x, y, z) in zip(elements, coord):
+        xyz += f"{el} {x} {y} {z}\n"
+
+    return xyz

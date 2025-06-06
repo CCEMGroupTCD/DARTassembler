@@ -161,6 +161,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ULEPAGUC1_Ru",
+        "stoichiometry": "RuC17H13IN6",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "f6427729a17f0c0a0085d68afa0ad126",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -440,14 +448,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ULEPAGUC1_Ru",
-        "stoichiometry": "RuC17H13IN6",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "f6427729a17f0c0a0085d68afa0ad126",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

@@ -157,6 +157,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "EXIHIYUC1_Ru",
+        "stoichiometry": "RuC16H16O4",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "76c753bc588481cc00c24f58c515fa5a",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -433,14 +441,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "EXIHIYUC1_Ru",
-        "stoichiometry": "RuC16H16O4",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "76c753bc588481cc00c24f58c515fa5a",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

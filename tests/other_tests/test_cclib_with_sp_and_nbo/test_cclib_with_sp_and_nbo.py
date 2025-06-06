@@ -1,6 +1,5 @@
-from DARTassembler.src.assembled_complex_output.gaussian import GaussianOutput
+from dev.DART_refactoring_to_v1_1_0.old_python_files.assembled_complex_output.gaussian import GaussianOutput
 import numpy as np
-import pandas as pd
 
 if __name__ == '__main__':
 

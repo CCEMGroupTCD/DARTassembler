@@ -209,6 +209,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "XIKAHUCE1_Ru",
+        "stoichiometry": "RuC18H27NO3",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "b52479e564f2a3651c4f36abd909fa5f",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -572,14 +580,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "XIKAHUCE1_Ru",
-        "stoichiometry": "RuC18H27NO3",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "b52479e564f2a3651c4f36abd909fa5f",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

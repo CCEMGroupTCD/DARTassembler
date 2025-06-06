@@ -217,6 +217,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "LITETAVI2_Fe",
+        "stoichiometry": "FeC19H29N2S",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "36f04333d5f4ee822fc746f67f6c19ba",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -600,14 +608,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "LITETAVI2_Fe",
-        "stoichiometry": "FeC19H29N2S",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "36f04333d5f4ee822fc746f67f6c19ba",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

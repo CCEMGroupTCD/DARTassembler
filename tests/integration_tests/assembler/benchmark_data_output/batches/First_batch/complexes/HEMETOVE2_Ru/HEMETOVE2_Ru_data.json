@@ -277,6 +277,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "HEMETOVE2_Ru",
+        "stoichiometry": "RuC26H34F2N2Si2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "d54cfec0efaf9604ead63bbf154892d9",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -761,14 +769,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "HEMETOVE2_Ru",
-        "stoichiometry": "RuC26H34F2N2Si2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "d54cfec0efaf9604ead63bbf154892d9",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

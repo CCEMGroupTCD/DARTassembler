@@ -249,6 +249,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "KEQIWECO2_Fe",
+        "stoichiometry": "FeC24H29N6",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "84ae7ab1f7dc0f03ef2cd93dd51e62e3",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -692,14 +700,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "KEQIWECO2_Fe",
-        "stoichiometry": "FeC24H29N6",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "84ae7ab1f7dc0f03ef2cd93dd51e62e3",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

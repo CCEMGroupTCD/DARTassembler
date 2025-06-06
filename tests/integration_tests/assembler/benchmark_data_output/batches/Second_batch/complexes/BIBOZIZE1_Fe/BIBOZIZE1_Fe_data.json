@@ -301,6 +301,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "BIBOZIZE1_Fe",
+        "stoichiometry": "FeC33H34BF3P",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "e891feab5f2d0a9ccc02b155005d1c0f",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -833,14 +841,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "BIBOZIZE1_Fe",
-        "stoichiometry": "FeC33H34BF3P",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "e891feab5f2d0a9ccc02b155005d1c0f",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

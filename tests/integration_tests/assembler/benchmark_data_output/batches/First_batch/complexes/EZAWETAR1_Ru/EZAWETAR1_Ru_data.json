@@ -513,6 +513,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "EZAWETAR1_Ru",
+        "stoichiometry": "RuC46H73O3PSi2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "313c413eca885d8a1f63f8456100ab36",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1410,14 +1418,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "EZAWETAR1_Ru",
-        "stoichiometry": "RuC46H73O3PSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "313c413eca885d8a1f63f8456100ab36",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

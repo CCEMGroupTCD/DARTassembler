@@ -7,12 +7,11 @@ from tqdm import tqdm
 from tblite.interface import Calculator
 import os
 import numpy as np
-from DARTassembler.src.constants.Periodic_Table import DART_Element
+from DARTassembler.src.constants.chem import Element
 from pathlib import Path
 from datetime import datetime
 
-from DARTassembler.src.ligand_extraction.io_custom import save_json
-from dev.src11_machine_learning.utils.utilities_ML import get_xtb_descriptors
+from DARTassembler.src.misc.io import save_json
 
 
 def is_assembled_complex_dir(dir: str):
@@ -97,7 +96,7 @@ if __name__ == "__main__":
 
         atoms = opt.atoms
 
-        metal_idx = [atom.index for atom in atoms if DART_Element(atom.symbol).is_metal]
+        metal_idx = [atom.index for atom in atoms if Element(atom.symbol).is_metal]
         assert len(metal_idx) == 1, f"Expected 1 metal centre, found {len(metal_idx)}."
         metal_idx = metal_idx[0]
 
@@ -106,7 +105,7 @@ if __name__ == "__main__":
         if save_output:
             write(relaxed_structure_file, relaxed_structure)
 
-        xtb_decriptors = {}#get_xtb_descriptors(relaxed_structure_file)
+        xtb_decriptors = {}#_get_xtb_descriptors(relaxed_structure_file)
 
         # Write output data of xtb calculation
         add_data = {'complex': cname, 'n_opt_steps': opt.nsteps, 'method': method, 'force_criterion': force_criterion, **xtb_decriptors}

@@ -205,6 +205,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "URECOBAW2_Ru",
+        "stoichiometry": "RuC19H24N2O2Si",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "25020b7da9e4483dd9a6328652ad6eb1",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -559,14 +567,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "URECOBAW2_Ru",
-        "stoichiometry": "RuC19H24N2O2Si",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "25020b7da9e4483dd9a6328652ad6eb1",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

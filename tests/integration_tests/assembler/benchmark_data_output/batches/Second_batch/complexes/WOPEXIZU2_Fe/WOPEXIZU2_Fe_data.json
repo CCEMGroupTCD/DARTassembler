@@ -265,6 +265,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "WOPEXIZU2_Fe",
+        "stoichiometry": "FeC28H32N3",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "5e33fc3cb4d504693c079d0d7cf20f85",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -736,14 +744,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "WOPEXIZU2_Fe",
-        "stoichiometry": "FeC28H32N3",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "5e33fc3cb4d504693c079d0d7cf20f85",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

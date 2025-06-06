@@ -217,6 +217,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "AZALETEJ1_Ru",
+        "stoichiometry": "RuC20H26NO3P",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "c88245a75385ccd8d17ed2580c5a9fbd",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -592,14 +600,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "AZALETEJ1_Ru",
-        "stoichiometry": "RuC20H26NO3P",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "c88245a75385ccd8d17ed2580c5a9fbd",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

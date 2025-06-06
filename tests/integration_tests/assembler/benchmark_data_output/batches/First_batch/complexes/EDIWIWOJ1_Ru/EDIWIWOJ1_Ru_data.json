@@ -221,6 +221,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "EDIWIWOJ1_Ru",
+        "stoichiometry": "RuC21H27NO3",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "d4e1b6ebefb527575394c36793866074",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -611,14 +619,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "EDIWIWOJ1_Ru",
-        "stoichiometry": "RuC21H27NO3",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "d4e1b6ebefb527575394c36793866074",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

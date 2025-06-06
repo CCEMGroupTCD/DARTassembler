@@ -269,6 +269,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "ONAHEDAM2_Ru",
+        "stoichiometry": "RuC25H30N6OSi2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "de59603bad7c492458d6184e5f16d329",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -737,14 +745,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "ONAHEDAM2_Ru",
-        "stoichiometry": "RuC25H30N6OSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "de59603bad7c492458d6184e5f16d329",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

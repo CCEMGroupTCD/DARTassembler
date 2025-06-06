@@ -1,7 +1,6 @@
 """
 This script makes statistical plots of the unique ligand database.
 """
-import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib
@@ -10,7 +9,7 @@ try:    # Avoid error when running on server
 except ImportError:
     pass
 import matplotlib.pyplot as plt
-from DARTassembler.src.ligand_extraction.io_custom import load_complex_db
+from DARTassembler.src.misc.io import load_complex_db
 from pathlib import Path
 from copy import deepcopy
 sns.set_theme()

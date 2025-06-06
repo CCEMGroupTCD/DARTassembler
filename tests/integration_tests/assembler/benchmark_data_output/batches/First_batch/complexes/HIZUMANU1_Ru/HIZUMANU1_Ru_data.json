@@ -673,6 +673,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "HIZUMANU1_Ru",
+        "stoichiometry": "RuC65H93N2O2PSi2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "7e8ece1a421f24948330b00c752be021",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1866,14 +1874,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "HIZUMANU1_Ru",
-        "stoichiometry": "RuC65H93N2O2PSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "7e8ece1a421f24948330b00c752be021",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

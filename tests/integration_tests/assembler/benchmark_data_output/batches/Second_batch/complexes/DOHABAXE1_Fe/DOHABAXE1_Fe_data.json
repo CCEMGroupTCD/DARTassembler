@@ -373,6 +373,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "DOHABAXE1_Fe",
+        "stoichiometry": "FeC41H46N2P",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "721a8e8251e209b562aae3a73a26a752",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1027,14 +1035,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "DOHABAXE1_Fe",
-        "stoichiometry": "FeC41H46N2P",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "721a8e8251e209b562aae3a73a26a752",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

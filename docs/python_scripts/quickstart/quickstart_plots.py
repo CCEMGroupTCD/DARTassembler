@@ -1,8 +1,8 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from DARTassembler.src.ligand_extraction.utilities_Molecule import stoichiometry2atomslist
-from DARTassembler.src.constants.Periodic_Table import DART_Element
+from DARTassembler.src.metalig.utils_molecule import stoichiometry2atomslist
+from DARTassembler.src.constants.chem import Element
 
 if __name__ == '__main__':
 
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     # Flatten list of lists
     element_list = [item for sublist in atom_lists_for_each_complex for item in sublist]
     # Remove metals
-    element_list = [element for element in element_list if not DART_Element(element).is_metal]
+    element_list = [element for element in element_list if not Element(element).is_metal]
     element_hist = pd.Series(element_list).value_counts()
 
     # Plot the ligand elements as histogram

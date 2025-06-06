@@ -169,6 +169,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "PILENORA2_Fe",
+        "stoichiometry": "FeC8H21N2P4S3Si",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "fd06ed88289eab83a64ddc3d3f64c0bf",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -464,14 +472,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "PILENORA2_Fe",
-        "stoichiometry": "FeC8H21N2P4S3Si",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "fd06ed88289eab83a64ddc3d3f64c0bf",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

@@ -133,6 +133,14 @@
             "O"
         ]
     },
+    "global_props": {
+        "complex_name": "IPOSOPOQ2_Ru",
+        "stoichiometry": "RuC11H16O3",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "f1f1c918476b590206ee27727e5c98e9",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -367,14 +375,6 @@
                 "node_label": "O"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "IPOSOPOQ2_Ru",
-        "stoichiometry": "RuC11H16O3",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "f1f1c918476b590206ee27727e5c98e9",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

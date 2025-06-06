@@ -525,6 +525,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "GACEMUSU2_Fe",
+        "stoichiometry": "FeC55H68N3O2",
+        "charge": 0,
+        "total_oxi_state": 1,
+        "graph_hash": "cd4fe93f6facf0ea662a536bb9a52a1f",
+        "batch_name": "Second_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1447,14 +1455,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "GACEMUSU2_Fe",
-        "stoichiometry": "FeC55H68N3O2",
-        "charge": 0,
-        "total_oxi_state": 1,
-        "graph_hash": "cd4fe93f6facf0ea662a536bb9a52a1f",
-        "batch_name": "Second_batch"
     },
     "metal_idc": [
         0

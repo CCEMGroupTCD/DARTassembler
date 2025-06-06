@@ -193,6 +193,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "UPAFUVAX1_Ru",
+        "stoichiometry": "RuC17H25N3",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "c5b7680ce06ad254dfeac665a2e91de5",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -538,14 +546,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "UPAFUVAX1_Ru",
-        "stoichiometry": "RuC17H25N3",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "c5b7680ce06ad254dfeac665a2e91de5",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

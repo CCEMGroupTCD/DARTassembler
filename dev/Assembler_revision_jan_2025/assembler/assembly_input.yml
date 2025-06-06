@@ -19,7 +19,7 @@ batches:
       - ligand_1:
           origin: [0, 0, 0 ]
           vector_1: [0, 0, 1 ]
-          temp_dent: 1 # todo WARNING: this is a temporary denticity, (i.e. in the future it should not need to be specified here). In the future I would hope that the Num. of vectors is enough for LigandChoice
+          temp_dent: 1 # todo WARNING: this is a temporary n_donors, (i.e. in the future it should not need to be specified here). In the future I would hope that the Num. of vectors is enough for LigandChoice
           ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/OH.json
       - ligand_2:
           origin: [ 0, 0, 0 ]
@@ -139,7 +139,7 @@ batches:
       - ligand_1:
           origin: [ 0, 0, 0 ]
           vector_1: [ 0, 0, 1 ]
-          temp_dent: 6  # todo WARNING: this is a temporary denticity, (i.e. in the future it should not need to be specified here)
+          temp_dent: 6  # todo WARNING: this is a temporary n_donors, (i.e. in the future it should not need to be specified here)
           ligand_db: /Users/timosommer/PhD/projects/DARTassembler/dev/Assembler_revision_jan_2025/assembler/ligand_filtering/JSON/hexagonal_eta.json
       - ligand_2:
           origin: [ 0, 0, 0 ]

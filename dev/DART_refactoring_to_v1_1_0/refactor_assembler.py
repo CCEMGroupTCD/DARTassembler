@@ -1,18 +1,14 @@
-import itertools
-from copy import deepcopy
 from pathlib import Path
-from typing import Union
 import pandas as pd
-from DARTassembler.src.assembly.ligand_geometries import align_donor_atoms, try_all_geometrical_isomer_possibilities
-from DARTassembler.src.ligand_extraction.DataBase import LigandDB
+from DARTassembler.src.metalig.db import LigandDB
 from ast import literal_eval
 import ase
 import numpy as np
-from DARTassembler.src.ligand_extraction.io_custom import save_to_xyz
+from DARTassembler.src.misc.io import save_to_xyz
 import warnings
 
 from dev.Assembler_revision_jan_2025.assembler.utilities import AssembledIsomer
-from dev.test.Integration_Test import IntegrationTest
+from DARTassembler.src.misc.tests import IntegrationTest
 
 warnings.filterwarnings("ignore", category=UserWarning)
 # warnings.simplefilter('error')    # Make warnings raise exceptions
@@ -52,7 +48,7 @@ def angle_between_vectors(v1, v2, degrees=True) -> float:
 #                     ):
 #         self.atoms = atoms
 #         self.donor_idc = donor_idc
-#         self.denticity = len(donor_idc)
+#         self.n_donors = len(donor_idc)
 #         self.isomers = None     # Fill with list of ase.Atoms() objects. This is how the assembly should ideally be set up.
 #         self.isomer_rssd = None
 #
@@ -87,11 +83,11 @@ def angle_between_vectors(v1, v2, degrees=True) -> float:
 #
 #     def _check_denticity(self, expected_denticity: int):
 #         """
-#         Check if the denticity of the ligand matches the expected denticity.
-#         :param expected_denticity: Expected denticity of the ligand.
+#         Check if the n_donors of the ligand matches the expected n_donors.
+#         :param expected_denticity: Expected n_donors of the ligand.
 #         """
-#         if self.denticity != expected_denticity:
-#             raise ValueError(f'This function is only for {expected_denticity}-dentate ligands, but got denticity {  self.denticity}.')
+#         if self.n_donors != expected_denticity:
+#             raise ValueError(f'This function is only for {expected_denticity}-dentate ligands, but got n_donors {  self.n_donors}.')
 #
 #     @classmethod
 #     def from_ligand_return_geometrical_isomers(cls,
@@ -232,14 +228,14 @@ def angle_between_vectors(v1, v2, degrees=True) -> float:
     #     :return: ASE Atoms object of the ligands (without metal) in the mer-3-2-1 geometry.
     #     """
     #     for ligand in self.ligands:
-    #         if ligand.denticity == 1:
+    #         if ligand.n_donors == 1:
     #             ligand.rotate_monodentate(axis='z')
-    #         elif ligand.denticity == 2:
+    #         elif ligand.n_donors == 2:
     #             ligand.rotate_bidentate(axis1='-x', axis2='-z')
-    #         elif ligand.denticity == 3:
+    #         elif ligand.n_donors == 3:
     #             ligand.rotate_mer_tridentate(axis1='y', axis2='x', axis3='-y')
     #         else:
-    #             raise ValueError(f'Unexpected denticity {ligand.denticity}.')
+    #             raise ValueError(f'Unexpected n_donors {ligand.n_donors}.')
     #
     #     return
 
@@ -256,8 +252,8 @@ if __name__ == '__main__':
 
 
     # Load ligand databases and append OH ligands to OER ligands to only have one database to search in
-    db = LigandDB.load_from_json(path=oer_ligand_db_path, n_max=n_max_ligands)
-    OH_db = LigandDB.load_from_json(path=OH_ligand_db_path)
+    db = LigandDB.from_json(path=oer_ligand_db_path, n_max=n_max_ligands)
+    OH_db = LigandDB.from_json(path=OH_ligand_db_path)
     db.db.update(OH_db.db)
 
     # Read in OER complex csv and extract the ligand names of the successfully assembled complexes.
@@ -276,9 +272,9 @@ if __name__ == '__main__':
         except KeyError:
             continue
         # Convert the old Ligand objects to AssemblyLigand objects which are used for the assembly
-        # monodentate = AssemblyLigand(atoms=monodentate.mol, donor_idc=monodentate.ligand_to_metal)
-        # bidentate = AssemblyLigand(atoms=bidentate.mol, donor_idc=bidentate.ligand_to_metal)
-        # tridentate = AssemblyLigand(atoms=tridentate.mol, donor_idc=tridentate.ligand_to_metal)
+        # monodentate = AssemblyLigand(atoms=monodentate.atoms, donor_idc=monodentate.donor_idc)
+        # bidentate = AssemblyLigand(atoms=bidentate.atoms, donor_idc=bidentate.donor_idc)
+        # tridentate = AssemblyLigand(atoms=tridentate.atoms, donor_idc=tridentate.donor_idc)
 
         # Target vectors for mer-3-2-1 geometry.
         target_vectors = [
@@ -302,7 +298,7 @@ if __name__ == '__main__':
 
         for c_idx, isomer in enumerate(isomers):
             name = f'{complex_name}_{c_idx}'
-            global_concat_atoms.append([isomer.mol, complex_name])
+            global_concat_atoms.append([isomer.atoms, complex_name])
             # ase.visualize.view(atoms) # Uncomment to visualize each assembled complex in ASE
 
             if idx >= n_max:

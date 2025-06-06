@@ -533,6 +533,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "EQISIWOC2_Ru",
+        "stoichiometry": "RuC56H64F3N4PSi2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "c198662be16c2f5895ef92981ccdd3d4",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -1483,14 +1491,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "EQISIWOC2_Ru",
-        "stoichiometry": "RuC56H64F3N4PSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "c198662be16c2f5895ef92981ccdd3d4",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0

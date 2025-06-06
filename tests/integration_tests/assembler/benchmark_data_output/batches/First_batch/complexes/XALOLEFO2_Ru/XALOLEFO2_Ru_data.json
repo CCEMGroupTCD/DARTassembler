@@ -229,6 +229,14 @@
             "H"
         ]
     },
+    "global_props": {
+        "complex_name": "XALOLEFO2_Ru",
+        "stoichiometry": "RuC20H28N4O2",
+        "charge": 0,
+        "total_oxi_state": 2,
+        "graph_hash": "f675a11bf486ddcedb5f0f9f6d57076c",
+        "batch_name": "First_batch"
+    },
     "graph": {
         "graph": {
             "0": {
@@ -627,14 +635,6 @@
                 "node_label": "H"
             }
         }
-    },
-    "global_props": {
-        "complex_name": "XALOLEFO2_Ru",
-        "stoichiometry": "RuC20H28N4O2",
-        "charge": 0,
-        "total_oxi_state": 2,
-        "graph_hash": "f675a11bf486ddcedb5f0f9f6d57076c",
-        "batch_name": "First_batch"
     },
     "metal_idc": [
         0
