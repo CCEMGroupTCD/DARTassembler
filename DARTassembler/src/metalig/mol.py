@@ -1098,20 +1098,21 @@ class Ligand(BaseMolecule):
 
     def get_isomers_effective_ligand_atoms_with_effective_donor_indices(self, dummy='Cu') -> tuple[ase.Atoms, list[list[int]]]:
         """
-        For each geometric isomer of this ligand, returns the effective donor atoms in which a dummy donor atom is placed at the mean position of each haptic group. Also returns the effective donor indices of each isomer. In total, the resulting ase.Atoms and indices can be used like any other ligand without haptic interactions.
+        This function solves the issue of making a ligand with haptic interactions into an effective ligand without haptic interactions. It will return two properties: an ase.Atoms() object of the effective ligand atoms and a list of lists, in which the outer list is each geometrical isomer and the inner list is all donor indices, either of the dentic donors or the dummy atoms of each haptic group. For a ligand without haptic interactions, these outputs are identical to `self.atoms` and `self.geometric_isomers_hapdent_idc`.
+        For a ligand with haptic interaction, for each haptic group, a dummy atom is appended to the end of a copy of `self.atoms`, where the element symbol of the dummy atom is specified by the `dummy` parameter and the position is the mean of all atoms of the haptic group. Also, for a ligand with haptic interactions, the `self.geometric_isomers_hapdent_idc` is transformed so that the inner lists contain for dentic donors as before the index of this donor atom in the ase.Atoms object, while for haptic groups, the index of the dummy atom of this haptic group in the ase.Atoms object is used. For the ligand rotation in the AssembledIsomer(), this means that this ligand can be treated like a ligand without haptic interactions. However, one needs to keep in mind to remove the dummy atoms after they are not needed anymore, and then to not use the effective donor indices returned here, but the original `self.geometric_isomers_hapdent_idc` instead which still contains the haptic information.
         :param dummy: Element symbol of the dummy atom.
-        :return: Tuple of ase.Atoms object and list of effective donor indices for each isomer.
+        :return: Tuple of effective ligand atoms and donor indices for each isomer, ready for ligand rotation.
         """
-        eff_atoms, isomers_eff_donor_idc = get_isomers_effective_ligand_atoms_with_effective_donor_indices(
+        all_atoms, isomers_eff_donor_idc = get_isomers_effective_ligand_atoms_with_effective_donor_indices(
                                                     ligand_atoms=self.atoms,
                                                     geometric_isomers_hapdent_idc=self.geometric_isomers_hapdent_idc,
                                                     dummy=dummy
                                                     )
         # Doublechecking that the effective atoms are the same as the original atoms if there are no haptic interactions
         if not self.is_haptic:
-            assert eff_atoms == self.atoms, f'Error in isomer generation for ligand {self.unique_name}.'
+            assert all_atoms == self.atoms, f'Error in isomer generation for ligand {self.unique_name}.'
 
-        return eff_atoms, isomers_eff_donor_idc
+        return all_atoms, isomers_eff_donor_idc
 
     def get_ligand_geometry_and_isomers(self) -> tuple[str, list[ase.Atoms], tuple[Union[int, tuple[int]]], float, str, float]:
         """

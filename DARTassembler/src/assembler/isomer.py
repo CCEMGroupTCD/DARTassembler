@@ -562,7 +562,7 @@ class AssembledIsomer(BaseMolecule):
             # Merge the graphs of the ligands and the metal centers to get the full graph of the complex.
             graph, ligand_indices, donor_indices = get_merged_graph_from_ligands_and_metal_centers(ligands=ligands, metal_centers=metal_centers)
             global_props = {}   # Will be populated during the DART workflow.
-            # To save memory, each complex is saved with only the most important information about its ligands.
+            # To save disk space, each complex is saved with only the most important information about its ligands. The most important one, the ligand_idc, will be saved in the isomer object anyway. These here is only additional, convenient information (only maybe the 'unique_names' are really important).
             ligand_info = {
                 'unique_names': [lig.unique_name for lig in ligands],
                 'geometries': [lig.geometry for lig in ligands],
@@ -581,8 +581,14 @@ class AssembledIsomer(BaseMolecule):
                             )
             isomers.append(isomer)
 
-        # Warnings for each isomer. If an isomer has no issues, the note should be ''. If an isomer is excluded because of clashing ligands or symmetrical ligands, the note should be `clashing_ligands' or `symmetrical_ligands`. todo @Cian: Please add corresponding warnings here after implementing the checks.
-        warnings = ['' for _ in isomers]
+        # todo @Cian: Please implement the clashing ligands and equivalent isomers here.
+
+        # Warnings for each isomer. If an isomer has no issues, the note should be ''. If an isomer is excluded because of clashing ligands or because it's equivalent to another one, the note should be `clashing_ligands' or `equivalent_to_previous_isomer`.
+        warnings = []
+        for isomer in isomers:
+            # todo @Cian: Please implement checks for clashing ligands or equivalent isomers here and in case of one of these issues, make the `isomer_warning` variable either "clashing_ligands" or "equivalent_to_previous_isomer". Only if the isomer has no issues, the `isomer_warning` should be an empty string.
+            isomer_warning = '' # For now, no issues are checked and we just always return an empty string, which means all isomers are treated as good.
+            warnings.append(isomer_warning)
 
         return isomers, warnings
 
@@ -705,35 +711,11 @@ class ReduceIsomers:
 
 
 
-
-
-# # Notes for talk with Cian
-# # algorithm above? Is this the align_vectors method?
-# # New refactoring:
-# # old way:
-# ChemBuild = AssembledIsomer(
-#                             ligands=...,
-#                             target_vectors=...,
-#                             ligand_origins=...,
-#                             metal_centers=...,
-#                             )
-# isomers = ChemBuild.get_isomers()   # returns a list of ase.Atoms() objects
-# # To save these, one needs to somehow combine the ase.Atoms() object with the graph and some other data like the metal OS:
-# for isomer in isomers:
-#     graph = ...
-#     metal_os = ...
-#     save_dict = {"graph": graph, "metal_os": metal_os, "atoms": isomer}
-#
-# # new way:
-# isomers = AssembledIsomer.from_ligands_and_metal_centers(   # isomers is a list of AssembledIsomer() objects
-#                                                             ligands=...,
-#                                                             target_vectors=...,
-#                                                             ligand_origins=...,
-#                                                             metal_centers=...,
-#                                                             )
-# # To save this, we can simply do the following:
-# for isomer in isomers:
-#     isomer.save_to_file("path/to/save/file.json")
-# # Is also be much simpler to generalize since we can use the BaseMolecule class as parent class for the AssembledIsomer class
+# - First make sure we have all the simple base functionalities working 100%
+#   - generate all isomers, with a default option to use `ligand.geometric_isomers_hapdent_idc` instead of the currently used `ligand.ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()`
+#   - provide warnings for clashing ligands and symmetrically equivalent ligands
+# - Afterwards (!!!), we can start to implement the more advanced features
+#   - Making isomers of monodentates etc. by swapping the ligands around
+#   - Implementing custom background atoms to specify any kind of atoms that a user wants in the xyz
 
 

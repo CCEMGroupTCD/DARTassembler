@@ -61,13 +61,17 @@ def get_isomers_effective_ligand_atoms_with_effective_donor_indices(
                                                                     dummy='Cu'
                                                                     ) -> tuple[ase.Atoms, list[list[int]]]:
     """
-    For each geometric isomer of this ligand, returns the effective donor atoms in which a dummy donor atom is placed at the mean position of each haptic group. Also returns the effective donor indices of each isomer. In total, the resulting ase.Atoms and indices can be used like any other ligand without haptic interactions.
+    For each geometric isomer of this ligand, returns all effective atoms of the ligand, i.e. all ligand atoms, and in case of haptic groups, additionally the effective donor atoms. Also returns the effective donor indices of each isomer. In total, the resulting ase.Atoms and indices can be used like any other ligand without haptic interactions.
+    :param ligand_atoms: ase.Atoms object of the ligand.
+    :param geometric_isomers_hapdent_idc: List of lists of donor indices with haptic groups in sub-lists. Each list corresponds to a geometric isomer of the ligand. The order of the indices in the sub-lists is the same as in the original ligand atoms.
     :param dummy: Element symbol of the dummy atom.
-    :return: Tuple of ase.Atoms object and list of effective donor indices for each isomer.
+    :return: Tuple of ase.Atoms object and list of effective donor indices for each isomer:
+    - ase.Atoms object. If all donors are dentic, this is the same as the original ligand atoms. If there are haptic groups, for each haptic group a dummy donor atom is appended to the ase.Atoms object.
+    - List of lists of donor indices. The outer lists are the isomers, the inner lists are the donor indices. In this list, each dentic donor is simply represented by its index, while each haptic group is represented by the index of the dummy donor atom of this haptic group in the ase.Atoms object.
     """
     # Get the effective donor atoms and indices with always the same hapdent_idc.
     ref_hapdent_idc = geometric_isomers_hapdent_idc[0]
-    eff_atoms, eff_idc = get_all_effective_ligand_atoms_with_effective_donor_indices(
+    all_atoms, eff_idc = get_all_effective_ligand_atoms_with_effective_donor_indices(
         ligand_atoms=ligand_atoms,
         hapdent_idc=ref_hapdent_idc,
         dummy=dummy
@@ -79,7 +83,7 @@ def get_isomers_effective_ligand_atoms_with_effective_donor_indices(
         eff_idc_ordered = [eff_idc[ref_hapdent_idc.index(i)] for i in hapdent_idc]
         isomers_eff_donor_idc.append(eff_idc_ordered)
 
-    return eff_atoms, isomers_eff_donor_idc
+    return all_atoms, isomers_eff_donor_idc
 
 def get_all_effective_ligand_atoms_with_effective_donor_indices(ligand_atoms: ase.Atoms, hapdent_idc: list, dummy: str= 'Cu') -> tuple[ase.Atoms, list[int]]:
     """
