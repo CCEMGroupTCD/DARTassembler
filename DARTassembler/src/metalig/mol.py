@@ -1297,7 +1297,7 @@ class Ligand(BaseMolecule):
         elif mode == 'all':
             return distances.min(), distances.max(), distances[self.donor_idc].tolist()
 
-    def _get_charge_as_int(self) -> Union[int, np.nan]:
+    def _get_charge_as_int(self) -> Union[int, 'nan']:
         """
         Returns the charge of the ligand as an integer or as np.nan if the charge is not specified.
         :return: Charge of the ligand as an integer or np.nan if the charge is not specified.
