@@ -1,5 +1,5 @@
 """
-This file contains the classes and methods that are used to process the input data and generate the assembled transition metal complexes.
+This file contains the classes and methods that are used to process the input data and generate the assembled transition metal complex isomers.
 """
 import warnings
 from typing import Dict, Any, List, Optional, Tuple, Union
