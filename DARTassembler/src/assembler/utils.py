@@ -1,6 +1,15 @@
 import hashlib
 import random
+import ase
+import numpy as np
+from typing import List, Tuple
 
+
+def are_atoms_equal(atom1: ase.Atom, atom2: ase.Atom) -> bool:
+    """
+    Compares two ase.Atoms objects to see if they are equal.
+    """
+    return atom1.symbol == atom2.symbol and np.allclose(atom1.position, atom2.position)
 
 def generate_pronounceable_word(length=5, seed=None, start_with_vowel=None) -> str:
     """

@@ -7,7 +7,7 @@ import numpy as np
 from DARTassembler.src.misc.io import save_to_xyz
 import warnings
 
-from dev.Assembler_revision_jan_2025.assembler.utilities import AssembledIsomer
+from dev.Assembler_revision_jan_2025.assembler.utilities import Isomer
 from DARTassembler.src.misc.tests import IntegrationTest
 
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -168,7 +168,7 @@ def angle_between_vectors(v1, v2, degrees=True) -> float:
 #     #     return self.atoms
 #
 #
-# class AssembledIsomer(object):
+# class Isomer(object):
 #
 #     def __init__(
 #                     self,
@@ -289,7 +289,7 @@ if __name__ == '__main__':
             [ase.Atom(symbol='Fe', position=[1, 0, 0])]
         ]
         ligands = [ligand for ligand in [monodentate, bidentate, tridentate]]
-        isomers = AssembledIsomer.from_ligands_and_metal_centers(
+        isomers = Isomer.from_ligands_and_metal_centers(
                                                                     ligands=ligands,
                                                                     target_vectors=target_vectors,
                                                                     ligand_origins=ligand_origins,
