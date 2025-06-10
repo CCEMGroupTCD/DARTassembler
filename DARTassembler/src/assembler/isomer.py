@@ -361,16 +361,7 @@ class IsomerFactory(object):
         :return: List of Isomer objects.
 
         Example usage for assembling a bi-metallic complex with three monodentate ligands, one of them bridging:
-        target_vectors = [
-                            [[1, 0, 0]],
-                            [[0, 0, 1]],
-                            [[-1, 0, 0]],
-                         ]
-        ligand_origins = [
-                            [0, 0, 0],
-                            [0, 0, 0],
-                            [0, 0, 0]
-                            ] # if all are at the origin like here, the `ligand_origins` can also be omitted
+        ligands = ... (list of three monodentate Ligand() objects, usually from the MetaLig database)
         ru = ['Ru', [1, 0, 0]]
         fe = ['Fe', [-1, 0, 0]]
         metal_centers = [
@@ -378,6 +369,16 @@ class IsomerFactory(object):
                             [ru, fe],   # metal centers for the second, bridging ligand
                             [fe]        # metal center for the third ligand
                         ]
+        target_vectors = [
+                            [[1, 0, 0]],
+                            [[0, 0, 1]],
+                            [[-1, 0, 0]],
+                         ]
+        ligand_origins = [  # if all are at the origin like here, the `ligand_origins` can also be omitted
+                            [0, 0, 0],
+                            [0, 0, 0],
+                            [0, 0, 0]
+                            ]
         factory = IsomerFactory(
                                     ligands=ligands,
                                     target_vectors=target_vectors,
@@ -389,6 +390,7 @@ class IsomerFactory(object):
         # Handle defaults for `ligand_origins` and `metal_centers`
         if ligand_origins is None:
             ligand_origins = [[0.0, 0.0, 0.0] for _ in ligands]
+        # todo: I guess the `ligand_origins` defaults for ligands that are connected to only one metal to its metal center coordinates, and for ligands that are connected to multiple metal centers to the average of the metal center coordinates (i.e. in the center of them)?
         if isinstance(metal_centers, str):
             # If the metal center is provided as a chemical element, it's a mono-metallic complex at the origin
             metal_centers = [[ase.Atom(symbol=metal_centers, position=[0, 0, 0])] for _ in ligands]
@@ -405,7 +407,7 @@ class IsomerFactory(object):
 
         self.ligands = ligands
         self.target_vectors = target_vectors
-        self.ligand_origins = ligand_origins    # todo: currently not used
+        self.ligand_origins = ligand_origins    # todo: not used in the code yet, to be implemented.
         self.metal_centers = metal_centers
 
     # This is the method used in the DART workflow to generate isomers.
