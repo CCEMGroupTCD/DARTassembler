@@ -7,14 +7,13 @@ from typing import Union, List, Tuple
 import json
 import re
 
-from DARTassembler.src.assembly.stk_utils import stkBB_to_networkx_graph
-from DARTassembler.src.constants.periodic_table import Element as element
+from DARTassembler.src.constants.chem import Element as element
 from DARTassembler.src.misc.io import read_xyz
 from DARTassembler.src.metalig.utils import angle_between_ab_ac_vectors
 
-from DARTassembler.src.metalig.mol import RCA_Molecule, RCA_Ligand
+from DARTassembler.src.metalig.mol import BaseMolecule, Ligand
 from DARTassembler.src.metalig.utils_graph import get_sorted_atoms_and_indices_from_graph, graph_from_graph_dict, get_graph_hash
-from DARTassembler.src.assembly.utilities_assembly import generate_pronounceable_word
+from DARTassembler.src.assembler.utils import generate_pronounceable_word
 
 atomic_number_Hg = 80
 
@@ -26,7 +25,7 @@ class TransitionMetalComplex(object):
     This class represents a mono-metallic transition metal complex assembled by DART. It contains all kind of information about the complex, including the ligands, the metal, the graph, the atomic properties, etc. Importantly, the graph and the atomic properties have consistent indices. A TransitionMetalComplex can be saved as a json file and loaded again.
     """
 
-    mol: RCA_Molecule
+    mol: BaseMolecule
 
     def __init__(self,
                  atomic_props: dict,
@@ -61,11 +60,11 @@ class TransitionMetalComplex(object):
         assert graph_elements == self.atomic_props["atoms"]
         assert nx.is_connected(self.graph), "The graph is not fully connected!"
 
-        self.mol = RCA_Molecule.make_from_atomic_properties(
-                                                            atomic_props_mol=self.atomic_props,
-                                                            global_props_mol={},
-                                                            graph=self.graph
-                                                            )
+        self.mol = BaseMolecule(
+                                    atomic_props=self.atomic_props,
+                                    global_props={},
+                                    graph=self.graph
+                                    )
 
         self.donor_indices = sorted(self.graph.neighbors(self.metal_idx))
         self.donor_elements = [self.atomic_props['atoms'][idx] for idx in self.donor_indices]
@@ -132,7 +131,7 @@ class TransitionMetalComplex(object):
     def merge_graph_from_ligands(ligands, metal) -> Tuple[nx.Graph, List, List]:
         """
         Merges the graphs from the ligands into one graph. The metal is added as a node with index 0 and connected to the donor atoms of the ligands.
-        :param ligands: dict[RCA_Ligand]
+        :param ligands: dict[Ligand]
         :param metal: str
         :return: Tuple of the merged graph of the complex, the indices of the ligand atoms and the indices of the ligand donor atoms
         """
@@ -222,14 +221,14 @@ class TransitionMetalComplex(object):
     @classmethod
     def from_stkBB(cls,
                  compl: stk.ConstructedMolecule = None,
-                 ligands: dict[RCA_Ligand] = None,
+                 ligands: dict[Ligand] = None,
                  metal_charge: int = 2,
                  metal: str = "Fe",
                  metal_idx: int = 0,
                  ):
         """
         :param compl: stk.ConstructedMolecule
-        :param ligands: dict[RCA_Ligand]
+        :param ligands: dict[Ligand]
         :param metal: str
         :param metal_charge: int
         """
