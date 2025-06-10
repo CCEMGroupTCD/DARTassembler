@@ -14,15 +14,15 @@
 Note from Timo: In my time writing scientific python code, I have often tried to implement all the features I wanted from the beginning and to make everything perfect from the beginning on. However, every time I ended up with a very complex and slow development process, and in the end I still had to change a lot because scientific software development is always messy and one can never predict everything. On the other hand, whenever I restrained myself and focused on implementing just the core features first, I ended up with a much simpler and faster development process, and in the end I could implement all the advanced features by making only small, local changes. Therefore, I would like to learn from this experience now for the DART refactoring. From my experience I would say that it is very recommendable to develop in stages, where first one tries to develop the core functionalities asap and tests them well and completely forgets about the advanced stuff. Afterwards, the code will be in a good enough state that usually it is easy to go in and locally change and add something to implement advanced features, and it is much faster and better than when doing that from begin with. Therefore, I would like to suggest the following plan for the DART refactoring process:
 
 Core functionalities to be implemented first, in order of priority:
-1. Agree on the format for all the input of the `AssembledIsomer().from_ligands_and_metal_centers()` method which is used in the DART workflow. If any changes should be really required later on (which tbh will always be the case), let's talk and exchange our ideas early and agree on the updated specifications. For the addition of new features, new parameters can initially simply be added for quick development, but after a bit of a try-out phase we should exchange ideas and agree on the exact format of the new parameters, so we don't have to change it later on. 
-2. Implement output of warnings for clashing ligands and symmetrically equivalent ligands (as can be seen at the end of the `AssembledIsomer().from_ligands_and_metal_centers()` method). Very important to do asap because it was part of the old DART workflow.
-3. Implement that the metal-ligand distance is adapted depending on the metal center a ligand is coordinated to. This should be done for now only for ligands which connect to only one metal center, not for bridging ligands, because that's much more complex. However, it is complicated, because it also needs to work for haptic ligands, where we have a Cu atom right now as the dummy atom, but of course the ligand should not be placed that far way, but instead depending on its actual donor atoms. There are two options I see how to implement this: keep track of the elements of the original haptic donor atoms and then calculate the mean donor distance from these, or changing the Cu dummy atom to one of the actual donor atom elements and then just use that as an approximation. I would personally prefer the first options because I think it is more robust and logical. 
-4. By default, remove the `try_all_geometrical_isomer_possibilities()` from `get_rotated_ligands()`, since as discussed a month ago, we will assume that the target vectors are in the correct order, and otherwise throw an error in the Python code for the user, or sort it ourselves in the DART workflow. 
-5. Implement everything to work perfectly with haptic and multi-metallic systems. This alone will take a good while and is difficult, so we need to focus on this because these are the actual core features that make DART so powerful. 
-Lower priorities in the AssembledIsomer() class, to implement once the main priorities are fully done and well tested:
+1. Agree on the format for all the input of the `Isomer().from_ligands_and_metal_centers()` method which is used in the DART workflow. If any changes should be really required later on (which tbh will always be the case), let's talk and exchange our ideas early and agree on the updated specifications. For the addition of new features, new parameters can initially simply be added for quick development, but after a bit of a try-out phase we should exchange ideas and agree on the exact format of the new parameters, so we don't have to change it later on. 
+2. Implement output of warnings for clashing ligands and symmetrically equivalent ligands (as can be seen at the end of the `Isomer().from_ligands_and_metal_centers()` method). Very important to do asap because it was part of the old DART workflow.
+3. Implement everything to work perfectly with haptic and multi-metallic systems. This alone will take a good while and is difficult, so we need to focus on this because these are the actual core features that make DART so powerful. 
+Lower priorities in the Isomer() class, to implement once the main priorities are fully done and well tested:
+4. By default, remove the `try_all_geometrical_isomer_possibilities()` from `get_rotated_ligands()`, since as discussed, we will assume that the target vectors are in the correct order, and otherwise throw an error in the Python code for the user, or sort it ourselves in the DART workflow.
 5. Add background atoms, an option to specify custom atoms which will be added to the complex xyz. This feature will probably also replace or be integrated with the old way of customized moving ligand atoms, as done in the rotation of the Pd-Ni ligand. 
-6. Swap around ligands to be able to generate all isomers, also of monodentates. While this is a cool feature and I think it will definitely be part of DART soon, we are right now in the stage of developing and testing the core features, which is already difficult enough. This feature is quite complex and would slow down the development a lot if we take it into account all the time while developing the other stuff. Therefore, the development should happen in stages: In the first stage, we focus on the core stuff, which is already very difficult to get right. Then, once we have all the other code finished, it will be much easier to implement this feature as well.
-7. Doublecheck and validate the user input. Very important but also time-consuming and prone to implement things that become unnecessary later on.
+6. Implement that the metal-ligand distance is adapted depending on the metal center a ligand is coordinated to. This should be done for now only for ligands which connect to only one metal center, not for bridging ligands, because that's much more complex. However, it is complicated, because it also needs to work for haptic ligands, where we have a Cu atom right now as the dummy atom, but of course the ligand should not be placed that far way, but instead depending on its actual donor atoms. There are two options I see how to implement this: keep track of the elements of the original haptic donor atoms and then calculate the mean donor distance from these, or changing the Cu dummy atom to one of the actual donor atom elements and then just use that as an approximation. I would personally prefer the first options because I think it is more robust and logical. 
+7. Swap around ligands to be able to generate all isomers, also of monodentates. While this is a cool feature and I think it will definitely be part of DART soon, we are right now in the stage of developing and testing the core features, which is already difficult enough. This feature is quite complex and would slow down the development a lot if we take it into account all the time while developing the other stuff. Therefore, the development should happen in stages: In the first stage, we focus on the core stuff, which is already very difficult to get right. Then, once we have all the other code finished, it will be much easier to implement this feature as well.
+8. Doublecheck and validate the user input. Very important but also time-consuming and prone to implement things that become unnecessary later on.
    - Small note about the last point, maybe it helps you: I have seen that you implemented very sophisticated classes for the input, like MetalSpec and LigandSpec. This is very professional a great idea.  However, right now we are in the stage of implementing the core features. Therefore, it is best to leave this doublechecking to the very end, once everything else is done, because it slows down the development of the actual features and usually just makes one write code that in the end isn't needed. I made exactly this mistake with the old DART workflow, where I spent a lot of time on this and then I had to change it all the time and now I can barely use any of it. Therefore, it's so important for me now to prioritize very hard, in order to learn from this experience. Additionally, I would also recommend to not use a yaml file but to simply define the input lists in the python file you use as playground for the development, since this is also easier and more intuitive (for an example see the end of the `assembler.py` file where I do this for the workflow). If you do prefer to have a yaml file (which in the end is equivalent), I would still recommend to not implement any doublechecking of the input for now.
 
 ## Code structure of the `DARTassembler` package
@@ -34,7 +34,7 @@ As such, the following Python classes need the ability to be accessed via the CL
 - `dbinfo()` a function to get a csv and concatenated .xyz files from a ligand db .jsonlines file
 
 The following Python classes do not need to be accessed via yaml since they will never be called from the CLI
-- `AssembledIsomer()` -> the class that assembles 3D TMCs from a list of ligands
+- `Isomer()` -> the class that assembles 3D TMCs from a list of ligands
 - `Ligand()` -> the class representing a ligand from the MetaLig
 
 ### Assembler() 
@@ -57,13 +57,13 @@ It implements the following functionalities:
 - Run from a list of keywords (called in Python) or from a yaml file
 - Load all required ligand databases
 - Generate combinations of ligands to be assembled together in the same complex
-- Call the `AssembledIsomer()` class to generate a list of 3D geometries from the specified ligands and metal centers
+- Call the `Isomer()` class to generate a list of 3D geometries from the specified ligands and metal centers
 - Save all generated isomers and accompanying information to an output directory
 
-### AssembledIsomer()
+### Isomer()
 This class is used to assemble the 3D geometries of the ligands and is maintained mostly by Cian. It currently has the following inputs (and a few more options will still be added):
 ```python
-class AssembledIsomer(BaseMolecule):
+class Isomer(BaseMolecule):
     def __init__(self,
                     atomic_props: Union[ase.Atoms, Dict[str, Any]],
                     graph: nx.Graph,
@@ -77,7 +77,7 @@ class AssembledIsomer(BaseMolecule):
 ```
 In the `Assembler()` class it is used like this:
 ```python
-isomers, warnings = AssembledIsomer.from_ligands_and_metal_centers(
+isomers, warnings = Isomer.from_ligands_and_metal_centers(
                                                                     ligands=ligands,
                                                                     target_vectors=self.target_vectors,
                                                                     ligand_origins=self.ligand_origins,
@@ -92,7 +92,7 @@ The input of this class are mostly Python lists of ligands, metal centers etc, w
 - Check if ligands clash
 
 ### Ligand()
-This class is used to represent a ligand from the MetaLig database and is maintained mostly by Timo. It has a wide range of properties to filter for in the ligandfilters module. It also has important properties for the `AssembledIsomer()` class such as the ligand geometry (`self.geometry`) and a list of list of indices of it's effective donor atoms, where the outer list are the possible (not-equivalent) possible orientations of the ligand (`self.geometric_isomers_hapdent_idc`).
+This class is used to represent a ligand from the MetaLig database and is maintained mostly by Timo. It has a wide range of properties to filter for in the ligandfilters module. It also has important properties for the `Isomer()` class such as the ligand geometry (`self.geometry`) and a list of list of indices of it's effective donor atoms, where the outer list are the possible (not-equivalent) possible orientations of the ligand (`self.geometric_isomers_hapdent_idc`).
 
 ### LigandFilters()
 A class that loads a ligand database file and call be called from a yaml in order to filter down the ligand database based on certain filters.

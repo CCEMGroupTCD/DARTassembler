@@ -5,7 +5,7 @@ import json
 import pandas as pd
 import numpy as np
 from DARTassembler.src.misc.io import write_yaml
-from DARTassembler.src.assembler.isomer import AssembledIsomer
+from DARTassembler.src.assembler.isomer import Isomer
 
 _gbl_optimization_movie = 'ffmovie.xyz'
 _gbl_concatenated_xyz = 'concat_passed_complexes.xyz'
@@ -239,8 +239,8 @@ class ComplexAssemblerOutput(object):
         df.to_csv(self.ligand_output_path, index=False)
 
     def save_data_json(self,
-                        complex: AssembledIsomer,
-                        ) -> None:
+                       complex: Isomer,
+                       ) -> None:
         """
         Saves all data in a contained json file.
         """

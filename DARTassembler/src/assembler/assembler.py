@@ -18,7 +18,7 @@ from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.assembler.ligands import LigandChoice
 from DARTassembler.src.misc.io import read_yaml
 from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, ComplexAssemblerOutput
-from DARTassembler.src.assembler.isomer import AssembledIsomer
+from DARTassembler.src.assembler.isomer import Isomer, IsomerFactory
 from DARTassembler.src.assembler.utils import generate_pronounceable_word
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
 
@@ -252,22 +252,23 @@ class Assembler(object):
             except StopIteration:
                 break # If all ligand combinations are exhausted, stop the batch
 
-            isomers, warnings = AssembledIsomer.from_ligands_and_metal_centers(
-                                                                        ligands=ligands,
-                                                                        target_vectors=self.target_vectors,
-                                                                        ligand_origins=self.ligand_origins,
-                                                                        metal_centers=self.metal_centers
-                                                                        )
+            factory = IsomerFactory(
+                                    ligands=ligands,
+                                    target_vectors=self.target_vectors,
+                                    ligand_origins=self.ligand_origins,
+                                    metal_centers=self.metal_centers
+                                    )
+            isomers = factory.generate_isomers()
 
             # Post-processing of isomers
             logging.debug("Post-processing isomers")
             isomer_idx = 1  # Index for naming the isomer
-            for isomer, warning in zip(isomers, warnings):
-                self._save_assembled_isomer(isomer=isomer, isomer_idx=isomer_idx, note=warning)
+            for isomer in isomers:
+                self._save_assembled_isomer(isomer=isomer, isomer_idx=isomer_idx)
                 isomer_idx += 1
 
             # Update counters if at least one isomer was successfully assembled for this complex
-            any_good_isomers = any(warning == '' for warning in warnings)
+            any_good_isomers = any(isomer.warning == '' for isomer in isomers)
             if any_good_isomers:
                 batch_sum_assembled_complexes += 1
                 progressbar.update(1)
@@ -313,11 +314,11 @@ class Assembler(object):
 
         return new_stk_ligand_building_blocks_list
 
-    def _save_assembled_isomer(self, isomer: AssembledIsomer, isomer_idx: int, note: str):
+    def _save_assembled_isomer(self, isomer: Isomer, isomer_idx: int):
         """
         Save the successfully assembled complex to the output files.
         """
-        success = True if note == '' else False
+        success = True if isomer.warning == '' else False
 
         name = self._get_unique_complex_name(complex=isomer, isomer_idx=isomer_idx)
 
@@ -331,7 +332,7 @@ class Assembler(object):
         }
 
         # Add a comment to the xyz file with complex and ligand names for easier identification
-        xyz_comment = f'complex_name: {name}, ligand_unique_names: ({", ".join(isomer.ligand_info["unique_names"])}), note: {note}'
+        xyz_comment = f'complex_name: {name}, ligand_unique_names: ({", ".join(isomer.ligand_info["unique_names"])}), note: {isomer.warning}'
         xyz_string = isomer.get_xyz_string(comment=xyz_comment)
 
         # Save to complex directory
@@ -351,7 +352,7 @@ class Assembler(object):
 
         # Save data for csv file.
         complex_idx = ( len(self.assembled_complex_names) - 1 ) if success else None
-        self._add_batch_info(complex=isomer, success=success, note=note, complex_idx=complex_idx)
+        self._add_batch_info(complex=isomer, success=success, complex_idx=complex_idx)
 
         return
 
@@ -406,7 +407,7 @@ class Assembler(object):
 
         return name
 
-    def _add_batch_info(self, complex: AssembledIsomer, success, note: str, complex_idx: int) -> None:
+    def _add_batch_info(self, complex: Isomer, success, complex_idx: int) -> None:
         """
         Add information about the batch to the batch info variable which will be saved to the batch info file.
         """
@@ -418,7 +419,7 @@ class Assembler(object):
             'complex_name': complex.global_props['complex_name'],
             'stoichiometry': complex.global_props['stoichiometry'],
             'graph_hash': complex.global_props['graph_hash'],
-            'note': note,
+            'note': complex.warning,
             'ligand_unique_names': complex.ligand_info['unique_names'],
             'ligand_geometries': complex.ligand_info['geometries'],
             'ligand_stoichiometries': complex.ligand_info['stoichiometries'],
@@ -517,7 +518,7 @@ if __name__ == '__main__':
 
     # Check if the code can read in a complex json file
     json_path = dart.assembled_complex_json_paths[0]
-    isomer = AssembledIsomer.from_json(json_path)
+    isomer = Isomer.from_json(json_path)
 
     # out_json2 = load_json('/Users/timosommer/PhD/projects/DARTassembler/dev/DART_refactoring_to_v1_1_0/data/assembler/data_output/batches/First_batch/complexes/ADIYOWOZ1test/ADIYOWOZ1test_data.json')
 

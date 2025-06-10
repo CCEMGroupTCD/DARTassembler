@@ -10,6 +10,7 @@ import itertools
 import ase
 import networkx as nx
 from copy import deepcopy
+from DARTassembler.src.assembler.utils import are_atoms_equal
 from DARTassembler.src.metalig.geometry import try_all_geometrical_isomer_possibilities
 from DARTassembler.src.constants.chem import Element
 from DARTassembler.src.metalig.db import LigandDB
@@ -17,153 +18,6 @@ from DARTassembler.src.metalig.mol import BaseMolecule, Ligand
 from DARTassembler.src.constants import chem as PerTab
 from DARTassembler.src.misc.io import load_json
 from DARTassembler.src.metalig.utils_graph import graph_from_graph_dict
-
-
-
-def get_merged_graph_from_ligands_and_metal_centers(
-                                                    ligands: list[Ligand],
-                                                    metal_centers: list[list[ase.Atom]]
-                                                    ) -> tuple[nx.Graph, list, list]:
-    """
-    Merges the graphs from the ligands into one graph. The metal is added as a node with index 0 and connected to the donor atoms of the ligands.
-    # todo
-        This function does not yet work perfectly for multidentate bridging ligands. The donor atoms of the ligands are not correctly connected to the metal center. E.g. for a bidentate bridging atom with two metal donors, all donor atoms are connected to each metal of the two metal centers. This needs to be either fixed or documented.
-    :param ligands: List of Ligand objects
-    :param metal_centers: List of list of connected metal centers for each ligand
-    :return: Tuple of the merged graph of the complex, the indices of the ligand atoms and the indices of the ligand donor atoms
-    """
-    ligand_graphs = [deepcopy(lig.graph) for lig in ligands]
-    unique_metal_centers = get_all_unique_metal_centers(metal_centers)
-
-    # Create the new graph by merging everything
-    graph = nx.Graph()
-    for i, unique_metal_center in enumerate(unique_metal_centers):
-        graph.add_nodes_from([(i, {"node_label": unique_metal_center.symbol})])
-
-    # Relabel the nodes of the old graphs so that they are unique for the next step
-    i = len(unique_metal_centers)  # start after the metals
-    ligand_indices = []
-    for ligand_graph in ligand_graphs:
-        node_mapping = {node: i + k for k, node in enumerate(sorted(ligand_graph.nodes))}
-        nx.relabel_nodes(ligand_graph, mapping=node_mapping, copy=False)
-        ligand_indices.append(list(node_mapping.values()))
-        i += len(ligand_graph.nodes)
-
-    # Copy the ligand graphs
-    for ligand_graph in ligand_graphs:
-        graph.add_nodes_from(ligand_graph.nodes(data=True))     # add ligand nodes
-        graph.add_edges_from(ligand_graph.edges())              # add ligand edges
-
-    # Connect the metal centers to the ligands
-    ligand_donor_indices = [[] for _ in ligands]
-    for i, (ligand, ligand_metal_centers, ligand_graph) in enumerate(zip(ligands, metal_centers, ligand_graphs)):
-        for metal_center in ligand_metal_centers:
-            unique_metal_center_idx = [i for i, atom in enumerate(unique_metal_centers) if are_atoms_equal(atom, metal_center)][0]
-            for atomic_donor_idx in ligand.donor_idc:
-                assert ligand.atomic_props['atoms'][atomic_donor_idx] in ligand.donor_elements, f"Atom {ligand.atomic_props['atoms'][atomic_donor_idx]} is not a donor atom of ligand."
-                graph_donor_idx = sorted(ligand_graph.nodes)[atomic_donor_idx]
-                graph.add_edge(unique_metal_center_idx, graph_donor_idx)
-                if graph_donor_idx not in ligand_donor_indices[i]:
-                    ligand_donor_indices[i].append(graph_donor_idx)
-
-    # Check if everything is valid
-    assert nx.is_connected(graph), "The graph is not fully connected!"
-    assert all([set(ligand_donor_indices[i]).issubset(set(ligand_indices[i])) for i in
-                range(len(ligand_indices))]), "The ligand donor indices are not subset of the ligand indices!"
-    assert sorted(graph.nodes) == list(
-        range(len(graph.nodes))), f"The graphs indices are not in order: {list(graph.nodes)}"
-
-    all_atomic_elements = [unique_metal_center.symbol for unique_metal_center in unique_metal_centers]
-    for ligand in ligands:
-        all_atomic_elements += ligand.atomic_props['atoms']
-    all_graph_elements = [graph.nodes[node]['node_label'] for node in sorted(graph.nodes)]
-    assert all_graph_elements == all_atomic_elements, f"The graph elements do not match the atomic elements: {all_graph_elements} vs {all_atomic_elements}!"
-
-    atomic_donor_elements = sorted([el for lig in ligands for el in lig.donor_elements])
-    graph_donor_elements = sorted([graph.nodes[node]['node_label'] for idc in ligand_donor_indices for node in sorted(graph.nodes) if node in idc])
-    assert atomic_donor_elements == graph_donor_elements, f"The atomic donor elements do not match the graph donor elements: {atomic_donor_elements} vs {graph_donor_elements}!"
-
-    # For debugging: Plot the graph only for the metals and the coordination atoms
-    # plot_graph = deepcopy(graph)
-    # keep_idc = list(range(len(unique_metal_centers))) + [idx for idc in ligand_donor_indices for idx in idc]
-    # for node in list(plot_graph.nodes):
-    #     if node not in keep_idc:
-    #         plot_graph.remove_node(node)
-    # view_graph(plot_graph)
-
-    # Flatten the ligand donor indices
-    donor_idc = [idx for idc in ligand_donor_indices for idx in idc]
-
-    return graph, ligand_indices, donor_idc
-
-def get_rotated_ligands(ligands: List[Ligand], target_vectors: List[List[float]],
-                        ligand_origins: List[List[float]]) -> list[list[Atoms]]:
-    rotated_ligands = []
-    for ligand, target_vectors, origin in zip(ligands, target_vectors, ligand_origins):
-        # Extract the geometry and donor atoms of the ligand
-        atoms, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
-        # Cast the target vectors to numpy arrays
-        target_vectors = [np.array(v) for v in target_vectors]
-        # Align the donor atoms of the ligand to the target vectors
-        ligand_isomers, donor_atoms_ordered, rssd = try_all_geometrical_isomer_possibilities(atoms=atoms,
-                                                                                             donor_idc=donor_atoms[0],
-                                                                                             target_vectors=target_vectors)
-        # Remove the dummy atom from the haptic ligands
-        ligand_isomers = remove_haptic_dummy_atom(atoms_list=ligand_isomers, dummy_atom="Cu",
-                                                  donor_atoms_idc=ligand.hapdent_idc)
-
-        # Append the rotated ligands to the list
-        rotated_ligands.append(ligand_isomers)
-
-    return rotated_ligands
-
-def remove_haptic_dummy_atom(atoms_list: List[Atoms], dummy_atom: str, donor_atoms_idc: Tuple[Tuple[int]]):
-    """
-    Removes the dummy atom from the generated isomers.
-    :return: List[Atoms]
-    """
-    # Check to see if there is haptic coordination
-    haptic_coordination = False
-    for donor_atoms in donor_atoms_idc:
-        if type(donor_atoms) == tuple:
-            haptic_coordination = True
-            break
-        else:
-            pass
-
-    # If there is no haptic coordination, return the atoms list as is
-    if not haptic_coordination:
-        return atoms_list
-
-    # If there is haptic coordination, remove the dummy atom from the donor atoms
-    else:
-        for atoms in atoms_list:
-            dummy_idc = [i for i, atom in enumerate(atoms) if atom.symbol == dummy_atom]
-            dummy_idc.sort(
-                reverse=True)  # This is important so that the larger index is removed first so as not to change the index of the other atoms
-            for dummy_idx in dummy_idc:
-                atoms.pop(dummy_idx)
-        return atoms_list
-
-def get_all_unique_metal_centers(metal_centers) -> List[ase.Atom]:
-    """
-    Get a list of all unique metal centers.
-    :return: List of ase.Atom objects
-    """
-    unique_metal_centers = [metal_centers[0][0]]    # initialize the list with the first metal center
-    for metal_list in metal_centers:
-        for metal in metal_list:
-            metal_in_list = any([are_atoms_equal(metal, m) for m in unique_metal_centers])
-            if not metal_in_list:
-                unique_metal_centers.append(metal)
-
-    return unique_metal_centers
-
-def are_atoms_equal(atom1: ase.Atom, atom2: ase.Atom) -> bool:
-    """
-    Compares two atoms to see if they are equal.
-    """
-    return atom1.symbol == atom2.symbol and np.allclose(atom1.position, atom2.position)
 
 
 class LigandSpec:
@@ -397,7 +251,7 @@ class BatchInput:
         return self.batch.get(key, default)
 
 
-class AssembledIsomer(BaseMolecule):
+class Isomer(BaseMolecule):
 
     def __init__(self,
                     atomic_props: Union[ase.Atoms, Dict[str, Any]],
@@ -408,6 +262,7 @@ class AssembledIsomer(BaseMolecule):
                     ligand_info: Dict[str, Any] = None,
                     global_props: Dict[str, Any] = None,
                     validity_check: bool = False,
+                    warning: str = '',
                     ):
         if global_props is None:
             global_props = {}
@@ -425,6 +280,7 @@ class AssembledIsomer(BaseMolecule):
         self.donor_idc = donor_idc
         self.ligand_idc = ligand_idc
         self.ligand_info = ligand_info
+        self.warning = warning
 
         self._tmc_validity_checks()
 
@@ -440,8 +296,8 @@ class AssembledIsomer(BaseMolecule):
 
     def to_dict(self):
         """
-        Converts the AssembledIsomer object to a dictionary.
-        :return: Dictionary representation of the AssembledIsomer object
+        Converts the Isomer object to a dictionary.
+        :return: Dictionary representation of the Isomer object
         """
         d = super().to_dict()   # Base class takes care of atomic_props, global_props, and graph
         d.update({
@@ -464,40 +320,45 @@ class AssembledIsomer(BaseMolecule):
         return atoms
 
     @classmethod
-    def from_json(cls, filepath) -> 'AssembledIsomer':
+    def from_json(cls, filepath) -> 'Isomer':
         """
-        Loads an AssembledIsomer object from a .json file.
+        Loads an Isomer object from a .json file.
         :param filepath: Path to the .json file
-        :return: AssembledIsomer object
+        :return: Isomer object
         """
         data = load_json(filepath)
         return cls.from_dict(data)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'AssembledIsomer':
+    def from_dict(cls, data: Dict[str, Any]) -> 'Isomer':
         """
-        Creates an AssembledIsomer object from a dictionary in the correct format.
-        :param data: Dictionary containing the AssembledIsomer data
-        :return: AssembledIsomer object
+        Creates an Isomer object from a dictionary in the correct format.
+        :param data: Dictionary containing the Isomer data
+        :return: Isomer object
         """
         data['graph'] = graph_from_graph_dict(data['graph'])
         return cls(**data)
 
-    # Note: This is the method used in the DART workflow to generate isomers, so this function is very important.
-    @classmethod
-    def from_ligands_and_metal_centers(
-                                        cls,
-                                        ligands: List[Ligand],
-                                        target_vectors: List[List[float]],
-                                        metal_centers: Union[List[List[Union[str, List[float]]]], str],
-                                        ligand_origins: List[List[float]] = None,
-                                        ) -> Tuple[List['AssembledIsomer'], List[str]]:
+# todo @Cian: I made three little changes now here:
+    # 1. I renamed the `AssembledIsomer` class to `Isomer` for simplicity. This renaming is already mirrored everywhere in the code here but you might have to change it when you copy in stuff from your files. If we want, we can also always rename it at the end.
+    # 1. I added the `warning` as an attribute to the Isomer() class, so that it is more directly connected with it and easier to handle.
+    # 2. I added the following `IsomerFactory()` class, so that it is more clear that the output of the function we talked about is a list of isomers, not an Isomer() object itself.
+
+class IsomerFactory(object):
+
+    def __init__(self,
+                    ligands: List[Ligand],
+                    target_vectors: List[List[float]],
+                    metal_centers: Union[List[List[Union[str, List[float]]]], str],
+                    ligand_origins: List[List[float]] = None,
+                    ):
         """
-        Generates novel transition metal complexes from ligands and metal centers.
+        Generates isomers from a list of ligands and metal centers. The orientation of the ligands relative to its metal center is determined by the target vectors. The ligand_origins can be used to shift the ligand with respect to the metal center. If `metal_centers` is a chemical element such as 'Ru', it is assumed to be a mono-metallic complex at the origin.
         :param ligands: List of Ligand objects from the MetaLig database.
         :param target_vectors: List of target vectors for each ligand.
         :param metal_centers: List of tuple with element and position for each metal center. If a string is provided, it is assumed to be the chemical element of a mono-metallic complex at the origin.
         :param ligand_origins: List of the origin for each ligand.
+        :return: List of Isomer objects.
 
         Example usage for assembling a bi-metallic complex with three monodentate ligands, one of them bridging:
         target_vectors = [
@@ -517,14 +378,15 @@ class AssembledIsomer(BaseMolecule):
                             [ru, fe],   # metal centers for the second, bridging ligand
                             [fe]        # metal center for the third ligand
                         ]
-        isomers, warnings = AssembledIsomer.from_ligands_and_metal_centers(
+        factory = IsomerFactory(
                                     ligands=ligands,
                                     target_vectors=target_vectors,
                                     ligand_origins=ligand_origins,
                                     metal_centers=metal_centers
                                     )
+        isomers = factory.generate_isomers()
         """
-        # Handle default values
+        # Handle defaults for `ligand_origins` and `metal_centers`
         if ligand_origins is None:
             ligand_origins = [[0.0, 0.0, 0.0] for _ in ligands]
         if isinstance(metal_centers, str):
@@ -532,20 +394,31 @@ class AssembledIsomer(BaseMolecule):
             metal_centers = [[ase.Atom(symbol=metal_centers, position=[0, 0, 0])] for _ in ligands]
         else:
             # If the metal center is provided as a list of elements and positions, convert to ASE Atoms objects
-            metal_centers = [[ase.Atom(symbol=metal[0], position=metal[1]) for metal in metal_list] for metal_list in metal_centers]
+            metal_centers = [[ase.Atom(symbol=metal[0], position=metal[1]) for metal in metal_list] for metal_list in
+                             metal_centers]
 
-        # Check input format
-        all_same_length = len(ligands) == len(target_vectors) == len(ligand_origins) == len(
-            metal_centers)
+        # Check input format of lists
+        input_lengths = (len(ligands), len(target_vectors), len(ligand_origins), len(metal_centers))
+        all_same_length = all(length == input_lengths[0] for length in input_lengths)
         if not all_same_length:
-            raise ValueError(
-                "The input of ligands, target vectors, ligand origins and metal centers must have the same length.")
+            raise ValueError(f'Input lists must all have the same length. Got lengths: {input_lengths}')
 
-        rotated_ligands = get_rotated_ligands(ligands=ligands, target_vectors=target_vectors, ligand_origins=ligand_origins)
+        self.ligands = ligands
+        self.target_vectors = target_vectors
+        self.ligand_origins = ligand_origins
+        self.metal_centers = metal_centers
 
-        # Generate all combinations; each combination is a tuple with one isomer per ligand.
+    # This is the method used in the DART workflow to generate isomers.
+    def generate_isomers(self) -> List['Isomer']:
+        """
+        Generates all possible isomers from the ligands and metal centers.
+        :return: List of Isomer objects, each representing a unique isomer of the provided ligands and metal centers.
+        """
+        rotated_ligands = self._get_rotated_ligands()
+
+        # Generate all combinations. Each combination is a tuple with one isomer per ligand.
         combinations = list(itertools.product(*rotated_ligands))
-        unique_metal_centers = get_all_unique_metal_centers(metal_centers)
+        unique_metal_centers = self._get_all_unique_metal_centers()
         ase_isomers = []
         for combo in combinations:
             combined = Atoms()  # Start with an empty Atoms object.
@@ -560,37 +433,179 @@ class AssembledIsomer(BaseMolecule):
         isomers = []
         for ase_isomer in ase_isomers:
             # Merge the graphs of the ligands and the metal centers to get the full graph of the complex.
-            graph, ligand_indices, donor_indices = get_merged_graph_from_ligands_and_metal_centers(ligands=ligands, metal_centers=metal_centers)
-            global_props = {}   # Will be populated during the DART workflow.
+            graph, ligand_indices, donor_indices = self._get_merged_graph_from_ligands_and_metal_centers()
+            global_props = {}  # Will be populated during the DART workflow.
             # To save disk space, each complex is saved with only the most important information about its ligands. The most important one, the ligand_idc, will be saved in the isomer object anyway. These here is only additional, convenient information (only maybe the 'unique_names' are really important).
             ligand_info = {
-                'unique_names': [lig.unique_name for lig in ligands],
-                'geometries': [lig.geometry for lig in ligands],
-                'donors': ['-'.join(sorted(lig.donor_elements)) for lig in ligands],
-                'charges': [lig.charge for lig in ligands],
-                'stoichiometries': [lig.stoichiometry for lig in ligands],
+                'unique_names': [lig.unique_name for lig in self.ligands],
+                'geometries': [lig.geometry for lig in self.ligands],
+                'donors': ['-'.join(sorted(lig.donor_elements)) for lig in self.ligands],
+                'charges': [lig.charge for lig in self.ligands],
+                'stoichiometries': [lig.stoichiometry for lig in self.ligands],
             }
-            isomer = cls(
-                            atomic_props=ase_isomer,
-                            graph=graph,
-                            metal_idc=metal_idc,
-                            ligand_idc=ligand_indices,
-                            donor_idc=donor_indices,
-                            global_props=global_props,
-                            ligand_info=ligand_info,
-                            )
+            isomer = Isomer(
+                atomic_props=ase_isomer,
+                graph=graph,
+                metal_idc=metal_idc,
+                ligand_idc=ligand_indices,
+                donor_idc=donor_indices,
+                global_props=global_props,
+                ligand_info=ligand_info,
+                warning='',  # Initially no warning, will be updated later if needed
+            )
             isomers.append(isomer)
 
-        # todo @Cian: Please implement the clashing ligands and equivalent isomers here.
-
         # Warnings for each isomer. If an isomer has no issues, the note should be ''. If an isomer is excluded because of clashing ligands or because it's equivalent to another one, the note should be `clashing_ligands' or `equivalent_to_previous_isomer`.
-        warnings = []
-        for isomer in isomers:
-            # todo @Cian: Please implement checks for clashing ligands or equivalent isomers here and in case of one of these issues, make the `isomer_warning` variable either "clashing_ligands" or "equivalent_to_previous_isomer". Only if the isomer has no issues, the `isomer_warning` should be an empty string.
-            isomer_warning = '' # For now, no issues are checked and we just always return an empty string, which means all isomers are treated as good.
-            warnings.append(isomer_warning)
+        # todo @Cian: Please implement checks for clashing ligands or equivalent isomers here and in case of one of these issues, make the `isomer.warning` variable either "clashing_ligands" or "equivalent_to_previous_isomer". Only if the isomer has no issues, the `isomer.warning` should be an empty string.
+        # for isomer in isomers:
+        #     isomer.warning = ...  # Set the warning message based on the checks
 
-        return isomers, warnings
+        return isomers
+
+    def _get_rotated_ligands(self) -> list[list[Atoms]]:
+        """
+        Rotates the ligands according to the target vectors and returns a list of rotated ligands.
+        :return: List of lists of ASE Atoms objects, where the outer list corresponds to each ligand and the inner lists correspond to the isomers of that ligand.
+        """
+        rotated_ligands = []
+        for ligand, target_vectors, origin in zip(self.ligands, self.target_vectors, self.ligand_origins):
+            # Extract the geometry and donor atoms of the ligand
+            atoms, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
+            # Cast the target vectors to numpy arrays
+            target_vectors = [np.array(v) for v in target_vectors]
+            # Align the donor atoms of the ligand to the target vectors
+            ligand_isomers, donor_atoms_ordered, rssd = try_all_geometrical_isomer_possibilities(atoms=atoms,
+                                                                                                 donor_idc=donor_atoms[0],
+                                                                                                 target_vectors=target_vectors)
+            # Remove the dummy atom from the haptic ligands
+            ligand_isomers = self._remove_haptic_dummy_atom(atoms_list=ligand_isomers, dummy_atom="Cu", donor_atoms_idc=ligand.hapdent_idc)
+
+            # Append the rotated ligands to the list
+            rotated_ligands.append(ligand_isomers)
+
+        return rotated_ligands
+
+    @staticmethod
+    def _remove_haptic_dummy_atom(atoms_list: List[ase.Atoms], dummy_atom: str, donor_atoms_idc: Tuple[Tuple[int]]):
+        """
+        Removes the dummy atom from the generated isomers.
+        :param atoms_list: List of ASE Atoms objects representing the isomers.
+        :param dummy_atom: The symbol of the dummy atom to remove (e.g., "Cu").
+        :param donor_atoms_idc: Indices of the donor atoms in the isomers. If the donor atoms are tuples, it indicates haptic coordination.
+        :return: List[Atoms]
+        """
+        # Check to see if there is haptic coordination
+        haptic_coordination = False
+        for donor_atoms in donor_atoms_idc:
+            if type(donor_atoms) == tuple:
+                haptic_coordination = True
+                break
+            else:
+                pass
+
+        # If there is no haptic coordination, return the atoms list as is
+        if not haptic_coordination:
+            return atoms_list
+
+        # If there is haptic coordination, remove the dummy atom from the donor atoms
+        else:
+            for atoms in atoms_list:
+                dummy_idc = [i for i, atom in enumerate(atoms) if
+                             atom.symbol == dummy_atom]
+                dummy_idc.sort(
+                    reverse=True)  # This is important so that the larger index is removed first so as not to change the index of the other atoms
+                for dummy_idx in dummy_idc:
+                    atoms.pop(dummy_idx)
+            return atoms_list
+
+    def _get_all_unique_metal_centers(self) -> List[ase.Atom]:
+        """
+        Get a list of all unique metal centers.
+        :return: List of ase.Atom objects
+        """
+        unique_metal_centers = [self.metal_centers[0][0]]  # initialize the list with the first metal center
+        for metal_list in self.metal_centers:
+            for metal in metal_list:
+                metal_in_list = any([are_atoms_equal(metal, m) for m in unique_metal_centers])
+                if not metal_in_list:
+                    unique_metal_centers.append(metal)
+
+        return unique_metal_centers
+
+    def _get_merged_graph_from_ligands_and_metal_centers(self) -> tuple[nx.Graph, list, list]:
+        """
+        Merges the graphs from the ligands into one graph. The metal is added as a node with index 0 and connected to the donor atoms of the ligands.
+        # todo
+            This function does not yet work perfectly for multidentate bridging ligands. The donor atoms of the ligands are not correctly connected to the metal center. E.g. for a bidentate bridging atom with two metal donors, all donor atoms are connected to each metal of the two metal centers. This needs to be either fixed or documented.
+        :return: Tuple of the merged graph of the complex, the indices of the ligand atoms and the indices of the ligand donor atoms
+        """
+        ligand_graphs = [deepcopy(lig.graph) for lig in self.ligands]
+        unique_metal_centers = self._get_all_unique_metal_centers()
+
+        # Create the new graph by merging everything
+        graph = nx.Graph()
+        for i, unique_metal_center in enumerate(unique_metal_centers):
+            graph.add_nodes_from([(i, {"node_label": unique_metal_center.symbol})])
+
+        # Relabel the nodes of the old graphs so that they are unique for the next step
+        i = len(unique_metal_centers)  # start after the metals
+        ligand_indices = []
+        for ligand_graph in ligand_graphs:
+            node_mapping = {node: i + k for k, node in enumerate(sorted(ligand_graph.nodes))}
+            nx.relabel_nodes(ligand_graph, mapping=node_mapping, copy=False)
+            ligand_indices.append(list(node_mapping.values()))
+            i += len(ligand_graph.nodes)
+
+        # Copy the ligand graphs
+        for ligand_graph in ligand_graphs:
+            graph.add_nodes_from(ligand_graph.nodes(data=True))  # add ligand nodes
+            graph.add_edges_from(ligand_graph.edges())  # add ligand edges
+
+        # Connect the metal centers to the ligands
+        ligand_donor_indices = [[] for _ in self.ligands]
+        for i, (ligand, ligand_metal_centers, ligand_graph) in enumerate(zip(self.ligands, self.metal_centers, ligand_graphs)):
+            for metal_center in ligand_metal_centers:
+                unique_metal_center_idx = \
+                [i for i, atom in enumerate(unique_metal_centers) if are_atoms_equal(atom, metal_center)][0]
+                for atomic_donor_idx in ligand.donor_idc:
+                    assert ligand.atomic_props['atoms'][
+                               atomic_donor_idx] in ligand.donor_elements, f"Atom {ligand.atomic_props['atoms'][atomic_donor_idx]} is not a donor atom of ligand."
+                    graph_donor_idx = sorted(ligand_graph.nodes)[atomic_donor_idx]
+                    graph.add_edge(unique_metal_center_idx, graph_donor_idx)
+                    if graph_donor_idx not in ligand_donor_indices[i]:
+                        ligand_donor_indices[i].append(graph_donor_idx)
+
+        # Check if everything is valid
+        assert nx.is_connected(graph), "The graph is not fully connected!"
+        assert all([set(ligand_donor_indices[i]).issubset(set(ligand_indices[i])) for i in
+                    range(len(ligand_indices))]), "The ligand donor indices are not subset of the ligand indices!"
+        assert sorted(graph.nodes) == list(
+            range(len(graph.nodes))), f"The graphs indices are not in order: {list(graph.nodes)}"
+
+        all_atomic_elements = [unique_metal_center.symbol for unique_metal_center in unique_metal_centers]
+        for ligand in self.ligands:
+            all_atomic_elements += ligand.atomic_props['atoms']
+        all_graph_elements = [graph.nodes[node]['node_label'] for node in sorted(graph.nodes)]
+        assert all_graph_elements == all_atomic_elements, f"The graph elements do not match the atomic elements: {all_graph_elements} vs {all_atomic_elements}!"
+
+        atomic_donor_elements = sorted([el for lig in self.ligands for el in lig.donor_elements])
+        graph_donor_elements = sorted(
+            [graph.nodes[node]['node_label'] for idc in ligand_donor_indices for node in sorted(graph.nodes) if
+             node in idc])
+        assert atomic_donor_elements == graph_donor_elements, f"The atomic donor elements do not match the graph donor elements: {atomic_donor_elements} vs {graph_donor_elements}!"
+
+        # For debugging: Plot the graph only for the metals and the coordination atoms
+        # plot_graph = deepcopy(graph)
+        # keep_idc = list(range(len(unique_metal_centers))) + [idx for idc in ligand_donor_indices for idx in idc]
+        # for node in list(plot_graph.nodes):
+        #     if node not in keep_idc:
+        #         plot_graph.remove_node(node)
+        # view_graph(plot_graph)
+
+        # Flatten the ligand donor indices
+        donor_idc = [idx for idc in ligand_donor_indices for idx in idc]
+
+        return graph, ligand_indices, donor_idc
 
 
 class ReduceIsomers:
