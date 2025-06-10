@@ -341,8 +341,8 @@ class Isomer(BaseMolecule):
 
 # todo @Cian: I made three little changes now here:
     # 1. I renamed the `AssembledIsomer` class to `Isomer` for simplicity. This renaming is already mirrored everywhere in the code here but you might have to change it when you copy in stuff from your files. If we want, we can also always rename it at the end.
-    # 1. I added the `warning` as an attribute to the Isomer() class, so that it is more directly connected with it and easier to handle.
-    # 2. I added the following `IsomerFactory()` class, so that it is more clear that the output of the function we talked about is a list of isomers, not an Isomer() object itself.
+    # 2. I added the `warning` as an attribute to the Isomer() class, so that it is more directly connected with it and easier to handle.
+    # 3. I added the following `IsomerFactory()` class, so that it is more clear that the output of the function we talked about is a list of isomers, not an Isomer() object itself.
 
 class IsomerFactory(object):
 
@@ -353,7 +353,7 @@ class IsomerFactory(object):
                     ligand_origins: List[List[float]] = None,
                     ):
         """
-        Generates isomers from a list of ligands and metal centers. The orientation of the ligands relative to its metal center is determined by the target vectors. The ligand_origins can be used to shift the ligand with respect to the metal center. If `metal_centers` is a chemical element such as 'Ru', it is assumed to be a mono-metallic complex at the origin.
+        Generates isomers from a list of ligands, target vectors and metal centers. The orientation of the ligands relative to its metal center is determined by the target vectors. The ligand_origins can be used to shift the ligand with respect to the metal center. If `metal_centers` is a chemical element such as 'Ru', it is assumed to be a mono-metallic complex at the origin.
         :param ligands: List of Ligand objects from the MetaLig database.
         :param target_vectors: List of target vectors for each ligand.
         :param metal_centers: List of tuple with element and position for each metal center. If a string is provided, it is assumed to be the chemical element of a mono-metallic complex at the origin.
@@ -405,7 +405,7 @@ class IsomerFactory(object):
 
         self.ligands = ligands
         self.target_vectors = target_vectors
-        self.ligand_origins = ligand_origins
+        self.ligand_origins = ligand_origins    # todo: currently not used
         self.metal_centers = metal_centers
 
     # This is the method used in the DART workflow to generate isomers.
@@ -468,7 +468,7 @@ class IsomerFactory(object):
         :return: List of lists of ASE Atoms objects, where the outer list corresponds to each ligand and the inner lists correspond to the isomers of that ligand.
         """
         rotated_ligands = []
-        for ligand, target_vectors, origin in zip(self.ligands, self.target_vectors, self.ligand_origins):
+        for ligand, target_vectors in zip(self.ligands, self.target_vectors):
             # Extract the geometry and donor atoms of the ligand
             atoms, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
             # Cast the target vectors to numpy arrays
