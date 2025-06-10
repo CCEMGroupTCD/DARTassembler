@@ -358,34 +358,38 @@ class IsomerFactory(object):
         :param target_vectors: List of target vectors for each ligand.
         :param metal_centers: List of tuple with element and position for each metal center. If a string is provided, it is assumed to be the chemical element of a mono-metallic complex at the origin.
         :param ligand_origins: List of the origin for each ligand.
-        :return: List of Isomer objects.
+
+        Example usage for assembling a mono-metallic square-planar Pd complex with 2 cis bidentate ligands in the xy-plane:
+            factory = IsomerFactory(
+                                    ligands=..., (list of two bidentate Ligand() objects, usually from the MetaLig database)
+                                    metal_centers='Pd',
+                                    target_vectors=[
+                                                    [[1, 0, 0], [0, 1, 0]],     # the donor atoms of the first bidentate ligand are oriented in (+x,+y) direction
+                                                    [[-1, 0, 0], [0, -1, 0]],   # the donor atoms of the second bidentate ligand are oriented in (-x,-y) direction
+                                                    ],
+                                    )
+            isomers = factory.generate_isomers()
 
         Example usage for assembling a bi-metallic complex with three monodentate ligands, one of them bridging:
-        ligands = ... (list of three monodentate Ligand() objects, usually from the MetaLig database)
-        ru = ['Ru', [1, 0, 0]]
-        fe = ['Fe', [-1, 0, 0]]
-        metal_centers = [
-                            [ru],       # metal center for the first ligand
-                            [ru, fe],   # metal centers for the second, bridging ligand
-                            [fe]        # metal center for the third ligand
-                        ]
-        target_vectors = [
-                            [[1, 0, 0]],
-                            [[0, 0, 1]],
-                            [[-1, 0, 0]],
-                         ]
-        ligand_origins = [  # if all are at the origin like here, the `ligand_origins` can also be omitted
-                            [0, 0, 0],
-                            [0, 0, 0],
-                            [0, 0, 0]
+            ligands = ... (list of three monodentate Ligand() objects, usually from the MetaLig database)
+            ru = ['Ru', [1, 0, 0]]
+            fe = ['Fe', [-1, 0, 0]]
+            metal_centers = [
+                                [ru],       # metal center for the first ligand
+                                [ru, fe],   # metal centers for the second, bridging ligand
+                                [fe]        # metal center for the third ligand
                             ]
-        factory = IsomerFactory(
-                                    ligands=ligands,
-                                    target_vectors=target_vectors,
-                                    ligand_origins=ligand_origins,
-                                    metal_centers=metal_centers
-                                    )
-        isomers = factory.generate_isomers()
+            target_vectors = [
+                                [[1, 0, 0]],
+                                [[0, 0, 1]],
+                                [[-1, 0, 0]],
+                             ]
+            factory = IsomerFactory(
+                                        ligands=ligands,
+                                        target_vectors=target_vectors,
+                                        metal_centers=metal_centers
+                                        )
+            isomers = factory.generate_isomers()
         """
         # Handle defaults for `ligand_origins` and `metal_centers`
         if ligand_origins is None:
@@ -413,8 +417,8 @@ class IsomerFactory(object):
     # This is the method used in the DART workflow to generate isomers.
     def generate_isomers(self) -> List['Isomer']:
         """
-        Generates all possible isomers from the ligands and metal centers.
-        :return: List of Isomer objects, each representing a unique isomer of the provided ligands and metal centers.
+        Generates all possible isomers from the ligands and metal centers provided in the constructor.
+        :return: List of Isomer objects.
         """
         rotated_ligands = self._get_rotated_ligands()
 
