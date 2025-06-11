@@ -154,9 +154,8 @@ class LigandFilters(object):
             # Write concatenated xyz file
             if len(filtered_ligand_ids) > 0:
                 with open(xyz_filepath, 'w') as f:
-                    for ligand_id in filtered_ligand_ids:
-                        xyz_string = self.db.db[ligand_id].get_xyz_string(comment=None, with_metal=self.output_metal)
-                        f.write(xyz_string)
+                    xyz_string = '\n'.join([self.db.db[ligand_id].get_xyz_string(comment=None, with_metal=self.output_metal) for ligand_id in filtered_ligand_ids])
+                    f.write(xyz_string)
 
         return
 

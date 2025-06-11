@@ -63,6 +63,11 @@ def save_file(string: str, outpath: Union[str,Path]):
         f.write(string)
 
 def append_file(string: str, outpath: Union[str,Path]):
+    # Ensure to start on new line if the file already exists
+    outpath = Path(outpath)
+    if outpath.is_file():
+        string = '\n' + string
+
     with open(outpath, 'a') as f:
         f.write(string)
 

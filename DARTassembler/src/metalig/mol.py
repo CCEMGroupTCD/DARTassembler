@@ -337,6 +337,9 @@ class BaseMolecule(object):
         for i, _ in enumerate(self.atomic_props['x']):
             xyz += f"{self.atomic_props['atoms'][i]}  {self.atomic_props['x'][i]}  {self.atomic_props['y'][i]}  {self.atomic_props['z'][i]} \n"
 
+        # Remove trailing newline character
+        xyz = xyz.rstrip('\n')
+
         return xyz
 
     def to_dict(self, include_graph: bool=True) -> dict:
@@ -1081,6 +1084,9 @@ class Ligand(BaseMolecule):
         # Add ligand atoms
         for i, _ in enumerate(self.atomic_props['x']):
             str_ += f"{self.atomic_props['atoms'][i]}  {self.atomic_props['x'][i]}  {self.atomic_props['y'][i]}  {self.atomic_props['z'][i]} \n"
+
+        # Remove the last newline character to match the .xyz format
+        str_ = str_.rstrip('\n')
 
         return str_
 
