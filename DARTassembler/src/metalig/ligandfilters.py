@@ -6,10 +6,15 @@ import pandas as pd
 from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
 from DARTassembler.src.misc.io import get_correct_ligand_db_path_from_input
+from DARTassembler.src.modules.modules import BaseModule
 
-class LigandFilters(object):
+class LigandFilters(BaseModule):
+    """
+    This module filters a ligand database based on specified criteria. It allows for filtering by properties, composition, parent complexes, and SMARTS patterns.
+    """
 
     def __init__(self, input_db_file: Union[str, Path, None], n_max_ligands: Union[int, None] = None):
+        super().__init__()
         self.n_max_ligands = n_max_ligands
         self.input_ligand_db_path = get_correct_ligand_db_path_from_input(input_db_file)
         self.db = LigandDB.from_json(path=self.input_ligand_db_path, n_max=n_max_ligands)
@@ -175,13 +180,13 @@ class LigandFilters(object):
 
         return
 
-    def get_filtered_db(self,
-                        filters: list[dict],
-                        output_db_file: Union[None, str, Path] = 'filtered_ligand_db.jsonlines',
-                        output_ligands_info: bool = True,
-                        output_metal: bool = True,
-                        pre_delete: bool = False
-                        ):
+    def run(self,
+            filters: list[dict],
+            output_db_file: Union[None, str, Path] = 'filtered_ligand_db.jsonlines',
+            output_ligands_info: bool = True,
+            output_metal: bool = True,
+            pre_delete: bool = False
+            ):
         """
         Apply filters to the ligand database and save the filtered ligands to a new ligand database file.
         :param filters: list of dictionaries with filter options.
@@ -230,7 +235,7 @@ if __name__ == '__main__':
 
     # #%% ==============    Refactor ligand filters    ==================
     filter = LigandFilters(input_db_file='metalig', n_max=n_max)
-    ligands = filter.get_filtered_db(oer_ligand_filters, output_db_file=outpath, output_ligands_info=output_info)
+    ligands = filter.run(oer_ligand_filters, output_db_file=outpath, output_ligands_info=output_info)
 
     # #%% ==============    Doublecheck refactoring    ==================
     # from dev.test.Integration_Test import IntegrationTest

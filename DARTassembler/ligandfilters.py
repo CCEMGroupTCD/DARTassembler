@@ -18,7 +18,7 @@ def ligandfilters(filter_input_path: Union[str, Path]) -> LigandFilters:
     pre_delete = input_dict.pop('pre_delete', False)
 
     filter = LigandFilters(input_db_file=input_db_file, n_max_ligands=n_max_ligands)
-    filter.get_filtered_db(**input_dict, pre_delete=pre_delete)
+    filter.run(**input_dict, pre_delete=pre_delete)
 
     return filter
 
