@@ -564,8 +564,7 @@
     "global_props": {
         "complex_name": "TEPUVUXA1_Ru",
         "stoichiometry": "RuC53H77O4PSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "c9ecbc613c596d621790f62ee1ce9f68",
         "batch_name": "First_batch"
     },

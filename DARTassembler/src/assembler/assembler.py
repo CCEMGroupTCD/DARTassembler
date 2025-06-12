@@ -1,6 +1,5 @@
 import warnings
 warnings.simplefilter("always")
-import shutil
 import sys
 import datetime
 from tqdm import tqdm
@@ -12,7 +11,8 @@ import ase
 from copy import deepcopy
 import numpy as np
 import logging
-from DARTassembler.src.constants.paths import projectpath
+from DARTassembler.src.modules.modules import BaseModule
+from DARTassembler.src.constants.paths import projectpath, default_assembler_yml_path
 from DARTassembler.src.constants.chem import Element
 from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.assembler.ligands import LigandChoice
@@ -23,17 +23,18 @@ from DARTassembler.src.assembler.utils import generate_pronounceable_word
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
 
 
-class Assembler(object):
+class Assembler(BaseModule):
+    """
+    This module assembles all isomers of complexes from specified ligand databases and metal centers. It saves all assembled complexes to the output directory as .xyz and .json files, together with a csv file containing information about the assembly run.
+    """
 
-    def __init__(
-                    self,
-                    output_directory: Union[str, Path] = 'DARTassembler',
-                    concatenate_xyz: bool = True,
-                    verbosity: int = 2,
-                    same_isomer_names: bool = True,
-                    complex_name_length: int = 8,
-                    n_max_ligands: Union[int,None] = None,
-                    pre_delete: bool = False
+    def __init__(self,
+                 output_directory: Union[str, Path] = 'DARTassembler',
+                 concatenate_xyz: bool = True,
+                 verbosity: int = 2,
+                 same_isomer_names: bool = True,
+                 complex_name_length: int = 8,
+                 n_max_ligands: Union[int, None] = None,
                  ):
         """
         The main class for the DART workflow. It assembles all isomers of complexes from specified ligand databases and metal centers. Finally, all assembled complexes are saved to the output directory as .xyz and .json files, together with a csv file containing information about the assembly run.
@@ -43,23 +44,19 @@ class Assembler(object):
         :param same_isomer_names: If True, subsequent isomers of the same complex are given the same name as the first isomer, but with a number appended to the end. If False, each isomer gets a completely unique name.
         :param complex_name_length: The length of the randomly generated complex name. Automatically increased if a name is already used.
         :param n_max_ligands: Maximum number of ligands to consider in the assembly. If None, all ligands are considered.
-        :param pre_delete: If True, new directories are deleted before they are recreated. This is useful for testing and debugging, to avoid mixing of old and new data.
         """
+        super().__init__()
         self.output_directory = Path(output_directory).resolve()
         self.concatenate_xyz = concatenate_xyz
         self.verbosity = verbosity
         self.same_isomer_names = same_isomer_names
         self.complex_name_length = complex_name_length
         self.n_max_ligands = n_max_ligands
-        self.pre_delete = pre_delete
 
         # Keep track of the input arguments
         self.init_args = {**locals()}
         self.init_args.pop('self')
-
-        # Delete the output directory if it already exists to avoid mixing of old and new data
-        if self.pre_delete:
-            shutil.rmtree(self.output_directory, ignore_errors=True)
+        self.init_args.pop('__class__')
 
         # Set up the output directories
         self.gbl_outcontrol = AssemblerOutput(outdir=self.output_directory)
@@ -98,11 +95,10 @@ class Assembler(object):
         for idx, batch_settings in enumerate(self.batches):
             # Set batch settings for the batch run
             self.batch_name = batch_settings['name']
-            self.ligand_db_files = [Path(filepath).resolve() for filepath in batch_settings['ligand_db_files']]
+            self.ligand_db_files = [filepath for filepath in batch_settings['ligand_db_files']]
             self.n_max_complexes = batch_settings['n_max_complexes']
             self.random_seed = batch_settings['random_seed']
-            self.total_charge = batch_settings['total_charge']
-            self.total_metal_oxidation_state = batch_settings['total_metal_oxidation_state']
+            self.total_ligand_charges = batch_settings['total_ligand_charges']
             self.target_vectors = batch_settings['target_vectors']
             self.ligand_origins = batch_settings['ligand_origins']
             self.metal_centers = batch_settings['metal_centers']
@@ -128,6 +124,25 @@ class Assembler(object):
         batch_names = [batch['name'] for batch in batches]
         if not len(batch_names) == len(set(batch_names)):
             raise ValueError(f"DART batch names must be unique. The following batch names are not unique: {batch_names}")
+
+        for batch in batches:
+            batch_name = batch['name']
+            # Check that all target vectors are lists of lists of list of floats or ints
+            target_vectors = batch['target_vectors']
+            try:
+                for i, target_vector in enumerate(target_vectors):
+                    try:
+                        array = np.array(target_vector)
+                    except ValueError as e:
+                        raise ValueError(f"Target vector {i} for batch {batch_name} is not a list of lists of floats: {target_vector}. Error: {e}")
+                    if array.ndim != 2:
+                        raise ValueError(f"Target vector {i} for batch {batch_name} must have 2 dimensions (list of list), got {array.shape}: {target_vector}")
+                    elif array.shape[1] != 3:
+                        raise ValueError(f"Target vector {i} for batch {batch_name} must have 3 elements (list of list of floats), got {array.shape[1]}: {target_vector}")
+                    elif not np.issubdtype(array.dtype, np.floating) and not np.issubdtype(array.dtype, np.integer):
+                        raise ValueError(f"Target vector {i} for batch {batch_name} must be a list of lists of floats, got {array.dtype}: {target_vector}")
+            except TypeError as e:
+                raise TypeError(f"Target vectors must be a list of lists of lists of floats. Error: {e}")
 
         return
 
@@ -180,8 +195,6 @@ class Assembler(object):
         if self.verbosity > 1:
             print(f"Total runtime for assembling {n_isomers} isomers (from {n_complexes} complexes): {self.runtime}")
 
-        logging.info('Done! All complexes assembled. Exiting DART Assembler Module.')
-
         return
 
     def _log_global_info(self) -> None:
@@ -232,10 +245,9 @@ class Assembler(object):
 
         # Set up an iterator for the ligand combinations
         ligand_choice = LigandChoice(
-                                database=self.ligand_dbs,
-                                metal_oxidation_state=self.total_metal_oxidation_state,
-                                total_complex_charge=self.total_charge,
-                                max_num_assembled_complexes=self.n_max_complexes,
+                                ligand_dbs=self.ligand_dbs,
+                                total_ligand_charges=self.total_ligand_charges,
+                                n_max_complexes=self.n_max_complexes,
                                 )
         ligand_combinations = ligand_choice.choose_ligands()
 
@@ -279,11 +291,19 @@ class Assembler(object):
         return
 
     def _get_ligand_databases(self) -> list[LigandDB]:
-        for ligand_db_filepath in self.ligand_db_files:
+        ligand_databases = []
+        for target_vectors, ligand_db_filepath in zip(self.target_vectors, self.ligand_db_files):
             if not ligand_db_filepath in self._loaded_ligand_databases:
-                self._loaded_ligand_databases[ligand_db_filepath] = LigandDB.from_json(ligand_db_filepath)
-        ligand_databases = [self._loaded_ligand_databases[ligand_db_filepath] for ligand_db_filepath in
-                          self.ligand_db_files]
+                self._loaded_ligand_databases[ligand_db_filepath] = LigandDB.from_json(ligand_db_filepath, n_max=self.n_max_ligands)
+
+            # Reduce to the ligands which have the correct n_eff_denticity for the specified target vectors
+            n_target_vectors = len(target_vectors)
+            database = {name: ligand for name, ligand in self._loaded_ligand_databases[ligand_db_filepath].db.items() if ligand.n_eff_denticities == n_target_vectors}
+            database = LigandDB(database)  # Convert to LigandDB object
+
+            if not database.db:
+                raise ValueError(f"No ligands found in database {ligand_db_filepath} with the same `n_eff_denticities` as the number of specified target vectors ({n_target_vectors}). Please check your input ligand database `{ligand_db_filepath}`.")
+            ligand_databases.append(database)
 
         return ligand_databases
 
@@ -325,8 +345,7 @@ class Assembler(object):
         isomer.global_props = {     # Overwrite potentially existing global properties with the new ones
             'complex_name': name,
             'stoichiometry': isomer.stoichiometry,
-            'charge': self.total_charge,
-            'total_oxi_state': self.total_metal_oxidation_state,
+            'total_ligand_charges': self.total_ligand_charges,
             'graph_hash': isomer.graph_hash,
             'batch_name': self.batch_name,
         }
@@ -371,7 +390,7 @@ class Assembler(object):
             assert last_isomers_name == last_isomers_stem + str(isomer_idx - 1) + self.complex_name_appendix, f'The complex name seems to work different than implemented.'
             # Construct the new isomers name after the same rules as above.
             name = last_isomers_stem + str(isomer_idx) + self.complex_name_appendix
-            assert not name in self.assembled_complex_names, f"Complex name {name} already exists in the assembled complex names list even though it is a subsequent isomer. This should be impossible."
+            assert not name in self.assembled_complex_names, f"Complex name {name} already exists in the assembled complex names list even though it is a subsequent isomer."
         else:
             # Generate new name for new complex.
             complex_name_length = self.complex_name_length
@@ -428,8 +447,7 @@ class Assembler(object):
             'batch_idx': self.batch_idx,
             'batch_name': self.batch_name,
             'metal_centers': metal_stoi,
-            'total_oxi_state': self.total_metal_oxidation_state,
-            'charge': self.total_charge,
+            'total_ligand_charges': self.total_ligand_charges,
             'random_seed': self.random_seed,
         }
         self.df_info.append(data)
@@ -437,17 +455,34 @@ class Assembler(object):
         return
 
     @classmethod
-    def run_from_yaml(cls, yaml_file: Union[str, Path]) -> 'Assembler':
+    def run_from_yaml(cls, input: Union[str, Path, None]) -> 'Assembler':
         """
         Run the assembler from a yaml file. See the documentation for the input format. The Assembler is run and the output is saved to the specified output directory. The Assembler object is returned.
-        :param yaml_file: Path to the yml file with the input settings.
+        :param input: Path to the yml file with the input settings.
         :return: Assembler object.
         """
-        options = read_yaml(yaml_file)
+        if input is None:
+            input = default_assembler_yml_path
+
+        options = read_yaml(input)
         batches = options.pop('batches')
 
         assembler = Assembler(**options)
         assembler.run_batches(batches=batches)
+
+        return assembler
+
+    @classmethod
+    def run_from_cli(cls, input: Union[str, Path, None]) -> 'Assembler':
+        """
+        Run the assembler from a yaml file specified in the command line interface. The Assembler is run and the output is saved to the specified output directory. The Assembler object is returned.
+        :param input: Path to the yml file with the input settings.
+        :return: Assembler object.
+        """
+        super()._before_run_from_cli()
+        super()._print_cli_input(input=input)
+        assembler = cls.run_from_yaml(input=input)
+        super()._after_run_from_cli()
 
         return assembler
 
@@ -466,11 +501,9 @@ if __name__ == '__main__':
         "same_isomer_names": True,
         "complex_name_length": 8,
         "n_max_ligands": 100,
-        "pre_delete": True,
         "batches": [{
                     "name": "First_batch",
-                    "total_metal_oxidation_state": 2,
-                    "total_charge": 0,
+                    "total_ligand_charges": -2,
                     "ligand_db_files": [bidentpath, monopath, haptic_path],
                     "target_vectors": [
                                         [[1, 0, 0], [0, 1, 0]],
@@ -489,8 +522,7 @@ if __name__ == '__main__':
             },
             {
                 "name": "Second_batch",
-                "total_metal_oxidation_state": 1,
-                "total_charge": 0,
+                "total_ligand_charges": -1,
                 "ligand_db_files": [bidentpath, monopath, haptic_path],
                 "target_vectors": [
                     [[1, 0, 0], [0, 1, 0]],

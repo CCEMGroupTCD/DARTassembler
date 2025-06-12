@@ -110,37 +110,51 @@ class LigandDB(BaseDB):
         """
         Returns a DataFrame with important ligand information for all ligands in the database, such as charge, stoichiometry, geometry, and more.
         :param max_entries: Maximum number of entries for long lists in the DataFrame, such as the list of CSD codes in which this ligand is present.
-        :return: A DataFrame with ligand information.
+        :return: A DataFrame with ligand information, with the index being `unique_name`.
         """
         ligands = {uname: ligand.get_csv_info(max_entries=max_entries) for uname, ligand in self.db.items()}
         df_ligand_info = pd.DataFrame.from_dict(ligands, orient='index')
+        assert df_ligand_info.index.tolist() == df_ligand_info['unique_name'].tolist()
+        df_ligand_info = df_ligand_info.reset_index(drop=True).set_index('unique_name')
 
         return df_ligand_info
 
-    def save_to_csv(self, outpath: Union[str, Path], max_entries: int=5) -> None:
+    def save_to_csv(self, outpath: Union[str, Path], max_entries: int=5) -> pd.DataFrame:
         """
         Saves a csv file with important ligand information for all ligands in the database, such as charge, stoichiometry, geometry, and more.
         :param outpath: Path to the output csv file.
         :param max_entries: Maximum number of entries for long lists in the DataFrame, such as the list of CSD codes in which this ligand is present.
-        :return: None
+        :return: A DataFrame with ligand information.
         """
         df = self.get_df(max_entries=max_entries)
-        df.to_csv(outpath, index=False)
+        df.to_csv(outpath, index=True)  # the index is the unique_names of the ligands
 
-        return
+        return df
 
-    def save_concat_xyz(self, outpath: Union[str, Path], with_metal: bool = True) -> None:
+    def save_to_concat_xyz(self, outpath: Union[str, Path], with_metal: bool=True, comment: str=None) -> str:
         """
         Save a concatenated xyz file with all ligands in the database.
         :param outpath: Path to the output xyz file.
         :param with_metal: If True, the output structure of each ligand will contain a metal center at the original position for better visualization. If False, only the ligand structure itself will be saved.
-        :return: None
+        :param comment: A comment to be added to each xyz structure. If None, a default comment will be used.
+        :return: A concatenated xyz string with all ligands in the database.
         """
+        outpath = Path(outpath)
+        outpath.parent.mkdir(parents=True, exist_ok=True)
+        xyz_string = self.get_concat_xyz_string(with_metal=with_metal, comment=comment)
         with open(outpath, 'w') as f:
-            for lig in self.db.values():
-                f.write(lig.get_xyz_string(comment=None, with_metal=with_metal))
+            f.write(xyz_string)
 
-        return
+        return xyz_string
+
+    def get_concat_xyz_string(self, with_metal: bool=True, comment: str=None) -> str:
+        """
+        Get a concatenated xyz string with all ligands in the database.
+        :param with_metal: If True, the output structure of each ligand will contain a metal center at the original position for better visualization. If False, only the ligand structure itself will be saved.
+        :param comment: A comment to be added to each xyz structure. If None, a default comment will be used.
+        :return: A concatenated xyz string with all ligands in the database.
+        """
+        return '\n'.join([lig.get_xyz_string(comment=comment, with_metal=with_metal) for lig in self.db.values()])
 
     def _get_ligand_geometries(self, sort_by_rssd: bool=False) -> dict:
         """
@@ -324,17 +338,3 @@ class LigandDB(BaseDB):
                 count += comb_count
 
         return count
-
-
-if __name__ == '__main__':
-
-    db_path = 'metalig'
-    n_max = 1000
-
-    db = LigandDB.from_json(path=db_path, n_max=n_max)
-    outpath = f'/Users/timosommer/PhD/projects/RCA/projects/DART/DARTassembler/data/metalig/test{n_max}_MetaLigDB_v1.0.0.jsonlines'
-    ligands_2D_sym = [lig for lig in db.db.values() if lig._check_if_2D_symmetrical()]
-    n_ligands_2D_sym = len(ligands_2D_sym)
-    print(f'Number of 2D symmetrical ligands: {n_ligands_2D_sym}')
-    # df_metals = db._calc_number_of_possible_complexes()
-    # print(df_metals)

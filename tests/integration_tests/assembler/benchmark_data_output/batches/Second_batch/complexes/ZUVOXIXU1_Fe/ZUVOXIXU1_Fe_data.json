@@ -168,8 +168,7 @@
     "global_props": {
         "complex_name": "ZUVOXIXU1_Fe",
         "stoichiometry": "FeC13H23OSi",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "af374c4cae1d113dc0270cc27f91d147",
         "batch_name": "Second_batch"
     },

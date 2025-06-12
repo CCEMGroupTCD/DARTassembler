@@ -236,8 +236,7 @@
     "global_props": {
         "complex_name": "TUWEHEZE2_Fe",
         "stoichiometry": "FeC17H34N3Si",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "9abae7faaf518f33396ca60c7275384c",
         "batch_name": "Second_batch"
     },

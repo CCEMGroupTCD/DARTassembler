@@ -404,8 +404,7 @@
     "global_props": {
         "complex_name": "IVOXUBUF1_Ru",
         "stoichiometry": "RuC36H54F2N2OSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "52a12f7d504ce59e6186e4360c4b4635",
         "batch_name": "First_batch"
     },

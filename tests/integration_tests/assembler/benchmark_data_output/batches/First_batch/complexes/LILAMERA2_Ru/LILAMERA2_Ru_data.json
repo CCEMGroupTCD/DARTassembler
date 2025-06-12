@@ -236,8 +236,7 @@
     "global_props": {
         "complex_name": "LILAMERA2_Ru",
         "stoichiometry": "RuC25H26O2SSi",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "5e8ed0931dd80664de470f6336aae8db",
         "batch_name": "First_batch"
     },

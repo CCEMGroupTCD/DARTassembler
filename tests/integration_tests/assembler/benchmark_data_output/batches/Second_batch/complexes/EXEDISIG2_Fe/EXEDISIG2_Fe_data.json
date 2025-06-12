@@ -336,8 +336,7 @@
     "global_props": {
         "complex_name": "EXEDISIG2_Fe",
         "stoichiometry": "FeC30H37F6N2O3Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "f566b5817d06516c41f6bd10610f3f6f",
         "batch_name": "Second_batch"
     },

@@ -684,8 +684,7 @@
     "global_props": {
         "complex_name": "TUHEKEDI1_Fe",
         "stoichiometry": "FeC62H91N8O4Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "af8177f278dfb218799bc8f4fa26edab",
         "batch_name": "Second_batch"
     },

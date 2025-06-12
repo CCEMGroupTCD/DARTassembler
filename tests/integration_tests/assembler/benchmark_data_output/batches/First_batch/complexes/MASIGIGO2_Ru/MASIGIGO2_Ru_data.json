@@ -260,8 +260,7 @@
     "global_props": {
         "complex_name": "MASIGIGO2_Ru",
         "stoichiometry": "RuC24H33N3S",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "c6fa3e0f82390d191ecdbe2d3b8c9d59",
         "batch_name": "First_batch"
     },

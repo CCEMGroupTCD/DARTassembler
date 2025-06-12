@@ -312,8 +312,7 @@
     "global_props": {
         "complex_name": "ANOHUQEN2_Ru",
         "stoichiometry": "RuC30H39N3O2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "3cdde776260447d57d886214a76c72b2",
         "batch_name": "First_batch"
     },

@@ -676,8 +676,7 @@
     "global_props": {
         "complex_name": "HIZUMANU2_Ru",
         "stoichiometry": "RuC65H93N2O2PSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "7e8ece1a421f24948330b00c752be021",
         "batch_name": "First_batch"
     },

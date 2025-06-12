@@ -180,8 +180,7 @@
     "global_props": {
         "complex_name": "KIZOKEJU1_Ru",
         "stoichiometry": "RuC18H17BrN2O3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "186ee3502b3cb4bb683992b988495c72",
         "batch_name": "First_batch"
     },

@@ -436,8 +436,7 @@
     "global_props": {
         "complex_name": "EFUPOHEF1_Ru",
         "stoichiometry": "RuC39H58NO5PSi",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "c9dc95365f7d7f48e317952e8ecb104c",
         "batch_name": "First_batch"
     },

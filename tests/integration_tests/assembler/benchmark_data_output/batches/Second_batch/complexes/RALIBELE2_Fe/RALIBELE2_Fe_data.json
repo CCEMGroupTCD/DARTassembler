@@ -308,8 +308,7 @@
     "global_props": {
         "complex_name": "RALIBELE2_Fe",
         "stoichiometry": "FeC27H37N2O4SSi2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "bc1f635ffac3db521d88ca561f695765",
         "batch_name": "Second_batch"
     },

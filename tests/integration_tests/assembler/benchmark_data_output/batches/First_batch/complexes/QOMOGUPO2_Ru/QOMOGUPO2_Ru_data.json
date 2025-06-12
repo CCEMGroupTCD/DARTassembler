@@ -392,8 +392,7 @@
     "global_props": {
         "complex_name": "QOMOGUPO2_Ru",
         "stoichiometry": "RuC40H50NO2P",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "cd4b0da35895afff5d666d7f36e28218",
         "batch_name": "First_batch"
     },

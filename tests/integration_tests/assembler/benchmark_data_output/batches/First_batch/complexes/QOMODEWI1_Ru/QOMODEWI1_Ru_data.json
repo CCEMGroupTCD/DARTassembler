@@ -160,8 +160,7 @@
     "global_props": {
         "complex_name": "QOMODEWI1_Ru",
         "stoichiometry": "RuC17H14N2O3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "e2728845ae78d5a8891c691ec6cc2edd",
         "batch_name": "First_batch"
     },

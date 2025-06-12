@@ -240,8 +240,7 @@
     "global_props": {
         "complex_name": "INEZUHID2_Fe",
         "stoichiometry": "FeC24H26N5Si",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "1d27a94728d1780ae1248d957f24533f",
         "batch_name": "Second_batch"
     },

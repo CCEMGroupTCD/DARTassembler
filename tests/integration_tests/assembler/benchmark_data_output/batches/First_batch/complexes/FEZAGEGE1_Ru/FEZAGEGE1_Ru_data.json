@@ -320,8 +320,7 @@
     "global_props": {
         "complex_name": "FEZAGEGE1_Ru",
         "stoichiometry": "RuC23H41O2P7S3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "dff0de50d66a295bba75b974ddb0944c",
         "batch_name": "First_batch"
     },

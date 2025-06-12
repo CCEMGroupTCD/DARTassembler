@@ -164,8 +164,7 @@
     "global_props": {
         "complex_name": "ULEPAGUC2_Ru",
         "stoichiometry": "RuC17H13IN6",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "f6427729a17f0c0a0085d68afa0ad126",
         "batch_name": "First_batch"
     },

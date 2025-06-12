@@ -348,8 +348,7 @@
     "global_props": {
         "complex_name": "ONEKOXUF1_Ru",
         "stoichiometry": "AlRuC25H52N3Si2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "ee8d46ba69c9fa21e954a0fc8cbdb176",
         "batch_name": "First_batch"
     },

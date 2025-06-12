@@ -75,7 +75,7 @@ The following complexes are randomly picked from the output of the assembler mod
 
 .. moldoc::
 
-    from DARTassembler.src.docs.docs_utils import get_moldoc_molecule
+    from DARTassembler.src.misc.docs import get_moldoc_molecule
 
     run = 'quickstart_without_filters'
     complex_name = 'AMAPIHOJ'
@@ -84,7 +84,7 @@ The following complexes are randomly picked from the output of the assembler mod
 
 .. moldoc::
 
-    from DARTassembler.src.docs.docs_utils import get_moldoc_molecule
+    from DARTassembler.src.misc.docs import get_moldoc_molecule
 
     run = 'quickstart_without_filters'
     complex_name = 'YOZEPECO'
@@ -93,7 +93,7 @@ The following complexes are randomly picked from the output of the assembler mod
 
 .. moldoc::
 
-    from DARTassembler.src.docs.docs_utils import get_moldoc_molecule
+    from DARTassembler.src.misc.docs import get_moldoc_molecule
 
     run = 'quickstart_without_filters'
     complex_name = 'HOKEHAYA'
@@ -225,7 +225,7 @@ Below you can see three randomly picked complexes from the output of the assembl
 
 .. moldoc::
 
-    from DARTassembler.src.docs.docs_utils import get_moldoc_molecule
+    from DARTassembler.src.misc.docs import get_moldoc_molecule
 
     run = 'quickstart_with_filters'
     complex_name = 'CIGIBENA'
@@ -234,7 +234,7 @@ Below you can see three randomly picked complexes from the output of the assembl
 
 .. moldoc::
 
-    from DARTassembler.src.docs.docs_utils import get_moldoc_molecule
+    from DARTassembler.src.misc.docs import get_moldoc_molecule
 
     run = 'quickstart_with_filters'
     complex_name = 'ITUXUGEB'
@@ -244,7 +244,7 @@ Below you can see three randomly picked complexes from the output of the assembl
 
 .. moldoc::
 
-    from DARTassembler.src.docs.docs_utils import get_moldoc_molecule
+    from DARTassembler.src.misc.docs import get_moldoc_molecule
 
     run = 'quickstart_with_filters'
     complex_name = 'WOREDEKI'

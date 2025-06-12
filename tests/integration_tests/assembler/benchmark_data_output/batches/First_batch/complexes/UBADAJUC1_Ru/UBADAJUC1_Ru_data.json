@@ -240,8 +240,7 @@
     "global_props": {
         "complex_name": "UBADAJUC1_Ru",
         "stoichiometry": "RuC24H27N5",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "e5e03d6921c041d7c45cc57bc40de73c",
         "batch_name": "First_batch"
     },

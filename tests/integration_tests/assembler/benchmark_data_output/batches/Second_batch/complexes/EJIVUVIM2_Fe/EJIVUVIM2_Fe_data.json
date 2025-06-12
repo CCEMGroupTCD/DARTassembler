@@ -140,8 +140,7 @@
     "global_props": {
         "complex_name": "EJIVUVIM2_Fe",
         "stoichiometry": "FeC10H19N2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "eb00b7bbb08cb8db556f81b06b9f5fdf",
         "batch_name": "Second_batch"
     },

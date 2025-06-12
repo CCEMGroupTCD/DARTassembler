@@ -184,8 +184,7 @@
     "global_props": {
         "complex_name": "ATUNUYUN2_Ru",
         "stoichiometry": "RuC18H12F2N2OP4S3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "68c8de96afbc10ada2243d9b95c7e1fe",
         "batch_name": "First_batch"
     },

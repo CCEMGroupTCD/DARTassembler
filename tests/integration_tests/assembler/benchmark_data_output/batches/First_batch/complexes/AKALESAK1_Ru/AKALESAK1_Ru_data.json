@@ -192,8 +192,7 @@
     "global_props": {
         "complex_name": "AKALESAK1_Ru",
         "stoichiometry": "RuC22H16F2N2O2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "6e109cbb0e03e013398a909a1d9c88c5",
         "batch_name": "First_batch"
     },

@@ -172,8 +172,7 @@
     "global_props": {
         "complex_name": "MUVIZINO2_Ru",
         "stoichiometry": "RuC19H16N2O2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "3ee3ca4eeac529cc1f5e2d99c528a11d",
         "batch_name": "First_batch"
     },

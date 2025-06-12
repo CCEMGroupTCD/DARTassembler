@@ -620,8 +620,7 @@
     "global_props": {
         "complex_name": "OQOXUDEM1_Fe",
         "stoichiometry": "FeC52H91N2O2P4",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "23198fc78502c109c2e6d457cf570587",
         "batch_name": "Second_batch"
     },

@@ -284,8 +284,7 @@
     "global_props": {
         "complex_name": "ESILUDIW1_Ru",
         "stoichiometry": "RuC30H31ClN4O",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "11efc826f1cfa0fa3c2138a3832925f1",
         "batch_name": "First_batch"
     },

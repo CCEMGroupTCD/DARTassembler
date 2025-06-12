@@ -348,8 +348,7 @@
     "global_props": {
         "complex_name": "EYAYIQOJ2_Ru",
         "stoichiometry": "RuC43H36BrNP2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "92cd8822721e161c6f7cef576008c793",
         "batch_name": "First_batch"
     },

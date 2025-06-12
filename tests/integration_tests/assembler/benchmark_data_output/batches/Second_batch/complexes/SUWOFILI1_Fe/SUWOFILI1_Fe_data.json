@@ -332,8 +332,7 @@
     "global_props": {
         "complex_name": "SUWOFILI1_Fe",
         "stoichiometry": "AlFeC31H43N3O",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "1c29f3bac31fffabeeef7037734d2516",
         "batch_name": "Second_batch"
     },

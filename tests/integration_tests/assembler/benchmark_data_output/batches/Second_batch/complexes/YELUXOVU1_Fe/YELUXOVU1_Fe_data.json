@@ -244,8 +244,7 @@
     "global_props": {
         "complex_name": "YELUXOVU1_Fe",
         "stoichiometry": "FeC24H32N",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "6bfece9ece238ce47bca7be2766f338b",
         "batch_name": "Second_batch"
     },

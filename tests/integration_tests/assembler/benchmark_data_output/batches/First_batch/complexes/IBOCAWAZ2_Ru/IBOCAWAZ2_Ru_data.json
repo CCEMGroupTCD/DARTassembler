@@ -252,8 +252,7 @@
     "global_props": {
         "complex_name": "IBOCAWAZ2_Ru",
         "stoichiometry": "RuC21H34INO2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "e5fd88cbb806addcf84521c45a7dc5f4",
         "batch_name": "First_batch"
     },

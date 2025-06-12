@@ -216,8 +216,7 @@
     "global_props": {
         "complex_name": "UYEKASEN1_Ru",
         "stoichiometry": "RuC20H26INO2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "1e528bdb7dd93f78c909b25177425d4c",
         "batch_name": "First_batch"
     },

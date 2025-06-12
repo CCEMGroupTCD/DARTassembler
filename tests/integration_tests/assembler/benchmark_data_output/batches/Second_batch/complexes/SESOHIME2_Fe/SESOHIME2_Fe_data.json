@@ -524,8 +524,7 @@
     "global_props": {
         "complex_name": "SESOHIME2_Fe",
         "stoichiometry": "FeC56H67O2P2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "8900485bc283cb3bed1ce165e4e58300",
         "batch_name": "Second_batch"
     },

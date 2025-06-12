@@ -1,5 +1,5 @@
 """
-This file contains the classes and methods that are used to process the input data and generate the assembled transition metal complexes.
+This file contains the classes and methods that are used to process the input data and generate the assembled transition metal complex isomers.
 """
 import warnings
 from typing import Dict, Any, List, Optional, Tuple, Union
@@ -337,6 +337,7 @@ class Isomer(BaseMolecule):
         :return: Isomer object
         """
         data['graph'] = graph_from_graph_dict(data['graph'])
+        data['charge'] = 0
         return cls(**data)
 
 # todo @Cian: I made three little changes now here:

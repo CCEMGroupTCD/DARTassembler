@@ -316,8 +316,7 @@
     "global_props": {
         "complex_name": "SULOKOPI2_Fe",
         "stoichiometry": "FeC30H43N2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "fbccdf85dd6ff063cdc4fdd24cdce479",
         "batch_name": "Second_batch"
     },

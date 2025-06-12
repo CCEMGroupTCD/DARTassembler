@@ -212,8 +212,7 @@
     "global_props": {
         "complex_name": "EJIFAHEY1_Fe",
         "stoichiometry": "FeC21H25N2Si",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "2e4fbe728e6b970fd257fd4de14b7a05",
         "batch_name": "Second_batch"
     },

@@ -220,8 +220,7 @@
     "global_props": {
         "complex_name": "EXENAVUM2_Fe",
         "stoichiometry": "FeC22H25N4",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "adfffb34d6d2527c05d43f84b35d0295",
         "batch_name": "Second_batch"
     },

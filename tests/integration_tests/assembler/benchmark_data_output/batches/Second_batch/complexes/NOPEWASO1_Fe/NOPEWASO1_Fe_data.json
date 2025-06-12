@@ -216,8 +216,7 @@
     "global_props": {
         "complex_name": "NOPEWASO1_Fe",
         "stoichiometry": "FeC22H24F2NO",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "9ab5f4bc3a3f8c34beba0e6c047d24e6",
         "batch_name": "Second_batch"
     },

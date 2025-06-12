@@ -276,8 +276,7 @@
     "global_props": {
         "complex_name": "EJOLELIL2_Fe",
         "stoichiometry": "FeC22H40OPSi",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "c485275b15e8577c3f119bb9d0100630",
         "batch_name": "Second_batch"
     },

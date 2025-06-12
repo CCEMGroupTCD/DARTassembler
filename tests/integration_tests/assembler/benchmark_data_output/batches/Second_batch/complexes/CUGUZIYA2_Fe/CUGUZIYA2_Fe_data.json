@@ -308,8 +308,7 @@
     "global_props": {
         "complex_name": "CUGUZIYA2_Fe",
         "stoichiometry": "FeC31H37N3OP",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "cdbea41ad2820c103d50975f80f4cbab",
         "batch_name": "Second_batch"
     },

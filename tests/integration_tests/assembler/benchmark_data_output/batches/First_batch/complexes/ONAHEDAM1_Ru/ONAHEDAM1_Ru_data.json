@@ -272,8 +272,7 @@
     "global_props": {
         "complex_name": "ONAHEDAM1_Ru",
         "stoichiometry": "RuC25H30N6OSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "de59603bad7c492458d6184e5f16d329",
         "batch_name": "First_batch"
     },

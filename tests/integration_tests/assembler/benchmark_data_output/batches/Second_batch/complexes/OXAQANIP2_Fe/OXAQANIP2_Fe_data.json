@@ -236,8 +236,7 @@
     "global_props": {
         "complex_name": "OXAQANIP2_Fe",
         "stoichiometry": "FeC21H31N2O",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "649ee03b031c0bbb37e2feb3e00c01d7",
         "batch_name": "Second_batch"
     },

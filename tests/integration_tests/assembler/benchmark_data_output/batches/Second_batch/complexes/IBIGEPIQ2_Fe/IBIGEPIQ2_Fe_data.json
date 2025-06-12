@@ -356,8 +356,7 @@
     "global_props": {
         "complex_name": "IBIGEPIQ2_Fe",
         "stoichiometry": "FeC40H41N2P2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "9e6af754e986f1160c42d0b10bace429",
         "batch_name": "Second_batch"
     },

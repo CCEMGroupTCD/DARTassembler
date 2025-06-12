@@ -760,8 +760,7 @@
     "global_props": {
         "complex_name": "WOPAHIDU2_Fe",
         "stoichiometry": "FeC69H103N10O2Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "2a1b76976e356a48d229493afff688e9",
         "batch_name": "Second_batch"
     },

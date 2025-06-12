@@ -860,8 +860,7 @@
     "global_props": {
         "complex_name": "IFEQULIK2_Fe",
         "stoichiometry": "FeC92H110N4P5",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "7eb9cbb9089cad8032f905432ba87647",
         "batch_name": "Second_batch"
     },

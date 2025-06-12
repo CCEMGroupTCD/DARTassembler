@@ -3,6 +3,8 @@ Utility functions for input and output.
 """
 import json
 import sys
+import warnings
+
 import yaml
 import tempfile
 from ase.io.xyz import write_xyz
@@ -228,15 +230,10 @@ def iterate_over_json(path: Union[str, Path], n_max: int=None, show_progress: bo
                 else:
                     return
 
-    except (json.JSONDecodeError, UserWarning):
+    except (json.JSONDecodeError, UnicodeDecodeError, UserWarning):
         # If normal JSON fails, try to load as JSON Lines
-        with jsonlines.open(path, 'r') as reader:
-            for i, line in tqdm(enumerate(reader), disable=not show_progress, desc='Load json'):
-                key, value = line['key'], line['value']
-                if check_if_return_entry(i, n_max):
-                    yield key, value
-                else:
-                    return
+        for key, value in iterate_over_jsonlines(path=path, n_max=n_max, show_progress=show_progress):
+            yield key, value
 
     return
 
@@ -327,8 +324,6 @@ def load_full_ligand_db(path: Union[str, Path], molecule: str='dict') -> dict:
 def iterate_unique_ligand_db(path: Union[str, Path], molecule: str= 'dict', n_max=None, show_progress: bool=False) -> dict:
     check_molecule_value(molecule)  # Check if the molecule value is valid
     db_path = get_correct_ligand_db_path_from_input(path)
-    if db_path is None:
-        raise ValueError(f'Invalid ligand database path specified: {path}')
 
     filename = Path(db_path).name
     for name, mol_dict in tqdm(iterate_over_json(db_path, n_max=n_max, show_progress=False), disable=not show_progress, desc=f'Load ligand db `{filename}`', file=sys.stdout, unit=' ligands'):
@@ -499,20 +494,35 @@ def get_correct_ligand_db_path_from_input(path) -> Path:
 
     if path.lower() in ('', 'none', 'null', 'default', 'metalig'):
         path = default_ligand_db_path
-        assert Path(path).is_file(), f"Default ligand database file '{path}' not found."
+        if not path.is_file():
+            # Check if the compressed file exists
+            compressions = ['.bz2']
+            for compression in compressions:
+                compressed_path = Path(str(path)+compression)
+                if compressed_path.is_file():
+                    path = compressed_path
+                    break
 
     elif path.lower() in ('test_metalig', 'test'):
+        warnings.warn(f'Using the test MetaLig database is deprecated. Please use the full ligand database instead and use the functionality to only read in a subset of ligands.', DeprecationWarning)
         path = test_ligand_db_path
-        assert Path(path).is_file(), f"Test ligand database file '{path}' not found."
+        if not path.is_file():
+            # Check if the compressed file exists
+            compressions = ['.bz2']
+            for compression in compressions:
+                compressed_path = Path(str(path)+compression)
+                if compressed_path.is_file():
+                    path = compressed_path
+                    break
 
     else:
         try:
             path = Path(path)
         except TypeError:
-            raise ValueError(f"Invalid ligand database path '{path}'.")
+            raise ValueError(f"Invalid ligand database path: '{path}'")
 
-        if not path.is_file():
-            raise FileNotFoundError(f"Ligand database filepath not found: '{path}'.")
+    if not path.is_file():
+        raise FileNotFoundError(f"Ligand database filepath not found: '{path}'")
 
     return Path(path)
 

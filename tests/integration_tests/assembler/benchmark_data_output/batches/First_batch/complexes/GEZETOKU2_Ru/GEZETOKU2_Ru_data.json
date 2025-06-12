@@ -464,8 +464,7 @@
     "global_props": {
         "complex_name": "GEZETOKU2_Ru",
         "stoichiometry": "RuC46H56NO6PS2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "8460de79706bf24e25de30c7de8891d1",
         "batch_name": "First_batch"
     },

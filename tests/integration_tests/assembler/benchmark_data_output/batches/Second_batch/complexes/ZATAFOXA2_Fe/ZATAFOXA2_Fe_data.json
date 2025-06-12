@@ -216,8 +216,7 @@
     "global_props": {
         "complex_name": "ZATAFOXA2_Fe",
         "stoichiometry": "FeC21H21N6O2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "370be82baea15217c85ecd2980f4c9b2",
         "batch_name": "Second_batch"
     },

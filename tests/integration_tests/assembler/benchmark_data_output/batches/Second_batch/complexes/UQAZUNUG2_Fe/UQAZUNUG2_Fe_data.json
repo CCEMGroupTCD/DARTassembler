@@ -212,8 +212,7 @@
     "global_props": {
         "complex_name": "UQAZUNUG2_Fe",
         "stoichiometry": "FeC22H24NOSi",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "8c542f8184eec26b9e662d41f6377ed4",
         "batch_name": "Second_batch"
     },

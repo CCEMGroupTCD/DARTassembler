@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'DART'
+project = 'DARTassembler'
 copyright = '2024, CCEM group'
 author = 'Timo Sommer, Cian Clarke, Felix Kleuker'
 
@@ -48,3 +48,5 @@ html_logo = '_static/DART_pic.png'
 import os
 import sys
 sys.path.insert(0, os.path.abspath("../"))
+# Add the version and release information to the documentation
+version = release = os.environ.get('READTHEDOCS_VERSION', 'dev')

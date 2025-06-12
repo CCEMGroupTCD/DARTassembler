@@ -196,8 +196,7 @@
     "global_props": {
         "complex_name": "UPAFUVAX2_Ru",
         "stoichiometry": "RuC17H25N3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "c5b7680ce06ad254dfeac665a2e91de5",
         "batch_name": "First_batch"
     },

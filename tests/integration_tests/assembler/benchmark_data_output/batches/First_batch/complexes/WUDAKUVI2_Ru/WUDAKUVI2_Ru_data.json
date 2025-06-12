@@ -196,8 +196,7 @@
     "global_props": {
         "complex_name": "WUDAKUVI2_Ru",
         "stoichiometry": "RuC23H16ClIN2O2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "ec940e48603e37f618ab198d7a3ab11b",
         "batch_name": "First_batch"
     },

@@ -420,8 +420,7 @@
     "global_props": {
         "complex_name": "QOFIYECU1_Fe",
         "stoichiometry": "FeC46H49N2O2P2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "d60237e8823fb642586f4b9a9e206433",
         "batch_name": "Second_batch"
     },

@@ -212,8 +212,7 @@
     "global_props": {
         "complex_name": "XIKAHUCE2_Ru",
         "stoichiometry": "RuC18H27NO3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "b52479e564f2a3651c4f36abd909fa5f",
         "batch_name": "First_batch"
     },

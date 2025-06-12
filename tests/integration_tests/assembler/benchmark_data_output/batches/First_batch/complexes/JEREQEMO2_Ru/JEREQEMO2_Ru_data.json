@@ -320,8 +320,7 @@
     "global_props": {
         "complex_name": "JEREQEMO2_Ru",
         "stoichiometry": "RuC37H33N5O",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "b192423ec1bceabeb8e820d819024b8b",
         "batch_name": "First_batch"
     },

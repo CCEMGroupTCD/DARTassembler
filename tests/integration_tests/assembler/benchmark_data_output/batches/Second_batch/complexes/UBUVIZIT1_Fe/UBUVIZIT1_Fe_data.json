@@ -224,8 +224,7 @@
     "global_props": {
         "complex_name": "UBUVIZIT1_Fe",
         "stoichiometry": "FeC26H23N2O",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "884c02160c70275986954036cdc2bed3",
         "batch_name": "Second_batch"
     },

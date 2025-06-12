@@ -260,8 +260,7 @@
     "global_props": {
         "complex_name": "UYAVIMUK1_Ru",
         "stoichiometry": "RuC22H35NO2Si",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "8cd73104aff85e312d5f8884a118f396",
         "batch_name": "First_batch"
     },

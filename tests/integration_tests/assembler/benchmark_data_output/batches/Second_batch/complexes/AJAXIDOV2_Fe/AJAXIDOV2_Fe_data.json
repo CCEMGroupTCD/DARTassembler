@@ -288,8 +288,7 @@
     "global_props": {
         "complex_name": "AJAXIDOV2_Fe",
         "stoichiometry": "AlFeC23H41N3",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "792e30149fc5c499c2204bcc864ff73f",
         "batch_name": "Second_batch"
     },

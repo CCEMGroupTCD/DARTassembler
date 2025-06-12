@@ -337,6 +337,9 @@ class BaseMolecule(object):
         for i, _ in enumerate(self.atomic_props['x']):
             xyz += f"{self.atomic_props['atoms'][i]}  {self.atomic_props['x'][i]}  {self.atomic_props['y'][i]}  {self.atomic_props['z'][i]} \n"
 
+        # Remove trailing newline character
+        xyz = xyz.rstrip('\n')
+
         return xyz
 
     def to_dict(self, include_graph: bool=True) -> dict:
@@ -528,6 +531,7 @@ class Ligand(BaseMolecule):
                  donor_idc: list[int],
                  graph: nx.Graph,
                  unique_name: str,
+                 charge: Union[int, float],
                  global_props: dict = None,
                  ligand_instances: dict = None,
                  hapdent_idc: tuple = None,
@@ -547,6 +551,7 @@ class Ligand(BaseMolecule):
         :param donor_idc: List of indices of donor atoms in the ligand, i.e. the atoms that are connected to the metal center.
         :param graph: The molecular graph represented as a networkx Graph object. The nodes are indexed from 0 to n_atoms-1.
         :param unique_name: Unique name for the ligand, which is used to identify it in the database, e.g. 'unq_CSD-OZIYON-02-a'.
+        :param charge: Formal charge of the ligand. Can be set to np.nan for many applications if the charge is not known or not relevant.
         :param global_props: A flat dictionary containing global properties of the ligand, such as charge, stoichiometry, etc. If None, an empty dictionary is created.
         :param ligand_instances: A dictionary containing information about the ligand instances in the parent complex in the following format:
         ligand_instances = {
@@ -585,7 +590,7 @@ class Ligand(BaseMolecule):
         +-------------------------------+----------------------+------------------------------------------------------+
         | geometry                      | str                  | Assigned ligand geometry (e.g., '2_cis').            |
         +-------------------------------+----------------------+------------------------------------------------------+
-        | charge                        | Union[int, float, np.nan] | Formal charge of the ligand.                     |
+        | charge                        | Union[int, np.nan] | Formal charge of the ligand.                     |
         +-------------------------------+----------------------+------------------------------------------------------+
         | smiles                        | Union[str, None]     | SMILES string if bond orders valid; else None.      |
         +-------------------------------+----------------------+------------------------------------------------------+
@@ -632,8 +637,6 @@ class Ligand(BaseMolecule):
         | is_2D_symmetrical             | bool                 | True if the ligand graph is symmetrical between donors. |
         +-------------------------------+----------------------+------------------------------------------------------+
         | has_all_bond_orders_valid     | bool                 | True if all bond orders in the graph are known.      |
-        +-------------------------------+----------------------+------------------------------------------------------+
-        | has_confident_charge          | bool                 | True if the ligand has a confident charge assigned.  |
         +-------------------------------+----------------------+------------------------------------------------------+
         | graph_hash                    | str                  | Weisfeiler-Lehman hash of the ligand graph (no metal). |
         +-------------------------------+----------------------+------------------------------------------------------+
@@ -706,46 +709,49 @@ class Ligand(BaseMolecule):
                          )
 
         self.unique_name = unique_name
-        self.charge = self.global_props['charge']
         self.other_ligand_instances = ligand_instances
-
-        # Saving the hapdent_idc as json converts the tuples to lists, so we need to convert them back to tuples
+        self.donor_idc = donor_idc
+        self.charge = charge
+        # Saving the hapdent_idc as json converts the tuples to lists, so we need to convert them back to tuples. If None, let them undefined for later calculation.
         if hapdent_idc is not None:
             self.hapdent_idc = format_hapdent_idc(hapdent_idc)
         if geometric_isomers_hapdent_idc is not None:
             self.geometric_isomers_hapdent_idc = [format_hapdent_idc(isomer_idc) for isomer_idc in geometric_isomers_hapdent_idc]
 
-        self.donor_idc = donor_idc
-        self.has_confident_charge = self.global_props['has_confident_charge']
-        self.n_ligand_instances = self.global_props['n_ligand_instances']
-
-        # Calculate planarity of the ligand and its donors.
-        self.donor_metal_planarity = self._get_donors_planarity(with_metal=True)
-        self.donor_planarity = self._get_donors_planarity(with_metal=False)
-        self.planarity = self._get_planarity()
-        self.global_props['planarity'] = self.planarity
-        self.global_props['donor_planarity'] = self.donor_planarity
-        self.global_props['donor_metal_planarity'] = self.donor_metal_planarity
-
-        # Calculate n_donors and hapticity of the ligand
-        self.n_donors = len(self.donor_idc)
-
-        # Mention some properties so it's certain they are stored in global_props and computed if they don't exist yet.
-        self.n_denticities
-        self.n_haptic_atoms
-        self.n_eff_denticities
-        self.n_haptic_groups
-        self.geometry
-        self.stoichiometry
-        self.n_beta_hydrogens
-        self.smiles
-        self.smiles_with_metal
-        self.min_interatomic_distance
-        self.max_ligand_extension
-        self.is_2D_symmetrical
-
         if validity_check:
             self._check_if_molecule_valid()
+
+    @cached_global_props
+    def has_confident_charge(self) -> bool:
+        if 'has_confident_charge' in self.global_props:
+            return self.global_props['has_confident_charge']
+        else:
+            return True
+
+    @cached_global_props
+    def n_ligand_instances(self) -> int:
+        """The number of instances of the ligand in the parent complexes."""
+        return len(self.other_ligand_instances['ligand_name'])
+
+    @cached_global_props
+    def donor_metal_planarity(self) -> float:
+        """The planarity of the donor atoms including the metal center."""
+        return self._get_donors_planarity(with_metal=True)
+
+    @cached_global_props
+    def donor_planarity(self) -> float:
+        """The planarity of the donor atoms excluding the metal center."""
+        return self._get_donors_planarity(with_metal=False)
+
+    @cached_global_props
+    def planarity(self) -> float:
+        """The overall planarity of the ligand."""
+        return self._get_planarity()
+
+    @cached_global_props
+    def n_donors(self):
+        """The number of donor atoms in the ligand."""
+        return len(self.donor_idc)
 
     @cached_global_props
     def donor_elements(self) -> list[str]:
@@ -1082,6 +1088,9 @@ class Ligand(BaseMolecule):
         for i, _ in enumerate(self.atomic_props['x']):
             str_ += f"{self.atomic_props['atoms'][i]}  {self.atomic_props['x'][i]}  {self.atomic_props['y'][i]}  {self.atomic_props['z'][i]} \n"
 
+        # Remove the last newline character to match the .xyz format
+        str_ = str_.rstrip('\n')
+
         return str_
 
     def get_all_effective_ligand_atoms_with_effective_donor_indices(self, dummy='Cu') -> tuple[ase.Atoms, list[int]]:
@@ -1226,6 +1235,9 @@ class Ligand(BaseMolecule):
         if different_props:
             raise ValueError(f"Input dictionary is missing or has unexpected properties: {different_props}. Expected properties: {ligand_dict_props}.")
 
+        if not 'charge' in d['global_props']:
+            raise ValueError(f"Input dictionary is missing the 'charge' property in 'global_props'.")
+
         # Convert the graph from a dictionary to a NetworkX graph object
         graph = graph_from_graph_dict(d['graph'])
 
@@ -1238,6 +1250,7 @@ class Ligand(BaseMolecule):
             ligand_instances=d['ligand_instances'],
             hapdent_idc=d['hapdent_idc'],
             geometric_isomers_hapdent_idc=d['geometric_isomers_hapdent_idc'],
+            charge=d['global_props']['charge'],
             validity_check=validity_check,
         )
     

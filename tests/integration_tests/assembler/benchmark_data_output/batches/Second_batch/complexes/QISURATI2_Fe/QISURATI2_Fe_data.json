@@ -316,8 +316,7 @@
     "global_props": {
         "complex_name": "QISURATI2_Fe",
         "stoichiometry": "FeC24H43N2O4Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "97f8c128f68f160a210907103799fbfc",
         "batch_name": "Second_batch"
     },

@@ -10,6 +10,7 @@ def get_moldoc_molecule(run: str, complex_name: str) -> molecule.Molecule:
     :param complex_name: The complex name, e.g. 'YOZEPECO'.
     :return: A moldoc molecule object.
     """
+    from DARTassembler.src._extraction.TransitionMetalComplex import TransitionMetalComplex
     rundir = docs_run_dirs[run]
     jsonpath = Path(rundir, complex_name, f'{complex_name}_data.json')
     tmc = TransitionMetalComplex.from_json(jsonpath)

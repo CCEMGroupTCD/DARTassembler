@@ -260,8 +260,7 @@
     "global_props": {
         "complex_name": "ICAYAZEL1_Ru",
         "stoichiometry": "RuC21H30N2O6S2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "e712ddf208fcd5894f31c0d34f9c4516",
         "batch_name": "First_batch"
     },

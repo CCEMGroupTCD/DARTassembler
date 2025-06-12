@@ -300,8 +300,7 @@
     "global_props": {
         "complex_name": "PUROFOJU2_Ru",
         "stoichiometry": "RuC22H44N2SSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "4779c63348c00c3c8492c1a7b48f9d6c",
         "batch_name": "First_batch"
     },

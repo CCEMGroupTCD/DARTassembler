@@ -360,8 +360,7 @@
     "global_props": {
         "complex_name": "NUMOZIKU2_Ru",
         "stoichiometry": "RuC38H44NPSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "db07a03833d7f1c1a8c704998789b80e",
         "batch_name": "First_batch"
     },

@@ -440,8 +440,7 @@
     "global_props": {
         "complex_name": "EMEHADUZ2_Fe",
         "stoichiometry": "FeC34H60N2P7S3",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "83f823faea36177c64cfdfc99365f547",
         "batch_name": "Second_batch"
     },

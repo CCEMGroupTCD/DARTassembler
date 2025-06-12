@@ -180,8 +180,7 @@
     "global_props": {
         "complex_name": "FIYINAZA2_Ru",
         "stoichiometry": "RuC16H20F2N2O",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "112436693d38fa923fd6d30cbbe07b5f",
         "batch_name": "First_batch"
     },

@@ -572,8 +572,7 @@
     "global_props": {
         "complex_name": "JEFOQOYI2_Fe",
         "stoichiometry": "FeC59H74N3O2Si",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "9937e50399c4777567f8a9c66d206e7b",
         "batch_name": "Second_batch"
     },

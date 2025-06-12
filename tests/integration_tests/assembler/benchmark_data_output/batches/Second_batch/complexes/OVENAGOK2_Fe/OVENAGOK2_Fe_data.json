@@ -108,8 +108,7 @@
     "global_props": {
         "complex_name": "OVENAGOK2_Fe",
         "stoichiometry": "FeC6H12NO4",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "80b1d23ee95f0a8064a434f43b8fe11a",
         "batch_name": "Second_batch"
     },

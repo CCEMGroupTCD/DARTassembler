@@ -424,8 +424,7 @@
     "global_props": {
         "complex_name": "EFIRONEV2_Ru",
         "stoichiometry": "RuC38H51N11O2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "ca256da5fa5d1346457f5485c3e00954",
         "batch_name": "First_batch"
     },

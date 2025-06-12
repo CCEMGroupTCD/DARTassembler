@@ -640,8 +640,7 @@
     "global_props": {
         "complex_name": "OMOGIFOQ2_Fe",
         "stoichiometry": "FeC66H77N10O3",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "9a7ccca5f41af7bde85e18f971804e25",
         "batch_name": "Second_batch"
     },

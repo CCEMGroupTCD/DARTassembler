@@ -192,8 +192,7 @@
     "global_props": {
         "complex_name": "VOBAXINO2_Fe",
         "stoichiometry": "FeC15H25N2SSi",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "c685e1a830bb1771649f62bc62ceed41",
         "batch_name": "Second_batch"
     },

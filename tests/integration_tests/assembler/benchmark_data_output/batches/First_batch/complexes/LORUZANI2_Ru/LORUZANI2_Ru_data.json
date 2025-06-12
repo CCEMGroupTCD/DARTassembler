@@ -120,8 +120,7 @@
     "global_props": {
         "complex_name": "LORUZANI2_Ru",
         "stoichiometry": "RuC10H12N2O2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "9388aa3aaac43549892fea3269a6fb9d",
         "batch_name": "First_batch"
     },

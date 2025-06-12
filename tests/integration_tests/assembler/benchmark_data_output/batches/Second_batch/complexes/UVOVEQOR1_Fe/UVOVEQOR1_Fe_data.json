@@ -200,8 +200,7 @@
     "global_props": {
         "complex_name": "UVOVEQOR1_Fe",
         "stoichiometry": "FeC19H20N3O4",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "935883ab3993cc73e7ef78d7aceafb98",
         "batch_name": "Second_batch"
     },

@@ -304,8 +304,7 @@
     "global_props": {
         "complex_name": "IGECIVOK1_Ru",
         "stoichiometry": "RuC28H41NO2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "7c5332c4f3846665bc1496ae376156bb",
         "batch_name": "First_batch"
     },

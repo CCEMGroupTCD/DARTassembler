@@ -304,8 +304,7 @@
     "global_props": {
         "complex_name": "GIVOFICE1_Fe",
         "stoichiometry": "FeC31H34F3NO2P",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "8cc1a65e44afda509978c74e2071748f",
         "batch_name": "Second_batch"
     },

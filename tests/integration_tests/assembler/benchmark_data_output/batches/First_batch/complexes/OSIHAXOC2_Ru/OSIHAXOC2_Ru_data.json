@@ -452,8 +452,7 @@
     "global_props": {
         "complex_name": "OSIHAXOC2_Ru",
         "stoichiometry": "RuC47H59O2P",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "80f3382ce07e18d1d187ea9938cb980e",
         "batch_name": "First_batch"
     },

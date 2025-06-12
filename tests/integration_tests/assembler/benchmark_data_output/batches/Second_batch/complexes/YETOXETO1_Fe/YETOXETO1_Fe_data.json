@@ -380,8 +380,7 @@
     "global_props": {
         "complex_name": "YETOXETO1_Fe",
         "stoichiometry": "FeC35H42BrN10O3",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "fa2b9a0a13a8d1fa52b11ee123ab0651",
         "batch_name": "Second_batch"
     },

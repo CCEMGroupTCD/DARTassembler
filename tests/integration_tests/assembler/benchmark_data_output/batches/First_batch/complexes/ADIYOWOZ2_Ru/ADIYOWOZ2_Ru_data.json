@@ -364,8 +364,7 @@
     "global_props": {
         "complex_name": "ADIYOWOZ2_Ru",
         "stoichiometry": "RuC32H49N2OP3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "6e659ae7962392dd1fe2bd8efdda0bf1",
         "batch_name": "First_batch"
     },

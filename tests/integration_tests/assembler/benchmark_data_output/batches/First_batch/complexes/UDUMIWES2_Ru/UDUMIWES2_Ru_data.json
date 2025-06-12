@@ -192,8 +192,7 @@
     "global_props": {
         "complex_name": "UDUMIWES2_Ru",
         "stoichiometry": "RuC18H22ClNO2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "421674fb40387f450aa6111d812d1bda",
         "batch_name": "First_batch"
     },
