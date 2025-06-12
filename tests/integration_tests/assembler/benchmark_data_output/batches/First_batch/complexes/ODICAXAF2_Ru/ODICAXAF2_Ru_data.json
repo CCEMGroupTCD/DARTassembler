@@ -228,8 +228,7 @@
     "global_props": {
         "complex_name": "ODICAXAF2_Ru",
         "stoichiometry": "RuC16H30N2O3Si2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "8efd566d815ea00783aa95cd5541039b",
         "batch_name": "First_batch"
     },

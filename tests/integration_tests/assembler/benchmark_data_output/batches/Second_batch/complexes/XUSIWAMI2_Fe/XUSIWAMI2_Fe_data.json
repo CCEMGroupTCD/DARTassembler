@@ -284,8 +284,7 @@
     "global_props": {
         "complex_name": "XUSIWAMI2_Fe",
         "stoichiometry": "AlFeC24H39N3",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "7079d9b62666af66c54754241cc0a152",
         "batch_name": "Second_batch"
     },

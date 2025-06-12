@@ -276,8 +276,7 @@
     "global_props": {
         "complex_name": "FOLUXOKE1_Fe",
         "stoichiometry": "FeC23H37O3Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "a300b4a0e7e69b0f24c1abb2a3b1cb58",
         "batch_name": "Second_batch"
     },

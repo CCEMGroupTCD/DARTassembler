@@ -248,8 +248,7 @@
     "global_props": {
         "complex_name": "EDENANIY2_Ru",
         "stoichiometry": "RuC21H33NO2Si",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "5d22b25128e9221120b6be6dc5767175",
         "batch_name": "First_batch"
     },

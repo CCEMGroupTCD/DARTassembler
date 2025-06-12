@@ -368,8 +368,7 @@
     "global_props": {
         "complex_name": "YOTOJIJA2_Ru",
         "stoichiometry": "RuC33H47Cl2N2OP3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "e7da3901ee96a24cca1d04d42a74c0ea",
         "batch_name": "First_batch"
     },

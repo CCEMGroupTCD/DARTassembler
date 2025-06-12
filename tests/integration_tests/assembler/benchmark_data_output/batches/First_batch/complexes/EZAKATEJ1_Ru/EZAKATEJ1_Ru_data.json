@@ -192,8 +192,7 @@
     "global_props": {
         "complex_name": "EZAKATEJ1_Ru",
         "stoichiometry": "RuC16H19F2N3O3Si",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "3bdd7a49f193e2156487afab41e9c430",
         "batch_name": "First_batch"
     },

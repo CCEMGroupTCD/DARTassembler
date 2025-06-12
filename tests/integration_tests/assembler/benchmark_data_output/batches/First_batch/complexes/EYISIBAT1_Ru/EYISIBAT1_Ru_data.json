@@ -240,8 +240,7 @@
     "global_props": {
         "complex_name": "EYISIBAT1_Ru",
         "stoichiometry": "RuC21H30N2O3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "ab30f6e8f9341c684b408f0e5491c6dd",
         "batch_name": "First_batch"
     },

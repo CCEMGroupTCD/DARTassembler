@@ -337,6 +337,7 @@ class Isomer(BaseMolecule):
         :return: Isomer object
         """
         data['graph'] = graph_from_graph_dict(data['graph'])
+        data['charge'] = 0
         return cls(**data)
 
 # todo @Cian: I made three little changes now here:

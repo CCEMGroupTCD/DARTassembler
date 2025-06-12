@@ -128,8 +128,7 @@
     "global_props": {
         "complex_name": "LERUDOZI2_Ru",
         "stoichiometry": "RuC13H14O",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "dfda6174f4fd9ad807912667f0212332",
         "batch_name": "First_batch"
     },

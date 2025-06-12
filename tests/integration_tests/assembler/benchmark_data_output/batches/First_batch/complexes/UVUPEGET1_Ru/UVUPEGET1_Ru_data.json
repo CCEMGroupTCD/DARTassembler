@@ -180,8 +180,7 @@
     "global_props": {
         "complex_name": "UVUPEGET1_Ru",
         "stoichiometry": "RuC17H20N2OSi",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "e7e7a88eb68add726eec10cf0fe021a1",
         "batch_name": "First_batch"
     },

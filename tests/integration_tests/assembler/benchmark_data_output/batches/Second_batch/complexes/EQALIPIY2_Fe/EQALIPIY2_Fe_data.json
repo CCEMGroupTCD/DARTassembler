@@ -588,8 +588,7 @@
     "global_props": {
         "complex_name": "EQALIPIY2_Fe",
         "stoichiometry": "FeC60H77N4OSi",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "a0cb5001499b3eb5df0bea24762ee6ab",
         "batch_name": "Second_batch"
     },

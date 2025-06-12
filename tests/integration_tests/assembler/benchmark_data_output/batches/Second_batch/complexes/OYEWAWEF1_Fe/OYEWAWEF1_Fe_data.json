@@ -252,8 +252,7 @@
     "global_props": {
         "complex_name": "OYEWAWEF1_Fe",
         "stoichiometry": "FeC27H26N3O3",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "8515eda8de4c3936cb84bbec03448871",
         "batch_name": "Second_batch"
     },

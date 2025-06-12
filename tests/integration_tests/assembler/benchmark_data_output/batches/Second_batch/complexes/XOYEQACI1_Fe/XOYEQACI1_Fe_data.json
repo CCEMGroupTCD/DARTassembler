@@ -164,8 +164,7 @@
     "global_props": {
         "complex_name": "XOYEQACI1_Fe",
         "stoichiometry": "FeC13H21N2O",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "f20f846a062d330237b7a231b759acd8",
         "batch_name": "Second_batch"
     },

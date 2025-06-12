@@ -280,8 +280,7 @@
     "global_props": {
         "complex_name": "IBENUWOG1_Fe",
         "stoichiometry": "FeC28H29ClN7O",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "5b67b914174adc0245838a4f7a6169cd",
         "batch_name": "Second_batch"
     },

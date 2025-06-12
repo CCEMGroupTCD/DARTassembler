@@ -300,8 +300,7 @@
     "global_props": {
         "complex_name": "ZAMIQIJE1_Fe",
         "stoichiometry": "FeC20H43N2O4Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "950cb3aeebf68ed5ff32b317b5580770",
         "batch_name": "Second_batch"
     },

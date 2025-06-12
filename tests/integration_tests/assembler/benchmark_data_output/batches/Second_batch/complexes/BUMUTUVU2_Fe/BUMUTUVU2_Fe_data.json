@@ -200,8 +200,7 @@
     "global_props": {
         "complex_name": "BUMUTUVU2_Fe",
         "stoichiometry": "FeC20H23N2S",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "c56c6c9a3ff381d66b126299f016b3be",
         "batch_name": "Second_batch"
     },

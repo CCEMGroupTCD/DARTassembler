@@ -264,8 +264,7 @@
     "global_props": {
         "complex_name": "YOPEHIMU2_Fe",
         "stoichiometry": "FeC24H30N7Si",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "26cd8e064e463aae960c043579dfbd2d",
         "batch_name": "Second_batch"
     },

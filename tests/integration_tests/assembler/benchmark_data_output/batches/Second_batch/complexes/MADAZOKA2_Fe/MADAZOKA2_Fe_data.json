@@ -320,8 +320,7 @@
     "global_props": {
         "complex_name": "MADAZOKA2_Fe",
         "stoichiometry": "FeC36H36ClN2O",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "543f393a7e2b758414f5bb8eba9c1c34",
         "batch_name": "Second_batch"
     },

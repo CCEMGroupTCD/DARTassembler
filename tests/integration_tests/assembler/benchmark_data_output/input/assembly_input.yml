@@ -1,18 +1,16 @@
-output_directory: assembler/data_output
+output_directory: .
 concatenate_xyz: true
 verbosity: 2
 same_isomer_names: true
 complex_name_length: 8
 n_max_ligands: 100
-pre_delete: true
 batches:
 - name: First_batch
-  total_metal_oxidation_state: 2
-  total_charge: 0
+  total_ligand_charges: -2
   ligand_db_files:
-  - assembler/data_input/bidentate.jsonlines
-  - assembler/data_input/monodentate.jsonlines
-  - assembler/data_input/haptic.jsonlines
+  - ../data_input/bidentate.jsonlines
+  - ../data_input/monodentate.jsonlines
+  - ../data_input/haptic.jsonlines
   target_vectors:
   - - - 1
       - 0
@@ -20,12 +18,12 @@ batches:
     - - 0
       - 1
       - 0
-  - - -1
-    - 0
-    - 0
-  - - 0
-    - -1
-    - 0
+  - - - -1
+      - 0
+      - 0
+  - - - 0
+      - -1
+      - 0
   ligand_origins:
   - - 0
     - 0
@@ -53,12 +51,11 @@ batches:
   random_seed: 0
   complex_name_appendix: _Ru
 - name: Second_batch
-  total_metal_oxidation_state: 1
-  total_charge: 0
+  total_ligand_charges: -1
   ligand_db_files:
-  - assembler/data_input/bidentate.jsonlines
-  - assembler/data_input/monodentate.jsonlines
-  - assembler/data_input/haptic.jsonlines
+  - ../data_input/bidentate.jsonlines
+  - ../data_input/monodentate.jsonlines
+  - ../data_input/haptic.jsonlines
   target_vectors:
   - - - 1
       - 0
@@ -66,12 +63,12 @@ batches:
     - - 0
       - 1
       - 0
-  - - -1
-    - 0
-    - 0
-  - - 0
-    - -1
-    - 0
+  - - - -1
+      - 0
+      - 0
+  - - - 0
+      - -1
+      - 0
   ligand_origins:
   - - 0
     - 0

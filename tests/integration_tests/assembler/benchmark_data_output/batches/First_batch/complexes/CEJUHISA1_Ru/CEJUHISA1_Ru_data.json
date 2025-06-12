@@ -408,8 +408,7 @@
     "global_props": {
         "complex_name": "CEJUHISA1_Ru",
         "stoichiometry": "RuC40H52N3O2P",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "fb4ad5782bea74281d944beab856a1a9",
         "batch_name": "First_batch"
     },

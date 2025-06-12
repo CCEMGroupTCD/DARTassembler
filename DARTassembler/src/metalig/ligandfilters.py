@@ -1,23 +1,23 @@
-import shutil
 from copy import deepcopy
 from pathlib import Path
 from typing import Union
 import pandas as pd
 from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
-from DARTassembler.src.misc.io import get_correct_ligand_db_path_from_input
+from DARTassembler.src.misc.io import get_correct_ligand_db_path_from_input, read_yaml
 from DARTassembler.src.modules.modules import BaseModule
+from DARTassembler.src.constants.paths import default_ligandfilters_yml_path
 
 class LigandFilters(BaseModule):
     """
     This module filters a ligand database based on specified criteria. It allows for filtering by properties, composition, parent complexes, and SMARTS patterns.
     """
 
-    def __init__(self, input_db_file: Union[str, Path, None], n_max_ligands: Union[int, None] = None):
+    def __init__(self, db: Union[str, Path, None], n: Union[int, None] = None):
         super().__init__()
-        self.n_max_ligands = n_max_ligands
-        self.input_ligand_db_path = get_correct_ligand_db_path_from_input(input_db_file)
-        self.db = LigandDB.from_json(path=self.input_ligand_db_path, n_max=n_max_ligands)
+        self.n_max_ligands = n
+        self.input_ligand_db_path = get_correct_ligand_db_path_from_input(db)
+        self.db = LigandDB.from_json(path=self.input_ligand_db_path, n_max=n)
 
     def _apply_filters(self, filters: list[dict]) -> list[str]:
         self.filter_tracking = []
@@ -180,31 +180,58 @@ class LigandFilters(BaseModule):
 
         return
 
+    @classmethod
+    def run_from_yaml(cls, input: Union[str,Path,None]) -> "LigandFilters":
+        """
+        Filter the full ligand database according to the specified filters. Should be run before assembly to reduce the number of ligands considered in the assembly to the ones that are interesting to the user.
+        :param input: Path to the filter input file (.yml). If None, the template ligandfilters.yml file is used.
+        :return: LigandFilters object
+        """
+        if input is None:
+            input = default_ligandfilters_yml_path
+
+        input_dict = read_yaml(input)
+        input_db_file = input_dict.pop('db', None)
+        n = input_dict.pop('n', None)
+
+        filter = LigandFilters(db=input_db_file, n=n)
+        filter.run(**input_dict)
+
+        return filter
+
+    @classmethod
+    def run_from_cli(cls, input: Union[str, Path, None] = None) -> "LigandFilters":
+        """
+        Run the ligand filters from the command line interface. This method is used to run the ligand filters with the specified input file.
+        :param input: Path to the filter input file (.yml). If None, the template ligandfilters.yml file is used.
+        :return: LigandFilters object
+        """
+        super()._before_run_from_cli()
+        super()._print_cli_input(input=input)
+        ligandfilters = cls.run_from_yaml(input=input)
+        super()._after_run_from_cli()
+
+        return ligandfilters
+
     def run(self,
             filters: list[dict],
-            output_db_file: Union[None, str, Path] = 'filtered_ligand_db.jsonlines',
-            output_ligands_info: bool = True,
-            output_metal: bool = True,
-            pre_delete: bool = False
+            outpath: Union[None, str, Path] = 'filtered_ligand_db.jsonlines',
+            dbinfo: bool = True,
+            metal: bool = True,
             ):
         """
         Apply filters to the ligand database and save the filtered ligands to a new ligand database file.
         :param filters: list of dictionaries with filter options.
-        :param output_db_file: path to the output ligand database file. If None, no output files are saved.
-        :param output_ligands_info: if a directory with info on the filtered ligands should be saved additionally to the ligand database.
-        :param output_metal: if a pseudo metal center should be added to the ligands in the concatenated xyz files.
-        :param pre_delete: if the output ligand db file and the info directory should be deleted before the new files are saved.
+        :param outpath: path to the output ligand database file. If None, no output files are saved.
+        :param dbinfo: if a directory with info on the filtered ligands should be saved additionally to the ligand database.
+        :param metal: if a pseudo metal center should be added to the ligands in the concatenated xyz files.
         :return: list of unique names of the ligands that passed all filters.
         """
-        self.output_ligand_db_path = Path(output_db_file)
-        self.output_info = output_ligands_info
-        self.output_metal = output_metal
+        self.output_ligand_db_path = Path(outpath)
+        self.output_info = dbinfo
+        self.output_metal = metal
         outdirname = f'info_{self.output_ligand_db_path.with_suffix("").name}'
         self.outdir = Path(self.output_ligand_db_path.parent, outdirname)  # directory for full output info
-
-        if pre_delete:
-            self.output_ligand_db_path.unlink(missing_ok=True)
-            shutil.rmtree(self.outdir, ignore_errors=True)
 
         print(f"Starting DART Ligand Filters Module.")
         print(f"Input ligand db file: `{self.input_ligand_db_path.name}`")
@@ -218,7 +245,7 @@ class LigandFilters(BaseModule):
             filtered_db._to_json(self.output_ligand_db_path, json_lines=True,
                                  desc=f'Save ligand db to `{self.output_ligand_db_path.name}`')
 
-            if output_ligands_info:
+            if dbinfo:
                 self.save_filtered_ligands_output()
 
         self.output = self._get_filter_tracking_string()
@@ -235,14 +262,4 @@ if __name__ == '__main__':
 
     # #%% ==============    Refactor ligand filters    ==================
     filter = LigandFilters(input_db_file='metalig', n_max=n_max)
-    ligands = filter.run(oer_ligand_filters, output_db_file=outpath, output_ligands_info=output_info)
-
-    # #%% ==============    Doublecheck refactoring    ==================
-    # from dev.test.Integration_Test import IntegrationTest
-    # old_dir = Path('/Users/timosommer/PhD/projects/DARTassembler/dev/DART_refactoring_to_v1_1_0/data/benchmark_ligandfilters')
-    # if old_dir.exists():
-    #     test = IntegrationTest(new_dir=Path(outpath).parent, old_dir=old_dir)
-    #     test.compare_all()
-    #     print('Test for ligand filters passed!')
-    # else:
-    #     print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
+    ligands = filter.run(oer_ligand_filters, outpath=outpath, dbinfo=output_info)

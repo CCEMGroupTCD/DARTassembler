@@ -404,8 +404,7 @@
     "global_props": {
         "complex_name": "USEQOVIZ2_Ru",
         "stoichiometry": "RuC42H44BF3NO5P",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "c697e1a2d505e10bf60c318230121ff2",
         "batch_name": "First_batch"
     },

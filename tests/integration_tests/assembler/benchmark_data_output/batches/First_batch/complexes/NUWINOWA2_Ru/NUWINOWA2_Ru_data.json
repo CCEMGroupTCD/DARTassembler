@@ -684,8 +684,7 @@
     "global_props": {
         "complex_name": "NUWINOWA2_Ru",
         "stoichiometry": "RuC64H94N4O3Si2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "9462479700409552593b53e0318d6182",
         "batch_name": "First_batch"
     },

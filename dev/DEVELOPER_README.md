@@ -31,29 +31,14 @@ The DART workflow has several important Python classes that need to be maintaine
 As such, the following Python classes need the ability to be accessed via the CLI and a yaml file:
 - `Assembler()` -> the full DART workflow, from loading the ligand db files to saving the output 3D TMC structures
 - `LigandFilters()` -> the ligand filters
-- `dbinfo()` a function to get a csv and concatenated .xyz files from a ligand db .jsonlines file
+- `DBInfo()` a module to get a csv and concatenated .xyz files from a ligand db .jsonlines file
 
 The following Python classes do not need to be accessed via yaml since they will never be called from the CLI
 - `Isomer()` -> the class that assembles 3D TMCs from a list of ligands
 - `Ligand()` -> the class representing a ligand from the MetaLig
 
 ### Assembler() 
-This class runs the full DART assembly workflow and is maintained mostly by Timo. It currently has the following inputs (and a few more options will still be added):
-```python
-class Assembler(object):
-    def __init__(
-                    self,
-                    output_directory: Union[str, Path] = 'DARTassembler',
-                    concatenate_xyz: bool = True,
-                    verbosity: int = 2,
-                    same_isomer_names: bool = True,
-                    complex_name_length: int = 8,
-                    n_max_ligands: Union[int,None] = None,
-                    pre_delete: bool = False
-                 ):
-```
-
-It implements the following functionalities:
+This class runs the full DART assembly workflow and is maintained mostly by Timo. It implements the following functionalities:
 - Run from a list of keywords (called in Python) or from a yaml file
 - Load all required ligand databases
 - Generate combinations of ligands to be assembled together in the same complex
@@ -97,22 +82,22 @@ This class is used to represent a ligand from the MetaLig database and is mainta
 ### LigandFilters()
 A class that loads a ligand database file and call be called from a yaml in order to filter down the ligand database based on certain filters.
 
-### dbinfo()
-A function that loads a ligand database and outputs information files such as a csv and a few concatenated .xyz files.
+### DBInfo()
+A class that loads a ligand database file and can be called from a yaml in order to generate a csv file with the ligand information and a concatenated .xyz file with all ligands in the database.
 
 ## Tests
 
 During the entire development process, the code should be continually tested to check if the output is as expected. The tests are integration tests, which run an entire module and then check that the output files are the same as in a benchmark directory. If they are not, the tests will print information about the differences. All tests are located in the `tests/integration_tests/` directory. The following tests are available:
 
 Very fast (a few seconds):
-- `test_ligandfilters.py`: Tests the `ligandfilters` module by reading in a limited set of ligands from the MetaLig database, applying a few filters and saving an output ligand db file.
-- `test_dbinfo.py`: Tests the `dbinfo` module.
-- `test_assembler.py`: Tests the `assembler` module which is the DART workflow, from reading in a yaml file, loading small sample ligand databases, assembling a few geometries and saving the output complexes.
+- `test_cli.py`: A short tests of all modules using the cli. This test is very fast but touches every single module so it's very handy.
+- `test_assembler.py`: Tests the `assembler` module which is the DART workflow, from reading in a yaml file, loading small sample ligand databases, assembling a few geometries and saving the output complexes. The tests here should be a little more expansive in the future, at the moment they are very fast as well.
 
 Currently not functional during the refactoring:
-- `test_installation.py`: A very fast test that checks the `ligandfilters`, `assembler` and `dbinfo` module with a very small set of ligands.
 - `test_Pd_Ni_example.py`: A test which runs the `ligandfilters` and `assembler` modules for the Pd-Ni case study.
 - `test_OER_example.py`: A test which runs the `ligandfilters` and `assembler` modules for the OER database.
+
+Note: The tests of ligandfilters, installtest and dbinfo that once existed have been removed because they are now all integrated in `test_cli.py`.
 
 ### How to test your code whenever you make any edits
 When developing new features, it is important to test the code to ensure that the output is as expected. The tests are integration tests, which run an entire module and then check that the output files are the same as in a benchmark directory. If they are not, the tests will print information about the differences. This is a good way to ensure that the code is working as expected and that no unintended changes have been made.
@@ -121,7 +106,7 @@ As an example, let's imagine we want to develop a new feature in our assembler m
 2. Make sure you are in a git branch for testing and feature development.
 3. Before making any edits, run all tests that contain the module we want to edit (or simply all of them) to make sure the benchmark outputs are correct. This will give us a baseline to compare against.
     - In our case, we edit the assembler module, so the most important test to run is `test_assembler.py`. 
-    - The `test_installation.py` test should also always be run since it is very fast and covers a good bit of DART, including the assembler module.
+    - The `test_cli.py` test should also always be run since it is very fast and covers all modules, including the assembler module.
     - The `test_Pd_Ni_example.py` and `test_OER_example.py` tests should also be run since the assembler module is used in these tests as well.
 4. Check that all the tests pass successfully. This should normally be the case, but if not, first we need to fix the benchmark directories before we can continue. You should see the following output:
 ```
@@ -189,7 +174,7 @@ If everything works:
    10. Upload to PyPI Production: ``twine upload dist/DARTassembler-X.Y.Z*``
    11. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
    12. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
-   
 
-
-
+## Changelog
+12.06.2025
+- Removed the total charge and metal oxidation state from assembler.yml input and replaced this with a single property `total_ligand_charges`

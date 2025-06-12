@@ -1,5 +1,5 @@
 """
-This module concatenates multiple ligand databases into one.
+This file contains the base module class and several small modules for the DARTassembler package. The `assembler` and `ligandfilters` modules are not included here.
 """
 from pathlib import Path
 from shutil import copyfile
@@ -15,41 +15,53 @@ class BaseModule(object):
     """
     Base class for all modules in the DARTassembler package. Implements the basic structure for running modules from the command line interface (CLI).
     """
+    def __init_subclass__(cls):
+        super().__init_subclass__()
+        # Set class attributes on each subclass immediately when it’s defined so you can access them without instantiating the class (as a cls object).
+        cls.module_name = cls.__name__.lower()
+        cls.desc        = (cls.__doc__ or "").strip()
+
     def __init__(self):
-        self.module_name = self.__class__.__name__.lower() # Name of the module, e.g. 'concat', 'ligandfilters', etc.
-        self.desc = self.__doc__.strip().strip("\n")
+        pass
 
-    def _before_run_from_cli(self) -> None:
+    @classmethod
+    def _before_run_from_cli(cls) -> None:
         """Base method for running the module."""
-        title = f'     {self.module_name.upper()} MODULE    '
-        self._print(f'{title:=^80}')
-        self._print(f'{self.module_name}: {self.desc}')
+        title = f'     {cls.module_name.upper()} MODULE    '
+        cls._print(f'{title:=^80}')
+        cls._print(f'{cls.module_name}: {cls.desc}')
 
-    def _after_run_from_cli(self) -> None:
-        self._print(f"Done! Exiting {self.module_name} module.")
+    @classmethod
+    def _after_run_from_cli(cls) -> None:
+        cls._print(f"Done! Exiting {cls.module_name} module.")
 
-    def _print_cli_input(self, **kwargs) -> None:
+    @classmethod
+    def _print_cli_input(cls, **kwargs) -> None:
         """
         Print the input parameters for the module.
         """
-        self._print(f"Input parameters:")
+        cls._print(f"Input parameters:")
         for key, value in kwargs.items():
-            self._print(f"  - {key}: {value}")
-        self._print(f'Starting {self.module_name} module with the above parameters...')
+            cls._print(f"  - {key}: {value}")
+        cls._print(f'Starting {cls.module_name} module with the above parameters...')
 
-    def run_from_cli(self, **kwargs):
-        self._before_run_from_cli()
-        self._print_cli_input(**kwargs)
-        output = self.run(**kwargs)
-        self._after_run_from_cli()
+    @classmethod
+    def run_from_cli(cls, **kwargs):
+        cls._before_run_from_cli()
+        cls._print_cli_input(**kwargs)
+        module = cls()  # Create an instance of the module class
+        module.run(**kwargs)
+        module._after_run_from_cli()
 
-        return output
+        return module
 
-    def _print(self, text: str) -> None:
+    @staticmethod
+    def _print(text: str) -> None:
         """
         Print text to the console.
         """
         print(textwrap.fill(text=text, width=80))
+
 
     def run(self, *args, **kwargs):
         """
@@ -65,17 +77,17 @@ class Concat(BaseModule):
     def __init__(self) -> None:
         super().__init__()
 
-    def run(self, paths: list[Union[str,Path]], outpath: Union[str,Path,None]=None, n_max_ligands: Union[int, None] = None) -> LigandDB:
+    def run(self, dbs: list[Union[str,Path]], outpath: Union[str,Path,None]=None, n: Union[int, None] = None) -> LigandDB:
         """
         Concatenate multiple ligand databases into one.
-        :param paths: Paths to the ligand databases.
+        :param dbs: Paths to the ligand databases.
         :param outpath: Path to the output ligand database. If None, no output file is saved.
-        :param n_max_ligands: Maximum number of ligands to be read in from each ligand database. If None, all ligands are read in. This is useful for testing purposes.
+        :param n: Maximum number of ligands to be read in from each ligand database. If None, all ligands are read in. This is useful for testing purposes.
         """
-        paths = [get_correct_ligand_db_path_from_input(path) for path in paths] # Ensure paths are correct
+        dbs = [get_correct_ligand_db_path_from_input(db) for db in dbs] # Ensure paths are correct
 
         # Load all ligand databases
-        ligand_dbs = [LigandDB.from_json(path, n_max=n_max_ligands) for path in paths]
+        ligand_dbs = [LigandDB.from_json(db, n_max=n) for db in dbs]
 
         # Print number of ligands in each database
         for i, db in enumerate(ligand_dbs):
@@ -105,21 +117,21 @@ class DBInfo(BaseModule):
     def __init__(self) -> None:
         super().__init__()
 
-    def run(self, path: Union[str, Path,None]='metalig', outdir: Union[str, Path, None] = None, n_max_ligands: Union[int, None] = None, with_metal: bool=True) -> tuple[LigandDB, pd.DataFrame, str]:
+    def run(self, db: Union[str, Path,None]='metalig', outdir: Union[str, Path, None] = None, n: Union[int, None] = None, metal: bool=True) -> tuple[LigandDB, pd.DataFrame, str]:
         """
         Reads in the given ligand database and saves a .csv file and a concatenated .xyz file with an overview of the ligands.
-        :param path: Path to the ligand database. The default path is 'metalig', which points to the full ligand database.
+        :param db: Path to the ligand database. The default path is 'metalig', which points to the full ligand database.
         :param outdir: Path to the output .csv file. If None, no output file is saved. If '.csv', the output file is saved in the same directory as the input file with the same name but with the .csv extension.
-        :param n_max_ligands: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.
-        :param with_metal: If True, the metal atom is included in the concatenated .xyz file. If False, only the ligand is included.
+        :param n: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.
+        :param metal: If True, the metal atom is included in the concatenated .xyz file. If False, only the ligand is included.
         :return: Tuple of (LigandDB, DataFrame, concatenated xyz string) of the ligands.
         """
-        path = get_correct_ligand_db_path_from_input(path)
-        db = LigandDB.from_json(path, n_max=n_max_ligands)
+        db = get_correct_ligand_db_path_from_input(db)
+        ligand_db = LigandDB.from_json(db, n_max=n)
 
         if outdir is None:
-            df = db.get_df()
-            xyz_string = db.get_concat_xyz_string(with_metal=with_metal)
+            df = ligand_db.get_df()
+            xyz_string = ligand_db.get_concat_xyz_string(with_metal=metal)
         else:
             # Handle default output path
             if outdir == '.':
@@ -128,17 +140,17 @@ class DBInfo(BaseModule):
             outdir.parent.mkdir(parents=True, exist_ok=True)
 
             # Save to csv
-            stem = path.stem
+            stem = db.name.removesuffix('.bz2').removesuffix('.jsonlines').removesuffix('.json')
             print(f'Saving ligand info and structures to `{outdir.name}`...')
             csv_filename = stem + '.csv'
-            df = db.save_to_csv(Path(outdir, csv_filename))
+            df = ligand_db.save_to_csv(Path(outdir, csv_filename))
             print(f'  - Saved .csv to `{csv_filename}`.')
             # Save to concatenated xyz file
             xyz_filename = 'concat_' + stem + '.xyz'
-            xyz_string = db.save_to_concat_xyz(Path(outdir, xyz_filename), with_metal=with_metal)
+            xyz_string = ligand_db.save_to_concat_xyz(Path(outdir, xyz_filename), with_metal=metal)
             print(f'  - Saved .xyz to `{xyz_filename}`.')
 
-        return db, df, xyz_string
+        return ligand_db, df, xyz_string
 
 
 class Configs(BaseModule):
@@ -182,7 +194,7 @@ class Configs(BaseModule):
 if __name__ == "__main__":
     n_max = 100  # Set a maximum number of ligands for testing purposes
 
-    # Try out the modules.
-    assembler_dict, ligandfilters_dict = Configs().run_from_cli()
-    ligand_db, df_ligands, xyz_ligands = DBInfo().run_from_cli(n_max_ligands=n_max, outpath=None)
-    out_db = Concat().run_from_cli(paths=['metalig'], outpath=None, n_max_ligands=n_max)
+    # Try out the modules without saving any output files.
+    assembler_dict, ligandfilters_dict = Configs.run_from_cli(outdir=None)
+    ligand_db, df_ligands, xyz_ligands = DBInfo.run_from_cli(n=n_max, outdir=None)
+    out_db = Concat.run_from_cli(dbs=['metalig'], outpath=None, n=n_max)

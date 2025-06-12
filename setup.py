@@ -29,7 +29,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'DARTassembler=DARTassembler.dart_cli:main',
+            'DARTassembler=DARTassembler.cli:main',
         ],
     },
 )

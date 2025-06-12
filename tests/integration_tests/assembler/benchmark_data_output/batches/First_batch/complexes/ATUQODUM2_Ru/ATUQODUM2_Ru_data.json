@@ -288,8 +288,7 @@
     "global_props": {
         "complex_name": "ATUQODUM2_Ru",
         "stoichiometry": "RuC22H40N2OSSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "84333b5b36a3068c8bfa9a5eb26da41a",
         "batch_name": "First_batch"
     },

@@ -208,8 +208,7 @@
     "global_props": {
         "complex_name": "ONIPEZEV1_Fe",
         "stoichiometry": "FeC23H22NOSi",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "948e5c0fb9799804e1ca058c92bfd4d9",
         "batch_name": "Second_batch"
     },

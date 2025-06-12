@@ -216,8 +216,7 @@
     "global_props": {
         "complex_name": "ERIRAVIF2_Ru",
         "stoichiometry": "RuC21H22N4O3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "8b8f0c1008888433f7820e1aaca9487e",
         "batch_name": "First_batch"
     },

@@ -208,8 +208,7 @@
     "global_props": {
         "complex_name": "YOFEWENE2_Fe",
         "stoichiometry": "FeC19H26NOSi",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "41e87fb931712548a9330983c15f2e7d",
         "batch_name": "Second_batch"
     },

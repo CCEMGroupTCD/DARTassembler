@@ -572,8 +572,7 @@
     "global_props": {
         "complex_name": "NITAYITE2_Ru",
         "stoichiometry": "RuC59H72N3P5",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "1c1777f2b4ba7a094e305209acf78df6",
         "batch_name": "First_batch"
     },

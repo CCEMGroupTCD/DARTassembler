@@ -268,8 +268,7 @@
     "global_props": {
         "complex_name": "HUBAGAFU2_Ru",
         "stoichiometry": "RuC32H26NO3P",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "d8ade8087864cd4f727ffc7e6650bb9f",
         "batch_name": "First_batch"
     },

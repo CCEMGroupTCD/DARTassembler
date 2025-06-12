@@ -244,8 +244,7 @@
     "global_props": {
         "complex_name": "PAWITUXA1_Fe",
         "stoichiometry": "FeC26H27N2O2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "767589daa6cacc0a4bdf36d07ec5c122",
         "batch_name": "Second_batch"
     },

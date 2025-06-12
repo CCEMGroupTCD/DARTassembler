@@ -224,8 +224,7 @@
     "global_props": {
         "complex_name": "EDIWIWOJ1_Ru",
         "stoichiometry": "RuC21H27NO3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "d4e1b6ebefb527575394c36793866074",
         "batch_name": "First_batch"
     },

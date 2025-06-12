@@ -440,8 +440,7 @@
     "global_props": {
         "complex_name": "GUVILIWO1_Fe",
         "stoichiometry": "FeC53H47N2O2P2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "73d2edaf42ffdbc2bc3497cab2d07119",
         "batch_name": "Second_batch"
     },

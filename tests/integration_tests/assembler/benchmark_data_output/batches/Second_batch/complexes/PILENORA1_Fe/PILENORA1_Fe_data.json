@@ -172,8 +172,7 @@
     "global_props": {
         "complex_name": "PILENORA1_Fe",
         "stoichiometry": "FeC8H21N2P4S3Si",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "fd06ed88289eab83a64ddc3d3f64c0bf",
         "batch_name": "Second_batch"
     },

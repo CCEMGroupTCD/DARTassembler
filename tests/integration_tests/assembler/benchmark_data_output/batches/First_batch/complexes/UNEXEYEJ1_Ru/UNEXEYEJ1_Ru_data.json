@@ -124,8 +124,7 @@
     "global_props": {
         "complex_name": "UNEXEYEJ1_Ru",
         "stoichiometry": "RuC7H15ClN4",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "1446f8ae49411facc899e5f767ad6276",
         "batch_name": "First_batch"
     },

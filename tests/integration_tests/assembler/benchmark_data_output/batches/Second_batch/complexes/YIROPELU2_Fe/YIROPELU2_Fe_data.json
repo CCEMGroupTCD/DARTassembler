@@ -268,8 +268,7 @@
     "global_props": {
         "complex_name": "YIROPELU2_Fe",
         "stoichiometry": "FeC19H39N2O2Si",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "a6e25fc6a6e67e7f67121a8d4d50e2f6",
         "batch_name": "Second_batch"
     },

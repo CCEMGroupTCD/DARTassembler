@@ -492,8 +492,7 @@
     "global_props": {
         "complex_name": "SIBUJASI2_Fe",
         "stoichiometry": "FeC55H53F6N2OP2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "ce47896636f97fc35ad7857a68894326",
         "batch_name": "Second_batch"
     },

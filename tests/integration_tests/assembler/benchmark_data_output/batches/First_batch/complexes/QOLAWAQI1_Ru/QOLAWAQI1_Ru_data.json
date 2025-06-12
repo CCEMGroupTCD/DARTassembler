@@ -184,8 +184,7 @@
     "global_props": {
         "complex_name": "QOLAWAQI1_Ru",
         "stoichiometry": "RuC16H15N3O6S2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "90125ba926edf2d0f2bb3f8dc3394e18",
         "batch_name": "First_batch"
     },

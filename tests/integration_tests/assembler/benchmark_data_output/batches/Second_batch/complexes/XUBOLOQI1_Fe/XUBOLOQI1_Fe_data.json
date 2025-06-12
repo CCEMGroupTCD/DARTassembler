@@ -292,8 +292,7 @@
     "global_props": {
         "complex_name": "XUBOLOQI1_Fe",
         "stoichiometry": "FeC31H34ClN2O",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "c87ddfc9f75004f755a6103f98df5544",
         "batch_name": "Second_batch"
     },

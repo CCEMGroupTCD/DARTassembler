@@ -388,8 +388,7 @@
     "global_props": {
         "complex_name": "UKOSORAH2_Ru",
         "stoichiometry": "RuC34H51NO3P4",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "eb1d9a7f3d90a1b20c43e21a47108c30",
         "batch_name": "First_batch"
     },

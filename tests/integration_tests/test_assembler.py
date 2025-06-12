@@ -1,14 +1,26 @@
 """
 Integration test for the assembly of complexes.
 """
+import os
 from pathlib import Path
 from DARTassembler.src.constants.paths import project_path
 from DARTassembler.src.assembler.assembler import Assembler
-
+from shutil import rmtree
 
 def test_assembler():
-    assembly_input = project_path().extend('tests', 'integration_tests', 'assembler', 'data_input', 'test_assembly_input.yml')
-    assembly = Assembler.run_from_yaml(assembly_input)
+    outdir = project_path().extend('tests', 'integration_tests', 'assembler', 'data_output')
+    assembly_input = outdir.parent / 'data_input' / 'test_assembly_input.yml'
+    # Remove the output directory if it exists to start fresh
+    if outdir.exists():
+        rmtree(outdir)
+    old_cwd = Path.cwd()    # Save the current working directory to return to it later
+    try:
+        outdir.mkdir(parents=True, exist_ok=True)
+        os.chdir(outdir)
+        assembly = Assembler.run_from_yaml(assembly_input)
+    finally:
+        # Change back to the original working directory
+        os.chdir(old_cwd)
 
     #%% ==============    Doublecheck refactoring    ==================
     from DARTassembler.src.misc.tests import IntegrationTest

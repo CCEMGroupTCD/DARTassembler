@@ -416,8 +416,7 @@
     "global_props": {
         "complex_name": "IQIMODAN1_Fe",
         "stoichiometry": "FeC34H59N3P3S",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "acde56aadaea1eb933827b955fd68e95",
         "batch_name": "Second_batch"
     },

@@ -472,8 +472,7 @@
     "global_props": {
         "complex_name": "UFIRICOC1_Ru",
         "stoichiometry": "RuC42H64BrO4PSi2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "0557646268af395b2c1195cf4ecb52a5",
         "batch_name": "First_batch"
     },

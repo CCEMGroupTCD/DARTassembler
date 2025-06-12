@@ -380,8 +380,7 @@
     "global_props": {
         "complex_name": "IPIHARAT1_Fe",
         "stoichiometry": "FeC46H43P2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "a2152c8946278cc17fabb8286cdaff2e",
         "batch_name": "Second_batch"
     },

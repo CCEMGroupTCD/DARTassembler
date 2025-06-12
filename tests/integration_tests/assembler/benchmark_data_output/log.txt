@@ -2,20 +2,18 @@ Starting DART Assembler Module.
 Output directory: /Users/timosommer/PhD/projects/DARTassembler/tests/integration_tests/assembler/data_output
 Running 2 batches...
 User-defined global settings:
-    output_directory              assembler/data_output
+    output_directory              .
     concatenate_xyz               True
     verbosity                     2
     same_isomer_names             True
     complex_name_length           8
     n_max_ligands                 100
-    pre_delete                    True
 ============================  Batch 0: First_batch  ============================
 User-defined settings for batch 0:
     name                          First_batch
-    total_metal_oxidation_state   2
-    total_charge                  0
-    ligand_db_files               ['assembler/data_input/bidentate.jsonlines', 'assembler/data_input/monodentate.jsonlines', 'assembler/data_input/haptic.jsonlines']
-    target_vectors                [[[1, 0, 0], [0, 1, 0]], [-1, 0, 0], [0, -1, 0]]
+    total_ligand_charges          -2
+    ligand_db_files               ['../data_input/bidentate.jsonlines', '../data_input/monodentate.jsonlines', '../data_input/haptic.jsonlines']
+    target_vectors                [[[1, 0, 0], [0, 1, 0]], [[-1, 0, 0]], [[0, -1, 0]]]
     ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
     metal_centers                 [[['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]]]
     n_max_complexes               100
@@ -24,10 +22,9 @@ User-defined settings for batch 0:
 ===========================  Batch 1: Second_batch  ============================
 User-defined settings for batch 1:
     name                          Second_batch
-    total_metal_oxidation_state   1
-    total_charge                  0
-    ligand_db_files               ['assembler/data_input/bidentate.jsonlines', 'assembler/data_input/monodentate.jsonlines', 'assembler/data_input/haptic.jsonlines']
-    target_vectors                [[[1, 0, 0], [0, 1, 0]], [-1, 0, 0], [0, -1, 0]]
+    total_ligand_charges          -1
+    ligand_db_files               ['../data_input/bidentate.jsonlines', '../data_input/monodentate.jsonlines', '../data_input/haptic.jsonlines']
+    target_vectors                [[[1, 0, 0], [0, 1, 0]], [[-1, 0, 0]], [[0, -1, 0]]]
     ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
     metal_centers                 [[['Fe', [0, 0, 0]]], [['Fe', [0, 0, 0]]], [['Fe', [0, 0, 0]]]]
     n_max_complexes               100
@@ -41,4 +38,3 @@ Batch 1 ('Second_batch'):
 ====================  Total summary of DART Assembler run  =====================
   - 400 isomers tried, 400 isomers (from 200 complexes) successfully assembled.
 DART Assembler output files saved to directory `data_output`.
-Done! All complexes assembled. Exiting DART Assembler Module.

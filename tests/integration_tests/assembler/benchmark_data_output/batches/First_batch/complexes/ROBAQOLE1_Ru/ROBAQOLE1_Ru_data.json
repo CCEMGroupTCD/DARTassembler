@@ -200,8 +200,7 @@
     "global_props": {
         "complex_name": "ROBAQOLE1_Ru",
         "stoichiometry": "RuC21H24O",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "21d10c7559c9ae8ec6acb01cbb782da6",
         "batch_name": "First_batch"
     },

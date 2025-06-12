@@ -424,8 +424,7 @@
     "global_props": {
         "complex_name": "IJIPOQOX2_Fe",
         "stoichiometry": "FeC41H53N6OS",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "756648dfcb15616b9130c88acc10496b",
         "batch_name": "Second_batch"
     },

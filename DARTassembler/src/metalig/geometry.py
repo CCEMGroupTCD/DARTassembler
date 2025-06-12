@@ -200,6 +200,7 @@ def try_all_geometrical_isomer_possibilities(
     if target_vectors.ndim == 1:
         target_vectors = target_vectors[None, :]
     assert target_vectors.shape[-1] == 3, f'Wrong dimension of target_vectors. It\'s {target_vectors.shape[-1]} but must be 3.'
+    assert len(donor_idc) == target_vectors.shape[0], f'Number of effective donor atoms ({len(donor_idc)}) must match number of target vectors ({target_vectors.shape[0]}).'
 
     data = []
     n = len(target_vectors)

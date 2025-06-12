@@ -248,8 +248,7 @@
     "global_props": {
         "complex_name": "AMEMAXED1_Ru",
         "stoichiometry": "RuC22H29N3O2SSi",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "54b4ad09c2274e3e5e54de5ab763da7b",
         "batch_name": "First_batch"
     },

@@ -232,8 +232,7 @@
     "global_props": {
         "complex_name": "AMEKUNAN1_Fe",
         "stoichiometry": "FeC26H24N3O",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "212c1850048c09c44585587557503a9c",
         "batch_name": "Second_batch"
     },

@@ -272,8 +272,7 @@
     "global_props": {
         "complex_name": "NARUJAZE2_Ru",
         "stoichiometry": "RuC29H30ClN3O",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "23f76cdbde2972d0576ca0a11754044b",
         "batch_name": "First_batch"
     },

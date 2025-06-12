@@ -8,13 +8,12 @@ from DARTassembler.src.metalig.mol import Ligand
 
 class LigandChoice(object):
 
-    def __init__(self, database, metal_oxidation_state: int, total_complex_charge: int, max_num_assembled_complexes: Union[int,str]):
+    def __init__(self, database, total_ligand_charges: int, max_num_assembled_complexes: Union[int,str]):
         """
         This class is used to choose ligands for the assembly of complexes. It supports both random and iterative ligand choice methods.
         """
         self.ligand_lists = database
-        self.metal_ox = metal_oxidation_state
-        self.total_charge = total_complex_charge
+        self.total_ligand_charges = total_ligand_charges
         self.max_num_assembled_complexes = max_num_assembled_complexes  # int or "all"
         self.ligand_choice = 'all' if max_num_assembled_complexes == "all" else 'random'
         self.continue_assembly = True   # If set to False, the assembler will stop
@@ -25,8 +24,8 @@ class LigandChoice(object):
         """
         Check if these ligands have the correct sum of charges.
         """
-        sum_ligand_charges = sum([ligand.charge for ligand in ligand_combination])
-        correct_charges = sum_ligand_charges == self.total_charge - self.metal_ox
+        total_ligand_charges = sum([ligand.charge for ligand in ligand_combination])
+        correct_charges = total_ligand_charges == self.total_ligand_charges
         return correct_charges
 
     def if_make_more_complexes(self, num_assembled_complexes: int) -> bool:
@@ -81,12 +80,12 @@ class LigandChoice(object):
         """
         # Charges
         sum_of_charges = sum([ligand.charge for ligand in ligand_combination])
-        assert sum_of_charges == self.total_charge - self.metal_ox, f"The sum of charges of the ligand combination {ligand_combination} is not equal to the total charge {self.total_charge} - the metal oxidation state {self.metal_ox} = {self.total_charge - self.metal_ox}! This should not happen!"
+        assert sum_of_charges == self.total_ligand_charges, f"The sum of charges {sum_of_charges} of the ligand combination {ligand_combination} is not equal to the total_ligand_charges {self.total_ligand_charges}."
 
         for idx, ligand in enumerate(ligand_combination):
             # Correct `same_as_previous`
             if self.ligand_lists[idx] == 'same_as_previous':
-                assert ligand.unique_name == ligand_combination[idx-1].unique_name, f"The ligand {ligand.unique_name} at index {idx} is not the same as the ligand {ligand_combination[idx-1].unique_name} at index {idx-1}! This should not happen!"
+                assert ligand.unique_name == ligand_combination[idx-1].unique_name, f"The ligand {ligand.unique_name} at index {idx} is not the same as the ligand {ligand_combination[idx-1].unique_name} at index {idx-1}!"
 
         return
 
@@ -143,7 +142,7 @@ class LigandChoice(object):
 
         if len(chosen_ligand_combinations) == 0: # Output error because no valid ligand combinations found
             raise LigandCombinationError(
-                f'No valid ligand combinations found which fulfill the metal oxidation state MOS={self.metal_ox} and total charge Q={self.total_charge} requirement! This can happen when the provided metal oxidation state or total charge are too high/low. Please check your ligand database and/or your assembly input file.')
+                f'No valid ligand combinations found which fulfill the total_ligand_charges {self.total_ligand_charges} requirement. Please check your ligand database and/or your assembly input file.')
 
         if self.switched_to_iterative:
             logging.info(f'DART info: This batch was interrupted early because all possible complexes have already been made.')

@@ -300,8 +300,7 @@
     "global_props": {
         "complex_name": "BUBOBIYI1_Fe",
         "stoichiometry": "FeC28H38N3Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "69722ebf536cf88b62f3c9c3033f80f1",
         "batch_name": "Second_batch"
     },

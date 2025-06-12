@@ -532,8 +532,7 @@
     "global_props": {
         "complex_name": "GIVOCAVO2_Fe",
         "stoichiometry": "FeC54H61N9O2PSSi",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "77bfc59d4f02b6f06f47246dd8f3f278",
         "batch_name": "Second_batch"
     },

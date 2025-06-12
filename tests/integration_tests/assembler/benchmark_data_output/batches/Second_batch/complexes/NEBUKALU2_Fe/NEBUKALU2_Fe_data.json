@@ -476,8 +476,7 @@
     "global_props": {
         "complex_name": "NEBUKALU2_Fe",
         "stoichiometry": "FeC48H62N2PSi2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "c4a7c23a5383039fd716e3e01293031e",
         "batch_name": "Second_batch"
     },

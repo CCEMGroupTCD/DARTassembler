@@ -384,8 +384,7 @@
     "global_props": {
         "complex_name": "TERUPAHI2_Fe",
         "stoichiometry": "FeC35H44F6N3O2Si2",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "1a5efac49d2c57b35b0ae6acddaa01bb",
         "batch_name": "Second_batch"
     },

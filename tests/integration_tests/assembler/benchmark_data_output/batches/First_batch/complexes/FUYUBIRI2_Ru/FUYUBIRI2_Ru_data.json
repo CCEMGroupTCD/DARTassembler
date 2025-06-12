@@ -596,8 +596,7 @@
     "global_props": {
         "complex_name": "FUYUBIRI2_Ru",
         "stoichiometry": "RuC48H82N10O3Si2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "db74ad7a0060ba250d578a506fa248e0",
         "batch_name": "First_batch"
     },

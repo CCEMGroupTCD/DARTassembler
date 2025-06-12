@@ -312,8 +312,7 @@
     "global_props": {
         "complex_name": "TEKUSULO2_Fe",
         "stoichiometry": "FeC32H33F6N2O",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "af965cff54b163fbc9b94fb0c7cab6ba",
         "batch_name": "Second_batch"
     },

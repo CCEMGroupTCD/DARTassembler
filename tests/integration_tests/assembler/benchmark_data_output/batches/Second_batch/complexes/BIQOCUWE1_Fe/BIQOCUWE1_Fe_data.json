@@ -244,8 +244,7 @@
     "global_props": {
         "complex_name": "BIQOCUWE1_Fe",
         "stoichiometry": "FeC19H33N4O",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "3a0b2f069e711fc93edf7c48e3a5d5d6",
         "batch_name": "Second_batch"
     },

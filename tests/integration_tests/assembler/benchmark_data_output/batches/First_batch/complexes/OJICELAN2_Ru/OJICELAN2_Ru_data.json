@@ -388,8 +388,7 @@
     "global_props": {
         "complex_name": "OJICELAN2_Ru",
         "stoichiometry": "RuC46H41F2NOP2",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "7a3efe261e402076687c138510073354",
         "batch_name": "First_batch"
     },

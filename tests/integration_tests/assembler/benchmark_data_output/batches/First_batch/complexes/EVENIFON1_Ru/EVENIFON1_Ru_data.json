@@ -272,8 +272,7 @@
     "global_props": {
         "complex_name": "EVENIFON1_Ru",
         "stoichiometry": "RuC30H22F3N6O2P",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "4f18527ffb8c579d64bae1f0eedc9c49",
         "batch_name": "First_batch"
     },

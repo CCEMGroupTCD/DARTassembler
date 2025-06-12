@@ -424,8 +424,7 @@
     "global_props": {
         "complex_name": "ZIDOJECO2_Ru",
         "stoichiometry": "RuC44H54N3P",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "1be89c699ca217a158c9bd79f6c4a3a6",
         "batch_name": "First_batch"
     },

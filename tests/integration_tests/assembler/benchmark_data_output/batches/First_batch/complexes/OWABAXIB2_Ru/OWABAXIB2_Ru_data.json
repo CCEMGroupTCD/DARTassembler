@@ -244,8 +244,7 @@
     "global_props": {
         "complex_name": "OWABAXIB2_Ru",
         "stoichiometry": "RuC20H33IN2O",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "250605c02ff87776b8d83c0252464375",
         "batch_name": "First_batch"
     },

@@ -348,8 +348,7 @@
     "global_props": {
         "complex_name": "KIMUDABA2_Ru",
         "stoichiometry": "AlRuC24H54N2PSi",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "8ab6ff88cc0dffa83a55403ddada972a",
         "batch_name": "First_batch"
     },

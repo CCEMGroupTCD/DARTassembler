@@ -568,8 +568,7 @@
     "global_props": {
         "complex_name": "XIFETACE2_Ru",
         "stoichiometry": "RuC64H62BF3N3O2P3",
-        "charge": 0,
-        "total_oxi_state": 2,
+        "total_ligand_charges": -2,
         "graph_hash": "af6d3b7403db7aa35aa74eb36f70484d",
         "batch_name": "First_batch"
     },

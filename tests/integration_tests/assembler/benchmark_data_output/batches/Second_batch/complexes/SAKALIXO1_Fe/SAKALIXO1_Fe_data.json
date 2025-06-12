@@ -332,8 +332,7 @@
     "global_props": {
         "complex_name": "SAKALIXO1_Fe",
         "stoichiometry": "FeC25H48N3O2Si",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "728bc35f8132e216c0101783ed3aa1df",
         "batch_name": "Second_batch"
     },

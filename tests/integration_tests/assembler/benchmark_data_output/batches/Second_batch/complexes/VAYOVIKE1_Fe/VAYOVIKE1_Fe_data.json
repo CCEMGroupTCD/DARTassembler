@@ -196,8 +196,7 @@
     "global_props": {
         "complex_name": "VAYOVIKE1_Fe",
         "stoichiometry": "FeC16H22N3O3S",
-        "charge": 0,
-        "total_oxi_state": 1,
+        "total_ligand_charges": -1,
         "graph_hash": "518550d0d84fe4cc10417e9f92c1472c",
         "batch_name": "Second_batch"
     },
