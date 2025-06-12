@@ -179,3 +179,6 @@ If everything works:
 12.06.2025
 - Removed the total charge and metal oxidation state from assembler.yml input and replaced this with a single property `total_ligand_charges`
 - Refactored the tests. There is now a new test test_cli.py which tests all modules via the CLI. The old tests dbinfo, ligandfilters and installtest have been removed since they are now all integrated in the test_cli.py test. It is recommended from now on to use the cli test to always test everything, and if required also use the assembler test. The assembler test is right now very small, but it should be expanded in the future to test more features of the assembler module.
+- Added a deprecation warning if test_metalig is used. From now on, every function and module has a property called either n or n_max_ligands, which is the maximum number of ligands to be read in, which should be used instead for testing purposes.
+- Refactored the CLI and made a new general class BaseModule. This class is used by the Assembler, LigandFilters, Concat, Configs and DBInfo classes to provide a common interface for the CLI.
+- Renamed the old ligand MetaLig ligand database files in data/metalig by prepending OLD_ to the file name to avoid confusion with the new ligand database files. The old files are still there for reference, but they should not be used anymore.
