@@ -4,3 +4,10 @@ import warnings
 warnings.filterwarnings("ignore")
 import numpy as np
 np.seterr(divide='ignore', invalid='ignore')
+
+# Import important DART classes for easy access
+from .src.assembler.assembler import Assembler
+from .src.metalig.ligandfilters import LigandFilters
+from .src.modules.modules import DBInfo, Concat, Configs
+from .src.assembler.isomer import Isomer, IsomerFactory
+from .src.metalig.mol import Ligand

@@ -390,7 +390,7 @@ class Assembler(BaseModule):
             assert last_isomers_name == last_isomers_stem + str(isomer_idx - 1) + self.complex_name_appendix, f'The complex name seems to work different than implemented.'
             # Construct the new isomers name after the same rules as above.
             name = last_isomers_stem + str(isomer_idx) + self.complex_name_appendix
-            assert not name in self.assembled_complex_names, f"Complex name {name} already exists in the assembled complex names list even though it is a subsequent isomer. This should be impossible."
+            assert not name in self.assembled_complex_names, f"Complex name {name} already exists in the assembled complex names list even though it is a subsequent isomer."
         else:
             # Generate new name for new complex.
             complex_name_length = self.complex_name_length

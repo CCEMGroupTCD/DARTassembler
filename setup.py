@@ -22,8 +22,7 @@ setup(
     package_data={
         'DARTassembler': [
             'data/*.csv',
-            'data/metalig/*.bz2',
-            'data/tests/test_installation/*',
+            'data/metalig/MetaLigDB*.bz2',
             'data/default/*'
         ]
     },

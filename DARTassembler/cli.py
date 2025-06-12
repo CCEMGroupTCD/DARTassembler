@@ -1,7 +1,5 @@
 import argparse
-from DARTassembler.src.modules.modules import DBInfo, Concat, Configs
-from DARTassembler.src.metalig.ligandfilters import LigandFilters
-from DARTassembler.src.assembler.assembler import Assembler
+from . import Assembler, LigandFilters, DBInfo, Concat, Configs
 
 init_cli_output = r"""================================================================================
                             ____  ___    ____  ______
@@ -26,7 +24,7 @@ def main():
     subparsers = parser.add_subparsers(dest="module", required=True, help="DART modules")
 
     # Assembler
-    parser_assembler = subparsers.add_parser("assembler", help="Assemble complexes from ligands in a high-throughput manner")
+    parser_assembler = subparsers.add_parser("assembler", help="Assemble complexes from ligands in a high-throughput fashion")
     parser_assembler.add_argument("--input", type=str, default=None, help="Path to a yml file with assembler options")
     parser_assembler.set_defaults(func=lambda args: Assembler.run_from_cli(input=args.input))
 

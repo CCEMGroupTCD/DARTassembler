@@ -178,3 +178,4 @@ If everything works:
 ## Changelog
 12.06.2025
 - Removed the total charge and metal oxidation state from assembler.yml input and replaced this with a single property `total_ligand_charges`
+- Refactored the tests. There is now a new test test_cli.py which tests all modules via the CLI. The old tests dbinfo, ligandfilters and installtest have been removed since they are now all integrated in the test_cli.py test. It is recommended from now on to use the cli test to always test everything, and if required also use the assembler test. The assembler test is right now very small, but it should be expanded in the future to test more features of the assembler module.

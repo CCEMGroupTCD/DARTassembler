@@ -3,6 +3,8 @@ Utility functions for input and output.
 """
 import json
 import sys
+import warnings
+
 import yaml
 import tempfile
 from ase.io.xyz import write_xyz
@@ -502,6 +504,7 @@ def get_correct_ligand_db_path_from_input(path) -> Path:
                     break
 
     elif path.lower() in ('test_metalig', 'test'):
+        warnings.warn(f'Using the test MetaLig database is deprecated. Please use the full ligand database instead and use the functionality to only read in a subset of ligands.', DeprecationWarning)
         path = test_ligand_db_path
         if not path.is_file():
             # Check if the compressed file exists
