@@ -3,11 +3,20 @@ Integration test for the assembly of complexes.
 """
 from pathlib import Path
 from DARTassembler.src.constants.Paths import project_path
-from dev.DART_refactoring_to_v1_1_0.assembler import Assembler
+
+def test_assembler(method):
+    if method == "A":
+        from dev.DART_refactoring_to_v1_1_0.assembler import Assembler
+        assembly_input = project_path().extend('tests', 'integration_tests', 'assembler', 'data_input', 'test_assembly_input.yml') #
+
+    elif method == "B":
+        from dev.DART_refactoring_to_v1_2_0.assembler import Assembler
+        assembly_input = project_path().extend('dev', 'DART_refactoring_to_v1_2_0', 'assembler.yml')
+    else:
+        raise ValueError(f"Unknown method '{method}'! Use 'A' or 'B'.")
 
 
-def test_assembler():
-    assembly_input = project_path().extend('tests', 'integration_tests', 'assembler', 'data_input', 'test_assembly_input.yml')
+
     assembly = Assembler.run_from_yaml(assembly_input)
 
     #%% ==============    Doublecheck refactoring    ==================
@@ -24,4 +33,4 @@ def test_assembler():
 
 
 if __name__ == "__main__":
-    assembly = test_assembler()
+    assembly = test_assembler(method="B")

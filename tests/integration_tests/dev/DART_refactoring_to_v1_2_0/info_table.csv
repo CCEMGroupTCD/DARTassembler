@@ -1,0 +1,2 @@
+attempt,success,complex_idx,complex_name,stoichiometry,graph_hash,note,ligand_unique_names,ligand_geometries,ligand_stoichiometries,ligand_charges,ligand_donors,batch_idx,batch_name,metal_centers,total_oxi_state,charge,random_seed
+0,True,0,UMEGEYAM1_test,RuC56H32B2F24,8adfb6ed17cbfba392977f628593b149,,"(unq_CSD-PEFQAV-06-a, unq_CSD-PHETHB-06-a)","(1_monodentate, 1_monodentate)","(C24H20B, C32H12BF24)","(-1, -1)","(C-C-C-C-C-C, C-C-C-C-C-C)",2,haptic_coordination,Ru,2,0,1

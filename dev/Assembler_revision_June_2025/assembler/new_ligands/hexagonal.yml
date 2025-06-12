@@ -1,0 +1,12 @@
+input_db_file:
+output_db_file: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/dev/Assembler_revision_June_2025/assembler/new_ligands/hexagonal.json
+
+filters:
+  - filter: 'property'
+    name: 'n_haptic_atoms'
+    values: [6]
+
+  - filter: 'property'
+    name: 'n_eff_denticities'
+    values: [1]
+

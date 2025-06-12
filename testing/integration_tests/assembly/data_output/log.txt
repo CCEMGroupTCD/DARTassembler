@@ -1,0 +1,44 @@
+Starting DART Assembler Module.
+Output directory: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/testing/integration_tests/assembly/data_output
+Running 2 batches...
+User-defined global settings:
+    output_directory              assembly/data_output
+    concatenate_xyz               True
+    verbosity                     2
+    same_isomer_names             True
+    complex_name_length           8
+    n_max_ligands                 100
+    pre_delete                    True
+============================  Batch 0: First_batch  ============================
+User-defined settings for batch 0:
+    name                          First_batch
+    total_metal_oxidation_state   2
+    total_charge                  0
+    ligand_db_files               ['assembly/data_input/bidentate.jsonlines', 'assembly/data_input/monodentate.jsonlines', 'assembly/data_input/haptic.jsonlines']
+    target_vectors                [[[1, 0, 0], [0, 1, 0]], [-1, 0, 0], [0, -1, 0]]
+    ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    metal_centers                 [[['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]]]
+    n_max_complexes               100
+    random_seed                   0
+    complex_name_appendix         _Ru
+===========================  Batch 1: Second_batch  ============================
+User-defined settings for batch 1:
+    name                          Second_batch
+    total_metal_oxidation_state   1
+    total_charge                  0
+    ligand_db_files               ['assembly/data_input/bidentate.jsonlines', 'assembly/data_input/monodentate.jsonlines', 'assembly/data_input/haptic.jsonlines']
+    target_vectors                [[[1, 0, 0], [0, 1, 0]], [-1, 0, 0], [0, -1, 0]]
+    ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    metal_centers                 [[['Fe', [0, 0, 0]]], [['Fe', [0, 0, 0]]], [['Fe', [0, 0, 0]]]]
+    n_max_complexes               100
+    random_seed                   1
+    complex_name_appendix         _Fe
+=============================  Summary per batch  ==============================
+Batch 0 ('First_batch'):
+  - 200 isomers tried, 200 isomers (from 100 complexes) successfully assembled.
+Batch 1 ('Second_batch'):
+  - 200 isomers tried, 200 isomers (from 100 complexes) successfully assembled.
+====================  Total summary of DART Assembler run  =====================
+  - 400 isomers tried, 400 isomers (from 200 complexes) successfully assembled.
+DART Assembler output files saved to directory `data_output`.
+Done! All complexes assembled. Exiting DART Assembler Module.

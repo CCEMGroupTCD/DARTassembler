@@ -1,0 +1,11 @@
+Starting DART Assembler Module.
+Output directory: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/tests/integration_tests/DARTassembler
+Running 1 batch...
+User-defined global settings:
+    output_directory              DARTassembler
+    concatenate_xyz               True
+    verbosity                     2
+    same_isomer_names             True
+    complex_name_length           8
+    n_max_ligands                 None
+    pre_delete                    False

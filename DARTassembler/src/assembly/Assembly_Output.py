@@ -8,7 +8,7 @@ import yaml
 
 from DARTassembler.src.assembly.Assembly_Input import AssemblyInput
 from DARTassembler.src.ligand_extraction.io_custom import write_yaml
-from dev.Assembler_revision_jan_2025.assembler.utilities import AssembledIsomer
+from dev.Assembler_revision_June_2025.assembler.utilities import DARTIsomer
 
 _gbl_optimization_movie = 'ffmovie.xyz'
 _gbl_concatenated_xyz = 'concat_passed_complexes.xyz'
@@ -228,9 +228,12 @@ class ComplexAssemblyOutput(object):
         self.ff_movie_path = Path(complexdir, start + _complex_ff_movie)
         self.ligand_output_path = Path(complexdir, start + _complex_ligand_info)
 
-    def save_all_complex_data(self,
-                              complex,
-                              ) -> None:
+    def save_all_complex_data(self, complex) -> None:
+        """
+        Saves all data of the complex in the complex directory.
+        :param complex:
+        :return:
+        """
         self.save_data_json(complex=complex)
 
     def get_ligand_info_dict(self, ligands: list, max_entries: int=np.inf) -> dict:
@@ -242,7 +245,7 @@ class ComplexAssemblyOutput(object):
         df.to_csv(self.ligand_output_path, index=False)
 
     def save_data_json(self,
-                        complex: AssembledIsomer,
+                        complex: DARTIsomer,
                         ) -> None:
         """
         Saves all data in a contained json file.

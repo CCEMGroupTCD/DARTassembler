@@ -3,9 +3,10 @@
 # and generate the assembled transition metal complexes                                 #
 #########################################################################################
 
+
 # Dart Assembler imports
 from DARTassembler.src.assembly.ligand_geometries import try_all_geometrical_isomer_possibilities
-from DARTassembler.src.ligand_extraction.DataBase import RCA_Ligand, LigandDB
+from DARTassembler.src.ligand_extraction.DataBase import RCA_Ligand, LigandDB, RCA_Molecule
 from DARTassembler.src.constants import Periodic_Table as PerTab
 
 # Scientific package imports
@@ -17,26 +18,32 @@ import numpy as np
 
 # Standard library imports
 from typing import Dict, Any, List, Optional, Tuple, Union
-from logger import default_logger as logger
+from dev.Assembler_revision_June_2025.assembler.logger import default_logger as logger
 from collections import defaultdict
-from logger import LoggedValueError
+from dev.Assembler_revision_June_2025.assembler.logger import LoggedValueError
 import itertools
 import logging
 
 # Data visualization imports
 from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
+from matplotlib import animation
+import matplotlib
+from mpl_toolkits.mplot3d import Axes3D
 
 # Plotly imports
 import dash
 from dash import dcc, html, Input, Output
 import plotly.express as px
 import plotly.io as pio
+import plotly.graph_objects as go
 
 # Data manipulation imports
 import pathlib as pl
 from ase.visualize import view
 from ase import Atoms
+from networkx.readwrite import json_graph
+import networkx as nx
 import pandas as pd
 import ase
 
@@ -222,10 +229,7 @@ class LigandSpec:
 
 class MetalSpec:
     REQUIRED_KEYS = {"metal_type", "metal_oxidation_state", "origin"}
-    OPTIONAL_KEYS = {
-        # future optional fields go here, e.g.:
-        # "spin_state": 0
-    }
+    OPTIONAL_KEYS = {"connectivity": None}
 
     def __init__(self, name: str, data: Dict[str, Any]):
         """
@@ -239,8 +243,11 @@ class MetalSpec:
         self.name = name
         self.data = data
         self.metal_type = self._get_metal_type()
-        self.metal_oxidation_state = HelpFunc.get_and_cast(dictionary=self.data, key="metal_oxidation_state", expected_type=int)
+        self.metal_oxidation_state = HelpFunc.get_and_cast(dictionary=self.data,
+                                                           key="metal_oxidation_state",
+                                                           expected_type=int)
         self.coord = self._get_origin()
+        self.connectivity = self.data.get("connectivity", self.OPTIONAL_KEYS["connectivity"])
 
         # log the metal data
         logger.info(f"Metal '{self.name}' initialized with type '{self.metal_type}' and coordinates {self.coord}.")
@@ -277,7 +284,7 @@ class MetalSpec:
 
 class BatchInput:
     # Define the required and optional keys for the batch input
-    REQUIRED_KEYS = {"name", "random_seed", "max_num_complexes", "total_charge", "geometry"}
+    REQUIRED_KEYS = {"name", "random_seed", "max_num_complexes", "total_charge", "geometry", "complex_name_appendix"}
     OPTIONAL_KEYS = {"debug": False,
                      "opt_mono_rot": True,
                      "filter_duplicate_isomers": True,
@@ -372,8 +379,10 @@ class BatchInput:
             if "isomer_comparison_grouping_cutoff" in self.batch else self.OPTIONAL_KEYS["isomer_comparison_grouping_cutoff"]
 
         self.auxiliary_structure_path = HelpFunc.get_and_cast(dictionary=self.batch,
-                                                                key="auxiliary_structure_path",
-                                                                expected_type=str) if "auxiliary_structure_path" in self.batch else self.OPTIONAL_KEYS["auxiliary_structure_path"]
+                                                              key="auxiliary_structure_path",
+                                                              expected_type=str) if "auxiliary_structure_path" in self.batch else self.OPTIONAL_KEYS["auxiliary_structure_path"]
+
+        self.complex_name_appendix = HelpFunc.get_and_cast(dictionary=self.batch, key="complex_name_appendix", expected_type=str)
 
         # Metals and ligands
         self.ligands = []
@@ -385,6 +394,9 @@ class BatchInput:
 
         # Validate inter-ligand inputs
         self._compare_ligand_inputs()
+
+        # Validate metal connectivity specifications
+        self._validate_metal_connectivity_specifications()
 
         # set logger level based on debug flag
         logger.setLevel(logging.DEBUG if self.debug else logging.INFO)
@@ -421,6 +433,90 @@ class BatchInput:
         if extra_keys:
             logger.warning(f"Unrecognized keys --> input: [{', '.join(extra_keys)}]")
 
+    def _validate_metal_connectivity_specifications(self) -> None:
+        """
+        Validates that the connectivity specifications for each metal are structurally and semantically correct.
+
+        Rules enforced:
+        - Connectivity must be a list of dicts.
+        - Each referenced species must exist and be unique among ligands and metals.
+        - Metals can only connect to ligands via named vectors (e.g., 'vector_1', not 'origin').
+        - Metals can only connect to other metals via 'origin'.
+        - Metals cannot connect to themselves.
+
+        Raises:
+            LoggedValueError if any condition is violated.
+        """
+        all_species = self.ligands + self.metals
+
+        for metal in self.metals:
+            if metal.connectivity is not None:
+                if not isinstance(metal.connectivity, list):
+                    raise LoggedValueError(
+                        f"Connectivity specification for metal '{metal.name}' must be a list of dictionaries.",
+                        logger
+                    )
+
+                for connection in metal.connectivity:
+                    if not isinstance(connection, dict):
+                        raise LoggedValueError(
+                            f"Each entry in the connectivity list for metal '{metal.name}' must be a dictionary.",
+                            logger
+                        )
+
+                    species_name = list(connection.keys())[0]
+                    targets = list(connection.values())[0]
+
+                    # Prevent self-connection
+                    if species_name == metal.name:
+                        raise LoggedValueError(
+                            f"Fatal Error: Metal '{metal.name}' cannot be connected to itself in the connectivity specification.",
+                            logger
+                        )
+
+                    # Ensure exactly one matching species exists
+                    matching_species = [s for s in all_species if s.name == species_name]
+                    if not matching_species:
+                        raise LoggedValueError(
+                            f"Fatal Error: Unrecognized species '{species_name}' in connectivity for metal '{metal.name}'. "
+                            f"Available species: {', '.join([s.name for s in all_species])}",
+                            logger
+                        )
+                    if len(matching_species) > 1:
+                        raise LoggedValueError(
+                            f"Fatal Error: Duplicate species named '{species_name}' found in connectivity for metal '{metal.name}'.",
+                            logger
+                        )
+
+                    corresponding = matching_species[0]
+
+                    # Metal–Ligand connections: must use named vectors
+                    if corresponding in self.ligands:
+                        if not hasattr(corresponding, "vectors") or not isinstance(corresponding.vectors, dict):
+                            raise LoggedValueError(
+                                f"Ligand '{species_name}' has no valid 'vectors' defined.",
+                                logger
+                            )
+                        for t in targets:
+                            if t not in corresponding.vectors:
+                                raise LoggedValueError(
+                                    f"Fatal Error: Metal '{metal.name}' is attempting to connect to ligand '{species_name}' "
+                                    f"using an invalid vector '{t}'. Valid vectors: {list(corresponding.vectors.keys())}",
+                                    logger
+                                )
+
+                    # Metal–Metal connections: must use origin only
+                    elif corresponding in self.metals:
+                        for t in targets:
+                            if t != "origin":
+                                raise LoggedValueError(
+                                    f"Fatal Error: Metal '{metal.name}' is attempting to connect to metal '{species_name}' using "
+                                    f"'{t}'. Only 'origin' is allowed for metal–metal connections.",
+                                    logger
+                                )
+
+        logger.info(f"Metal connectivity specifications for batch '{self.batch_name}' validated successfully.")
+
     def _validate_filter_duplicate_isomers_method(self) -> None:
         """
         Validates the method for filtering duplicate isomers.
@@ -443,7 +539,6 @@ class BatchInput:
                                        f"ligand it MUST be specified for all ligands. swap_group not specified for {ligands_missing_swap_group}", logger)
 
         return None
-
 
     @staticmethod
     def _validate_metal(metal_data: Dict[str, Any]) -> List[float]:
@@ -603,11 +698,6 @@ class AssemblyComplex(object):
         logger.debug("Swap groups validated successfully.")
         return None
 
-
-
-
-
-
     def generate(self) -> List[Atoms]:
         # Generate all possible isomers by exchanging compatible ligands
         ligand_lists = self._assign_ligands_to_vectors(
@@ -618,8 +708,10 @@ class AssemblyComplex(object):
 
         # Loop through each ligand set permutation and generate the each isomer
         all_isomers = []
+        all_DARTLigands = []  # List to store the DARTLigand objects used in each isomer
         for ligand_swapped_combo in ligand_lists:
             aligned_ligands = []  # list of a complexes ligands i.e. [l1, l2, [l3-i1, l3-i2], l4, ...] where i1, i2, etc. correspond to a unique coordination of a ligand within a binding site
+            aligned_DARTLigands = []  # list of DARTLigand objects used in the complex
             for idx, (ligand, ligand_target_vectors, origin) in enumerate(zip(ligand_swapped_combo, self.target_vectors, self.ligand_origins)):
                 # Retrieve the ligand's geometry (ASE atoms object) and donor atom indices (List[List[index]).
                 geometry, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
@@ -627,17 +719,24 @@ class AssemblyComplex(object):
                 # Tag each atom in the ligand geometry with a 2D label:
                 #   [0] = ligand index in the complex (elcn, e.g., for filtering/grouping)
                 #   [1] = position of the ligand in the coordination sequence (1-based index)
+                #   [2] = 1 if atom is a donor atom else zero
                 # This enables downstream tracking of ligand identity and spatial assignment during isomer generation and filtering.
+                donor_idc = list(self._flatten(ligand.get_denticities_and_hapticities_idc()))
+                n_atoms = len(geometry)
+                tags = np.full((n_atoms, 3), [ligand.n_eff_denticities, idx + 1, 0], dtype=int)
+                tags[donor_idc, 2] = 1
 
-                geometry.new_array('multi_tags', np.full((len(geometry), 2), [ligand.n_eff_denticities, idx + 1], dtype=int))
+                geometry.new_array('multi_tags', tags)
 
                 # Convert target vector dictionary values to numpy arrays.
+                vector_labels = list(ligand_target_vectors.keys())
                 target_vectors = [np.array(v) for v in ligand_target_vectors.values()]
 
                 # Align the donor atoms of the ligand to the target vectors
                 # TODO this code may be replaced in the future, I think Timo might have a more robust version of this code
                 ligand_isomers, donor_atoms_ordered, rssd = try_all_geometrical_isomer_possibilities(atoms=geometry,
                                                                                                      donor_idc=donor_atoms[0],
+                                                                                                     vector_labels=vector_labels,
                                                                                                      target_vectors=target_vectors)
 
                 # Translate the ligand to its correct location in the complex
@@ -652,11 +751,13 @@ class AssemblyComplex(object):
                 )
                 # Append the rotated ligands to the list
                 aligned_ligands.append(cleaned_isomers)
+                aligned_DARTLigands.append([ligand for _ in range(len(cleaned_isomers))])
 
             all_isomers.append(aligned_ligands)
+            all_DARTLigands.append(aligned_DARTLigands)
 
         # Assemble the complexes using the ligand permutations
-        all_isomers = self._gen_all_isomers(all_isomers)
+        all_isomers, ligands_used = self._gen_all_isomers(ligands=all_isomers, DARTLigands=all_DARTLigands)
 
         # Optimize mono-coordinating ligands if requested
         if self.opt_mono_rot:
@@ -677,6 +778,7 @@ class AssemblyComplex(object):
                                           isomer_comparison_grouping_mode=self.isomer_comparison_grouping_mode,
                                           fingerprint_grouping_cutoff=self.isomer_comparison_grouping_cutoff)
             all_isomers = reduce_isom.reduce_isomers()
+            ligands_used = [ligands_used[i] for i in reduce_isom.output_indices]
             # Note the code can be paused here and you can inspect the isomers with reduce_isom.plot_fingerprint_difference_matrix()
 
         # Filter clashing structures if requested
@@ -686,18 +788,19 @@ class AssemblyComplex(object):
                                    covalent_radii=elem_cov_radii,
                                    buffer=self.filter_clashing_structures_cov_radii_buffer,
                                    check_metal_clashes=self.check_metal_clashes)
-            all_isomers = clashing.process_isomers()
+            all_isomers, retained_indices = clashing.process_isomers()
+            ligands_used = [ligands_used[i] for i in retained_indices]
 
-        return all_isomers
+        return all_isomers, ligands_used
 
-    def _flatten(self, nested_list: list):
+    def _flatten(self, nested):
         """
-        Helper function to flatten a nested list
-        :param nested_list:
-        :return a generator object that can be used to iterate over the flattened list
+        Recursively flattens a nested list or tuple into a flat generator of elements.
+        :param: nested (list or tuple): Arbitrarily nested list/tuple of elements (e.g., indices)
+        :return: Individual flattened elements
         """
-        for item in nested_list:
-            if isinstance(item, list):
+        for item in nested:
+            if isinstance(item, (list, tuple)):
                 yield from self._flatten(item)
             else:
                 yield item
@@ -764,41 +867,58 @@ class AssemblyComplex(object):
 
     def _add_metals(self, ligand_structure: Atoms) -> Atoms:
         """
-        Adds the metals to the complex
-        :param: ligand_structure: Atoms object representing the ligand structure
-        :return: Atoms object with metals added
+        Adds the metals to the complex, ensuring they are first in the Atoms object.
+        :param ligand_structure: Atoms object representing the ligand structure
+        :return: Atoms object with metals prepended
         """
+        # Start with an empty Atoms object to accumulate metals
+        metal_atoms = Atoms()
+
         for idx, (metal_type, metal_origin) in enumerate(zip(self.metal_types, self.metal_origins)):
             # Create a single-atom ASE structure for the metal
             metal = Atoms(symbols=metal_type, positions=[metal_origin])
-            # Add a 2-column metadata array for future use
-            metal.new_array('multi_tags', np.full((len(metal), 2), [0, 0], dtype=int))
-            ligand_structure += metal
-            # log info
+            metal.new_array('multi_tags', np.full((1, 3), [0, 0, 0], dtype=int))  # Only one atom
+            metal_atoms += metal
             logger.debug(f"Metal [{idx + 1}/{len(self.metal_types)}]: [{metal_type}] added at origin [{metal_origin}]")
-        return ligand_structure
 
-    def _gen_all_isomers(self, ligands: List[List[List[Atoms]]]) -> List[Atoms]:
+        # Combine metals first, then ligand structure
+        combined = metal_atoms + ligand_structure
+        return combined
+
+    def _gen_all_isomers(
+            self,
+            ligands: List[List[List[Atoms]]],
+            DARTLigands: List[List[List[RCA_Ligand]]]
+    ) -> Tuple[List[Atoms], List[List[RCA_Ligand]]]:
         """
-        Generate all possible isomers from a list of ligands which have multiple isomers
-        :param ligands: list: [[ligand1_isomer1, Ligand1_isomer2], [ligand2_isomer1, ligand2_isomer2], [ligand3_isomer1, ligand3_isomer2, ligand3_isomer3], ...]
-        :return: list of ase objects
+        Generate all possible isomers from a list of ligands which have multiple isomers.
+
+        :param ligands: Nested list of ASE ligand structures.
+        :param DARTLigands: Nested list of corresponding RCA_Ligand objects.
+        :return: Tuple of (assembled ASE Atoms objects, per-isomer list of RCA_Ligand objects used).
         """
         isomers = []
+        ligand_compositions = []
+
         logger.info(f"Generating isomers from {len(ligands)} ligand slots.")
-        for ligand_lists in ligands:
-            # Generate all combinations; each combination is a tuple with one isomer per ligand.
-            combinations = list(itertools.product(*ligand_lists))
-            for idx, combo in enumerate(combinations):
-                combined = Atoms()  # Start with an empty Atoms object.
-                for ligand in combo:  # Iterate over the ligands in the combination.
-                    combined += ligand  # combining Atoms objects.
-                combined = self._add_metals(ligand_structure=combined)  # Add the metals to the complex
-                isomers.append(combined)  # Store all the new isomers
-                logger.debug(f"Isomer {idx + 1}/{len(combinations)} assembled.")
+
+        for ligand_atoms_list, ligand_obj_list in zip(ligands, DARTLigands):
+            combinations_atoms = list(itertools.product(*ligand_atoms_list))
+            combinations_ligands = list(itertools.product(*ligand_obj_list))
+
+            for idx, (combo_atoms, combo_ligands) in enumerate(zip(combinations_atoms, combinations_ligands)):
+                combined = Atoms()
+                for ligand_atoms in combo_atoms:
+                    combined += ligand_atoms
+
+                combined = self._add_metals(ligand_structure=combined)
+                isomers.append(combined)
+                ligand_compositions.append(list(combo_ligands))
+
+                logger.debug(f"Isomer {idx + 1}/{len(combinations_atoms)} assembled.")
 
         logger.info(f"Total number of assembled isomers: {len(isomers)}.")
-        return isomers
+        return isomers, ligand_compositions
 
     @staticmethod
     def _remove_haptic_dummy_atom(atoms_list: List[Atoms], dummy_atom: str, donor_atoms_idc: Tuple[Tuple[int]]):
@@ -859,20 +979,22 @@ class ClashFilter:
                      f"buffer: {self.buffer}, "
                      f"check_metal_clashes: {self.check_metal_clashes}")
 
-    def process_isomers(self) -> List[Atoms]:
+    def process_isomers(self) -> Tuple[List[Atoms], List[int]]:
         """
         Filters out isomers that have atomic clashes.
-        :return: List of filtered isomers.
+        :return: Tuple of (filtered isomers, indices of retained isomers in original list)
         """
+        retained_indices = []
         for idx, isomer in enumerate(self.isomers):
             if not self.has_clash(isomer):
                 self.filtered_isomers.append(isomer)
+                retained_indices.append(idx)
             else:
                 self.rejected_isomers.append(isomer)
                 logger.debug(f"Clash detected in isomer [{idx}] of [{len(self.isomers)}], skipping.")
 
         logger.info(f"Filtered out {len(self.isomers) - len(self.filtered_isomers)} isomers due to atomic clashes.")
-        return self.filtered_isomers
+        return self.filtered_isomers, retained_indices
 
     def has_clash(self, atoms: Atoms) -> bool:
         """
@@ -1115,6 +1237,7 @@ class ReduceIsomersV2:
         self.diff_matrix = None  # Placeholder for the fingerprint difference matrix
         self.energy_heuristic_mode = energy_heuristic_mode
         self.output_isomers = []
+        self.output_indices = []
         self.similarity_cutoff_used = None
 
     def reduce_isomers(self) -> List[Atoms]:
@@ -1173,6 +1296,7 @@ class ReduceIsomersV2:
                     visited.add(j)
 
         # Use selected indices to form output isomers
+        self.output_indices = unique_indices
         self.output_isomers = [self.isomers[i] for i in unique_indices]
         logger.info(f"Fingerprint reduction retained [{len(self.output_isomers)}] unique isomers of a total [{n}] isomers.")
 
@@ -1370,10 +1494,10 @@ class ReduceIsomersV2:
 
         # Use selected indices to form output isomers
         self.output_isomers = [self.isomers[i] for i in unique_indices]
+        self.output_indices = unique_indices
         logger.info(f"Fingerprint reduction retained [{len(self.output_isomers)}] unique isomers of a total [{n}] isomers.")
 
         return self.output_isomers
-
 
     def _analyze_similarity(self, matrix: np.ndarray, quantile: float = 0.2, method: str = "cluster", cutoff: Optional[float] = None) -> np.ndarray:
         """
@@ -1541,7 +1665,6 @@ class ReduceIsomersV2:
         if self.diff_matrix is None:
             self.reduce_isomers()
 
-
         labels_list = [f"{i}" for i in range(len(self.isomers))]
         df = pd.DataFrame(self.diff_matrix, index=labels_list, columns=labels_list)
 
@@ -1584,7 +1707,6 @@ class ReduceIsomersV2:
             ax.set_xticklabels(labels_list, rotation=0, ha='center', fontsize=12)
             ax.set_yticklabels(labels_list, rotation=0, ha='right', fontsize=12)
             ax.tick_params(top=True, bottom=False, labeltop=True, labelbottom=False)
-
 
             fig.colorbar(cax, ax=ax, fraction=0.046, pad=0.04, label="Difference")
             ax.set_title("Comparison Matrix (Matplotlib)")
@@ -1749,9 +1871,6 @@ class ReduceIsomersV2:
         view([isomer1, isomer2, overlaid], viewer="ase")
 
 
-
-
-
 class AtomsCombiner:
     def __init__(self, base_atoms: Atoms, xyz_path: Union[str, pl.Path]):
         """
@@ -1794,3 +1913,387 @@ class AtomsCombiner:
             logger.warning("No auxiliary structure found in .xyz file; returning base atoms only.")
             return self.base_atoms
         return self.base_atoms + self.xyz_atoms
+
+
+class DARTIsomer(RCA_Molecule):
+    """
+    generates a RCA_Molecule object from an ASE Atoms object and
+    a list of ligands
+    """
+
+    def __init__(self,
+                 atoms: Atoms,
+                 ligands: List[RCA_Ligand],
+                 default_graph: bool = True,
+                 ligand_target_vectors: List[List[float]] = None,
+                 ligand_origins: List[List[float]] = None,
+                 connectivity: Dict = None,
+                 metal_centers: Union[List[List[Union[str, List[float]]]], str] = None):
+
+        self._ani = None
+        self.atoms = atoms
+        self.ligands = ligands
+        self.default_graph = default_graph
+        self.ligand_target_vectors = ligand_target_vectors
+        self.ligand_origins = ligand_origins
+        self.metal_centers = metal_centers
+        self.ligand_info = self._get_ligand_info()
+        self.connectivity = connectivity
+
+        if not len(self.ligands) == len(self.ligand_target_vectors) == len(self.ligand_origins):
+            raise LoggedValueError(f"Fatal Error: The input of ligands, target vectors, ligand origins and metal centers must have the same length."
+                                   f"Respective lenghts given: [ligands: {len(self.ligands)}, target_vectors: {len(self.ligand_target_vectors)}, "
+                                   f"ligand_origins: {len(self.ligand_origins)}.", logger)
+
+        assert [len(vector_set) for vector_set in self.ligand_target_vectors] == [ligand.n_eff_denticities for ligand in self.ligands], \
+            LoggedValueError("Fatal Error: The number of target vectors must match the number of ligand donor atoms.", logger)
+
+        super().__init__(
+            atomic_props=self.atoms,
+            graph=self._get_graph(),
+            global_props=None)
+
+    @classmethod
+    def from_batch_input(cls, atoms: Atoms, ligands: List[RCA_Ligand], batch_input: BatchInput, default_graph: bool = True) -> "DARTIsomer":
+        """
+        Create a DARTIsomer instance from a BatchInput object.
+        :param atoms:
+        :param ligands:
+        :param batch_input: BatchInput object containing auxiliary_structure_path, ligands, target_vectors, and ligand_origins.
+        :return: DARTIsomer instance
+        """
+        logger.debug(f"Creating DARTIsomer from BatchInput with {len(ligands)} ligands and {len(batch_input.metals)} metal centers.")
+        target_vectors = [ligand.vectors for ligand in batch_input.ligands]
+        ligand_origins = [ligand.origin for ligand in batch_input.ligands]
+        metal_centers = [metal for metal in batch_input.metals]
+
+        return cls(
+            atoms=atoms,
+            default_graph=default_graph,
+            ligands=ligands,
+            ligand_target_vectors=target_vectors,
+            ligand_origins=ligand_origins,
+            metal_centers=metal_centers,
+            connectivity=[metal.connectivity for metal in batch_input.metals]
+        )
+
+    def _get_ligand_info(self) -> Dict[str, Any]:
+        """
+        Extract information about the ligands in this isomer.
+        - unique_names: A list of unique ligand names that appears in the same
+        order as they appear in the ASE Atoms object.
+        :return: Dictionary containing:
+                - unique_names: List of unique ligand names.
+                - geometries: List of ligand geometries.
+                - donors: List of donor atoms for each ligand, represented as strings.
+                - charges: List of predicted charges for each ligand.
+                - stoichiometries: List of ligand stoichiometries.
+        """
+
+        return {'unique_names': list(set(ligand.unique_name for ligand in self.ligands)),
+                'geometries': [ligand.geometry for ligand in self.ligands],
+                'donors': ['-'.join(sorted(ligand.local_elements)) for ligand in self.ligands],
+                'charges': [ligand.pred_charge for ligand in self.ligands],
+                'stoichiometries': [lig.stoichiometry for lig in self.ligands]}
+
+    def _get_graph(self):
+        """
+        Generate a graph where (default):
+            - Every metal is connected to every other metal.
+            - Every metal is connected to every ligand donor atom.
+            - Ligand donor atoms are not connected to each other.
+        :return: networkx.Graph
+        """
+
+        graph = nx.Graph()
+        tags = self.atoms.get_array("multi_tags")
+        vector_keys = self.atoms.get_array("vector_keys")
+        metal_idc = self._get_metal_idc()
+        donor_idc = self._get_donor_idc()
+
+        if self.default_graph and all(connectivity is None for connectivity in self.connectivity):
+            # --- Step 1: Add all atoms as graph nodes ---
+            for i, atom in enumerate(self.atoms):
+                graph.add_node(i, node_label=atom.symbol)
+
+            # --- Step 3: Connect all metal atoms to each other ---
+            for i in metal_idc:
+                for j in metal_idc:
+                    if i < j:
+                        graph.add_edge(i, j)
+
+            # --- Step 4: Connect each metal to all donor atoms ---
+            for metal_idx in metal_idc:
+                for donor_idx in donor_idc:
+                    graph.add_edge(metal_idx, donor_idx)
+
+        elif all(connectivity is not None for connectivity in self.connectivity):
+            # --- Guided connectivity via user-defined input in self.connectivity ---
+            # This block builds the graph based on explicit user-provided metal–ligand and metal–metal connections.
+
+            for metal_idx, metal_conn in zip(metal_idc, self.connectivity):
+                # metal_idx: global atom index for the current metal atom
+                # metal_conn: list of connection dicts for this metal, e.g., [{'ligand_1': ['vector_1']}, ...]
+
+                for conn in metal_conn:
+                    # Each conn is a dictionary defining connections to another metal or ligand
+                    # e.g., {'ligand_3': ['vector_1', 'vector_2']}
+
+                    for partner_key, vectors in conn.items():
+                        # partner_key: string identifier of the connection partner ('ligand_X' or 'metal_Y')
+                        # vectors: list of vector keys (e.g., ['vector_1']) to match against vector_keys array
+
+                        if partner_key.startswith("ligand_"):
+                            # --- Handle metal–ligand connections ---
+                            # Extract ligand number from string key (1-based indexing from user)
+                            ligand_num = int(partner_key.split("_")[1]) - 1
+
+                            # ligand_tag corresponds to tags[:, 1] in multi_tags, which starts from 1
+                            ligand_tag = ligand_num + 1
+
+                            # Construct boolean mask:
+                            # - (tags[:, 1] == ligand_tag): atoms belonging to the specific ligand
+                            # - np.isin(vector_keys, vectors): atoms whose assigned vector_key matches one of the specified vectors
+                            atom_mask = (tags[:, 1] == ligand_tag) & np.isin(vector_keys, vectors)
+
+                            # Extract atom indices matching both ligand identity and vector key
+                            atom_idcs = np.where(atom_mask)[0]
+
+                            # Add edges from current metal to each valid donor atom
+                            for atom_idx in atom_idcs:
+                                graph.add_edge(metal_idx, atom_idx)
+
+                        elif partner_key.startswith("metal_"):
+                            # --- Handle metal–metal connections ---
+                            # Extract the second metal's index from the string
+                            other_metal_num = int(partner_key.split("_")[1]) - 1
+
+                            # Get global atom index for this second metal
+                            other_metal_idx = metal_idc[other_metal_num]
+
+                            # Avoid adding duplicate edges by enforcing i < j
+                            if metal_idx < other_metal_idx:
+                                graph.add_edge(metal_idx, other_metal_idx)
+        else:
+            return LoggedValueError("Fatal Error: Alternative graph generation not implemented yet. ", logger)
+
+        # --- Step 5: Add intra-ligand bonds (all atoms with same ligand tag > 0) ---
+        for ligand_idx, ligand in enumerate(self.ligands):
+            # Get atom indices in self.atoms that belong to this ligand
+            atom_indices = np.where(tags[:, 1] == ligand_idx + 1)[0]  # ligand indices start at 1
+
+            if len(atom_indices) != len(ligand.graph.nodes):
+                raise LoggedValueError(f"Mismatch: ligand {ligand_idx} has {len(ligand.graph.nodes)} nodes but {len(atom_indices)} atoms in Atoms object.", logger)
+
+            # Map ligand-local node indices to global atom indices
+            index_map = dict(zip(ligand.graph.nodes, atom_indices))
+
+            for u, v in ligand.graph.edges():
+                graph.add_edge(index_map[u], index_map[v])
+
+        graph = nx.relabel_nodes(graph, {n: int(n) for n in graph.nodes})
+
+        # Add node labels for RCA_Molecule
+        for i, atom in enumerate(self.atoms):
+            graph.add_node(i, node_label=atom.symbol)
+
+        return graph
+
+    def _get_metal_idc(self) -> List[int]:
+        """
+        Get the indices of metal nodes from the ase object
+        :return: List of indices of metal nodes in the graph
+        """
+        tags = self.atoms.get_array('multi_tags')
+        metal_idc = np.where((tags == [0, 0, 0]).all(axis=1))[0]
+        return metal_idc.tolist()
+
+    def _get_ligand_idc(self):
+        pass
+
+    def _get_donor_idc(self):
+        tags = self.atoms.get_array('multi_tags')
+        Donor_idc = np.where((tags[:, 2] == [1]))[0]
+        return Donor_idc.tolist()
+
+    def to_dict(self):
+        """
+        Converts the DARTIsomer object to a fully JSON-serializable dictionary.
+        """
+
+        # Note: I seem to have encountered an issue with non serializable types in the graph data.
+        # Note: This function sanitizes the graph data to ensure it can be serialized.
+        def sanitize(obj):
+            if isinstance(obj, dict):
+                return {k: sanitize(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [sanitize(v) for v in obj]
+            elif isinstance(obj, (np.integer, np.int64)):
+                return int(obj)
+            elif isinstance(obj, (np.floating, np.float64)):
+                return float(obj)
+            else:
+                return obj
+
+        raw_graph_data = json_graph.node_link_data(self.graph)
+        clean_graph_data = sanitize(raw_graph_data)
+
+        return {
+            "atomic_props": {
+                "x": [float(x) for x in self.atoms.positions[:, 0]],
+                "y": [float(y) for y in self.atoms.positions[:, 1]],
+                "z": [float(z) for z in self.atoms.positions[:, 2]],
+                "atoms": [str(s) for s in self.atoms.get_chemical_symbols()],
+            },
+            "graph": clean_graph_data,
+            "global_props": self.global_props,
+            "metal_idc": [int(i) for i in self._get_metal_idc()],
+            "donor_idc": [int(i) for i in self._get_donor_idc()],
+            "ligand_idc": self._get_ligand_idc(),  # make sure this returns a serializable type too
+            "ligand_info": sanitize(self.ligand_info),
+        }
+
+    def view_3d_graph_interactive(self) -> None:
+        """
+        Interactive 3D visualization of the ASE Atoms object and bonding graph using Plotly.
+        """
+        atoms = self.atoms
+        graph = self._get_graph()
+        pos = atoms.get_positions()
+        symbols = atoms.get_chemical_symbols()
+        tags = atoms.get_array('multi_tags')
+
+        # Color and size scheme using CPK colors
+        colors = []
+        sizes = []
+        for symbol, tag in zip(symbols, tags):
+            color = self.get_cpk_colors().get(symbol, 'grey')  # fallback to grey
+            colors.append(color)
+
+            # Size logic based on tags
+            if np.all(tag == [0, 0, 0]):  # metal
+                sizes.append(40)
+            elif tag[2] == 1:  # donor
+                sizes.append(30)
+            else:
+                sizes.append(20)
+        # Atom coordinates
+        x, y, z = pos[:, 0], pos[:, 1], pos[:, 2]
+
+        # --- Main atom spheres (no text) ---
+        node_trace = go.Scatter3d(
+            x=x, y=y, z=z,
+            mode='markers',
+            marker=dict(size=sizes, color=colors, opacity=1.0),
+            name='Atoms',
+            hoverinfo='text',
+            text=[f"{i}: {s}" for i, s in enumerate(symbols)]
+        )
+
+        # --- Optional labels (separate trace) ---
+        label_trace = go.Scatter3d(
+            x=x, y=y, z=z,
+            mode='text+markers',  # Add markers to trigger legend
+            text=[f"{i}: {s}" for i, s in enumerate(symbols)],
+            textposition="top center",
+            textfont=dict(size=12, color='black'),
+            marker=dict(size=1, color='rgba(0,0,0,0)'),  # Fully transparent marker
+            name='Atom Labels',
+            showlegend=True,
+            hoverinfo='none',
+            visible='legendonly'  # Hidden by default, toggleable
+        )
+
+        edge_x_solid, edge_y_solid, edge_z_solid = [], [], []
+        edge_x_dashed, edge_y_dashed, edge_z_dashed = [], [], []
+
+        metal_idc = set(self._get_metal_idc())
+        donor_idc = set(self._get_donor_idc())
+
+        for u, v in graph.edges():
+            if u in graph.nodes and v in graph.nodes:
+                x0, y0, z0 = pos[u]
+                x1, y1, z1 = pos[v]
+                is_hashed = (
+                        (u in metal_idc and v in donor_idc) or
+                        (v in metal_idc and u in donor_idc) or
+                        (u in metal_idc and v in metal_idc and u != v)
+                )
+
+                if is_hashed:
+                    edge_x_dashed += [x0, x1, None]
+                    edge_y_dashed += [y0, y1, None]
+                    edge_z_dashed += [z0, z1, None]
+                else:
+                    edge_x_solid += [x0, x1, None]
+                    edge_y_solid += [y0, y1, None]
+                    edge_z_solid += [z0, z1, None]
+
+        # Solid bonds (non donor-metal)
+        edge_trace_solid = go.Scatter3d(
+            x=edge_x_solid, y=edge_y_solid, z=edge_z_solid,
+            mode='lines',
+            line=dict(width=5, color='gray'),
+            hoverinfo='none',
+            name='Normal Bonds'
+        )
+
+        # Dashed donor-metal bonds
+        edge_trace_dashed = go.Scatter3d(
+            x=edge_x_dashed, y=edge_y_dashed, z=edge_z_dashed,
+            mode='lines',
+            line=dict(width=10, color='cornflowerblue', dash='solid'),
+            hoverinfo='none',
+            name='Donor–Metal Bonds'
+        )
+
+        # Assemble and render
+        fig = go.Figure(data=[edge_trace_dashed, edge_trace_solid, node_trace, label_trace])
+        fig.update_layout(
+            scene=dict(
+                xaxis=dict(visible=False),
+                yaxis=dict(visible=False),
+                zaxis=dict(visible=False),
+            ),
+            margin=dict(l=0, r=0, t=0, b=0),
+            showlegend=True,  # <-- Enable legend
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=-0.2,
+                xanchor="center",
+                x=0.5
+            ),
+        )
+        fig.show()
+
+    def get_cpk_colors(self):
+        """
+        Returns a dictionary mapping element symbols to their CPK colors.
+        :return:
+        """
+        return {
+            'H': '#D3D3D3', 'D': '#FFFFC0', 'T': '#FFFFA0', 'He': '#D9FFFF', 'Li': '#CC80FF',
+            'Be': '#C2FF00', 'B': '#FFB5B5', 'C': '#909090', 'C-13': '#505050', 'C-14': '#404040',
+            'N': '#3050F8', 'N-15': '#105050', 'O': '#FF0D0D', 'F': '#90E050', 'Ne': '#B3E3F5',
+            'Na': '#AB5CF2', 'Mg': '#8AFF00', 'Al': '#BFA6A6', 'Si': '#F0C8A0', 'P': '#FF8000',
+            'S': '#FFFF30', 'Cl': '#1FF01F', 'Ar': '#80D1E3', 'K': '#8F40D4', 'Ca': '#3DFF00',
+            'Sc': '#E6E6E6', 'Ti': '#BFC2C7', 'V': '#A6A6AB', 'Cr': '#8A99C7', 'Mn': '#9C7AC7',
+            'Fe': '#E06633', 'Co': '#F090A0', 'Ni': '#50D050', 'Cu': '#C88033', 'Zn': '#7D80B0',
+            'Ga': '#C28F8F', 'Ge': '#668F8F', 'As': '#BD80E3', 'Se': '#FFA100', 'Br': '#A62929',
+            'Kr': '#5CB8D1', 'Rb': '#702EB0', 'Sr': '#00FF00', 'Y': '#94FFFF', 'Zr': '#94E0E0',
+            'Nb': '#73C2C9', 'Mo': '#54B5B5', 'Tc': '#3B9E9E', 'Ru': '#248F8F', 'Rh': '#0A7D8C',
+            'Pd': '#006985', 'Ag': '#C0C0C0', 'Cd': '#FFD98F', 'In': '#A67573', 'Sn': '#668080',
+            'Sb': '#9E63B5', 'Te': '#D47A00', 'I': '#940094', 'Xe': '#429EB0', 'Cs': '#57178F',
+            'Ba': '#00C900', 'La': '#70D4FF', 'Ce': '#FFFFC7', 'Pr': '#D9FFC7', 'Nd': '#C7FFC7',
+            'Pm': '#A3FFC7', 'Sm': '#8FFFC7', 'Eu': '#61FFC7', 'Gd': '#45FFC7', 'Tb': '#30FFC7',
+            'Dy': '#1FFFC7', 'Ho': '#00FF9C', 'Er': '#00E675', 'Tm': '#00D452', 'Yb': '#00BF38',
+            'Lu': '#00AB24', 'Hf': '#4DC2FF', 'Ta': '#4DA6FF', 'W': '#2194D6', 'Re': '#267DAB',
+            'Os': '#266696', 'Ir': '#175487', 'Pt': '#D0D0E0', 'Au': '#FFD123', 'Hg': '#B8B8D0',
+            'Tl': '#A6544D', 'Pb': '#575961', 'Bi': '#9E4FB5', 'Po': '#AB5C00', 'At': '#754F45',
+            'Rn': '#428296', 'Fr': '#420066', 'Ra': '#007D00', 'Ac': '#70ABFA', 'Th': '#00BAFF',
+            'Pa': '#00A1FF', 'U': '#008FFF', 'Np': '#0080FF', 'Pu': '#006BFF', 'Am': '#545CF2',
+            'Cm': '#785CE3', 'Bk': '#8A4FE3', 'Cf': '#A136D4', 'Es': '#B31FD4', 'Fm': '#B31FBA',
+            'Md': '#B30DA6', 'No': '#BD0D87', 'Lr': '#C70066', 'Rf': '#CC0059', 'Db': '#D1004F',
+            'Sg': '#D90045', 'Bh': '#E00038', 'Hs': '#E6002E', 'Mt': '#EB0026'
+        }

@@ -1,0 +1,98 @@
+Starting DART Assembler Module.
+Output directory: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/tests/integration_tests/dev/DART_refactoring_to_v1_2_0
+Running 3 batches...
+User-defined global settings:
+    output_directory              ./dev/DART_refactoring_to_v1_2_0
+    concatenate_xyz               True
+    verbosity                     2
+    same_isomer_names             True
+    complex_name_length           8
+    n_max_ligands                 None
+    pre_delete                    False
+Starting DART Assembler Module.
+Output directory: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/tests/integration_tests/dev/DART_refactoring_to_v1_2_0
+Running 3 batches...
+User-defined global settings:
+    output_directory              ./dev/DART_refactoring_to_v1_2_0
+    concatenate_xyz               True
+    verbosity                     2
+    same_isomer_names             True
+    complex_name_length           8
+    n_max_ligands                 None
+    pre_delete                    False
+Metal coordinates for 'Ir' validated: [0, 0, 0]
+Metal 'metal_1' initialized with type 'Ir' and coordinates [0.0, 0.0, 0.0].
+Ligand 'ligand_1' initialized with 1 vectors and origin [0.0, 0.0, 0.0].
+Ligand 'ligand_2' initialized with 1 vectors and origin [0.0, 0.0, 0.0].
+Ligand 'ligand_3' initialized with 2 vectors and origin [0.0, 0.0, 0.0].
+Ligand 'ligand_4' initialized with 2 vectors and origin [0.0, 0.0, 0.0].
+Metal connectivity specifications for batch '2-2-1-1-monometalic' validated successfully.
+Batch '2-2-1-1-monometalic' initialized
+Provided keys: debug, complex_name_appendix, max_num_complexes, total_charge, name, random_seed, opt_mono_rot, filter_duplicate_isomers, filter_duplicate_isomers_method, filter_duplicate_isomers_grid_size, filter_clashing_structures, filter_clashing_structures_cov_radii_buffer, isomer_comparison_mode, isomer_comparison_grouping_mode, isomer_comparison_grouping_cutoff, check_metal_clashes, auxiliary_structure_path, geometry
+Random seed: 5
+Max number of complexes: 0
+Total charge: 0
+Total metal oxidation state: 3
+debug: True
+opt_mono_rot: True
+filter_duplicate_isomers: True
+filter_clashing_structures: True
+filter_clashing_structures_cov_radii_buffer: 0.0
+Metal coordinates for 'Ir' validated: [-2, 0, 0]
+Metal 'metal_1' initialized with type 'Ir' and coordinates [-2.0, 0.0, 0.0].
+Metal coordinates for 'Fe' validated: [2, 0, 0]
+Metal 'metal_2' initialized with type 'Fe' and coordinates [2.0, 0.0, 0.0].
+Ligand 'ligand_1' initialized with 1 vectors and origin [0.0, 0.0, 0.5].
+Ligand 'ligand_2' initialized with 1 vectors and origin [0.0, 0.0, -0.5].
+Ligand 'ligand_3' initialized with 2 vectors and origin [-2.0, 0.0, 0.0].
+Ligand 'ligand_4' initialized with 2 vectors and origin [2.0, 0.0, 0.0].
+Metal connectivity specifications for batch '2-2-1-1-bi-metalic' validated successfully.
+Batch '2-2-1-1-bi-metalic' initialized
+Provided keys: debug, complex_name_appendix, max_num_complexes, total_charge, name, random_seed, opt_mono_rot, filter_duplicate_isomers, filter_duplicate_isomers_method, filter_duplicate_isomers_grid_size, filter_clashing_structures, filter_clashing_structures_cov_radii_buffer, isomer_comparison_mode, isomer_comparison_grouping_mode, isomer_comparison_grouping_cutoff, check_metal_clashes, auxiliary_structure_path, geometry
+Random seed: 5
+Max number of complexes: 0
+Total charge: 0
+Total metal oxidation state: 3
+debug: True
+opt_mono_rot: True
+filter_duplicate_isomers: True
+filter_clashing_structures: True
+filter_clashing_structures_cov_radii_buffer: 0.0
+Metal coordinates for 'Ru' validated: [0, 0, 0]
+Metal 'metal_1' initialized with type 'Ru' and coordinates [0.0, 0.0, 0.0].
+Ligand 'ligand_1' initialized with 1 vectors and origin [0.0, 0.0, 0.0].
+Ligand 'ligand_2' initialized with 1 vectors and origin [0.0, 0.0, 0.0].
+Metal connectivity specifications for batch 'haptic_coordination' validated successfully.
+Batch 'haptic_coordination' initialized
+Provided keys: debug, complex_name_appendix, max_num_complexes, total_charge, name, random_seed, opt_mono_rot, filter_duplicate_isomers, filter_duplicate_isomers_method, filter_duplicate_isomers_grid_size, filter_clashing_structures, filter_clashing_structures_cov_radii_buffer, isomer_comparison_mode, isomer_comparison_grouping_mode, isomer_comparison_grouping_cutoff, check_metal_clashes, auxiliary_structure_path, geometry
+Random seed: 1
+Max number of complexes: 1
+Total charge: 0
+Total metal oxidation state: 2
+debug: True
+opt_mono_rot: True
+filter_duplicate_isomers: True
+filter_clashing_structures: True
+filter_clashing_structures_cov_radii_buffer: 0.0
+Generating isomers from 2 ligand slots.
+Metal [1/1]: [Ru] added at origin [[0.0, 0.0, 0.0]]
+Isomer 1/1 assembled.
+Metal [1/1]: [Ru] added at origin [[0.0, 0.0, 0.0]]
+Isomer 1/1 assembled.
+Total number of assembled isomers: 2.
+Optimizing rotation of mono-coordinating ligands...
+AxialOpt initialized with 2 complexes, 2 target vectors, and 2 ligand origins.
+Rotated ligand with tag 1 by 220.02 degrees around vector {'vector_1': [0.0, 0.0, 2.0]} at origin [0.0, 0.0, 0.0].
+Rotated ligand with tag 2 by 122.10 degrees around vector {'vector_1': [0.0, 0.0, -2.0]} at origin [0.0, 0.0, 0.0].
+Rotated ligand with tag 1 by 234.81 degrees around vector {'vector_1': [0.0, 0.0, 2.0]} at origin [0.0, 0.0, 0.0].
+Rotated ligand with tag 2 by 266.14 degrees around vector {'vector_1': [0.0, 0.0, -2.0]} at origin [0.0, 0.0, 0.0].
+Optimized 2 complexes with mono-coordinating ligand rotations.
+Filtering duplicate isomers...
+Comparing fingerprints with mode 'max_diff'.
+Fingerprint reduction retained [1] unique isomers of a total [2] isomers.
+Reduced isomers from 2 to 1 using method 'fingerprint'.
+Filtering clashing structures...
+Initialized ClashFilter with 1 isomers, covalent radii dict, buffer: 0.0, check_metal_clashes: False
+Filtered out 0 isomers due to atomic clashes.
+Creating DARTIsomer from BatchInput with 2 ligands and 1 metal centers.
+=============================  Summary per batch  ==============================

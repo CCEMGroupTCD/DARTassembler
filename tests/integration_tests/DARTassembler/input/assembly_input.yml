@@ -1,0 +1,86 @@
+output_directory: DARTassembler
+concatenate_xyz: true
+verbosity: 2
+same_isomer_names: true
+complex_name_length: 8
+n_max_ligands: null
+pre_delete: false
+batches:
+- debug: true
+  max_num_complexes: 4
+  total_charge: 0
+  name: 2-2-1-1-monometalic
+  random_seed: 5
+  opt_mono_rot: true
+  filter_duplicate_isomers: true
+  filter_duplicate_isomers_method: fingerprint
+  filter_duplicate_isomers_grid_size: 9
+  filter_clashing_structures: true
+  filter_clashing_structures_cov_radii_buffer: 0.0
+  isomer_comparison_mode: max_diff
+  isomer_comparison_grouping_mode: cluster
+  isomer_comparison_grouping_cutoff: 1.0
+  check_metal_clashes: false
+  auxiliary_structure_path: null
+  geometry:
+  - metal_1:
+      metal_type: Ir
+      metal_oxidation_state: 3
+      origin:
+      - 0
+      - 0
+      - 0
+  - ligand_1:
+      origin:
+      - 0
+      - 0
+      - 0
+      vector_1: z
+      temp_dent: 1
+      n_max: 30
+      swap_group: 1
+      ligand_db: ./new_ligands/small_mono.json
+  - ligand_2:
+      origin:
+      - 0
+      - 0
+      - 0
+      vector_1:
+      - 0
+      - 1
+      - 0
+      temp_dent: 1
+      n_max: 30
+      swap_group: 1
+      ligand_db: ./new_ligands/small_mono.json
+  - ligand_3:
+      origin:
+      - 0
+      - 0
+      - 0
+      vector_1:
+      - -1
+      - 0
+      - 0
+      vector_2: -y
+      temp_dent: 2
+      n_max: 30
+      swap_group: 2
+      ligand_db: ./new_ligands/bidentate.json
+  - ligand_4:
+      origin:
+      - 0
+      - 0
+      - 0
+      vector_1:
+      - 1
+      - 0
+      - 0
+      vector_2:
+      - 0
+      - 0
+      - -1
+      temp_dent: 2
+      n_max: 30
+      swap_group: 2
+      ligand_db: ./new_ligands/bidentate.json

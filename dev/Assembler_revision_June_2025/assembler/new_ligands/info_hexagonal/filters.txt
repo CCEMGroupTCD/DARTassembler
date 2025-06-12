@@ -1,0 +1,16 @@
+===============================  Filter Options  ===============================
+Filter 01: property: n_haptic_atoms            name: n_haptic_atoms, values: [6]
+Filter 02: property: n_eff_denticities         name: n_eff_denticities, values: [1]
+===============================  Filter Results  ===============================
+                                        Ligands passed  Ligands removed
+Filter 01: property: n_haptic_atoms           435            40583     
+Filter 02: property: n_eff_denticities        320              115     
+==================  Total summary of DART Ligand Filters run  ==================
+Before filtering:           41018 ligands
+Filtered out:               40698 ligands
+Passed:                     320 ligands
+Passed geometries:          1_monodentate (320)
+Passed stoichiometries:     C10H14, C6H6, C12H18, C32H28P2, C9H10, ...
+Filtered ligand database with 320 ligands was saved to `hexagonal.json`.
+Info on filtered ligands saved to directory `info_hexagonal`.
+Done! All ligands filtered. Exiting DART Ligand Filters Module.

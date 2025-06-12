@@ -62,7 +62,7 @@ for el in data:
 
 
 div = 10  # number of divisions per decade
-decades = [10 ** i for i in range(0, 4)]  # e.g. [1, 10, 100, 1000]
+decades = [10 ** i for i in range(0, 5)]  # e.g. [1, 10, 100, 1000]
 
 tick_val_base_10 = [0]
 
@@ -134,7 +134,7 @@ fig.add_trace(go.Scatter(
         color=color_log_nonzero,
         colorscale=custom_colorscale,
         cmin=0,
-        cmax=3.5,
+        cmax=4.0,
         colorbar=dict(title="log10(Value)",
                       tickvals=tick_vals,
                       ticktext=tick_text,
@@ -155,6 +155,8 @@ fig.update_layout(
     yaxis=dict(title="Period", dtick=1, autorange="reversed"),
     plot_bgcolor='white'
 )
+
+
 
 pio.write_image(fig, "periodic_table.svg", format="svg")
 fig.show()

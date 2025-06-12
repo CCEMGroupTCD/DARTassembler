@@ -1,7 +1,7 @@
 from DARTassembler.ligandfilters import ligandfilters
 
 def test_filter_ligands():
-    filters = ligandfilters(filter_input_path="small_mono.yml")
+    filters = ligandfilters(filter_input_path="hexagonal.yml")
     return filters
 
 

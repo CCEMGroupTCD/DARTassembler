@@ -180,13 +180,15 @@ def get_geometrical_isomers_from_trying_out_all_possibilities(
 def try_all_geometrical_isomer_possibilities(
                                                 atoms: ase.Atoms,
                                                 donor_idc: list[int],
-                                                target_vectors: list[np.ndarray]
+                                                target_vectors: list[np.ndarray],
+                                                vector_labels: list[str] = None
                                                 ) -> tuple[list[ase.Atoms], list[list[int]], float]:
     """
     Tries out all combinations of mapping the provided donor atoms to the target vectors, for each target vector in the list of target vectors. All combinations are tried out and all isomers with the lowest rssd are returned. Usually, there will be several with the same rssd.
-    :param atoms: ase.Atoms() object of the ligand
-    :param donor_idc: Indices of the donor atoms in `atoms`
-    :param target_vectors: List of 3D vectors of shape (n,3)
+    :param: atoms: ase.Atoms() object of the ligand
+    :param: vector_labels: List of labels for the target vectors. If provided, these labels will be assigned to the donor atoms in the isomers.
+    :param: donor_idc: Indices of the donor atoms in `atoms`
+    :param: target_vectors: List of 3D vectors of shape (n,3)
     :return: Tuple of:
         - List of ASE Atoms objects of the best isomers
         - List of lists of indices of the best isomers
@@ -203,6 +205,15 @@ def try_all_geometrical_isomer_possibilities(
     for idc in donor_idc_permutations:
         idc = list(idc)   # Convert tuple to list to allow indexing later on with the indices saved in `data`
         isomer, rssd = align_donor_atoms(atoms, donor_idc=idc, target_vectors=target_vectors, return_rssd=True)
+
+        # Assign vector_key to each donor atom in the permutation
+        # This allows us to later attribute each donor atom with a specific target vector
+        if vector_labels:
+            vector_keys_array = np.full(len(isomer), "", dtype=object)
+            for atom_idx, label in zip(idc, vector_labels):
+                vector_keys_array[atom_idx] = label
+            isomer.new_array("vector_keys", vector_keys_array)
+
         data.append((rssd, idc, isomer))
     best_rssd, _, _ = min(data, key=lambda x: x[0])
 
