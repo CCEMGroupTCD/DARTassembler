@@ -32,10 +32,14 @@ As such, the following Python classes need the ability to be accessed via the CL
 - `Assembler()` -> the full DART workflow, from loading the ligand db files to saving the output 3D TMC structures
 - `LigandFilters()` -> the ligand filters
 - `DBInfo()` a module to get a csv and concatenated .xyz files from a ligand db .jsonlines file
+- `Configs()` -> a module to generate a yaml file with the default configuration for the DART workflow, which can then be used as a template for the user to create their own yaml file
+- `Concat()` -> a module to concatenate multiple ligand db files into one single file, which can then be used in the DART workflow
+- BaseModule -> a base class for all modules that are accessible via the CLI, which implements the common functionality to read in a yaml file and call the module with the specified parameters. This is used by the Assembler, LigandFilters, Concat, Configs and DBInfo classes.
 
 The following Python classes do not need to be accessed via yaml since they will never be called from the CLI
-- `Isomer()` -> the class that assembles 3D TMCs from a list of ligands
+- `Isomer()` -> the class that represents 3D TMCs
 - `Ligand()` -> the class representing a ligand from the MetaLig
+- `IsomerFactory()` -> a class to generate Isomer() objects from a list of ligands and metal centers
 
 ### Assembler() 
 This class runs the full DART assembly workflow and is maintained mostly by Timo. It implements the following functionalities:
@@ -182,3 +186,12 @@ If everything works:
 - Added a deprecation warning if test_metalig is used. From now on, every function and module has a property called either n or n_max_ligands, which is the maximum number of ligands to be read in, which should be used instead for testing purposes.
 - Refactored the CLI and made a new general class BaseModule. This class is used by the Assembler, LigandFilters, Concat, Configs and DBInfo classes to provide a common interface for the CLI.
 - Renamed the old ligand MetaLig ligand database files in data/metalig by prepending OLD_ to the file name to avoid confusion with the new ligand database files. The old files are still there for reference, but they should not be used anymore.
+
+
+## Todo list
+### Small renaming and shifting
+- Consistently name the `n_max_ligands`. Right now often it is `n` in all modules except the assembler.
+- In assembler.yml:
+  - n_max_complexes -> n_max_isomers
+### Functionalities
+- Add that in assembler.yml, the user can specify or leave out total_ligand_charges=None, which will then mean that any ligand combination is fine, independent of their total charge.
