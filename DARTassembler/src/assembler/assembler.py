@@ -245,9 +245,9 @@ class Assembler(BaseModule):
 
         # Set up an iterator for the ligand combinations
         ligand_choice = LigandChoice(
-                                database=self.ligand_dbs,
+                                ligand_dbs=self.ligand_dbs,
                                 total_ligand_charges=self.total_ligand_charges,
-                                max_num_assembled_complexes=self.n_max_complexes,
+                                n_max_complexes=self.n_max_complexes,
                                 )
         ligand_combinations = ligand_choice.choose_ligands()
 
