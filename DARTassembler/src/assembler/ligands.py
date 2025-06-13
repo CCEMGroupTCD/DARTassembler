@@ -27,8 +27,11 @@ class LigandChoice(object):
         """
         Check if these ligands have the correct sum of charges.
         """
-        total_ligand_charges = sum([ligand.charge for ligand in ligand_combination])
-        correct_charges = total_ligand_charges == self.total_ligand_charges
+        if self.total_ligand_charges is None:
+            correct_charges = True
+        else:
+            total_ligand_charges = sum([ligand.charge for ligand in ligand_combination])
+            correct_charges = total_ligand_charges == self.total_ligand_charges
         return correct_charges
 
     def if_make_more_complexes(self, num_assembled_complexes: int) -> bool:
@@ -82,8 +85,9 @@ class LigandChoice(object):
         Doublechecks the ligand combination for consistency with all constraints.
         """
         # Charges
-        sum_of_charges = sum([ligand.charge for ligand in ligand_combination])
-        assert sum_of_charges == self.total_ligand_charges, f"The sum of charges {sum_of_charges} of the ligand combination {ligand_combination} is not equal to the total_ligand_charges {self.total_ligand_charges}."
+        if self.total_ligand_charges is not None:
+            sum_of_charges = sum([ligand.charge for ligand in ligand_combination])
+            assert sum_of_charges == self.total_ligand_charges, f"The sum of charges {sum_of_charges} of the ligand combination {ligand_combination} is not equal to the total_ligand_charges {self.total_ligand_charges}."
 
         for idx, ligand in enumerate(ligand_combination):
             # Correct `same_as_previous`

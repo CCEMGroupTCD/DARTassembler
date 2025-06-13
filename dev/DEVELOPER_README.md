@@ -191,7 +191,6 @@ If everything works:
 ## Todo list
 ### Small renaming and shifting
 - Consistently name the `n_max_ligands`. Right now often it is `n` in all modules except the assembler.
-- In assembler.yml:
-  - n_max_complexes -> n_max_isomers
+- rename complex_name_appendix to complex_name_suffix in assembler.yml
 ### Functionalities
 - Add that in assembler.yml, the user can specify or leave out total_ligand_charges=None, which will then mean that any ligand combination is fine, independent of their total charge.

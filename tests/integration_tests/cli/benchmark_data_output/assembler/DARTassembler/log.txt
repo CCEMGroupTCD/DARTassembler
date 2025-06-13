@@ -9,7 +9,7 @@ User-defined global settings:
     complex_name_length           8
     n_max_ligands                 100
 ============================  Batch 0: First_batch  ============================
-User-defined settings for batch 0:
+User-defined settings for batch First_batch:
     name                          First_batch
     total_ligand_charges          -2
     ligand_db_files               ['metalig', 'metalig', 'metalig']
@@ -20,7 +20,7 @@ User-defined settings for batch 0:
     random_seed                   0
     complex_name_appendix         _Ru
 ===========================  Batch 1: Second_batch  ============================
-User-defined settings for batch 1:
+User-defined settings for batch Second_batch:
     name                          Second_batch
     total_ligand_charges          -1
     ligand_db_files               ['metalig', 'metalig', 'metalig']

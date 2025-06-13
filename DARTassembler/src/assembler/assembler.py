@@ -38,12 +38,12 @@ class Assembler(BaseModule):
                  ):
         """
         The main class for the DART workflow. It assembles all isomers of complexes from specified ligand databases and metal centers. Finally, all assembled complexes are saved to the output directory as .xyz and .json files, together with a csv file containing information about the assembly run.
-        :param output_directory: ODirectory where the output files are saved. If it does not exist, it is created.
+        :param output_directory: Directory where the output files are saved. If it does not exist, it is created.
         :param concatenate_xyz: If True, a single concatenated .xyz file with all assembled complexes is created, for easier browsing in ase.
         :param verbosity: If 0, only errors are printed. If 1, warnings are printed. If 2, info messages are printed. If 3, debug messages are printed.
         :param same_isomer_names: If True, subsequent isomers of the same complex are given the same name as the first isomer, but with a number appended to the end. If False, each isomer gets a completely unique name.
-        :param complex_name_length: The length of the randomly generated complex name. Automatically increased if a name is already used.
-        :param n_max_ligands: Maximum number of ligands to consider in the assembly. If None, all ligands are considered.
+        :param complex_name_length: The length of the randomly generated complex name. Automatically increases by 1 whenever a randomly generated name is duplicated to avoid duplicate names.
+        :param n_max_ligands: Maximum number of ligands to load from the ligand databases provided in each batch. If None, all ligands are loaded. Useful to speed up test runs.
         """
         super().__init__()
         self.output_directory = Path(output_directory).resolve()
@@ -52,6 +52,8 @@ class Assembler(BaseModule):
         self.same_isomer_names = same_isomer_names
         self.complex_name_length = complex_name_length
         self.n_max_ligands = n_max_ligands
+
+        self._loaded_ligand_databases = {}    # to avoid reloading the same ligand database multiple times
 
         # Keep track of the input arguments
         self.init_args = {**locals()}
@@ -71,45 +73,29 @@ class Assembler(BaseModule):
     def run_batches(self, batches: list[dict]) -> None:
         """
         Runs the whole assembly for all batches specified in the assembly input file.
-        :param batches: list of dictionaries with the batch settings. See the documentation for more information.
+        :param batches: List of dictionaries with the batch settings. See the documentation for more information.
         :return None
         """
-        self._check_batch_settings(batches)
-
-        # Save yml file with input arguments to output directory
-        self.batches_args = {**locals()}
-        self.batches_args.pop('self')
-        self.input_args = {**self.init_args, **self.batches_args}
-        self.gbl_outcontrol.save_settings(self.input_args)
-
         self.batches = batches
         self.n_batches = len(self.batches)
         self.df_info = []
         self.assembled_complex_names = []
         self.assembled_complex_json_paths = []
-        self._loaded_ligand_databases = {}    # to avoid reloading the same ligand database multiple times
 
+        self.batches_args = {**locals()}
+        self.batches_args.pop('self')
+        self.input_args = {**self.init_args, **self.batches_args}
         self._log_global_info()
+
+        self._check_batch_settings(batches)
+
+        # Save yml file with input arguments to output directory
+        self.gbl_outcontrol.save_settings(self.input_args)
 
         start = datetime.datetime.now()
         for idx, batch_settings in enumerate(self.batches):
-            # Set batch settings for the batch run
-            self.batch_name = batch_settings['name']
-            self.ligand_db_files = [filepath for filepath in batch_settings['ligand_db_files']]
-            self.n_max_complexes = batch_settings['n_max_complexes']
-            self.random_seed = batch_settings['random_seed']
-            self.total_ligand_charges = batch_settings['total_ligand_charges']
-            self.target_vectors = batch_settings['target_vectors']
-            self.ligand_origins = batch_settings['ligand_origins']
-            self.metal_centers = batch_settings['metal_centers']
-            self.complex_name_appendix = batch_settings['complex_name_appendix']
-
-            self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
-            self.batch_outcontrol = BatchAssemblerOutput(self.batch_output_path)
-            self.batch_idx = idx
-
-            self._log_batch_title_and_settings(batch_settings)
-            self._run_batch()  # run the batch assembly
+            self._log_batch_title_and_settings(batch_settings=batch_settings, idx=idx, name=batch_settings['name']),
+            self._run_batch(batch_idx=idx, **batch_settings)  # run the batch assembly
 
         self.runtime = datetime.datetime.now() - start  # keep track of the runtime to display later
         self._make_and_save_output_csv()
@@ -209,7 +195,8 @@ class Assembler(BaseModule):
 
         return
 
-    def _log_success_rate(self, df):
+    @staticmethod
+    def _log_success_rate(df):
         """Log success rate of the run."""
         n_total = len(df)
         n_isomers = df['success'].sum()
@@ -226,17 +213,66 @@ class Assembler(BaseModule):
 
         return
 
-    def _log_batch_title_and_settings(self, batch_settings: dict):
-        batch_title = f'  Batch {self.batch_idx}: {self.batch_name}  '
+    @staticmethod
+    def _log_batch_title_and_settings(batch_settings: dict, idx: int, name: str) -> None:
+        """
+        Log the title and settings of the batch.
+        :param batch_settings: Dictionary with the batch settings.
+        :param idx: Index of the batch in the list of batches.
+        :param name: Name of the batch, used for logging.
+        :return: None
+        """
+        batch_title = f'  Batch {idx}: {name}  '
         logging.info(f'{batch_title:=^80}')
-        logging.info(f"User-defined settings for batch {self.batch_idx}:")
+        logging.info(f"User-defined settings for batch {name}:")
         for key, value in batch_settings.items():
             logging.info(f"    {key: <30}{value}")
 
-    def _run_batch(self):
+        return
+
+    def _run_batch(self,
+                    name: str,
+                    batch_idx: int,
+                    target_vectors: list[list[list[float]]],
+                    metal_centers: Union[str, tuple[str, [float, float, float]]],
+                    n_max_complexes: Union[int, str],
+                    total_ligand_charges: int = None,
+                    ligand_db_files: Union[list[str], str] = 'metalig',
+                    ligand_origins: list[tuple[float, float, float]] = None,
+                    complex_name_appendix: str = '',
+                    random_seed: int = 0,
+                   ) -> None:
         """
         Run the assembly for one batch.
+        :param name: Name of the batch.
+        :param batch_idx: Index of the batch in the list of batches.
+        :param target_vectors: List of target vectors for the complexes to be assembled. Each target vector is a list of lists of floats/ints.
+        :param metal_centers: Metal centers to be used for the complexes. Can be a string (e.g. 'Ru') or a tuple of (metal symbol, (x, y, z)).
+        :param n_max_complexes: Maximum number of complexes to be assembled in this batch. If 'all', all complexes are assembled.
+        :param total_ligand_charges: Choose ligands so that the total charge of all ligands in the complex is equal to this value. If None, any ligand combination is assembled.
+        :param ligand_db_files: List of ligand database files to be used for the batch. If None, defaults to ['metalig'] for each set of target vectors.
+        :param ligand_origins: Coordinates for each ligand, which will be used as the origin of the ligand rotation in the complex. If None, defaults to the center of all metal center coordinates for each ligand.
+        :param complex_name_appendix: Appendix to be added to each complex name. Defaults to ''.
+        :param random_seed: Random seed for reproducibility. Defaults to 0.
+        :return: None
         """
+        # Handle defaults
+        if isinstance(ligand_db_files, str):    # Expand a single path to a list of paths for each ligand.
+            ligand_db_files = [ligand_db_files for _ in target_vectors]
+
+        self.batch_name = name
+        self.batch_idx = batch_idx
+        self.ligand_db_files = ligand_db_files   # do not resolve path here to keep keywords like 'metalig'
+        self.n_max_complexes = n_max_complexes
+        self.random_seed = random_seed
+        self.total_ligand_charges = total_ligand_charges
+        self.target_vectors = target_vectors
+        self.ligand_origins = ligand_origins
+        self.metal_centers = metal_centers
+        self.complex_name_appendix = complex_name_appendix
+
+        self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
+        self.batch_outcontrol = BatchAssemblerOutput(self.batch_output_path)
         # Set random seed for reproducibility. Do this batch-wise so every batch is reproducible independently.
         random.seed(self.random_seed)
 
@@ -307,7 +343,8 @@ class Assembler(BaseModule):
 
         return ligand_databases
 
-    def _modify_ligand_geometry(self, geometry_modifier_path: Union[str, Path], building_blocks: dict):
+    @staticmethod
+    def _modify_ligand_geometry(geometry_modifier_path: Union[str, Path], building_blocks: dict):
         old_mol, new_mol = ase.io.read(geometry_modifier_path, index=':', format='xyz')
         coordinates_for_matching = old_mol.get_positions()
         new_coordinates = new_mol.get_positions()
@@ -342,10 +379,11 @@ class Assembler(BaseModule):
 
         name = self._get_unique_complex_name(complex=isomer, isomer_idx=isomer_idx)
 
+        total_ligand_charges = sum(isomer.ligand_info['charges'])   # Don't take the global property self.total_ligand_charges in case it is None
         isomer.global_props = {     # Overwrite potentially existing global properties with the new ones
             'complex_name': name,
             'stoichiometry': isomer.stoichiometry,
-            'total_ligand_charges': self.total_ligand_charges,
+            'total_ligand_charges': total_ligand_charges,
             'graph_hash': isomer.graph_hash,
             'batch_name': self.batch_name,
         }
