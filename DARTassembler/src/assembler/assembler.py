@@ -77,6 +77,8 @@ class Assembler(BaseModule):
         :return None
         """
         self.batches = batches
+        for idx, batch in enumerate(self.batches):
+            batch['name'] = batch.get('name', f'batch_{idx}')  # Use batch name or generate a default one
         self.n_batches = len(self.batches)
         self.df_info = []
         self.assembled_complex_names = []
@@ -166,7 +168,7 @@ class Assembler(BaseModule):
         for batch_idx, batch in enumerate(self.batches):
             df = self.df_info[self.df_info['batch_idx'] == batch_idx]
             batch_name = df['batch_name'].iloc[0]
-            logging.info(f"Batch {batch_idx} ('{batch_name}'):")
+            logging.info(f"{batch_name}:")
             self._log_success_rate(df)
 
         # Print total summary of run
@@ -222,9 +224,9 @@ class Assembler(BaseModule):
         :param name: Name of the batch, used for logging.
         :return: None
         """
-        batch_title = f'  Batch {idx}: {name}  '
+        batch_title = f'  {name}  '
         logging.info(f'{batch_title:=^80}')
-        logging.info(f"User-defined settings for batch {name}:")
+        logging.info(f"User-defined settings for {name}:")
         for key, value in batch_settings.items():
             logging.info(f"    {key: <30}{value}")
 
@@ -253,9 +255,14 @@ class Assembler(BaseModule):
         :param ligand_db_files: List of ligand database files to be used for the batch. If None, defaults to ['metalig'] for each set of target vectors.
         :param ligand_origins: Coordinates for each ligand, which will be used as the origin of the ligand rotation in the complex. If None, defaults to the center of all metal center coordinates for each ligand.
         :param complex_name_appendix: Appendix to be added to each complex name. Defaults to ''.
-        :param random_seed: Random seed for reproducibility. Defaults to 0.
+        :param random_seed: Random seed for reproducibility. If None, defaults to the batch_idx so that each batch is deterministic but different from each other.
         :return: None
         """
+        # Set random seed for reproducibility. Do this batch-wise so every batch is reproducible independently.
+        if random_seed is None:
+            random_seed = batch_idx
+        random.seed(random_seed)
+
         # Handle defaults
         if isinstance(ligand_db_files, str):    # Expand a single path to a list of paths for each ligand.
             ligand_db_files = [ligand_db_files for _ in target_vectors]
@@ -273,8 +280,6 @@ class Assembler(BaseModule):
 
         self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
         self.batch_outcontrol = BatchAssemblerOutput(self.batch_output_path)
-        # Set random seed for reproducibility. Do this batch-wise so every batch is reproducible independently.
-        random.seed(self.random_seed)
 
         # Load the ligand databases and cache them for later use
         self.ligand_dbs = self._get_ligand_databases()

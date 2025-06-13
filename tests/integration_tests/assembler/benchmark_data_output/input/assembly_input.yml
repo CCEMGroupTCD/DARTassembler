@@ -5,8 +5,7 @@ same_isomer_names: true
 complex_name_length: 8
 n_max_ligands: 100
 batches:
-- name: First_batch
-  total_ligand_charges: -2
+- total_ligand_charges: -2
   ligand_db_files:
   - ../data_input/bidentate.jsonlines
   - ../data_input/monodentate.jsonlines
@@ -50,7 +49,8 @@ batches:
   n_max_complexes: 100
   random_seed: 0
   complex_name_appendix: _Ru
-- name: Second_batch
+  name: batch_0
+- &id001
   total_ligand_charges: -1
   ligand_db_files:
   - ../data_input/bidentate.jsonlines
@@ -95,3 +95,6 @@ batches:
   n_max_complexes: 100
   random_seed: 1
   complex_name_appendix: _Fe
+  name: batch_1
+idx: 1
+batch: *id001
