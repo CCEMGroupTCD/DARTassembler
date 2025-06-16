@@ -236,7 +236,7 @@ class Assembler(BaseModule):
                     name: str,
                     batch_idx: int,
                     target_vectors: list[list[list[float]]],
-                    metal_centers: Union[str, tuple[str, [float, float, float]]],
+                    metal_centers: Union[str, tuple[str, tuple[float, float, float]]],
                     n_max_complexes: Union[int, str],
                     total_ligand_charges: int = None,
                     ligand_db_files: Union[list[str], str] = 'metalig',
