@@ -3,7 +3,6 @@ from typing import Union
 import ase
 import networkx as nx
 from ase import Atoms
-from rdkit import Chem
 import numpy as np
 import re
 from DARTassembler.src.constants.chem import Element
@@ -128,10 +127,11 @@ def get_denticities_and_hapticities_idc(graph: nx.Graph, donor_idc) -> tuple[Uni
 
     return tuple(denticities_and_hapticities)
 
-def get_rdkit_mol_from_smiles(smiles: str, sanitize: bool=False) -> Chem.Mol:
+def get_rdkit_mol_from_smiles(smiles: str, sanitize: bool=False):
     """
     Get an RDKit molecule from a SMILES string. If sanitize is set to False, the molecule will not be sanitized but an attempt will be made to calculate properties important for other functions.
     """
+    from rdkit import Chem
     mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
     if not sanitize:
         # Let rdkit calculate properties important for other functions, especially HasSubstructMatch(). Usually, those properties would be called by the sanitization process, but here we need to do that manually so that the right properties are set.
@@ -146,6 +146,7 @@ def has_smarts_pattern(smarts: str, smiles: str) -> bool:
     @param smarts: SMARTS pattern to match.
     @return: True if the molecule matches the SMARTS pattern, False otherwise.
     """
+    from rdkit import Chem
     mol = get_rdkit_mol_from_smiles(smiles)
 
     # Check if the molecule matches the SMARTS pattern.
@@ -225,7 +226,7 @@ def are_points_coplanar(points, dist=0.1):
 
     return max_dist <= dist
 
-def rdkit_mol_to_graph(mol: Chem.Mol, element_label: str='node_label', bond_label: str= 'bond_type') -> nx.Graph:
+def rdkit_mol_to_graph(mol: 'Chem.Mol', element_label: str='node_label', bond_label: str= 'bond_type') -> nx.Graph:
     """
     Create a graph from an rdkit atoms object
     @param atoms: RDKit atoms object

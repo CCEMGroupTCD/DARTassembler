@@ -10,11 +10,9 @@ User-defined global settings:
     n_max_ligands                 100
 ==================================  batch_0  ===================================
 User-defined settings for batch_0:
-    total_ligand_charges          -2
-    ligand_db_files               ['../data_input/bidentate.jsonlines', '../data_input/monodentate.jsonlines', '../data_input/haptic.jsonlines']
     target_vectors                [[[1, 0, 0], [0, 1, 0]], [[-1, 0, 0]], [[0, -1, 0]]]
     ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-    metal_centers                 [[['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]]]
+    metal_centers                 Ru
     n_max_complexes               100
     random_seed                   0
     complex_name_appendix         _Ru

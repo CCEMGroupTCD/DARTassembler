@@ -194,3 +194,6 @@ If everything works:
 - rename complex_name_appendix to complex_name_suffix in assembler.yml
 ### Functionalities
 - Add that in assembler.yml, the user can specify or leave out total_ligand_charges=None, which will then mean that any ligand combination is fine, independent of their total charge.
+### Docs
+- Make a tutorial notebook for the DART workflow, explaining the very basics (mostly just the target vectors) by assembling Pd(II) square-planar complexes with 1 bidentate and 2 monodentate ligands.
+- Explain the target vectors in the docs and make a figure explaining them.
