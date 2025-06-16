@@ -161,14 +161,23 @@ class NumpyEncoder(json.JSONEncoder):
             return bool(obj)
         elif isinstance(obj, np.str_):
             return str(obj)
-        elif isinstance(obj, np.string_):
-            return str(obj)
+        elif isinstance(obj, np.bytes_):
+            return obj.decode('utf-8')
         elif isinstance(obj, Path):
             return str(obj)
         elif isinstance(obj, (datetime, date)):
             return obj.isoformat()
         elif isinstance(obj, timedelta):
             return str(obj)
+        elif isinstance(obj, ase.Atoms):
+            return obj.todict()
+
+        # Deprecated attribute handling for np.string_ to ensure compatibility with older versions of numpy
+        try:
+            if isinstance(obj, np.string_):
+                return str(obj)
+        except TypeError:
+            pass
         return json.JSONEncoder.default(self, obj)
 
 
