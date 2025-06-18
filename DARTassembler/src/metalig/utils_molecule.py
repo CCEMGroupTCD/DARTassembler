@@ -11,6 +11,22 @@ from DARTassembler.src.constants.chem import Element
 # List of integers that RDKit considers as invalid bond orders.
 unknown_rdkit_bond_orders = [0, 20, 21]
 
+
+def hapdent_idc_to_donor_idc(hapdent_idc: list) -> list[int]:
+    """
+    Converts a list of donor indices with haptic groups in sub-lists to a flat list of all donor indices.
+    :param hapdent_idc: Iterable (list/tuple) of donor indices with haptic groups in sub-lists.
+    :return: Flat list of all donor indices.
+    """
+    donor_idc = []
+    for donor_idx in hapdent_idc:
+        try:    # try if donor_idx is list/tuple
+            donor_idx = list(donor_idx)
+        except TypeError:  # donor_idx is int
+            donor_idx = [donor_idx]
+        donor_idc.extend(donor_idx)
+    return donor_idc
+
 def check_metal_center_format(metal_center: str) -> None:
     """
     Check if the metal centers have the correct format, e.g. 'Fe', 'Ni-2', 'Pt0', 'Au+1'. Otherwise raises a ValueError.

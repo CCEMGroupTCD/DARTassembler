@@ -179,6 +179,9 @@ If everything works:
    11. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
    12. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
 
+## Known issues
+- If the DART assembler is executed twice in the same directory at the same time, the concat.xyz files might get more molecules because they are appended from both processes.
+
 ## Changelog
 12.06.2025
 - Removed the total charge and metal oxidation state from assembler.yml input and replaced this with a single property `total_ligand_charges`
@@ -186,7 +189,8 @@ If everything works:
 - Added a deprecation warning if test_metalig is used. From now on, every function and module has a property called either n or n_max_ligands, which is the maximum number of ligands to be read in, which should be used instead for testing purposes.
 - Refactored the CLI and made a new general class BaseModule. This class is used by the Assembler, LigandFilters, Concat, Configs and DBInfo classes to provide a common interface for the CLI.
 - Renamed the old ligand MetaLig ligand database files in data/metalig by prepending OLD_ to the file name to avoid confusion with the new ligand database files. The old files are still there for reference, but they should not be used anymore.
-
+18.06.2025
+- The Isomer() class has an attribute `self.ligands` now which is a list of Ligand() objects. This is very handy for later code writing, but atm it's still slow. I will speed that up later though, the `self.ligands` can be fully used. 
 
 ## Todo list
 ### Small renaming and shifting
