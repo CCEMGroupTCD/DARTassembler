@@ -16,6 +16,8 @@ from DARTassembler.src.constants.chem import Element
 from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.metalig.mol import BaseMolecule, Ligand
 from DARTassembler.src.constants import chem as PerTab
+from DARTassembler.src.metalig.utils import check_equal
+from DARTassembler.src.metalig.utils_molecule import hapdent_idc_to_donor_idc
 from DARTassembler.src.misc.io import load_json
 from DARTassembler.src.metalig.utils_graph import graph_from_graph_dict
 
@@ -273,7 +275,7 @@ class Isomer(BaseMolecule):
                          atomic_props=atomic_props,
                          global_props=global_props,
                          graph=graph,
-                         validity_check=validity_check
+                         validity_check=False   # will be performed later if required
                          )
 
         self.metal_idc = metal_idc
@@ -281,16 +283,40 @@ class Isomer(BaseMolecule):
         self.ligand_idc = ligand_idc
         self.ligand_info = ligand_info
         self.warning = warning
+        self.metals = [self.atoms[idx].symbol for idx in self.metal_idc]
 
-        self._tmc_validity_checks()
+        # todo Timo later: this prolongs the runtime of the DART workflow by about 100%. Speed it up later by providing global_props or so. Have a look first with profiler what's the issue.
+        self.ligands = self._get_ligands()  # Ligand() objects for convenient access to ligands. Won't be saved to disk in the DART workflow.
+
+        if validity_check:
+            self._tmc_validity_checks()
+
+    def _get_ligands(self, validity_check: bool = True) -> List[Ligand]:
+        ligands = []
+        for idx, (isomer_donor_idc, isomer_ligand_indices) in enumerate(zip(self.donor_idc, self.ligand_idc)):
+            # Create a Ligand() object for each ligand in the isomer
+            ligand = Ligand(
+                atomic_props=self.atoms[isomer_ligand_indices],
+                donor_idc=self.ligand_info['donor_idcs'][idx],
+                global_props={'geometry': self.ligand_info['geometries'][idx]},
+                graph=self.graph.subgraph(isomer_ligand_indices),
+                unique_name=self.ligand_info['unique_names'][idx],
+                charge=self.ligand_info['charges'],
+                hapdent_idc=self.ligand_info['hapdent_idcs'][idx],
+                geometric_isomers_hapdent_idc=self.ligand_info['geometric_isomers_hapdent_idcs'][idx],
+                validity_check=validity_check,
+            )
+            ligands.append(ligand)
+
+        return ligands
 
     def _tmc_validity_checks(self) -> None:
         """Some short checks specifically for transition metal complexes."""
+        self._check_if_molecule_valid() # Checks basic molecular properties like atomic_props and graph
         # Doublecheck if all the metals are really metals. Don't raise an error in case it's intentional.
-        for metal_idx in self.metal_idc:
-            is_metal = Element(self.atomic_props['atoms'][metal_idx]).is_metal
-            if not is_metal:
-                warnings.warn(f"Metal center is not a metal.")
+        all_metals = all(Element(metal).is_metal for metal in self.metals)
+        if not all_metals:
+            warnings.warn(f"Any of the metal centers {self.metals} in Isomer() is not a metal. Providing a chemical element as `metal center` that is not a metal is not a problem, this is just to make you aware.")
 
         return
 
@@ -340,7 +366,7 @@ class Isomer(BaseMolecule):
         data['charge'] = 0
         return cls(**data)
 
-# todo @Cian: I made three little changes now here:
+# todo @Cian (12.06.12): I made three little changes now here:
     # 1. I renamed the `AssembledIsomer` class to `Isomer` for simplicity. This renaming is already mirrored everywhere in the code here but you might have to change it when you copy in stuff from your files. If we want, we can also always rename it at the end.
     # 2. I added the `warning` as an attribute to the Isomer() class, so that it is more directly connected with it and easier to handle.
     # 3. I added the following `IsomerFactory()` class, so that it is more clear that the output of the function we talked about is a list of isomers, not an Isomer() object itself.
@@ -395,7 +421,7 @@ class IsomerFactory(object):
         # Handle defaults for `ligand_origins` and `metal_centers`
         if ligand_origins is None:
             ligand_origins = [[0.0, 0.0, 0.0] for _ in ligands]
-        # todo: I guess the `ligand_origins` defaults for ligands that are connected to only one metal to its metal center coordinates, and for ligands that are connected to multiple metal centers to the average of the metal center coordinates (i.e. in the center of them)?
+        # todo Cian: I guess the `ligand_origins` defaults for ligands that are connected to only one metal to its metal center coordinates, and for ligands that are connected to multiple metal centers to the average of the metal center coordinates (i.e. in the center of them)?
         if isinstance(metal_centers, str):
             # If the metal center is provided as a chemical element, it's a mono-metallic complex at the origin
             metal_centers = [[ase.Atom(symbol=metal_centers, position=[0, 0, 0])] for _ in ligands]
@@ -412,7 +438,7 @@ class IsomerFactory(object):
 
         self.ligands = ligands
         self.target_vectors = target_vectors
-        self.ligand_origins = ligand_origins    # todo: not used in the code yet, to be implemented.
+        self.ligand_origins = ligand_origins    # todo Cian: not used in the code yet, to be implemented.
         self.metal_centers = metal_centers
 
     # This is the method used in the DART workflow to generate isomers.
@@ -429,7 +455,7 @@ class IsomerFactory(object):
         ase_isomers = []
         for combo in combinations:
             combined = Atoms()  # Start with an empty Atoms object.
-            # todo @Cian: I always found it extremely handy in DART that the metal center came first, so I have changed the order here (in your code now, the ligand came first). Pls remove comment if ok. Otherwise, the `metal_idc` needs to be updated as well.
+            # todo Cian: I always found it extremely handy in DART that the metal center came first, so I have changed the order here (in your code now, the ligand came first). Pls remove comment if ok. Otherwise, the `metal_idc` needs to be updated as well.
             for atom in unique_metal_centers:
                 combined += atom
             for ligand in combo:  # Iterate over the ligands in the combination.
@@ -442,13 +468,18 @@ class IsomerFactory(object):
             # Merge the graphs of the ligands and the metal centers to get the full graph of the complex.
             graph, ligand_indices, donor_indices = self._get_merged_graph_from_ligands_and_metal_centers()
             global_props = {}  # Will be populated during the DART workflow.
-            # To save disk space, each complex is saved with only the most important information about its ligands. The most important one, the ligand_idc, will be saved in the isomer object anyway. These here is only additional, convenient information (only maybe the 'unique_names' are really important).
+            # To save disk space, each complex is saved with only the most important information about its ligands. The most important one, the ligand_idc, will be saved in the isomer object anyway.
             ligand_info = {
+                # Important info for making Ligands() objects in the Isomer().
                 'unique_names': [lig.unique_name for lig in self.ligands],
                 'geometries': [lig.geometry for lig in self.ligands],
-                'donors': ['-'.join(sorted(lig.donor_elements)) for lig in self.ligands],
+                'donor_idcs': [lig.donor_idc for lig in self.ligands],
                 'charges': [lig.charge for lig in self.ligands],
                 'stoichiometries': [lig.stoichiometry for lig in self.ligands],
+                'hapdent_idcs': [lig.hapdent_idc for lig in self.ligands],
+                'geometric_isomers_hapdent_idcs': [lig.geometric_isomers_hapdent_idc for lig in self.ligands],
+                # Convenience information for the output csv.
+                'donors': ['-'.join(sorted(lig.donor_elements)) for lig in self.ligands]
             }
             isomer = Isomer(
                 atomic_props=ase_isomer,
@@ -459,13 +490,20 @@ class IsomerFactory(object):
                 global_props=global_props,
                 ligand_info=ligand_info,
                 warning='',  # Initially no warning, will be updated later if needed
+                validity_check=True,
             )
             isomers.append(isomer)
 
         # Warnings for each isomer. If an isomer has no issues, the note should be ''. If an isomer is excluded because of clashing ligands or because it's equivalent to another one, the note should be `clashing_ligands' or `equivalent_to_previous_isomer`.
-        # todo @Cian: Please implement checks for clashing ligands or equivalent isomers here and in case of one of these issues, make the `isomer.warning` variable either "clashing_ligands" or "equivalent_to_previous_isomer". Only if the isomer has no issues, the `isomer.warning` should be an empty string.
-        # for isomer in isomers:
-        #     isomer.warning = ...  # Set the warning message based on the checks
+        # todo @Cian: Please uncomment the following section and implement the functions/classes for checking clashing ligands and equivalent isomers here:
+        # for idx, isomer in enumerate(isomers):
+        #     has_clashing_ligands = check_for_clashing_ligands(isomer)
+        #     if has_clashing_ligands:
+        #         isomer.warning = 'clashing_ligands'
+        #     other_isomers = [isomer for i, isomer in enumerate(isomers) if i != idx]  # All other isomers except the current one
+        #     has_equivalent_isomers = check_for_equivalent_isomers(isomer, other_isomers)
+        #     if has_equivalent_isomers:
+        #         isomer.warning = 'equivalent_isomers'
 
         return isomers
 

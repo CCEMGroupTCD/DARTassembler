@@ -1265,6 +1265,9 @@ class Ligand(BaseMolecule):
         if not self.n_donors == self.n_denticities + self.n_haptic_atoms:
             raise ValueError(
                 f'Number of donors ({self.n_donors}) does not equal number of n_denticities ({self.n_denticities}) plus n_haptic_atoms ({self.n_haptic_atoms}) in ligand {self.unique_name}.')
+        if hasattr(self, 'hapdent_idc'):
+            new_hapdent = get_denticities_and_hapticities_idc(graph=self.graph, donor_idc=self.donor_idc)
+            assert new_hapdent == self.hapdent_idc, f'Hapdent_idc are inconsistent: old: {self.hapdent_idc}, new: {self.hapdent_idc}'
 
         return None
     

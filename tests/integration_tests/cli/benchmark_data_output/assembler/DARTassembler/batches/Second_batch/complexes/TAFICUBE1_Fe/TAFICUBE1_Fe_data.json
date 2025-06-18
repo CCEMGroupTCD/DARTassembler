@@ -559,10 +559,17 @@
             "1_monodentate",
             "1_monodentate"
         ],
-        "donors": [
-            "N-N",
-            "Cl",
-            "N"
+        "donor_idcs": [
+            [
+                2,
+                3
+            ],
+            [
+                0
+            ],
+            [
+                19
+            ]
         ],
         "charges": [
             0,
@@ -573,6 +580,45 @@
             "C10H6F2N2",
             "Cl",
             "C8H11N"
+        ],
+        "hapdent_idcs": [
+            [
+                2,
+                3
+            ],
+            [
+                0
+            ],
+            [
+                19
+            ]
+        ],
+        "geometric_isomers_hapdent_idcs": [
+            [
+                [
+                    2,
+                    3
+                ],
+                [
+                    3,
+                    2
+                ]
+            ],
+            [
+                [
+                    0
+                ]
+            ],
+            [
+                [
+                    19
+                ]
+            ]
+        ],
+        "donors": [
+            "N-N",
+            "Cl",
+            "N"
         ]
     }
 }
