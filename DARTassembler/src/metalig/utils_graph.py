@@ -59,7 +59,8 @@ def assert_graph_and_coordinates_are_consistent(graph: nx.Graph, atoms: list[str
     assert new_graph_hash == graph_hash, f'Graph hashes don\'t match: {new_graph_hash} vs {graph_hash}'
 
     # Check if the relabeled graph has the same atoms in the same order as the atomic_props
-    relabeled_atoms = [a for _, a in graph.nodes(data=node_label)]
+    # The order of the atoms in the graph is determined by the order of the nodes, which is sorted by the node index
+    relabeled_atoms = [graph.nodes[i][node_label] for i in range(len(atoms))]
     assert relabeled_atoms == atoms, f'Atoms in reindexed graph and atomic_props don\'t match: {relabeled_atoms} vs {atoms}'
 
     # Check if the relabeled graph has the correct coordinating atom indices, for ligands only

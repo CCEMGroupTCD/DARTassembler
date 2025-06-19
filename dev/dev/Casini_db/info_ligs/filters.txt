@@ -1,0 +1,19 @@
+===============================  Filter Options  ===============================
+Filter 01: denticities                         denticities: [2]
+Filter 02: remove_ligands_with_adjacent_co...  remove_ligands_with_adjacent_coordinating_atoms: True, apply_to_denticities: [2]
+Filter 03: ligand_charges                      ligand_charges: [-1], apply_to_denticities: None
+Filter 04: coordinating_atoms_composition      elements: ['C', 'N'], instruction: must_contain_and_only_contain, apply_to_denticities: None
+===============================  Filter Results  ===============================
+                                               Ligands passed  Ligands removed
+Filter 01: denticities                              15578           25440     
+Filter 02: remove_ligands_with_adjacent_co...       15117             461     
+Filter 03: ligand_charges                            6853            8264     
+Filter 04: coordinating_atoms_composition             894            5959     
+==================  Total summary of DART Ligand Filters run  ==================
+Before filtering:  41018 ligands
+Filtered out:      40124 ligands
+Passed:            894 ligands
+Denticities:       2: 894
+Filtered ligand database with 894 ligands was saved to `ligs.json`.
+Info on filtered ligands saved to directory `info_ligs`.
+Done! All ligands filtered. Exiting DART Ligand Filters Module.
