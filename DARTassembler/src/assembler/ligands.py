@@ -76,7 +76,8 @@ class LigandChoice(object):
                 chosen_ligand = prel_ligand_combination[-1]
             else:
                 chosen_ligand = prel_ligand_combination[idx]
-            ligand_combination.append(chosen_ligand)
+            # Fixed a bug where this function would return the name of the ligand rather than the ligand object itself
+            ligand_combination.append(ligand_list.db[chosen_ligand])
 
         return ligand_combination
 

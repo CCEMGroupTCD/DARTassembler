@@ -9,7 +9,7 @@ from shutil import rmtree
 
 def test_assembler():
     outdir = project_path().extend('tests', 'integration_tests', 'assembler', 'data_output')
-    assembly_input = outdir.parent / 'data_input' / 'test_assembly_input.yml'
+    assembly_input = outdir.parent / 'data_input' / 'test_assembly_input.yaml'
     # Remove the output directory if it exists to start fresh
     if outdir.exists():
         rmtree(outdir)
