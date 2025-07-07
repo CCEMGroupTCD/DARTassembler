@@ -6,15 +6,17 @@ from tqdm import tqdm
 import random
 import pandas as pd
 from pathlib import Path
-from typing import Union
+from typing import Union, Dict, Any, List, Tuple, Optional
 import ase
 from copy import deepcopy
 import numpy as np
 import logging
+from DARTassembler.src.assembler.isomer import elem_cov_radii
 from DARTassembler.src.modules.modules import BaseModule
 from DARTassembler.src.constants.paths import projectpath, default_assembler_yml_path
 from DARTassembler.src.assembler.ligands import LigandChoice
 from DARTassembler.src.misc.io import read_yaml
+from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, ComplexAssemblerOutput
 from DARTassembler.src.assembler.isomer import Isomer, BatchInput, IsomerFactory, AxialOptModifier, DuplicateIsomerFilter, IsomerClashFilter, BiTransRotationModifier
 from DARTassembler.src.assembler.utils import generate_pronounceable_word
@@ -75,11 +77,6 @@ class Assembler(BaseModule):
         :return None
         """
         self.batches = batches
-        self.processed_batches = []  # Keep track of processed batches
-        for idx, batch in enumerate(self.batches):
-            # Convert the batch dictionary to a BatchInput object for easier handling
-            batch = BatchInput(batch=batch)
-            self.processed_batches.append(batch)
 
         self.n_batches = len(self.batches)
         self.df_info = []
@@ -94,7 +91,7 @@ class Assembler(BaseModule):
         self.gbl_outcontrol.save_settings(self.input_args)
 
         start = datetime.datetime.now()
-        for idx, batch_settings in enumerate(self.processed_batches):
+        for idx, batch_settings in enumerate(self.batches):
             self._log_batch_title_and_settings(batch_settings=batch_settings),
             self._run_batch(batch_idx=idx, batch=batch_settings)  # run the batch assembly
 
@@ -194,60 +191,54 @@ class Assembler(BaseModule):
         return
 
     @staticmethod
-    def _log_batch_title_and_settings(batch_settings: BatchInput) -> None:
+    def _log_batch_title_and_settings(batch_settings: Dict[Any, Any]) -> None:
         """
         Log the title and settings of the batch.
         :param batch_settings: Dictionary with the batch settings.
-        :param idx: Index of the batch in the list of batches.
-        :param name: Name of the batch, used for logging.
         :return: None
         """
-        batch_title = f'  {batch_settings.name}  '
+        batch_title = f'  {batch_settings["name"]}  '
         logging.info(f'{batch_title:=^80}')
-        logging.info(f"User-defined settings for {batch_settings.name}:")
-        for key, value in batch_settings.batch.items():
+        logging.info(f"User-defined settings for {batch_settings['name']}:")
+        for key, value in batch_settings.items():
             logging.info(f"    {key: <30}{value}")
 
         return
 
-    def _run_batch(self, batch: BatchInput, batch_idx: int) -> None:
+    def _run_batch(self, batch: Dict[Any, Any], batch_idx: int) -> None:
         """
         Run the assembly for one batch.
-        :param name: Name of the batch.
+        :param: batch: Dictionary with the batch settings.
         :param batch_idx: Index of the batch in the list of batches.
-        :param target_vectors: List of target vectors for the complexes to be assembled. Each target vector is a list of lists of floats/ints.
-        :param metal_centers: Metal centers to be used for the complexes. Can be a string (e.g. 'Ru') or a tuple of (metal symbol, (x, y, z)).
-        :param n_max_complexes: Maximum number of complexes to be assembled in this batch. If 'all', all complexes are assembled.
-        :param total_ligand_charges: Choose ligands so that the total charge of all ligands in the complex is equal to this value. If None, any ligand combination is assembled.
-        :param ligand_db_files: List of ligand database files to be used for the batch. If None, defaults to ['metalig'] for each set of target vectors.
-        :param ligand_origins: Coordinates for each ligand, which will be used as the origin of the ligand rotation in the complex. If None, defaults to the center of all metal center coordinates for each ligand.
-        :param complex_name_appendix: Appendix to be added to each complex name. Defaults to ''.
-        :param random_seed: Random seed for reproducibility. If None, defaults to the batch_idx so that each batch is deterministic but different from each other.
         :return: None
         """
         # Set random seed for reproducibility. Do this batch-wise so every batch is reproducible independently.
-        random_seed = batch.random_seed if batch.random_seed is not None else batch_idx
+        random_seed = batch["random_seed"] if batch["random_seed"] is not None else batch_idx
         random.seed(random_seed)
 
 
-        self.batch_name = batch.name
+        self.batch_name = batch["name"]
         self.batch_idx = batch_idx
-        self.ligand_db_files = [Path(ligand.ligand_db_path) for ligand in batch.ligands]
-        self.n_max_complexes = batch.max_num_complexes
+        self.ligand_db_files = self._extract_ligand_db_paths(geometry=batch['geometry'])
+        self.n_max_complexes = batch["max_num_complexes"]
         self.random_seed = random_seed
-        self.total_ligand_charges = int(batch.total_charge) - int(batch.total_metal_oxidation_state)
-        self.target_vectors = [ligand.vectors for ligand in batch.ligands]
-        self.ligand_origins = [ligand.origin for ligand in batch.ligands]
-        self.metal_centers = [metal.metal_type for metal in batch.metals]
-        self.complex_name_appendix = batch.complex_name_appendix
+        self.total_ligand_charges = int(batch["total_charge"]) - int(self._sum_metal_oxidation_states(geometry=batch['geometry']))
+        self.target_vectors, self.ligand_origins = self._extract_ligand_origins_and_vectors(geometry=batch['geometry'])
 
+        self.metal_centres = [str(list(frag.values())[0]["metal_type"]) for frag in batch["geometry"] if list(frag.keys())[0].startswith("metal")]
+        self.complex_name_appendix = batch["complex_name_appendix"]
+        self.metal_coords = [frag[list(frag.keys())[0]]["origin"] for frag in batch["geometry"] if list(frag.keys())[0].startswith("metal")]
+        self.swap_groups = [fragment[name].get("swap_group")for fragment in batch["geometry"]for name in fragment if name.startswith("ligand")]
+        self.connectivity = self._extract_connectivity_from_geometry(geometry=batch["geometry"])
         self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
         self.batch_outcontrol = BatchAssemblerOutput(self.batch_output_path)
 
         # Generate ligand combinations [lig1, lig2], [lig3, lig4], ...
-        ligand_choice = LigandChoice(ligand_dbs=[ligand.ligand_db for ligand in batch.ligands],
-                                           total_ligand_charges=self.total_ligand_charges,
-                                           n_max_complexes=self.n_max_complexes)
+        ligand_dbs = self.construct_ligand_dbs(batch["geometry"])
+        ligand_choice = LigandChoice(ligand_dbs=ligand_dbs,
+                                     total_ligand_charges=self.total_ligand_charges,
+                                     n_max_complexes=self.n_max_complexes)
+
         ligand_combinations = ligand_choice.choose_ligands()
 
         # Set progress bar with or without final number of assembled complexes
@@ -268,12 +259,28 @@ class Assembler(BaseModule):
             # ------------------------------- #
             # 1. Initial Isomer Generation
             # ------------------------------- #
-            isomers_assembled = IsomerFactory.from_batch_input(batch_input=batch, ligands=ligands).generate()
+            isomers_assembled = IsomerFactory(ligands=ligands,
+                                              target_vectors=self.target_vectors,
+                                              ligand_origins=self.ligand_origins,
+                                              metal_types=self.metal_centres,
+                                              metal_origins=self.metal_coords,
+                                              filter_duplicate_isomers=batch["filter_duplicate_isomers"],
+                                              filter_clashing_structures=batch["filter_clashing_structures"],
+                                              filter_clashing_structures_cov_radii_buffer=batch["filter_clashing_structures_cov_radii_buffer"],
+                                              check_metal_clashes=batch["check_metal_clashes"],
+                                              filter_duplicate_isomers_method=batch["filter_duplicate_isomers_method"],
+                                              filter_duplicate_isomers_grid_size=batch["filter_duplicate_isomers_grid_size"],
+                                              isomer_comparison_mode=batch["isomer_comparison_mode"],
+                                              isomer_comparison_grouping_mode=batch["isomer_comparison_grouping_mode"],
+                                              isomer_comparison_grouping_cutoff=batch["isomer_comparison_grouping_cutoff"],
+                                              swap_groups=self.swap_groups,
+                                              connectivity=self.connectivity).generate()
+
 
             # ------------------------------- #
             # 2. Mono-ligands Optimization
             # ------------------------------- #
-            isomers_mono_opt = AxialOptModifier.from_batch_input(batch_input=batch, isomers=isomers_assembled).modify()
+            isomers_mono_opt = AxialOptModifier(isomers=isomers_assembled, opt=batch["opt_mono_rot"]).modify()
 
             # ------------------------------- #
             # 3. rotate bi-type ligands
@@ -283,12 +290,22 @@ class Assembler(BaseModule):
             # ------------------------------- #
             # 3. Remove redundant isomers
             # ------------------------------- #
-            isomers_unique = DuplicateIsomerFilter.from_batch_input(batch_input=batch, isomers=isomers_mono_opt).filter()
+            isomers_unique=DuplicateIsomerFilter(isomers=isomers_mono_opt,
+                                                  method=batch["filter_duplicate_isomers_method"],
+                                                  grid_size=batch["filter_duplicate_isomers_grid_size"],
+                                                  isomer_comparison_mode=batch["isomer_comparison_mode"],
+                                                  isomer_comparison_grouping_mode=batch["isomer_comparison_grouping_mode"],
+                                                  fingerprint_grouping_cutoff=batch["isomer_comparison_grouping_cutoff"],
+                                                  metal_centres=self.metal_centres).filter()
+
 
             # ------------------------------- #
             # 4. Post-assembly filter
             # ------------------------------- #
-            isomers = IsomerClashFilter.from_batch_input(batch_input=batch, isomers=isomers_unique).filter()
+            isomers = IsomerClashFilter(isomers=isomers_unique,
+                                        covalent_radii=elem_cov_radii,
+                                        buffer=batch["filter_clashing_structures_cov_radii_buffer"],
+                                        check_metal_clashes=batch["check_metal_clashes"]).filter()
 
             # Post-processing of isomers
             logging.debug("Post-processing isomers")
@@ -308,7 +325,130 @@ class Assembler(BaseModule):
 
         return
 
+    @staticmethod
+    def construct_ligand_dbs(geometry: list[dict]) -> list:
+        """
+        Constructs LigandDB objects from ligand entries in geometry.
 
+        :param geometry: List of dicts (geometry section from a batch)
+        :return: List of LigandDB instances
+        """
+        ligand_dbs = []
+
+        for fragment in geometry:
+            assert len(fragment) == 1, f"{len(fragment)} keys present for {fragment}, expected 1"
+            name = next(iter(fragment))
+            if name.startswith("ligand"):
+                spec = fragment[name]
+                ligand_db_path = spec["ligand_db"]
+                n_max = spec.get("n_max", None)
+
+                ligand_db = LigandDB.from_json(path=ligand_db_path, n_max=n_max)
+                ligand_dbs.append(ligand_db)
+
+        return ligand_dbs
+
+    @staticmethod
+    def _extract_connectivity_from_geometry(geometry: list[dict]) -> list[Optional[List[Dict[str, List[str]]]]]:
+        """
+        Returns a list of connectivity specs, one per metal entry in geometry.
+
+        Each item is either:
+        - None (if connectivity key is missing)
+        - A list of {partner_name: [vector_keys]} dicts
+        """
+        connectivity = []
+        for fragment in geometry:
+            name, spec = next(iter(fragment.items()))
+            if name.startswith("metal"):
+                conn = spec.get("connectivity", None)
+                if conn is not None:
+                    # Validate basic structure if needed
+                    if not isinstance(conn, list):
+                        raise ValueError(f"Expected a list of dicts for connectivity of {name}, got {type(conn)}")
+                    for item in conn:
+                        if not isinstance(item, dict):
+                            raise ValueError(f"Each connectivity entry for {name} must be a dict.")
+                    connectivity.append(conn)
+                else:
+                    connectivity.append(None)
+        return connectivity
+
+    @staticmethod
+    def _extract_ligand_origins_and_vectors(geometry: List[dict]) -> Tuple[List[Dict[str, List[float]]], List[List[float]]]:
+        """
+        Extracts and processes ligand origins and vectors from the geometry.
+
+        :param geometry: List of fragments from batch["geometry"]
+        :return: (target_vectors, ligand_origins)
+        """
+        axis_map = {
+            "x": [1.0, 0.0, 0.0],
+            "y": [0.0, 1.0, 0.0],
+            "z": [0.0, 0.0, 1.0],
+            "-x": [-1.0, 0.0, 0.0],
+            "-y": [0.0, -1.0, 0.0],
+            "-z": [0.0, 0.0, -1.0],
+        }
+
+        def _parse_vector(value, key: str, name: str) -> List[float]:
+            if isinstance(value, str):
+                vec = axis_map.get(value.strip().lower())
+                if vec is None:
+                    raise ValueError(
+                        f"Fatal Error: Invalid string '{value}' in '{key}' for ligand '{name}'. "
+                        f"Expected one of: {', '.join(axis_map.keys())}."
+                    )
+                return vec
+            elif isinstance(value, list) and len(value) == 3:
+                if not all(isinstance(v, (int, float)) for v in value):
+                    raise ValueError(f"Fatal Error: '{key}' in ligand '{name}' must be a 3-element list of numbers.")
+                return [float(v) for v in value]
+            else:
+                raise ValueError(f"Fatal Error: '{key}' in ligand '{name}' must be a symbolic axis string or a 3-element list.")
+
+        target_vectors = []
+        ligand_origins = []
+
+        for fragment in geometry:
+            assert len(fragment) == 1, f"{len(fragment)} keys present for {fragment}, expected 1"
+            name = next(iter(fragment))
+            if name.startswith("ligand"):
+                spec = fragment[name]
+                ligand_origins.append(spec["origin"])
+
+                vector_dict = {
+                    key: _parse_vector(value, key=key, name=name)
+                    for key, value in spec.items()
+                    if key.startswith("vector")
+                }
+
+                target_vectors.append(vector_dict)
+
+        return target_vectors, ligand_origins
+
+    @staticmethod
+    def _extract_ligand_db_paths(geometry: list[dict]) -> list[Path]:
+        ligand_paths = []
+        for fragment in geometry:
+            assert len(fragment) == 1, f"{len(fragment)} keys present for {fragment}, expected 1"
+            name = next(iter(fragment))
+            if name.startswith("ligand"):
+                ligand_paths.append(Path(fragment[name]["ligand_db"]))
+        return ligand_paths
+
+    @staticmethod
+    def _sum_metal_oxidation_states(geometry: list[dict]) -> int:
+        total_oxidation_state = 0
+        for fragment in geometry:
+            assert len(fragment) == 1, f"{len(fragment)} keys present for {fragment}, expected 1"
+            name = next(iter(fragment))
+            if name.startswith("metal"):
+                metal_spec = fragment[name]
+                ox_state = metal_spec.get("metal_oxidation_state")
+                assert ox_state is not None, f"No 'metal_oxidation_state' found for {name}"
+                total_oxidation_state += ox_state
+        return total_oxidation_state
 
 
     def _save_assembled_isomer(self, isomer: Isomer, isomer_idx: int):
