@@ -70,13 +70,14 @@ class Isomer(BaseMolecule):
                     ):
 ```
 In the `Assembler()` class it is used like this:
+
 ```python
 isomers, warnings = Isomer.from_ligands_and_metal_centers(
-                                                                    ligands=ligands,
-                                                                    target_vectors=self.target_vectors,
-                                                                    ligand_origins=self.ligand_origins,
-                                                                    metal_centers=self.metal_centers
-                                                                    )
+    ligands=ligands,
+    target_vectors=self.target_vectors,
+    ligand_origins=self.ligand_origins,
+    metal_centers=self.metal_centres
+)
 ```
 The input of this class are mostly Python lists of ligands, metal centers etc, which it uses to assemble a list of 3D geometries, which it returns together with a list of warnings (see above). It does not require to be run from a yaml file since it will not be called from the CLI, but instead it is a flexible and powerful Python class to be used for the general assembly of 3D transition metal complexes from a list of given ligands, metal centers, target vectors and origins (so it can also be used independently of the `Assembler()` class). It implements the following functionalities:
 - Assemble a list of isomers from a set of ligands, metal centers, target vectors and origins

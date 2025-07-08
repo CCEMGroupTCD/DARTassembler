@@ -1,8 +1,0 @@
-output_db_file: /Users/timosommer/PhD/projects/DARTassembler/dev/DART_refactoring_to_v1_1_0/data/assembler/example_ligand_db/bidentate.jsonlines
-n_max_ligands: 100
-output_ligands_info: False
-
-filters:
-  - filter: 'property'
-    name: 'geometry'
-    values: ['2_cis']

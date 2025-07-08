@@ -42,7 +42,7 @@ class LigandFilters(BaseModule):
                 name_appendix = get_standardized_stoichiometry_from_atoms_list(filter['elements'])
             elif filtername == 'parent_complexes':
                 self.unames = [uname for uname in self.unames if self.db.db[uname].has_specified_metal_centers(**filter)]
-                name_appendix = ', '.join(filter['metal_centers'])
+                name_appendix = ', '.join(filter['metal_centres'])
             elif filtername == 'smarts':
                 self.unames = [uname for uname in self.unames if self.db.db[uname].has_specified_smarts(**filter)]
                 name_appendix = filter['smarts']
