@@ -18,7 +18,7 @@ from DARTassembler.src.assembler.ligands import LigandChoice
 from DARTassembler.src.misc.io import read_yaml
 from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, ComplexAssemblerOutput
-from DARTassembler.src.assembler.isomer import Isomer, BatchInput, IsomerFactory, AxialOptModifier, DuplicateIsomerFilter, IsomerClashFilter, BiTransRotationModifier
+from DARTassembler.src.assembler.isomer import Isomer, IsomerFactory, AxialOptModifier, DuplicateIsomerFilter, IsomerClashFilter, BiTransRotationModifier
 from DARTassembler.src.assembler.utils import generate_pronounceable_word
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
 
@@ -273,8 +273,7 @@ class Assembler(BaseModule):
                                               isomer_comparison_mode=batch["isomer_comparison_mode"],
                                               isomer_comparison_grouping_mode=batch["isomer_comparison_grouping_mode"],
                                               isomer_comparison_grouping_cutoff=batch["isomer_comparison_grouping_cutoff"],
-                                              swap_groups=self.swap_groups,
-                                              connectivity=self.connectivity).generate()
+                                              swap_groups=self.swap_groups).generate()
 
 
             # ------------------------------- #

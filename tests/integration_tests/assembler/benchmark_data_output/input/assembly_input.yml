@@ -105,16 +105,6 @@ batches:
       - -2
       - 0
       - 0
-      connectivity:
-      - ligand_1:
-        - vector_1
-      - ligand_2:
-        - vector_1
-      - ligand_3:
-        - vector_1
-        - vector_2
-      - metal_2:
-        - origin
   - metal_2:
       metal_type: Fe
       metal_oxidation_state: 0
@@ -122,16 +112,6 @@ batches:
       - 2
       - 0
       - 0
-      connectivity:
-      - ligand_1:
-        - vector_1
-      - ligand_2:
-        - vector_1
-      - ligand_4:
-        - vector_1
-        - vector_2
-      - metal_1:
-        - origin
   - ligand_1:
       origin:
       - 0

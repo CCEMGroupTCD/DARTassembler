@@ -51,440 +51,6 @@ elem_cov_radii = {'H': 0.32, 'He': 0.46, 'Li': 1.33, 'Be': 1.02, 'B': 0.85, 'C':
                   'Pa': 1.69, 'U': 1.7, 'Np': 1.71, 'Pu': 1.72, 'Am': 1.66, 'Cm': 1.66, 'Bk': 1.68, 'Cf': 1.68, 'Es': 1.65, 'Fm': 1.67, 'Md': 1.73, 'No': 1.76, 'Lr': 1.61, 'Rf': 1.57, 'Db': 1.49,
                   'Sg': 1.43, 'Bh': 1.41, 'Hs': 1.34, 'Mt': 1.29, 'Ds': 1.28, 'Rg': 1.21, 'Cn': 1.22, 'Nh': 1.36, 'Fl': 1.43, 'Mc': 1.62, 'Lv': 1.75, 'Ts': 1.65, 'Og': 1.57}
 
-
-class HelpFunc:
-    def __init__(self):
-        """
-        This class is a collection of helper functions that are used throughout the assembly process
-        """
-        pass
-
-    @staticmethod
-    def get_and_cast(dictionary: dict, key: str, expected_type: type) -> Any:
-        """
-        Safely retrieve a value from the dictionary and convert it to the expected type.
-        If the expected type is bool, interpret common string/int representations.
-        """
-        value = dictionary.get(key)
-
-        # Special handling for booleans
-        if expected_type is bool:
-            if isinstance(value, bool):
-                return value
-            if isinstance(value, int):
-                if value in (0, 1):
-                    return bool(value)
-            if isinstance(value, str):
-                lowered = value.strip().lower()
-                if lowered in {"true", "t", "1"}:
-                    return True
-                if lowered in {"false", "f", "0"}:
-                    return False
-            raise ValueError(
-                f"Fatal Error: '{key}' must be a boolean (true/false, 1/0, t/f)"
-            )
-
-        # Standard casting fallback
-        if not isinstance(value, expected_type):
-            try:
-                value = expected_type(value)
-            except Exception:
-                raise ValueError(
-                    f"Fatal Error: '{key}' must be of type {expected_type.__name__}"
-                )
-        return value
-
-
-class LigandSpec:
-    REQUIRED_KEYS = {"origin", "ligand_db"}
-    OPTIONAL_KEYS = {"n_max": np.inf, "swap_group": None}
-
-    """
-    Represents a ligand entry in the batch file's geometry section
-    It can handle different numbers of vectors dynamically and unique ligand specific input options
-    LigandSpec --> Ligand Specification
-    """
-
-    def __init__(self, name: str, data: Dict[str, Any]):
-        """
-        Initializes a LigandSpec object
-        :param name: The ligand's identifier (e.g., 'ligand_1')
-        :param data: Dictionary containing ligand properties
-        :raises ValueError: If required keys are missing
-        """
-        self.name = name
-        self.data = data
-        self._validate_keys()
-        self.origin = self._get_vector(key="origin", required=True)
-        self.vectors = self._extract_vectors()
-        self.ligand_db_path = data.get("ligand_db", None)
-        self.n_max = HelpFunc.get_and_cast(self.data, "n_max", int) if "n_max" in self.data else self.OPTIONAL_KEYS["n_max"]
-        self.ligand_db = LigandDB.from_json(path=self.ligand_db_path, n_max=self.n_max)
-        self.swap_group = HelpFunc.get_and_cast(self.data, "swap_group", int) if "swap_group" in self.data else self.OPTIONAL_KEYS["swap_group"]
-
-        # Log the ligand data
-        print(f"Ligand '{self.name}' initialized with {len(self.vectors)} vectors and origin {self.origin}.")
-
-    def _validate_keys(self) -> None:
-        """
-        Checks for missing required keys, duplicate keys, unrecognized keys,
-        and ensures at least one 'vector_*' key is present.
-        """
-        # 1. Check required keys
-        all_valid_keys = self.REQUIRED_KEYS.union(self.OPTIONAL_KEYS)
-        missing_keys = self.REQUIRED_KEYS - self.data.keys()
-        if missing_keys:
-            raise ValueError(f"Fatal Error: Missing required keys for ligand '{self.name}': {', '.join(missing_keys)}")
-
-        # 2. Ensure at least one vector_* key exists
-        vector_keys = [k for k in self.data if k.startswith("vector")]
-        if not vector_keys:
-            raise ValueError(f"Fatal Error: Ligand '{self.name}' must have at least one 'vector_*' key (e.g., 'vector_1').")
-
-        # 3. Check for unrecognized keys (excluding vectors)
-        non_vector_keys = set(self.data.keys()) - set(vector_keys)
-        extra_keys = non_vector_keys - all_valid_keys
-        if extra_keys:
-            print(f"Unrecognized keys in ligand '{self.name}': {', '.join(extra_keys)}")
-
-        # 4. Check for duplicate keys (except vector_* keys)
-        for key in non_vector_keys:
-            count = sum(1 for k in self.data if k == key)
-            if count > 1:
-                raise ValueError(f"Fatal Error: Ligand '{self.name}' has duplicate key '{key}'. Each non-vector key must occur exactly once.")
-
-    def _extract_vectors(self) -> Dict[str, List[float]]:
-        return {key: self._get_vector(key=key, required=False) for key in self.data if key.startswith("vector")}
-
-    def _get_vector(self, key: str, required: bool = False) -> Optional[List[float]]:
-        """
-        Gets a vector from the ligand data, ensuring it is either:
-        - a 3-element list of floats
-        - a valid symbolic string ('x', 'y', 'z', '-x', '-y', '-z')
-
-        :param key: The key to retrieve from the ligand data
-        :param required: If True, raises an error if the key is not found or is None
-        :return: The vector as a list of floats or None if not found
-        """
-        key_count = sum(1 for k in self.data if k == key)
-        if key_count > 1:
-            raise ValueError(f"Fatal Error: Ligand '{self.name}' must have exactly one '{key}' key, found {key_count}.")
-
-        value = self.data.get(key)
-
-        if required and value is None:
-            raise ValueError(f"Fatal Error: '{key}' is required for ligand '{self.name}'.")
-
-        if value is not None:
-            axis_map = {
-                "x": [1.0, 0.0, 0.0],
-                "y": [0.0, 1.0, 0.0],
-                "z": [0.0, 0.0, 1.0],
-                "-x": [-1.0, 0.0, 0.0],
-                "-y": [0.0, -1.0, 0.0],
-                "-z": [0.0, 0.0, -1.0],
-            }
-
-            if isinstance(value, str):
-                vec = axis_map.get(value.strip().lower())
-                if vec is None:
-                    raise ValueError(f"Fatal Error: Invalid string '{value}' in '{key}' for ligand '{self.name}'. Expected one of: {', '.join(axis_map.keys())}.")
-                return vec
-
-            elif isinstance(value, list) and len(value) == 3:
-                if not all(isinstance(v, (int, float)) for v in value):
-                    raise ValueError(f"Fatal Error: '{key}' in ligand '{self.name}' must be a 3-element list of numbers.")
-                return [float(v) for v in value]
-
-            else:
-                raise ValueError(f"Fatal Error: '{key}' in ligand '{self.name}' must be either a symbolic axis string or a 3-element list of numbers.")
-
-        return None
-
-
-class MetalSpec:
-    REQUIRED_KEYS = {"metal_type", "metal_oxidation_state", "origin"}
-    OPTIONAL_KEYS = {"connectivity": None}
-
-    def __init__(self, name: str, data: Dict[str, Any]):
-        """
-        Initializes a MetalSpec object. This object is used to store input instructions concerning a metal atom
-        :param name: The metal's identifier (e.g., 'metal_1')
-        :param data: Dictionary containing metal properties
-        :raises ValueError: If required keys are missing
-        """
-
-        # validate that the metal data contains the required keys
-        self.name = name
-        self.data = data
-        self.metal_type = self._get_metal_type()
-        self.metal_oxidation_state = HelpFunc.get_and_cast(dictionary=self.data,
-                                                           key="metal_oxidation_state",
-                                                           expected_type=int)
-        self.coord = self._get_origin()
-        self.connectivity = self.data.get("connectivity", self.OPTIONAL_KEYS["connectivity"])
-
-        # log the metal data
-        print(f"Metal '{self.name}' initialized with type '{self.metal_type}' and coordinates {self.coord}.")
-
-    def _validate_keys(self) -> None:
-        """
-        Ensures all required keys are present and flags unrecognized keys.
-        """
-        missing = self.REQUIRED_KEYS - self.data.keys()
-        if missing:
-            raise ValueError(f"Fatal Error: Missing required keys for metal '{self.name}': {', '.join(missing)}")
-
-        extra = set(self.data.keys()) - self.REQUIRED_KEYS - self.OPTIONAL_KEYS
-        if extra:
-            print(f"Unrecognized keys in metal '{self.name}': {', '.join(extra)}")
-
-    def _get_origin(self) -> List[float]:
-        coords = HelpFunc.get_and_cast(self.data, "origin", list)
-        if len(coords) != 3:
-            raise ValueError(f"Fatal Error: 'origin' for metal '{self.name}' must be a 3-element list.")
-        return [float(x) for x in coords]
-
-    def _get_metal_type(self) -> str:
-        metal_val = self.data.get("metal_type")
-        if metal_val is None:
-            raise ValueError(f"Fatal Error: 'metal_type' is missing for metal '{self.name}'.")
-        metal_str = str(metal_val)
-
-        if metal_str not in chem.all_atomic_symbols:
-            raise ValueError(f"Fatal Error: Metal '{metal_str}' not found in the periodic table.")
-        return metal_str
-
-
-class BatchInput:
-    # Define the required and optional keys for the batch input
-    REQUIRED_KEYS = {"name", "random_seed", "max_num_complexes", "total_charge", "geometry", "complex_name_appendix"}
-    OPTIONAL_KEYS = {"opt_mono_rot": True,
-                     "filter_duplicate_isomers": True,
-                     "filter_clashing_structures": True,
-                     "filter_clashing_structures_cov_radii_buffer": 0.0,
-                     "check_metal_clashes": True,
-                     "filter_duplicate_isomers_method": "fingerprint",
-                     "filter_duplicate_isomers_grid_size": 9,
-                     "isomer_comparison_mode": "max_diff",
-                     "isomer_comparison_grouping_mode": "cluster",
-                     "isomer_comparison_grouping_cutoff": 1.0,
-                     "auxiliary_structure_path": None
-                     }
-
-    def __init__(self, batch: Dict[str, Any]):
-        """
-        Parses and validates a single batch entry from the assembly YAML input.
-        Initializes ligand and metal specifications and computes total oxidation state.
-        """
-
-        self.batch = batch
-        self.name = None
-        self.random_seed = None
-        self.max_num_complexes = None
-        self.total_charge = None
-        self.geometry = None
-        self.complex_name_appendix = None
-        self.opt_mono_rot = None
-        self.filter_duplicate_isomers = None
-        self.filter_clashing_structures = None
-        self.filter_clashing_structures_cov_radii_buffer = None
-        self.check_metal_clashes = None
-        self.filter_duplicate_isomers_method = None
-        self.filter_duplicate_isomers_grid_size = None
-        self.isomer_comparison_mode = None
-        self.isomer_comparison_grouping_mode = None
-        self.isomer_comparison_grouping_cutoff = None
-        self.auxiliary_structure_path = None
-
-        # Set all required attributes
-        for key in self.REQUIRED_KEYS:
-            setattr(self, self._normalize_key_name(key),
-                    HelpFunc.get_and_cast(dictionary=self.batch, key=key, expected_type=self._infer_type(key, required=True)))
-
-        # Set all optional attributes with defaults
-        for key, default in self.OPTIONAL_KEYS.items():
-            expected_type = type(default)
-            value = batch.get(key, default)
-            setattr(self, self._normalize_key_name(key),
-                    HelpFunc.get_and_cast({"tmp": value}, key="tmp", expected_type=expected_type))
-
-        # Metals and ligands
-        self.ligands = []
-        self.metals = []
-        self._process_geometry()
-
-        # Calculate the total metal oxidation state by summing the oxidation states of all metals
-        self.total_metal_oxidation_state = int(sum([metal.metal_oxidation_state for metal in self.metals]))
-
-        # Validate inter-ligand inputs
-        self._compare_ligand_inputs()
-
-        # Validate metal connectivity specifications
-        self._validate_metal_connectivity_specifications()
-
-    def _normalize_key_name(self, key: str) -> str:
-        """Ensure key names are safe to use as attributes (optional but helpful)."""
-        return key
-
-    def _infer_type(self, key: str, required: bool) -> type:
-        """Infer the expected type from a known key set."""
-        if required:
-            # Hardcode required key types
-            types = {
-                "name": str,
-                "random_seed": int,
-                "max_num_complexes": int,
-                "total_charge": int,
-                "geometry": list,
-                "complex_name_appendix": str
-            }
-            return types[key]
-        else:
-            return type(self.OPTIONAL_KEYS[key])
-
-    def _validate_batch(self) -> None:
-        """
-        Validates the provided batch dictionary, ensuring all required keys exist
-        :raises ValueError: If a required key is missing
-        """
-        # Ensure the batch is a dictionary
-        if not isinstance(self.batch, dict):
-            raise ValueError("Fatal Error: Batch input must be a dictionary.")
-
-        # Check for missing and extra keys
-        missing_keys = self.REQUIRED_KEYS - set(self.batch.keys())
-        extra_keys = set(self.batch.keys()) - self.REQUIRED_KEYS - set(self.OPTIONAL_KEYS)
-
-        if missing_keys:
-            raise ValueError(f"Fatal Error: Missing required keys --> input: [{', '.join(missing_keys)}]")
-
-        if extra_keys:
-            ValueError(f"Unrecognized keys --> input: [{', '.join(extra_keys)}]")
-
-    def _validate_metal_connectivity_specifications(self) -> None:
-        """
-        Validates that the connectivity specifications for each metal are structurally and semantically correct.
-
-        Rules enforced:
-        - Connectivity must be a list of dicts.
-        - Each referenced species must exist and be unique among ligands and metals.
-        - Metals can only connect to ligands via named vectors (e.g., 'vector_1', not 'origin').
-        - Metals can only connect to other metals via 'origin'.
-        - Metals cannot connect to themselves.
-
-        Raises:
-            LoggedValueError if any condition is violated.
-        """
-        all_species = self.ligands + self.metals
-
-        for metal in self.metals:
-            if metal.connectivity is not None:
-                if not isinstance(metal.connectivity, list):
-                    raise ValueError(
-                        f"Connectivity specification for metal '{metal.name}' must be a list of dictionaries.")
-
-                for connection in metal.connectivity:
-                    if not isinstance(connection, dict):
-                        raise ValueError(
-                            f"Each entry in the connectivity list for metal '{metal.name}' must be a dictionary.", )
-
-                    species_name = list(connection.keys())[0]
-                    targets = list(connection.values())[0]
-
-                    # Prevent self-connection
-                    if species_name == metal.name:
-                        raise ValueError(
-                            f"Fatal Error: Metal '{metal.name}' cannot be connected to itself in the connectivity specification.")
-
-                    # Ensure exactly one matching species exists
-                    matching_species = [s for s in all_species if s.name == species_name]
-                    if not matching_species:
-                        raise ValueError(
-                            f"Fatal Error: Unrecognized species '{species_name}' in connectivity for metal '{metal.name}'. "
-                            f"Available species: {', '.join([s.name for s in all_species])}")
-                    if len(matching_species) > 1:
-                        raise ValueError(
-                            f"Fatal Error: Duplicate species named '{species_name}' found in connectivity for metal '{metal.name}'.")
-
-                    corresponding = matching_species[0]
-
-                    # Metal–Ligand connections: must use named vectors
-                    if corresponding in self.ligands:
-                        if not hasattr(corresponding, "vectors") or not isinstance(corresponding.vectors, dict):
-                            raise ValueError(f"Ligand '{species_name}' has no valid 'vectors' defined.")
-                        for t in targets:
-                            if t not in corresponding.vectors:
-                                raise ValueError(
-                                    f"Fatal Error: Metal '{metal.name}' is attempting to connect to ligand '{species_name}' "
-                                    f"using an invalid vector '{t}'. Valid vectors: {list(corresponding.vectors.keys())}")
-
-                    # Metal–Metal connections: must use origin only
-                    elif corresponding in self.metals:
-                        for t in targets:
-                            if t != "origin":
-                                raise ValueError(
-                                    f"Fatal Error: Metal '{metal.name}' is attempting to connect to metal '{species_name}' using "
-                                    f"'{t}'. Only 'origin' is allowed for metal–metal connections.")
-
-        print(f"Metal connectivity specifications for batch '{self.name}' validated successfully.")
-
-    def _validate_filter_duplicate_isomers_method(self) -> None:
-        """
-        Validates the method for filtering duplicate isomers.
-        :raises ValueError: If the method is not recognized
-        """
-        valid_methods = ["fingerprint", "alignment"]
-        if self.filter_duplicate_isomers_method not in valid_methods:
-            raise ValueError(f"Fatal Error: Unrecognized method for filtering duplicate isomers: {self.filter_duplicate_isomers_method}. "
-                             f"Valid methods are: {', '.join(valid_methods)}")
-
-    def _compare_ligand_inputs(self):
-        """
-        Compares the ligand inputs to ensure they are consistent across ligands
-        :return: None
-        """
-        if any(ligand.swap_group is not None for ligand in self.ligands):
-            if not all(ligand.swap_group is not None for ligand in self.ligands):
-                ligands_missing_swap_group = [ligand.name for ligand in self.ligands if ligand.swap_group is None]
-                raise ValueError(f"Fatal Error: If a swap_group is specified for any "
-                                 f"ligand it MUST be specified for all ligands. swap_group not specified for {ligands_missing_swap_group}")
-
-        return None
-
-    @staticmethod
-    def _validate_metal(metal_data: Dict[str, Any]) -> List[float]:
-        """
-        Validate the metal's coordinate entry
-        :param metal_data: Dictionary containing metal position data
-        :return: The metal coordinates as a list of floats
-        :raises ValueError: If the coordinate format is incorrect
-        """
-        if "origin" not in metal_data or not isinstance(metal_data["origin"], list) or len(metal_data["origin"]) != 3:
-            raise ValueError("Fatal Error: 'metal' must contain a 'origin' key with a 3-element list")
-        print(f"Metal coordinates for '{metal_data.get('metal_type', 'unknown')}' validated: {metal_data['origin']}")
-        return [float(x) for x in metal_data["origin"]]
-
-    def _process_geometry(self) -> None:
-        """
-        Processes the 'geometry' key to extract metal and ligand entries
-        """
-
-        for entry in self.geometry:
-            if not isinstance(entry, dict) or len(entry) != 1:
-                raise ValueError("Fatal Error: 'geometry' must be a list of dictionaries with a single key-value pair")
-
-            key, value = next(iter(entry.items()))
-
-            if key.startswith("metal"):
-                self._validate_metal(value)
-                self.metals.append(MetalSpec(key, value))
-            elif key.startswith("ligand"):
-                self.ligands.append(LigandSpec(key, value))
-            else:
-                raise ValueError(f"Fatal Error: Unexpected key '{key}' in geometry")
-
-
 class Isomer(BaseMolecule):
     """
     generates a BaseMolecule object from an ASE Atoms object and
@@ -497,7 +63,6 @@ class Isomer(BaseMolecule):
                  default_graph: bool = True,
                  ligand_target_vectors: List[List[float]] = None,
                  ligand_origins: List[List[float]] = None,
-                 connectivity: Dict = None,
                  metal_centers: Union[List[List[Union[str, List[float]]]], str] = None):
 
         self._ani = None
@@ -509,7 +74,6 @@ class Isomer(BaseMolecule):
         self.ligand_origins = ligand_origins
         self.metal_centers = metal_centers
         self.ligand_info = self._get_ligand_info()
-        self.connectivity = connectivity
         self.warning = ''
 
         if not len(self.ligands) == len(self.ligand_target_vectors) == len(self.ligand_origins):
@@ -526,30 +90,7 @@ class Isomer(BaseMolecule):
             global_props=None)
         print("done")
 
-    @classmethod
-    def from_batch_input(cls, atoms: Atoms, ligands: List[Ligand], batch_input: BatchInput, default_graph: bool = True):
-        """
-        Create a Isomer instance from a BatchInput object.
-        :param default_graph: boolean indicating whether to use the default graph generation method.
-        :param atoms: ASE Atoms object representing the atomic structure of the isomer.
-        :param ligands: List of Ligand objects associated with the isomer.
-        :param batch_input: BatchInput object containing auxiliary_structure_path, ligands, target_vectors, and ligand_origins.
-        :return: Isomer instance
-        """
-        print(f"Creating Isomer from BatchInput with {len(ligands)} ligands and {len(batch_input.metals)} metal centers.")
-        target_vectors = [ligand.vectors for ligand in batch_input.ligands]
-        ligand_origins = [ligand.origin for ligand in batch_input.ligands]
-        metal_centers = [metal for metal in batch_input.metals]
 
-        return cls(
-            atoms=atoms,
-            default_graph=default_graph,
-            ligands=ligands,
-            ligand_target_vectors=target_vectors,
-            ligand_origins=ligand_origins,
-            metal_centers=metal_centers,
-            connectivity=[metal.connectivity for metal in batch_input.metals]
-        )
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]):
@@ -611,71 +152,21 @@ class Isomer(BaseMolecule):
         metal_idc = self._get_metal_idc()
         donor_idc = self._get_donor_idc()
 
-        if self.default_graph and all(connectivity is None for connectivity in self.connectivity):
-            # --- Step 1: Add all atoms as graph nodes ---
-            for i, atom in enumerate(self.DART_atoms):
-                graph.add_node(i, node_label=atom.symbol)
 
-            # --- Step 3: Connect all metal atoms to each other ---
-            for i in metal_idc:
-                for j in metal_idc:
-                    if i < j:
-                        graph.add_edge(i, j)
+        # --- Step 1: Add all atoms as graph nodes ---
+        for i, atom in enumerate(self.DART_atoms):
+            graph.add_node(i, node_label=atom.symbol)
 
-            # --- Step 4: Connect each metal to all donor atoms ---
-            for metal_idx in metal_idc:
-                for donor_idx in donor_idc:
-                    graph.add_edge(metal_idx, donor_idx)
+        # --- Step 3: Connect all metal atoms to each other ---
+        for i in metal_idc:
+            for j in metal_idc:
+                if i < j:
+                    graph.add_edge(i, j)
 
-        elif all(connectivity is not None for connectivity in self.connectivity):
-            # --- Guided connectivity via user-defined input in self.connectivity ---
-            # This block builds the graph based on explicit user-provided metal–ligand and metal–metal connections.
-
-            for metal_idx, metal_conn in zip(metal_idc, self.connectivity):
-                # metal_idx: global atom index for the current metal atom
-                # metal_conn: list of connection dicts for this metal, e.g., [{'ligand_1': ['vector_1']}, ...]
-
-                for conn in metal_conn:
-                    # Each conn is a dictionary defining connections to another metal or ligand
-                    # e.g., {'ligand_3': ['vector_1', 'vector_2']}
-
-                    for partner_key, vectors in conn.items():
-                        # partner_key: string identifier of the connection partner ('ligand_X' or 'metal_Y')
-                        # vectors: list of vector keys (e.g., ['vector_1']) to match against vector_keys array
-
-                        if partner_key.startswith("ligand_"):
-                            # --- Handle metal–ligand connections ---
-                            # Extract ligand number from string key (1-based indexing from user)
-                            ligand_num = int(partner_key.split("_")[1]) - 1
-
-                            # ligand_tag corresponds to tags in tags, which starts from 1
-                            ligand_tag = ligand_num + 1
-
-                            # Construct boolean mask:
-                            # - (tags[:, 1] == ligand_tag): atoms belonging to the specific ligand
-                            # - np.isin(vector_keys, vectors): atoms whose assigned vector_key matches one of the specified vectors
-                            atom_mask = (ligand_tags == ligand_tag) & np.isin(vector_keys, vectors)
-
-                            # Extract atom indices matching both ligand identity and vector key
-                            atom_idcs = np.where(atom_mask)[0]
-
-                            # Add edges from current metal to each valid donor atom
-                            for atom_idx in atom_idcs:
-                                graph.add_edge(metal_idx, atom_idx)
-
-                        elif partner_key.startswith("metal_"):
-                            # --- Handle metal–metal connections ---
-                            # Extract the second metal's index from the string
-                            other_metal_num = int(partner_key.split("_")[1]) - 1
-
-                            # Get global atom index for this second metal
-                            other_metal_idx = metal_idc[other_metal_num]
-
-                            # Avoid adding duplicate edges by enforcing i < j
-                            if metal_idx < other_metal_idx:
-                                graph.add_edge(metal_idx, other_metal_idx)
-        else:
-            return ValueError("Fatal Error: Alternative graph generation not implemented yet. ")
+        # --- Step 4: Connect each metal to all donor atoms ---
+        for metal_idx in metal_idc:
+            for donor_idx in donor_idc:
+                graph.add_edge(metal_idx, donor_idx)
 
         # --- Step 5: Add intra-ligand bonds (all atoms with same ligand tag > 0) ---
         for ligand_idx, ligand in enumerate(self.ligands):
@@ -726,7 +217,6 @@ class Isomer(BaseMolecule):
         """
         Converts the Isomer object to a fully JSON-serializable dictionary.
         """
-
         # Note: I seem to have encountered an issue with non serializable types in the graph data.
         # Note: This function sanitizes the graph data to ensure it can be serialized.
         def sanitize(obj):
@@ -919,8 +409,7 @@ class IsomerFactory:
                  isomer_comparison_mode: str = "max_diff",
                  isomer_comparison_grouping_mode: str = "cluster",
                  isomer_comparison_grouping_cutoff: float = 1.0,
-                 swap_groups: Optional[List[int]] = None,
-                 connectivity: Optional[List[Dict[str, Any]]] = None):
+                 swap_groups: Optional[List[int]] = None):
         """
         Generates novel transition metal complexes from ligands and metals
         :param ligands:         Dictionary of ligand objects
@@ -946,39 +435,12 @@ class IsomerFactory:
         self.isomer_comparison_grouping_mode = isomer_comparison_grouping_mode
         self.isomer_comparison_grouping_cutoff = isomer_comparison_grouping_cutoff
         self.swap_groups = swap_groups
-        self.connectivity = connectivity  # List of dictionaries containing connectivity specifications for metals
 
         # Validate the input
         self._validate_input()
         self._validate_swap_groups()
 
-    @classmethod
-    def from_batch_input(cls, batch_input: BatchInput, ligands):
-        """
-        Create an IsomerFactory instance directly from a BatchInput object.
-        :param: ligands: the ligands objects to be used in the assembly
-        :param: batch_input: BatchInput instance containing parsed input data
-        :return: IsomerFactory instance
-        """
-        return cls(
-            ligands=ligands,
-            target_vectors=[ligand.vectors for ligand in batch_input.ligands],
-            ligand_origins=[ligand.origin for ligand in batch_input.ligands],
-            metal_types=[metal.metal_type for metal in batch_input.metals],
-            metal_origins=[metal.coord for metal in batch_input.metals],
-            filter_duplicate_isomers=batch_input.filter_duplicate_isomers,
-            filter_clashing_structures=batch_input.filter_clashing_structures,
-            filter_clashing_structures_cov_radii_buffer=batch_input.filter_clashing_structures_cov_radii_buffer,
-            check_metal_clashes=batch_input.check_metal_clashes,
-            filter_duplicate_isomers_method=batch_input.filter_duplicate_isomers_method,
-            filter_duplicate_isomers_grid_size=batch_input.filter_duplicate_isomers_grid_size,
-            isomer_comparison_mode=batch_input.isomer_comparison_mode,
-            isomer_comparison_grouping_mode=batch_input.isomer_comparison_grouping_mode,
-            isomer_comparison_grouping_cutoff=batch_input.isomer_comparison_grouping_cutoff,
-            swap_groups=[ligand.swap_group for ligand in batch_input.ligands],
-            connectivity=[metal.connectivity for metal in batch_input.metals],
 
-        )
 
     def _validate_input(self) -> None:
         """
@@ -1090,7 +552,6 @@ class IsomerFactory:
                                default_graph=True,
                                ligand_target_vectors=self.target_vectors,
                                ligand_origins=self.ligand_origins,
-                               connectivity=self.connectivity,
                                metal_centers=self.metal_origins
                                ) for isomer, ligands in zip(all_isomers, ligands_used)]
 
@@ -1348,18 +809,7 @@ class AxialOptModifier:
         self.output_isomers = []
         print(f"AxialOpt initialized with {len(self.input_isomers)} Isomer objects.")
 
-    @classmethod
-    def from_batch_input(cls, batch_input: BatchInput, isomers: List[Atoms] = None):
-        """
-        Create an AxialOpt instance from a BatchInput object.
-        :param isomers: isomers to be optimized.
-        :param batch_input: object containing parsed input data
-        :return: returns an instance of AxialOpt
-        """
-        return cls(
-            isomers=isomers,
-            opt=batch_input.opt_mono_rot
-        )
+
 
     def modify(self):
         """
@@ -1411,7 +861,6 @@ class AxialOptModifier:
                 ligands=isomer.ligands,
                 ligand_target_vectors=isomer.ligand_target_vectors,
                 ligand_origins=isomer.ligand_origins,
-                connectivity=isomer.connectivity,
                 metal_centers=isomer.metal_centers,
                 default_graph=isomer.default_graph
             )
@@ -1554,24 +1003,7 @@ class DuplicateIsomerFilter:
         self.output_isomers = []
         self.similarity_cutoff_used = None
 
-    @classmethod
-    def from_batch_input(cls, batch_input: BatchInput, isomers: List[Atoms] = None):
-        """
-        Create an instance of ReduceIsomers from a BatchInput object.
-        :param batch_input:
-        :param isomers:
-        :return:
-        """
 
-        return cls(
-            isomers=isomers,
-            method=batch_input.filter_duplicate_isomers_method,
-            grid_size=batch_input.filter_duplicate_isomers_grid_size,
-            isomer_comparison_mode=batch_input.isomer_comparison_mode,
-            isomer_comparison_grouping_mode=batch_input.isomer_comparison_grouping_mode,
-            fingerprint_grouping_cutoff=batch_input.isomer_comparison_grouping_cutoff,
-            metal_centres=[metal.coord for metal in batch_input.metals]
-        )
 
     def filter(self) -> List[Atoms]:
         """
@@ -2224,19 +1656,7 @@ class IsomerClashFilter:
               f"buffer: {self.buffer}, "
               f"check_metal_clashes: {self.check_metal_clashes}")
 
-    @classmethod
-    def from_batch_input(cls, batch_input: BatchInput, isomers: List[Isomer] = None):
-        """
-        Create a ClashFilter instance from a BatchInput object.
-        :param batch_input:
-        :param isomers:
-        :return:
-        """
 
-        return cls(isomers=isomers,
-                   covalent_radii=elem_cov_radii,
-                   buffer=batch_input.filter_clashing_structures_cov_radii_buffer,
-                   check_metal_clashes=batch_input.check_metal_clashes)
 
     def filter(self) -> Tuple[List[Atoms], List[int]]:
         """
@@ -2329,17 +1749,7 @@ class AtomsCombiner:
         self.xyz_path = pl.Path(xyz_path)
         self.xyz_atoms = self._load_xyz()
 
-    @classmethod
-    def from_batch_input(cls, batch_input: BatchInput, base_atoms: Atoms):
-        """
-        Create an instance from a BatchInput object and a base Atoms object.
-        :param batch_input: BatchInput object containing auxiliary_structure_path
-        :param base_atoms: ASE Atoms object to combine with the .xyz file
-        """
-        return cls(
-            base_atoms=base_atoms,
-            xyz_path=batch_input.auxiliary_structure_path
-        )
+
 
     def _load_xyz(self) -> Atoms:
         """Read the .xyz file and return an ASE Atoms object."""
@@ -2370,18 +1780,7 @@ class BiTransRotationModifier:
         self.output_isomers = []
         print(f"AxialOpt initialized with {len(self.input_isomers)} Isomer objects.")
 
-    @classmethod
-    def from_batch_input(cls, batch_input: BatchInput, isomers: List[Atoms] = None):
-        """
-        Create an AxialOpt instance from a BatchInput object.
-        :param isomers: isomers to be optimized.
-        :param batch_input: object containing parsed input data
-        :return: returns an instance of AxialOpt
-        """
-        return cls(
-            isomers=isomers,
-            opt=batch_input.opt_mono_rot
-        )
+
 
     def modify(self):
         """
@@ -2433,7 +1832,6 @@ class BiTransRotationModifier:
                 ligands=isomer.ligands,
                 ligand_target_vectors=isomer.ligand_target_vectors,
                 ligand_origins=isomer.ligand_origins,
-                connectivity=isomer.connectivity,
                 metal_centers=isomer.metal_centers,
                 default_graph=isomer.default_graph
             )
