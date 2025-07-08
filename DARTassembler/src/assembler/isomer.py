@@ -4,9 +4,7 @@ This file contains the classes and methods that are used to process the input da
 # Dart Assembler imports
 from DARTassembler.src.metalig.geometry import align_donor_atoms
 from DARTassembler.src.metalig.mol import BaseMolecule, Ligand
-from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.misc.io import load_json
-from DARTassembler.src.constants import chem
 
 # Scientific package imports
 from scipy.optimize import differential_evolution, linear_sum_assignment, brute

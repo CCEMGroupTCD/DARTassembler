@@ -1,27 +1,31 @@
+# Standard library imports
+from typing import Union, Dict, Any, List, Tuple, Optional
+from tqdm import tqdm
+import datetime
+import logging
+import random
+import sys
+
+# DART specific imports
+from DARTassembler.src.assembler.isomer import Isomer, IsomerFactory, AxialOptModifier, DuplicateIsomerFilter, IsomerClashFilter, BiTransRotationModifier
+from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, ComplexAssemblerOutput
+from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
+from DARTassembler.src.assembler.utils import generate_pronounceable_word
+from DARTassembler.src.constants.paths import default_assembler_yml_path
+from DARTassembler.src.assembler.isomer import elem_cov_radii
+from DARTassembler.src.assembler.ligands import LigandChoice
+from DARTassembler.src.modules.modules import BaseModule
+from DARTassembler.src.metalig.db import LigandDB
+from DARTassembler.src.misc.io import read_yaml
+
+# Data processing imports
+from pathlib import Path
+import pandas as pd
+import numpy as np
+
+# Warnings
 import warnings
 warnings.simplefilter("always")
-import sys
-import datetime
-from tqdm import tqdm
-import random
-import pandas as pd
-from pathlib import Path
-from typing import Union, Dict, Any, List, Tuple, Optional
-import ase
-from copy import deepcopy
-import numpy as np
-import logging
-from DARTassembler.src.assembler.isomer import elem_cov_radii
-from DARTassembler.src.modules.modules import BaseModule
-from DARTassembler.src.constants.paths import projectpath, default_assembler_yml_path
-from DARTassembler.src.assembler.ligands import LigandChoice
-from DARTassembler.src.misc.io import read_yaml
-from DARTassembler.src.metalig.db import LigandDB
-from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, ComplexAssemblerOutput
-from DARTassembler.src.assembler.isomer import Isomer, IsomerFactory, AxialOptModifier, DuplicateIsomerFilter, IsomerClashFilter, BiTransRotationModifier
-from DARTassembler.src.assembler.utils import generate_pronounceable_word
-from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
-
 
 class Assembler(BaseModule):
     """
@@ -52,8 +56,7 @@ class Assembler(BaseModule):
         self.same_isomer_names = same_isomer_names
         self.complex_name_length = complex_name_length
 
-
-        self._loaded_ligand_databases = {}    # to avoid reloading the same ligand database multiple times
+        self._loaded_ligand_databases = {}  # to avoid reloading the same ligand database multiple times
 
         # Keep track of the input arguments
         self.init_args = {**locals()}
@@ -86,7 +89,6 @@ class Assembler(BaseModule):
         self.input_args = {**self.init_args, "batches": self.batches}
         self._log_global_info()
 
-
         # Save yml file with input arguments to output directory
         self.gbl_outcontrol.save_settings(self.input_args)
 
@@ -101,8 +103,6 @@ class Assembler(BaseModule):
         self._final_checks()
 
         return
-
-
 
     def _make_and_save_output_csv(self) -> None:
         """Save output info csv of all attempts."""
@@ -164,7 +164,7 @@ class Assembler(BaseModule):
         """Log global information about the run."""
         logging.info('Starting DART Assembler Module.')
         logging.info(f'Output directory: {self.output_directory}')
-        plural = 'es' if self.n_batches > 1 else ''                # print plural or singular in next line
+        plural = 'es' if self.n_batches > 1 else ''  # print plural or singular in next line
         logging.info(f"Running {self.n_batches} batch{plural}...")
         logging.info(f"User-defined global settings:")
         for key, value in self.init_args.items():
@@ -216,7 +216,6 @@ class Assembler(BaseModule):
         random_seed = batch["random_seed"] if batch["random_seed"] is not None else batch_idx
         random.seed(random_seed)
 
-
         self.batch_name = batch["name"]
         self.batch_idx = batch_idx
         self.ligand_db_files = self._extract_ligand_db_paths(geometry=batch['geometry'])
@@ -228,7 +227,7 @@ class Assembler(BaseModule):
         self.metal_centres = [str(list(frag.values())[0]["metal_type"]) for frag in batch["geometry"] if list(frag.keys())[0].startswith("metal")]
         self.complex_name_appendix = batch["complex_name_appendix"]
         self.metal_coords = [frag[list(frag.keys())[0]]["origin"] for frag in batch["geometry"] if list(frag.keys())[0].startswith("metal")]
-        self.swap_groups = [fragment[name].get("swap_group")for fragment in batch["geometry"]for name in fragment if name.startswith("ligand")]
+        self.swap_groups = [fragment[name].get("swap_group") for fragment in batch["geometry"] for name in fragment if name.startswith("ligand")]
         self.connectivity = self._extract_connectivity_from_geometry(geometry=batch["geometry"])
         self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
         self.batch_outcontrol = BatchAssemblerOutput(self.batch_output_path)
@@ -254,8 +253,6 @@ class Assembler(BaseModule):
             except StopIteration:
                 break
 
-
-
             # ------------------------------- #
             # 1. Initial Isomer Generation
             # ------------------------------- #
@@ -275,7 +272,6 @@ class Assembler(BaseModule):
                                               isomer_comparison_grouping_cutoff=batch["isomer_comparison_grouping_cutoff"],
                                               swap_groups=self.swap_groups).generate()
 
-
             # ------------------------------- #
             # 2. Mono-ligands Optimization
             # ------------------------------- #
@@ -289,14 +285,13 @@ class Assembler(BaseModule):
             # ------------------------------- #
             # 3. Remove redundant isomers
             # ------------------------------- #
-            isomers_unique=DuplicateIsomerFilter(isomers=isomers_mono_opt,
-                                                  method=batch["filter_duplicate_isomers_method"],
-                                                  grid_size=batch["filter_duplicate_isomers_grid_size"],
-                                                  isomer_comparison_mode=batch["isomer_comparison_mode"],
-                                                  isomer_comparison_grouping_mode=batch["isomer_comparison_grouping_mode"],
-                                                  fingerprint_grouping_cutoff=batch["isomer_comparison_grouping_cutoff"],
-                                                  metal_centres=self.metal_centres).filter()
-
+            isomers_unique = DuplicateIsomerFilter(isomers=isomers_mono_opt,
+                                                   method=batch["filter_duplicate_isomers_method"],
+                                                   grid_size=batch["filter_duplicate_isomers_grid_size"],
+                                                   isomer_comparison_mode=batch["isomer_comparison_mode"],
+                                                   isomer_comparison_grouping_mode=batch["isomer_comparison_grouping_mode"],
+                                                   fingerprint_grouping_cutoff=batch["isomer_comparison_grouping_cutoff"],
+                                                   metal_centres=self.metal_centres).filter()
 
             # ------------------------------- #
             # 4. Post-assembly filter
@@ -449,7 +444,6 @@ class Assembler(BaseModule):
                 total_oxidation_state += ox_state
         return total_oxidation_state
 
-
     def _save_assembled_isomer(self, isomer: Isomer, isomer_idx: int):
         """
         Save the successfully assembled complex to the output files.
@@ -458,8 +452,8 @@ class Assembler(BaseModule):
 
         name = self._get_unique_complex_name(complex=isomer, isomer_idx=isomer_idx)
 
-        total_ligand_charges = sum(isomer.ligand_info['charges'])   # Don't take the global property self.total_ligand_charges in case it is None
-        isomer.global_props = {     # Overwrite potentially existing global properties with the new ones
+        total_ligand_charges = sum(isomer.ligand_info['charges'])  # Don't take the global property self.total_ligand_charges in case it is None
+        isomer.global_props = {  # Overwrite potentially existing global properties with the new ones
             'complex_name': name,
             'stoichiometry': isomer.stoichiometry,
             'total_ligand_charges': total_ligand_charges,
@@ -487,7 +481,7 @@ class Assembler(BaseModule):
             self.batch_outcontrol.save_xyz(xyz_string, success=success, append=True)
 
         # Save data for csv file.
-        complex_idx = ( len(self.assembled_complex_names) - 1 ) if success else None
+        complex_idx = (len(self.assembled_complex_names) - 1) if success else None
         self._add_batch_info(complex=isomer, success=success, complex_idx=complex_idx)
 
         return
@@ -505,14 +499,14 @@ class Assembler(BaseModule):
             last_isomers_stem = last_isomers_name[:-n_digits_remove]
             # Check that we can reconstruct the last isomers name.
             # Todo I had to comment out this assert to make the code work
-            #assert last_isomers_name == last_isomers_stem + str(isomer_idx - 1) + self.complex_name_appendix, f'The complex name seems to work different than implemented.'
+            # assert last_isomers_name == last_isomers_stem + str(isomer_idx - 1) + self.complex_name_appendix, f'The complex name seems to work different than implemented.'
             # Construct the new isomers name after the same rules as above.
             name = last_isomers_stem + str(isomer_idx) + self.complex_name_appendix
             assert not name in self.assembled_complex_names, f"Complex name {name} already exists in the assembled complex names list even though it is a subsequent isomer."
         else:
             # Generate new name for new complex.
             complex_name_length = self.complex_name_length
-            while True:     # emulate a do-while loop
+            while True:  # emulate a do-while loop
                 # Get a random name for the complex
                 if self.same_isomer_names:
                     hash_string = complex.graph_hash
@@ -521,7 +515,7 @@ class Assembler(BaseModule):
                     sorted_indices = np.lexsort((xyz[:, 2], xyz[:, 1], xyz[:, 0]), axis=0)
                     xyz = np.round(xyz, decimals=decimals)  # round to 6 decimals to get rid of numerical noise
                     xyz = xyz[sorted_indices]
-                    elements = [el for _, el in sorted(zip(sorted_indices, complex.atomic_props['atoms']))] # sort elements according to xyz
+                    elements = [el for _, el in sorted(zip(sorted_indices, complex.atomic_props['atoms']))]  # sort elements according to xyz
                     hash_string = str(elements) + str(xyz)  # make hash string
 
                 # Generate a pronounceable word from the hash
@@ -540,7 +534,7 @@ class Assembler(BaseModule):
                     complex_name_length += 1
                     continue
                 else:
-                    break   # name is unique, break the loop
+                    break  # name is unique, break the loop
 
         return name
 
