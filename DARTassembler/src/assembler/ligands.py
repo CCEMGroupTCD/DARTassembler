@@ -59,7 +59,7 @@ class LigandChoice(object):
 
         return ligand_combination
 
-    def _choose_iterative_ligand_combination_from_db(self, all_combinations) -> list:
+    def _choose_iterative_ligand_combination_from_db(self, all_combinations: list[tuple[str]]) -> list:
         """
         Choose ligands iteratively from the ligand databases.
         """

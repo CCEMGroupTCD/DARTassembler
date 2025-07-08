@@ -1,5 +1,5 @@
 Starting DART Assembler Module.
-Output directory: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/tests/integration_tests/assembler/data_output
+Output directory: /Users/timosommer/PhD/projects/DARTassembler/tests/integration_tests/assembler/data_output
 Running 3 batches...
 User-defined global settings:
     output_directory              .
@@ -78,7 +78,8 @@ User-defined settings for 3-3-haptic_coordination:
 2-2-1-1-bi-metalic:
   - 32 isomers tried, 7 isomers (from 2 complexes) successfully assembled.
   - 25 isomers failed because of filters:
-    - duplicate-: 25
+    - duplicate-: 24
+    - duplicate-duplicate-: 1
 3-3-haptic_coordination:
   - 4 isomers tried, 2 isomers (from 2 complexes) successfully assembled.
   - 2 isomers failed because of filters:
@@ -86,7 +87,8 @@ User-defined settings for 3-3-haptic_coordination:
 ====================  Total summary of DART Assembler run  =====================
   - 68 isomers tried, 19 isomers (from 6 complexes) successfully assembled.
   - 49 isomers failed because of filters:
-    - duplicate-: 45
+    - duplicate-: 44
     - clashing-: 2
     - duplicate-clashing-: 2
+    - duplicate-duplicate-: 1
 DART Assembler output files saved to directory `data_output`.

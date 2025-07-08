@@ -8,7 +8,6 @@ from DARTassembler.src.misc.io import load_json
 
 # Scientific package imports
 from scipy.optimize import differential_evolution, linear_sum_assignment, brute
-from sklearn.cluster import MeanShift, estimate_bandwidth
 from scipy.spatial.transform import Rotation as R
 from scipy.spatial.distance import cdist
 import numpy as np
@@ -17,16 +16,6 @@ import numpy as np
 from typing import Dict, Any, List, Optional, Tuple, Union
 from collections import defaultdict
 import itertools
-
-# Matplotlib imports
-from matplotlib.colors import LinearSegmentedColormap
-import matplotlib.pyplot as plt
-
-# Plotly/Dash imports
-import plotly.graph_objects as go
-import plotly.express as px
-import plotly.io as pio
-import dash
 
 # Data manipulation imports
 from networkx.readwrite import json_graph
@@ -37,7 +26,6 @@ import pathlib as pl
 import pandas as pd
 import ase
 
-pio.renderers.default = 'browser'
 
 # Todo: we need to cite the original source of the covalent radii data (I am not sure where it was obtained)
 elem_cov_radii = {'H': 0.32, 'He': 0.46, 'Li': 1.33, 'Be': 1.02, 'B': 0.85, 'C': 0.75, 'N': 0.71, 'O': 0.63, 'F': 0.64, 'Ne': 0.67, 'Na': 1.55, 'Mg': 1.39, 'Al': 1.26, 'Si': 1.16, 'P': 1.11,
@@ -251,6 +239,9 @@ class Isomer(BaseMolecule):
         """
         Interactive 3D visualization of the ASE Atoms object and bonding graph using Plotly.
         """
+        import plotly.graph_objects as go
+        import dash
+
         atoms = self.DART_atoms
         graph = self._get_graph()
         pos = atoms.get_positions()
@@ -1264,6 +1255,7 @@ class DuplicateIsomerFilter:
         :return: 2D numpy array of group labels ('Close' or 'Far').
         """
         if method == "cluster":
+            from sklearn.cluster import MeanShift, estimate_bandwidth
             # Flatten the matrix values for clustering.
             # Upper triangle indices are used to avoid redundancy.
             triu_indices = np.triu_indices_from(matrix, k=1)
@@ -1406,6 +1398,8 @@ class DuplicateIsomerFilter:
         :param: max_color: Dictionary with RGB values for the maximum color.
         :param: cell_label_mode: 'value' (float), 'group' (Close/Far), or 'none'.
         """
+        from matplotlib.colors import LinearSegmentedColormap
+        import matplotlib.pyplot as plt
 
         assert cell_label_mode in {"value", "group", "none"}, ValueError(
             f"Fatal Error: Unsupported cell label mode '{cell_label_mode}'. "
@@ -1482,6 +1476,9 @@ class DuplicateIsomerFilter:
         """
         Launch an interactive Dash app to render the heatmap and enable isomer alignment viewing.
         """
+        # Plotly/Dash imports
+        import plotly.express as px
+        import dash
         app = dash.Dash(__name__)
         fig = px.imshow(
             df,
