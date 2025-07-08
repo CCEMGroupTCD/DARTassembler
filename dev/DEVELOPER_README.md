@@ -25,6 +25,11 @@ Lower priorities in the Isomer() class, to implement once the main priorities ar
 8. Doublecheck and validate the user input. Very important but also time-consuming and prone to implement things that become unnecessary later on.
    - Small note about the last point, maybe it helps you: I have seen that you implemented very sophisticated classes for the input, like MetalSpec and LigandSpec. This is very professional a great idea.  However, right now we are in the stage of implementing the core features. Therefore, it is best to leave this doublechecking to the very end, once everything else is done, because it slows down the development of the actual features and usually just makes one write code that in the end isn't needed. I made exactly this mistake with the old DART workflow, where I spent a lot of time on this and then I had to change it all the time and now I can barely use any of it. Therefore, it's so important for me now to prioritize very hard, in order to learn from this experience. Additionally, I would also recommend to not use a yaml file but to simply define the input lists in the python file you use as playground for the development, since this is also easier and more intuitive (for an example see the end of the `assembler.py` file where I do this for the workflow). If you do prefer to have a yaml file (which in the end is equivalent), I would still recommend to not implement any doublechecking of the input for now.
 
+## 20.06.2025 Meeting about priorities and refactoring
+1. Todo: Review of input, agree on final format and update tests 
+- Done: ligand clashing and equivlaent isomer code functionality, todo refactoring to fit it into the code base
+
+
 ## Code structure of the `DARTassembler` package
 The DART workflow has several important Python classes that need to be maintained. One re-occurring feature is that for all DART modules that are accessible via the CLI, there should be a function to call this class from a yaml file. However, all classes themselves should take only Python objects (lists, dictionaries, strings, ase.Atoms etc) as input, since this makes the development much simpler. 
 
@@ -195,9 +200,11 @@ If everything works:
 ## Todo list
 ### Small renaming and shifting
 - Consistently name the `n_max_ligands`. Right now often it is `n` in all modules except the assembler.
-- rename complex_name_appendix to complex_name_suffix in assembler.yml
+- Rename complex_name_appendix to complex_name_suffix in assembler.yml
+- Rename `validity_check` to `validate` in BaseMolecule() and inheriting classes.
+- Rename `target_vectors`?
+- Rename geometry strings everywhere, including the metalig.
 ### Functionalities
-- Add that in assembler.yml, the user can specify or leave out total_ligand_charges=None, which will then mean that any ligand combination is fine, independent of their total charge.
 ### Docs
 - Make a tutorial notebook for the DART workflow, explaining the very basics (mostly just the target vectors) by assembling Pd(II) square-planar complexes with 1 bidentate and 2 monodentate ligands.
 - Explain the target vectors in the docs and make a figure explaining them.

@@ -6,7 +6,7 @@ __MACOSX
 *.swp
 ~$*
 
-/devtimo/
+/devtimo
 
 # Only include the zip file of the MetaLig, but not the full file. This is because the full .jsonlines file has around 300MB which is too large for GitHub.
 /DARTassembler/data/metalig/*.jsonlines
@@ -38,7 +38,6 @@ __MACOSX
 # Other dev stuff
 /dev/DART_refactoring_to_v1_1_0/data/**
 
-
 #/docs/_build
 
 /src04_Assembly/Z-test.py
@@ -46,10 +45,10 @@ __MACOSX
 
 /src02_LigandCharge/test.json
 
-!/dev/test/tmQMG_Jsons_test/
-!/dev/test/tmQMG_Jsons_test/complex_db_original.json
-!/dev/test/tmQMG_Jsons_test/tmQM_Ligands_unique_original.json
-!/dev/test/tmQMG_Jsons_test/tmQM_Ligands_full_original.json
+!/devtimo/test/tmQMG_Jsons_test/
+!/devtimo/test/tmQMG_Jsons_test/complex_db_original.json
+!/devtimo/test/tmQMG_Jsons_test/tmQM_Ligands_unique_original.json
+!/devtimo/test/tmQMG_Jsons_test/tmQM_Ligands_full_original.json
 
 !/database/ligand_charges/
 !/database/ligand_charges/charge_benchmark/
@@ -74,7 +73,7 @@ __MACOSX
 /DARTassembler/src/constants/CSD/CSD_Smiles_full.csv
 
 
-/dev/test/machine_learning
+/devtimo/test/machine_learning
 /ccem_server
 
 /DARTassembler/src/constants/CSD/mol2s/
@@ -114,14 +113,14 @@ __MACOSX
 /data_output/tmQM_Jsons/Filtering/filteredLigDB.json
 /data_output/tmQM_Jsons/Filtering/filterSetup.json
 
-/dev/test/data/C_ligands_for_Manting
+/devtimo/test/data/C_ligands_for_Manting
 /data_output/tmQM_Jsons/Assembled_Moleculesall.xyz
 /data_output/tmQM_Jsons/Assembled_Moleculestmp_output_test_cian.xyz
 /dev/test/tmQMG_Jsons_fixed_gbl_props_cutoffs_full/
 
-/dev/test/ML_detect_missing_H/data/**
-/dev/test/machine_learning/**
-dev/test/data/CH_ligands_for_Ana/
+/devtimo/test/ML_detect_missing_H/data/**
+/devtimo/test/machine_learning/**
+/devtimo/test/data/CH_ligands_for_Ana/
 
 /src14_Assembly_Unit_Test/*
 !/src14_Assembly_Unit_Test/output_benchmark/
@@ -183,4 +182,3 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-/dev/DART_refactoring_to_v1_1_0/data/
