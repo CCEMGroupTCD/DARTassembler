@@ -425,6 +425,9 @@ class IsomerFactory:
         self.isomer_comparison_grouping_cutoff = isomer_comparison_grouping_cutoff
         self.swap_groups = swap_groups
 
+        # todo: Temporary input fixes
+        self.target_vectors = [{'vector_'+str(i+1): vector for i, vector in enumerate(vectors)} for vectors in self.target_vectors]
+
         # Validate the input
         self._validate_input()
         self._validate_swap_groups()
@@ -453,7 +456,7 @@ class IsomerFactory:
         :return: None
         """
         if any(swap_tag is None for swap_tag in self.swap_groups) and not all(swap_tag is None for swap_tag in self.swap_groups):
-            raise ValueError("Fatal Error: If a swap_group is specified for any ligand, it MUST be specified for all ligands.")
+            raise ValueError("If a swap_group is specified for any ligand, it must be specified for all ligands.")
 
         elif all(swap_tag is None for swap_tag in self.swap_groups):
             print("No swap groups specified. Using effective ligand coordination numbers (n_eff_denticities) as swap groups.")
@@ -473,7 +476,7 @@ class IsomerFactory:
                 elcns = {list2[i] for i in indices}
                 if len(elcns) > 1:
                     details = ", ".join(f"{self.ligands[i].unique_name} (n_eff_denticities={list2[i]})" for i in indices)
-                    raise ValueError(f"Fatal Error: Ligands in swap_group {group_id} must all have the same elcn, but found mismatches: {details}")
+                    raise ValueError(f"Ligands in swap_group {group_id} must all have the same n_eff_denticities, but found mismatches: {details}")
         print("Swap groups validated successfully.")
         return None
 
@@ -994,11 +997,13 @@ class DuplicateIsomerFilter:
 
 
 
-    def filter(self) -> List[Atoms]:
+    def filter(self) -> List[Isomer]:
         """
         Reduce the number of isomers based on the specified method.
         :return: unique isomers as a list of ASE Atoms objects
         """
+        if len(self.isomers) <= 1:
+            return self.isomers
 
         if self.method == "alignment":
             self.output_isomers = self._reduce_by_alignment()
@@ -1217,7 +1222,7 @@ class DuplicateIsomerFilter:
         shifted = atoms.positions - center
         atoms.positions = center + (shifted @ R_total.T)
 
-    def _reduce_by_fingerprint(self) -> List[Atoms]:
+    def _reduce_by_fingerprint(self):
         """
         Reduce isomers using fingerprint-based similarity clustering.
         Select one representative per cluster labeled 'Close'.
@@ -1260,7 +1265,7 @@ class DuplicateIsomerFilter:
             # Upper triangle indices are used to avoid redundancy.
             triu_indices = np.triu_indices_from(matrix, k=1)
             values = matrix[triu_indices].reshape(-1, 1)
-            bandwidth = estimate_bandwidth(values, quantile=quantile, n_samples=len(values))
+            # bandwidth = estimate_bandwidth(values, quantile=quantile, n_samples=len(values))
             ms = MeanShift(bandwidth=0.5)
             ms.fit(values)
             cluster_labels = ms.labels_
