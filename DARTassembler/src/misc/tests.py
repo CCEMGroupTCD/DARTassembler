@@ -60,9 +60,8 @@ class IntegrationTest(object):
         """
         Compares two xyz files and return a string describing the differences.
         """
-        xyz_test = XYZIntegrationTest(new_file, old_file, tol=self.xyz_tol)
+        xyz_test = XYZIntegrationTest(new_xyz=new_file, old_xzy=old_file, tol=self.xyz_tol)
         return xyz_test.compare_and_return_result_string()
-
 
     def _compare_csv_files(self, new_file, old_file) -> Union[str,None]:
         """
@@ -191,7 +190,8 @@ class XYZIntegrationTest(object):
         same_n_atoms = len(old_mol) == len(new_mol)
         mol_results['same_n_atoms'] = same_n_atoms
         # Check atom types
-        mol_results['n_diff_atom_types'] = np.sum(old_mol.get_chemical_symbols() != new_mol.get_chemical_symbols())
+        mol_results['diff_el'] = np.any(old_mol.get_chemical_symbols() != new_mol.get_chemical_symbols())
+        mol_results['diff_el_order'] = np.any(sorted(old_mol.get_chemical_symbols()) != sorted(new_mol.get_chemical_symbols()))
         if same_n_atoms:
             # Check interatomic distances
             dist = np.diagonal(ase.geometry.get_distances(old_mol.positions, new_mol.positions)[1])
@@ -210,8 +210,7 @@ class XYZIntegrationTest(object):
         return mol_results
 
     def compare_xyz_files(self, print=True):
-        if (len(self.old_mols) != len(self.new_mols)):
-            warnings.warn(f"Number of molecules is not the same in the two files. old: {len(self.old_mols)}, new {len(self.new_mols)}. Try to compare anyway.")
+        assert (len(self.old_mols) == len(self.new_mols))
 
         df_mol_results = []
         for idx, (old_mol, new_mol) in enumerate(zip(self.old_mols, self.new_mols)):
@@ -220,6 +219,22 @@ class XYZIntegrationTest(object):
             df_mol_results.append(mol_results)
 
         df_mol_results = pd.DataFrame(df_mol_results)
+
+        # Check if the order of molecules is different but the molecules themselves are the same by checking interatomic distances
+        matches = []
+        for old_mol in self.old_mols:
+            has_match = False
+            for new_mol in self.new_mols:
+                if not sorted(old_mol.get_chemical_symbols()) == sorted(new_mol.get_chemical_symbols()):
+                    continue
+                old_mol_dists = np.sort(old_mol.get_all_distances().flatten())
+                new_mol_dists = np.sort(new_mol.get_all_distances().flatten())
+                diff_dist = np.abs(old_mol_dists - new_mol_dists)
+                if np.all(diff_dist <= self.tol):
+                    has_match = True
+                    break
+            matches.append(has_match)
+        df_mol_results['has_match'] = matches
 
         if print:
             print('=================    Summary:    =================')
@@ -253,20 +268,26 @@ class XYZIntegrationTest(object):
             result_string = f'Diff. n molecules! old: {len(self.old_mols)}, new: {len(self.new_mols)}'
             return result_string
 
+        n = len(self.old_mols)
         df_mol_results = self.compare_xyz_files(print=False)
-        same_n_atoms = df_mol_results['same_n_atoms'].all()
-        n_diff_atom_types = df_mol_results['n_diff_atom_types'].mean().round().astype(int)
+        n_same_atoms = df_mol_results['same_n_atoms'].sum()
+        n_diff_el = df_mol_results['diff_el'].sum()
+        n_diff_el_order = df_mol_results['diff_el_order'].sum()
         sum_interatomic_distances = df_mol_results['sum_interatomic_distances'].mean()
         n_diff_interatomic_distances = df_mol_results['n_diff_interatomic_distances'].mean().round().astype(int)
         n_diff_xyz_coordinates = df_mol_results['n_diff_xyz_coordinates'].mean().round().astype(int)
         sum_diff_xyz_coordinates = df_mol_results['sum_diff_xyz_coordinates'].mean()
-        if not same_n_atoms:
-            return f'Diff. n atoms! N diff el: {n_diff_atom_types}'
+        sum_matches = df_mol_results['has_match'].sum()
 
-        if n_diff_atom_types > 0:
-            return f'Same n atoms, but n diff el: {n_diff_atom_types}'
+        if n_same_atoms != n:
+            string = f' for {n - n_same_atoms}/{n} mols' if n > 1 else ''
+            return f'Diff. n atoms{string}!'
 
-        result_string = ''
+        result_string = f'Matches: {sum_matches}/{n}. '
+        string = f' {n_diff_el}/{n}' if n > 1 else ''
+        result_string += f'Diff. el:{string}. '
+        string = f' {n_diff_el_order}/{n}' if n > 1 else ''
+        result_string += f'Diff. el order:{string}. '
         if n_diff_xyz_coordinates > 0 or sum_diff_xyz_coordinates > 0:
             result_string += f'Diff coords: {n_diff_xyz_coordinates} (sum={sum_diff_xyz_coordinates:.2g}A). '
         if n_diff_interatomic_distances > 0 or sum_interatomic_distances > 0:

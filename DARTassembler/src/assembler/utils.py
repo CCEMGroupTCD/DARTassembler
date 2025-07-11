@@ -3,7 +3,49 @@ import random
 import ase
 import numpy as np
 from typing import List, Tuple
+from collections import defaultdict
+import itertools
 
+def assign_ligands_to_vectors(ligands: List['Ligand'],
+                               swap_groups: List[int]) -> List[List['Ligand']]:
+    """
+    Assigns ligands to vector entries based on swap group IDs.
+    Ligands in the same swap group can be swapped among vector entries assigned the same swap group ID.
+
+    :param ligands:       A list of ligand objects.
+    :param swap_groups:   A list of integers where the i-th value defines the swap group for the i-th ligand.
+                          Ligands with the same group ID can be swapped; those with different IDs cannot.
+                          This list must match the length and order of the `vectors` list.
+    :return:              A list of ligand groupings for each vector entry.
+                          Each entry contains the swappable ligands for that vector,
+                          used later for permutation generation.
+    :raise:               LoggedValueError if swap_groups are inconsistent with ligand or vector count.
+    """
+    if swap_groups is None:
+        return [ligands]
+
+    n = len(ligands)
+    if len(swap_groups) != n:
+        raise ValueError("swap_groups must match the number of ligands and vectors.")
+
+    # Group ligand indices by swap group
+    group_to_indices = defaultdict(list)
+    for idx, grp in enumerate(swap_groups):
+        group_to_indices[grp].append(idx)
+
+    # For each vector position, gather allowed ligand indices
+    allowed = [group_to_indices[grp] for grp in swap_groups]
+
+    # Build all assignments, filtering out any that reuse the same ligand twice
+    results = []
+    for combo in itertools.product(*allowed):
+        if len(set(combo)) != n:
+            continue
+        results.append([ligands[i] for i in combo])
+
+    assert results[0] == ligands, "First result must be the original ligand order."
+
+    return results
 
 def are_atoms_equal(atom1: ase.Atom, atom2: ase.Atom) -> bool:
     """

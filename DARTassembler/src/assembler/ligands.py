@@ -103,7 +103,6 @@ class LigandChoice(object):
         - ligand_choice = 'all': If the mode is iterative, it's very simple: All structures will be made, though the order is non-random.
         - ligand_choice = 'random': If the mode is random, the function will yield a random ligand combination each time it is called. The function will stop yielding ligand combinations if the maximum number of complexes has been reached or if no more valid ligand combinations can be found. In the latter case, the random mode will also switch to iterative mode to make sure all possible complexes are made.
         """
-
         # Setup all ligand combinations as iterable. Needed for the iterative ligand choice method.
         assert self.ligand_dbs[-1] == 'same_as_previous' if 'same_as_previous' in self.ligand_dbs else True, "The 'same_as_previous' instruction must always come last in the list of ligand lists!" # HARDCODED: If the 'same_as_previous' instruction is used, it always comes last in the list of ligand lists
         all_valid_lists = [ligands.db for ligands in self.ligand_dbs if ligands != 'same_as_previous']

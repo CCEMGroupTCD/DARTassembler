@@ -3,217 +3,151 @@ concatenate_xyz: true
 verbosity: 2
 same_isomer_names: true
 complex_name_length: 8
-n_max_ligands: None
+n_max_ligands: 100
 batches:
-- debug: true
-  complex_name_appendix: _test
-  max_num_complexes: 2
-  total_charge: 0
+- n_max_complexes: 20
+  target_vectors:
+  - - z
+  - - -x
+    - -y
+  - - x
+    - y
+    - -z
+  metal_centers: Fe
+  name: batch_0
+- complex_name_appendix: _mono
+  n_max_complexes: 10
+  total_ligand_charges: -3
   name: 2-2-1-1-monometalic
   random_seed: 5
-  opt_mono_rot: true
-  filter_duplicate_isomers: true
-  filter_duplicate_isomers_method: fingerprint
-  filter_duplicate_isomers_grid_size: 9
-  filter_clashing_structures: true
-  filter_clashing_structures_cov_radii_buffer: 0.0
-  isomer_comparison_mode: max_diff
-  isomer_comparison_grouping_mode: cluster
-  isomer_comparison_grouping_cutoff: 1.0
-  check_metal_clashes: false
-  auxiliary_structure_path: null
-  geometry:
-  - metal_1:
-      metal_type: Ir
-      metal_oxidation_state: 3
-      origin:
-      - 0
-      - 0
-      - 0
-  - ligand_1:
-      origin:
-      - 0
-      - 0
-      - 0
-      vector_1: z
-      n_max: 30
-      swap_group: 1
-      ligand_db: ../data_input/ligands/JSONS/small_mono.json
-  - ligand_2:
-      origin:
-      - 0
-      - 0
-      - 0
-      vector_1:
+  ligand_db_files:
+  - ../data_input/ligands/JSONS/small_mono.json
+  - ../data_input/ligands/JSONS/small_mono.json
+  - ../data_input/ligands/JSONS/bidentate.json
+  - ../data_input/ligands/JSONS/bidentate.json
+  target_vectors:
+  - - - 0
       - 0
       - 1
-      - 0
-      n_max: 30
-      swap_group: 1
-      ligand_db: ../data_input/ligands/JSONS/small_mono.json
-  - ligand_3:
-      origin:
-      - 0
-      - 0
-      - 0
-      vector_1:
-      - -1
-      - 0
-      - 0
-      vector_2: -y
-      n_max: 30
-      swap_group: 2
-      ligand_db: ../data_input/ligands/JSONS/bidentate.json
-  - ligand_4:
-      origin:
-      - 0
-      - 0
-      - 0
-      vector_1:
+  - - - 0
       - 1
       - 0
+  - - - -1
       - 0
-      vector_2:
       - 0
+    - - 0
+      - -1
+      - 0
+  - - - 1
+      - 0
+      - 0
+    - - 0
       - 0
       - -1
-      n_max: 30
-      swap_group: 2
-      ligand_db: ../data_input/ligands/JSONS/bidentate.json
-- debug: true
-  complex_name_appendix: _test
-  max_num_complexes: 2
-  total_charge: 0
+  metal_centers: Ir
+- complex_name_appendix: _bi
+  n_max_complexes: 10
+  total_ligand_charges: -3
   name: 2-2-1-1-bi-metalic
   random_seed: 5
-  opt_mono_rot: true
-  filter_duplicate_isomers: true
-  filter_duplicate_isomers_method: fingerprint
-  filter_duplicate_isomers_grid_size: 9
-  filter_clashing_structures: true
-  filter_clashing_structures_cov_radii_buffer: 0.0
-  isomer_comparison_mode: max_diff
-  isomer_comparison_grouping_mode: cluster
-  isomer_comparison_grouping_cutoff: 1.0
-  check_metal_clashes: false
-  auxiliary_structure_path: null
-  geometry:
-  - metal_1:
-      metal_type: Ir
-      metal_oxidation_state: 3
-      origin:
-      - -2
-      - 0
-      - 0
-  - metal_2:
-      metal_type: Fe
-      metal_oxidation_state: 0
-      origin:
-      - 2
-      - 0
-      - 0
-  - ligand_1:
-      origin:
-      - 0
-      - 0
-      - 0.5
-      vector_1:
-      - 0
+  ligand_db_files:
+  - ../data_input/ligands/JSONS/small_mono.json
+  - ../data_input/ligands/JSONS/small_mono.json
+  - ../data_input/ligands/JSONS/bidentate.json
+  - ../data_input/ligands/JSONS/bidentate.json
+  target_vectors:
+  - - - 0
       - 0
       - 2
-      n_max: 30
-      swap_group: 1
-      ligand_db: ../data_input/ligands/JSONS/small_mono.json
-  - ligand_2:
-      origin:
-      - 0
-      - 0
-      - -0.5
-      vector_1:
-      - 0
+  - - - 0
       - 0
       - -2
-      n_max: 30
-      swap_group: 1
-      ligand_db: ../data_input/ligands/JSONS/small_mono.json
-  - ligand_3:
-      origin:
-      - -2
-      - 0
-      - 0
-      vector_1:
-      - -3
+  - - - -3
       - -3
       - 0
-      vector_2:
-      - -3
+    - - -3
       - 3
       - 0
-      n_max: 30
-      swap_group: 2
-      ligand_db: ../data_input/ligands/JSONS/bidentate.json
-  - ligand_4:
-      origin:
-      - 2
-      - 0
-      - 0
-      vector_1:
-      - 3
+  - - - 3
       - -3
       - 0
-      vector_2:
-      - 3
+    - - 3
       - 3
       - -1
-      n_max: 30
-      swap_group: 2
-      ligand_db: ../data_input/ligands/JSONS/bidentate.json
-- debug: true
-  complex_name_appendix: _test
-  max_num_complexes: 2
-  total_charge: 0
+  metal_centers:
+  - - - Ir
+      - - -2
+        - 0
+        - 0
+    - - Fe
+      - - 2
+        - 0
+        - 0
+  - - - Ir
+      - - -2
+        - 0
+        - 0
+    - - Fe
+      - - 2
+        - 0
+        - 0
+  - - - Ir
+      - - -2
+        - 0
+        - 0
+  - - - Fe
+      - - 2
+        - 0
+        - 0
+  swap_groups:
+  - 1
+  - 1
+  - 2
+  - 2
+- complex_name_appendix: _haptic
+  n_max_complexes: 10
+  total_ligand_charges: -2
   name: 3-3-haptic_coordination
   random_seed: 1
-  opt_mono_rot: true
-  filter_duplicate_isomers: true
-  filter_duplicate_isomers_method: fingerprint
-  filter_duplicate_isomers_grid_size: 9
-  filter_clashing_structures: true
-  filter_clashing_structures_cov_radii_buffer: 0.0
-  isomer_comparison_mode: max_diff
-  isomer_comparison_grouping_mode: cluster
-  isomer_comparison_grouping_cutoff: 1.0
-  check_metal_clashes: false
-  auxiliary_structure_path: null
-  geometry:
-  - metal_1:
-      metal_type: Ru
-      metal_oxidation_state: 2
-      origin:
-      - 0
-      - 0
-      - 0
-  - ligand_1:
-      origin:
-      - 0
-      - 0
-      - 0
-      vector_1:
-      - 0
+  ligand_db_files:
+  - ../data_input/ligands/JSONS/hexagonal.json
+  - ../data_input/ligands/JSONS/hexagonal.json
+  target_vectors:
+  - - - 0
       - 0
       - 2
-      n_max: 30
-      swap_group: 1
-      ligand_db: ../data_input/ligands/JSONS/hexagonal.json
-  - ligand_2:
-      origin:
-      - 0
-      - 0
-      - 0
-      vector_1:
-      - 0
+  - - - 0
       - 0
       - -2
-      n_max: 30
-      swap_group: 1
-      ligand_db: ../data_input/ligands/JSONS/hexagonal.json
+  ligand_origins:
+  - - 0
+    - 0
+    - 0
+  - - 0
+    - 0
+    - 0
+  swap_groups: null
+  metal_centers: Ru
+- &id001
+  complex_name_appendix: _trans
+  n_max_complexes: 2
+  total_ligand_charges: -2
+  name: 2-2-bi_trans_minimal_input
+  random_seed: 1
+  ligand_db_files: ../data_input/ligands/JSONS/bi_trans.jsonlines
+  target_vectors:
+  - - - 0
+      - 0
+      - 1
+    - - 0
+      - 0
+      - -1
+  - - - 1
+      - 0
+      - 0
+    - - -1
+      - 0
+      - 0
+  metal_centers: La
+idx: 4
+batch: *id001

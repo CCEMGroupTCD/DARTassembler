@@ -7,12 +7,11 @@ import random
 import sys
 
 # DART specific imports
-from DARTassembler.src.assembler.isomer import Isomer, IsomerFactory, AxialOptModifier, DuplicateIsomerFilter, IsomerClashFilter, BiTransRotationModifier
+from DARTassembler.src.assembler.isomer import Isomer, IsomerFactory
 from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, ComplexAssemblerOutput
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
 from DARTassembler.src.assembler.utils import generate_pronounceable_word
 from DARTassembler.src.constants.paths import default_assembler_yml_path
-from DARTassembler.src.assembler.isomer import elem_cov_radii
 from DARTassembler.src.assembler.ligands import LigandChoice
 from DARTassembler.src.modules.modules import BaseModule
 from DARTassembler.src.metalig.db import LigandDB
@@ -85,7 +84,8 @@ class Assembler(BaseModule):
             batch['name'] = batch.get('name', f'batch_{idx}')  # Use batch name or generate a default one
         self.n_batches = len(self.batches)
         self.df_info = []
-        self.assembled_complex_names = []
+        self.all_assembled_isomer_names = []
+        self.successfully_assembled_isomer_names = []
         self.assembled_complex_json_paths = []
 
         self.batches_args = {**locals()}
@@ -116,26 +116,6 @@ class Assembler(BaseModule):
         batch_names = [batch['name'] for batch in batches]
         if not len(batch_names) == len(set(batch_names)):
             raise ValueError(f"DART batch names must be unique. The following batch names are not unique: {batch_names}")
-
-        for batch in batches:
-            batch_name = batch['name']
-            # Check that all target vectors are lists of lists of list of floats or ints
-            target_vectors = batch['target_vectors']
-            try:
-                for i, target_vector in enumerate(target_vectors):
-                    try:
-                        array = np.array(target_vector)
-                    except ValueError as e:
-                        raise ValueError(f"Target vector {i} for batch {batch_name} is not a list of lists of floats: {target_vector}. Error: {e}")
-                    if array.ndim != 2:
-                        raise ValueError(f"Target vector {i} for batch {batch_name} must have 2 dimensions (list of list), got {array.shape}: {target_vector}")
-                    elif array.shape[1] != 3:
-                        raise ValueError(f"Target vector {i} for batch {batch_name} must have 3 elements (list of list of floats), got {array.shape[1]}: {target_vector}")
-                    elif not np.issubdtype(array.dtype, np.floating) and not np.issubdtype(array.dtype, np.integer):
-                        raise ValueError(f"Target vector {i} for batch {batch_name} must be a list of lists of floats, got {array.dtype}: {target_vector}")
-            except TypeError as e:
-                raise TypeError(f"Target vectors must be a list of lists of lists of floats. Error: {e}")
-
         return
 
     def _make_and_save_output_csv(self) -> None:
@@ -186,7 +166,7 @@ class Assembler(BaseModule):
         logging.info(f'{total_summary_title:=^80}')
         self._log_success_rate(self.df_info)
         n_isomers = self.df_info['success'].sum()
-        n_complexes = self.df_info['graph_hash'].nunique()
+        n_complexes = self.df_info[self.df_info['success']]['graph_hash'].nunique()
         logging.info(f"DART Assembler output files saved to directory `{self.output_directory.name}`.")
 
         # The runtime is printed but not logged, so that slight differences in the runtime do not cause the integration tests to fail.
@@ -212,7 +192,7 @@ class Assembler(BaseModule):
         """Log success rate of the run."""
         n_total = len(df)
         n_isomers = df['success'].sum()
-        n_complexes = df['graph_hash'].nunique()
+        n_complexes = df[df['success']]['graph_hash'].nunique()
 
         # Output statistics how many isomers failed each filter
         post_filters = df['note'].value_counts()
@@ -245,25 +225,24 @@ class Assembler(BaseModule):
                     batch_idx: int,
                     target_vectors: list[list[list[float]]],
                     metal_centers: Union[str, tuple[str, tuple[float, float, float]]],
-                   metal_coords,
-                   swap_groups,
-                   filter_duplicate_isomers,
-                   filter_clashing_structures,
-                   filter_clashing_structures_cov_radii_buffer,
-                   check_metal_clashes,
-                   filter_duplicate_isomers_method,
-                   filter_duplicate_isomers_grid_size,
-                   isomer_comparison_mode,
-                   isomer_comparison_grouping_mode,
-                   isomer_comparison_grouping_cutoff,
-                   opt_mono_rot,
                     n_max_complexes: Union[int, str],
+                    swap_groups: list[int] = None,
+                    filter_duplicate_isomers: bool = True,
+                    filter_clashing_structures: bool = True,
+                    filter_clashing_structures_cov_radii_buffer: float = 0.0,
+                    check_metal_clashes: bool = False,
+                    filter_duplicate_isomers_method: str = "fingerprint",
+                    filter_duplicate_isomers_grid_size: int = 9,
+                    isomer_comparison_mode: str = "max_diff",
+                    isomer_comparison_grouping_mode: str = "cluster",
+                    isomer_comparison_grouping_cutoff: float = 0.5,
+                    opt_mono_rot: bool = True,
                     total_ligand_charges: int = None,
                     ligand_db_files: Union[list[str], str] = 'metalig',
                     ligand_origins: list[tuple[float, float, float]] = None,
                     complex_name_appendix: str = '',
                     random_seed: int = 0,
-                   ) -> None:
+                    ) -> None:
         """
         Run the assembly for one batch.
         :param name: Name of the batch.
@@ -297,7 +276,6 @@ class Assembler(BaseModule):
         self.ligand_origins = ligand_origins
         self.metal_centers = metal_centers
         self.complex_name_appendix = complex_name_appendix
-        self.metal_coords = metal_coords
         self.swap_groups = swap_groups
         self.filter_duplicate_isomers = filter_duplicate_isomers
         self.filter_clashing_structures = filter_clashing_structures
@@ -336,52 +314,29 @@ class Assembler(BaseModule):
             except StopIteration:
                 break # If all ligand combinations are exhausted, stop the batch
 
-            factory = IsomerFactory(ligands=ligands,
-                                      target_vectors=self.target_vectors,
-                                      ligand_origins=self.ligand_origins,
-                                      metal_types=self.metal_centers,
-                                      metal_origins=self.metal_coords,
-                                      filter_duplicate_isomers=self.filter_duplicate_isomers,
-                                      filter_clashing_structures=self.filter_clashing_structures,
-                                      filter_clashing_structures_cov_radii_buffer=self.filter_clashing_structures_cov_radii_buffer,
-                                      check_metal_clashes=self.check_metal_clashes,
-                                      filter_duplicate_isomers_method=self.filter_duplicate_isomers_method,
-                                      filter_duplicate_isomers_grid_size=self.filter_duplicate_isomers_grid_size,
-                                      isomer_comparison_mode=self.isomer_comparison_mode,
-                                      isomer_comparison_grouping_mode=self.isomer_comparison_grouping_mode,
-                                      isomer_comparison_grouping_cutoff=self.isomer_comparison_grouping_cutoff,
-                                      swap_groups=self.swap_groups
+            factory = IsomerFactory(
+                                    ligands=ligands,
+                                    target_vectors=self.target_vectors,
+                                    ligand_origins=self.ligand_origins,
+                                    metal_centers=self.metal_centers,
+                                    filter_duplicate_isomers=self.filter_duplicate_isomers,
+                                    filter_clashing_structures=self.filter_clashing_structures,
+                                    filter_clashing_structures_cov_radii_buffer=self.filter_clashing_structures_cov_radii_buffer,
+                                    check_metal_clashes=self.check_metal_clashes,
+                                    filter_duplicate_isomers_method=self.filter_duplicate_isomers_method,
+                                    filter_duplicate_isomers_grid_size=self.filter_duplicate_isomers_grid_size,
+                                    isomer_comparison_mode=self.isomer_comparison_mode,
+                                    isomer_comparison_grouping_mode=self.isomer_comparison_grouping_mode,
+                                    isomer_comparison_grouping_cutoff=self.isomer_comparison_grouping_cutoff,
+                                    swap_groups=self.swap_groups,
+                                    opt_mono_rot= self.opt_mono_rot
                                     )
-            isomers_assembled = factory.generate()
+            isomers = factory.generate_isomers()
 
-            # ------------------------------- #
-            # 2. Mono-ligands Optimization
-            # ------------------------------- #
-            isomers_mono_opt = AxialOptModifier(isomers=isomers_assembled, opt=self.opt_mono_rot).modify()
-
-            # ------------------------------- #
-            # 3. rotate bi-type ligands
-            # ------------------------------- #
-            # Note: This is a placeholder for the axial bidentate ligand rotation.
-
-            # ------------------------------- #
-            # 3. Remove redundant isomers
-            # ------------------------------- #
-            isomers_unique = DuplicateIsomerFilter(isomers=isomers_mono_opt,
-                                                   method=self.filter_duplicate_isomers_method,
-                                                   grid_size=self.filter_duplicate_isomers_grid_size,
-                                                   isomer_comparison_mode=self.isomer_comparison_mode,
-                                                   isomer_comparison_grouping_mode=self.isomer_comparison_grouping_mode,
-                                                   fingerprint_grouping_cutoff=self.isomer_comparison_grouping_cutoff,
-                                                   metal_centres=self.metal_centers).filter()
-
-            # ------------------------------- #
-            # 4. Post-assembly filter
-            # ------------------------------- #
-            isomers = IsomerClashFilter(isomers=isomers_unique,
-                                        covalent_radii=elem_cov_radii,
-                                        buffer=self.filter_clashing_structures_cov_radii_buffer,
-                                        check_metal_clashes=self.check_metal_clashes).filter()
+            # Sort isomers so that the ones without warnings are first, so that the indices of the names are consecutive.
+            successful_isomers = [isomer for isomer in isomers if isomer.warning == '']
+            unsuccessful_isomers = [isomer for isomer in isomers if isomer.warning != '']
+            isomers = successful_isomers + unsuccessful_isomers  # Put successful isomers first, then unsuccessful ones, while keeping the order of isomers within each group.
 
             # Post-processing of isomers
             logging.debug("Post-processing isomers")
@@ -500,7 +455,7 @@ class Assembler(BaseModule):
             complex_outcontrol.save_structure(xyz_string)
 
             # Keep track of number and names of assembled complexes
-            self.assembled_complex_names.append(name)
+            self.successfully_assembled_isomer_names.append(name)
             self.assembled_complex_json_paths.append(complex_outcontrol.data_path)
 
         # Save to concatenated xyz file of this batch
@@ -508,8 +463,10 @@ class Assembler(BaseModule):
             self.batch_outcontrol.save_xyz(xyz_string, success=success, append=True)
 
         # Save data for csv file.
-        complex_idx = (len(self.assembled_complex_names) - 1) if success else None
+        complex_idx = (len(self.successfully_assembled_isomer_names) - 1) if success else None
         self._add_batch_info(complex=isomer, success=success, complex_idx=complex_idx)
+
+        self.all_assembled_isomer_names.append(name)
 
         return
 
@@ -522,14 +479,13 @@ class Assembler(BaseModule):
             n_digits_last_isomer = len(str(isomer_idx - 1))
             n_digits_appendix = len(self.complex_name_appendix)
             n_digits_remove = n_digits_last_isomer + n_digits_appendix
-            last_isomers_name = self.assembled_complex_names[-1]
+            last_isomers_name = self.all_assembled_isomer_names[-1]
             last_isomers_stem = last_isomers_name[:-n_digits_remove]
             # Check that we can reconstruct the last isomers name.
-            # Todo I had to comment out this assert to make the code work
-            # assert last_isomers_name == last_isomers_stem + str(isomer_idx - 1) + self.complex_name_appendix, f'The complex name seems to work different than implemented.'
+            assert last_isomers_name == last_isomers_stem + str(isomer_idx - 1) + self.complex_name_appendix, f'The complex name seems to work different than implemented.'
             # Construct the new isomers name after the same rules as above.
             name = last_isomers_stem + str(isomer_idx) + self.complex_name_appendix
-            assert not name in self.assembled_complex_names, f"Complex name {name} already exists in the assembled complex names list even though it is a subsequent isomer."
+            assert not name in self.all_assembled_isomer_names, f"Complex name {name} already exists in the assembled complex names list even though it is a subsequent isomer."
         else:
             # Generate new name for new complex.
             complex_name_length = self.complex_name_length
@@ -557,7 +513,7 @@ class Assembler(BaseModule):
                 name += self.complex_name_appendix
 
                 # If the name is already used, redo name generation with one more character. For the next complex, it starts with the original character length again.
-                if name in self.assembled_complex_names:
+                if name in self.all_assembled_isomer_names:
                     complex_name_length += 1
                     continue
                 else:
