@@ -4,7 +4,7 @@
 output_directory: .             # Path to a directory for the output files.
 concatenate_xyz: True
 verbosity: 2
-same_isomer_names: True
+same_isomer_names: False
 complex_name_length: 8
 n_max_ligands: 100
 batches:
@@ -12,8 +12,9 @@ batches:
     target_vectors:
     - [z]     # equivalent to [[0, 0, 1]]
     - [-x, -y]
-    - [x, y, -z]
+    - [y, x, -z]
     metal_centers: Fe
+    ligand_geometries: [1_monodentate, 2_cis, 3_facial]
 
   - complex_name_appendix: "_mono"
     n_max_complexes: 10

@@ -1,6 +1,8 @@
 """
 Integration test for the assembly of complexes.
 """
+import sys; print('Python %s on %s' % (sys.version, sys.platform))
+sys.path.extend(['/Users/timosommer/PhD/projects/DARTassembler'])
 import os
 from pathlib import Path
 from DARTassembler.src.constants.paths import project_path

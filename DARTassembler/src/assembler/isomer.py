@@ -21,7 +21,8 @@ import pandas as pd
 from scipy.optimize import brute
 
 from DARTassembler.src.assembler.utils import are_atoms_equal, assign_ligands_to_vectors
-from DARTassembler.src.metalig.geometry import try_all_geometrical_isomer_possibilities
+from DARTassembler.src.metalig.geometry import try_all_geometrical_isomer_possibilities, all_geometries, align_vectors, \
+    align_donor_atoms
 from DARTassembler.src.constants.chem import Element
 from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.metalig.mol import BaseMolecule, Ligand
@@ -30,6 +31,13 @@ from DARTassembler.src.metalig.utils_molecule import hapdent_idc_to_donor_idc, g
 from DARTassembler.src.misc.io import load_json
 from DARTassembler.src.metalig.utils_graph import graph_from_graph_dict
 
+from functools import lru_cache
+from logging import getLogger, Logger
+
+# Keep track of 10 different messages and then warn again
+@lru_cache(1)
+def logging_warn_once(msg: str):
+    logging.warning(msg)
 
 class Isomer(BaseMolecule):
 
@@ -147,7 +155,7 @@ class Isomer(BaseMolecule):
         :return: Isomer object
         """
         data['graph'] = graph_from_graph_dict(data['graph'])
-        data['charge'] = 0
+        data['charge'] = 0  # todo
         return cls(**data)
 
 
@@ -170,7 +178,7 @@ class IsomerFactory(object):
                     isomer_comparison_grouping_cutoff: float = 1.0,
                     swap_groups: Optional[List[int]] = None,
                     opt_mono_rot: Optional[bool] = True,
-                    background: Union[str, Path] = None,
+                    all_combinations: bool = False,
                     ):
         """
         Generates isomers from a list of ligands, target vectors and metal centers. The orientation of the ligands relative to its metal center is determined by the target vectors. The ligand_origins can be used to shift the ligand with respect to the metal center. If `metal_centers` is a chemical element such as 'Ru', it is assumed to be a mono-metallic complex at the origin.
@@ -229,7 +237,7 @@ class IsomerFactory(object):
         self.isomer_comparison_grouping_cutoff = isomer_comparison_grouping_cutoff
         self.swap_groups = swap_groups
         self.opt_mono_rot = opt_mono_rot
-        self.background = background
+        self.all_combinations = all_combinations
 
     def _check_input_and_handle_defaults(self, metal_centers, ligand_origins, ligands, target_vectors):
         if isinstance(metal_centers, str):
@@ -280,6 +288,26 @@ class IsomerFactory(object):
                         f"Target vector must be a list of lists of floats, got {array.dtype}: {target_vector_list}")
         except TypeError as e:
             raise TypeError(f"Target vectors must be a list of lists of lists of floats. Error: {e}")
+
+        # Check if the target vectors are compatible with the ligand geometries.
+        for target_vector_list, ligand in zip(target_vectors, ligands):
+            ligand_geom_vector = np.asarray(all_geometries[ligand.n_eff_denticities][ligand.geometry][0])
+            _, rssd = align_vectors(target_vectors=target_vector_list, donor_vectors=ligand_geom_vector)
+            if not np.isclose(rssd, 0.0):
+                # Check if any combination of the target vectors matches the geometry of the ligand.
+                n = len(target_vectors)
+                target_vector_list_permutations = list(itertools.permutations(target_vector_list, n))
+                any_other_order_matches = False
+                for target_vector_list_test in target_vector_list_permutations:
+                    _, rssd = align_vectors(target_vectors=target_vector_list_test, donor_vectors=ligand_geom_vector)
+                    if np.isclose(rssd, 0.0):
+                        any_other_order_matches = True
+                        break
+                if any_other_order_matches:
+                    warn_string = f'Most likely, this is due to a wrong order of the provided target vectors for each donor (see documentation), because if we change the order, they fit perfectly. '
+                else:
+                    warn_string = f'Most likely, this is due to erroneously provided ligands/target vectors, or simply because the provided target vectors are intended to be different from the ideal geometry of the ligand. '
+                logging.warning(f"WARNING: Provided target vectors `{target_vector_list}` do not perfectly match the ligand geometry `{ligand.geometry}`, which has ideal target vectors of {ligand_geom_vector.tolist()}. The assembler will continue with the input you provided, but the assembled complexes may not have the intended geometry. {warn_string}If this is intended, you can ignore this warning.")
 
         return metal_centers, ligand_origins, ligands, target_vectors
 
@@ -345,7 +373,7 @@ class IsomerFactory(object):
                     target_vectors=target_vectors, ligand_origins=ligand_origins)[0]
                 isomers.append(isomer)
 
-        # Warnings for each isomer. If an isomer has no issues, the note should be ''. If an isomer is excluded because of clashing ligands or because it's equivalent to another one, the note should be `clashes' or `equivalent_to_previous_isomer`.
+        # Warnings for each isomer. If an isomer has no issues, the note is ''. If an isomer is excluded because of clashing ligands or because it's equivalent to another one, the note is `clashes' or `duplicate`.
         for idx, isomer in enumerate(isomers):
             if isomer.warning == '' and self.filter_clashing_structures:
                 clashfilter = IsomerClashFilter(
@@ -360,14 +388,23 @@ class IsomerFactory(object):
                 if clashing:
                     isomer.warning = 'clashes'
                     continue
-        isomers = DuplicateIsomerFilter(isomers=isomers,
-                                               method=self.filter_duplicate_isomers_method,
-                                               grid_size=self.filter_duplicate_isomers_grid_size,
-                                               isomer_comparison_mode=self.isomer_comparison_mode,
-                                               isomer_comparison_grouping_mode=self.isomer_comparison_grouping_mode,
-                                               fingerprint_grouping_cutoff=self.isomer_comparison_grouping_cutoff,
-                                               metal_centres=self.metal_centers).filter()
 
+        # Add inplace warnings for isomers that are duplicates of each other. Very important to do this after the clash filter, because otherwise a clashing isomer might be seen as the "first duplicate" and thus be kept, while the other, not-clashing isomer would be discarded.
+        not_clashing_isomers = [isomer for isomer in isomers if isomer.warning == '']
+        DuplicateIsomerFilter(
+                                isomers=not_clashing_isomers,
+                                method=self.filter_duplicate_isomers_method,
+                                grid_size=self.filter_duplicate_isomers_grid_size,
+                                isomer_comparison_mode=self.isomer_comparison_mode,
+                                isomer_comparison_grouping_mode=self.isomer_comparison_grouping_mode,
+                                fingerprint_grouping_cutoff=self.isomer_comparison_grouping_cutoff,
+                                metal_centres=self.metal_centers
+                                ).filter()
+
+        # Sort isomers so that the ones without warnings are first, so that the indices of the names are consecutive.
+        successful_isomers = [isomer for isomer in isomers if isomer.warning == '']
+        unsuccessful_isomers = [isomer for isomer in isomers if isomer.warning != '']
+        isomers = successful_isomers + unsuccessful_isomers  # Put successful isomers first, then unsuccessful ones, while keeping the order of isomers within each group.
 
         return isomers
 
@@ -377,15 +414,18 @@ class IsomerFactory(object):
         :return: List of lists of ASE Atoms objects, where the outer list corresponds to each ligand and the inner lists correspond to the isomers of that ligand.
         """
         rotated_ligands = []
-        for ligand, target_vectors, origin in zip(ligands, target_vectors, ligand_origins):
+        for ligand, target_vector_list, origin in zip(ligands, target_vectors, ligand_origins):
             # Extract the geometry and donor atoms of the ligand
             atoms, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
             # Cast the target vectors to numpy arrays
-            target_vectors = [np.array(v) for v in target_vectors]
-            # Align the donor atoms of the ligand to the target vectors
-            ligand_isomers, donor_atoms_ordered, rssd = try_all_geometrical_isomer_possibilities(atoms=atoms,
-                                                                                                 donor_idc=donor_atoms[0],
-                                                                                                 target_vectors=target_vectors)
+            target_vector_list = [np.array(v) for v in target_vector_list]
+
+            # Align the donor atoms of the ligand to the target vectors. Either make all possible geometrical isomers or just the ones specified in the MetaLig. For most cases these two should be identical, but making all combinations has two consequences: (a) the order of input target vectors does not matter (the one with the lowest error is always assembled) and (b) some geometries have more isomers, e.g. the `trigonal` geometry has in theory three isomers in which simply the ligand is rotated, but for the MetaLig we had decided to filter out these isomers so that only one is kept.
+            if self.all_combinations:
+                ligand_isomers, _, _ = try_all_geometrical_isomer_possibilities(atoms=atoms, donor_idc=donor_atoms[0], target_vectors=target_vector_list)
+            else:
+                ligand_isomers = [align_donor_atoms(atoms, donor_idc=idc, target_vectors=target_vector_list, return_rssd=False) for idc in donor_atoms]
+
             # Remove the dummy atom from the haptic ligands
             ligand_isomers = self._remove_haptic_dummy_atom(atoms_list=ligand_isomers, dummy_atom="Cu", donor_atoms_idc=ligand.hapdent_idc)
 
@@ -716,7 +756,7 @@ class DuplicateIsomerFilter:
         logging.debug(f"Reduced isomers from {len(self.isomers)} to {len(self.output_isomers)} using method '{self.method}'.")
         return self.output_isomers
 
-    def _reduce_by_alignment(self) -> List[Atoms]:
+    def _reduce_by_alignment(self) -> List['Isomer']:
         """
         Reduce isomers by aligning them and calculating RMSD or another distance metric.
         :return:
@@ -731,7 +771,7 @@ class DuplicateIsomerFilter:
             for j in range(i + 1, n):
                 isomer2 = self.isomers[j]
                 logging.debug(f"Comparing isomers [{i}] and [{j}] ... [{counter}/{total}]")
-                score = self.align_isomers(isomer1.DART_atoms, isomer2.DART_atoms)
+                score = self.align_isomers(isomer1.atoms, isomer2.atoms)
                 diff_matrix[i, j] = score
                 diff_matrix[j, i] = score
                 counter += 1
@@ -744,18 +784,7 @@ class DuplicateIsomerFilter:
             method=self.isomer_comparison_grouping_mode,
             cutoff=self.fingerprint_grouping_cutoff
         )
-
-        # Assign 'duplicate' warning to all but the first occurrence in each group
-        visited = set()
-        for i in range(n):
-            if i in visited:
-                continue
-            for j in range(n):
-                if i != j and group_labels_matrix[i, j] == "Close":
-                    self.isomers[j].warning += "duplicate-"
-                    visited.add(j)
-
-        self.output_isomers = self.isomers  # return all isomers, tagged if duplicate
+        self.output_isomers = self._assign_duplicate_warnings(group_labels_matrix, self.isomers)
         return self.output_isomers
 
     def energy_heuristic(self, stat_atoms: ase.Atoms, rot_atoms: ase.Atoms):
@@ -934,20 +963,24 @@ class DuplicateIsomerFilter:
         group_labels_matrix = self._analyze_similarity(self.diff_matrix, quantile=0.2,
                                                        method=self.isomer_comparison_grouping_mode,
                                                        cutoff=self.fingerprint_grouping_cutoff)
-
-        n = len(self.isomers)
-        visited = set()
-
-        for i in range(n):
-            if i in visited:
-                continue
-            for j in range(n):
-                if i != j and group_labels_matrix[i, j] == "Close":
-                    self.isomers[j].warning += "duplicate-"
-                    visited.add(j)
-
-        self.output_isomers = self.isomers
+        self.output_isomers = self._assign_duplicate_warnings(group_labels_matrix, self.isomers)
         return self.output_isomers
+
+    @staticmethod
+    def _assign_duplicate_warnings(group_labels_matrix: np.ndarray, isomers: List['Isomer']):
+        """
+        Assign 'duplicate' warning to all but the first occurrence in each group
+        :param group_labels_matrix: 2D numpy array with labels 'Close' or 'Far'.
+        """
+        n = len(isomers)
+        for i in range(n):
+            for j in range(i + 1, n):
+                if group_labels_matrix[i, j] == "Close":
+                    # The jth isomer is close to the ith one and j>i, so we mark the jth isomer as a duplicate
+                    isomers[j].warning = "duplicate"
+
+        return isomers
+
 
     def _analyze_similarity(self, matrix: np.ndarray, quantile: float = 0.2, method: str = "cluster", cutoff: Optional[float] = None) -> np.ndarray:
         """
@@ -964,7 +997,7 @@ class DuplicateIsomerFilter:
             # Upper triangle indices are used to avoid redundancy.
             triu_indices = np.triu_indices_from(matrix, k=1)
             values = matrix[triu_indices].reshape(-1, 1)
-            # bandwidth = estimate_bandwidth(values, quantile=quantile, n_samples=len(values))
+            # bandwidth = float(estimate_bandwidth(values, quantile=quantile, n_samples=len(values)))
             ms = MeanShift(bandwidth=0.5)
             ms.fit(values)
             cluster_labels = ms.labels_

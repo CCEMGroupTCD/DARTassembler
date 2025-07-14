@@ -220,22 +220,6 @@ class XYZIntegrationTest(object):
 
         df_mol_results = pd.DataFrame(df_mol_results)
 
-        # Check if the order of molecules is different but the molecules themselves are the same by checking interatomic distances
-        matches = []
-        for old_mol in self.old_mols:
-            has_match = False
-            for new_mol in self.new_mols:
-                if not sorted(old_mol.get_chemical_symbols()) == sorted(new_mol.get_chemical_symbols()):
-                    continue
-                old_mol_dists = np.sort(old_mol.get_all_distances().flatten())
-                new_mol_dists = np.sort(new_mol.get_all_distances().flatten())
-                diff_dist = np.abs(old_mol_dists - new_mol_dists)
-                if np.all(diff_dist <= self.tol):
-                    has_match = True
-                    break
-            matches.append(has_match)
-        df_mol_results['has_match'] = matches
-
         if print:
             print('=================    Summary:    =================')
             n_changed_atom_numbers = (df_mol_results['n_diff_atom_types'] != 0).sum()
@@ -258,17 +242,39 @@ class XYZIntegrationTest(object):
 
         return df_mol_results
 
+    def _get_if_molecules_are_same(self):
+        """
+        Check if the order of molecules is different but the molecules themselves are the same by checking interatomic distances.
+        """
+        matches = []
+        for old_mol in self.old_mols:
+            has_match = False
+            for new_mol in self.new_mols:
+                if not sorted(old_mol.get_chemical_symbols()) == sorted(new_mol.get_chemical_symbols()):
+                    continue
+                old_mol_dists = np.sort(old_mol.get_all_distances().flatten())
+                new_mol_dists = np.sort(new_mol.get_all_distances().flatten())
+                diff_dist = np.abs(old_mol_dists - new_mol_dists)
+                if np.all(diff_dist <= self.tol):
+                    has_match = True
+                    break
+            matches.append(has_match)
+        return matches
+
     def compare_and_return_result_string(self) -> Union[str, None]:
         """
         Compares the two xyz files and returns a short string describing the differences. If there are no differences, None is returned.
         :return: str or None
         """
+        matches = self._get_if_molecules_are_same()
+        n = max(len(self.new_mols), len(self.old_mols))
+        result_string = f'Same: {sum(matches)}/{n}. '
+
         same_n_mols = (len(self.old_mols) == len(self.new_mols))
         if not same_n_mols:
-            result_string = f'Diff. n molecules! old: {len(self.old_mols)}, new: {len(self.new_mols)}'
+            result_string += f'Diff. n mol: old: {len(self.old_mols)}, new: {len(self.new_mols)}'
             return result_string
 
-        n = len(self.old_mols)
         df_mol_results = self.compare_xyz_files(print=False)
         n_same_atoms = df_mol_results['same_n_atoms'].sum()
         n_diff_el = df_mol_results['diff_el'].sum()
@@ -277,13 +283,12 @@ class XYZIntegrationTest(object):
         n_diff_interatomic_distances = df_mol_results['n_diff_interatomic_distances'].mean().round().astype(int)
         n_diff_xyz_coordinates = df_mol_results['n_diff_xyz_coordinates'].mean().round().astype(int)
         sum_diff_xyz_coordinates = df_mol_results['sum_diff_xyz_coordinates'].mean()
-        sum_matches = df_mol_results['has_match'].sum()
 
         if n_same_atoms != n:
             string = f' for {n - n_same_atoms}/{n} mols' if n > 1 else ''
-            return f'Diff. n atoms{string}!'
+            result_string += f'Diff. n atoms: {n_same_atoms}/{n}{string}. '
+            return result_string
 
-        result_string = f'Matches: {sum_matches}/{n}. '
         string = f' {n_diff_el}/{n}' if n > 1 else ''
         result_string += f'Diff. el:{string}. '
         string = f' {n_diff_el_order}/{n}' if n > 1 else ''

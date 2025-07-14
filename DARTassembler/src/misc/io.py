@@ -112,10 +112,11 @@ class JSONLinesReader:
             for key, value in reader:
                 print(key, value)
     """
-    def __init__(self, path: Union[str, Path], n_max: int = None, show_progress: bool = True):
+    def __init__(self, path: Union[str, Path], n_max: int = None, show_progress: bool = True, disable: bool = False):
         self.path = ensure_path_exists(path)
         self.n_max = n_max
         self.show_progress = show_progress
+        self.disable = disable
         self.file_obj = None
         self.reader = None
 

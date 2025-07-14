@@ -1,6 +1,7 @@
 # Standard library imports
 from typing import Union, Dict, Any, List, Tuple, Optional
 from tqdm import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 import datetime
 import logging
 import random
@@ -9,13 +10,14 @@ import sys
 # DART specific imports
 from DARTassembler.src.assembler.isomer import Isomer, IsomerFactory
 from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, ComplexAssemblerOutput
+from DARTassembler.src.metalig.geometry import all_geometries, align_vectors
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
 from DARTassembler.src.assembler.utils import generate_pronounceable_word
 from DARTassembler.src.constants.paths import default_assembler_yml_path
 from DARTassembler.src.assembler.ligands import LigandChoice
 from DARTassembler.src.modules.modules import BaseModule
 from DARTassembler.src.metalig.db import LigandDB
-from DARTassembler.src.misc.io import read_yaml
+from DARTassembler.src.misc.io import read_yaml, get_correct_ligand_db_path_from_input
 
 # Data processing imports
 from pathlib import Path
@@ -178,7 +180,7 @@ class Assembler(BaseModule):
     def _log_global_info(self) -> None:
         """Log global information about the run."""
         logging.info('Starting DART Assembler Module.')
-        logging.info(f'Output directory: {self.output_directory}')
+        logging.info(f'Output directory: {self.output_directory.name}')
         plural = 'es' if self.n_batches > 1 else ''  # print plural or singular in next line
         logging.info(f"Running {self.n_batches} batch{plural}...")
         logging.info(f"User-defined global settings:")
@@ -234,12 +236,13 @@ class Assembler(BaseModule):
                     filter_duplicate_isomers_method: str = "fingerprint",
                     filter_duplicate_isomers_grid_size: int = 9,
                     isomer_comparison_mode: str = "max_diff",
-                    isomer_comparison_grouping_mode: str = "cluster",
+                    isomer_comparison_grouping_mode: str = "cutoff",
                     isomer_comparison_grouping_cutoff: float = 0.5,
                     opt_mono_rot: bool = True,
                     total_ligand_charges: int = None,
                     ligand_db_files: Union[list[str], str] = 'metalig',
                     ligand_origins: list[tuple[float, float, float]] = None,
+                    ligand_geometries: list[str] = None,
                     complex_name_appendix: str = '',
                     random_seed: int = 0,
                     ) -> None:
@@ -287,144 +290,98 @@ class Assembler(BaseModule):
         self.isomer_comparison_grouping_mode = isomer_comparison_grouping_mode
         self.isomer_comparison_grouping_cutoff = isomer_comparison_grouping_cutoff
         self.opt_mono_rot = opt_mono_rot
+        self.ligand_geometries = ligand_geometries
         self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
         self.batch_outcontrol = BatchAssemblerOutput(self.batch_output_path)
 
-        # Load the ligand databases and cache them for later use
-        self.ligand_dbs = self._get_ligand_databases()
+        # Redirect tqdm to the logging module so that messages appear properly on two different lines
+        with logging_redirect_tqdm():
 
-        # Set up an iterator for the ligand combinations
-        ligand_choice = LigandChoice(
-                                ligand_dbs=self.ligand_dbs,
-                                total_ligand_charges=self.total_ligand_charges,
-                                n_max_complexes=self.n_max_complexes,
-                                )
-        ligand_combinations = ligand_choice.choose_ligands()
+            # Load the ligand databases and cache them for later use
+            self.ligand_dbs = self._get_ligand_databases()
 
-        # Set progress bar with or without final number of assembled complexes
-        total = self.n_max_complexes if self.n_max_complexes == 'all' else None
-        progressbar = tqdm(desc='Assembling complexes', unit=' complexes', file=sys.stdout, total=total)
-
-        batch_sum_assembled_complexes = 0  # Number of assembled complexes in this batch
-        while ligand_choice.if_make_more_complexes(batch_sum_assembled_complexes):
-
-            # Choose ligands for complex
-            try:
-                ligands = next(ligand_combinations)
-            except StopIteration:
-                break # If all ligand combinations are exhausted, stop the batch
-
-            factory = IsomerFactory(
-                                    ligands=ligands,
-                                    target_vectors=self.target_vectors,
-                                    ligand_origins=self.ligand_origins,
-                                    metal_centers=self.metal_centers,
-                                    filter_duplicate_isomers=self.filter_duplicate_isomers,
-                                    filter_clashing_structures=self.filter_clashing_structures,
-                                    filter_clashing_structures_cov_radii_buffer=self.filter_clashing_structures_cov_radii_buffer,
-                                    check_metal_clashes=self.check_metal_clashes,
-                                    filter_duplicate_isomers_method=self.filter_duplicate_isomers_method,
-                                    filter_duplicate_isomers_grid_size=self.filter_duplicate_isomers_grid_size,
-                                    isomer_comparison_mode=self.isomer_comparison_mode,
-                                    isomer_comparison_grouping_mode=self.isomer_comparison_grouping_mode,
-                                    isomer_comparison_grouping_cutoff=self.isomer_comparison_grouping_cutoff,
-                                    swap_groups=self.swap_groups,
-                                    opt_mono_rot= self.opt_mono_rot
+            # Set up an iterator for the ligand combinations
+            ligand_choice = LigandChoice(
+                                    ligand_dbs=self.ligand_dbs,
+                                    total_ligand_charges=self.total_ligand_charges,
+                                    n_max_complexes=self.n_max_complexes,
                                     )
-            isomers = factory.generate_isomers()
+            ligand_combinations = ligand_choice.choose_ligands()
 
-            # Sort isomers so that the ones without warnings are first, so that the indices of the names are consecutive.
-            successful_isomers = [isomer for isomer in isomers if isomer.warning == '']
-            unsuccessful_isomers = [isomer for isomer in isomers if isomer.warning != '']
-            isomers = successful_isomers + unsuccessful_isomers  # Put successful isomers first, then unsuccessful ones, while keeping the order of isomers within each group.
+            # Set progress bar with or without final number of assembled complexes
+            total = self.n_max_complexes if self.n_max_complexes == 'all' else None
+            progressbar = tqdm(desc='Assembling complexes', unit=' complexes', file=sys.stdout, total=total, disable=self.verbosity < 2)
 
-            # Post-processing of isomers
-            logging.debug("Post-processing isomers")
-            isomer_idx = 1  # Index for naming the isomer
-            for isomer in isomers:
-                self._save_assembled_isomer(isomer=isomer, isomer_idx=isomer_idx)
-                isomer_idx += 1
+            batch_sum_assembled_complexes = 0  # Number of assembled complexes in this batch
+            while ligand_choice.if_make_more_complexes(batch_sum_assembled_complexes):
 
-            # Update counters if at least one isomer was successfully assembled for this complex
-            any_good_isomers = any(isomer.warning == '' for isomer in isomers)
-            if any_good_isomers:
-                batch_sum_assembled_complexes += 1
-                progressbar.update(1)
-            logging.debug("Leaving post-processing")
+                # Choose ligands for complex
+                try:
+                    ligands = next(ligand_combinations)
+                except StopIteration:
+                    break # If all ligand combinations are exhausted, stop the batch
 
-        progressbar.close()
+                factory = IsomerFactory(
+                                        ligands=ligands,
+                                        target_vectors=self.target_vectors,
+                                        ligand_origins=self.ligand_origins,
+                                        metal_centers=self.metal_centers,
+                                        filter_duplicate_isomers=self.filter_duplicate_isomers,
+                                        filter_clashing_structures=self.filter_clashing_structures,
+                                        filter_clashing_structures_cov_radii_buffer=self.filter_clashing_structures_cov_radii_buffer,
+                                        check_metal_clashes=self.check_metal_clashes,
+                                        filter_duplicate_isomers_method=self.filter_duplicate_isomers_method,
+                                        filter_duplicate_isomers_grid_size=self.filter_duplicate_isomers_grid_size,
+                                        isomer_comparison_mode=self.isomer_comparison_mode,
+                                        isomer_comparison_grouping_mode=self.isomer_comparison_grouping_mode,
+                                        isomer_comparison_grouping_cutoff=self.isomer_comparison_grouping_cutoff,
+                                        swap_groups=self.swap_groups,
+                                        opt_mono_rot= self.opt_mono_rot
+                                        )
+                isomers = factory.generate_isomers()
+
+                # Post-processing of isomers
+                logging.debug("Post-processing isomers")
+                isomer_idx = 1  # Index for naming the isomer
+                for isomer in isomers:
+                    self._save_assembled_isomer(isomer=isomer, isomer_idx=isomer_idx)
+                    isomer_idx += 1
+
+                # Update counters if at least one isomer was successfully assembled for this complex
+                any_good_isomers = any(isomer.warning == '' for isomer in isomers)
+                if any_good_isomers:
+                    batch_sum_assembled_complexes += 1
+                    progressbar.update(1)
+                logging.debug("Leaving post-processing")
+
+            progressbar.close()
 
         return
 
     def _get_ligand_databases(self) -> list[LigandDB]:
         ligand_databases = []
-        for target_vectors, ligand_db_filepath in zip(self.target_vectors, self.ligand_db_files):
+        for idx, (target_vectors, ligand_db_filepath) in enumerate(zip(self.target_vectors, self.ligand_db_files)):
             if not ligand_db_filepath in self._loaded_ligand_databases:
-                self._loaded_ligand_databases[ligand_db_filepath] = LigandDB.from_json(ligand_db_filepath, n_max=self.n_max_ligands)
+                ligand_db_filepath = get_correct_ligand_db_path_from_input(ligand_db_filepath)
+                self._loaded_ligand_databases[ligand_db_filepath] = LigandDB.from_json(ligand_db_filepath, n_max=self.n_max_ligands, show_progress=self.verbosity > 1)
 
             # Reduce to the ligands which have the correct n_eff_denticity for the specified target vectors
             n_target_vectors = len(target_vectors)
             database = {name: ligand for name, ligand in self._loaded_ligand_databases[ligand_db_filepath].db.items() if ligand.n_eff_denticities == n_target_vectors}
-            database = LigandDB(database)  # Convert to LigandDB object
 
-            if not database.db:
-                raise ValueError(f"No ligands found in database {ligand_db_filepath} with the same `n_eff_denticities` as the number of specified target vectors ({n_target_vectors}). Please check your input ligand database `{ligand_db_filepath}`.")
+            # If required, reduce the database to the ligands with the correct geometry
+            if self.ligand_geometries is not None:
+                geometry = self.ligand_geometries[idx]
+                database = {name: ligand for name, ligand in database.items() if ligand.geometry == geometry}
+
+            if not database:
+                with_geometries = f' and ligand geometry `{geometry}`' if self.ligand_geometries is not None else ''
+                raise ValueError(f"The provided ligand database contains no ligands with `n_eff_denticities={n_target_vectors}`{with_geometries}. Please check your input ligand database `{Path(ligand_db_filepath).resolve()}`.")
+
+            database = LigandDB(database)  # Convert to LigandDB object
             ligand_databases.append(database)
 
         return ligand_databases
-
-    @staticmethod
-    def _extract_ligand_origins_and_vectors(geometry: List[dict]) -> Tuple[List[Dict[str, List[float]]], List[List[float]]]:
-        """
-        Extracts and processes ligand origins and vectors from the geometry.
-
-        :param geometry: List of fragments from batch["geometry"]
-        :return: (target_vectors, ligand_origins)
-        """
-        axis_map = {
-            "x": [1.0, 0.0, 0.0],
-            "y": [0.0, 1.0, 0.0],
-            "z": [0.0, 0.0, 1.0],
-            "-x": [-1.0, 0.0, 0.0],
-            "-y": [0.0, -1.0, 0.0],
-            "-z": [0.0, 0.0, -1.0],
-        }
-
-        def _parse_vector(value, key: str, name: str) -> List[float]:
-            if isinstance(value, str):
-                vec = axis_map.get(value.strip().lower())
-                if vec is None:
-                    raise ValueError(
-                        f"Fatal Error: Invalid string '{value}' in '{key}' for ligand '{name}'. "
-                        f"Expected one of: {', '.join(axis_map.keys())}."
-                    )
-                return vec
-            elif isinstance(value, list) and len(value) == 3:
-                if not all(isinstance(v, (int, float)) for v in value):
-                    raise ValueError(f"Fatal Error: '{key}' in ligand '{name}' must be a 3-element list of numbers.")
-                return [float(v) for v in value]
-            else:
-                raise ValueError(f"Fatal Error: '{key}' in ligand '{name}' must be a symbolic axis string or a 3-element list.")
-
-        target_vectors = []
-        ligand_origins = []
-
-        for fragment in geometry:
-            assert len(fragment) == 1, f"{len(fragment)} keys present for {fragment}, expected 1"
-            name = next(iter(fragment))
-            if name.startswith("ligand"):
-                spec = fragment[name]
-                ligand_origins.append(spec["origin"])
-
-                vector_dict = {
-                    key: _parse_vector(value, key=key, name=name)
-                    for key, value in spec.items()
-                    if key.startswith("vector")
-                }
-
-                target_vectors.append(vector_dict)
-
-        return target_vectors, ligand_origins
 
     def _save_assembled_isomer(self, isomer: Isomer, isomer_idx: int):
         """

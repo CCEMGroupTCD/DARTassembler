@@ -287,13 +287,7 @@ def align_donor_atoms(
     donor_idc = list(donor_idc)   # A tuple wouldn't work for indexing
 
     donor_vectors = atoms.positions[donor_idc]
-    # Normalize the donor vectors and target vectors to unit vectors so that only the direction of the vectors counts, not the magnitude.
-    donor_vectors = donor_vectors / np.linalg.norm(donor_vectors, axis=1)[:, None]
-    target_vectors = target_vectors / np.linalg.norm(target_vectors, axis=1)[:, None]
-    # Find the correct rotation to align the donor vectors with the target vectors. Suppress warnings because we use this function a lot with bad rotations simply because we are trying to find the best rotation.
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        rot, rssd = R.align_vectors(a=target_vectors, b=donor_vectors, weights=weights)  # the a and b are unintuitive but correct
+    rot, rssd = align_vectors(donor_vectors, target_vectors, weights)
     # Apply the rotation to all the atoms of the ligand
     rotated_coords = rot.apply(atoms.positions)
     atoms.set_positions(rotated_coords)
@@ -302,6 +296,26 @@ def align_donor_atoms(
         return atoms, rssd
     else:
         return atoms
+
+
+def align_vectors(donor_vectors, target_vectors, weights=None, normalize=True) -> tuple[R, float]:
+    """
+    Align the donor vectors to the target vectors. Returns the rotation matrix and the root sum of squared differences (RSSD) between the aligned vectors.
+    :param donor_vectors: Vectors of the donor atoms to be aligned.
+    :param target_vectors: Vectors of the target atoms to which the donor vectors should be aligned.
+    :param weights: Weights for the alignment. If None, all vectors are treated equally.
+    :param normalize: If True, the donor vectors and target vectors are normalized to unit vectors so that only the direction of the vectors counts, not the magnitude.
+    :return: tuple of Rotation object and the root sum of squared differences (RSSD) between the aligned vectors.
+    """
+    if normalize:
+        # Normalize the donor vectors and target vectors to unit vectors so that only the direction of the vectors counts, not the magnitude.
+        donor_vectors = donor_vectors / np.linalg.norm(donor_vectors, axis=1)[:, None]
+        target_vectors = target_vectors / np.linalg.norm(target_vectors, axis=1)[:, None]
+    # Find the correct rotation to align the donor vectors with the target vectors. Suppress warnings because we use this function a lot with bad rotations simply because we are trying to find the best rotation.
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        rot, rssd = R.align_vectors(a=target_vectors, b=donor_vectors, weights=weights)  # the a and b are unintuitive but correct
+    return rot, rssd
 
 
 if __name__ == '__main__':
