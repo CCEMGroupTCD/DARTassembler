@@ -2,8 +2,6 @@
 This file contains the classes and methods that are used to process the input data and generate the assembled transition metal complex isomers.
 """
 import warnings
-from functools import lru_cache
-from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple, Union
 from ase.visualize import view
 from ase import Atoms
@@ -31,9 +29,6 @@ from DARTassembler.src.metalig.utils import check_equal
 from DARTassembler.src.metalig.utils_molecule import hapdent_idc_to_donor_idc, get_atomic_props_from_ase_atoms
 from DARTassembler.src.misc.io import load_json
 from DARTassembler.src.metalig.utils_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, get_graph_hash
-
-from functools import lru_cache
-from logging import getLogger, Logger
 
 
 
@@ -302,7 +297,7 @@ class AssembledComplex(object):
                          complex_name_length: int = 8,
                          complex_name_suffix: str = '',
                          avoid_names: Optional[List[str]] = None
-                         ) -> List['AssembledIsomer']:
+                         ):
         """
         Generates all possible isomers from the ligands and metal centers provided.
         :return: List of AssembledIsomer objects.
@@ -358,11 +353,11 @@ class AssembledComplex(object):
                     warning='',  # Initially no warning, will be updated later if needed
                     validity_check=True,
                 )
-                isomer = AxialOptModifier(isomers=[isomer], opt=self.optimize_monoaxial).modify(
-                    target_vectors=target_vectors, ligand_origins=ligand_origins)[0]
+                isomer = AxialOptModifier(isomers=[isomer], opt=self.optimize_monoaxial).modify(target_vectors=target_vectors, ligand_origins=ligand_origins)[0]
                 isomers.append(isomer)
 
-        # Warnings for each isomer. If an isomer has no issues, the note is ''. If an isomer is excluded because of clashing ligands or because it's equivalent to another one, the note is `clashes' or `duplicate`.
+
+        # Warnings for each isomer. If an isomer has no issues, the note is ''. If an isomer is excluded because of clashing ligands or because it's equivalent to another one, the note is `clashing' or `duplicate`.
         for idx, isomer in enumerate(isomers):
             if isomer.warning == '' and self.check_clashing:
                 clashfilter = IsomerClashFilter(
@@ -396,7 +391,7 @@ class AssembledComplex(object):
         for isomer_idx, isomer in enumerate(self.isomers, start=1):
             isomer.isomer_name = self.complex_name + str(isomer_idx)
 
-        return self.isomers
+        return
 
     def get_complex_name(self, avoid_names: Optional[list[str]]) -> str:
         return get_complex_name(seed=self.graph_hash, length=self.complex_name_length, suffix=self.complex_name_suffix, avoid_names=avoid_names)
@@ -424,7 +419,6 @@ class AssembledComplex(object):
             "ligand_idc": self.ligand_indices,
             "ligand_info": self.get_ligandinfo(),
             "input": {
-                # "metal_centers": [[atoms.todict() for atoms in metal_list] for metal_list in self.metal_centers], # todo
                 "check_duplicate": self.check_duplicate,
                 "check_clashing": self.check_clashing,
                 "clashing_buffer": self.clashing_buffer,

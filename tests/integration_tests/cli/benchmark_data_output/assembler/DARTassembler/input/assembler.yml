@@ -1,0 +1,98 @@
+output_directory: DARTassembler
+verbosity: 2
+complex_name_length: 8
+n_max_ligands: 100
+batches:
+- name: First_batch
+  total_ligand_charges: -2
+  ligand_db_files:
+  - metalig
+  - metalig
+  - metalig
+  target_vectors:
+  - - - 1
+      - 0
+      - 0
+    - - 0
+      - 1
+      - 0
+  - - - -1
+      - 0
+      - 0
+  - - - 0
+      - -1
+      - 0
+  ligand_origins:
+  - - 0
+    - 0
+    - 0
+  - - 0
+    - 0
+    - 0
+  - - 0
+    - 0
+    - 0
+  metal_centers:
+  - - - Ru
+      - - 0
+        - 0
+        - 0
+  - - - Ru
+      - - 0
+        - 0
+        - 0
+  - - - Ru
+      - - 0
+        - 0
+        - 0
+  n_max_complexes: 100
+  random_seed: 0
+  complex_name_suffix: _Ru
+- &id001
+  name: Second_batch
+  total_ligand_charges: -1
+  ligand_db_files:
+  - metalig
+  - metalig
+  - metalig
+  target_vectors:
+  - - - 1
+      - 0
+      - 0
+    - - 0
+      - 1
+      - 0
+  - - - -1
+      - 0
+      - 0
+  - - - 0
+      - -1
+      - 0
+  ligand_origins:
+  - - 0
+    - 0
+    - 0
+  - - 0
+    - 0
+    - 0
+  - - 0
+    - 0
+    - 0
+  metal_centers:
+  - - - Fe
+      - - 0
+        - 0
+        - 0
+  - - - Fe
+      - - 0
+        - 0
+        - 0
+  - - - Fe
+      - - 0
+        - 0
+        - 0
+  n_max_complexes: 100
+  random_seed: 1
+  complex_name_suffix: _Fe
+idx: 1
+batch: *id001

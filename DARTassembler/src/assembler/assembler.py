@@ -12,9 +12,7 @@ import sys
 # DART specific imports
 from DARTassembler.src.assembler.isomer import AssembledIsomer, AssembledComplex
 from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, ComplexAssemblerOutput
-from DARTassembler.src.metalig.geometry import all_geometries, align_vectors
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
-from DARTassembler.src.assembler.utils import generate_pronounceable_word
 from DARTassembler.src.constants.paths import default_assembler_yml_path
 from DARTassembler.src.assembler.ligands import LigandChoice
 from DARTassembler.src.modules.modules import BaseModule
@@ -144,7 +142,7 @@ class Assembler(BaseModule):
         :param metal_centers: Metal centers to be used for the complexes. Can be a string (e.g. 'Ru') or a tuple of (metal symbol, (x, y, z)).
         :param n_max_complexes: Maximum number of complexes to be assembled in this batch. If 'all', all complexes are assembled.
         :param total_ligand_charges: Choose ligands so that the total charge of all ligands in the complex is equal to this value. If None, any ligand combination is assembled.
-        :param ligand_db_files: List of ligand database files to be used for the batch. If None, defaults to ['metalig'] for each set of target vectors.
+        :param ligand_db_files: List of ligand database files to be used for the batch. If None, defaults to ['metalig'] for each set of target vectors. If 'same_as_previous', the same ligand database as in the previous batch is used. If a single string is provided, it is expanded to a list of the same length as target_vectors.
         :param ligand_origins: Coordinates for each ligand, which will be used as the origin of the ligand rotation in the complex. If None, defaults to the center of all metal center coordinates for each ligand.
         :param complex_name_suffix: Suffix to be added to each complex name. Defaults to ''.
         :param random_seed: Random seed for reproducibility. If None, defaults to the batch_idx so that each batch is deterministic but different from each other.
@@ -197,7 +195,7 @@ class Assembler(BaseModule):
             ligand_combinations = ligand_choice.choose_ligands()
 
             # Set progress bar with or without final number of assembled complexes
-            total = self.n_max_complexes if self.n_max_complexes == 'all' else None
+            total = self.n_max_complexes if self.n_max_complexes != 'all' else None
             progressbar = tqdm(desc='Assembling complexes', unit=' complexes', file=sys.stdout, total=total, disable=self.verbosity < 2)
 
             batch_sum_assembled_complexes = 0  # Number of assembled complexes in this batch
@@ -216,7 +214,6 @@ class Assembler(BaseModule):
                     metal_centers=self.metal_centers,
                 )
                 complex.generate_isomers(
-
                                             check_duplicate= self.check_duplicate,
                                             check_clashing= self.check_clashing,
                                             clashing_buffer= self.clashing_buffer,
@@ -246,6 +243,12 @@ class Assembler(BaseModule):
     def _get_ligand_databases(self) -> list[LigandDB]:
         ligand_databases = []
         for idx, (target_vectors, ligand_db_filepath) in enumerate(zip(self.target_vectors, self.ligand_db_files)):
+            if ligand_db_filepath == 'same_as_previous':
+                if not idx > 0:
+                    raise ValueError("The first ligand database cannot be 'same_as_previous'. Please provide a valid ligand database file path.")
+                ligand_databases.append('same_as_previous')
+                continue
+
             if not ligand_db_filepath in self._loaded_ligand_databases:
                 ligand_db_filepath = get_correct_ligand_db_path_from_input(ligand_db_filepath)
                 self._loaded_ligand_databases[ligand_db_filepath] = LigandDB.from_json(ligand_db_filepath, n_max=self.n_max_ligands, show_progress=self.verbosity > 1)

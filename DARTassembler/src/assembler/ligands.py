@@ -43,7 +43,7 @@ class LigandChoice(object):
         else: # self.n_max_complexes is an integer
             return num_assembled_complexes < self.n_max_complexes
 
-    def _choose_random_ligand_combination_from_db(self) -> list:
+    def _choose_random_ligand_combination_from_db(self) -> list[Ligand]:
         """
         Choose ligands randomly from the ligand databases.
         """
@@ -59,25 +59,25 @@ class LigandChoice(object):
 
         return ligand_combination
 
-    def _choose_iterative_ligand_combination_from_db(self, all_combinations: list[tuple[str]]) -> list:
+    def _choose_iterative_ligand_combination_from_db(self, all_combinations: list[tuple[str]]) -> list[Ligand]:
         """
         Choose ligands iteratively from the ligand databases.
         """
         # Choose ligands iteratively, but if the last entry in the topology is "same_as_previous", all_combinations only includes the ligand lists before that. Therefore we have to add it later.
         try:
-            prel_ligand_combination = next(all_combinations) # preliminary ligand combination without respecting "same_as_previous"
+            prel_ligand_combination = next(all_combinations) # preliminary ligand combination, potentially with "same_as_previous" statement
         except StopIteration:   # No more valid ligand combinations
             return None
 
-        # Add the last ligand to the list of ligands if the last entry in the topology is "same_as_previous"
+        # Get the ligand objects and respect the "same_as_previous" instruction
         ligand_combination = []
         for idx, ligand_list in enumerate(self.ligand_dbs):
             if ligand_list == 'same_as_previous':
-                chosen_ligand = prel_ligand_combination[-1]
+                chosen_ligand = ligand_combination[-1]
             else:
-                chosen_ligand = prel_ligand_combination[idx]
-            # Fixed a bug where this function would return the name of the ligand rather than the ligand object itself
-            ligand_combination.append(ligand_list.db[chosen_ligand])
+                chosen_ligand_name = prel_ligand_combination[idx]
+                chosen_ligand = ligand_list.db[chosen_ligand_name]
+            ligand_combination.append(chosen_ligand)
 
         return ligand_combination
 
@@ -104,8 +104,7 @@ class LigandChoice(object):
         - ligand_choice = 'random': If the mode is random, the function will yield a random ligand combination each time it is called. The function will stop yielding ligand combinations if the maximum number of complexes has been reached or if no more valid ligand combinations can be found. In the latter case, the random mode will also switch to iterative mode to make sure all possible complexes are made.
         """
         # Setup all ligand combinations as iterable. Needed for the iterative ligand choice method.
-        assert self.ligand_dbs[-1] == 'same_as_previous' if 'same_as_previous' in self.ligand_dbs else True, "The 'same_as_previous' instruction must always come last in the list of ligand lists!" # HARDCODED: If the 'same_as_previous' instruction is used, it always comes last in the list of ligand lists
-        all_valid_lists = [ligands.db for ligands in self.ligand_dbs if ligands != 'same_as_previous']
+        all_valid_lists = [ligands.db if ligands != 'same_as_previous' else ['same_as_previous'] for ligands in self.ligand_dbs ]
         all_ligand_combinations = itertools.product(*all_valid_lists)
 
         chosen_ligand_combinations = set()  # Store all chosen ligand combinations to avoid duplicates
