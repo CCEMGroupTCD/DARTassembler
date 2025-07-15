@@ -271,7 +271,10 @@ def get_n_entries_of_json_db(path: Union[str, Path]) -> int:
 
     return n_entries
 
-def save_json(db: dict, path: Union[str, Path], **kwargs):
+def save_json(db: dict, path: Union[str, Path], mkdir: bool=True, **kwargs):
+    if mkdir:
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, 'w') as file:
         json.dump(db, file, cls=NumpyEncoder, **kwargs)
 

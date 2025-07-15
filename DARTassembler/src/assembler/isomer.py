@@ -20,7 +20,8 @@ import pandas as pd
 
 from scipy.optimize import brute
 
-from DARTassembler.src.assembler.utils import are_atoms_equal, assign_ligands_to_vectors
+from DARTassembler.src.assembler.utils import are_atoms_equal, get_list_with_all_possible_swappings, \
+    remove_haptic_dummy_atom, generate_pronounceable_word, get_complex_name
 from DARTassembler.src.metalig.geometry import try_all_geometrical_isomer_possibilities, all_geometries, align_vectors, \
     align_donor_atoms
 from DARTassembler.src.constants.chem import Element
@@ -29,17 +30,14 @@ from DARTassembler.src.metalig.mol import BaseMolecule, Ligand
 from DARTassembler.src.metalig.utils import check_equal
 from DARTassembler.src.metalig.utils_molecule import hapdent_idc_to_donor_idc, get_atomic_props_from_ase_atoms
 from DARTassembler.src.misc.io import load_json
-from DARTassembler.src.metalig.utils_graph import graph_from_graph_dict
+from DARTassembler.src.metalig.utils_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, get_graph_hash
 
 from functools import lru_cache
 from logging import getLogger, Logger
 
-# Keep track of 10 different messages and then warn again
-@lru_cache(1)
-def logging_warn_once(msg: str):
-    logging.warning(msg)
 
-class Isomer(BaseMolecule):
+
+class AssembledIsomer(BaseMolecule):
 
     def __init__(self,
                     atomic_props: Union[ase.Atoms, Dict[str, Any]],
@@ -50,6 +48,8 @@ class Isomer(BaseMolecule):
                     ligand_info: Dict[str, Any] = None,
                     global_props: Dict[str, Any] = None,
                     validity_check: bool = False,
+                    target_vectors = None,
+                    ligand_origins = None,
                     warning: str = '',
                     ):
         if global_props is None:
@@ -69,7 +69,10 @@ class Isomer(BaseMolecule):
         self.ligand_idc = ligand_idc
         self.ligand_info = ligand_info
         self.warning = warning
+        self.target_vectors = target_vectors
+        self.ligand_origins = ligand_origins
         self.metals = [self.atoms[idx].symbol for idx in self.metal_idc]
+        self.isomer_name = None # Will be set later
 
         # A little expensive, but small compared to the mono-axial optimization.
         self.ligands = self._get_ligands()  # Ligand() objects for convenient access to ligands. Won't be saved to disk in the DART workflow.
@@ -108,14 +111,14 @@ class Isomer(BaseMolecule):
         # Doublecheck if all the metals are really metals. Don't raise an error in case it's intentional.
         all_metals = all(Element(metal).is_metal for metal in self.metals)
         if not all_metals:
-            warnings.warn(f"Any of the metal centers {self.metals} in Isomer() is not a metal. Providing a chemical element as `metal center` that is not a metal is not a problem, this is just to make you aware.")
+            warnings.warn(f"Any of the metal centers {self.metals} in AssembledIsomer() is not a metal. Providing a chemical element as `metal center` that is not a metal is not a problem, this is just to make you aware.")
 
         return
 
     def to_dict(self):
         """
-        Converts the Isomer object to a dictionary.
-        :return: Dictionary representation of the Isomer object
+        Converts the AssembledIsomer object to a dictionary.
+        :return: Dictionary representation of the AssembledIsomer object
         """
         d = super().to_dict()   # Base class takes care of atomic_props, global_props, and graph
         d.update({
@@ -138,28 +141,28 @@ class Isomer(BaseMolecule):
         return atoms
 
     @classmethod
-    def from_json(cls, filepath) -> 'Isomer':
+    def from_json(cls, filepath) -> 'AssembledIsomer':
         """
-        Loads an Isomer object from a .json file.
+        Loads an AssembledIsomer object from a .json file.
         :param filepath: Path to the .json file
-        :return: Isomer object
+        :return: AssembledIsomer object
         """
         data = load_json(filepath)
         return cls.from_dict(data)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'Isomer':
+    def from_dict(cls, data: Dict[str, Any]) -> 'AssembledIsomer':
         """
-        Creates an Isomer object from a dictionary in the correct format.
-        :param data: Dictionary containing the Isomer data
-        :return: Isomer object
+        Creates an AssembledIsomer object from a dictionary in the correct format.
+        :param data: Dictionary containing the AssembledIsomer data
+        :return: AssembledIsomer object
         """
         data['graph'] = graph_from_graph_dict(data['graph'])
         data['charge'] = 0  # todo
         return cls(**data)
 
 
-class IsomerFactory(object):
+class AssembledComplex(object):
 
     def __init__(
                     self,
@@ -167,18 +170,6 @@ class IsomerFactory(object):
                     target_vectors: list[list[list[float]]],
                     metal_centers: Union[List[List[Union[str, List[float]]]], str],
                     ligand_origins: List[List[float]] = None,
-                    filter_duplicate_isomers: bool = True,
-                    filter_clashing_structures: bool = True,
-                    filter_clashing_structures_cov_radii_buffer: float = -0.3,
-                    check_metal_clashes: bool = True,
-                    filter_duplicate_isomers_method: str = "fingerprint",
-                    filter_duplicate_isomers_grid_size: int = 9,
-                    isomer_comparison_mode: str = "max_diff",
-                    isomer_comparison_grouping_mode: str = "cluster",
-                    isomer_comparison_grouping_cutoff: float = 1.0,
-                    swap_groups: Optional[List[int]] = None,
-                    opt_mono_rot: Optional[bool] = True,
-                    all_combinations: bool = False,
                     ):
         """
         Generates isomers from a list of ligands, target vectors and metal centers. The orientation of the ligands relative to its metal center is determined by the target vectors. The ligand_origins can be used to shift the ligand with respect to the metal center. If `metal_centers` is a chemical element such as 'Ru', it is assumed to be a mono-metallic complex at the origin.
@@ -188,7 +179,7 @@ class IsomerFactory(object):
         :param ligand_origins: List of the origin for each ligand.
 
         Example usage for assembling a mono-metallic square-planar Pd complex with 2 cis bidentate ligands in the xy-plane:
-            factory = IsomerFactory(
+            factory = AssembledComplex(
                                     ligands=..., (list of two bidentate Ligand() objects, usually from the MetaLig database)
                                     metal_centers='Pd',
                                     target_vectors=[
@@ -212,7 +203,7 @@ class IsomerFactory(object):
                                 [[0, 0, 1]],
                                 [[-1, 0, 0]],
                              ]
-            factory = IsomerFactory(
+            factory = AssembledComplex(
                                         ligands=ligands,
                                         target_vectors=target_vectors,
                                         metal_centers=metal_centers
@@ -225,19 +216,6 @@ class IsomerFactory(object):
         self.target_vectors = target_vectors
         self.ligand_origins = ligand_origins
         self.metal_centers = metal_centers
-
-        self.filter_duplicate_isomers = filter_duplicate_isomers
-        self.filter_clashing_structures = filter_clashing_structures
-        self.filter_clashing_structures_cov_radii_buffer = filter_clashing_structures_cov_radii_buffer
-        self.check_metal_clashes = check_metal_clashes
-        self.filter_duplicate_isomers_method = filter_duplicate_isomers_method
-        self.filter_duplicate_isomers_grid_size = filter_duplicate_isomers_grid_size
-        self.isomer_comparison_mode = isomer_comparison_mode
-        self.isomer_comparison_grouping_mode = isomer_comparison_grouping_mode
-        self.isomer_comparison_grouping_cutoff = isomer_comparison_grouping_cutoff
-        self.swap_groups = swap_groups
-        self.opt_mono_rot = opt_mono_rot
-        self.all_combinations = all_combinations
 
     def _check_input_and_handle_defaults(self, metal_centers, ligand_origins, ligands, target_vectors):
         if isinstance(metal_centers, str):
@@ -312,73 +290,84 @@ class IsomerFactory(object):
         return metal_centers, ligand_origins, ligands, target_vectors
 
     # This is the method used in the DART workflow to generate isomers.
-    def generate_isomers(self) -> List['Isomer']:
+    def generate_isomers(self,
+                         check_duplicate: bool = True,
+                         check_clashing: bool = True,
+                         swap_groups: Optional[List[int]] = None,
+                         optimize_monoaxial: Optional[bool] = True,
+                         force_all_isomers: bool = False,
+                         clashing_buffer: float = -0.3,
+                         clashing_metal: bool = False,
+                         duplicate_cutoff: float = 0.5,
+                         complex_name_length: int = 8,
+                         complex_name_suffix: str = '',
+                         avoid_names: Optional[List[str]] = None
+                         ) -> List['AssembledIsomer']:
         """
-        Generates all possible isomers from the ligands and metal centers provided in the constructor.
-        :return: List of Isomer objects.
+        Generates all possible isomers from the ligands and metal centers provided.
+        :return: List of AssembledIsomer objects.
         """
+        self.check_duplicate = check_duplicate
+        self.check_clashing = check_clashing
+        self.clashing_buffer = clashing_buffer
+        self.clashing_metal = clashing_metal
+        self.duplicate_cutoff = duplicate_cutoff
+        self.swap_groups = swap_groups
+        self.optimize_monoaxial = optimize_monoaxial
+        self.force_all_isomers = force_all_isomers
+        self.complex_name_length = complex_name_length
+        self.complex_name_suffix = complex_name_suffix
+        self.avoid_names = avoid_names
+
+        unique_metal_centers = self._get_all_unique_metal_centers()
+        self.metal_idc = [idx for idx in range(len(unique_metal_centers))]
+        self.graph, self.ligand_indices, self.donor_indices = self._get_merged_graph_from_ligands_and_metal_centers()
+        self.graph_hash = get_graph_hash(self.graph)
+        self.complex_name = self.get_complex_name(avoid_names=avoid_names)
+
         # Generate all possible geometric isomers to be generated via exchanging ligands (or, as here implemented, exchanging the target vectors of the ligands).
-        target_vector_combs = assign_ligands_to_vectors(ligands=self.target_vectors, swap_groups=self.swap_groups)
-        ligand_origin_combs = assign_ligands_to_vectors(ligands=self.ligand_origins, swap_groups=self.swap_groups)
+        target_vector_combs = get_list_with_all_possible_swappings(objects=self.target_vectors, swap_groups=self.swap_groups)
+        ligand_origin_combs = get_list_with_all_possible_swappings(objects=self.ligand_origins, swap_groups=self.swap_groups)
 
         isomers = []
-        ligands = self.ligands
         for target_vectors, ligand_origins in zip(target_vector_combs, ligand_origin_combs):
-            rotated_ligands = self._get_rotated_ligands(ligands=ligands, target_vectors=target_vectors, ligand_origins=ligand_origins)
+            rotated_ligands = self._get_rotated_ligands(target_vectors=target_vectors, ligand_origins=ligand_origins)
 
             # Generate all combinations. Each combination is a tuple with one isomer per ligand.
             combinations = list(itertools.product(*rotated_ligands))
-            unique_metal_centers = self._get_all_unique_metal_centers()
             ase_isomers = []
             for combo in combinations:
                 combined = Atoms()  # Start with an empty Atoms object.
-
                 for atom in unique_metal_centers:
                     combined += atom
                 for ligand in combo:  # Iterate over the ligands in the combination.
                     combined += ligand  # combining Atoms objects.
                 ase_isomers.append(combined)  # Store all the new isomers
-            metal_idc = [idx for idx in range(len(unique_metal_centers))]
 
             for ase_isomer in ase_isomers:
-                # Merge the graphs of the ligands and the metal centers to get the full graph of the complex.
-                graph, ligand_indices, donor_indices = self._get_merged_graph_from_ligands_and_metal_centers()
-                global_props = {}  # Will be populated during the DART workflow.
-                # To save disk space, each complex is saved with only the most important information about its ligands. The most important one, the ligand_idc, will be saved in the isomer object anyway.
-                ligand_info = {
-                    # Important info for making Ligands() objects in the Isomer().
-                    'unique_names': [lig.unique_name for lig in ligands],
-                    'geometries': [lig.geometry for lig in ligands],
-                    'donor_idcs': [lig.donor_idc for lig in ligands],
-                    'charges': [lig.charge for lig in ligands],
-                    'stoichiometries': [lig.stoichiometry for lig in ligands],
-                    'hapdent_idcs': [lig.hapdent_idc for lig in ligands],
-                    'geometric_isomers_hapdent_idcs': [lig.geometric_isomers_hapdent_idc for lig in ligands],
-                    'target_vectors': target_vectors,
-                    # Convenience information for the output csv.
-                    'donors': ['-'.join(sorted(lig.donor_elements)) for lig in ligands]
-                }
-                isomer = Isomer(
+                isomer = AssembledIsomer(
                     atomic_props=ase_isomer,
-                    graph=graph,
-                    metal_idc=metal_idc,
-                    ligand_idc=ligand_indices,
-                    donor_idc=donor_indices,
-                    global_props=global_props,
-                    ligand_info=ligand_info,
+                    graph=self.graph,
+                    metal_idc=self.metal_idc,
+                    ligand_idc=self.ligand_indices,
+                    donor_idc=self.donor_indices,
+                    global_props={},
+                    ligand_info=self.get_ligandinfo(),
+                    target_vectors=target_vectors,
+                    ligand_origins=ligand_origins,
                     warning='',  # Initially no warning, will be updated later if needed
                     validity_check=True,
                 )
-                isomer = AxialOptModifier(isomers=[isomer], opt=self.opt_mono_rot).modify(
+                isomer = AxialOptModifier(isomers=[isomer], opt=self.optimize_monoaxial).modify(
                     target_vectors=target_vectors, ligand_origins=ligand_origins)[0]
                 isomers.append(isomer)
 
         # Warnings for each isomer. If an isomer has no issues, the note is ''. If an isomer is excluded because of clashing ligands or because it's equivalent to another one, the note is `clashes' or `duplicate`.
         for idx, isomer in enumerate(isomers):
-            if isomer.warning == '' and self.filter_clashing_structures:
+            if isomer.warning == '' and self.check_clashing:
                 clashfilter = IsomerClashFilter(
-                    buffer=self.filter_clashing_structures_cov_radii_buffer,
-                    check_metal_clashes=self.check_metal_clashes
+                    buffer=self.clashing_buffer,
+                    check_metal_clashes=self.clashing_metal
                 )
                 clashing = clashfilter.has_clashing_atoms(
                     atoms=isomer.atoms,
@@ -386,48 +375,105 @@ class IsomerFactory(object):
                     metal_idc=isomer.metal_idc
                 )
                 if clashing:
-                    isomer.warning = 'clashes'
+                    isomer.warning = 'clashing'
                     continue
 
         # Add inplace warnings for isomers that are duplicates of each other. Very important to do this after the clash filter, because otherwise a clashing isomer might be seen as the "first duplicate" and thus be kept, while the other, not-clashing isomer would be discarded.
         not_clashing_isomers = [isomer for isomer in isomers if isomer.warning == '']
         DuplicateIsomerFilter(
                                 isomers=not_clashing_isomers,
-                                method=self.filter_duplicate_isomers_method,
-                                grid_size=self.filter_duplicate_isomers_grid_size,
-                                isomer_comparison_mode=self.isomer_comparison_mode,
-                                isomer_comparison_grouping_mode=self.isomer_comparison_grouping_mode,
-                                fingerprint_grouping_cutoff=self.isomer_comparison_grouping_cutoff,
-                                metal_centres=self.metal_centers
+                                fingerprint_grouping_cutoff=self.duplicate_cutoff,
+                                metal_centers=self.metal_centers
                                 ).filter()
 
         # Sort isomers so that the ones without warnings are first, so that the indices of the names are consecutive.
-        successful_isomers = [isomer for isomer in isomers if isomer.warning == '']
-        unsuccessful_isomers = [isomer for isomer in isomers if isomer.warning != '']
-        isomers = successful_isomers + unsuccessful_isomers  # Put successful isomers first, then unsuccessful ones, while keeping the order of isomers within each group.
+        self.successful_isomers = [isomer for isomer in isomers if isomer.warning == '']
+        self.unsuccessful_isomers = [isomer for isomer in isomers if isomer.warning != '']
+        self.isomers = self.successful_isomers + self.unsuccessful_isomers  # Put successful isomers first, then unsuccessful ones, while keeping the order of isomers within each group.
+        self.success = len(self.successful_isomers) > 0
 
-        return isomers
+        # Important: assign names after sorting by success and failure, so that the names are consecutive for the successful isomers.
+        for isomer_idx, isomer in enumerate(self.isomers, start=1):
+            isomer.isomer_name = self.complex_name + str(isomer_idx)
 
-    def _get_rotated_ligands(self, ligands, target_vectors, ligand_origins) -> list[list[Atoms]]:
+        return self.isomers
+
+    def get_complex_name(self, avoid_names: Optional[list[str]]) -> str:
+        return get_complex_name(seed=self.graph_hash, length=self.complex_name_length, suffix=self.complex_name_suffix, avoid_names=avoid_names)
+
+    def to_dict(self):
+        """
+        Converts the AssembledComplex object to a dictionary.
+        :return: Dictionary representation of the AssembledComplex object
+        """
+        isomer_data = {}
+        for isomer in self.isomers:
+            isomer_data[isomer.isomer_name] = {
+                'atomic_props': isomer.atomic_props,
+                'warning': isomer.warning,
+                'target_vectors': isomer.target_vectors,
+                'ligand_origins': isomer.ligand_origins,
+            }
+        return {
+            "complex_name": self.complex_name,
+            "isomers": isomer_data,
+            "graph": graph_to_dict_with_node_labels(self.graph),
+            "graph_hash": self.graph_hash,
+            "metal_idc": self.metal_idc,
+            "donor_idc": self.donor_indices,
+            "ligand_idc": self.ligand_indices,
+            "ligand_info": self.get_ligandinfo(),
+            "input": {
+                # "metal_centers": [[atoms.todict() for atoms in metal_list] for metal_list in self.metal_centers], # todo
+                "check_duplicate": self.check_duplicate,
+                "check_clashing": self.check_clashing,
+                "clashing_buffer": self.clashing_buffer,
+                "clashing_metal": self.clashing_metal,
+                "duplicate_cutoff": self.duplicate_cutoff,
+                "swap_groups": self.swap_groups,
+                "optimize_monoaxial": self.optimize_monoaxial,
+                "force_all_isomers": self.force_all_isomers,
+                "complex_name_length": self.complex_name_length,
+                "complex_name_suffix": self.complex_name_suffix,
+            }
+
+        }
+
+    def get_ligandinfo(self) -> Dict[str, Any]:
+        return {
+            # Important info for making Ligands() objects in the AssembledIsomer().
+            'unique_names': [lig.unique_name for lig in self.ligands],
+            'geometries': [lig.geometry for lig in self.ligands],
+            'donor_idcs': [lig.donor_idc for lig in self.ligands],
+            'charges': [lig.charge for lig in self.ligands],
+            'stoichiometries': [lig.stoichiometry for lig in self.ligands],
+            'hapdent_idcs': [lig.hapdent_idc for lig in self.ligands],
+            'geometric_isomers_hapdent_idcs': [lig.geometric_isomers_hapdent_idc for lig in self.ligands],
+            # Convenience information for the output csv.
+            'donors': ['-'.join(sorted(lig.donor_elements)) for lig in self.ligands]
+        }
+
+    def _get_rotated_ligands(self, target_vectors, ligand_origins) -> list[list[Atoms]]:
         """
         Rotates the ligands according to the target vectors and returns a list of rotated ligands.
         :return: List of lists of ASE Atoms objects, where the outer list corresponds to each ligand and the inner lists correspond to the isomers of that ligand.
         """
         rotated_ligands = []
-        for ligand, target_vector_list, origin in zip(ligands, target_vectors, ligand_origins):
-            # Extract the geometry and donor atoms of the ligand
-            atoms, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices()
+        for ligand, target_vector_list, origin in zip(self.ligands, target_vectors, ligand_origins):
+            # Extract the geometry and donor atoms of the effective ligand, potentially with 'Cu' dummy atoms for haptic ligands.
+            atoms, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices(dummy='Cu')
             # Cast the target vectors to numpy arrays
             target_vector_list = [np.array(v) for v in target_vector_list]
 
             # Align the donor atoms of the ligand to the target vectors. Either make all possible geometrical isomers or just the ones specified in the MetaLig. For most cases these two should be identical, but making all combinations has two consequences: (a) the order of input target vectors does not matter (the one with the lowest error is always assembled) and (b) some geometries have more isomers, e.g. the `trigonal` geometry has in theory three isomers in which simply the ligand is rotated, but for the MetaLig we had decided to filter out these isomers so that only one is kept.
-            if self.all_combinations:
+            if self.force_all_isomers:
                 ligand_isomers, _, _ = try_all_geometrical_isomer_possibilities(atoms=atoms, donor_idc=donor_atoms[0], target_vectors=target_vector_list)
             else:
                 ligand_isomers = [align_donor_atoms(atoms, donor_idc=idc, target_vectors=target_vector_list, return_rssd=False) for idc in donor_atoms]
 
             # Remove the dummy atom from the haptic ligands
-            ligand_isomers = self._remove_haptic_dummy_atom(atoms_list=ligand_isomers, dummy_atom="Cu", donor_atoms_idc=ligand.hapdent_idc)
+            if ligand.n_haptic_atoms > 0:
+                ligand_isomers = [remove_haptic_dummy_atom(atoms=atoms, dummy_atom='Cu') for atoms in ligand_isomers]
 
             # Translate the ligand to its correct location in the complex
             for ligand_isomer in ligand_isomers:
@@ -438,39 +484,6 @@ class IsomerFactory(object):
             rotated_ligands.append(ligand_isomers)
 
         return rotated_ligands
-
-    @staticmethod
-    def _remove_haptic_dummy_atom(atoms_list: List[ase.Atoms], dummy_atom: str, donor_atoms_idc: Tuple[Tuple[int]]):
-        """
-        Removes the dummy atom from the generated isomers.
-        :param atoms_list: List of ASE Atoms objects representing the isomers.
-        :param dummy_atom: The symbol of the dummy atom to remove (e.g., "Cu").
-        :param donor_atoms_idc: Indices of the donor atoms in the isomers. If the donor atoms are tuples, it indicates haptic coordination.
-        :return: List[Atoms]
-        """
-        # Check to see if there is haptic coordination
-        haptic_coordination = False
-        for donor_atoms in donor_atoms_idc:
-            if type(donor_atoms) == tuple:
-                haptic_coordination = True
-                break
-            else:
-                pass
-
-        # If there is no haptic coordination, return the atoms list as is
-        if not haptic_coordination:
-            return atoms_list
-
-        # If there is haptic coordination, remove the dummy atom from the donor atoms
-        else:
-            for atoms in atoms_list:
-                dummy_idc = [i for i, atom in enumerate(atoms) if
-                             atom.symbol == dummy_atom]
-                dummy_idc.sort(
-                    reverse=True)  # This is important so that the larger index is removed first so as not to change the index of the other atoms
-                for dummy_idx in dummy_idc:
-                    atoms.pop(dummy_idx)
-            return atoms_list
 
     def _get_all_unique_metal_centers(self) -> List[ase.Atom]:
         """
@@ -489,8 +502,6 @@ class IsomerFactory(object):
     def _get_merged_graph_from_ligands_and_metal_centers(self) -> tuple[nx.Graph, list, list]:
         """
         Merges the graphs from the ligands into one graph. The metal is added as a node with index 0 and connected to the donor atoms of the ligands.
-        # todo
-            This function does not yet work perfectly for multidentate bridging ligands. The donor atoms of the ligands are not correctly connected to the metal center. E.g. for a bidentate bridging atom with two metal donors, all donor atoms are connected to each metal of the two metal centers. This needs to be either fixed or documented.
         :return: Tuple of the merged graph of the complex, the indices of the ligand atoms and the indices of the ligand donor atoms
         """
         ligand_graphs = [deepcopy(lig.graph) for lig in self.ligands]
@@ -562,7 +573,7 @@ class IsomerFactory(object):
         return graph, ligand_indices, donor_idc
 
 class AxialOptModifier:
-    def __init__(self, isomers: List['Isomer'], opt: bool = True, distance_cutoff: Optional[float] = 4.0, use_cutoff: bool = False):
+    def __init__(self, isomers: List['AssembledIsomer'], opt: bool = True, distance_cutoff: Optional[float] = 4.0, use_cutoff: bool = False):
         """
         This class will take a list of ASE Atoms objects and optimize mono-coordinating ligands around their coordination axis.
         Optionally, a distance_cutoff (Å) can be supplied so the penalty is only evaluated for pairs closer than this threshold.
@@ -572,9 +583,9 @@ class AxialOptModifier:
         # Optional distance cutoff for the objective function (None = use all pairs)
         self.distance_cutoff: Optional[float] = distance_cutoff if use_cutoff else None
         self.output_isomers = []
-        logging.debug(f"AxialOpt initialized with {len(self.input_isomers)} Isomer objects.")
+        logging.debug(f"AxialOpt initialized with {len(self.input_isomers)} AssembledIsomer objects.")
 
-    def modify(self, target_vectors, ligand_origins) -> List['Isomer']:
+    def modify(self, target_vectors, ligand_origins) -> List['AssembledIsomer']:
         """
         Optimize the rotation of each mono-coordinating ligand around their respective coordination axis simultaneously
         """
@@ -604,14 +615,14 @@ class AxialOptModifier:
                     continue
                 self.rotate(atoms=atoms, vector=axis[0], origin=origin, idc=idc, angle=angle)
 
-            # Update the Isomer() with the new 3D coordinates
+            # Update the AssembledIsomer() with the new 3D coordinates
             isomer.atoms = atoms
             isomer.atomic_props = get_atomic_props_from_ase_atoms(atoms)
             for ligand, idc in zip(isomer.ligands, isomer.ligand_idc):
                 ligand.atoms = atoms[idc]
                 ligand.atomic_props = get_atomic_props_from_ase_atoms(ligand.atoms)
 
-            # Append the new Isomer to the output complexes
+            # Append the new AssembledIsomer to the output complexes
             self.output_isomers.append(isomer)
 
         logging.debug(f"Optimized {len(self.output_isomers)} complexes with mono-coordinating ligand rotations.")
@@ -707,22 +718,22 @@ class DuplicateIsomerFilter:
     Class to reduce the number of isomers based on alignment or fingerprint similarity.
     """
 
-    def __init__(self, isomers: List['Isomer'],
-                 method: str = "fingerprint",
+    def __init__(self, isomers: List['AssembledIsomer'],
+                 method: str = "distances",
                  grid_size=9,
                  isomer_comparison_mode: str = "max_diff",
-                 isomer_comparison_grouping_mode: str = "cluster",  # 'cluster' or 'cutoff'
-                 fingerprint_grouping_cutoff: float = 1.0,
-                 metal_centres: List[List[float]] = None,
+                 isomer_comparison_grouping_mode: str = "cutoff",  # 'cluster' or 'cutoff'
+                 fingerprint_grouping_cutoff: float = 0.5,
+                 metal_centers: List[List[float]] = None,
                  energy_heuristic_mode: str = "max",
                  ):
         """
         Initialize the isomer reduction class.
         :param: isomers: The list of ASE Atoms objects representing isomers.
-        :param: method: The method to use for reduction, either 'alignment' or 'fingerprint'.
+        :param: method: The method to use for reduction, either 'alignment' or 'distances'.
         :param: grid_size: The number of grid points when scanning from 0 to 360 for exact alignment.
-        :param: isomer_comparison_mode: The mode for comparing fingerprints, e.g., 'max_diff', etc.
-        :param: isomer_comparison_grouping_mode: The mode for grouping fingerprints, either 'cluster' or 'cutoff'.
+        :param: duplicate_distances_metric: The mode for comparing fingerprints, e.g., 'max_diff', etc.
+        :param: duplicate_distances_classifier: The mode for grouping fingerprints, either 'cluster' or 'cutoff'.
         :param: fingerprint_grouping_cutoff: The cutoff value for grouping fingerprints when using 'cutoff' mode.
         """
         self.isomers = isomers
@@ -731,14 +742,14 @@ class DuplicateIsomerFilter:
         self.isomer_comparison_mode = isomer_comparison_mode
         self.isomer_comparison_grouping_mode = isomer_comparison_grouping_mode
         self.fingerprint_grouping_cutoff = fingerprint_grouping_cutoff
-        self.metal_centres = metal_centres
+        self.metal_centres = metal_centers
         self.diff_matrix = None  # Placeholder for the fingerprint difference matrix
         self.energy_heuristic_mode = energy_heuristic_mode
         self.output_isomers = []
         self.similarity_cutoff_used = None
 
 
-    def filter(self) -> List['Isomer']:
+    def filter(self) -> List['AssembledIsomer']:
         """
         Reduce the number of isomers based on the specified method.
         :return: unique isomers as a list of ASE Atoms objects
@@ -748,15 +759,15 @@ class DuplicateIsomerFilter:
 
         if self.method == "alignment":
             self.output_isomers = self._reduce_by_alignment()
-        elif self.method == "fingerprint":
+        elif self.method == "distances":
             self.output_isomers = self._reduce_by_fingerprint()
         else:
-            raise ValueError(f"Fatal Error: Unsupported reduction method '{self.method}. Supported methods are 'alignment' and 'fingerprint'.")
+            raise ValueError(f"Fatal Error: Unsupported reduction method '{self.method}. Supported methods are 'alignment' and 'distances'.")
 
         logging.debug(f"Reduced isomers from {len(self.isomers)} to {len(self.output_isomers)} using method '{self.method}'.")
         return self.output_isomers
 
-    def _reduce_by_alignment(self) -> List['Isomer']:
+    def _reduce_by_alignment(self) -> List['AssembledIsomer']:
         """
         Reduce isomers by aligning them and calculating RMSD or another distance metric.
         :return:
@@ -856,7 +867,7 @@ class DuplicateIsomerFilter:
         :param rotated_atoms: ASE Atoms object to be rotated.
         :return: float — alignment score (as defined by energy_heuristic or objective_function)
         """
-        assert hasattr(self, "metal_centres"), ValueError("Fatal Error: metal_centres must be defined before calling align_isomers. ")
+        assert hasattr(self, "metal_centers"), ValueError("Fatal Error: metal_centers must be defined before calling align_isomers. ")
         logging.debug(f"Aligning isomers based on {len(self.metal_centres)} metal centre(s).")
 
         # Here the number of metal centres and the fact that metal centres of different isomers
@@ -967,7 +978,7 @@ class DuplicateIsomerFilter:
         return self.output_isomers
 
     @staticmethod
-    def _assign_duplicate_warnings(group_labels_matrix: np.ndarray, isomers: List['Isomer']):
+    def _assign_duplicate_warnings(group_labels_matrix: np.ndarray, isomers: List['AssembledIsomer']):
         """
         Assign 'duplicate' warning to all but the first occurrence in each group
         :param group_labels_matrix: 2D numpy array with labels 'Close' or 'Far'.
@@ -980,7 +991,6 @@ class DuplicateIsomerFilter:
                     isomers[j].warning = "duplicate"
 
         return isomers
-
 
     def _analyze_similarity(self, matrix: np.ndarray, quantile: float = 0.2, method: str = "cluster", cutoff: Optional[float] = None) -> np.ndarray:
         """
@@ -1216,7 +1226,7 @@ class DuplicateIsomerFilter:
             color_continuous_scale=color_scale,
             zmin=0, zmax=1.0,
             title="Comparison Matrix (Interactive)",
-            labels={"x": "Isomer Index", "y": "Isomer Index", "color": "Difference"}
+            labels={"x": "AssembledIsomer Index", "y": "AssembledIsomer Index", "color": "Difference"}
         )
 
         # Get the upper triangle indices (excluding the diagonal)

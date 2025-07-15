@@ -5,21 +5,22 @@ import json
 import pandas as pd
 import numpy as np
 from DARTassembler.src.misc.io import write_yaml
-from DARTassembler.src.assembler.isomer import Isomer
+from DARTassembler.src.assembler.isomer import AssembledIsomer
 
 _gbl_optimization_movie = 'ffmovie.xyz'
-_gbl_concatenated_xyz = 'concat_passed_complexes.xyz'
-_gbl_run_info_table = 'info_table.csv'
+_gbl_concatenated_xyz = 'concat_passed_isomers.xyz'
+_gbl_run_info_table = 'isomers.csv'
 _gbl_batch_dir = 'batches'
 _gbl_input_dir = 'input'
-_gbl_input_settings = 'assembly_input.yml'
+_gbl_input_settings = 'assembler.yml'
 _gbl_log_file = 'log.txt'
 
 # Batch output files
 _batch_passed_ff_movie = 'concat_passed_ffmovie.xyz'     # All xyz movies of the forcefield optimization of passed complexes
 _batch_failed_ff_movie = 'concat_failed_ffmovie.xyz'     # All xyz movies of the forcefield optimization of failed complexes
-_batch_passed_xyz = 'concat_passed_complexes.xyz'        # All xyz files of passed complexes
-_batch_failed_xyz = 'concat_failed_complexes.xyz'        # All xyz files of failed complexes
+_batch_passed_xyz = 'concat_passed_isomers.xyz'        # All xyz files of passed complexes
+_batch_failed_xyz = 'concat_failed_isomers.xyz'        # All xyz files of failed complexes
+_batch_all_xyz = 'concat_all_isomers.xyz'                  # All xyz files of passed and failed complexes concatenated
 _batch_output = 'batch_output.txt'                       # The batch output file with all stdout output
 _batch_errors = 'batch_errors.txt'                       # The batch errors file with all stderr output
 _batch_complex_dir = 'complexes'                         # The directory where all the complex output files are stored
@@ -138,11 +139,12 @@ class BatchAssemblerOutput(object):
         self.failed_ff_movie_path = Path(self.batchdir, _batch_failed_ff_movie)   # All xyz movies of the forcefield optimization of failed complexes
         self.passed_xyz_path = Path(self.batchdir, _batch_passed_xyz)             # All xyz files of passed complexes
         self.failed_xyz_path = Path(self.batchdir, _batch_failed_xyz)             # All xyz files of failed complexes
+        self.all_xyz_path = Path(self.batchdir, _batch_all_xyz)                   # All xyz files of passed and failed complexes concatenated
         self.output_path = Path(self.batchdir, _batch_output)                     # The batch output file with all stdout output
         self.errors_path = Path(self.batchdir, _batch_errors)                     # The batch errors file with all stderr output
         self.complex_dir = Path(self.batchdir, _batch_complex_dir)                # The directory where all the complex output files are stored
 
-        concatenated_files = [self.passed_ff_movie_path, self.failed_ff_movie_path, self.passed_xyz_path, self.failed_xyz_path]
+        concatenated_files = [self.passed_ff_movie_path, self.failed_ff_movie_path, self.passed_xyz_path, self.failed_xyz_path, self.all_xyz_path]
         for file in concatenated_files:
             ensure_file_deleted(file)
 
@@ -244,7 +246,7 @@ class ComplexAssemblerOutput(object):
         df.to_csv(self.ligand_output_path, index=False)
 
     def save_data_json(self,
-                       complex: Isomer,
+                       complex: AssembledIsomer,
                        ) -> None:
         """
         Saves all data in a contained json file.
