@@ -15,9 +15,7 @@ from scipy.spatial.distance import cdist, pdist
 from scipy.spatial.transform import Rotation as R
 from scipy.optimize import linear_sum_assignment, differential_evolution
 import pandas as pd
-
 from scipy.optimize import brute
-
 from DARTassembler.src.assembler.utils import are_atoms_equal, get_list_with_all_possible_swappings, \
     remove_haptic_dummy_atom, generate_pronounceable_word, get_complex_name
 from DARTassembler.src.metalig.geometry import try_all_geometrical_isomer_possibilities, all_geometries, align_vectors, \
@@ -319,7 +317,7 @@ class AssembledComplex(object):
         self.metal_idc = [idx for idx in range(len(unique_metal_centers))]
         self.graph, self.ligand_indices, self.donor_indices = self._get_merged_graph_from_ligands_and_metal_centers()
         self.graph_hash = get_graph_hash(self.graph)
-        self.complex_name = self.get_complex_name(avoid_names=avoid_names)
+        self.complex_name = self._get_complex_name(avoid_names=avoid_names)
 
         # Generate all possible geometric isomers to be generated via exchanging ligands (or, as here implemented, exchanging the target vectors of the ligands).
         target_vector_combs = get_list_with_all_possible_swappings(objects=self.target_vectors, swap_groups=self.swap_groups)
@@ -348,7 +346,7 @@ class AssembledComplex(object):
                     ligand_idc=self.ligand_indices,
                     donor_idc=self.donor_indices,
                     global_props={},
-                    ligand_info=self.get_ligandinfo(),
+                    ligand_info=self._get_ligandinfo(),
                     target_vectors=target_vectors,
                     ligand_origins=ligand_origins,
                     warning='',  # Initially no warning, will be updated later if needed
@@ -356,7 +354,6 @@ class AssembledComplex(object):
                 )
                 isomer = AxialOptModifier(isomers=[isomer], opt=self.optimize_monoaxial).modify(target_vectors=target_vectors, ligand_origins=ligand_origins)[0]
                 isomers.append(isomer)
-
 
         # Warnings for each isomer. If an isomer has no issues, the note is ''. If an isomer is excluded because of clashing ligands or because it's equivalent to another one, the note is `clashing' or `duplicate`.
         for idx, isomer in enumerate(isomers):
@@ -394,9 +391,6 @@ class AssembledComplex(object):
 
         return
 
-    def get_complex_name(self, avoid_names: Optional[list[str]]) -> str:
-        return get_complex_name(seed=self.graph_hash, length=self.complex_name_length, suffix=self.complex_name_suffix, avoid_names=avoid_names)
-
     def to_dict(self):
         """
         Converts the AssembledComplex object to a dictionary.
@@ -418,7 +412,7 @@ class AssembledComplex(object):
             "metal_idc": self.metal_idc,
             "donor_idc": self.donor_indices,
             "ligand_idc": self.ligand_indices,
-            "ligand_info": self.get_ligandinfo(),
+            "ligand_info": self._get_ligandinfo(),
             "input": {
                 "check_duplicate": self.check_duplicate,
                 "check_clashing": self.check_clashing,
@@ -434,7 +428,10 @@ class AssembledComplex(object):
 
         }
 
-    def get_ligandinfo(self) -> Dict[str, Any]:
+    def _get_complex_name(self, avoid_names: Optional[list[str]]) -> str:
+        return get_complex_name(seed=self.graph_hash, length=self.complex_name_length, suffix=self.complex_name_suffix, avoid_names=avoid_names)
+
+    def _get_ligandinfo(self) -> Dict[str, Any]:
         return {
             # Important info for making Ligands() objects in the AssembledIsomer().
             'unique_names': [lig.unique_name for lig in self.ligands],
