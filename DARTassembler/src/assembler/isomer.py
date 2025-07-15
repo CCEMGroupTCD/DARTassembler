@@ -135,26 +135,27 @@ class AssembledIsomer(BaseMolecule):
             atoms += self.atoms[metal_idx]
         return atoms
 
-    @classmethod
-    def from_json(cls, filepath) -> 'AssembledIsomer':
-        """
-        Loads an AssembledIsomer object from a .json file.
-        :param filepath: Path to the .json file
-        :return: AssembledIsomer object
-        """
-        data = load_json(filepath)
-        return cls.from_dict(data)
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'AssembledIsomer':
-        """
-        Creates an AssembledIsomer object from a dictionary in the correct format.
-        :param data: Dictionary containing the AssembledIsomer data
-        :return: AssembledIsomer object
-        """
-        data['graph'] = graph_from_graph_dict(data['graph'])
-        data['charge'] = 0  # todo
-        return cls(**data)
+    # todo: update these methods using the new output format of the AssembledComplex.to_dict() method.
+    # @classmethod
+    # def from_json(cls, filepath) -> 'AssembledIsomer':
+    #     """
+    #     Loads an AssembledIsomer object from a .json file.
+    #     :param filepath: Path to the .json file
+    #     :return: AssembledIsomer object
+    #     """
+    #     data = load_json(filepath)
+    #     return cls.from_dict(data)
+    #
+    # @classmethod
+    # def from_dict(cls, data: Dict[str, Any]) -> 'AssembledIsomer':
+    #     """
+    #     Creates an AssembledIsomer object from a dictionary in the correct format.
+    #     :param data: Dictionary containing the AssembledIsomer data
+    #     :return: AssembledIsomer object
+    #     """
+    #     data['graph'] = graph_from_graph_dict(data['graph'])
+    #     data['charge'] = 0  # todo
+    #     return cls(**data)
 
 
 class AssembledComplex(object):
