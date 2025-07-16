@@ -6,12 +6,13 @@ User-defined global settings:
     verbosity                     2
     complex_name_length           8
     n_max_ligands                 100
+    consecutive_indices           False
 ==================================  batch_0  ===================================
 User-defined settings for batch_0:
     n_max_complexes               20
-    target_vectors                [['z'], ['-x', '-y'], ['y', 'x', '-z']]
+    target_vectors                [['x', 'y'], ['-x', '-y']]
     metal_centers                 Fe
-    ligand_geometries             ['1_monodentate', '2_cis', '3_facial']
+    ligand_geometries             ['2_cis', '2_cis']
     name                          batch_0
 ============================  2-2-1-1-monometalic  =============================
 User-defined settings for 2-2-1-1-monometalic:
@@ -62,10 +63,10 @@ User-defined settings for 2-2-bi_trans_minimal_input:
     metal_centers                 La
 =============================  Summary per batch  ==============================
 batch_0:
-  - 150 isomers tried, 72 isomers (from 20 complexes) successfully assembled.
-  - 78 isomers failed because of filters:
-    - clashing: 56
-    - duplicate: 22
+  - 92 isomers tried, 27 isomers (from 20 complexes) successfully assembled.
+  - 65 isomers failed because of filters:
+    - duplicate: 51
+    - clashing: 14
 2-2-1-1-monometalic:
   - 48 isomers tried, 28 isomers (from 10 complexes) successfully assembled.
   - 20 isomers failed because of filters:
@@ -83,8 +84,8 @@ batch_0:
     - clashing: 8
     - duplicate: 5
 ====================  Total summary of DART Assembler run  =====================
-  - 384 isomers tried, 269 isomers (from 53 complexes) successfully assembled.
-  - 115 isomers failed because of filters:
-    - clashing: 82
-    - duplicate: 33
+  - 326 isomers tried, 224 isomers (from 53 complexes) successfully assembled.
+  - 102 isomers failed because of filters:
+    - duplicate: 62
+    - clashing: 40
 DART Assembler output files saved to directory `data_output`.

@@ -2,20 +2,18 @@ output_directory: .
 verbosity: 2
 complex_name_length: 8
 n_max_ligands: 100
+consecutive_indices: false
 batches:
 - n_max_complexes: 20
   target_vectors:
-  - - z
+  - - x
+    - y
   - - -x
     - -y
-  - - y
-    - x
-    - -z
   metal_centers: Fe
   ligand_geometries:
-  - 1_monodentate
   - 2_cis
-  - 3_facial
+  - 2_cis
   name: batch_0
 - n_max_complexes: 10
   total_ligand_charges: -3

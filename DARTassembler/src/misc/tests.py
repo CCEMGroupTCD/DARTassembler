@@ -291,14 +291,10 @@ class XYZIntegrationTest(object):
             result_string += f'Diff. n atoms: {n_same_atoms}/{n}{string}. '
             return result_string
 
-        string = f' {n_diff_el}/{n}' if n > 1 else ''
-        result_string += f'Diff. el:{string}. '
-        string = f' {n_diff_el_order}/{n}' if n > 1 else ''
-        result_string += f'Diff. el order:{string}. '
-        if n_diff_xyz_coordinates > 0 or sum_diff_xyz_coordinates > 0:
-            result_string += f'Diff coords: {n_diff_xyz_coordinates} (sum={sum_diff_xyz_coordinates:.2g}A). '
-        if n_diff_interatomic_distances > 0 or sum_interatomic_distances > 0:
-            result_string += f'Diff interdist: {n_diff_interatomic_distances} (sum={sum_interatomic_distances:.2g}A). '
+        result_string += f'Diff. el: {n_diff_el}/{n}. '
+        result_string += f'Diff. el order: {n_diff_el_order}/{n}. '
+        result_string += f'Diff. dist: {n_diff_interatomic_distances} (sum={sum_interatomic_distances:.2g}A). '
+        result_string += f'Diff. coords: {n_diff_xyz_coordinates} (sum={sum_diff_xyz_coordinates:.2g}A). '
 
         if result_string == '':
             result_string = None

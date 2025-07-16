@@ -38,6 +38,7 @@ class Assembler(BaseModule):
                  verbosity: int = 2,
                  complex_name_length: int = 8,
                  n_max_ligands: Optional[int] = None,
+                 consecutive_indices: bool = True,
                  ):
         """
         The main class for the DART workflow. It assembles all isomers of complexes from specified ligand databases and metal centers. Finally, all assembled complexes are saved to the output directory as .xyz and .json files, together with a csv file containing information about the assembly run.
@@ -51,6 +52,7 @@ class Assembler(BaseModule):
         self.verbosity = verbosity
         self.complex_name_length = complex_name_length
         self.n_max_ligands = n_max_ligands
+        self.consecutive_indices = consecutive_indices
 
         self._loaded_ligand_databases = {}  # to avoid reloading the same ligand database multiple times
 
@@ -225,6 +227,7 @@ class Assembler(BaseModule):
                                             complex_name_length=self.complex_name_length,
                                             complex_name_suffix=self.complex_name_suffix,
                                             avoid_names=self.all_tried_complex_names,  # Avoid names of already tried complexes
+                                            consecutive_indices=self.consecutive_indices
                 )
                 # Add the complex name to the set of all tried complex names to avoid duplicates in the next iteration
                 self.all_tried_complex_names.add(complex.complex_name)

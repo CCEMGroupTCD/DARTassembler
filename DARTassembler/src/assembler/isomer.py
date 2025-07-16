@@ -295,7 +295,8 @@ class AssembledComplex(object):
                          duplicate_cutoff: float = 0.5,
                          complex_name_length: int = 8,
                          complex_name_suffix: str = '',
-                         avoid_names: Optional[List[str]] = None
+                         avoid_names: Optional[List[str]] = None,
+                         consecutive_indices: bool = True
                          ):
         """
         Generates all possible isomers from the ligands and metal centers provided.
@@ -382,8 +383,11 @@ class AssembledComplex(object):
         # Sort isomers so that the ones without warnings are first, so that the indices of the names are consecutive.
         self.successful_isomers = [isomer for isomer in isomers if isomer.warning == '']
         self.unsuccessful_isomers = [isomer for isomer in isomers if isomer.warning != '']
-        self.isomers = self.successful_isomers + self.unsuccessful_isomers  # Put successful isomers first, then unsuccessful ones, while keeping the order of isomers within each group.
         self.success = len(self.successful_isomers) > 0
+        if consecutive_indices:
+            self.isomers = self.successful_isomers + self.unsuccessful_isomers  # Put successful isomers first, then unsuccessful ones, while keeping the order of isomers within each group.
+        else:
+            self.isomers = isomers
 
         # Important: assign names after sorting by success and failure, so that the names are consecutive for the successful isomers.
         for isomer_idx, isomer in enumerate(self.isomers, start=1):
