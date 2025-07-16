@@ -1621,7 +1621,7 @@
                     "H"
                 ]
             },
-            "warning": "duplicate",
+            "warning": "duplicate(3,4)",
             "target_vectors": [
                 [
                     [

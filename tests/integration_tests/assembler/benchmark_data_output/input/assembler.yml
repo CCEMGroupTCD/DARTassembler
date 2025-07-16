@@ -2,7 +2,6 @@ output_directory: .
 verbosity: 2
 complex_name_length: 8
 n_max_ligands: 100
-consecutive_indices: false
 batches:
 - n_max_complexes: 20
   target_vectors:
