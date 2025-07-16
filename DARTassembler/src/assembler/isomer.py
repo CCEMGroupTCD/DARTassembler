@@ -827,7 +827,7 @@ class AxialOptModifier:
             target_vectors = isomer.ligand_target_vectors
             ligand_origins = isomer.ligand_origins
 
-            # Run the global optimizer.
+            # Run the optimizer.
             bounds = [[0, 360] for _ in target_vectors]
             result = differential_evolution(
                 self.objective_function, bounds=bounds,
