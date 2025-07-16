@@ -242,31 +242,33 @@ class XYZIntegrationTest(object):
 
         return df_mol_results
 
-    def _get_if_molecules_are_same(self):
+    def _old_mol_identical_to_one_mol_in_new_mols(self) -> list[bool]:
         """
-        Check if the order of molecules is different but the molecules themselves are the same by checking interatomic distances.
+        Return a Boolean list saying whether every molecule in `self.old_mols`
+        occurs (ignoring order) in `self.new_mols`, within `self.tol`.
+        :return: list of bools of len `self.old_mols`, where each bool indicates whether the corresponding molecule in `self.old_mols` is the same as any molecule in `self.new_mols`.
         """
-        matches = []
-        for old_mol in self.old_mols:
-            has_match = False
-            for new_mol in self.new_mols:
-                if not sorted(old_mol.get_chemical_symbols()) == sorted(new_mol.get_chemical_symbols()):
-                    continue
-                old_mol_dists = np.sort(old_mol.get_all_distances().flatten())
-                new_mol_dists = np.sort(new_mol.get_all_distances().flatten())
-                diff_dist = np.abs(old_mol_dists - new_mol_dists)
-                if np.all(diff_dist <= self.tol):
-                    has_match = True
-                    break
-            matches.append(has_match)
-        return matches
+        def _fingerprint(mol, tol):
+            # 1. composition – order independent
+            comp = ''.join(sorted(mol.get_chemical_symbols()))  # e.g. 'CCHHO'
+            # 2. geometry signature – sort + round distances to the tol grid
+            d = mol.get_all_distances(mic=False).ravel()
+            sig = tuple(np.sort(np.rint(d / tol).astype(np.int16)))  # tuple → hashable
+            return (comp, sig)
+
+        # Pre-fingerprint all new molecules once
+        new_signatures = {_fingerprint(m, self.tol) for m in self.new_mols}
+
+        # Check each old molecule against the set
+        is_same = [_fingerprint(m, self.tol) in new_signatures for m in self.old_mols]
+        return is_same
 
     def compare_and_return_result_string(self) -> Union[str, None]:
         """
         Compares the two xyz files and returns a short string describing the differences. If there are no differences, None is returned.
         :return: str or None
         """
-        matches = self._get_if_molecules_are_same()
+        matches = self._old_mol_identical_to_one_mol_in_new_mols()
         n = max(len(self.new_mols), len(self.old_mols))
         result_string = f'Same: {sum(matches)}/{n}. '
 
