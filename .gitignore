@@ -181,4 +181,4 @@ coverage.xml
 *.pot
 
 # Sphinx documentation
-docs/_build/
+docs/_build/dev/ligand_figure/
