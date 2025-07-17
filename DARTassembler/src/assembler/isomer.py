@@ -1,6 +1,7 @@
 """
 This file contains the classes and methods that are used to process the input data and generate the assembled transition metal complex isomers.
 """
+import sys
 import warnings
 from typing import Dict, Any, List, Optional, Tuple, Union
 from ase.visualize import view
@@ -28,7 +29,14 @@ from DARTassembler.src.metalig.utils_molecule import hapdent_idc_to_donor_idc, g
 from DARTassembler.src.misc.io import load_json
 from DARTassembler.src.metalig.utils_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, get_graph_hash
 
-
+try:
+    import plotly.graph_objects as go
+    import plotly.express as px
+    import plotly.io as pio
+    import dash
+    pio.renderers.default = 'browser'
+except ImportError:
+    print("Plotly is not installed. Skipping visualization features.")
 
 class AssembledIsomer(BaseMolecule):
 
@@ -44,6 +52,7 @@ class AssembledIsomer(BaseMolecule):
                     target_vectors = None,
                     ligand_origins = None,
                     warning: str = '',
+                    isomer_name: str = None
                     ):
         if global_props is None:
             global_props = {}
@@ -64,8 +73,8 @@ class AssembledIsomer(BaseMolecule):
         self.warning = warning
         self.target_vectors = target_vectors
         self.ligand_origins = ligand_origins
+        self.isomer_name = isomer_name
         self.metals = [self.atoms[idx].symbol for idx in self.metal_idc]
-        self.isomer_name = None # Will be set later
 
         # A little expensive, but small compared to the mono-axial optimization.
         self.ligands = self._get_ligands()  # Ligand() objects for convenient access to ligands. Won't be saved to disk in the DART workflow.
@@ -296,7 +305,6 @@ class AssembledComplex(object):
                          complex_name_length: int = 8,
                          complex_name_suffix: str = '',
                          avoid_names: Optional[List[str]] = None,
-                         consecutive_indices: bool = True
                          ):
         """
         Generates all possible isomers from the ligands and metal centers provided.
@@ -325,6 +333,9 @@ class AssembledComplex(object):
         ligand_origin_combs = get_list_with_all_possible_swappings(objects=self.ligand_origins, swap_groups=self.swap_groups)
 
         isomers = []
+        same_length_target_vectors = []
+        same_length_ligand_origins = []
+        isomer_idx = 1
         for target_vectors, ligand_origins in zip(target_vector_combs, ligand_origin_combs):
             rotated_ligands = self._get_rotated_ligands(target_vectors=target_vectors, ligand_origins=ligand_origins)
 
@@ -352,12 +363,23 @@ class AssembledComplex(object):
                     ligand_origins=ligand_origins,
                     warning='',  # Initially no warning, will be updated later if needed
                     validity_check=True,
+                    isomer_name=self.complex_name + str(isomer_idx)  # Assign a name based on the complex name and index
                 )
-                isomer = AxialOptModifier(isomers=[isomer], opt=self.optimize_monoaxial).modify(target_vectors=target_vectors, ligand_origins=ligand_origins)[0]
                 isomers.append(isomer)
+                same_length_ligand_origins.append(ligand_origins)
+                same_length_target_vectors.append(target_vectors)
+                isomer_idx += 1
 
-        # Warnings for each isomer. If an isomer has no issues, the note is ''. If an isomer is excluded because of clashing ligands or because it's equivalent to another one, the note is `clashing' or `duplicate`.
-        for idx, isomer in enumerate(isomers):
+        pre_isomers_duplicate_groups = DuplicateIsomerFilter(
+                                                            isomers=isomers,
+                                                            fingerprint_grouping_cutoff=self.duplicate_cutoff,
+                                                            metal_centers=self.metal_centers
+                                                            ).get_duplicate_groups()
+        pre_isomers_duplicate_group_names = [set([isomer.isomer_name for isomer in isomer_group]) for isomer_group in pre_isomers_duplicate_groups]
+
+        # Do a mono-axial optimization of the isomers and afterward check for clashing ligands.
+        for idx, isomer, target_vectors, ligand_origins in zip(range(len(isomers)), isomers, same_length_target_vectors, same_length_ligand_origins):
+            isomers[idx] = AxialOptModifier(isomers=[isomers[idx]], opt=self.optimize_monoaxial).modify(target_vectors=target_vectors, ligand_origins=ligand_origins)[0]
             if isomer.warning == '' and self.check_clashing:
                 clashfilter = IsomerClashFilter(
                     buffer=self.clashing_buffer,
@@ -372,26 +394,49 @@ class AssembledComplex(object):
                     isomer.warning = 'clashing'
                     continue
 
-        # Add inplace warnings for isomers that are duplicates of each other. Very important to do this after the clash filter, because otherwise a clashing isomer might be seen as the "first duplicate" and thus be kept, while the other, not-clashing isomer would be discarded.
-        not_clashing_isomers = [isomer for isomer in isomers if isomer.warning == '']
-        DuplicateIsomerFilter(
-                                isomers=not_clashing_isomers,
-                                fingerprint_grouping_cutoff=self.duplicate_cutoff,
-                                metal_centers=self.metal_centers
-                                ).filter()
+        # Check for duplicates again after the mono-axial optimization.
+        post_isomers_duplicate_groups = DuplicateIsomerFilter(
+                                                            isomers=isomers,
+                                                            fingerprint_grouping_cutoff=self.duplicate_cutoff,
+                                                            metal_centers=self.metal_centers
+                                                            ).get_duplicate_groups()
+        post_isomers_duplicate_group_names = [set([isomer.isomer_name for isomer in isomer_group]) for isomer_group in post_isomers_duplicate_groups]
 
-        # Sort isomers so that the ones without warnings are first, so that the indices of the names are consecutive.
-        self.successful_isomers = [isomer for isomer in isomers if isomer.warning == '']
-        self.unsuccessful_isomers = [isomer for isomer in isomers if isomer.warning != '']
+        # Join the pre- and post-isomers duplicate groups. If an isomer is a duplicate in either the pre- or post-isomers duplicate groups, it is considered a duplicate.
+        joined_isomers_duplicate_group_names = self._join_duplicate_groups_by_union(pre_isomers_duplicate_group_names, post_isomers_duplicate_group_names)
+        assert sorted(name for group in joined_isomers_duplicate_group_names for name in group) == sorted(name for isomer in isomers for name in [isomer.isomer_name]), "Joined isomer groups do not contain all isomers."
+        # todo: Outcomment this line to go back to the previous behaviour where duplicates are only detected after the mono-axial optimization. If this line is commented, both the pre and post duplicate check is active and an isomer is considered a duplicate if it is a duplicate in either the pre- OR post-isomers duplicate groups.
+        joined_isomers_duplicate_group_names = post_isomers_duplicate_group_names   # todo debugging
+
+        # Sort the joint isomer names by the order of `isomers` and convert to lists, so that the output order of isomers is preserved. That is particularly important so that the duplicate filter always keeps the same, "first" isomer in the group.
+        isomer_names_order = [isomer.isomer_name for isomer in isomers]
+        joined_isomers_duplicate_group_names = [sorted(list(group), key=lambda x: isomer_names_order.index(x)) for group in joined_isomers_duplicate_group_names]
+
+        # Divide the isomers into successful and unsuccessful isomers. If an isomer has a 'clashing' warning, or if it is a duplicate, it is considered unsuccessful. For duplicates, we use the joint duplicate groups and let through only the first isomer in each group, marking the others as duplicates. It is important that this is done after the clash filter, so that clashing isomers are not considered duplicates.
+        self.successful_isomers = []
+        self.unsuccessful_isomers = []
+        isomer_dict = {isomer.isomer_name: isomer for isomer in isomers}
+        for isomer_group in joined_isomers_duplicate_group_names:
+            assert len(isomer_group) == len(set(isomer_group)) and len(isomer_group) > 0, f"Duplicate isomer group contains duplicates or is empty: {isomer_group}"
+            first_isomer_in_group_added = False
+            for isomer_name in isomer_group:
+                if isomer_dict[isomer_name].warning == 'clashing':
+                    # If the isomer is clashing, add it to the unsuccessful isomers.
+                    self.unsuccessful_isomers.append(isomer_dict[isomer_name])
+                elif isomer_dict[isomer_name].warning == '':
+                    if not first_isomer_in_group_added:
+                        # If the isomer is not clashing and is the first in the group, add it to the successful isomers.
+                        self.successful_isomers.append(isomer_dict[isomer_name])
+                        first_isomer_in_group_added = True
+                    else:
+                        # If the isomer is not clashing and is not the first in the group, add it to the unsuccessful isomers and mark it as a duplicate.
+                        duplicate_indices = ','.join(name.removeprefix(self.complex_name) for name in isomer_group)
+                        isomer_dict[isomer_name].warning = f'duplicate({duplicate_indices})'
+                        self.unsuccessful_isomers.append(isomer_dict[isomer_name])
+                else:
+                    raise ValueError(f"Isomer {isomer_name} has an unexpected warning: {isomer_dict[isomer_name].warning}. Expected 'clashing' or ''.")
         self.success = len(self.successful_isomers) > 0
-        if consecutive_indices:
-            self.isomers = self.successful_isomers + self.unsuccessful_isomers  # Put successful isomers first, then unsuccessful ones, while keeping the order of isomers within each group.
-        else:
-            self.isomers = isomers
-
-        # Important: assign names after sorting by success and failure, so that the names are consecutive for the successful isomers.
-        for isomer_idx, isomer in enumerate(self.isomers, start=1):
-            isomer.isomer_name = self.complex_name + str(isomer_idx)
+        self.isomers = isomers
 
         return
 
@@ -431,6 +476,29 @@ class AssembledComplex(object):
             }
 
         }
+
+    @staticmethod
+    def _join_duplicate_groups_by_union(pre_isomers_duplicate_group_names: List[set[str]],
+                                       post_isomers_duplicate_group_names: List[set[str]]) -> List[set[str]]:
+        """
+        Join the pre- and post-isomers duplicate groups. If two isomers are duplicates in either the pre- or post-isomers duplicate groups, they are considered duplicates.
+        """
+        joined_isomers_duplicate_group_names: list[set[str]] = []
+        for pre_isomer_group in pre_isomers_duplicate_group_names:
+            joint_group = pre_isomer_group
+            for isomer_name in pre_isomer_group:
+                for post_isomer_group in post_isomers_duplicate_group_names:
+                    if isomer_name in post_isomer_group:
+                        # If the isomer is in the post-isomer group, join the groups.
+                        joint_group = joint_group.union(post_isomer_group)
+                        break
+            joint_group = sorted(joint_group)
+            if joint_group not in joined_isomers_duplicate_group_names:
+                joined_isomers_duplicate_group_names.append(joint_group)
+
+        return joined_isomers_duplicate_group_names
+
+
 
     def _get_complex_name(self, avoid_names: Optional[list[str]]) -> str:
         return get_complex_name(seed=self.graph_hash, length=self.complex_name_length, suffix=self.complex_name_suffix, avoid_names=avoid_names)
@@ -739,31 +807,30 @@ class DuplicateIsomerFilter:
         self.isomer_comparison_grouping_mode = isomer_comparison_grouping_mode
         self.fingerprint_grouping_cutoff = fingerprint_grouping_cutoff
         self.metal_centres = metal_centers
+        self.unique_metal_centers = list({(atom.symbol, tuple(atom.position)): atom for sublist in self.metal_centres for atom in sublist}.values())
         self.diff_matrix = None  # Placeholder for the fingerprint difference matrix
         self.energy_heuristic_mode = energy_heuristic_mode
-        self.output_isomers = []
+        self.isomer_group = []
         self.similarity_cutoff_used = None
 
 
-    def filter(self) -> List['AssembledIsomer']:
+    def get_duplicate_groups(self) -> List[List['AssembledIsomer']]:
         """
-        Reduce the number of isomers based on the specified method.
-        :return: unique isomers as a list of ASE Atoms objects
+        Returns all input isomers as a list of lists, in which each sublist contains isomers that are considered duplicates.
         """
         if len(self.isomers) <= 1:
-            return self.isomers
+            return [self.isomers]
 
         if self.method == "alignment":
-            self.output_isomers = self._reduce_by_alignment()
+            self.isomer_group = self._reduce_by_alignment()
         elif self.method == "distances":
-            self.output_isomers = self._reduce_by_fingerprint()
+            self.isomer_group = self._reduce_by_fingerprint()
         else:
             raise ValueError(f"Fatal Error: Unsupported reduction method '{self.method}. Supported methods are 'alignment' and 'distances'.")
 
-        logging.debug(f"Reduced isomers from {len(self.isomers)} to {len(self.output_isomers)} using method '{self.method}'.")
-        return self.output_isomers
+        return self.isomer_group
 
-    def _reduce_by_alignment(self) -> List['AssembledIsomer']:
+    def _reduce_by_alignment(self) -> List[List['AssembledIsomer']]:
         """
         Reduce isomers by aligning them and calculating RMSD or another distance metric.
         :return:
@@ -791,8 +858,8 @@ class DuplicateIsomerFilter:
             method=self.isomer_comparison_grouping_mode,
             cutoff=self.fingerprint_grouping_cutoff
         )
-        self.output_isomers = self._assign_duplicate_warnings(group_labels_matrix, self.isomers)
-        return self.output_isomers
+        self.isomer_group = self._group_isomers(group_labels_matrix, self.isomers)
+        return self.isomer_group
 
     def energy_heuristic(self, stat_atoms: ase.Atoms, rot_atoms: ase.Atoms):
         """
@@ -864,33 +931,33 @@ class DuplicateIsomerFilter:
         :return: float — alignment score (as defined by energy_heuristic or objective_function)
         """
         assert hasattr(self, "metal_centers"), ValueError("Fatal Error: metal_centers must be defined before calling align_isomers. ")
-        logging.debug(f"Aligning isomers based on {len(self.metal_centres)} metal centre(s).")
+        logging.debug(f"Aligning isomers based on {len(self.unique_metal_centers)} metal centre(s).")
 
         # Here the number of metal centres and the fact that metal centres of different isomers
         # must always be aligned is taken into account to determine if the isomers are similar or not
-        if len(self.metal_centres) == 1:
+        if len(self.unique_metal_centers) == 1:
             # There are 3 axes which an isomer can be rotated around to align it with another isomer
             bounds = [[0, 360] for _ in range(3)]
             # The 3 cardinal axes, properly centered on the metal centre
             axes = np.eye(3)  # Standard Cartesian axes (x, y, z)
             logging.debug("Performing 3D brute-force alignment over x, y, z axes.")
 
-        elif len(self.metal_centres) == 2:
+        elif len(self.unique_metal_centers) == 2:
             # The isomer can only be rotated around the metal-metal axis to determine if the isomers are similar or not
             bounds = [[0, 360] for _ in range(1)]
-            axis_vector = np.array(self.metal_centres[1]) - np.array(self.metal_centres[0])
+            axis_vector = self.unique_metal_centers[1].position - self.unique_metal_centers[0].position
             axis_vector /= np.linalg.norm(axis_vector)  # Normalize
             axes = [axis_vector]
             logging.debug(f"Performing 1D brute-force alignment around axis: {axis_vector.tolist()}")
 
-        elif len(self.metal_centres) >= 3:
+        elif len(self.unique_metal_centers) >= 3:
             # 3 metal centres means each isomer is fixed in space and their geometries can be directly compared
             # We simply return the energy heuristic
             logging.debug("Three or more metal centres detected — skipping alignment and using direct heuristic.")
             return self.energy_heuristic(stat_atoms=stationary_atoms, rot_atoms=rotated_atoms)
 
         else:
-            raise ValueError(f"Fatal Error: Unsupported number of metal centres ({len(self.metal_centres)}). ")
+            raise ValueError(f"Fatal Error: Unsupported number of metal centres ({len(self.unique_metal_centers)}). ")
 
         # Perform brute-force global optimization using the configured grid density
         result_angles = brute(
@@ -923,7 +990,7 @@ class DuplicateIsomerFilter:
         # Apply the rotation to the rotated isomer
         self.apply_combined_rotation(atoms=rotated_isomer,
                                      R_total=R_total,
-                                     center=np.array(self.metal_centres[0]))
+                                     center=np.array(self.unique_metal_centers[0].position))
 
         # calculate the energy heuristic that will be minimized
         val = self.energy_heuristic(stat_atoms=stationary_isomer,
@@ -970,23 +1037,60 @@ class DuplicateIsomerFilter:
         group_labels_matrix = self._analyze_similarity(self.diff_matrix, quantile=0.2,
                                                        method=self.isomer_comparison_grouping_mode,
                                                        cutoff=self.fingerprint_grouping_cutoff)
-        self.output_isomers = self._assign_duplicate_warnings(group_labels_matrix, self.isomers)
-        return self.output_isomers
+        self.isomer_group = self._group_isomers(group_labels_matrix, self.isomers)
+        return self.isomer_group
 
     @staticmethod
-    def _assign_duplicate_warnings(group_labels_matrix: np.ndarray, isomers: List['AssembledIsomer']):
+    def _group_isomers(group_labels_matrix: np.ndarray, isomers: List['AssembledIsomer']) -> List[List['AssembledIsomer']]:
         """
-        Assign 'duplicate' warning to all but the first occurrence in each group
-        :param group_labels_matrix: 2D numpy array with labels 'Close' or 'Far'.
+        Group isomers based on which ones are labeled 'Close' in the group_labels_matrix.
+        :param group_labels_matrix: 2D numpy array with labels 'Close' or 'Far'. It's possible that this list is not consistent, i.e. if isomers 1 and 2 are 'Close', and isomers 2 and 3 are 'Close', it is still possible that isomers 1 and 3 are 'Far', even though this is illogical. This will be handled here such that isomers 1 and 3 are grouped together as well in this case.
+        :param isomers: List of AssembledIsomer objects to be grouped.
+        :return: List of lists, where each sublist contains isomers that are considered duplicates.
         """
         n = len(isomers)
+        if group_labels_matrix.shape != (n, n):
+            raise ValueError(
+                "group_labels_matrix must be a square matrix with the same "
+                "dimension as the number of isomers."
+            )
+
+        # Build an undirected adjacency list
+        adjacency = [[] for _ in range(n)]
         for i in range(n):
             for j in range(i + 1, n):
-                if group_labels_matrix[i, j] == "Close":
-                    # The jth isomer is close to the ith one and j>i, so we mark the jth isomer as a duplicate
-                    isomers[j].warning = "duplicate"
+                if (
+                        group_labels_matrix[i, j] == "Close"
+                        or group_labels_matrix[j, i] == "Close"
+                ):
+                    adjacency[i].append(j)
+                    adjacency[j].append(i)
 
-        return isomers
+        # Depth-first search for connected components
+        visited = [False] * n
+        groups: List[List["AssembledIsomer"]] = []
+
+        for start in range(n):
+            if visited[start]:
+                continue
+            stack = [start]
+            component_indices: List[int] = []
+
+            while stack:
+                node = stack.pop()
+                if visited[node]:
+                    continue
+                visited[node] = True
+                component_indices.append(node)
+                stack.extend(adjacency[node])
+
+            # Maintain original order inside the component
+            component_indices.sort()
+            groups.append([isomers[idx] for idx in component_indices])
+
+        assert len([_ for sublist in groups for _ in sublist]) == n, "Grouped indices do not cover all isomers or have duplicates."
+
+        return groups
 
     def _analyze_similarity(self, matrix: np.ndarray, quantile: float = 0.2, method: str = "cluster", cutoff: Optional[float] = None) -> np.ndarray:
         """
@@ -1148,7 +1252,10 @@ class DuplicateIsomerFilter:
         max_color = {"r": 12, "g": 171, "b": 185} if max_color is None else max_color
 
         if self.diff_matrix is None:
-            self.filter()
+            self.get_duplicate_groups()
+            for isomer_group in self.isomer_group:
+                for i in range(1, len(isomer_group)):
+                    isomer_group[i].warning = 'duplicate'  # Mark all but the first isomer in the group as duplicate.
 
         labels_list = [f"{i}" for i in range(len(self.isomers))]
         df = pd.DataFrame(self.diff_matrix, index=labels_list, columns=labels_list)
@@ -1213,9 +1320,9 @@ class DuplicateIsomerFilter:
         """
         Launch an interactive Dash app to render the heatmap and enable isomer alignment viewing.
         """
-        # Plotly/Dash imports
-        import plotly.express as px
-        import dash
+        if "plotly" not in sys.modules:
+            print("Plotly is not installed. Please install it to use the interactive heatmap feature.")
+            return None
         app = dash.Dash(__name__)
         fig = px.imshow(
             df,
@@ -1294,13 +1401,24 @@ class DuplicateIsomerFilter:
                 point = clickData["points"][0]
                 i_idx = int(point["y"])
                 j_idx = int(point["x"])
-                print(f"Clicked cell: ({i_idx}, {j_idx}) — triggering isomer viewer.")
-                self.view_isomer_alignment(i_idx, j_idx)
-            return fig  # Return same figure to avoid layout refresh
+                print(f"Clicked cell: ({i_idx}, {j_idx}) — opening viewer.")
+                # Direct call to viewer
+                self.view_isomer_alignment(i_idx, j_idx, grid_size=self.grid_size)
+            return fig
 
-        app.run(debug=False, use_reloader=False)
+        app.run(
+            debug=True,
+            use_reloader=False,
+            **{
+                "threaded": False,
+                "processes": 1,
+                "use_debugger": True,
+                "dev_tools_silence_routes_logging": False,
+                "dev_tools_prune_errors": False
+            }
+        )
 
-    def view_isomer_alignment(self, index1: int, index2: int, grid_size: int = None) -> None:
+    def view_isomer_alignment(self, index1: int, index2: int, grid_size=None) -> None:
         """
         Visualize two isomers (by index) and their optimal alignment using ASE's viewer.
         Frame 0: isomer1
@@ -1314,20 +1432,24 @@ class DuplicateIsomerFilter:
         assert 0 <= index1 < len(self.isomers), f"Index1 out of range: {index1}"
         assert 0 <= index2 < len(self.isomers), f"Index2 out of range: {index2}"
 
-        isomer1 = self.isomers[index1].DART_atoms.copy()
-        isomer2 = self.isomers[index2].DART_atoms.copy()
-        isomer2_aligned = self.isomers[index2].DART_atoms.copy()
+        print("1")
+        isomer1 = self.isomers[index1].atoms.copy()
+        print("2")
+        isomer2 = self.isomers[index2].atoms.copy()
+        print("3")
+        isomer2_aligned = self.isomers[index2].atoms.copy()
+        print("4")
 
         # Determine alignment axes
-        if len(self.metal_centres) == 1:
+        if len(self.unique_metal_centers) == 1:
             bounds = [[0, 360] for _ in range(3)]
             axes = np.eye(3)
-        elif len(self.metal_centres) == 2:
+        elif len(self.unique_metal_centers) == 2:
             bounds = [[0, 360]]
-            axis_vector = np.array(self.metal_centres[1]) - np.array(self.metal_centres[0])
+            axis_vector = self.unique_metal_centers[1].position - self.unique_metal_centers[0].position
             axis_vector /= np.linalg.norm(axis_vector)
             axes = [axis_vector]
-        elif len(self.metal_centres) >= 3:
+        elif len(self.unique_metal_centers) >= 3:
             bounds = None
             axes = None
             print("Three or more metal centres — skipping rotation; showing structures unaligned.")
@@ -1335,7 +1457,7 @@ class DuplicateIsomerFilter:
             raise ValueError("Fatal Error: Invalid number of metal centres for alignment.")
 
         # Perform rotation if applicable
-        if len(self.metal_centres) < 3:
+        if len(self.unique_metal_centers) < 3:
             result_angles = brute(
                 func=self.objective_function,
                 ranges=bounds,
@@ -1343,7 +1465,7 @@ class DuplicateIsomerFilter:
                 Ns=grid_size if grid_size else self.grid_size
             )
             R_total = self.combined_rotation_matrix(result_angles, axes)
-            self.apply_combined_rotation(atoms=isomer2_aligned, R_total=R_total, center=np.array(self.metal_centres[0]))
+            self.apply_combined_rotation(atoms=isomer2_aligned, R_total=R_total, center=np.array(self.unique_metal_centers[0].position))
 
         # Create overlaid image: isomer1 + rotated isomer2
         overlaid = isomer1.copy() + isomer2_aligned.copy()
@@ -1356,6 +1478,7 @@ class DuplicateIsomerFilter:
         for atom in overlaid:
             atom.tag = 3
 
+        print("Launching ASE viewer with aligned isomers...")
         view([isomer1, isomer2, overlaid], viewer="ase")
 
 

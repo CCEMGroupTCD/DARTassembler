@@ -1770,7 +1770,7 @@
                     "H"
                 ]
             },
-            "warning": "duplicate",
+            "warning": "duplicate(1,3)",
             "target_vectors": [
                 [
                     [
@@ -2381,7 +2381,7 @@
                     "H"
                 ]
             },
-            "warning": "duplicate",
+            "warning": "duplicate(2,4)",
             "target_vectors": [
                 [
                     [
@@ -7269,7 +7269,7 @@
                     "H"
                 ]
             },
-            "warning": "duplicate",
+            "warning": "duplicate(10,12)",
             "target_vectors": [
                 [
                     [
@@ -9102,7 +9102,7 @@
                     "H"
                 ]
             },
-            "warning": "duplicate",
+            "warning": "duplicate(13,15)",
             "target_vectors": [
                 [
                     [

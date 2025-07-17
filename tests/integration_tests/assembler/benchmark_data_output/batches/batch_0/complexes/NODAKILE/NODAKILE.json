@@ -1506,7 +1506,7 @@
                     "H"
                 ]
             },
-            "warning": "duplicate",
+            "warning": "duplicate(2,3)",
             "target_vectors": [
                 [
                     [
@@ -2021,7 +2021,7 @@
                     "H"
                 ]
             },
-            "warning": "duplicate",
+            "warning": "duplicate(1,4)",
             "target_vectors": [
                 [
                     [

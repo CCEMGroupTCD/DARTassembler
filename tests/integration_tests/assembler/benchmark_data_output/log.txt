@@ -6,7 +6,6 @@ User-defined global settings:
     verbosity                     2
     complex_name_length           8
     n_max_ligands                 100
-    consecutive_indices           False
 ==================================  batch_0  ===================================
 User-defined settings for batch_0:
     n_max_complexes               20

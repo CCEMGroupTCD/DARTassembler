@@ -759,7 +759,7 @@
                     "H"
                 ]
             },
-            "warning": "duplicate",
+            "warning": "duplicate(1,2)",
             "target_vectors": [
                 [
                     [
