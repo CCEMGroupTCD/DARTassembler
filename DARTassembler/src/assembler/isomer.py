@@ -1146,7 +1146,7 @@ class DuplicateIsomerFilter:
         This result is then reflected to the lower triangle to create a full symmetric matrix.
         """
         # Generate fingerprints for each isomer
-        fingerprints = [self._compute_sorted_distance_fingerprint(isomer) for isomer in isomers]
+        fingerprints = [self._compute_sorted_distance_fingerprint(isomer)[0] for isomer in isomers]
         # Ensure all fingerprints have the same length
         assert all(len(fp) == len(fingerprints[0]) for fp in fingerprints)
         # Initialize a square matrix to hold the differences
@@ -1162,7 +1162,7 @@ class DuplicateIsomerFilter:
         return diff_matrix
 
     @staticmethod
-    def _compute_sorted_distance_fingerprint(isomer) -> np.ndarray:
+    def _compute_sorted_distance_fingerprint(isomer) -> tuple[np.ndarray, list[tuple[str, str]]]:
         """
         Compute an inter-atomic distance matrix for an isomer and sort the distances under to two conditions:
         1. entries in the matrix (atom-atom distances) are sorted in ascending order.
@@ -1190,7 +1190,10 @@ class DuplicateIsomerFilter:
         order = np.lexsort((dists, second_elem, first_elem))  # last key is primary
         sorted_dists = dists[order]  # sort distances according to the order
 
-        return sorted_dists
+        #  also get sorted element pairs
+        sorted_pairs = list(zip(first_elem[order], second_elem[order]))
+
+        return sorted_dists, sorted_pairs
 
     @staticmethod
     def _fingerprint_comparison(fp1: np.ndarray, fp2: np.ndarray, mode: str = "max_diff"):
@@ -1480,6 +1483,38 @@ class DuplicateIsomerFilter:
 
         print("Launching ASE viewer with aligned isomers...")
         view([isomer1, isomer2, overlaid], viewer="ase")
+
+    def debug_fingerprints(self, idx1, idx2):
+        """
+        A tool that displays the fingerprints of two isomers side by side and highlights
+        which difference is used to generate the score
+        :param idx1: index of first isomer
+        :param idx2: index of second isomer
+        :return: None
+        """
+
+        # Get the fingerprints of the two isomers
+        fp1, pairs1 = self._compute_sorted_distance_fingerprint(self.isomers[idx1])
+        fp2, pairs2 = self._compute_sorted_distance_fingerprint(self.isomers[idx2])
+
+        # Ensure both fingerprints are of the same length
+        if len(fp1) != len(fp2):
+            raise ValueError(f"Fingerprints of isomers {idx1} and {idx2} have different lengths: {len(fp1)} vs {len(fp2)}")
+
+        # Create a DataFrame for visualization
+        df = pd.DataFrame({
+            "Distance": np.arange(len(fp1)),
+            f"Isomer {idx1}": fp1,
+            f"Isomer {idx2}": fp2,
+            "Pair": [f"{pair[0]}-{pair[1]}" for pair in pairs1],
+            "Difference": np.abs(fp1 - fp2),
+        })
+        # display the results
+        print(df)
+
+        return df
+
+
 
 
 class IsomerClashFilter:
