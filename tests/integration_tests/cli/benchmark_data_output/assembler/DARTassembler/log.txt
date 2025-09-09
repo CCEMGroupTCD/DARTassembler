@@ -1,0 +1,47 @@
+Starting DART Assembler Module.
+Output directory: DARTassembler
+Running 2 batches...
+User-defined global settings:
+    output_directory              DARTassembler
+    verbosity                     2
+    complex_name_length           8
+    n_max_ligands                 100
+================================  First_batch  =================================
+User-defined settings for First_batch:
+    name                          First_batch
+    total_ligand_charges          -2
+    ligand_db_files               ['metalig', 'metalig', 'metalig']
+    target_vectors                [[[1, 0, 0], [0, 1, 0]], [[-1, 0, 0]], [[0, -1, 0]]]
+    ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    metal_centers                 [[['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]]]
+    n_max_complexes               100
+    random_seed                   0
+    complex_name_suffix           _Ru
+================================  Second_batch  ================================
+User-defined settings for Second_batch:
+    name                          Second_batch
+    total_ligand_charges          -1
+    ligand_db_files               ['metalig', 'metalig', 'metalig']
+    target_vectors                [[[1, 0, 0], [0, 1, 0]], [[-1, 0, 0]], [[0, -1, 0]]]
+    ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    metal_centers                 [[['Fe', [0, 0, 0]]], [['Fe', [0, 0, 0]]], [['Fe', [0, 0, 0]]]]
+    n_max_complexes               100
+    random_seed                   1
+    complex_name_suffix           _Fe
+=============================  Summary per batch  ==============================
+First_batch:
+  - 202 isomers tried, 156 isomers (from 100 complexes) successfully assembled.
+  - 46 isomers failed because of filters:
+    - duplicate: 42
+    - clashing: 4
+Second_batch:
+  - 202 isomers tried, 154 isomers (from 100 complexes) successfully assembled.
+  - 48 isomers failed because of filters:
+    - duplicate: 46
+    - clashing: 2
+====================  Total summary of DART Assembler run  =====================
+  - 404 isomers tried, 310 isomers (from 200 complexes) successfully assembled.
+  - 94 isomers failed because of filters:
+    - duplicate: 88
+    - clashing: 6
+DART Assembler output files saved to directory `DARTassembler`.

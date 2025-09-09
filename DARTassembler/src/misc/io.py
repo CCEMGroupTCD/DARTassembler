@@ -112,10 +112,11 @@ class JSONLinesReader:
             for key, value in reader:
                 print(key, value)
     """
-    def __init__(self, path: Union[str, Path], n_max: int = None, show_progress: bool = True):
+    def __init__(self, path: Union[str, Path], n_max: int = None, show_progress: bool = True, disable: bool = False):
         self.path = ensure_path_exists(path)
         self.n_max = n_max
         self.show_progress = show_progress
+        self.disable = disable
         self.file_obj = None
         self.reader = None
 
@@ -270,7 +271,10 @@ def get_n_entries_of_json_db(path: Union[str, Path]) -> int:
 
     return n_entries
 
-def save_json(db: dict, path: Union[str, Path], **kwargs):
+def save_json(db: dict, path: Union[str, Path], mkdir: bool=True, **kwargs):
+    if mkdir:
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, 'w') as file:
         json.dump(db, file, cls=NumpyEncoder, **kwargs)
 

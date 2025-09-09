@@ -2,8 +2,79 @@ import hashlib
 import random
 import ase
 import numpy as np
-from typing import List, Tuple
+from typing import List, Tuple, Optional
+from collections import defaultdict
+import itertools
 
+
+def get_complex_name(seed: str, length: int, suffix: str = '', avoid_names: Optional[set[str]] = None) -> str:
+    """
+    Generates a unique name for the complex based on the graph hash and the specified length and suffix.
+    :param avoid_names: A set of names to avoid. If the generated name is in this set, it will generate a new name with one more character.
+    :return: Name (str) of the complex, which is pronounceable and unique.
+    """
+    if avoid_names is None:
+        avoid_names = []
+    while True:  # emulate a do-while loop
+        # Generate a random, pronounceable name
+        name = generate_pronounceable_word(length=length, seed=seed)
+        name += suffix  # Add the suffix to the name
+
+        # If the name is already used, redo name generation with one more character. For the next complex, it starts with the original character length again.
+        if name in avoid_names:
+            length += 1
+            continue
+        else:
+            break  # name is unique, break the loop
+
+    return name
+
+def remove_haptic_dummy_atom(atoms: ase.Atoms, dummy_atom: str) -> ase.Atoms:
+    """
+    Removes the dummy atom from the generated isomers.
+    :param atoms: Ase.Atoms object containing the structure.
+    :param dummy_atom: The symbol of the dummy atom to remove (e.g., "Cu").
+    :return:
+    """
+    dummy_idc = [i for i, atom in enumerate(atoms) if atom.symbol == dummy_atom]
+    dummy_idc.sort(
+        reverse=True)  # This is important so that the larger index is removed first so as not to change the index of the other atoms
+    for dummy_idx in dummy_idc:
+        atoms.pop(dummy_idx)
+    return atoms
+
+def get_list_with_all_possible_swappings(objects: list, swap_groups: List[int]) -> list[list]:
+    """
+    Returns a list of all possible combinations of the objects in `object_list` based on the provided `swap_groups`. Each group in `swap_groups` indicates which objects can be swapped with each other.
+    :param objects: A list of objects to be swapped.
+    :param swap_groups: A list of integers where each integer represents a group index. Objects with the same group index can be swapped with each other.
+    :return: A list of lists, where each inner list is a unique combination of the objects in `object_list` based on the swap groups.
+    """
+    if swap_groups is None or len(set(swap_groups)) == 1:
+        return [objects]
+
+    n = len(objects)
+    if len(swap_groups) != n:
+        raise ValueError("`swap_groups` must match the length of `objects`.")
+
+    # Group ligand indices by swap group
+    group_to_indices = defaultdict(list)
+    for idx, grp in enumerate(swap_groups):
+        group_to_indices[grp].append(idx)
+
+    # For each vector position, gather allowed ligand indices
+    allowed = [group_to_indices[grp] for grp in swap_groups]
+
+    # Build all assignments, filtering out any that reuse the same ligand twice
+    results = []
+    for combo in itertools.product(*allowed):
+        if len(set(combo)) != n:
+            continue
+        results.append([objects[i] for i in combo])
+
+    assert results[0] == objects, "First result must be the original ligand order."
+
+    return results
 
 def are_atoms_equal(atom1: ase.Atom, atom2: ase.Atom) -> bool:
     """

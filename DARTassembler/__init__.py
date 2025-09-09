@@ -9,5 +9,5 @@ np.seterr(divide='ignore', invalid='ignore')
 from .src.assembler.assembler import Assembler
 from .src.metalig.ligandfilters import LigandFilters
 from .src.modules.modules import DBInfo, Concat, Configs
-from .src.assembler.isomer import Isomer, IsomerFactory
+from .src.assembler.isomer import AssembledIsomer, AssembledComplex
 from .src.metalig.mol import Ligand

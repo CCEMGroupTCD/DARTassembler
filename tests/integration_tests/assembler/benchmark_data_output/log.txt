@@ -1,92 +1,90 @@
 Starting DART Assembler Module.
-Output directory: /Users/cianclarke/Documents/PhD/Complex_Assembly/DART/DART/tests/integration_tests/assembler/data_output
-Running 3 batches...
+Output directory: data_output
+Running 5 batches...
 User-defined global settings:
     output_directory              .
-    concatenate_xyz               True
     verbosity                     2
-    same_isomer_names             True
     complex_name_length           8
-    n_max_ligands                 None
+    n_max_ligands                 100
+==================================  batch_0  ===================================
+User-defined settings for batch_0:
+    n_max_complexes               20
+    target_vectors                [['x', 'y'], ['-x', '-y']]
+    metal_centers                 Fe
+    ligand_geometries             ['2_cis', '2_cis']
+    name                          batch_0
 ============================  2-2-1-1-monometalic  =============================
 User-defined settings for 2-2-1-1-monometalic:
-    debug                         True
-    complex_name_appendix         _test
-    max_num_complexes             2
-    total_charge                  0
+    n_max_complexes               10
+    total_ligand_charges          -3
     name                          2-2-1-1-monometalic
     random_seed                   5
-    opt_mono_rot                  True
-    filter_duplicate_isomers      True
-    filter_duplicate_isomers_methodfingerprint
-    filter_duplicate_isomers_grid_size9
-    filter_clashing_structures    True
-    filter_clashing_structures_cov_radii_buffer0.0
-    isomer_comparison_mode        max_diff
-    isomer_comparison_grouping_modecluster
-    isomer_comparison_grouping_cutoff1.0
-    check_metal_clashes           False
-    auxiliary_structure_path      None
-    geometry                      [{'metal_1': {'metal_type': 'Ir', 'metal_oxidation_state': 3, 'origin': [0, 0, 0]}}, {'ligand_1': {'origin': [0, 0, 0], 'vector_1': 'z', 'n_max': 30, 'swap_group': 1, 'ligand_db': '../data_input/ligands/JSONS/small_mono.json'}}, {'ligand_2': {'origin': [0, 0, 0], 'vector_1': [0, 1, 0], 'n_max': 30, 'swap_group': 1, 'ligand_db': '../data_input/ligands/JSONS/small_mono.json'}}, {'ligand_3': {'origin': [0, 0, 0], 'vector_1': [-1, 0, 0], 'vector_2': '-y', 'n_max': 30, 'swap_group': 2, 'ligand_db': '../data_input/ligands/JSONS/bidentate.json'}}, {'ligand_4': {'origin': [0, 0, 0], 'vector_1': [1, 0, 0], 'vector_2': [0, 0, -1], 'n_max': 30, 'swap_group': 2, 'ligand_db': '../data_input/ligands/JSONS/bidentate.json'}}]
+    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
+    target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
+    metal_centers                 Ir
 =============================  2-2-1-1-bi-metalic  =============================
 User-defined settings for 2-2-1-1-bi-metalic:
-    debug                         True
-    complex_name_appendix         _test
-    max_num_complexes             2
-    total_charge                  0
+    n_max_complexes               10
+    total_ligand_charges          -3
     name                          2-2-1-1-bi-metalic
     random_seed                   5
-    opt_mono_rot                  True
-    filter_duplicate_isomers      True
-    filter_duplicate_isomers_methodfingerprint
-    filter_duplicate_isomers_grid_size9
-    filter_clashing_structures    True
-    filter_clashing_structures_cov_radii_buffer0.0
-    isomer_comparison_mode        max_diff
-    isomer_comparison_grouping_modecluster
-    isomer_comparison_grouping_cutoff1.0
-    check_metal_clashes           False
-    auxiliary_structure_path      None
-    geometry                      [{'metal_1': {'metal_type': 'Ir', 'metal_oxidation_state': 3, 'origin': [-2, 0, 0]}}, {'metal_2': {'metal_type': 'Fe', 'metal_oxidation_state': 0, 'origin': [2, 0, 0]}}, {'ligand_1': {'origin': [0, 0, 0.5], 'vector_1': [0, 0, 2], 'n_max': 30, 'swap_group': 1, 'ligand_db': '../data_input/ligands/JSONS/small_mono.json'}}, {'ligand_2': {'origin': [0, 0, -0.5], 'vector_1': [0, 0, -2], 'n_max': 30, 'swap_group': 1, 'ligand_db': '../data_input/ligands/JSONS/small_mono.json'}}, {'ligand_3': {'origin': [-2, 0, 0], 'vector_1': [-3, -3, 0], 'vector_2': [-3, 3, 0], 'n_max': 30, 'swap_group': 2, 'ligand_db': '../data_input/ligands/JSONS/bidentate.json'}}, {'ligand_4': {'origin': [2, 0, 0], 'vector_1': [3, -3, 0], 'vector_2': [3, 3, -1], 'n_max': 30, 'swap_group': 2, 'ligand_db': '../data_input/ligands/JSONS/bidentate.json'}}]
+    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', '../data_input/ligands/JSONS/small_mono.json', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
+    target_vectors                [[[0, 0, 2]], [[0, 0, -2]], [[-3, -3, 0], [-3, 3, 0]], [[3, -3, 0], [3, 3, -1]]]
+    metal_centers                 [[['Ir', [-2, 0, 0]], ['Fe', [2, 0, 0]]], [['Ir', [-2, 0, 0]], ['Fe', [2, 0, 0]]], [['Ir', [-2, 0, 0]]], [['Fe', [2, 0, 0]]]]
+    swap_groups                   [1, 1, 2, 2]
+    check_duplicate               True
+    check_clashing                True
+    optimize_monoaxial            True
+    force_all_isomers             False
+    clashing_buffer               -0.3
+    clashing_metal                False
+    duplicate_cutoff              0.5
 ==========================  3-3-haptic_coordination  ===========================
 User-defined settings for 3-3-haptic_coordination:
-    debug                         True
-    complex_name_appendix         _test
-    max_num_complexes             2
-    total_charge                  0
+    complex_name_suffix           _haptic
+    n_max_complexes               10
+    total_ligand_charges          -2
     name                          3-3-haptic_coordination
     random_seed                   1
-    opt_mono_rot                  True
-    filter_duplicate_isomers      True
-    filter_duplicate_isomers_methodfingerprint
-    filter_duplicate_isomers_grid_size9
-    filter_clashing_structures    True
-    filter_clashing_structures_cov_radii_buffer0.0
-    isomer_comparison_mode        max_diff
-    isomer_comparison_grouping_modecluster
-    isomer_comparison_grouping_cutoff1.0
-    check_metal_clashes           False
-    auxiliary_structure_path      None
-    geometry                      [{'metal_1': {'metal_type': 'Ru', 'metal_oxidation_state': 2, 'origin': [0, 0, 0]}}, {'ligand_1': {'origin': [0, 0, 0], 'vector_1': [0, 0, 2], 'n_max': 30, 'swap_group': 1, 'ligand_db': '../data_input/ligands/JSONS/hexagonal.json'}}, {'ligand_2': {'origin': [0, 0, 0], 'vector_1': [0, 0, -2], 'n_max': 30, 'swap_group': 1, 'ligand_db': '../data_input/ligands/JSONS/hexagonal.json'}}]
+    ligand_db_files               ['../data_input/ligands/JSONS/hexagonal.json', '../data_input/ligands/JSONS/hexagonal.json']
+    target_vectors                [[[0, 0, 2]], [[0, 0, -2]]]
+    ligand_origins                [[0, 0, 0], [0, 0, 0]]
+    metal_centers                 Ru
+=========================  2-2-bi_trans_minimal_input  =========================
+User-defined settings for 2-2-bi_trans_minimal_input:
+    complex_name_suffix           _trans
+    n_max_complexes               all
+    total_ligand_charges          -2
+    name                          2-2-bi_trans_minimal_input
+    random_seed                   1
+    ligand_db_files               ['../data_input/ligands/JSONS/bi_trans.jsonlines', 'same_as_previous']
+    target_vectors                [[[0, 0, 1], [0, 0, -1]], [[1, 0, 0], [-1, 0, 0]]]
+    metal_centers                 La
 =============================  Summary per batch  ==============================
+batch_0:
+  - 92 isomers tried, 27 isomers (from 20 complexes) successfully assembled.
+  - 65 isomers failed because of filters:
+    - duplicate: 51
+    - clashing: 14
 2-2-1-1-monometalic:
-  - 32 isomers tried, 10 isomers (from 2 complexes) successfully assembled.
-  - 22 isomers failed because of filters:
-    - duplicate-: 18
-    - clashing-: 2
-    - duplicate-clashing-: 2
+  - 48 isomers tried, 28 isomers (from 10 complexes) successfully assembled.
+  - 20 isomers failed because of filters:
+    - clashing: 18
+    - duplicate: 2
 2-2-1-1-bi-metalic:
-  - 32 isomers tried, 7 isomers (from 2 complexes) successfully assembled.
-  - 25 isomers failed because of filters:
-    - duplicate-: 25
+  - 160 isomers tried, 156 isomers (from 10 complexes) successfully assembled.
+  - 4 isomers failed because of filters:
+    - duplicate: 4
 3-3-haptic_coordination:
-  - 4 isomers tried, 2 isomers (from 2 complexes) successfully assembled.
-  - 2 isomers failed because of filters:
-    - duplicate-: 2
+  - 10 isomers tried, 10 isomers (from 10 complexes) successfully assembled.
+2-2-bi_trans_minimal_input:
+  - 16 isomers tried, 3 isomers (from 3 complexes) successfully assembled.
+  - 13 isomers failed because of filters:
+    - clashing: 8
+    - duplicate: 5
 ====================  Total summary of DART Assembler run  =====================
-  - 68 isomers tried, 19 isomers (from 6 complexes) successfully assembled.
-  - 49 isomers failed because of filters:
-    - duplicate-: 45
-    - clashing-: 2
-    - duplicate-clashing-: 2
+  - 326 isomers tried, 224 isomers (from 53 complexes) successfully assembled.
+  - 102 isomers failed because of filters:
+    - duplicate: 62
+    - clashing: 40
 DART Assembler output files saved to directory `data_output`.

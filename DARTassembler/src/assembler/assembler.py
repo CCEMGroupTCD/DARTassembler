@@ -1,22 +1,23 @@
 # Standard library imports
 from typing import Union, Dict, Any, List, Tuple, Optional
+
+import ase.io
 from tqdm import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 import datetime
 import logging
 import random
 import sys
 
 # DART specific imports
-from DARTassembler.src.assembler.isomer import Isomer, IsomerFactory, AxialOptModifier, DuplicateIsomerFilter, IsomerClashFilter, BiTransRotationModifier
+from DARTassembler.src.assembler.isomer import AssembledIsomer, AssembledComplex
 from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, ComplexAssemblerOutput
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
-from DARTassembler.src.assembler.utils import generate_pronounceable_word
 from DARTassembler.src.constants.paths import default_assembler_yml_path
-from DARTassembler.src.assembler.isomer import elem_cov_radii
 from DARTassembler.src.assembler.ligands import LigandChoice
 from DARTassembler.src.modules.modules import BaseModule
 from DARTassembler.src.metalig.db import LigandDB
-from DARTassembler.src.misc.io import read_yaml
+from DARTassembler.src.misc.io import read_yaml, get_correct_ligand_db_path_from_input, save_json
 
 # Data processing imports
 from pathlib import Path
@@ -34,27 +35,22 @@ class Assembler(BaseModule):
 
     def __init__(self,
                  output_directory: Union[str, Path] = 'DARTassembler',
-                 concatenate_xyz: bool = True,
                  verbosity: int = 2,
-                 same_isomer_names: bool = True,
                  complex_name_length: int = 8,
-                 n_max_ligands: Union[int, None] = None,
+                 n_max_ligands: Optional[int] = None,
                  ):
         """
         The main class for the DART workflow. It assembles all isomers of complexes from specified ligand databases and metal centers. Finally, all assembled complexes are saved to the output directory as .xyz and .json files, together with a csv file containing information about the assembly run.
         :param output_directory: Directory where the output files are saved. If it does not exist, it is created.
-        :param concatenate_xyz: If True, a single concatenated .xyz file with all assembled complexes is created, for easier browsing in ase.
         :param verbosity: If 0, only errors are printed. If 1, warnings are printed. If 2, info messages are printed. If 3, debug messages are printed.
-        :param same_isomer_names: If True, subsequent isomers of the same complex are given the same name as the first isomer, but with a number appended to the end. If False, each isomer gets a completely unique name.
-        :param complex_name_length: The length of the randomly generated complex name. Automatically increases by 1 whenever a randomly generated name is duplicated to avoid duplicate names.
+        :param complex_name_length: The length of the randomly generated complex name. If a duplicate name is generated, the length is increased by one character until a unique name is found.
         :param n_max_ligands: Maximum number of ligands to load from the ligand databases provided in each batch. If None, all ligands are loaded. Useful to speed up test runs.
         """
         super().__init__()
         self.output_directory = Path(output_directory).resolve()
-        self.concatenate_xyz = concatenate_xyz
         self.verbosity = verbosity
-        self.same_isomer_names = same_isomer_names
         self.complex_name_length = complex_name_length
+        self.n_max_ligands = n_max_ligands
 
         self._loaded_ligand_databases = {}  # to avoid reloading the same ligand database multiple times
 
@@ -80,14 +76,19 @@ class Assembler(BaseModule):
         :return None
         """
         self.batches = batches
-
+        for idx, batch in enumerate(self.batches):
+            batch['name'] = batch.get('name', f'batch_{idx}')  # Use batch name or generate a default one
         self.n_batches = len(self.batches)
         self.df_info = []
-        self.assembled_complex_names = []
-        self.assembled_complex_json_paths = []
+        self.all_tried_complex_names = set()    # Keep track of all tried complex names to avoid duplicates
+        self.successfully_assembled_isomer_names = []
 
-        self.input_args = {**self.init_args, "batches": self.batches}
+        self.batches_args = {**locals()}
+        self.batches_args.pop('self')
+        self.input_args = {**self.init_args, **self.batches_args}
         self._log_global_info()
+
+        self._check_batch_settings(batches)
 
         # Save yml file with input arguments to output directory
         self.gbl_outcontrol.save_settings(self.input_args)
@@ -95,7 +96,7 @@ class Assembler(BaseModule):
         start = datetime.datetime.now()
         for idx, batch_settings in enumerate(self.batches):
             self._log_batch_title_and_settings(batch_settings=batch_settings),
-            self._run_batch(batch_idx=idx, batch=batch_settings)  # run the batch assembly
+            self._run_batch(batch_idx=idx, **batch_settings)  # run the batch assembly
 
         self.runtime = datetime.datetime.now() - start  # keep track of the runtime to display later
         self._make_and_save_output_csv()
@@ -104,458 +105,230 @@ class Assembler(BaseModule):
 
         return
 
-    def _make_and_save_output_csv(self) -> None:
-        """Save output info csv of all attempts."""
-        self.df_info = pd.DataFrame(self.df_info)
-        self.df_info['attempt'] = self.df_info.index
-        self.df_info = self.df_info[['attempt'] + [col for col in self.df_info.columns if col != 'attempt']]  # Move attempt column to front
-
-        outdf = self.df_info.copy()
-        # Make lists in the dataframe to strings for saving to csv
-        for col in outdf.columns:
-            if isinstance(outdf[col].iloc[0], list):
-                outdf[col] = outdf[col].apply(lambda x: f'({", ".join(str(el) for el in x)})' if isinstance(x, list) else x)
-        self.gbl_outcontrol.save_run_info_table(outdf)
-
-        return
-
-    def _final_checks(self) -> None:
-        """Some final checks."""
-        df_test_success = self.df_info[self.df_info['success']]
-        batches = df_test_success['batch_idx'].unique()
-        for batch in batches:
-            df_batch = df_test_success[df_test_success['batch_idx'] == batch]
-            # Check for duplicate complex names in the batch
-            duplicate_names = df_batch['complex_name'][df_batch['complex_name'].duplicated()].values
-            assert len(duplicate_names) == 0, f"Duplicate complex names in batch {batch}: {duplicate_names}. Please report this issue to our GitHub page."
-
-        return
-
-    def _log_summary(self) -> None:
-        """Log nice summary per batch."""
-        batch_summary_title = '  Summary per batch  '
-        logging.info(f'{batch_summary_title:=^80}')
-        for batch_idx, batch in enumerate(self.batches):
-            df = self.df_info[self.df_info['batch_idx'] == batch_idx]
-            if df.empty:
-                # Exclude batches that do not gen any TMCs else following code will fail
-                logging.info(f"Batch[{batch_idx}]: {batch['name']} --> No complexes assembled.")
-                continue
-
-            batch_name = df['batch_name'].iloc[0]
-            logging.info(f"{batch_name}:")
-            self._log_success_rate(df)
-
-        # Print total summary of run
-        total_summary_title = '  Total summary of DART Assembler run  '
-        logging.info(f'{total_summary_title:=^80}')
-        self._log_success_rate(self.df_info)
-        n_isomers = self.df_info['success'].sum()
-        n_complexes = self.df_info['graph_hash'].nunique()
-        logging.info(f"DART Assembler output files saved to directory `{self.output_directory.name}`.")
-
-        # The runtime is printed but not logged, so that slight differences in the runtime do not cause the integration tests to fail.
-        if self.verbosity > 1:
-            print(f"Total runtime for assembling {n_isomers} isomers (from {n_complexes} complexes): {self.runtime}")
-
-        return
-
-    def _log_global_info(self) -> None:
-        """Log global information about the run."""
-        logging.info('Starting DART Assembler Module.')
-        logging.info(f'Output directory: {self.output_directory}')
-        plural = 'es' if self.n_batches > 1 else ''  # print plural or singular in next line
-        logging.info(f"Running {self.n_batches} batch{plural}...")
-        logging.info(f"User-defined global settings:")
-        for key, value in self.init_args.items():
-            logging.info(f"    {key: <30}{value}")
-
-        return
-
     @staticmethod
-    def _log_success_rate(df):
-        """Log success rate of the run."""
-        n_total = len(df)
-        n_isomers = df['success'].sum()
-        n_complexes = df['graph_hash'].nunique()
-
-        # Output statistics how many isomers failed each filter
-        post_filters = df['note'].value_counts()
-        post_filter_notes = '\n'.join([f'    - {filter}: {n}' for filter, n in post_filters.items() if not filter == ''])
-
-        logging.info(f"  - {n_total} isomers tried, {n_isomers} isomers (from {n_complexes} complexes) successfully assembled.")
-        if post_filter_notes != '':
-            logging.info(f"  - {n_total - n_isomers} isomers failed because of filters:")
-            logging.info(post_filter_notes)
-
+    def _check_batch_settings(batches: list) -> None:
+        # Check all batch names are unique
+        batch_names = [batch['name'] for batch in batches]
+        if not len(batch_names) == len(set(batch_names)):
+            raise ValueError(f"DART batch names must be unique. The following batch names are not unique: {batch_names}")
         return
 
-    @staticmethod
-    def _log_batch_title_and_settings(batch_settings: Dict[Any, Any]) -> None:
-        """
-        Log the title and settings of the batch.
-        :param batch_settings: Dictionary with the batch settings.
-        :return: None
-        """
-        batch_title = f'  {batch_settings["name"]}  '
-        logging.info(f'{batch_title:=^80}')
-        logging.info(f"User-defined settings for {batch_settings['name']}:")
-        for key, value in batch_settings.items():
-            logging.info(f"    {key: <30}{value}")
-
-        return
-
-    def _run_batch(self, batch: Dict[Any, Any], batch_idx: int) -> None:
+    def _run_batch(self,
+                   name: str,
+                   batch_idx: int,
+                   target_vectors: list[list[list[float]]],
+                   metal_centers: Union[str, tuple[str, tuple[float, float, float]]],
+                   n_max_complexes: Union[int, str],
+                   swap_groups: list[int] = None,
+                   check_duplicate: bool = True,
+                   check_clashing: bool = True,
+                   clashing_buffer: float = -0.3,
+                   clashing_metal: bool = False,
+                   duplicate_cutoff: float = 0.5,
+                   optimize_monoaxial: bool = True,
+                   total_ligand_charges: int = None,
+                   ligand_db_files: Union[list[str], str] = 'metalig',
+                   ligand_origins: list[tuple[float, float, float]] = None,
+                   ligand_geometries: list[str] = None,
+                   complex_name_suffix: str = '',
+                   random_seed: Optional[int] = None,
+                   force_all_isomers: bool = False,
+                   ) -> None:
         """
         Run the assembly for one batch.
-        :param: batch: Dictionary with the batch settings.
+        :param name: Name of the batch.
         :param batch_idx: Index of the batch in the list of batches.
+        :param target_vectors: List of target vectors for the complexes to be assembled. Each target vector is a list of lists of floats/ints.
+        :param metal_centers: Metal centers to be used for the complexes. Can be a string (e.g. 'Ru') or a tuple of (metal symbol, (x, y, z)).
+        :param n_max_complexes: Maximum number of complexes to be assembled in this batch. If 'all', all complexes are assembled.
+        :param total_ligand_charges: Choose ligands so that the total charge of all ligands in the complex is equal to this value. If None, any ligand combination is assembled.
+        :param ligand_db_files: List of ligand database files to be used for the batch. If None, defaults to ['metalig'] for each set of target vectors. If 'same_as_previous', the same ligand database as in the previous batch is used. If a single string is provided, it is expanded to a list of the same length as target_vectors.
+        :param ligand_origins: Coordinates for each ligand, which will be used as the origin of the ligand rotation in the complex. If None, defaults to the center of all metal center coordinates for each ligand.
+        :param complex_name_suffix: Suffix to be added to each complex name. Defaults to ''.
+        :param random_seed: Random seed for reproducibility. If None, defaults to the batch_idx so that each batch is deterministic but different from each other.
         :return: None
         """
         # Set random seed for reproducibility. Do this batch-wise so every batch is reproducible independently.
-        random_seed = batch["random_seed"] if batch["random_seed"] is not None else batch_idx
+        if random_seed is None:
+            random_seed = batch_idx
         random.seed(random_seed)
+        np.random.seed(random_seed)
 
-        self.batch_name = batch["name"]
+        # Handle defaults
+        if isinstance(ligand_db_files, str):    # Expand a single path to a list of paths for each ligand.
+            ligand_db_files = [ligand_db_files for _ in target_vectors]
+
+        self.batch_name = name
         self.batch_idx = batch_idx
-        self.ligand_db_files = self._extract_ligand_db_paths(geometry=batch['geometry'])
-        self.n_max_complexes = batch["max_num_complexes"]
+        self.ligand_db_files = ligand_db_files   # do not resolve path here to keep keywords like 'metalig'
+        self.n_max_complexes = n_max_complexes
         self.random_seed = random_seed
-        self.total_ligand_charges = int(batch["total_charge"]) - int(self._sum_metal_oxidation_states(geometry=batch['geometry']))
-        self.target_vectors, self.ligand_origins = self._extract_ligand_origins_and_vectors(geometry=batch['geometry'])
-
-        self.metal_centres = [str(list(frag.values())[0]["metal_type"]) for frag in batch["geometry"] if list(frag.keys())[0].startswith("metal")]
-        self.complex_name_appendix = batch["complex_name_appendix"]
-        self.metal_coords = [frag[list(frag.keys())[0]]["origin"] for frag in batch["geometry"] if list(frag.keys())[0].startswith("metal")]
-        self.swap_groups = [fragment[name].get("swap_group") for fragment in batch["geometry"] for name in fragment if name.startswith("ligand")]
-        self.connectivity = self._extract_connectivity_from_geometry(geometry=batch["geometry"])
+        self.total_ligand_charges = total_ligand_charges
+        self.target_vectors = target_vectors
+        self.ligand_origins = ligand_origins
+        self.metal_centers = metal_centers
+        self.complex_name_suffix = complex_name_suffix
+        self.swap_groups = swap_groups
+        self.check_duplicate = check_duplicate
+        self.check_clashing = check_clashing
+        self.clashing_buffer = clashing_buffer
+        self.clashing_metal = clashing_metal
+        self.duplicate_cutoff = duplicate_cutoff
+        self.optimize_monoaxial = optimize_monoaxial
+        self.ligand_geometries = ligand_geometries
+        self.force_all_isomers = force_all_isomers
         self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
         self.batch_outcontrol = BatchAssemblerOutput(self.batch_output_path)
 
-        # Generate ligand combinations [lig1, lig2], [lig3, lig4], ...
-        ligand_dbs = self.construct_ligand_dbs(batch["geometry"])
-        ligand_choice = LigandChoice(ligand_dbs=ligand_dbs,
-                                     total_ligand_charges=self.total_ligand_charges,
-                                     n_max_complexes=self.n_max_complexes)
+        # Redirect tqdm to the logging module so that messages appear properly on two different lines
+        with (logging_redirect_tqdm()):
 
-        ligand_combinations = ligand_choice.choose_ligands()
+            # Load the ligand databases and cache them for later use
+            self.ligand_dbs = self._get_ligand_databases()
 
-        # Set progress bar with or without final number of assembled complexes
-        total = self.n_max_complexes if self.n_max_complexes == 'all' else None
-        progressbar = tqdm(desc='Assembling complexes', unit=' complexes', file=sys.stdout, total=total)
+            # Set up an iterator for the ligand combinations
+            ligand_choice = LigandChoice(
+                                    ligand_dbs=self.ligand_dbs,
+                                    total_ligand_charges=self.total_ligand_charges,
+                                    n_max_complexes=self.n_max_complexes,
+                                    )
+            ligand_combinations = ligand_choice.choose_ligands()
 
-        batch_sum_assembled_complexes = 0  # Number of assembled complexes in this batch
-        while ligand_choice.if_make_more_complexes(batch_sum_assembled_complexes):
+            # Set progress bar with or without final number of assembled complexes
+            total = self.n_max_complexes if self.n_max_complexes != 'all' else None
+            progressbar = tqdm(desc='Assembling complexes', unit=' complexes', file=sys.stdout, total=total, disable=self.verbosity < 2)
 
-            # Choose ligands for complex
-            try:
-                ligands = next(ligand_combinations)
-            except StopIteration:
-                break
+            batch_sum_assembled_complexes = 0  # Number of assembled complexes in this batch
+            while ligand_choice.if_make_more_complexes(batch_sum_assembled_complexes):
 
-            # ------------------------------- #
-            # 1. Initial Isomer Generation
-            # ------------------------------- #
-            isomers_assembled = IsomerFactory(ligands=ligands,
-                                              target_vectors=self.target_vectors,
-                                              ligand_origins=self.ligand_origins,
-                                              metal_types=self.metal_centres,
-                                              metal_origins=self.metal_coords,
-                                              filter_duplicate_isomers=batch["filter_duplicate_isomers"],
-                                              filter_clashing_structures=batch["filter_clashing_structures"],
-                                              filter_clashing_structures_cov_radii_buffer=batch["filter_clashing_structures_cov_radii_buffer"],
-                                              check_metal_clashes=batch["check_metal_clashes"],
-                                              filter_duplicate_isomers_method=batch["filter_duplicate_isomers_method"],
-                                              filter_duplicate_isomers_grid_size=batch["filter_duplicate_isomers_grid_size"],
-                                              isomer_comparison_mode=batch["isomer_comparison_mode"],
-                                              isomer_comparison_grouping_mode=batch["isomer_comparison_grouping_mode"],
-                                              isomer_comparison_grouping_cutoff=batch["isomer_comparison_grouping_cutoff"],
-                                              swap_groups=self.swap_groups).generate()
+                # Choose ligands for complex
+                try:
+                    ligands = next(ligand_combinations)
+                except StopIteration:
+                    break # If all ligand combinations are exhausted, stop the batch
 
-            # ------------------------------- #
-            # 2. Mono-ligands Optimization
-            # ------------------------------- #
-            isomers_mono_opt = AxialOptModifier(isomers=isomers_assembled, opt=batch["opt_mono_rot"]).modify()
+                complex = AssembledComplex(
+                    ligands=ligands,
+                    target_vectors=self.target_vectors,
+                    ligand_origins=self.ligand_origins,
+                    metal_centers=self.metal_centers,
+                )
+                complex.generate_isomers(
+                                            check_duplicate= self.check_duplicate,
+                                            check_clashing= self.check_clashing,
+                                            clashing_buffer= self.clashing_buffer,
+                                            clashing_metal= self.clashing_metal,
+                                            duplicate_cutoff= self.duplicate_cutoff,
+                                            swap_groups = self.swap_groups,
+                                            optimize_monoaxial = self.optimize_monoaxial,
+                                            force_all_isomers=self.force_all_isomers,
+                                            complex_name_length=self.complex_name_length,
+                                            complex_name_suffix=self.complex_name_suffix,
+                                            avoid_names=self.all_tried_complex_names,  # Avoid names of already tried complexes
+                )
+                # Add the complex name to the set of all tried complex names to avoid duplicates in the next iteration
+                self.all_tried_complex_names.add(complex.complex_name)
 
-            # ------------------------------- #
-            # 3. rotate bi-type ligands
-            # ------------------------------- #
-            # Note: This is a placeholder for the axial bidentate ligand rotation.
+                self._save_assembled_isomers(complex=complex)
 
-            # ------------------------------- #
-            # 3. Remove redundant isomers
-            # ------------------------------- #
-            isomers_unique = DuplicateIsomerFilter(isomers=isomers_mono_opt,
-                                                   method=batch["filter_duplicate_isomers_method"],
-                                                   grid_size=batch["filter_duplicate_isomers_grid_size"],
-                                                   isomer_comparison_mode=batch["isomer_comparison_mode"],
-                                                   isomer_comparison_grouping_mode=batch["isomer_comparison_grouping_mode"],
-                                                   fingerprint_grouping_cutoff=batch["isomer_comparison_grouping_cutoff"],
-                                                   metal_centres=self.metal_centres).filter()
+                # Update counters if at least one isomer was successfully assembled for this complex
+                if complex.success:
+                    batch_sum_assembled_complexes += 1
+                    progressbar.update(1)
 
-            # ------------------------------- #
-            # 4. Post-assembly filter
-            # ------------------------------- #
-            isomers = IsomerClashFilter(isomers=isomers_unique,
-                                        covalent_radii=elem_cov_radii,
-                                        buffer=batch["filter_clashing_structures_cov_radii_buffer"],
-                                        check_metal_clashes=batch["check_metal_clashes"]).filter()
-
-            # Post-processing of isomers
-            logging.debug("Post-processing isomers")
-            isomer_idx = 1  # Index for naming the isomer
-            for isomer in isomers:
-                self._save_assembled_isomer(isomer=isomer, isomer_idx=isomer_idx)
-                isomer_idx += 1
-
-            # Update counters if at least one isomer was successfully assembled for this complex
-            any_good_isomers = any(isomer.warning == '' for isomer in isomers)
-            if any_good_isomers:
-                batch_sum_assembled_complexes += 1
-                progressbar.update(1)
-            logging.debug("Leaving post-processing")
-
-        progressbar.close()
+            progressbar.close()
 
         return
 
-    @staticmethod
-    def construct_ligand_dbs(geometry: list[dict]) -> list:
+    def _get_ligand_databases(self) -> list[LigandDB]:
+        ligand_databases = []
+        for idx, (target_vectors, ligand_db_filepath) in enumerate(zip(self.target_vectors, self.ligand_db_files)):
+            if ligand_db_filepath == 'same_as_previous':
+                if not idx > 0:
+                    raise ValueError("The first ligand database cannot be 'same_as_previous'. Please provide a valid ligand database file path.")
+                ligand_databases.append('same_as_previous')
+                continue
+
+            if not ligand_db_filepath in self._loaded_ligand_databases:
+                ligand_db_filepath = get_correct_ligand_db_path_from_input(ligand_db_filepath)
+                self._loaded_ligand_databases[ligand_db_filepath] = LigandDB.from_json(ligand_db_filepath, n_max=self.n_max_ligands, show_progress=self.verbosity > 1)
+
+            # Reduce to the ligands which have the correct n_eff_denticity for the specified target vectors
+            n_target_vectors = len(target_vectors)
+            database = {name: ligand for name, ligand in self._loaded_ligand_databases[ligand_db_filepath].db.items() if ligand.n_eff_denticities == n_target_vectors}
+
+            # If required, reduce the database to the ligands with the correct geometry
+            if self.ligand_geometries is not None:
+                geometry = self.ligand_geometries[idx]
+                database = {name: ligand for name, ligand in database.items() if ligand.geometry == geometry}
+
+            if not database:
+                with_geometries = f' and ligand geometry `{geometry}`' if self.ligand_geometries is not None else ''
+                raise ValueError(f"The provided ligand database contains no ligands with `n_eff_denticities={n_target_vectors}`{with_geometries}. Please check your input ligand database `{Path(ligand_db_filepath).resolve()}`.")
+
+            database = LigandDB(database)  # Convert to LigandDB object
+            ligand_databases.append(database)
+
+        return ligand_databases
+
+    def _save_assembled_isomers(self, complex):
         """
-        Constructs LigandDB objects from ligand entries in geometry.
-
-        :param geometry: List of dicts (geometry section from a batch)
-        :return: List of LigandDB instances
+        Save the successfully assembled isomers of the complex to the output directory in the following format:
+        {complex.complex_name}.json: Complex data in json format with all isomers and their properties.
+        {complex.complex_name}/{complex.complex_name}{isomer_idx}.xyz: XYZ file of the isomer with a comment containing the isomer name, warning, and ligand unique names.
+        Additionally, the xyz files are saved to the concatenated xyz files (either passed or failed) of this batch and to the all_xyz file.
         """
-        ligand_dbs = []
+        # Save complex json file with all isomer data
+        if complex.success:
+            complex_dir = Path(self.batch_outcontrol.complex_dir, complex.complex_name)
+            complex_json_filepath = complex_dir / f'{complex.complex_name}.json'
+            data = complex.to_dict()
+            save_json(db=data, path=complex_json_filepath, mkdir=True, indent=4)
 
-        for fragment in geometry:
-            assert len(fragment) == 1, f"{len(fragment)} keys present for {fragment}, expected 1"
-            name = next(iter(fragment))
-            if name.startswith("ligand"):
-                spec = fragment[name]
-                ligand_db_path = spec["ligand_db"]
-                n_max = spec.get("n_max", None)
+        for isomer in complex.isomers:
+            success = True if isomer.warning == '' else False
+            isomer_name = isomer.isomer_name
 
-                ligand_db = LigandDB.from_json(path=ligand_db_path, n_max=n_max)
-                ligand_dbs.append(ligand_db)
+            # Add a comment to the xyz file with complex and ligand names for easier identification
+            xyz_comment = f'isomer_name: {isomer_name}, warning: {isomer.warning}, ligand_unique_names: ({", ".join(isomer.ligand_info["unique_names"])})'
+            xyz_string = isomer.get_xyz_string(comment=xyz_comment)
 
-        return ligand_dbs
+            # Save xyz of isomer to complex directory
+            if success:
+                isomer_xyz_filepath = complex_dir / f'{isomer_name}.xyz'
+                with open(str(isomer_xyz_filepath), 'w') as xyz_file:
+                    xyz_file.write(xyz_string)
+                self.successfully_assembled_isomer_names.append(isomer_name)
 
-    @staticmethod
-    def _extract_connectivity_from_geometry(geometry: list[dict]) -> list[Optional[List[Dict[str, List[str]]]]]:
-        """
-        Returns a list of connectivity specs, one per metal entry in geometry.
+            # Save to concatenated xyz files of this batch
+            self.batch_outcontrol.save_xyz(xyz_string, success=success, append=True)    # passed/failed xyz files are created automatically
+            self.batch_outcontrol.save_file(xyz_string, self.batch_outcontrol.all_xyz_path, append=True)        # save to all_xyz file
 
-        Each item is either:
-        - None (if connectivity key is missing)
-        - A list of {partner_name: [vector_keys]} dicts
-        """
-        connectivity = []
-        for fragment in geometry:
-            name, spec = next(iter(fragment.items()))
-            if name.startswith("metal"):
-                conn = spec.get("connectivity", None)
-                if conn is not None:
-                    # Validate basic structure if needed
-                    if not isinstance(conn, list):
-                        raise ValueError(f"Expected a list of dicts for connectivity of {name}, got {type(conn)}")
-                    for item in conn:
-                        if not isinstance(item, dict):
-                            raise ValueError(f"Each connectivity entry for {name} must be a dict.")
-                    connectivity.append(conn)
-                else:
-                    connectivity.append(None)
-        return connectivity
-
-    @staticmethod
-    def _extract_ligand_origins_and_vectors(geometry: List[dict]) -> Tuple[List[Dict[str, List[float]]], List[List[float]]]:
-        """
-        Extracts and processes ligand origins and vectors from the geometry.
-
-        :param geometry: List of fragments from batch["geometry"]
-        :return: (target_vectors, ligand_origins)
-        """
-        axis_map = {
-            "x": [1.0, 0.0, 0.0],
-            "y": [0.0, 1.0, 0.0],
-            "z": [0.0, 0.0, 1.0],
-            "-x": [-1.0, 0.0, 0.0],
-            "-y": [0.0, -1.0, 0.0],
-            "-z": [0.0, 0.0, -1.0],
-        }
-
-        def _parse_vector(value, key: str, name: str) -> List[float]:
-            if isinstance(value, str):
-                vec = axis_map.get(value.strip().lower())
-                if vec is None:
-                    raise ValueError(
-                        f"Fatal Error: Invalid string '{value}' in '{key}' for ligand '{name}'. "
-                        f"Expected one of: {', '.join(axis_map.keys())}."
-                    )
-                return vec
-            elif isinstance(value, list) and len(value) == 3:
-                if not all(isinstance(v, (int, float)) for v in value):
-                    raise ValueError(f"Fatal Error: '{key}' in ligand '{name}' must be a 3-element list of numbers.")
-                return [float(v) for v in value]
-            else:
-                raise ValueError(f"Fatal Error: '{key}' in ligand '{name}' must be a symbolic axis string or a 3-element list.")
-
-        target_vectors = []
-        ligand_origins = []
-
-        for fragment in geometry:
-            assert len(fragment) == 1, f"{len(fragment)} keys present for {fragment}, expected 1"
-            name = next(iter(fragment))
-            if name.startswith("ligand"):
-                spec = fragment[name]
-                ligand_origins.append(spec["origin"])
-
-                vector_dict = {
-                    key: _parse_vector(value, key=key, name=name)
-                    for key, value in spec.items()
-                    if key.startswith("vector")
-                }
-
-                target_vectors.append(vector_dict)
-
-        return target_vectors, ligand_origins
-
-    @staticmethod
-    def _extract_ligand_db_paths(geometry: list[dict]) -> list[Path]:
-        ligand_paths = []
-        for fragment in geometry:
-            assert len(fragment) == 1, f"{len(fragment)} keys present for {fragment}, expected 1"
-            name = next(iter(fragment))
-            if name.startswith("ligand"):
-                ligand_paths.append(Path(fragment[name]["ligand_db"]))
-        return ligand_paths
-
-    @staticmethod
-    def _sum_metal_oxidation_states(geometry: list[dict]) -> int:
-        total_oxidation_state = 0
-        for fragment in geometry:
-            assert len(fragment) == 1, f"{len(fragment)} keys present for {fragment}, expected 1"
-            name = next(iter(fragment))
-            if name.startswith("metal"):
-                metal_spec = fragment[name]
-                ox_state = metal_spec.get("metal_oxidation_state")
-                assert ox_state is not None, f"No 'metal_oxidation_state' found for {name}"
-                total_oxidation_state += ox_state
-        return total_oxidation_state
-
-    def _save_assembled_isomer(self, isomer: Isomer, isomer_idx: int):
-        """
-        Save the successfully assembled complex to the output files.
-        """
-        success = True if isomer.warning == '' else False
-
-        name = self._get_unique_complex_name(complex=isomer, isomer_idx=isomer_idx)
-
-        total_ligand_charges = sum(isomer.ligand_info['charges'])  # Don't take the global property self.total_ligand_charges in case it is None
-        isomer.global_props = {  # Overwrite potentially existing global properties with the new ones
-            'complex_name': name,
-            'stoichiometry': isomer.stoichiometry,
-            'total_ligand_charges': total_ligand_charges,
-            'graph_hash': isomer.graph_hash,
-            'batch_name': self.batch_name,
-        }
-
-        # Add a comment to the xyz file with complex and ligand names for easier identification
-        xyz_comment = f'complex_name: {name}, ligand_unique_names: ({", ".join(isomer.ligand_info["unique_names"])}), note: {isomer.warning}'
-        xyz_string = isomer.get_xyz_string(comment=xyz_comment)
-
-        # Save to complex directory
-        if success:
-            complex_dir = Path(self.batch_outcontrol.complex_dir, name)
-            complex_outcontrol = ComplexAssemblerOutput(complex_dir)
-            complex_outcontrol.save_all_complex_data(complex=isomer)
-            complex_outcontrol.save_structure(xyz_string)
-
-            # Keep track of number and names of assembled complexes
-            self.assembled_complex_names.append(name)
-            self.assembled_complex_json_paths.append(complex_outcontrol.data_path)
-
-        # Save to concatenated xyz file of this batch
-        if self.concatenate_xyz:
-            self.batch_outcontrol.save_xyz(xyz_string, success=success, append=True)
-
-        # Save data for csv file.
-        complex_idx = (len(self.assembled_complex_names) - 1) if success else None
-        self._add_batch_info(complex=isomer, success=success, complex_idx=complex_idx)
+            # Save data for csv file.
+            isomer_idx = (len(self.successfully_assembled_isomer_names) - 1) if success else None
+            self._add_batch_info(isomer=isomer, success=success, isomer_idx=isomer_idx, complex_name=complex.complex_name)
 
         return
 
-    def _get_unique_complex_name(self, complex, isomer_idx, decimals=6) -> str:
-        """
-        Returns a unique new name for the complex. If the complex is a subsequent isomer, the name is based on the first isomer.
-        """
-        if isomer_idx > 1 and self.same_isomer_names:  # subsequent isomers
-            # Fix subsequent isomer to always have the same name as the first isomer, but counting up.
-            n_digits_last_isomer = len(str(isomer_idx - 1))
-            n_digits_appendix = len(self.complex_name_appendix)
-            n_digits_remove = n_digits_last_isomer + n_digits_appendix
-            last_isomers_name = self.assembled_complex_names[-1]
-            last_isomers_stem = last_isomers_name[:-n_digits_remove]
-            # Check that we can reconstruct the last isomers name.
-            # Todo I had to comment out this assert to make the code work
-            # assert last_isomers_name == last_isomers_stem + str(isomer_idx - 1) + self.complex_name_appendix, f'The complex name seems to work different than implemented.'
-            # Construct the new isomers name after the same rules as above.
-            name = last_isomers_stem + str(isomer_idx) + self.complex_name_appendix
-            assert not name in self.assembled_complex_names, f"Complex name {name} already exists in the assembled complex names list even though it is a subsequent isomer."
-        else:
-            # Generate new name for new complex.
-            complex_name_length = self.complex_name_length
-            while True:  # emulate a do-while loop
-                # Get a random name for the complex
-                if self.same_isomer_names:
-                    hash_string = complex.graph_hash
-                else:
-                    xyz = complex._get_xyz_array()
-                    sorted_indices = np.lexsort((xyz[:, 2], xyz[:, 1], xyz[:, 0]), axis=0)
-                    xyz = np.round(xyz, decimals=decimals)  # round to 6 decimals to get rid of numerical noise
-                    xyz = xyz[sorted_indices]
-                    elements = [el for _, el in sorted(zip(sorted_indices, complex.atomic_props['atoms']))]  # sort elements according to xyz
-                    hash_string = str(elements) + str(xyz)  # make hash string
-
-                # Generate a pronounceable word from the hash
-                name = generate_pronounceable_word(length=complex_name_length, seed=hash_string)
-
-                # If the name is based on the graph hash AND there are multiple isomers, add a number to the end of each name, otherwise start without a number.
-                if self.same_isomer_names:  # Names based on graph hash
-                    assert isomer_idx == 1, f'Isomer idx that is {isomer_idx} should be 1 here because subsequent isomers are handled differently.'
-                    name = name + str(1)
-
-                # Add the specified appendix to the name
-                name += self.complex_name_appendix
-
-                # If the name is already used, redo name generation with one more character. For the next complex, it starts with the original character length again.
-                if name in self.assembled_complex_names:
-                    complex_name_length += 1
-                    continue
-                else:
-                    break  # name is unique, break the loop
-
-        return name
-
-    def _add_batch_info(self, complex: Isomer, success, complex_idx: int) -> None:
+    def _add_batch_info(self, isomer: AssembledIsomer, success, isomer_idx: int, complex_name: str) -> None:
         """
         Add information about the batch to the batch info variable which will be saved to the batch info file.
         """
-        elements = complex.get_metal_symbols()
+        elements = isomer.get_metal_symbols()
         metal_stoi = get_standardized_stoichiometry_from_atoms_list(elements)
         data = {
             'success': success,
-            'complex_idx': complex_idx,
-            'complex_name': complex.global_props['complex_name'],
-            'stoichiometry': complex.global_props['stoichiometry'],
-            'graph_hash': complex.global_props['graph_hash'],
-            'note': complex.warning,
-            'ligand_unique_names': complex.ligand_info['unique_names'],
-            'ligand_geometries': complex.ligand_info['geometries'],
-            'ligand_stoichiometries': complex.ligand_info['stoichiometries'],
-            'ligand_charges': complex.ligand_info['charges'],
-            'ligand_donors': complex.ligand_info['donors'],
+            'isomer_idx': isomer_idx,
+            'isomer_name': isomer.isomer_name,
+            'complex_name': complex_name,
+            'stoichiometry': isomer.stoichiometry,
+            'graph_hash': isomer.graph_hash,
+            'warning': isomer.warning,
+            'ligand_unique_names': isomer.ligand_info['unique_names'],
+            'ligand_geometries': isomer.ligand_info['geometries'],
+            'ligand_stoichiometries': isomer.ligand_info['stoichiometries'],
+            'ligand_charges': isomer.ligand_info['charges'],
+            'ligand_donors': isomer.ligand_info['donors'],
             'batch_idx': self.batch_idx,
             'batch_name': self.batch_name,
             'metal_centers': metal_stoi,
@@ -598,6 +371,105 @@ class Assembler(BaseModule):
 
         return assembler
 
+    def _make_and_save_output_csv(self) -> None:
+        """Save output info csv of all attempts."""
+        self.df_info = pd.DataFrame(self.df_info)
+        self.df_info['attempt'] = self.df_info.index
+        self.df_info = self.df_info[['attempt'] + [col for col in self.df_info.columns if col != 'attempt']]  # Move attempt column to front
 
-if __name__ == '__main__':
-    raise NotImplementedError("This code has been deprecated and needs to be updated")
+        outdf = self.df_info.copy()
+        # Make lists in the dataframe to strings for saving to csv
+        for col in outdf.columns:
+            if isinstance(outdf[col].iloc[0], list):
+                outdf[col] = outdf[col].apply(lambda x: f'({", ".join(str(el) for el in x)})' if isinstance(x, list) else x)
+        self.gbl_outcontrol.save_run_info_table(outdf)
+
+        return
+
+    def _final_checks(self) -> None:
+        """Some final checks."""
+        df_test_success = self.df_info[self.df_info['success']]
+        batches = df_test_success['batch_idx'].unique()
+        for batch in batches:
+            df_batch = df_test_success[df_test_success['batch_idx'] == batch]
+            # Check for duplicate complex names in the batch
+            duplicate_names = df_batch['isomer_name'][df_batch['isomer_name'].duplicated()].values
+            assert len(duplicate_names) == 0, f"Duplicate isomer names in batch {batch}: {duplicate_names}. Please report this issue to our GitHub page."
+
+        return
+
+    def _log_summary(self) -> None:
+        """Log nice summary per batch."""
+        batch_summary_title = '  Summary per batch  '
+        logging.info(f'{batch_summary_title:=^80}')
+        for batch_idx, batch in enumerate(self.batches):
+            batch_name = batch['name']
+            df = self.df_info[self.df_info['batch_idx'] == batch_idx]
+            logging.info(f"{batch_name}:")
+            self._log_success_rate(df)
+
+        # Print total summary of run
+        total_summary_title = '  Total summary of DART Assembler run  '
+        logging.info(f'{total_summary_title:=^80}')
+        self._log_success_rate(self.df_info)
+        n_isomers = self.df_info['success'].sum()
+        n_complexes = self.df_info[self.df_info['success']]['graph_hash'].nunique()
+        logging.info(f"DART Assembler output files saved to directory `{self.output_directory.name}`.")
+
+        # The runtime is printed but not logged, so that slight differences in the runtime do not cause the integration tests to fail.
+        if self.verbosity > 1:
+            print(f"Total runtime for assembling {n_isomers} isomers (from {n_complexes} complexes): {self.runtime}")
+
+        return
+
+    def _log_global_info(self) -> None:
+        """Log global information about the run."""
+        logging.info('Starting DART Assembler Module.')
+        logging.info(f'Output directory: {self.output_directory.name}')
+        plural = 'es' if self.n_batches > 1 else ''  # print plural or singular in next line
+        logging.info(f"Running {self.n_batches} batch{plural}...")
+        logging.info(f"User-defined global settings:")
+        for key, value in self.init_args.items():
+            logging.info(f"    {key: <30}{value}")
+
+        return
+
+    @staticmethod
+    def _log_success_rate(df):
+        """Log success rate of the run."""
+        n_total = len(df)
+        n_isomers = df['success'].sum()
+        n_complexes = df[df['success']]['complex_name'].nunique()
+
+        # Output statistics how many isomers failed each filter
+        post_filters = df['warning'].value_counts().to_dict()
+        # Merge all warnings that start with 'duplicate' into one
+        n_duplicates = sum(count for note, count in post_filters.items() if note.startswith('duplicate'))
+        post_filters = {note: count for note, count in post_filters.items() if not note.startswith('duplicate')}
+        if n_duplicates > 0:
+            post_filters['duplicate'] = n_duplicates
+        # Sort the post-filters by the number of occurrences
+        post_filters = dict(sorted(post_filters.items(), key=lambda item: item[1], reverse=True))
+        post_filter_notes = '\n'.join([f'    - {filter}: {n}' for filter, n in post_filters.items() if not filter == ''])
+
+        logging.info(f"  - {n_total} isomers tried, {n_isomers} isomers (from {n_complexes} complexes) successfully assembled.")
+        if post_filter_notes != '':
+            logging.info(f"  - {n_total - n_isomers} isomers failed because of filters:")
+            logging.info(post_filter_notes)
+
+        return
+
+    @staticmethod
+    def _log_batch_title_and_settings(batch_settings: Dict[Any, Any]) -> None:
+        """
+        Log the title and settings of the batch.
+        :param batch_settings: Dictionary with the batch settings.
+        :return: None
+        """
+        batch_title = f'  {batch_settings["name"]}  '
+        logging.info(f'{batch_title:=^80}')
+        logging.info(f"User-defined settings for {batch_settings['name']}:")
+        for key, value in batch_settings.items():
+            logging.info(f"    {key: <30}{value}")
+
+        return

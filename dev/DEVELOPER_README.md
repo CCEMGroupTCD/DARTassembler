@@ -9,6 +9,8 @@
     - Active developing should be done on other branches, which are then merged into the `rca_ligand_refactor` branch once the feature is complete and all tests pass.
       - Note: During the currently ongoing refactoring process, the installation, Pd-Ni and OER tests (see `Tests`) are not yet fully functional, because I believe it will make more sense to adapt them once at the end. All the other tests though are functional and should be used.
 
+### How to edit/update the code, especially for the 'isomer.py' file
+The code is in a quite ready-to-publish state now, so we want to minimize the changes to the code. If you want to try out and edit the code, please copy a version of the 'isomer.py' file into your dev folder and change the import in the assembler.py file to point to your local 'isomer.py' file. This way, you can test your changes without affecting the main codebase. Feel free to add batches to the input file of the assembler test in order to test and develop your stuff. Once you are happy with your changes, you can check the differences between the old and the new 'isomer.py' file by marking the two files in Pycharm and right-clicking to select "Compare Files". Then, you can put only the changes you want to keep into the main codebase. This way, you can easily test your changes and make sure that they work as expected before merging them into the main codebase. Don't forget to run the tests after each change to make sure that everything is still working as expected. Also, at the end, please change the import in the assembler.py file back to the 'isomer.py' file in the main codebase, so that the code is ready for the next developer to use.
 
 ### Refactoring goals, plan and priorities
 Note from Timo: In my time writing scientific python code, I have often tried to implement all the features I wanted from the beginning and to make everything perfect from the beginning on. However, every time I ended up with a very complex and slow development process, and in the end I still had to change a lot because scientific software development is always messy and one can never predict everything. On the other hand, whenever I restrained myself and focused on implementing just the core features first, I ended up with a much simpler and faster development process, and in the end I could implement all the advanced features by making only small, local changes. Therefore, I would like to learn from this experience now for the DART refactoring. From my experience I would say that it is very recommendable to develop in stages, where first one tries to develop the core functionalities asap and tests them well and completely forgets about the advanced stuff. Afterwards, the code will be in a good enough state that usually it is easy to go in and locally change and add something to implement advanced features, and it is much faster and better than when doing that from begin with. Therefore, I would like to suggest the following plan for the DART refactoring process:
@@ -24,6 +26,11 @@ Lower priorities in the Isomer() class, to implement once the main priorities ar
 7. Swap around ligands to be able to generate all isomers, also of monodentates. While this is a cool feature and I think it will definitely be part of DART soon, we are right now in the stage of developing and testing the core features, which is already difficult enough. This feature is quite complex and would slow down the development a lot if we take it into account all the time while developing the other stuff. Therefore, the development should happen in stages: In the first stage, we focus on the core stuff, which is already very difficult to get right. Then, once we have all the other code finished, it will be much easier to implement this feature as well.
 8. Doublecheck and validate the user input. Very important but also time-consuming and prone to implement things that become unnecessary later on.
    - Small note about the last point, maybe it helps you: I have seen that you implemented very sophisticated classes for the input, like MetalSpec and LigandSpec. This is very professional a great idea.  However, right now we are in the stage of implementing the core features. Therefore, it is best to leave this doublechecking to the very end, once everything else is done, because it slows down the development of the actual features and usually just makes one write code that in the end isn't needed. I made exactly this mistake with the old DART workflow, where I spent a lot of time on this and then I had to change it all the time and now I can barely use any of it. Therefore, it's so important for me now to prioritize very hard, in order to learn from this experience. Additionally, I would also recommend to not use a yaml file but to simply define the input lists in the python file you use as playground for the development, since this is also easier and more intuitive (for an example see the end of the `assembler.py` file where I do this for the workflow). If you do prefer to have a yaml file (which in the end is equivalent), I would still recommend to not implement any doublechecking of the input for now.
+
+## 20.06.2025 Meeting about priorities and refactoring
+1. Todo: Review of input, agree on final format and update tests 
+- Done: ligand clashing and equivlaent isomer code functionality, todo refactoring to fit it into the code base
+
 
 ## Code structure of the `DARTassembler` package
 The DART workflow has several important Python classes that need to be maintained. One re-occurring feature is that for all DART modules that are accessible via the CLI, there should be a function to call this class from a yaml file. However, all classes themselves should take only Python objects (lists, dictionaries, strings, ase.Atoms etc) as input, since this makes the development much simpler. 
@@ -196,9 +203,11 @@ If everything works:
 ## Todo list
 ### Small renaming and shifting
 - Consistently name the `n_max_ligands`. Right now often it is `n` in all modules except the assembler.
-- rename complex_name_appendix to complex_name_suffix in assembler.yml
+- Rename complex_name_appendix to complex_name_suffix in assembler.yml
+- Rename `validity_check` to `validate` in BaseMolecule() and inheriting classes.
+- Rename `target_vectors`?
+- Rename geometry strings everywhere, including the metalig.
 ### Functionalities
-- Add that in assembler.yml, the user can specify or leave out total_ligand_charges=None, which will then mean that any ligand combination is fine, independent of their total charge.
 ### Docs
 - Make a tutorial notebook for the DART workflow, explaining the very basics (mostly just the target vectors) by assembling Pd(II) square-planar complexes with 1 bidentate and 2 monodentate ligands.
 - Explain the target vectors in the docs and make a figure explaining them.

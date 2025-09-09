@@ -43,7 +43,7 @@ When running the DART Assembler Module, it will first read in the provided confi
 **3. Geometrical isomers :**
     For each complex, the assembler automatically generates all geometric isomers. If the user specified to only return the lowest energy isomer, the assembler will calculate the energy of each isomer using a single point calculation with a universal force field and return only the one with the lowest-energy, otherwise all isomers will be processed.
 
-**4. Isomer naming :**
+**4. AssembledIsomer naming :**
     After assembling all geometric isomers, the assembler automatically generate an 8-letter pronounceable name for each isomer. Per default, this name will be the same for all isomers but appended with an increasing number, or if only the lowest energy isomer is returned, the number will be left away. Alternatively, users can specify in the configuration file to generate a completely new name for each isomer.
 
 **5. Post-assembly check :**
