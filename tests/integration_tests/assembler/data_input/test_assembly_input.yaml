@@ -29,7 +29,7 @@ batches:
       - [[1,0,0], [0,0,-1]]
     metal_centers: Ir
 
-  - n_max_complexes: 10
+  - n_max_complexes: 0 # 10
     total_ligand_charges: -3
     name: "2-2-1-1-bi-metalic"
     random_seed: 5
@@ -86,7 +86,7 @@ batches:
       - [[ 1, 0, 0 ], [ -1, 0, 0 ]]
     metal_centers: La
 
-  - n_max_complexes: 0 # 10
+  - n_max_complexes: 10
     total_ligand_charges: -3
     name: "2-2-1-1-monometalic_with_swap_groups"
     random_seed: 5
@@ -101,4 +101,5 @@ batches:
       - [[-1,0,0], [0,-1,0]]
       - [[1,0,0], [0,0,-1]]
     metal_centers: Ir
-    swap_groups: [1, 1, 2, 2]
+    swap_groups: [1, 1, 2, 2] # Bug The swap groups does not seem to work with every geometry
+
