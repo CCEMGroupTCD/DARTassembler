@@ -1,0 +1,325 @@
+
+Explanation as to why triggering of the following assert:
+
+# I noticed this assert statement was triggered when certain swap groups were added
+assert sorted(name for group in joined_isomers_duplicate_group_names for name in group) == sorted(name for isomer in isomers for name in [isomer.isomer_name]), "Joined isomer groups do not contain all isomers."
+
+happens, and how to fix it. This explanation was generated with the help of ChatGPT5
+
+
+#########################################################################################
+
+You detect duplicate isomers before mono-axial optimisation → this gives pre groups, e.g.
+pre = { {A,B}, {C}, {D,E,F}, ... }
+
+You detect duplicates after optimisation → post groups, e.g.
+post = { {A,C}, {B}, {D,E}, {F}, ... }
+
+You then want the final “duplicate groups” to mean:
+“Two isomers are in the same group if they were ever grouped together in pre or in post.”
+That’s the union of both groupings, including all transitive links.
+
+Mathematically, that’s an equivalence relation: you need the transitive closure of the relation “duplicates in pre OR post”. The result should be a partition of all isomer names (i.e., disjoint groups that together contain every isomer exactly once).
+
+What the current join function actually does
+
+In isomer.py:
+
+@staticmethod
+def _join_duplicate_groups_by_union(pre_isomers_duplicate_group_names: List[set[str]],
+                                    post_isomers_duplicate_group_names: List[set[str]]) -> List[set[str]]:
+    """
+    Join the pre- and post-isomers duplicate groups. If an isomer is a duplicate in either the pre-
+    or post-isomers duplicate groups, they are considered duplicates.
+    """
+    joined_isomers_duplicate_group_names: list[set[str]] = []
+    for pre_isomer_group in pre_isomers_duplicate_group_names:
+        joint_group = pre_isomer_group
+        for isomer_name in pre_isomer_group:
+            for post_isomer_group in post_isomers_duplicate_group_names:
+                if isomer_name in post_isomer_group:
+                    joint_group = joint_group.union(post_isomer_group)
+                    break
+        joint_group = sorted(joint_group)  # <-- becomes a list here
+        if joint_group not in joined_isomers_duplicate_group_names:
+            joined_isomers_duplicate_group_names.append(joint_group)
+    return joined_isomers_duplicate_group_names
+
+
+Two important problems:
+
+Overlaps: It unions per pre-group, but doesn’t propagate unions across different pre-groups when the linking happens via post-groups (or vice-versa). That creates overlapping final groups.
+
+Type mismatch: The function claims to return List[set[str]] but actually appends sorted lists (not sets). Not the root cause, but it can confuse later code.
+
+Your assert:
+
+assert sorted(name for group in joined_isomers_duplicate_group_names for name in group) == \
+       sorted(isomer.isomer_name for isomer in isomers), \
+       "Joined isomer groups do not contain all isomers."
+
+
+fails because the left side duplicates names when groups overlap (e.g., A appears in two joined groups). So the multiset on the left has extra entries.
+
+Tiny warm-up example (recap)
+
+pre: {A,B}, {C}
+
+post: {A,C}, {B}
+
+Current join:
+
+For {A,B}: union with post groups containing A and B → {A,B,C}
+
+For {C}: union with post group containing C ({A,C}) → {A,C}
+
+Final joined = [{A,B,C}, {A,C}] → overlap on A and C → assert fails.
+
+The correct result is one group {A,B,C} (because A-B are together in pre; A-C are together in post → all three are connected transitively).
+
+Example 1 (moderate): split/merge across both passes
+
+Let’s use 5 isomers: A,B,C,D,E
+
+pre groups
+
+{A, B} (A duplicates B)
+
+{C, D} (C duplicates D)
+
+{E}
+
+post groups
+
+{B, C} (post says B duplicates C)
+
+{D, E} (post says D duplicates E)
+
+{A}
+
+What the current function does
+
+Start with pre group {A, B}
+
+A appears in post {A} → joint becomes {A, B}
+
+B appears in post {B, C} → joint becomes {A, B, C}
+Emit group G1 = {A, B, C}
+
+Next pre group {C, D}
+
+C appears in post {B, C} → joint becomes {B, C, D}
+
+D appears in post {D, E} → joint becomes {B, C, D, E}
+Emit group G2 = {B, C, D, E}
+
+Next pre group {E}
+
+E appears in post {D, E} → joint becomes {D, E}
+Emit group G3 = {D, E}
+
+Final joined (order irrelevant): [{A,B,C}, {B,C,D,E}, {D,E}]
+This has heavy overlaps (B,C repeated; D,E repeated) → the flattened list has duplicates → assert fails.
+
+What the result should be
+
+Build edges when two names appear together anywhere:
+
+From pre: (A-B), (C-D)
+
+From post: (B-C), (D-E)
+
+Now the connectivity is:
+A—B—C—D—E → all connected, so the correct single group is {A,B,C,D,E}.
+Your “per pre group” union never reaches that transitive end state consistently for all groups, hence overlaps.
+
+Example 2 (larger chain with multiple bridges)
+
+7 isomers: A,B,C,D,E,F,G
+
+pre groups
+
+{A, B}
+
+{C, D}
+
+{E, F}
+
+{G}
+
+post groups
+
+{B, C}
+
+{D, E}
+
+{F, G}
+
+Current function outcome (sketch)
+
+Pre {A,B} → union with post for A ({A}) and B ({B,C}) → {A,B,C} → G1
+
+Pre {C,D} → post C ({B,C}) and D ({D,E}) → {B,C,D,E} → G2
+
+Pre {E,F} → post E ({D,E}) and F ({F,G}) → {D,E,F,G} → G3
+
+Pre {G} → post G ({F,G}) → {F,G} → G4
+
+Joined = [{A,B,C}, {B,C,D,E}, {D,E,F,G}, {F,G}] → massive overlaps.
+
+Correct outcome
+
+Edges: (A-B), (C-D), (E-F) from pre; (B-C), (D-E), (F-G) from post.
+
+Graph: A—B—C—D—E—F—G → all 7 connected → one final group {A,B,C,D,E,F,G}.
+
+Again, only a transitive closure (DSU/Union-Find or connected-components) gives this clean, disjoint result.
+
+Why swap_groups makes this show up
+
+swap_groups changes how ligands are permuted across sites. That changes the geometry/symmetry the duplicate filter sees before vs after optimisation. Sometimes pre says “A with B” while post says “A with C”. The moment pre/post disagree in this way, your current joining approach produces overlapping results and the assert trips.
+
+The robust fix (works for all the examples)
+
+Treat “is duplicate in pre OR post” as an edge between two isomer names. Then compute connected components:
+
+Nodes = all isomer names
+
+Edges = pairs that appeared together in any pre group or any post group
+
+Connected components = the final, disjoint duplicate groups
+
+Here’s a drop-in replacement for _join_duplicate_groups_by_union using a DSU (Union-Find). It returns sorted lists (update any annotations accordingly):
+
+@staticmethod
+def _join_duplicate_groups_by_union(
+    pre_isomers_duplicate_group_names: List[set[str]],
+    post_isomers_duplicate_group_names: List[set[str]],
+) -> List[List[str]]:
+    """
+    Join pre- and post- duplicate groups by taking the transitive closure over
+    the relation "is duplicate in either pre OR post". Returns disjoint groups.
+    """
+
+    # 1) Gather all names (assumes the duplicate filter returns singletons for unique isomers)
+    all_groups = pre_isomers_duplicate_group_names + post_isomers_duplicate_group_names
+    all_names = sorted({n for g in all_groups for n in g})
+
+    # 2) Union-Find (DSU)
+    parent = {n: n for n in all_names}
+    rank = {n: 0 for n in all_names}
+
+    def find(x):
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]  # path compression
+            x = parent[x]
+        return x
+
+    def union(a, b):
+        ra, rb = find(a), find(b)
+        if ra == rb:
+            return
+        if rank[ra] < rank[rb]:
+            parent[ra] = rb
+        elif rank[ra] > rank[rb]:
+            parent[rb] = ra
+        else:
+            parent[rb] = ra
+            rank[ra] += 1
+
+    # 3) Union within each group for both pre and post
+    for g in all_groups:
+        g = list(g)
+        for i in range(1, len(g)):
+            union(g[0], g[i])
+
+    # 4) Collect components (disjoint groups)
+    components = {}
+    for n in all_names:
+        root = find(n)
+        components.setdefault(root, []).append(n)
+
+    joined = [sorted(v) for v in components.values()]
+
+    # 5) Defensive sanity check (partition & coverage)
+    flat = [n for grp in joined for n in grp]
+    assert len(flat) == len(all_names) == len(set(flat)), \
+        "Joined groups must be a disjoint partition of all isomers."
+
+    return joined
+
+
+Also remove the temporary override line (it discards the intended join):
+joined_isomers_duplicate_group_names = post_isomers_duplicate_group_names # todo debugging
+
+And make the types consistent (function annotation should return List[List[str]] if you keep sorted lists).
+
+Make the assertion actionable
+
+Replace the current blanket assert with one that pinpoints the problem:
+
+from collections import Counter
+
+all_names      = [iso.isomer_name for iso in isomers]
+flat_joined    = [n for grp in joined_isomers_duplicate_group_names for n in grp]
+missing        = sorted(set(all_names) - set(flat_joined))
+extra          = sorted(set(flat_joined) - set(all_names))
+dupes          = sorted([n for n, c in Counter(flat_joined).items() if c > 1])
+
+assert not missing and not extra and not dupes, (
+    "Joined isomer groups must be a disjoint cover of all isomers. "
+    f"Missing: {missing}; Extra: {extra}; Duplicated entries: {dupes}"
+)
+
+
+If something ever goes wrong again, you’ll immediately see whether it’s coverage or disjointness (and exactly which names).
+
+Simple mental model (really simplified)
+
+Draw a dot for each isomer.
+
+If two isomers show up in the same pre group, draw a line between them.
+Do the same for post.
+
+Now, each clump of connected dots (no matter how long the chain) is one final duplicate group.
+That’s it.
+
+Quick unit tests you can add
+def test_join_union_transitive_small():
+    pre  = [ {"A","B"}, {"C"} ]
+    post = [ {"A","C"}, {"B"} ]
+    out  = ClassName._join_duplicate_groups_by_union(pre, post)
+    assert sorted(map(tuple, out)) == [("A","B","C")]  # single group
+
+def test_join_union_chain():
+    pre  = [ {"A","B"}, {"C","D"}, {"E","F"}, {"G"} ]
+    post = [ {"B","C"}, {"D","E"}, {"F","G"} ]
+    out  = ClassName._join_duplicate_groups_by_union(pre, post)
+    assert sorted(map(tuple, out)) == [("A","B","C","D","E","F","G")]
+
+def test_join_union_two_components():
+    pre  = [ {"A","B"}, {"C"}, {"D","E"} ]
+    post = [ {"B"}, {"C","D"}, {"E"} ]
+    out  = ClassName._join_duplicate_groups_by_union(pre, post)
+    # Components: {A,B} and {C,D,E}
+    assert sorted(map(tuple, out)) == [("A","B"), ("C","D","E")]
+
+
+(Replace ClassName with your class.)
+
+TL;DR
+
+The assert is firing because your join routine produces overlapping groups whenever pre and post disagree (a hallmark of missing transitive closure).
+
+Use a Union-Find / connected-components approach to compute a proper partition of isomers.
+
+Make the assert report missing / extra / duplicated names to speed future debugging.
+
+Clean up the type annotation (return List[List[str]]) and remove the one-off debug override line.
+
+
+
+Update this bug has been addressed
+
+Replaced the hardcoded join with a union-find implementation that ensures every isomer appears exactly once across all merged groups.
+Also added a configurable mode parameter (or, and, pre, post, legacy) so developers can test or replicate legacy behaviour easily.

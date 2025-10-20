@@ -133,6 +133,8 @@ class Assembler(BaseModule):
                    complex_name_suffix: str = '',
                    random_seed: Optional[int] = None,
                    force_all_isomers: bool = False,
+                   extra_structure_path: str = None,
+                   translate_extra_structure: Optional[Tuple[float, float, float]] = None,
                    ) -> None:
         """
         Run the assembly for one batch.
@@ -179,6 +181,8 @@ class Assembler(BaseModule):
         self.force_all_isomers = force_all_isomers
         self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
         self.batch_outcontrol = BatchAssemblerOutput(self.batch_output_path)
+        self.extra_structure_path = extra_structure_path
+        self.translate_extra_structure = translate_extra_structure
 
         # Redirect tqdm to the logging module so that messages appear properly on two different lines
         with (logging_redirect_tqdm()):
@@ -299,6 +303,22 @@ class Assembler(BaseModule):
                 with open(str(isomer_xyz_filepath), 'w') as xyz_file:
                     xyz_file.write(xyz_string)
                 self.successfully_assembled_isomer_names.append(isomer_name)
+                if self.extra_structure_path is not None:
+                    # Combine the DART generated xyz with the extra structure xyz into one new xyz file and save it in the same location
+
+                    extra_structure = ase.io.read(self.extra_structure_path, format="xyz")
+
+                    # Ensure we always use a NumPy array for the translation vector
+                    translation = np.array(self.translate_extra_structure or [0.0, 0.0, 0.0], dtype=float)
+                    extra_structure.positions += translation
+
+                    # Combine structures (order doesn’t matter unless you care about atom order)
+                    combined_structure = extra_structure + isomer.atoms
+
+                    # Write combined XYZ
+                    combined_xyz_filepath = complex_dir / f"{isomer_name}_combined.xyz"
+                    ase.io.write(str(combined_xyz_filepath), combined_structure, format="xyz")
+
 
             # Save to concatenated xyz files of this batch
             self.batch_outcontrol.save_xyz(xyz_string, success=success, append=True)    # passed/failed xyz files are created automatically

@@ -1,0 +1,21 @@
+🐞 Clashing Warning Not Propagating Post-Optimization
+
+Symptom:
+Isomers that were correctly detected as “clashing” didn’t retain the 'clashing' warning in subsequent duplicate filtering steps.
+
+Root Cause:
+Inside the loop:
+
+for idx, isomer in enumerate(isomers):
+    isomers[idx] = AxialOptModifier(...).modify(...)[0]
+
+
+the isomer variable still referenced the old (pre-optimized) object.
+The warning was assigned to the outdated instance, not the one actually stored in isomers.
+
+Fix:
+Re-bound the local variable after replacement:
+
+isomer = isomers[idx]
+
+Now any modifications to isomer.warning persist on the correct object.

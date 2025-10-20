@@ -131,8 +131,7 @@ batches:
     - 0
     - 0
   metal_centers: Ru
-- &id001
-  complex_name_suffix: _trans
+- complex_name_suffix: _trans
   n_max_complexes: all
   total_ligand_charges: -2
   name: 2-2-bi_trans_minimal_input
@@ -154,5 +153,79 @@ batches:
       - 0
       - 0
   metal_centers: La
-idx: 4
+- n_max_complexes: 10
+  total_ligand_charges: -3
+  name: 2-2-1-1-monometalic_with_swap_groups
+  random_seed: 5
+  ligand_db_files:
+  - ../data_input/ligands/JSONS/small_mono.json
+  - same_as_previous
+  - ../data_input/ligands/JSONS/bidentate.json
+  - ../data_input/ligands/JSONS/bidentate.json
+  target_vectors:
+  - - - 0
+      - 0
+      - 1
+  - - - 0
+      - 1
+      - 0
+  - - - -1
+      - 0
+      - 0
+    - - 0
+      - -1
+      - 0
+  - - - 1
+      - 0
+      - 0
+    - - 0
+      - 0
+      - -1
+  metal_centers: Ir
+  swap_groups:
+  - 1
+  - 1
+  - 2
+  - 2
+- &id001
+  n_max_complexes: 10
+  total_ligand_charges: -3
+  name: 2-2-1-1-monometalic_with_swap_groups_with_extra_structure
+  random_seed: 5
+  ligand_db_files:
+  - ../data_input/ligands/JSONS/small_mono.json
+  - same_as_previous
+  - ../data_input/ligands/JSONS/bidentate.json
+  - ../data_input/ligands/JSONS/bidentate.json
+  target_vectors:
+  - - - 0
+      - 0
+      - 1
+  - - - 0
+      - 1
+      - 0
+  - - - -1
+      - 0
+      - 0
+    - - 0
+      - -1
+      - 0
+  - - - 1
+      - 0
+      - 0
+    - - 0
+      - 0
+      - -1
+  metal_centers: Ir
+  swap_groups:
+  - 1
+  - 1
+  - 2
+  - 2
+  extra_structure_path: ../data_input/Cu_surface.xyz
+  translate_extra_structure:
+  - -6
+  - -4
+  - -14
+idx: 6
 batch: *id001

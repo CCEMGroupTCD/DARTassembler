@@ -1,0 +1,22 @@
+🐞 Axis Shape Error During Rotation (ValueError: Expected equal numbers of rotations and vectors)
+
+Symptom:
+When optimizing 2-trans ligands, the program crashed inside SciPy’s Rotation.apply() with:
+
+ValueError: Expected equal numbers of rotations and vectors, got 2 rotations and 45 vectors.
+
+
+Root Cause:
+axis for 2-trans ligands was shaped (2,3) (two donor vectors), but the rotation function expected a single (3,) vector.
+This happened because the flattening logic in objective_function() wasn’t applied consistently during the call to rotate().
+
+Fix:
+Moved and centralized axis normalization inside rotate():
+
+Handles (3,), (1,3), and (2,3) shapes.
+
+Warns if 2-trans donor vectors aren’t anti-parallel.
+
+Always normalizes to a single unit vector.
+
+This bug has been successfully addressed

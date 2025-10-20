@@ -11,23 +11,19 @@ import itertools
 import ase
 import networkx as nx
 from copy import deepcopy
+from typing import List
 import logging
 from scipy.spatial.distance import cdist, pdist
 from scipy.spatial.transform import Rotation as R
 from scipy.optimize import linear_sum_assignment, differential_evolution
 import pandas as pd
 from scipy.optimize import brute
-from DARTassembler.src.assembler.utils import are_atoms_equal, get_list_with_all_possible_swappings, \
-    remove_haptic_dummy_atom, generate_pronounceable_word, get_complex_name
-from DARTassembler.src.metalig.geometry import try_all_geometrical_isomer_possibilities, all_geometries, align_vectors, \
-    align_donor_atoms
+from DARTassembler.src.assembler.utils import are_atoms_equal, get_list_with_all_possible_swappings, remove_haptic_dummy_atom, get_complex_name
+from DARTassembler.src.metalig.geometry import try_all_geometrical_isomer_possibilities, all_geometries, align_vectors, align_donor_atoms
 from DARTassembler.src.constants.chem import Element
-from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.metalig.mol import BaseMolecule, Ligand
-from DARTassembler.src.metalig.utils import check_equal
-from DARTassembler.src.metalig.utils_molecule import hapdent_idc_to_donor_idc, get_atomic_props_from_ase_atoms
-from DARTassembler.src.misc.io import load_json
-from DARTassembler.src.metalig.utils_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, get_graph_hash
+from DARTassembler.src.metalig.utils_molecule import get_atomic_props_from_ase_atoms
+from DARTassembler.src.metalig.utils_graph import  graph_to_dict_with_node_labels, get_graph_hash
 
 try:
     import plotly.graph_objects as go
@@ -382,8 +378,16 @@ class AssembledComplex(object):
         pre_isomers_duplicate_group_names = [set([isomer.isomer_name for isomer in isomer_group]) for isomer_group in pre_isomers_duplicate_groups]
 
         # Do a mono-axial optimization of the isomers and afterward check for clashing ligands.
-        for idx, isomer, target_vectors, ligand_origins in zip(range(len(isomers)), isomers, same_length_target_vectors, same_length_ligand_origins):
-            isomers[idx] = AxialOptModifier(isomers=[isomers[idx]], opt=self.optimize_monoaxial).modify(target_vectors_list=[target_vectors], ligand_origins_list=[ligand_origins])[0]
+        for idx, isomer, target_vectors, ligand_origins in zip(
+                range(len(isomers)), isomers, same_length_target_vectors, same_length_ligand_origins):
+
+            # Replace the list entry with the optimized object
+            isomers[idx] = AxialOptModifier(isomers=[isomers[idx]], opt=self.optimize_monoaxial) \
+                .modify(target_vectors_list=[target_vectors], ligand_origins_list=[ligand_origins])[0]
+
+            # IMPORTANT: rebind 'isomer' to the NEW object you just stored
+            isomer = isomers[idx]
+
             if isomer.warning == '' and self.check_clashing:
                 clashfilter = IsomerClashFilter(
                     buffer=self.clashing_buffer,
@@ -395,7 +399,7 @@ class AssembledComplex(object):
                     metal_idc=isomer.metal_idc
                 )
                 if clashing:
-                    isomer.warning = 'clashing'
+                    isomer.warning = 'clashing'  # this now updates the optimized object
                     continue
 
         # Check for duplicates again after the mono-axial optimization.
@@ -484,8 +488,8 @@ class AssembledComplex(object):
         }
 
     @staticmethod
-    def _join_duplicate_groups_by_union(pre_isomers_duplicate_group_names: List[set[str]],
-                                        post_isomers_duplicate_group_names: List[set[str]]) -> List[set[str]]:
+    def _join_duplicate_groups_by_union_legacy(pre_isomers_duplicate_group_names: List[set[str]],
+                                               post_isomers_duplicate_group_names: List[set[str]]) -> List[set[str]]:
         """
         Join the pre- and post-isomers duplicate groups. If two isomers are duplicates in either the pre- or post-isomers duplicate groups, they are considered duplicates.
         """
@@ -503,6 +507,103 @@ class AssembledComplex(object):
                 joined_isomers_duplicate_group_names.append(joint_group)
 
         return joined_isomers_duplicate_group_names
+
+    from typing import List, Iterable
+
+    @staticmethod
+    def _join_duplicate_groups_by_union(
+            pre_isomers_duplicate_group_names: Iterable[Iterable[str]],
+            post_isomers_duplicate_group_names: Iterable[Iterable[str]],
+            mode: str = "post",
+    ) -> List[List[str]]:
+        """
+        Join duplicate groups from the pre- and post-AxialOpt stages.
+
+        Modes
+        -----
+        - "or"   (default): final duplicates if pre OR post grouped them (transitive closure).
+                           → Most aggressive merge (your current behavior).
+        - "pre"            : final duplicates follow ONLY the pre groups (post ignored).
+                           → Precedent to pre stage (useful to preserve pre-stage distinctions).
+        - "post"           : final duplicates follow ONLY the post groups (pre ignored).
+                           → Treat AxialOpt as canonical; simplest final equivalence.
+
+        Returns
+        -------
+        List[List[str]] : Disjoint duplicate groups, each sorted by name.
+                          All names present in the chosen stage(s) appear exactly once.
+        """
+        # --- Normalize inputs: turn each incoming group into a set ---
+        pre = [set(g) for g in pre_isomers_duplicate_group_names]
+        post = [set(g) for g in post_isomers_duplicate_group_names]
+
+        # Choose which groups to use based on the mode
+        m = mode.strip().lower()
+        if m == "or":
+            source_groups = pre + post
+        elif m == "pre":
+            source_groups = pre
+        elif m == "post":
+            source_groups = post
+        else:
+            raise ValueError(f"_join_duplicate_groups_by_union: unknown mode '{mode}'. Use 'or' | 'pre' | 'post'.")
+
+        # Collect every distinct isomer name seen in the selected groups.
+        all_names = sorted({n for g in source_groups for n in g})
+
+        # Edge case: no names (e.g., empty inputs)
+        if not all_names:
+            return []
+
+        # --- Disjoint Set Union (Union-Find) setup ---
+        parent = {n: n for n in all_names}  # representative for each name
+        rank = {n: 0 for n in all_names}  # tree rank (for union by rank)
+
+        def find(x: str) -> str:
+            """Find the representative of x's set (path compression)."""
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        def union(a: str, b: str) -> None:
+            """Union sets of a and b (union by rank)."""
+            ra, rb = find(a), find(b)
+            if ra == rb:
+                return
+            if rank[ra] < rank[rb]:
+                parent[ra] = rb
+            elif rank[ra] > rank[rb]:
+                parent[rb] = ra
+            else:
+                parent[rb] = ra
+                rank[ra] += 1
+
+        # --- Add edges: union all members within each selected group ---
+        # For each group, tie everyone to an anchor so they land in one component.
+        for g in source_groups:
+            if not g:
+                continue
+            it = iter(g)
+            anchor = next(it)
+            for n in it:
+                union(anchor, n)
+
+        # --- Collect connected components as final groups ---
+        comps: dict[str, List[str]] = {}
+        for n in all_names:
+            r = find(n)
+            comps.setdefault(r, []).append(n)
+
+        joined = [sorted(v) for v in comps.values()]
+
+        # Defensive sanity: ensure disjoint partition over all seen names
+        flat = [n for grp in joined for n in grp]
+        assert len(flat) == len(all_names) == len(set(flat)), (
+            "Joined groups must be a disjoint partition of all isomers seen in the chosen stage(s)."
+        )
+
+        return joined
 
     def _get_complex_name(self, avoid_names: Optional[list[str]]) -> str:
         return get_complex_name(seed=self.graph_hash, length=self.complex_name_length, suffix=self.complex_name_suffix, avoid_names=avoid_names)
@@ -695,7 +796,7 @@ class AxialOptModifier:
             for angle, axis, origin, idc, ligand in zip(best_ligand_angles, target_vectors, ligand_origins, isomer.ligand_idc, isomer.ligands):
                 if ligand.geometry not in ['1_monodentate', '2_trans']:
                     continue
-                self.rotate(atoms=atoms, vector=np.asarray(axis).squeeze(), origin=origin, idc=idc, angle=angle)
+                self.rotate(atoms=atoms, vector=axis, origin=origin, idc=idc, angle=angle)
 
             # Copy isomer before modification to avoid unintended side effects
             new_isomer = deepcopy(isomer)
@@ -725,16 +826,8 @@ class AxialOptModifier:
         TMC_worker = TMC_in.copy()
 
         for angle, axis, origin, idc, geometry in zip(list(x), vectors_in, origins_in, ligand_idc, geometries):
-            axis = np.asarray(axis).squeeze()  # Ensure axis is a 1D vector for monodentate ligands
             if geometry not in ['1_monodentate', '2_trans']:
                 continue
-            elif geometry == '2_trans':
-                # Reduce the 2D axis of two (hopefully) collinear vectors to a single vector to rotate around.
-                if not np.allclose(axis[0], -axis[1]):
-                    warnings.warn(
-                        f"Ligands with geometry '2_trans' have target vectors that are not collinear. This may lead to unexpected results in the rotation of these ligands around their axis to maximize inter-ligand distance.")
-                axis = axis[0]
-            assert axis.ndim == 1, 'Axis must be a 1D vector for rotation.'
             self.rotate(atoms=TMC_worker, vector=axis, origin=origin, idc=idc, angle=angle)
 
         # Vectorised distance computation using condensed matrix
@@ -757,23 +850,44 @@ class AxialOptModifier:
     @staticmethod
     def rotate(atoms: Atoms, vector: np.array, origin: np.array, idc: List[int], angle: int):
         """
-        Rotate the atoms in the Atoms object (only atoms with indices=idc) around the vector by the specified angle.
-        Vectorised implementation: rotation is applied to all selected atoms at once.
+        Rotate selected atoms around the given vector by the specified angle.
+        Robust to common axis shapes for ligand geometries:
+          - (3,)   : standard single axis vector
+          - (1,3)  : single axis wrapped in an extra list
+          - (2,3)  : 2-trans case (two anti-parallel donor vectors) → collapse to one
         """
-        # Normalise rotation vector
+        # Normalize vector shape and cast the list to a numpy array
         vector = np.asarray(vector, dtype=float)
-        vector /= np.linalg.norm(vector)
+
+        # If vector is 2D, reduce to 1D
+        if vector.ndim == 2:
+            if vector.shape == (2, 3): # If 2-trans geometry we should have two near opposite donor atom vectors
+                # Check if donor atom vectors are opposite
+                if not np.allclose(vector[0], -vector[1], atol=1e-3):
+                    logging.warning("rotate(): 2_trans target vectors not perfectly opposite; using first vector.")
+                vector = vector[0]  # warn if not opposite but still use the first vector
+            elif vector.shape == (1, 3):
+                vector = vector[0]
+            else:
+                raise ValueError(f"rotate(): Unexpected axis shape {vector.shape}. Expected (3,), (1,3), or (2,3).")
+
+        elif vector.ndim != 1 or vector.shape[0] != 3:
+            raise ValueError(f"rotate(): Axis must be a single 3D vector, got shape {vector.shape}")
+
+        # --- Normalize direction (unit vector) ---
+        norm = np.linalg.norm(vector)
+        if norm == 0:
+            raise ValueError("rotate(): Rotation axis has zero length.")
+        vector = vector / norm
+
         origin = np.asarray(origin, dtype=float)
 
-        # Create rotation object
+        # --- Perform rotation ---
         rotation = R.from_rotvec(np.radians(angle) * vector)
-
-        # Vectorised rotation of the chosen indices
         idc_arr = np.asarray(idc, dtype=int)
         rel = atoms.positions[idc_arr] - origin  # translate
         atoms.positions[idc_arr] = rotation.apply(rel) + origin  # rotate & translate back
         return atoms
-
     def visualize_structures(self):
         """
         Visualize input and output complexes interleaved using ASE's GUI.
