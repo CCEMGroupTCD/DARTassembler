@@ -127,7 +127,7 @@ class JSONLinesReader:
         else:
             self.file_obj = open(self.path, 'r', encoding='utf-8')
 
-        self.reader = jsonlines.Reader(self.file_obj)
+        self.reader = jsonlines.Reader(self.file_obj, loads=json.loads)
         return self._iterator()
 
     def _iterator(self) -> Iterator[tuple[str, Dict]]:
@@ -532,10 +532,10 @@ def get_correct_ligand_db_path_from_input(path) -> Path:
         try:
             path = Path(path)
         except TypeError:
-            raise ValueError(f"Invalid ligand database path: '{path}'")
+            raise ValueError(f"Invalid ligand database path: '{path}' (absolute path: '{Path(path).resolve()}')")
 
     if not path.is_file():
-        raise FileNotFoundError(f"Ligand database filepath not found: '{path}'")
+        raise FileNotFoundError(f"Ligand database filepath not found: '{path}' (absolute path: '{path.resolve()}')")
 
     return Path(path)
 

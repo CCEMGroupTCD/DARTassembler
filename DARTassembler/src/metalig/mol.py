@@ -11,7 +11,7 @@ from DARTassembler.src.misc.refactor_v1_0_0 import refactor_metalig_entry_from_v
 from DARTassembler.src.metalig.utils_molecule import get_planarity, get_denticities_and_hapticities_idc, \
     get_isomers_effective_ligand_atoms_with_effective_donor_indices, \
     get_all_effective_ligand_atoms_with_effective_donor_indices, format_hapdent_idc, has_smarts_pattern, \
-    check_metal_center_format, get_atomic_props_from_ase_atoms, get_ase_atoms_from_atomic_props
+    check_metal_center_format, get_atomic_props_from_ase_atoms, get_ase_atoms_from_atomic_props, stoichiometry2atomslist
 from DARTassembler.src.constants.chem import Element
 from DARTassembler.src.metalig.utils_graph import graph_from_graph_dict, graph_to_dict_with_node_labels, view_graph, \
     get_sorted_atoms_and_indices_from_graph, get_reindexed_graph, get_graph_fragments, count_atoms_with_n_bonds, get_graph_hash, get_heavy_atoms_graph, \
@@ -975,23 +975,24 @@ class Ligand(BaseMolecule):
         :param only_donors: If True, only the donor atoms are considered.
         :return: True if the ligand has the specified stoichiometry, False otherwise.
         """
+        if isinstance(elements, str):
+            elements = stoichiometry2atomslist(elements)
         atoms_of_interest = [Element(el).symbol for el in elements]
         if only_donors:
             atoms = self.donor_elements
         else:
             atoms = self.atomic_props['atoms']
 
-        if ((sorted(list(atoms)) == sorted(
-                atoms_of_interest)) and instruction == "must_contain_and_only_contain") or \
-                (all(elem in list(atoms) for elem in
-                     atoms_of_interest) and instruction == "must_at_least_contain") or \
-                ((any(elem in list(atoms) for elem in
-                      atoms_of_interest) == False) and instruction == "must_exclude") or \
-                ((all(elem in atoms_of_interest for elem in
-                      list(atoms))) and instruction == "must_only_contain_in_any_amount"):
-            atoms_present = True
+        if instruction == 'must_contain_and_only_contain':
+            atoms_present = sorted(list(atoms)) == sorted(atoms_of_interest)
+        elif instruction == 'must_at_least_contain':
+            atoms_present = all(elem in list(atoms) for elem in atoms_of_interest)
+        elif instruction == 'must_exclude':
+            atoms_present = any(elem in list(atoms) for elem in atoms_of_interest) == False
+        elif instruction == 'must_only_contain_in_any_amount':
+            atoms_present = all(elem in atoms_of_interest for elem in list(atoms))
         else:
-            atoms_present = False
+            raise ValueError(f'Invalid instruction: {instruction}. Must be one of ["must_contain_and_only_contain", "must_at_least_contain", "must_exclude", "must_only_contain_in_any_amount"].')
 
         return atoms_present
 

@@ -1,0 +1,21 @@
+#########################################################################################
+# Input file for the assembly module of DART.                                           #
+#########################################################################################
+output_directory: .            # Path to a directory for the output files.
+verbosity: 2
+complex_name_length: 8
+n_max_ligands:
+batches:
+  - total_ligand_charges: -3
+    n_max_complexes: all
+    name: "Au3Cl2CN"
+    random_seed: 0
+    ligand_db_files:
+      - ../ligands/Cl.jsonlines
+      - same_as_previous
+      - ../ligands/CN.jsonlines
+    target_vectors:
+      - ['x']
+      - ['y']
+      - ['-x', '-y']
+    metal_centers: Au

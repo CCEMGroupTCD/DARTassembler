@@ -82,7 +82,10 @@ class IntegrationTest(object):
             change = 'numerical'
         except AssertionError:
             try:
-                pd.testing.assert_frame_equal(df_new, df_old, check_like=True)
+                # Ignore order of rows and columns
+                df_new2 = df_new.sort_values(by=list(df_new.columns), axis=0).reset_index(drop=True)
+                df_old2 = df_old.sort_values(by=list(df_old.columns), axis=0).reset_index(drop=True)
+                pd.testing.assert_frame_equal(df_new2, df_old2, check_like=True)
                 change = 'change in order of rows/columns'
             except AssertionError:
                 change = 'other'

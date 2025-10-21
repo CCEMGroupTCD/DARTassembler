@@ -3,7 +3,8 @@ from pathlib import Path
 from typing import Union
 import pandas as pd
 from DARTassembler.src.metalig.db import LigandDB
-from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
+from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list, \
+    stoichiometry2atomslist
 from DARTassembler.src.misc.io import get_correct_ligand_db_path_from_input, read_yaml
 from DARTassembler.src.modules.modules import BaseModule
 from DARTassembler.src.constants.paths import default_ligandfilters_yml_path
@@ -38,6 +39,8 @@ class LigandFilters(BaseModule):
                 self.unames = [uname for uname in self.unames if self.db.db[uname].has_global_property_in_range(**filter)]
                 name_appendix = filter['name']
             elif filtername == 'composition':
+                if isinstance(filter['elements'], str):
+                    filter['elements'] = stoichiometry2atomslist(filter['elements'])
                 self.unames = [uname for uname in self.unames if self.db.db[uname].has_specified_stoichiometry(**filter)]
                 name_appendix = get_standardized_stoichiometry_from_atoms_list(filter['elements'])
             elif filtername == 'parent_complexes':
@@ -261,5 +264,5 @@ if __name__ == '__main__':
     output_info = True
 
     # #%% ==============    Refactor ligand filters    ==================
-    filter = LigandFilters(input_db_file='metalig', n_max=n_max)
+    filter = LigandFilters(db='metalig', n=n_max)
     ligands = filter.run(oer_ligand_filters, outpath=outpath, dbinfo=output_info)

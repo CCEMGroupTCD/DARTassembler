@@ -105,19 +105,19 @@ all_geometries = {
     # For the other denticities, just make up one random geometry so that the code can assemble them in theory, but these should only be assembled on their own, without any other ligands, since they are so crowded.
     7:
         {
-            '7_septadentate': ((x, y, z, -x, -y, -z, hex1), 1),                   # made up
+            '7_septadentate': (tuple([xy_angle(i*360/7) for i in range(7)]), 1),                   # septagonal
         },
     8:
         {
-            '8_octadentate': ((x, y, z, -x, -y, -z, hex1, hex2), 1)               # made up
+            '8_octadentate': (tuple([xy_angle(i*360/8) for i in range(8)]), 1)                     # octagonal
         },
     9:
         {
-            '9_nonadentate': ((x, y, z, -x, -y, -z, hex1, hex2, hex3), 1)         # made up
+            '9_nonadentate': (tuple([xy_angle(i*360/9) for i in range(9)]), 1)                     # nonagonal
         },
     10:
         {
-            '10_decadentate': ((x, y, z, -x, -y, -z, hex1, hex2, hex3, hex4), 1)   # made up
+            '10_decadentate': (tuple([xy_angle(i*360/10) for i in range(10)]), 1)                  # decagonal
         },
 }
 
