@@ -1,0 +1,158 @@
+output_directory: .
+verbosity: 2
+complex_name_length: 8
+n_max_ligands: 100
+batches:
+- n_max_complexes: 20
+  target_vectors:
+  - - x
+    - y
+  - - -x
+    - -y
+  metal_centers: Fe
+  ligand_geometries:
+  - 2_cis
+  - 2_cis
+  name: batch_0
+- n_max_complexes: 10
+  total_ligand_charges: -3
+  name: 2-2-1-1-monometalic
+  random_seed: 5
+  ligand_db_files:
+  - ../data_input/ligands/JSONS/small_mono.json
+  - same_as_previous
+  - ../data_input/ligands/JSONS/bidentate.json
+  - ../data_input/ligands/JSONS/bidentate.json
+  target_vectors:
+  - - - 0
+      - 0
+      - 1
+  - - - 0
+      - 1
+      - 0
+  - - - -1
+      - 0
+      - 0
+    - - 0
+      - -1
+      - 0
+  - - - 1
+      - 0
+      - 0
+    - - 0
+      - 0
+      - -1
+  metal_centers: Ir
+- n_max_complexes: 10
+  total_ligand_charges: -3
+  name: 2-2-1-1-bi-metalic
+  random_seed: 5
+  ligand_db_files:
+  - ../data_input/ligands/JSONS/small_mono.json
+  - ../data_input/ligands/JSONS/small_mono.json
+  - ../data_input/ligands/JSONS/bidentate.json
+  - ../data_input/ligands/JSONS/bidentate.json
+  target_vectors:
+  - - - 0
+      - 0
+      - 2
+  - - - 0
+      - 0
+      - -2
+  - - - -3
+      - -3
+      - 0
+    - - -3
+      - 3
+      - 0
+  - - - 3
+      - -3
+      - 0
+    - - 3
+      - 3
+      - -1
+  metal_centers:
+  - - - Ir
+      - - -2
+        - 0
+        - 0
+    - - Fe
+      - - 2
+        - 0
+        - 0
+  - - - Ir
+      - - -2
+        - 0
+        - 0
+    - - Fe
+      - - 2
+        - 0
+        - 0
+  - - - Ir
+      - - -2
+        - 0
+        - 0
+  - - - Fe
+      - - 2
+        - 0
+        - 0
+  swap_groups:
+  - 1
+  - 1
+  - 2
+  - 2
+  check_duplicate: true
+  check_clashing: true
+  optimize_monoaxial: true
+  force_all_isomers: false
+  clashing_buffer: -0.3
+  clashing_metal: false
+  duplicate_cutoff: 0.5
+- complex_name_suffix: _haptic
+  n_max_complexes: 10
+  total_ligand_charges: -2
+  name: 3-3-haptic_coordination
+  random_seed: 1
+  ligand_db_files:
+  - ../data_input/ligands/JSONS/hexagonal.json
+  - ../data_input/ligands/JSONS/hexagonal.json
+  target_vectors:
+  - - - 0
+      - 0
+      - 2
+  - - - 0
+      - 0
+      - -2
+  ligand_origins:
+  - - 0
+    - 0
+    - 0
+  - - 0
+    - 0
+    - 0
+  metal_centers: Ru
+- &id001
+  complex_name_suffix: _trans
+  n_max_complexes: all
+  total_ligand_charges: -2
+  name: 2-2-bi_trans_minimal_input
+  random_seed: 1
+  ligand_db_files:
+  - ../data_input/ligands/JSONS/bi_trans.jsonlines
+  - same_as_previous
+  target_vectors:
+  - - - 0
+      - 0
+      - 1
+    - - 0
+      - 0
+      - -1
+  - - - 1
+      - 0
+      - 0
+    - - -1
+      - 0
+      - 0
+  metal_centers: La
+idx: 4
+batch: *id001

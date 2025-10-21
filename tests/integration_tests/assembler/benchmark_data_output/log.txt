@@ -1,6 +1,6 @@
 Starting DART Assembler Module.
 Output directory: data_output
-Running 5 batches...
+Running 7 batches...
 User-defined global settings:
     output_directory              .
     verbosity                     2
@@ -60,6 +60,28 @@ User-defined settings for 2-2-bi_trans_minimal_input:
     ligand_db_files               ['../data_input/ligands/JSONS/bi_trans.jsonlines', 'same_as_previous']
     target_vectors                [[[0, 0, 1], [0, 0, -1]], [[1, 0, 0], [-1, 0, 0]]]
     metal_centers                 La
+====================  2-2-1-1-monometalic_with_swap_groups  ====================
+User-defined settings for 2-2-1-1-monometalic_with_swap_groups:
+    n_max_complexes               10
+    total_ligand_charges          -3
+    name                          2-2-1-1-monometalic_with_swap_groups
+    random_seed                   5
+    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
+    target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
+    metal_centers                 Ir
+    swap_groups                   [1, 1, 2, 2]
+=========  2-2-1-1-monometalic_with_swap_groups_with_extra_structure  ==========
+User-defined settings for 2-2-1-1-monometalic_with_swap_groups_with_extra_structure:
+    n_max_complexes               10
+    total_ligand_charges          -3
+    name                          2-2-1-1-monometalic_with_swap_groups_with_extra_structure
+    random_seed                   5
+    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
+    target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
+    metal_centers                 Ir
+    swap_groups                   [1, 1, 2, 2]
+    extra_structure_path          ../data_input/Cu_surface.xyz
+    translate_extra_structure     [-6, -4, -14]
 =============================  Summary per batch  ==============================
 batch_0:
   - 92 isomers tried, 27 isomers (from 20 complexes) successfully assembled.
@@ -67,24 +89,34 @@ batch_0:
     - duplicate: 51
     - clashing: 14
 2-2-1-1-monometalic:
-  - 48 isomers tried, 28 isomers (from 10 complexes) successfully assembled.
-  - 20 isomers failed because of filters:
-    - clashing: 18
-    - duplicate: 2
+  - 48 isomers tried, 27 isomers (from 10 complexes) successfully assembled.
+  - 21 isomers failed because of filters:
+    - clashing: 20
+    - duplicate: 1
 2-2-1-1-bi-metalic:
-  - 160 isomers tried, 156 isomers (from 10 complexes) successfully assembled.
-  - 4 isomers failed because of filters:
-    - duplicate: 4
+  - 160 isomers tried, 154 isomers (from 10 complexes) successfully assembled.
+  - 6 isomers failed because of filters:
+    - duplicate: 6
 3-3-haptic_coordination:
   - 10 isomers tried, 10 isomers (from 10 complexes) successfully assembled.
 2-2-bi_trans_minimal_input:
   - 16 isomers tried, 3 isomers (from 3 complexes) successfully assembled.
   - 13 isomers failed because of filters:
-    - clashing: 8
-    - duplicate: 5
+    - duplicate: 9
+    - clashing: 4
+2-2-1-1-monometalic_with_swap_groups:
+  - 192 isomers tried, 32 isomers (from 10 complexes) successfully assembled.
+  - 160 isomers failed because of filters:
+    - duplicate: 83
+    - clashing: 77
+2-2-1-1-monometalic_with_swap_groups_with_extra_structure:
+  - 192 isomers tried, 32 isomers (from 10 complexes) successfully assembled.
+  - 160 isomers failed because of filters:
+    - duplicate: 83
+    - clashing: 77
 ====================  Total summary of DART Assembler run  =====================
-  - 326 isomers tried, 224 isomers (from 53 complexes) successfully assembled.
-  - 102 isomers failed because of filters:
-    - duplicate: 62
-    - clashing: 40
+  - 710 isomers tried, 285 isomers (from 73 complexes) successfully assembled.
+  - 425 isomers failed because of filters:
+    - duplicate: 233
+    - clashing: 192
 DART Assembler output files saved to directory `data_output`.

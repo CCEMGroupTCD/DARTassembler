@@ -6,14 +6,14 @@ verbosity: 2
 complex_name_length: 8
 n_max_ligands: 100
 batches:
-  - n_max_complexes: 20
+  - n_max_complexes: 20                               # Checked by Cian 15/10/2025
     target_vectors:
       - [ x, y ]
       - [-x, -y]
     metal_centers: Fe
     ligand_geometries: [2_cis, 2_cis]
 
-  - n_max_complexes: 10
+  - n_max_complexes: 10                               # Checked by Cian 15/10/2025 (EDUGOCET2 was not flagged as isomer due to difference in rotation)
     total_ligand_charges: -3
     name: "2-2-1-1-monometalic"
     random_seed: 5
@@ -29,7 +29,7 @@ batches:
       - [[1,0,0], [0,0,-1]]
     metal_centers: Ir
 
-  - n_max_complexes: 10
+  - n_max_complexes: 10                                # Checked by Cian 15/10/2025 any differences are soley due to slight differences in monodentate-rotation
     total_ligand_charges: -3
     name: "2-2-1-1-bi-metalic"
     random_seed: 5
@@ -58,7 +58,7 @@ batches:
     duplicate_cutoff: 0.5
 
   - complex_name_suffix: "_haptic"
-    n_max_complexes: 10
+    n_max_complexes: 10                                 # Checked by Cian 15/10/2025
     total_ligand_charges: -2
     name: "3-3-haptic_coordination"
     random_seed: 1
@@ -73,7 +73,7 @@ batches:
       - [ 0, 0, 0 ]
     metal_centers: Ru
 
-  - complex_name_suffix: "_trans"
+  - complex_name_suffix: "_trans"                       # Checked by Cian 15/10/2025
     n_max_complexes: 'all'
     total_ligand_charges: -2
     name: "2-2-bi_trans_minimal_input"
@@ -85,3 +85,40 @@ batches:
       - [[ 0, 0, 1 ], [ 0, 0, -1 ]]
       - [[ 1, 0, 0 ], [ -1, 0, 0 ]]
     metal_centers: La
+
+  - n_max_complexes: 10                             # Checked by Cian 15/10/2025
+    total_ligand_charges: -3
+    name: "2-2-1-1-monometalic_with_swap_groups"
+    random_seed: 5
+    ligand_db_files:
+      - ../data_input/ligands/JSONS/small_mono.json
+      - same_as_previous
+      - ../data_input/ligands/JSONS/bidentate.json
+      - ../data_input/ligands/JSONS/bidentate.json
+    target_vectors:
+      - [[0,0,1]]
+      - [[0,1,0]]
+      - [[-1,0,0], [0,-1,0]]
+      - [[1,0,0], [0,0,-1]]
+    metal_centers: Ir
+    swap_groups: [1, 1, 2, 2] # Checked by Cian 15/10/2025
+
+  - n_max_complexes: 10                             # Checked by Cian 15/10/2025
+    total_ligand_charges: -3
+    name: "2-2-1-1-monometalic_with_swap_groups_with_extra_structure"
+    random_seed: 5
+    ligand_db_files:
+      - ../data_input/ligands/JSONS/small_mono.json
+      - same_as_previous
+      - ../data_input/ligands/JSONS/bidentate.json
+      - ../data_input/ligands/JSONS/bidentate.json
+    target_vectors:
+      - [ [ 0,0,1 ] ]
+      - [ [ 0,1,0 ] ]
+      - [ [ -1,0,0 ], [ 0,-1,0 ] ]
+      - [ [ 1,0,0 ], [ 0,0,-1 ] ]
+    metal_centers: Ir
+    swap_groups: [ 1, 1, 2, 2 ] # Checked by Cian 15/10/2025
+    extra_structure_path: "../data_input/Cu_surface.xyz"
+    translate_extra_structure: [ -6, -4, -14 ]
+
