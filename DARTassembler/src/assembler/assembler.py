@@ -129,7 +129,7 @@ class Assembler(BaseModule):
                    total_ligand_charges: int = None,
                    ligand_db_files: Union[list[str], str] = 'metalig',
                    ligand_origins: list[tuple[float, float, float]] = None,
-                   ligand_geometries: list[str] = None,
+                   ligand_archetypes: list[str] = None,
                    complex_name_suffix: str = '',
                    random_seed: Optional[int] = None,
                    force_all_isomers: bool = False,
@@ -177,7 +177,7 @@ class Assembler(BaseModule):
         self.clashing_metal = clashing_metal
         self.duplicate_cutoff = duplicate_cutoff
         self.optimize_monoaxial = optimize_monoaxial
-        self.ligand_geometries = ligand_geometries
+        self.ligand_archetypes = ligand_archetypes
         self.force_all_isomers = force_all_isomers
         self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
         self.batch_outcontrol = BatchAssemblerOutput(self.batch_output_path)
@@ -261,14 +261,14 @@ class Assembler(BaseModule):
             n_target_vectors = len(target_vectors)
             database = {name: ligand for name, ligand in self._loaded_ligand_databases[ligand_db_filepath].db.items() if ligand.n_eff_denticities == n_target_vectors}
 
-            # If required, reduce the database to the ligands with the correct geometry
-            if self.ligand_geometries is not None:
-                geometry = self.ligand_geometries[idx]
-                database = {name: ligand for name, ligand in database.items() if ligand.geometry == geometry}
+            # If required, reduce the database to the ligands with the correct archetype
+            if self.ligand_archetypes is not None:
+                archetype = self.ligand_archetypes[idx]
+                database = {name: ligand for name, ligand in database.items() if ligand.archetype == archetype}
 
             if not database:
-                with_geometries = f' and ligand geometry `{geometry}`' if self.ligand_geometries is not None else ''
-                raise ValueError(f"The provided ligand database contains no ligands with `n_eff_denticities={n_target_vectors}`{with_geometries}. Please check your input ligand database `{Path(ligand_db_filepath).resolve()}`.")
+                with_archetypes = f' and ligand archetype `{archetype}`' if self.ligand_archetypes is not None else ''
+                raise ValueError(f"The provided ligand database contains no ligands with `n_eff_denticities={n_target_vectors}`{with_archetypes}. Please check your input ligand database `{Path(ligand_db_filepath).resolve()}`.")
 
             database = LigandDB(database)  # Convert to LigandDB object
             ligand_databases.append(database)
@@ -345,7 +345,7 @@ class Assembler(BaseModule):
             'graph_hash': isomer.graph_hash,
             'warning': isomer.warning,
             'ligand_unique_names': isomer.ligand_info['unique_names'],
-            'ligand_geometries': isomer.ligand_info['geometries'],
+            'ligand_archetypes': isomer.ligand_info['archetypes'],
             'ligand_stoichiometries': isomer.ligand_info['stoichiometries'],
             'ligand_charges': isomer.ligand_info['charges'],
             'ligand_donors': isomer.ligand_info['donors'],

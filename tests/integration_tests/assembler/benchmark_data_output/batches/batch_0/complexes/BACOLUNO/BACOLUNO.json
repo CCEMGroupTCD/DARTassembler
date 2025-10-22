@@ -1802,9 +1802,9 @@
             "unq_CSD-OZOVOP-02-a",
             "unq_CSD-OZIYON-02-b"
         ],
-        "geometries": [
-            "2_cis",
-            "2_cis"
+        "archetypes": [
+            "2-cis",
+            "2-cis"
         ],
         "donor_idcs": [
             [

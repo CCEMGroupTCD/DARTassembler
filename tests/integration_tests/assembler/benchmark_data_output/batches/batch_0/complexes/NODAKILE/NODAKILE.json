@@ -3032,9 +3032,9 @@
             "unq_CSD-OZOZOU-02-a",
             "unq_CSD-OZOSIG-02-a"
         ],
-        "geometries": [
-            "2_cis",
-            "2_cis"
+        "archetypes": [
+            "2-cis",
+            "2-cis"
         ],
         "donor_idcs": [
             [

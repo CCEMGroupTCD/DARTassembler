@@ -1953,10 +1953,10 @@
             "unq_CSD-OZOYEI-01-c",
             "unq_CSD-OZOZIN-01-a"
         ],
-        "geometries": [
-            "2_cis",
-            "1_monodentate",
-            "1_monodentate"
+        "archetypes": [
+            "2-cis",
+            "1-mono",
+            "1-mono"
         ],
         "donor_idcs": [
             [

@@ -20,7 +20,7 @@ import pandas as pd
 from scipy.optimize import brute
 from DARTassembler.src.assembler.utils import are_atoms_equal, get_list_with_all_possible_swappings, \
     remove_haptic_dummy_atom, get_complex_name, join_duplicate_groups_by_union
-from DARTassembler.src.metalig.geometry import try_all_geometrical_isomer_possibilities, all_geometries, align_vectors, align_donor_atoms
+from DARTassembler.src.metalig.archetype import try_all_geometrical_isomer_possibilities, all_archetypes, align_vectors, align_donor_atoms
 from DARTassembler.src.constants.chem import Element
 from DARTassembler.src.metalig.mol import BaseMolecule, Ligand
 from DARTassembler.src.metalig.utils_molecule import get_atomic_props_from_ase_atoms
@@ -86,7 +86,7 @@ class AssembledIsomer(BaseMolecule):
             ligand = Ligand(
                 atomic_props=self.atoms[isomer_ligand_indices],
                 donor_idc=self.ligand_info['donor_idcs'][idx],
-                global_props={'geometry': self.ligand_info['geometries'][idx]},
+                global_props={'archetype': self.ligand_info['archetypes'][idx]},
                 graph=self.graph.subgraph(isomer_ligand_indices),
                 unique_name=self.ligand_info['unique_names'][idx],
                 charge=self.ligand_info['charges'],
@@ -268,26 +268,26 @@ class AssembledComplex(object):
         except TypeError as e:
             raise TypeError(f"Target vectors must be a list of lists of lists of floats. Error: {e}")
 
-        # Check if the target vectors are compatible with the ligand geometries.
+        # Check if the target vectors are compatible with the ligand archetypes.
         for target_vector_list, ligand in zip(target_vectors, ligands):
-            ligand_geom_vector = np.asarray(all_geometries[ligand.n_eff_denticities][ligand.geometry][0])
-            _, rssd = align_vectors(target_vectors=target_vector_list, donor_vectors=ligand_geom_vector)
+            ligand_arch_vector = np.asarray(all_archetypes[ligand.n_eff_denticities][ligand.archetype][0])
+            _, rssd = align_vectors(target_vectors=target_vector_list, donor_vectors=ligand_arch_vector)
             if not np.isclose(rssd, 0.0):
-                # Check if any combination of the target vectors matches the geometry of the ligand.
+                # Check if any combination of the target vectors matches the archetype of the ligand.
                 n = len(target_vectors)
                 target_vector_list_permutations = list(itertools.permutations(target_vector_list, n))
                 any_other_order_matches = False
                 for target_vector_list_test in target_vector_list_permutations:
-                    _, rssd = align_vectors(target_vectors=target_vector_list_test, donor_vectors=ligand_geom_vector)
+                    _, rssd = align_vectors(target_vectors=target_vector_list_test, donor_vectors=ligand_arch_vector)
                     if np.isclose(rssd, 0.0):
                         any_other_order_matches = True
                         break
                 if any_other_order_matches:
                     warn_string = f'Most likely, this is due to a wrong order of the provided target vectors for each donor (see documentation), because if we change the order, they fit perfectly. '
                 else:
-                    warn_string = f'Most likely, this is due to erroneously provided ligands/target vectors, or simply because the provided target vectors are intended to be different from the ideal geometry of the ligand. '
+                    warn_string = f'Most likely, this is due to erroneously provided ligands/target vectors, or simply because the provided target vectors are intended to be different from the ideal archetype of the ligand. '
                 logging.warning(
-                    f"WARNING: Provided target vectors `{target_vector_list}` do not perfectly match the ligand geometry `{ligand.geometry}`, which has ideal target vectors of {ligand_geom_vector.tolist()}. The assembler will continue with the input you provided, but the assembled complexes may not have the intended geometry. {warn_string}If this is intended, you can ignore this warning.")
+                    f"WARNING: Provided target vectors `{target_vector_list}` do not perfectly match the ligand archetype `{ligand.archetype}`, which has ideal target vectors of {ligand_arch_vector.tolist()}. The assembler will continue with the input you provided, but the assembled complexes may not have the intended archetype. {warn_string}If this is intended, you can ignore this warning.")
 
         return metal_centers, ligand_origins, ligands, target_vectors
 
@@ -495,7 +495,7 @@ class AssembledComplex(object):
         return {
             # Important info for making Ligands() objects in the AssembledIsomer().
             'unique_names': [lig.unique_name for lig in self.ligands],
-            'geometries': [lig.geometry for lig in self.ligands],
+            'archetypes': [lig.archetype for lig in self.ligands],
             'donor_idcs': [lig.donor_idc for lig in self.ligands],
             'charges': [lig.charge for lig in self.ligands],
             'stoichiometries': [lig.stoichiometry for lig in self.ligands],
@@ -512,12 +512,12 @@ class AssembledComplex(object):
         """
         rotated_ligands = []
         for ligand, target_vector_list, origin in zip(self.ligands, target_vectors, ligand_origins):
-            # Extract the geometry and donor atoms of the effective ligand, potentially with 'Cu' dummy atoms for haptic ligands.
+            # Extract the archetype and donor atoms of the effective ligand, potentially with 'Cu' dummy atoms for haptic ligands.
             atoms, donor_atoms = ligand.get_isomers_effective_ligand_atoms_with_effective_donor_indices(dummy='Cu')
             # Cast the target vectors to numpy arrays
             target_vector_list = [np.array(v) for v in target_vector_list]
 
-            # Align the donor atoms of the ligand to the target vectors. Either make all possible geometrical isomers or just the ones specified in the MetaLig. For most cases these two should be identical, but making all combinations has two consequences: (a) the order of input target vectors does not matter (the one with the lowest error is always assembled) and (b) some geometries have more isomers, e.g. the `trigonal` geometry has in theory three isomers in which simply the ligand is rotated, but for the MetaLig we had decided to filter out these isomers so that only one is kept.
+            # Align the donor atoms of the ligand to the target vectors. Either make all possible geometrical isomers or just the ones specified in the MetaLig. For most cases these two should be identical, but making all combinations has two consequences: (a) the order of input target vectors does not matter (the one with the lowest error is always assembled) and (b) some archetypes have more isomers, e.g. the `trigonal` archetype has in theory three isomers in which simply the ligand is rotated, but for the MetaLig we had decided to filter out these isomers so that only one is kept.
             if self.force_all_isomers:
                 ligand_isomers, _, _ = try_all_geometrical_isomer_possibilities(atoms=atoms, donor_idc=donor_atoms[0], target_vectors=target_vector_list)
             else:
@@ -660,13 +660,13 @@ class AxialOptModifier:
             # Each ligand rotation angle gets its own bound
             bounds = [[0, 360] for _ in target_vectors]
 
-            geometries = [ligand.geometry for ligand in isomer.ligands]
+            archetypes = [ligand.archetype for ligand in isomer.ligands]
 
             # Run the optimizer
             result = differential_evolution(
                 self.objective_function,
                 bounds=bounds,
-                args=(target_vectors, ligand_origins, atoms.copy(), isomer.ligand_idc, geometries),
+                args=(target_vectors, ligand_origins, atoms.copy(), isomer.ligand_idc, archetypes),
                 seed=42,
                 maxiter=maxiter,
                 popsize=popsize,
@@ -677,7 +677,7 @@ class AxialOptModifier:
 
             # Correctly apply rotations to this isomer's ligands
             for angle, axis, origin, idc, ligand in zip(best_ligand_angles, target_vectors, ligand_origins, isomer.ligand_idc, isomer.ligands):
-                if ligand.geometry not in ['1_monodentate', '2_trans']:
+                if ligand.archetype not in ['1-mono', '2-trans']:
                     continue
                 self.rotate(atoms=atoms, vector=axis, origin=origin, idc=idc, angle=angle)
 
@@ -696,7 +696,7 @@ class AxialOptModifier:
         return self.output_isomers
 
     def objective_function(self, x: np.ndarray, vectors_in: List[np.array], origins_in: List[np.array],
-                           TMC_in: ase.Atoms, ligand_idc: list[list[int]], geometries: List[str]) -> float:
+                           TMC_in: ase.Atoms, ligand_idc: list[list[int]], archetypes: List[str]) -> float:
         """
         Objective function to optimize the position of the ligands in the TMC complex.
         :param: x:  Array of angles to rotate each ligand around its respective vector.
@@ -708,8 +708,8 @@ class AxialOptModifier:
         # Generate a copy of the input complex
         TMC_worker = TMC_in.copy()
 
-        for angle, axis, origin, idc, geometry in zip(list(x), vectors_in, origins_in, ligand_idc, geometries):
-            if geometry not in ['1_monodentate', '2_trans']:
+        for angle, axis, origin, idc, archetype in zip(list(x), vectors_in, origins_in, ligand_idc, archetypes):
+            if archetype not in ['1-mono', '2-trans']:
                 continue
             self.rotate(atoms=TMC_worker, vector=axis, origin=origin, idc=idc, angle=angle)
 
@@ -734,7 +734,7 @@ class AxialOptModifier:
     def rotate(atoms: Atoms, vector: np.array, origin: np.array, idc: List[int], angle: int):
         """
         Rotate selected atoms around the given vector by the specified angle.
-        Robust to common axis shapes for ligand geometries:
+        Robust to common axis shapes for ligand archetypes:
           - (3,)   : standard single axis vector
           - (1,3)  : single axis wrapped in an extra list
           - (2,3)  : 2-trans case (two anti-parallel donor vectors) -> collapse to the first one
@@ -744,10 +744,10 @@ class AxialOptModifier:
 
         # If vector is 2D, reduce to 1D
         if vector.ndim == 2:
-            if vector.shape == (2, 3): # If 2-trans geometry we should have two near opposite donor atom vectors
+            if vector.shape == (2, 3): # If 2-trans archetype we should have two near opposite donor atom vectors
                 # Check if donor atom vectors are opposite
                 # if not np.allclose(vector[0], -vector[1], atol=1e-3):
-                #     logging.warning("rotate(): 2_trans target vectors not perfectly opposite; using first vector.")
+                #     logging.warning("rotate(): 2-trans target vectors not perfectly opposite; using first vector.")
                 vector = vector[0]  # warn if not opposite but still use the first vector
             elif vector.shape == (1, 3):
                 vector = vector[0]
@@ -971,7 +971,7 @@ class DuplicateIsomerFilter:
             logging.debug(f"Performing 1D brute-force alignment around axis: {axis_vector.tolist()}")
 
         elif len(self.unique_metal_centers) >= 3:
-            # 3 metal centres means each isomer is fixed in space and their geometries can be directly compared
+            # 3 metal centres means each isomer is fixed in space and their archetypes can be directly compared
             # We simply return the energy heuristic
             logging.debug("Three or more metal centres detected — skipping alignment and using direct heuristic.")
             return self.energy_heuristic(stat_atoms=stationary_atoms, rot_atoms=rotated_atoms)

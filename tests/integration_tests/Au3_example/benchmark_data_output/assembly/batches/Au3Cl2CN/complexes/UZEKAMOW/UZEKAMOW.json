@@ -857,10 +857,10 @@
             "unq_CSD-OZOCUD-01-a",
             "unq_CSD-KIVPEK-02-a"
         ],
-        "geometries": [
-            "1_monodentate",
-            "1_monodentate",
-            "2_cis"
+        "archetypes": [
+            "1-mono",
+            "1-mono",
+            "2-cis"
         ],
         "donor_idcs": [
             [

@@ -2494,9 +2494,9 @@
             "unq_CSD-PALLAP-012-a",
             "unq_CSD-PALLAP-012-a"
         ],
-        "geometries": [
-            "2_trans",
-            "2_trans"
+        "archetypes": [
+            "2-trans",
+            "2-trans"
         ],
         "donor_idcs": [
             [

@@ -1085,11 +1085,11 @@
             "unq_CSD-PADFAC-02-a",
             "unq_CSD-OZIYON-02-a"
         ],
-        "geometries": [
-            "1_monodentate",
-            "1_monodentate",
-            "2_cis",
-            "2_cis"
+        "archetypes": [
+            "1-mono",
+            "1-mono",
+            "2-cis",
+            "2-cis"
         ],
         "donors": [
             "N",

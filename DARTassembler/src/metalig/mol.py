@@ -20,7 +20,7 @@ from DARTassembler.src.metalig.utils_graph import graph_from_graph_dict, graph_t
 from DARTassembler.src.metalig.utils import get_stable_sorted_value_counts, check_equal, sort_dict_as
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list, \
     unknown_rdkit_bond_orders, get_max_deviation_from_coplanarity, if_same_stoichiometries
-from DARTassembler.src.metalig.geometry import assign_geometry
+from DARTassembler.src.metalig.archetype import assign_archetype
 
 pseudo_metal = 'Cu'     # Pseudo metal for display in ligand xyz files and for use in the SMARTS filter.
 # The set of properties that are stored in the ligand dictionary of the MetaLig database.
@@ -33,7 +33,7 @@ ligand_global_props = [
     # General properties
     'unique_name',
     'stoichiometry',
-    'geometry',
+    'archetype',
     'charge',
     'smiles',
     'smiles_with_metal',
@@ -56,8 +56,8 @@ ligand_global_props = [
     'donor_metal_planarity',
     'min_interatomic_distance',
     'max_ligand_extension',
-    'geometry_rssd',
-    'geometry_confidence',
+    'archetype_rssd',
+    'archetype_confidence',
     # Boolean properties
     'is_2D_symmetrical',
     'has_all_bond_orders_valid',
@@ -588,7 +588,7 @@ class Ligand(BaseMolecule):
         +-------------------------------+----------------------+------------------------------------------------------+
         | stoichiometry                 | str                  | Stoichiometry of the ligand (e.g., 'C10H12N2O4').    |
         +-------------------------------+----------------------+------------------------------------------------------+
-        | geometry                      | str                  | Assigned ligand geometry (e.g., '2_cis').            |
+        | archetype                      | str                  | Assigned ligand archetype (e.g., '2-cis').            |
         +-------------------------------+----------------------+------------------------------------------------------+
         | charge                        | Union[int, np.nan] | Formal charge of the ligand.                     |
         +-------------------------------+----------------------+------------------------------------------------------+
@@ -630,9 +630,9 @@ class Ligand(BaseMolecule):
         +-------------------------------+----------------------+------------------------------------------------------+
         | max_ligand_extension          | float                | Maximum distance between any two ligand atoms.       |
         +-------------------------------+----------------------+------------------------------------------------------+
-        | geometry_rssd                 | float                | RSSD value for geometry assignment.                  |
+        | archetype_rssd                 | float                | RSSD value for archetype assignment.                  |
         +-------------------------------+----------------------+------------------------------------------------------+
-        | geometry_confidence           | float                | Confidence score for geometry assignment.            |
+        | archetype_confidence           | float                | Confidence score for archetype assignment.            |
         +-------------------------------+----------------------+------------------------------------------------------+
         | is_2D_symmetrical             | bool                 | True if the ligand graph is symmetrical between donors. |
         +-------------------------------+----------------------+------------------------------------------------------+
@@ -804,42 +804,42 @@ class Ligand(BaseMolecule):
         return len([sublist for sublist in self.hapdent_idc if isinstance(sublist, tuple)])
 
     @cached_global_props
-    def _geometry_and_geometrical_isomers(self):
-        """Cache all the geometry and isomer information when required."""
-        geometry, _, isomer_hapdent_idc, rssd, _, geometry_confidence = self.get_ligand_geometry_and_isomers()
+    def _archetype_and_geometrical_isomers(self):
+        """Cache all the archetype and isomer information when required."""
+        archetype, _, isomer_hapdent_idc, rssd, _, archetype_confidence = self.get_ligand_archetype_and_isomers()
         d = {
-            'geometry': geometry,                                                       # str
+            'archetype': archetype,                                                       # str
             'geometric_isomers_hapdent_idc': isomer_hapdent_idc,                        # list of hapdent_idc
-            'geometry_rssd': rssd,                                                      # float >= 0.0
-            'geometry_confidence': geometry_confidence                                  # float > 1.0
+            'archetype_rssd': rssd,                                                      # float >= 0.0
+            'archetype_confidence': archetype_confidence                                  # float > 1.0
         }
 
         # Add to global_props so that the information is saved when the ligand is written to a file
-        self.global_props['geometry'] = geometry
-        self.global_props['geometry_rssd'] = rssd
-        self.global_props['geometry_confidence'] = geometry_confidence
+        self.global_props['archetype'] = archetype
+        self.global_props['archetype_rssd'] = rssd
+        self.global_props['archetype_confidence'] = archetype_confidence
 
         return d
 
     @cached_global_props
-    def geometry(self) -> str:
-        """The geometry of the ligand, e.g. '2_cis'."""
-        return self._geometry_and_geometrical_isomers['geometry']
+    def archetype(self) -> str:
+        """The archetype of the ligand, e.g. '2-cis'."""
+        return self._archetype_and_geometrical_isomers['archetype']
 
     @cached_global_props
     def geometric_isomers_hapdent_idc(self) -> list:
         """A list of hapdent_idc with different orders of elements, representing the geometric isomers of the ligand."""
-        return self._geometry_and_geometrical_isomers['geometric_isomers_hapdent_idc']
+        return self._archetype_and_geometrical_isomers['geometric_isomers_hapdent_idc']
 
     @cached_global_props
-    def geometry_rssd(self) -> float:
-        """The RSSD value of the geometry assignment of the ligand. The lower the value, the more close the real geometry is to the ideal geometry."""
-        return self._geometry_and_geometrical_isomers['geometry_rssd']
+    def archetype_rssd(self) -> float:
+        """The RSSD value of the archetype assignment of the ligand. The lower the value, the more close the real archetype is to the ideal archetype."""
+        return self._archetype_and_geometrical_isomers['archetype_rssd']
 
     @cached_global_props
-    def geometry_confidence(self) -> float:
-        """The confidence of the geometry assignment of the ligand. The higher the value, the more confident the geometry assignment is."""
-        return self._geometry_and_geometrical_isomers['geometry_confidence']
+    def archetype_confidence(self) -> float:
+        """The confidence of the archetype assignment of the ligand. The higher the value, the more confident the archetype assignment is."""
+        return self._archetype_and_geometrical_isomers['archetype_confidence']
 
     @cached_global_props
     def min_interatomic_distance(self) -> float:
@@ -1124,20 +1124,20 @@ class Ligand(BaseMolecule):
 
         return all_atoms, isomers_eff_donor_idc
 
-    def get_ligand_geometry_and_isomers(self) -> tuple[str, list[ase.Atoms], tuple[Union[int, tuple[int]]], float, str, float]:
+    def get_ligand_archetype_and_isomers(self) -> tuple[str, list[ase.Atoms], tuple[Union[int, tuple[int]]], float, str, float]:
         """
-        Returns the ligand geometry, its geometrical isomers and other related information. Handles haptic donors by replacing each haptic group with a single dummy atom.
+        Returns the ligand archetype, its geometrical isomers and other related information. Handles haptic donors by replacing each haptic group with a single dummy atom.
         :return: Tuple of:
-        - The assigned geometry, e.g. '2_cis' (str)
+        - The assigned archetype, e.g. '2-cis' (str)
         - List of ASE Atoms objects of the best isomers
         - List of hapdent tuples for each isomer
-        - The root sum of squared differences (RSSD) of the assigned geometry (float)
-        - The second-best geometry (str)
-        - The weight necessary for a change in geometry (float)
+        - The root sum of squared differences (RSSD) of the assigned archetype (float)
+        - The second-best archetype (str)
+        - The weight necessary for a change in archetype (float)
         """
         eff_ligand_atoms, eff_donor_idc = self.get_all_effective_ligand_atoms_with_effective_donor_indices('Cu')
-        geometry, eff_isomers, eff_isomer_donor_idc, rssd, second_geometry, weight_necessary_for_change = assign_geometry(eff_ligand_atoms, eff_donor_idc)
-        # Remove Cu from the isomers to get the real ligand geometry in case of haptic ligands
+        archetype, eff_isomers, eff_isomer_donor_idc, rssd, second_archetype, weight_necessary_for_change = assign_archetype(eff_ligand_atoms, eff_donor_idc)
+        # Remove Cu from the isomers to get the real ligand archetype in case of haptic ligands
         real_isomers = []
         for isomer in eff_isomers:
             real_isomer = isomer[[atom.symbol != 'Cu' for atom in isomer]]
@@ -1157,7 +1157,7 @@ class Ligand(BaseMolecule):
             assert set(hapdent_donor_idc) == set(self.hapdent_idc), f"Error in conversion of effective donor indices to hapdent donor indices: {hapdent_isomer_idc} vs. {self.hapdent_idc}"
             hapdent_isomer_idc.append(hapdent_donor_idc)
 
-        return geometry, real_isomers, hapdent_isomer_idc, rssd, second_geometry, weight_necessary_for_change
+        return archetype, real_isomers, hapdent_isomer_idc, rssd, second_archetype, weight_necessary_for_change
 
     def get_csv_info(self, max_entries: int=5) -> dict:
         """

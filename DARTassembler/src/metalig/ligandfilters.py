@@ -110,8 +110,8 @@ class LigandFilters(BaseModule):
         output += df_filters[['Ligands passed', 'Ligands removed']].to_string(justify='center', index_names=False, max_colwidth=max_colwidth) + '\n'
 
         # Count denticities of all passed ligands
-        geometry_count = pd.Series([lig.geometry for lig in self._all_ligands_left()]).value_counts().to_dict()
-        geometry_output = ', '.join(sorted([f'{geom} ({count})' for geom, count in geometry_count.items()]))
+        archetype_count = pd.Series([lig.archetype for lig in self._all_ligands_left()]).value_counts().to_dict()
+        archetype_output = ', '.join(sorted([f'{geom} ({count})' for geom, count in archetype_count.items()]))
 
         n_ligands_before = len(self.df_all_ligands)
         n_ligands_after = len(self.unames)
@@ -120,7 +120,7 @@ class LigandFilters(BaseModule):
         output += f"Before filtering:           {n_ligands_before} ligands\n"
         output += f"Filtered out:               {n_ligands_before - n_ligands_after} ligands\n"
         output += f"Passed:                     {n_ligands_after} ligands\n"
-        output += f"Passed geometries:          {geometry_output}\n"
+        output += f"Passed archetypes:          {archetype_output}\n"
 
         # Print the stoichiometries of the first five passed ligands.
         stoichiometries = ', '.join([lig.stoichiometry for idx, lig in enumerate(self._all_ligands_left()) if idx < 5])

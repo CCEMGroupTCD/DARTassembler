@@ -46,17 +46,17 @@ if __name__ == "__main__":
 
     Br_filters = [
         {'filter': 'composition', 'elements': 'Br', 'instruction': 'must_contain_and_only_contain', 'only_donors': False},
-        {'filter': 'property', 'name': 'geometry', 'values': ['1_monodentate']}
+        {'filter': 'property', 'name': 'archetype', 'values': ['1-mono']}
     ]
     NN_filters = [
         {'filter': 'composition', 'elements': 'N2', 'instruction': 'must_contain_and_only_contain', 'only_donors': True},
         {'filter': 'composition', 'elements': 'CHNF', 'instruction': 'must_only_contain_in_any_amount', 'only_donors': False},
-        {'filter': 'property', 'name': 'geometry', 'values': ['2_cis']},
+        {'filter': 'property', 'name': 'archetype', 'values': ['2-cis']},
     ]
     Hap_filters = [
         {'filter': 'composition', 'elements': 'C', 'instruction': 'must_only_contain_in_any_amount', 'only_donors': True},
         {'filter': 'property', 'name': 'n_haptic_groups', 'values': [1]},
-        {'filter': 'property', 'name': 'geometry', 'values': ['1_monodentate']},
+        {'filter': 'property', 'name': 'archetype', 'values': ['1-mono']},
     ]
 
 

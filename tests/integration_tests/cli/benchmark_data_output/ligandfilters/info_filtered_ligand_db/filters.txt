@@ -27,7 +27,7 @@ Filter 11: property: n_beta_hydrogens                 22             32
 Before filtering:           300 ligands
 Filtered out:               278 ligands
 Passed:                     22 ligands
-Passed geometries:          1_monodentate (20), 2_cis (2)
+Passed archetypes:          1-mono (20), 2-cis (2)
 Passed stoichiometries:     Cl, I, C7H9N, C6H7N, C6H6N, ...
 Filtered ligand database with 22 ligands was saved to `filtered_ligand_db.jsonlines`.
 Info on filtered ligands saved to directory `info_filtered_ligand_db`.

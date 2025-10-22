@@ -1497,10 +1497,10 @@
             "unq_CSD-OZUBIV-01-a",
             "unq_CSD-OZOXUX-01-c"
         ],
-        "geometries": [
-            "2_cis",
-            "1_monodentate",
-            "1_monodentate"
+        "archetypes": [
+            "2-cis",
+            "1-mono",
+            "1-mono"
         ],
         "donor_idcs": [
             [

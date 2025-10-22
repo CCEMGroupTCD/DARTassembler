@@ -1779,9 +1779,9 @@
             "unq_CSD-PEFQAV-06-a",
             "unq_CSD-PEFQAV-06-a"
         ],
-        "geometries": [
-            "1_monodentate",
-            "1_monodentate"
+        "archetypes": [
+            "1-mono",
+            "1-mono"
         ],
         "donor_idcs": [
             [

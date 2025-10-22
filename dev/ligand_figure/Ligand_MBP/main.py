@@ -9,8 +9,8 @@ import numpy as np
 
 
 # Goals
-# 1. show the variety of number of donor atoms for 1_monodentate
-# 2. show a small chart of the number of unique donor atom configs for 2_cis
+# 1. show the variety of number of donor atoms for 1-mono
+# 2. show a small chart of the number of unique donor atom configs for 2-cis
 
 def filter_ligands_by_geometry(db: LigandDB, geometry: str):
     """
@@ -44,6 +44,6 @@ if __name__ == "__main__":
     db = LigandDB.from_json(n_max=500).db
 
     # Filter ligands by geometry
-    cis_bidentate_ligands = filter_ligands_by_geometry(db, "2_cis")
+    cis_bidentate_ligands = filter_ligands_by_geometry(db, "2-cis")
 
     print("done")

@@ -108,7 +108,7 @@ class LigandDB(BaseDB):
 
     def get_df(self, max_entries: int=5) -> pd.DataFrame:
         """
-        Returns a DataFrame with important ligand information for all ligands in the database, such as charge, stoichiometry, geometry, and more.
+        Returns a DataFrame with important ligand information for all ligands in the database, such as charge, stoichiometry, archetype, and more.
         :param max_entries: Maximum number of entries for long lists in the DataFrame, such as the list of CSD codes in which this ligand is present.
         :return: A DataFrame with ligand information, with the index being `unique_name`.
         """
@@ -121,7 +121,7 @@ class LigandDB(BaseDB):
 
     def save_to_csv(self, outpath: Union[str, Path], max_entries: int=5) -> pd.DataFrame:
         """
-        Saves a csv file with important ligand information for all ligands in the database, such as charge, stoichiometry, geometry, and more.
+        Saves a csv file with important ligand information for all ligands in the database, such as charge, stoichiometry, archetype, and more.
         :param outpath: Path to the output csv file.
         :param max_entries: Maximum number of entries for long lists in the DataFrame, such as the list of CSD codes in which this ligand is present.
         :return: A DataFrame with ligand information.
@@ -156,44 +156,44 @@ class LigandDB(BaseDB):
         """
         return '\n'.join([lig.get_xyz_string(comment=comment, with_metal=with_metal) for lig in self.db.values()])
 
-    def _get_ligand_geometries(self, sort_by_rssd: bool=False) -> dict:
+    def _get_ligand_archetypes(self, sort_by_rssd: bool=False) -> dict:
         """
-        Assigns geometries to all ligands in the database and returns a dictionary with geometries as keys and a list of tuples as values.
-        :param sort_by_rssd:  If True, sorts the ligands by the weight necessary for change (rssd) within each geometry. This is useful to have the ligands with the lowest rssd first.
-        :return: A dictionary with geometries as keys and a list of tuples as values. Each tuple contains the ligand name, rssd, weight necessary for change, second geometry, isomers and isomer_idc.
+        Assigns archetypes to all ligands in the database and returns a dictionary with archetypes as keys and a list of tuples as values.
+        :param sort_by_rssd:  If True, sorts the ligands by the weight necessary for change (rssd) within each archetype. This is useful to have the ligands with the lowest rssd first.
+        :return: A dictionary with archetypes as keys and a list of tuples as values. Each tuple contains the ligand name, rssd, weight necessary for change, second archetype, isomers and isomer_idc.
         """
         data = defaultdict(list)
-        for name, ligand in tqdm(self.db.items(), desc='Assigning ligand geometries'):
-            geometry, isomers, isomer_idc, rssd, second_geometry, weight_necessary_for_change = ligand.get_ligand_geometry_and_isomers()
-            data[geometry].append((name, rssd, weight_necessary_for_change, second_geometry, isomers, isomer_idc))
+        for name, ligand in tqdm(self.db.items(), desc='Assigning ligand archetypes'):
+            archetype, isomers, isomer_idc, rssd, second_archetype, weight_necessary_for_change = ligand.get_ligand_archetype_and_isomers()
+            data[archetype].append((name, rssd, weight_necessary_for_change, second_archetype, isomers, isomer_idc))
 
-        # Sort data by geometry name to have geometries of the same n_eff_donors together
+        # Sort data by archetype name to have archetypes of the same n_eff_donors together
         data = dict(sorted(data.items(), key=lambda x: x[0]))
         if sort_by_rssd:
-            # Sort each geometry by weight necessary for change
-            for geometry, names_rssd in data.items():
+            # Sort each archetype by weight necessary for change
+            for archetype, names_rssd in data.items():
                 names_rssd.sort(key=lambda x: x[2])
 
         return data
 
-    def _save_ligand_geometry_concat_xyz_files(self,
+    def _save_ligand_archetype_concat_xyz_files(self,
                                                outdir: Union[str, Path],
                                                output_all_isomers: bool=True,
                                                sort_by_rssd: bool=False
                                                ) -> dict:
         """
-        Assigns geometries to all ligands in the database and saves the structures with all isomers for each geometry in a different concatenated xyz file.
+        Assigns archetypes to all ligands in the database and saves the structures with all isomers for each archetype in a different concatenated xyz file.
         :param outdir: Path to the output directory where the xyz files will be saved.
         :param output_all_isomers: If True, all isomers will be saved in the xyz file. If False, only the first isomer will be saved.
-        :param sort_by_rssd: If True, sorts the ligands by the weight necessary for change (rssd) within each geometry. This is useful to have the ligands with the lowest rssd first.
-        :return: A dictionary with geometries as keys and a list of tuples as values. Each tuple contains the ligand name, rssd, weight necessary for change, second geometry, isomers and isomer_idc.
+        :param sort_by_rssd: If True, sorts the ligands by the weight necessary for change (rssd) within each archetype. This is useful to have the ligands with the lowest rssd first.
+        :return: A dictionary with archetypes as keys and a list of tuples as values. Each tuple contains the ligand name, rssd, weight necessary for change, second archetype, isomers and isomer_idc.
         """
-        data = self._get_ligand_geometries(sort_by_rssd=sort_by_rssd)
+        data = self._get_ligand_archetypes(sort_by_rssd=sort_by_rssd)
 
-        # Save structures with all isomers for each geometry in a different concatenated xyz file
-        for geometry, info in data.items():
-            atoms, comments, weights, second_geometries = [], [], [], []
-            for name, rssd, weight, second_geometry, isomers, isomer_idc in info:
+        # Save structures with all isomers for each archetype in a different concatenated xyz file
+        for archetype, info in data.items():
+            atoms, comments, weights, second_archetypes = [], [], [], []
+            for name, rssd, weight, second_archetype, isomers, isomer_idc in info:
                 for isomer_idx, (isomer, idc) in enumerate(zip(isomers, isomer_idc)):
                     if not output_all_isomers and isomer_idx > 0:
                         continue
@@ -201,12 +201,12 @@ class LigandDB(BaseDB):
                     isomer.append(ase.Atom('Cu', position=(0, 0, 0)))
                     atoms.append(isomer)
                     weights.append(weight)
-                    comments.append(f'{name}-{isomer_idx} rssd={rssd:.3f} change:{weight:.3f}->{second_geometry} idc={idc}')
-                    second_geometries.append(second_geometry)
-            outpath = Path(outdir, f'concat_{geometry}.xyz')
+                    comments.append(f'{name}-{isomer_idx} rssd={rssd:.3f} change:{weight:.3f}->{second_archetype} idc={idc}')
+                    second_archetypes.append(second_archetype)
+            outpath = Path(outdir, f'concat_{archetype}.xyz')
             n_isomers = np.unique([len(isomers) for _, _, _, _, isomers, _ in info])
             n_isomers = n_isomers[0] if len(n_isomers) == 1 else n_isomers
-            print(f'{geometry}: {len(atoms)} structures, {n_isomers} isomer{"s" if n_isomers > 1 else ""}')
+            print(f'{archetype}: {len(atoms)} structures, {n_isomers} isomer{"s" if n_isomers > 1 else ""}')
             save_to_xyz(outpath=outpath, structures=atoms, comments=comments)
 
         return data
@@ -284,43 +284,43 @@ class LigandDB(BaseDB):
 
         return df
 
-    def _calc_number_of_possible_complexes_for_metal(self, metal: str, geometries: dict = None) -> pd.DataFrame:
+    def _calc_number_of_possible_complexes_for_metal(self, metal: str, archetypes: dict = None) -> pd.DataFrame:
         metal_oxi_states = Element(metal).common_oxidation_states
         results = []
 
-        # possible geometries for octahedral and square-planar complexes. This list needs to be expanded when adding new geometries.
-        if geometries is None:
-            geometries = {
+        # possible archetypes for octahedral and square-planar complexes. This list needs to be expanded when adding new archetypes.
+        if archetypes is None:
+            archetypes = {
                 'octahedral': [(3, 2, 1), (4, 1, 1), (5, 1)],
                 'square_planar': [(2, 2), (2, 1, 1)]
             }
 
         for oxi_state in metal_oxi_states:
             target_charge = -oxi_state
-            for geometry_name, geometry_list in geometries.items():
-                for geometry in geometry_list:
-                    count = self._calc_number_of_combinations_of_ligands_for_topology(target_charge=target_charge, geometry=geometry)
+            for archetype_name, archetype_list in archetypes.items():
+                for archetype in archetype_list:
+                    count = self._calc_number_of_combinations_of_ligands_for_topology(target_charge=target_charge, archetype=archetype)
                     results.append(
-                        {'metal': metal, 'oxi_state': oxi_state, 'geometry': geometry_name, 'denticities': geometry,
+                        {'metal': metal, 'oxi_state': oxi_state, 'archetype': archetype_name, 'denticities': archetype,
                          'count': count})
 
         return pd.DataFrame(results)
 
-    def _calc_number_of_combinations_of_ligands_for_topology(self, target_charge: int, geometry: tuple) -> int:
+    def _calc_number_of_combinations_of_ligands_for_topology(self, target_charge: int, archetype: tuple) -> int:
         """
-        Calculates the number of possible ligand combinations for a given target charge and geometry.
+        Calculates the number of possible ligand combinations for a given target charge and archetype.
         @target_charge: The targeted sum of charges of the ligands.
-        @geometry: The topology of the complex, e.g. (3, 2, 1) for a octahedral complex with 3 bidentate, 2 monodentate and 1 tridentate ligand.
+        @archetype: The topology of the complex, e.g. (3, 2, 1) for a octahedral complex with 3 bidentate, 2 monodentate and 1 tridentate ligand.
         """
-        n_ligands = len(geometry)
-        geometry = sorted(geometry)
+        n_ligands = len(archetype)
+        archetype = sorted(archetype)
 
-        df = self.get_reduced_df().query('n_donors in @geometry and not charge.isnull()')[['n_donors', 'charge']].astype(int)
+        df = self.get_reduced_df().query('n_donors in @archetype and not charge.isnull()')[['n_donors', 'charge']].astype(int)
 
         df = df.groupby(['n_donors', 'charge']).size().reset_index().rename(columns={0: 'count'})
         count = 0
         for ligs in itertools.combinations_with_replacement(list(df.itertuples()), n_ligands):
-            correct_denticities = sorted(lig.n_donors for lig in ligs) == geometry
+            correct_denticities = sorted(lig.n_donors for lig in ligs) == archetype
             correct_charges = sum(lig.charge for lig in ligs) == target_charge
             if correct_charges and correct_denticities:
                 # Group ligands which have the same charge and n_donors.

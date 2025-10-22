@@ -859,10 +859,10 @@
             "unq_CSD-OZOWAC-01-a",
             "unq_CSD-OZOMOI-01-d"
         ],
-        "geometries": [
-            "2_cis",
-            "1_monodentate",
-            "1_monodentate"
+        "archetypes": [
+            "2-cis",
+            "1-mono",
+            "1-mono"
         ],
         "donor_idcs": [
             [

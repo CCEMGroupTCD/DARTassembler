@@ -46,13 +46,13 @@ if __name__ == "__main__":
 
     Cl_filters = [
         {'filter': 'composition', 'elements': 'Cl', 'instruction': 'must_contain_and_only_contain', 'only_donors': False},
-        {'filter': 'property', 'name': 'geometry', 'values': ['1_monodentate']}
+        {'filter': 'property', 'name': 'archetype', 'values': ['1-mono']}
     ]
     CN = [
         {'filter': 'property', 'name': 'n_denticities', 'values': [2]},
         {'filter': 'property', 'name': 'n_haptic_groups', 'values': [0]},
         {'filter': 'property', 'name': 'charge', 'values': [-1]},
-        {'filter': 'property', 'name': 'geometry', 'values': ['2_cis']},    # This filter was not in the original study, we just manually removed the 2_trans ligand afterwards
+        {'filter': 'property', 'name': 'archetype', 'values': ['2-cis']},    # This filter was not in the original study, we just manually removed the 2-trans ligand afterwards
         {'filter': 'composition', 'elements': 'CN', 'instruction': 'must_contain_and_only_contain', 'only_donors': True},
     ]
 

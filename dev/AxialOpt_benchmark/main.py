@@ -56,7 +56,7 @@ class AxialOptModifierCustom(AxialOptModifier):
 
             # Correctly apply rotations to this isomer's ligands
             for angle, axis, origin, idc, ligand in zip(best_ligand_angles, target_vectors, ligand_origins, isomer.ligand_idc, isomer.ligands):
-                if ligand.geometry not in ['1_monodentate', '2_trans']:
+                if ligand.geometry not in ['1-mono', '2-trans']:
                     continue
                 self.rotate(atoms=atoms, vector=np.asarray(axis).squeeze(), origin=origin, idc=idc, angle=angle)
 

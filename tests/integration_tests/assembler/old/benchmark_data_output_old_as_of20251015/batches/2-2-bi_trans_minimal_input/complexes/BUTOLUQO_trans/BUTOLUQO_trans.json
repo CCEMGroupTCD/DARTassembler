@@ -1902,9 +1902,9 @@
             "unq_CSD-TAYGIM-02-a",
             "unq_CSD-TAYGIM-02-a"
         ],
-        "geometries": [
-            "2_trans",
-            "2_trans"
+        "archetypes": [
+            "2-trans",
+            "2-trans"
         ],
         "donor_idcs": [
             [

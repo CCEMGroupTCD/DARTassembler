@@ -2990,11 +2990,11 @@
             "unq_CSD-PACBOM-02-a",
             "unq_CSD-PAKLET-02-a"
         ],
-        "geometries": [
-            "1_monodentate",
-            "1_monodentate",
-            "2_cis",
-            "2_cis"
+        "archetypes": [
+            "1-mono",
+            "1-mono",
+            "2-cis",
+            "2-cis"
         ],
         "donor_idcs": [
             [

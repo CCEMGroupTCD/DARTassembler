@@ -1608,9 +1608,9 @@
             "unq_CSD-OZURAE-02-b",
             "unq_CSD-PABGIL-02-a"
         ],
-        "geometries": [
-            "2_cis",
-            "2_cis"
+        "archetypes": [
+            "2-cis",
+            "2-cis"
         ],
         "donor_idcs": [
             [

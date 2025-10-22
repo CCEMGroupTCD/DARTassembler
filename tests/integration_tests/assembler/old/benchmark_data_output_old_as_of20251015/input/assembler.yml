@@ -10,19 +10,19 @@ batches:
   - - -x
     - -y
   metal_centers: Fe
-  ligand_geometries:
-  - 2_cis
-  - 2_cis
+  ligand_archetypes:
+  - 2-cis
+  - 2-cis
   name: batch_0
 - n_max_complexes: 10
   total_ligand_charges: -3
   name: 2-2-1-1-monometalic
   random_seed: 5
   ligand_db_files:
-  - ../data_input/ligands/JSONS/small_mono.json
+  - ../data_input/ligands/JSONS/small_mono.jsonlines
   - same_as_previous
-  - ../data_input/ligands/JSONS/bidentate.json
-  - ../data_input/ligands/JSONS/bidentate.json
+  - ../data_input/ligands/JSONS/bidentate.jsonlines
+  - ../data_input/ligands/JSONS/bidentate.jsonlines
   target_vectors:
   - - - 0
       - 0
@@ -48,10 +48,10 @@ batches:
   name: 2-2-1-1-bi-metalic
   random_seed: 5
   ligand_db_files:
-  - ../data_input/ligands/JSONS/small_mono.json
-  - ../data_input/ligands/JSONS/small_mono.json
-  - ../data_input/ligands/JSONS/bidentate.json
-  - ../data_input/ligands/JSONS/bidentate.json
+  - ../data_input/ligands/JSONS/small_mono.jsonlines
+  - ../data_input/ligands/JSONS/small_mono.jsonlines
+  - ../data_input/ligands/JSONS/bidentate.jsonlines
+  - ../data_input/ligands/JSONS/bidentate.jsonlines
   target_vectors:
   - - - 0
       - 0
@@ -114,8 +114,8 @@ batches:
   name: 3-3-haptic_coordination
   random_seed: 1
   ligand_db_files:
-  - ../data_input/ligands/JSONS/hexagonal.json
-  - ../data_input/ligands/JSONS/hexagonal.json
+  - ../data_input/ligands/JSONS/hexagonal.jsonlines
+  - ../data_input/ligands/JSONS/hexagonal.jsonlines
   target_vectors:
   - - - 0
       - 0

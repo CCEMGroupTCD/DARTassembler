@@ -25,7 +25,7 @@ Filter 10: smarts                                     27               1
 Before filtering:           1000 ligands
 Filtered out:               973 ligands
 Passed:                     27 ligands
-Passed geometries:          1_monodentate (19), 2_cis (8)
+Passed geometries:          1-mono (19), 2-cis (8)
 Passed stoichiometries:     C6H6N, C6H5O, C6H5N2O2, C7H5O2, C12H9N3, ...
 Filtered ligand database with 27 ligands was saved to `filtered_ligand_db.jsonlines`.
 Info on filtered ligands saved to directory `info_filtered_ligand_db`.

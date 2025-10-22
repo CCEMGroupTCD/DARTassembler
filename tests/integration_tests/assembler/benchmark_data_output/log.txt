@@ -11,7 +11,7 @@ User-defined settings for batch_0:
     n_max_complexes               20
     target_vectors                [['x', 'y'], ['-x', '-y']]
     metal_centers                 Fe
-    ligand_geometries             ['2_cis', '2_cis']
+    ligand_archetypes             ['2-cis', '2-cis']
     name                          batch_0
 ============================  2-2-1-1-monometallic  ============================
 User-defined settings for 2-2-1-1-monometallic:
@@ -19,7 +19,7 @@ User-defined settings for 2-2-1-1-monometallic:
     total_ligand_charges          -3
     name                          2-2-1-1-monometallic
     random_seed                   5
-    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
+    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.jsonlines', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.jsonlines', '../data_input/ligands/JSONS/bidentate.jsonlines']
     target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
     metal_centers                 Ir
 =============================  2-2-1-1-bimetallic  =============================
@@ -28,7 +28,7 @@ User-defined settings for 2-2-1-1-bimetallic:
     total_ligand_charges          -3
     name                          2-2-1-1-bimetallic
     random_seed                   5
-    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', '../data_input/ligands/JSONS/small_mono.json', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
+    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.jsonlines', '../data_input/ligands/JSONS/small_mono.jsonlines', '../data_input/ligands/JSONS/bidentate.jsonlines', '../data_input/ligands/JSONS/bidentate.jsonlines']
     target_vectors                [[[0, 0, 2]], [[0, 0, -2]], [[-3, -3, 0], [-3, 3, 0]], [[3, -3, 0], [3, 3, -1]]]
     metal_centers                 [[['Ir', [-2, 0, 0]], ['Fe', [2, 0, 0]]], [['Ir', [-2, 0, 0]], ['Fe', [2, 0, 0]]], [['Ir', [-2, 0, 0]]], [['Fe', [2, 0, 0]]]]
     swap_groups                   [1, 1, 2, 2]
@@ -46,7 +46,7 @@ User-defined settings for 3-3-haptic_coordination:
     total_ligand_charges          -2
     name                          3-3-haptic_coordination
     random_seed                   1
-    ligand_db_files               ['../data_input/ligands/JSONS/hexagonal.json', '../data_input/ligands/JSONS/hexagonal.json']
+    ligand_db_files               ['../data_input/ligands/JSONS/hexagonal.jsonlines', '../data_input/ligands/JSONS/hexagonal.jsonlines']
     target_vectors                [[[0, 0, 2]], [[0, 0, -2]]]
     ligand_origins                [[0, 0, 0], [0, 0, 0]]
     metal_centers                 Ru
@@ -66,7 +66,7 @@ User-defined settings for 2-2-1-1-monometallic_with_swap_groups:
     total_ligand_charges          -3
     name                          2-2-1-1-monometallic_with_swap_groups
     random_seed                   5
-    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
+    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.jsonlines', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.jsonlines', '../data_input/ligands/JSONS/bidentate.jsonlines']
     target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
     metal_centers                 Ir
     swap_groups                   [1, 1, 2, 2]
@@ -76,7 +76,7 @@ User-defined settings for 2-2-1-1-monometallic_with_swap_groups_with_extra_struc
     total_ligand_charges          -3
     name                          2-2-1-1-monometallic_with_swap_groups_with_extra_structure
     random_seed                   5
-    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
+    ligand_db_files               ['../data_input/ligands/JSONS/small_mono.jsonlines', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.jsonlines', '../data_input/ligands/JSONS/bidentate.jsonlines']
     target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
     metal_centers                 Ir
     swap_groups                   [1, 1, 2, 2]

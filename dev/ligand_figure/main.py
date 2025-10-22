@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 from matplotlib import rcParams
 rcParams['svg.fonttype'] = 'none'
 
-def plot_geometry_histogram_as_svg(ligand_dict: dict, output_file: str = "geometry_histogram.svg"):
+def plot_geometry_histogram_as_svg(ligand_dict: dict, output_file: str = "archetype_histogram.svg"):
     """
     Plot a horizontal bar histogram of ligand geometries using total counts only.
     """
@@ -41,16 +41,16 @@ def plot_geometry_histogram_as_svg(ligand_dict: dict, output_file: str = "geomet
     plt.savefig(output_file, format='svg')
     plt.close()
 
-def plot_haptic_pie_chart(ligand_dict: dict, geometry: str = "3_meridional", output_file: str = "3_meridional_haptic_pie.svg"):
+def plot_haptic_pie_chart(ligand_dict: dict, geometry: str = "3-meridional", output_file: str = "3-meridional_haptic_pie.svg"):
     """
-    Plot a pie chart showing the percentage of 3_meridional ligands that have haptic coordination.
+    Plot a pie chart showing the percentage of 3-meridional ligands that have haptic coordination.
     """
 
     if geometry not in ligand_dict:
         print(f"No ligands found with geometry: {geometry}")
         return
 
-    # Get counts for 3_meridional ligands
+    # Get counts for 3-meridional ligands
     total = ligand_dict[geometry]["num_count"]
     haptic = ligand_dict[geometry]["haptic_count"]
     non_haptic = ligand_dict[geometry]["non_haptic_count"]
@@ -93,7 +93,7 @@ if __name__ == "__main__":
         xyz = data.get_xyz_string()
 
         ligand_dict[name] = {
-            "geometry": geometry,
+            "archetype": geometry,
             "haptic": haptic,
             "donor_atoms": donor_atoms_string,
             "xyz": xyz}
@@ -113,8 +113,8 @@ if __name__ == "__main__":
                 ligand_dict[geometry]["non_haptic_count"] += 1
 
     print(f"Total unique geometries: \n{ligand_dict}")
-    plot_geometry_histogram_as_svg(ligand_dict, "geometry_histogram.svg")
+    plot_geometry_histogram_as_svg(ligand_dict, "archetype_histogram.svg")
     plot_haptic_pie_chart(ligand_dict,
-                          geometry="3_meridional",
-                          output_file="3_meridional_haptic_pie.svg")
+                          geometry="3-meridional",
+                          output_file="3-meridional_haptic_pie.svg")
 

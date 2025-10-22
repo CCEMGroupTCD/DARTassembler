@@ -178,7 +178,7 @@ if __name__ == '__main__':
         data[db]['n_compared'] = len(df_db)
 
     #%% Change order of the columns
-    first_cols = ['stoichiometry', 'geometry', 'donors', 'n_haptic_atoms', 'n_ligand_instances', 'charge', 'charge_tmqmgl', 'charge_realigands', 'charge_cell2mol', 'charge_diff_tmqmgl', 'charge_diff_realigands', 'charge_diff_cell2mol',  'all_csd_complex_ids']
+    first_cols = ['stoichiometry', 'archetype', 'donors', 'n_haptic_atoms', 'n_ligand_instances', 'charge', 'charge_tmqmgl', 'charge_realigands', 'charge_cell2mol', 'charge_diff_tmqmgl', 'charge_diff_realigands', 'charge_diff_cell2mol',  'all_csd_complex_ids']
     df = df[first_cols + [col for col in df.columns if col not in first_cols]]
 
     # Print the results by converting to a DataFrame
@@ -197,7 +197,7 @@ if __name__ == '__main__':
         df_diff['all_csd_complex_ids'] = df_diff['all_csd_complex_ids'].apply(lambda x: ', '.join(sorted(x)))
         df_diff = df_diff.rename(columns={'charge_' + db: 'other_charge', 'charge': 'metalig_charge', 'unique_name': 'metalig_name'})
         df_diff['other_charge'] = df_diff['other_charge'].astype(int)
-        cols = ['metalig_name', 'stoichiometry', 'geometry', 'donors', 'n_haptic_atoms', 'n_ligand_instances', 'metalig_charge', 'other_charge', 'other_db', 'all_csd_complex_ids']
+        cols = ['metalig_name', 'stoichiometry', 'archetype', 'donors', 'n_haptic_atoms', 'n_ligand_instances', 'metalig_charge', 'other_charge', 'other_db', 'all_csd_complex_ids']
         df_diff = df_diff[cols]
         df_all_diffs.append(df_diff)
     df_all_diffs = pd.concat(df_all_diffs, ignore_index=True)
@@ -208,7 +208,7 @@ if __name__ == '__main__':
     # for db in other_dbs:
     #     old_df_diffs = old_df_all_diffs[old_df_all_diffs['other_db'] == db].copy()
     #     new_df_diffs = df_all_diffs[df_all_diffs['other_db'] == db].copy()
-    #     merged_diff = old_df_diffs.merge(new_df_diffs, on=['metalig_name', 'stoichiometry', 'geometry', 'donors', 'n_haptic_atoms', 'n_ligand_instances', 'metalig_charge', 'other_charge'], how='inner', indicator=True)
+    #     merged_diff = old_df_diffs.merge(new_df_diffs, on=['metalig_name', 'stoichiometry', 'archetype', 'donors', 'n_haptic_atoms', 'n_ligand_instances', 'metalig_charge', 'other_charge'], how='inner', indicator=True)
     #     print(f'{db}: {len(merged_diff)}/{len(new_df_diffs)} ligand entries are identical.')
 
     print('Done!')
