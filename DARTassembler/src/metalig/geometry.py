@@ -66,58 +66,58 @@ hex6 = xy_angle(5*60)
 all_geometries = {
     1:
         {
-            '1_monodentate': ((x,), 1),
+            '1_monodentate': ((x,), 1), # 1-mono
         },
     2:
         {
-            '2_cis': ((x, y), 1),
-            '2_trans': ((x, -x), 1)
+            '2_cis': ((x, y), 1),       # 2-cis
+            '2_trans': ((x, -x), 1)     # 2-trans
         },
     3:
         {
-            '3_meridional': ((y, x, -y), 1),
-            '3_facial': ((x, y, z), 1.467),
-            '3_trigonal': ((tri1, tri2, tri3), 1.045),
+            '3_meridional': ((y, x, -y), 1),    # 3-meridional
+            '3_facial': ((x, y, z), 1.467),     # 3-facial
+            '3_trigonal': ((tri1, tri2, tri3), 1.045),  # 3-trigonal
             # '3_trigonal_offset': ((trip1, trip2, trip3), 1.5),    # looks extremely close to a facial geometry so leave it out
         },
     4:
         {
-            '4_tetrahedral': ((tet1, tet2, tet3, tet4), 1.06),
-            '4_tetragonal': ((x, y, -x, -y), 0.96),
-            '4_seesaw': ((x, y, z, -z), 1.45),
-            '4_trigonal_pyramidal': ((tri1, tri2, tri3, z), 1.051),
-            '4_compressed_meridional': ((mer1, mer2, mer3, mer4), 1.8),
-            '4_tetragonal_offset': ((tetmono1, tetmono2, tetmono3, tetmono4), 1.13),
+            '4_tetrahedral': ((tet1, tet2, tet3, tet4), 1.06),  # 4-tetrahedral
+            '4_tetragonal': ((x, y, -x, -y), 0.96),             # 4-tetragonal
+            '4_seesaw': ((x, y, z, -z), 1.45),                  # 4-facial
+            '4_trigonal_pyramidal': ((tri1, tri2, tri3, z), 1.051),     # 4-trigonal-pyramidal
+            '4_compressed_meridional': ((mer1, mer2, mer3, mer4), 1.8), # 4-meridional
+            '4_tetragonal_offset': ((tetmono1, tetmono2, tetmono3, tetmono4), 1.13),    # 4-tetragonal-offset
         },
     5:
         {
-            '5_square_pyramidal': ((x, y, -x, -y, z), 1),
+            '5_square_pyramidal': ((x, y, -x, -y, z), 1),           # 5-square-pyramidal
             # 'trigonal_bipyramidal': ((tri1, tri2, tri3, z, -z), 1),     # Doesn't seem to exist in MetaLig.
-            '5_pentagonal': ((penta1, penta2, penta3, penta4, penta5), 0.8)
+            '5_pentagonal': ((penta1, penta2, penta3, penta4, penta5), 0.8) # 5-pentagonal
         },
     6:
         {
-            '6_octahedral': ((x, y, z, -x, -y, -z), 1),
-            '6_hexagonal': ((hex1, hex2, hex3, hex4, hex5, hex6), 1.30),
-            '6_trigonal_prismatic': ((trip1, trip2, trip3, trip4, trip5, trip6), 1),
-            '6_pentagonal_pyramidal': ((penta1, penta2, penta3, penta4, penta5, z), 1),
+            '6_octahedral': ((x, y, z, -x, -y, -z), 1),                                 # 6-octahedral
+            '6_hexagonal': ((hex1, hex2, hex3, hex4, hex5, hex6), 1.30),                # 6-hexagonal
+            '6_trigonal_prismatic': ((trip1, trip2, trip3, trip4, trip5, trip6), 1),    # 6-trigonal-prismatic
+            '6_pentagonal_pyramidal': ((penta1, penta2, penta3, penta4, penta5, z), 1), # 6-pentagonal-pyramidal
         },
     # For the other denticities, just make up one random geometry so that the code can assemble them in theory, but these should only be assembled on their own, without any other ligands, since they are so crowded.
     7:
         {
-            '7_septadentate': (tuple([xy_angle(i*360/7) for i in range(7)]), 1),                   # septagonal
+            '7_septadentate': (tuple([xy_angle(i*360/7) for i in range(7)]), 1),                   # 7-septa
         },
     8:
         {
-            '8_octadentate': (tuple([xy_angle(i*360/8) for i in range(8)]), 1)                     # octagonal
+            '8_octadentate': (tuple([xy_angle(i*360/8) for i in range(8)]), 1)                     # 8-octa
         },
     9:
         {
-            '9_nonadentate': (tuple([xy_angle(i*360/9) for i in range(9)]), 1)                     # nonagonal
+            '9_nonadentate': (tuple([xy_angle(i*360/9) for i in range(9)]), 1)                     # 9-nona
         },
     10:
         {
-            '10_decadentate': (tuple([xy_angle(i*360/10) for i in range(10)]), 1)                  # decagonal
+            '10_decadentate': (tuple([xy_angle(i*360/10) for i in range(10)]), 1)                  # 10-deca
         },
 }
 

@@ -22,7 +22,7 @@ from tqdm import tqdm
 import zipfile
 import shutil
 import os
-from DARTassembler.src.constants.paths import default_ligand_db_path, test_ligand_db_path
+from DARTassembler.src.constants.paths import default_ligand_db_path
 from DARTassembler.src.metalig.mol import Ligand
 from DARTassembler.src.metalig.utils import get_duration_string
 
@@ -31,7 +31,7 @@ def check_if_MetaLig_exists_else_uncompress_from_zip(delete_zip=False):
     """
     Checks if the MetaLig database exists as uncompressed file, and if not uncompresses it.
     """
-    files = [default_ligand_db_path, test_ligand_db_path]
+    files = [default_ligand_db_path]
 
     for unzipped_file in files:
         zip_file = Path(str(unzipped_file) + '.bz2')
@@ -516,17 +516,17 @@ def get_correct_ligand_db_path_from_input(path) -> Path:
                     path = compressed_path
                     break
 
-    elif path.lower() in ('test_metalig', 'test'):
-        warnings.warn(f'Using the test MetaLig database is deprecated. Please use the full ligand database instead and use the functionality to only read in a subset of ligands.', DeprecationWarning)
-        path = test_ligand_db_path
-        if not path.is_file():
-            # Check if the compressed file exists
-            compressions = ['.bz2']
-            for compression in compressions:
-                compressed_path = Path(str(path)+compression)
-                if compressed_path.is_file():
-                    path = compressed_path
-                    break
+    # elif path.lower() in ('test_metalig', 'test'):
+    #     warnings.warn(f'Using the test MetaLig database is deprecated. Please use the full ligand database instead and use the functionality to only read in a subset of ligands.', DeprecationWarning)
+    #     path = test_ligand_db_path
+    #     if not path.is_file():
+    #         # Check if the compressed file exists
+    #         compressions = ['.bz2']
+    #         for compression in compressions:
+    #             compressed_path = Path(str(path)+compression)
+    #             if compressed_path.is_file():
+    #                 path = compressed_path
+    #                 break
 
     else:
         try:

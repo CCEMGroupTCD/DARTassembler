@@ -2,19 +2,19 @@ import hashlib
 import random
 import ase
 import numpy as np
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Any, Iterable
 from collections import defaultdict
 import itertools
 
 
-def get_complex_name(seed: str, length: int, suffix: str = '', avoid_names: Optional[set[str]] = None) -> str:
+def get_complex_name(seed: str, length: int, suffix: str = '', avoid_names: Optional[Iterable[str]] = None) -> str:
     """
     Generates a unique name for the complex based on the graph hash and the specified length and suffix.
     :param avoid_names: A set of names to avoid. If the generated name is in this set, it will generate a new name with one more character.
     :return: Name (str) of the complex, which is pronounceable and unique.
     """
     if avoid_names is None:
-        avoid_names = []
+        avoid_names = set()
     while True:  # emulate a do-while loop
         # Generate a random, pronounceable name
         name = generate_pronounceable_word(length=length, seed=seed)
@@ -117,6 +117,99 @@ def generate_pronounceable_word(length=5, seed=None, start_with_vowel=None) -> s
 
     return word.upper()
 
+def join_duplicate_groups_by_union(
+        pre_isomers_duplicate_group_names: Iterable[Iterable[str]],
+        post_isomers_duplicate_group_names: Iterable[Iterable[str]],
+        mode: str,
+) -> List[List[str]]:
+    """
+    Join duplicate groups from the pre- and post-AxialOpt stages.
+
+    Modes
+    -----
+    - "or"   (default): final duplicates if pre OR post grouped them (transitive closure).
+                       → Most aggressive merge (your current behavior).
+    - "pre"            : final duplicates follow ONLY the pre groups (post ignored).
+                       → Precedent to pre stage (useful to preserve pre-stage distinctions).
+    - "post"           : final duplicates follow ONLY the post groups (pre ignored).
+                       → Treat AxialOpt as canonical; simplest final equivalence.
+
+    Returns
+    -------
+    List[List[str]] : Disjoint duplicate groups, each sorted by name.
+                      All names present in the chosen stage(s) appear exactly once.
+    """
+    # --- Normalize inputs: turn each incoming group into a set ---
+    pre = [set(g) for g in pre_isomers_duplicate_group_names]
+    post = [set(g) for g in post_isomers_duplicate_group_names]
+
+    # Choose which groups to use based on the mode
+    m = mode.strip().lower()
+    if m == "or":
+        source_groups = pre + post
+    elif m == "pre":
+        source_groups = pre
+    elif m == "post":
+        source_groups = post
+    else:
+        raise ValueError(f"_join_duplicate_groups_by_union: unknown mode '{mode}'. Use 'or' | 'pre' | 'post'.")
+
+    # Collect every distinct isomer name seen in the selected groups.
+    all_names = sorted({n for g in source_groups for n in g})
+
+    # Edge case: no names (e.g., empty inputs)
+    if not all_names:
+        return []
+
+    # --- Disjoint Set Union (Union-Find) setup ---
+    parent = {n: n for n in all_names}  # representative for each name
+    rank = {n: 0 for n in all_names}  # tree rank (for union by rank)
+
+    def find(x: str) -> str:
+        """Find the representative of x's set (path compression)."""
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a: str, b: str) -> None:
+        """Union sets of a and b (union by rank)."""
+        ra, rb = find(a), find(b)
+        if ra == rb:
+            return
+        if rank[ra] < rank[rb]:
+            parent[ra] = rb
+        elif rank[ra] > rank[rb]:
+            parent[rb] = ra
+        else:
+            parent[rb] = ra
+            rank[ra] += 1
+
+    # --- Add edges: union all members within each selected group ---
+    # For each group, tie everyone to an anchor so they land in one component.
+    for g in source_groups:
+        if not g:
+            continue
+        it = iter(g)
+        anchor = next(it)
+        for n in it:
+            union(anchor, n)
+
+    # --- Collect connected components as final groups ---
+    comps: dict[str, List[str]] = {}
+    for n in all_names:
+        r = find(n)
+        comps.setdefault(r, []).append(n)
+
+    joined = [sorted(v) for v in comps.values()]
+
+    # Defensive sanity: ensure disjoint partition over all seen names
+    flat = [n for grp in joined for n in grp]
+    assert len(flat) == len(all_names) == len(set(flat)), (
+        "Joined groups must be a disjoint partition of all isomers seen in the chosen stage(s)."
+    )
+
+    return joined
 
 if __name__ == '__main__':
     n = range(10)

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding DART &mdash; DARTassembler dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Module Overview" href="2_module_overview.html" />
+    <link rel="prev" title="Advanced Example" href="1_Pd_Ni_Cross_Coupling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DARTassembler
+              <img src="../_static/DART_pic.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                dev
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">How to Use DART</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="1_installation_guide.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_Pd_Ni_Cross_Coupling.html">Advanced Example</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Understanding DART</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dart-in-a-nutshell">DART in a Nutshell</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-dart-files">The DART Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-the-dart-assembler-module-works">How the DART Assembler Module works</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="2_module_overview.html">Module Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_metalig_database.html">MetaLig Ligand Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_ligand_filters.html">Ligand Filters Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_assembler.html">Assembler Module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="3_troubleshooting_and_faqs.html">Troubleshooting and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_tips_and_tricks.html">DART Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_current_limitations.html">Limitations and Recommendations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_how_to_cite_dart.html">How to cite DART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_version_history.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DARTassembler</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Understanding DART</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/doc_files/1_understanding_the_dart_workflow.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="understanding-dart">
+<span id="dart-workflow"></span><h1>Understanding DART<a class="headerlink" href="#understanding-dart" title="Link to this heading"></a></h1>
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#dart-in-a-nutshell" id="id1">DART in a Nutshell</a></p></li>
+<li><p><a class="reference internal" href="#the-dart-files" id="id2">The DART Files</a></p></li>
+<li><p><a class="reference internal" href="#how-the-dart-assembler-module-works" id="id3">How the DART Assembler Module works</a></p></li>
+</ul>
+</nav>
+<section id="dart-in-a-nutshell">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">DART in a Nutshell</a><a class="headerlink" href="#dart-in-a-nutshell" title="Link to this heading"></a></h2>
+<p>Here is a brief overview of how DART works:</p>
+<p><strong>1. The MetaLig ligand database :</strong> The MetaLig contains 41,018 ligands extracted from the Cambridge Structural Database (CSD) and includes accurately determined formal charges. It is a great resource for exploring ligands and generating novel complexes.</p>
+<p><strong>2. Ligand Filters :</strong> The Ligand Filter Module enables you to refine the MetaLig to target ligands that express chemical properties important to your personal research.</p>
+<p><strong>3. Assembler :</strong> The Assembler module generates novel complexes by selecting ligands from the MetaLig and assembling them to a metal center. You can filter ligands, specify a different set of ligands for each binding site, and enforce chemical equivalence across multiple binding sites. The assembler configuration file allows you to specify many options such as the geometry and charge of the complex, the metal center, the ligands to use, how to manage geometric isomers and more.</p>
+</section>
+<section id="the-dart-files">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">The DART Files</a><a class="headerlink" href="#the-dart-files" title="Link to this heading"></a></h2>
+<p>DART has a few different types of files:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>.jsonlines :</strong> These files are ligand databases. You need to provide one or more of these to the <a class="reference internal" href="2_assembler.html#assembler"><span class="std std-ref">DART assembler module</span></a>.</p></li>
+<li><p><strong>.yml :</strong> These files are configuration files for the Ligand Filters and Assembler Module. They allow you to specify a wide range of ligand filters and assembly options to customize your output to your needs.</p></li>
+<li><p><strong>.xyz :</strong> These files are outputted by the dbinfo and the assembler module. They contain structures of ligands or complexes respectively. If they start with “concat”, they contain multiple structures. All .xyz files can easily be visualized for example with ase with the command <code class="docutils literal notranslate"><span class="pre">ase</span> <span class="pre">gui</span> <span class="pre">FILE.xyz</span></code>.</p></li>
+<li><p><strong>.csv :</strong> These files are outputted by the dbinfo and the assembler module. They contain information about ligands and complexes respectively.</p></li>
+<li><p><strong>.json :</strong> These files are outputted by the assembler. They contain machine-readable information about each complex.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="how-the-dart-assembler-module-works">
+<span id="how-assembler-works"></span><h2><a class="toc-backref" href="#id3" role="doc-backlink">How the DART Assembler Module works</a><a class="headerlink" href="#how-the-dart-assembler-module-works" title="Link to this heading"></a></h2>
+<p>When running the DART Assembler Module, it will first read in the provided configuration file and load the specified ligand database files. Then, for each batch specified in the configuration file the assembler starts to generate complexes:</p>
+<dl class="simple">
+<dt><strong>1. Ligand choice :</strong></dt><dd><p>First, the assembler selects one ligand for each binding site in the specified geometry from all ligands in the specified ligand database with the correct denticity. Depending on the configuration, the ligand choice is either random or iteratively. If the user specified a different ligand database for each binding site, the ligand for each site is chosen from only that database. If the user specified to enforce chemical equivalence across multiple binding sites, the ligand for the second binding site will simply be copied from the previous binding site. Then, all chosen ligands undergo a first check if the sum of formal charges agrees with the specified metal oxidation state and total charge of the complex and if DART <a class="reference internal" href="3_current_limitations.html#current-limitations"><span class="std std-ref">can assemble all of the ligands</span></a>. If the check fails, the assembler will discard this combination of ligands and continue to the next one.</p>
+</dd>
+<dt><strong>2. Ligand placement and rotation :</strong></dt><dd><p>The set of ligands is then coordinated to each binding site of the specified metal center atom via placement and rotation of the ligands implemented using the Python package <a class="reference external" href="https://github.com/lukasturcani/stk">stk</a>. DART has a different algorithm of placement and rotation implemented for each denticity and depending on the ligand shape, such as if a bidentate ligand in it’s original CSD complex had a planar or non-planar metallacycle.</p>
+</dd>
+<dt><strong>3. Geometrical isomers :</strong></dt><dd><p>For each complex, the assembler automatically generates all geometric isomers. If the user specified to only return the lowest energy isomer, the assembler will calculate the energy of each isomer using a single point calculation with a universal force field and return only the one with the lowest-energy, otherwise all isomers will be processed.</p>
+</dd>
+<dt><strong>4. AssembledIsomer naming :</strong></dt><dd><p>After assembling all geometric isomers, the assembler automatically generate an 8-letter pronounceable name for each isomer. Per default, this name will be the same for all isomers but appended with an increasing number, or if only the lowest energy isomer is returned, the number will be left away. Alternatively, users can specify in the configuration file to generate a completely new name for each isomer.</p>
+</dd>
+<dt><strong>5. Post-assembly check :</strong></dt><dd><p>All isomers undergo a post-assembly check which looks our for steric clashes between ligands by checking if two ligands are more than a certain distance away from each other. If the check fails, the assembler will discard the isomer. If all isomers fail the check, the assembler will continue to the next combination of ligands.</p>
+</dd>
+<dt><strong>6. Saving the complex :</strong></dt><dd><p>Finally, the assembler will save the geometry of each isomer to an .xyz file, some info about its ligands to a .csv file and extensive machine-readable information about the isomer to a .json file. The assembler will then proceed to assemble the next complex, until the specified maximum number of complexes is reached or all combinations of ligands are exhausted.</p>
+</dd>
+</dl>
+<p>After assembling all required complexes, the assembler will save some overview files, such as a .csv file with information about all attempted complexes and concatenated .xyz files for all successful and failed complexes. The assembler will also print a summary of the assembly process to the console.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="1_Pd_Ni_Cross_Coupling.html" class="btn btn-neutral float-left" title="Advanced Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="2_module_overview.html" class="btn btn-neutral float-right" title="Module Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, CCEM group.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

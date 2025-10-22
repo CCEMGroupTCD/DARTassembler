@@ -30,18 +30,18 @@ User-defined settings for Second_batch:
     complex_name_suffix           _Fe
 =============================  Summary per batch  ==============================
 First_batch:
-  - 202 isomers tried, 156 isomers (from 100 complexes) successfully assembled.
-  - 46 isomers failed because of filters:
-    - duplicate: 42
+  - 202 isomers tried, 157 isomers (from 100 complexes) successfully assembled.
+  - 45 isomers failed because of filters:
+    - duplicate: 41
     - clashing: 4
 Second_batch:
-  - 202 isomers tried, 154 isomers (from 100 complexes) successfully assembled.
-  - 48 isomers failed because of filters:
-    - duplicate: 46
-    - clashing: 2
+  - 202 isomers tried, 149 isomers (from 100 complexes) successfully assembled.
+  - 53 isomers failed because of filters:
+    - duplicate: 50
+    - clashing: 3
 ====================  Total summary of DART Assembler run  =====================
-  - 404 isomers tried, 310 isomers (from 200 complexes) successfully assembled.
-  - 94 isomers failed because of filters:
-    - duplicate: 88
-    - clashing: 6
+  - 404 isomers tried, 306 isomers (from 200 complexes) successfully assembled.
+  - 98 isomers failed because of filters:
+    - duplicate: 91
+    - clashing: 7
 DART Assembler output files saved to directory `DARTassembler`.

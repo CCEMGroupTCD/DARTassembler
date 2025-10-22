@@ -13,20 +13,20 @@ User-defined settings for batch_0:
     metal_centers                 Fe
     ligand_geometries             ['2_cis', '2_cis']
     name                          batch_0
-============================  2-2-1-1-monometalic  =============================
-User-defined settings for 2-2-1-1-monometalic:
+============================  2-2-1-1-monometallic  ============================
+User-defined settings for 2-2-1-1-monometallic:
     n_max_complexes               10
     total_ligand_charges          -3
-    name                          2-2-1-1-monometalic
+    name                          2-2-1-1-monometallic
     random_seed                   5
     ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
     target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
     metal_centers                 Ir
-=============================  2-2-1-1-bi-metalic  =============================
-User-defined settings for 2-2-1-1-bi-metalic:
+=============================  2-2-1-1-bimetallic  =============================
+User-defined settings for 2-2-1-1-bimetallic:
     n_max_complexes               10
     total_ligand_charges          -3
-    name                          2-2-1-1-bi-metalic
+    name                          2-2-1-1-bimetallic
     random_seed                   5
     ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', '../data_input/ligands/JSONS/small_mono.json', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
     target_vectors                [[[0, 0, 2]], [[0, 0, -2]], [[-3, -3, 0], [-3, 3, 0]], [[3, -3, 0], [3, 3, -1]]]
@@ -60,21 +60,21 @@ User-defined settings for 2-2-bi_trans_minimal_input:
     ligand_db_files               ['../data_input/ligands/JSONS/bi_trans.jsonlines', 'same_as_previous']
     target_vectors                [[[0, 0, 1], [0, 0, -1]], [[1, 0, 0], [-1, 0, 0]]]
     metal_centers                 La
-====================  2-2-1-1-monometalic_with_swap_groups  ====================
-User-defined settings for 2-2-1-1-monometalic_with_swap_groups:
+===================  2-2-1-1-monometallic_with_swap_groups  ====================
+User-defined settings for 2-2-1-1-monometallic_with_swap_groups:
     n_max_complexes               10
     total_ligand_charges          -3
-    name                          2-2-1-1-monometalic_with_swap_groups
+    name                          2-2-1-1-monometallic_with_swap_groups
     random_seed                   5
     ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
     target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
     metal_centers                 Ir
     swap_groups                   [1, 1, 2, 2]
-=========  2-2-1-1-monometalic_with_swap_groups_with_extra_structure  ==========
-User-defined settings for 2-2-1-1-monometalic_with_swap_groups_with_extra_structure:
+=========  2-2-1-1-monometallic_with_swap_groups_with_extra_structure  =========
+User-defined settings for 2-2-1-1-monometallic_with_swap_groups_with_extra_structure:
     n_max_complexes               10
     total_ligand_charges          -3
-    name                          2-2-1-1-monometalic_with_swap_groups_with_extra_structure
+    name                          2-2-1-1-monometallic_with_swap_groups_with_extra_structure
     random_seed                   5
     ligand_db_files               ['../data_input/ligands/JSONS/small_mono.json', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.json', '../data_input/ligands/JSONS/bidentate.json']
     target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
@@ -88,12 +88,12 @@ batch_0:
   - 65 isomers failed because of filters:
     - duplicate: 51
     - clashing: 14
-2-2-1-1-monometalic:
-  - 48 isomers tried, 27 isomers (from 10 complexes) successfully assembled.
-  - 21 isomers failed because of filters:
+2-2-1-1-monometallic:
+  - 48 isomers tried, 26 isomers (from 10 complexes) successfully assembled.
+  - 22 isomers failed because of filters:
     - clashing: 20
-    - duplicate: 1
-2-2-1-1-bi-metalic:
+    - duplicate: 2
+2-2-1-1-bimetallic:
   - 160 isomers tried, 154 isomers (from 10 complexes) successfully assembled.
   - 6 isomers failed because of filters:
     - duplicate: 6
@@ -104,19 +104,19 @@ batch_0:
   - 13 isomers failed because of filters:
     - duplicate: 9
     - clashing: 4
-2-2-1-1-monometalic_with_swap_groups:
-  - 192 isomers tried, 32 isomers (from 10 complexes) successfully assembled.
-  - 160 isomers failed because of filters:
-    - duplicate: 83
-    - clashing: 77
-2-2-1-1-monometalic_with_swap_groups_with_extra_structure:
-  - 192 isomers tried, 32 isomers (from 10 complexes) successfully assembled.
-  - 160 isomers failed because of filters:
-    - duplicate: 83
-    - clashing: 77
+2-2-1-1-monometallic_with_swap_groups:
+  - 192 isomers tried, 33 isomers (from 10 complexes) successfully assembled.
+  - 159 isomers failed because of filters:
+    - duplicate: 81
+    - clashing: 78
+2-2-1-1-monometallic_with_swap_groups_with_extra_structure:
+  - 192 isomers tried, 33 isomers (from 10 complexes) successfully assembled.
+  - 159 isomers failed because of filters:
+    - duplicate: 81
+    - clashing: 78
 ====================  Total summary of DART Assembler run  =====================
-  - 710 isomers tried, 285 isomers (from 73 complexes) successfully assembled.
-  - 425 isomers failed because of filters:
-    - duplicate: 233
-    - clashing: 192
+  - 710 isomers tried, 286 isomers (from 73 complexes) successfully assembled.
+  - 424 isomers failed because of filters:
+    - duplicate: 230
+    - clashing: 194
 DART Assembler output files saved to directory `data_output`.

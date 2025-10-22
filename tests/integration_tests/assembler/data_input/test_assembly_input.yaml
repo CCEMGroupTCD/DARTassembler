@@ -15,7 +15,7 @@ batches:
 
   - n_max_complexes: 10                               # Checked by Cian 15/10/2025 (EDUGOCET2 was not flagged as isomer due to difference in rotation)
     total_ligand_charges: -3
-    name: "2-2-1-1-monometalic"
+    name: "2-2-1-1-monometallic"
     random_seed: 5
     ligand_db_files:
       - ../data_input/ligands/JSONS/small_mono.json
@@ -29,9 +29,9 @@ batches:
       - [[1,0,0], [0,0,-1]]
     metal_centers: Ir
 
-  - n_max_complexes: 10                                # Checked by Cian 15/10/2025 any differences are soley due to slight differences in monodentate-rotation
+  - n_max_complexes: 10                                # Checked by Cian 15/10/2025 any differences are solely due to slight differences in monodentate-rotation
     total_ligand_charges: -3
-    name: "2-2-1-1-bi-metalic"
+    name: "2-2-1-1-bimetallic"
     random_seed: 5
     ligand_db_files:
       - ../data_input/ligands/JSONS/small_mono.json
@@ -88,7 +88,7 @@ batches:
 
   - n_max_complexes: 10                             # Checked by Cian 15/10/2025
     total_ligand_charges: -3
-    name: "2-2-1-1-monometalic_with_swap_groups"
+    name: "2-2-1-1-monometallic_with_swap_groups"
     random_seed: 5
     ligand_db_files:
       - ../data_input/ligands/JSONS/small_mono.json
@@ -105,7 +105,7 @@ batches:
 
   - n_max_complexes: 10                             # Checked by Cian 15/10/2025
     total_ligand_charges: -3
-    name: "2-2-1-1-monometalic_with_swap_groups_with_extra_structure"
+    name: "2-2-1-1-monometallic_with_swap_groups_with_extra_structure"
     random_seed: 5
     ligand_db_files:
       - ../data_input/ligands/JSONS/small_mono.json

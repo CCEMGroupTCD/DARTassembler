@@ -3,9 +3,9 @@ This file contains the classes and methods that are used to process the input da
 """
 import sys
 import warnings
-from typing import Dict, Any, List, Optional, Tuple, Union
+from typing import Dict, Any, List, Optional, Tuple, Union, Iterable
 from ase.visualize import view
-from ase import Atoms
+from ase import Atoms, Atom
 import numpy as np
 import itertools
 import ase
@@ -18,22 +18,22 @@ from scipy.spatial.transform import Rotation as R
 from scipy.optimize import linear_sum_assignment, differential_evolution
 import pandas as pd
 from scipy.optimize import brute
-from DARTassembler.src.assembler.utils import are_atoms_equal, get_list_with_all_possible_swappings, remove_haptic_dummy_atom, get_complex_name
+from DARTassembler.src.assembler.utils import are_atoms_equal, get_list_with_all_possible_swappings, \
+    remove_haptic_dummy_atom, get_complex_name, join_duplicate_groups_by_union
 from DARTassembler.src.metalig.geometry import try_all_geometrical_isomer_possibilities, all_geometries, align_vectors, align_donor_atoms
 from DARTassembler.src.constants.chem import Element
 from DARTassembler.src.metalig.mol import BaseMolecule, Ligand
 from DARTassembler.src.metalig.utils_molecule import get_atomic_props_from_ase_atoms
 from DARTassembler.src.metalig.utils_graph import  graph_to_dict_with_node_labels, get_graph_hash
 
-try:
+try:    # optional imports for visualization. Don't print if not available (since not essential for the main functionality).
     import plotly.graph_objects as go
     import plotly.express as px
     import plotly.io as pio
     import dash
-
     pio.renderers.default = 'browser'
 except ImportError:
-    print("Plotly is not installed. Skipping visualization features.")
+    pass
 
 
 class AssembledIsomer(BaseMolecule):
@@ -111,8 +111,7 @@ class AssembledIsomer(BaseMolecule):
         # Doublecheck if all the metals are really metals. Don't raise an error in case it's intentional.
         all_metals = all(Element(metal).is_metal for metal in self.metals)
         if not all_metals:
-            warnings.warn(
-                f"Any of the metal centers {self.metals} in AssembledIsomer() is not a metal. Providing a chemical element as `metal center` that is not a metal is not a problem, this is just to make you aware.")
+            warnings.warn(f"Any of the metal centers {self.metals} in AssembledIsomer() is not a metal. Providing a chemical element as `metal center` that is not a metal is not a problem for DART, this warning is just to make you aware.")
 
         return
 
@@ -304,12 +303,14 @@ class AssembledComplex(object):
                          duplicate_cutoff: float = 0.5,
                          complex_name_length: int = 8,
                          complex_name_suffix: str = '',
-                         avoid_names: Optional[List[str]] = None,
+                         avoid_names: Optional[Iterable[str]] = None,
                          ):
         """
         Generates all possible isomers from the ligands and metal centers provided.
         :return: List of AssembledIsomer objects.
         """
+        if avoid_names is None:
+            avoid_names = set()
         self.check_duplicate = check_duplicate
         self.check_clashing = check_clashing
         self.clashing_buffer = clashing_buffer
@@ -370,85 +371,85 @@ class AssembledComplex(object):
                 same_length_target_vectors.append(target_vectors)
                 isomer_idx += 1
 
-        pre_isomers_duplicate_groups = DuplicateIsomerFilter(
-            isomers=isomers,
-            fingerprint_grouping_cutoff=self.duplicate_cutoff,
-            metal_centers=self.metal_centers
-        ).get_duplicate_groups()
+        pre_isomers_duplicate_groups = DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=self.duplicate_cutoff, metal_centers=self.metal_centers).get_duplicate_groups()
         pre_isomers_duplicate_group_names = [set([isomer.isomer_name for isomer in isomer_group]) for isomer_group in pre_isomers_duplicate_groups]
 
         # Do a mono-axial optimization of the isomers and afterward check for clashing ligands.
-        for idx, isomer, target_vectors, ligand_origins in zip(
-                range(len(isomers)), isomers, same_length_target_vectors, same_length_ligand_origins):
-
-            # Replace the list entry with the optimized object
-            isomers[idx] = AxialOptModifier(isomers=[isomers[idx]], opt=self.optimize_monoaxial) \
-                .modify(target_vectors_list=[target_vectors], ligand_origins_list=[ligand_origins])[0]
-
-            # IMPORTANT: rebind 'isomer' to the NEW object you just stored
-            isomer = isomers[idx]
+        for idx, isomer, target_vectors, ligand_origins in zip(range(len(isomers)), isomers, same_length_target_vectors, same_length_ligand_origins):
+            isomer = AxialOptModifier(isomers=[isomer], opt=self.optimize_monoaxial).modify(target_vectors_list=[target_vectors], ligand_origins_list=[ligand_origins])[0]
+            isomers[idx] = isomer # important: copy changed object over to list
 
             if isomer.warning == '' and self.check_clashing:
-                clashfilter = IsomerClashFilter(
-                    buffer=self.clashing_buffer,
-                    check_metal_clashes=self.clashing_metal
-                )
-                clashing = clashfilter.has_clashing_atoms(
-                    atoms=isomer.atoms,
-                    ligand_idc=isomer.ligand_idc,
-                    metal_idc=isomer.metal_idc
-                )
+                clashfilter = IsomerClashFilter(buffer=self.clashing_buffer, check_metal_clashes=self.clashing_metal)
+                clashing = clashfilter.has_clashing_atoms(atoms=isomer.atoms, ligand_idc=isomer.ligand_idc, metal_idc=isomer.metal_idc)
                 if clashing:
                     isomer.warning = 'clashing'  # this now updates the optimized object
-                    continue
 
         # Check for duplicates again after the mono-axial optimization.
-        post_isomers_duplicate_groups = DuplicateIsomerFilter(
-            isomers=isomers,
-            fingerprint_grouping_cutoff=self.duplicate_cutoff,
-            metal_centers=self.metal_centers
-        ).get_duplicate_groups()
+        joined_isomers_duplicate_group_names = self.get_duplicate_isomers_group_names(isomers=isomers, pre_isomers_duplicate_group_names=pre_isomers_duplicate_group_names, duplicate_cutoff=self.duplicate_cutoff,  metal_centers=self.metal_centers)
+
+        self.successful_isomers, self.unsuccessful_isomers = self.divide_into_successful_and_unsuccessful_isomers(isomers, joined_isomers_duplicate_group_names)
+        self.success = len(self.successful_isomers) > 0
+        self.isomers = isomers
+
+        return
+
+    @staticmethod
+    def get_duplicate_isomers_group_names(isomers: list[Any], pre_isomers_duplicate_group_names: list[set[str | None]], duplicate_cutoff: float, metal_centers: list[list[Atom]]) -> list[list[str]]:
+        """
+        Get the joined duplicate isomer group names from pre- and post-monoaxial optimization duplicate groups. Sort the joined groups by the order of `isomers` to preserve the output order.
+        :param isomers: List of isomer objects, each having an 'isomer_name' attribute.
+        :param pre_isomers_duplicate_group_names: List of sets of isomer names that are considered duplicates before monoaxial optimization.
+        :param duplicate_cutoff: Cutoff for duplicate isomer filtering.
+        :param metal_centers: List of metal center atoms.
+        :return: List of lists of isomer names that are considered duplicates.
+        """
+        post_isomers_duplicate_groups = DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=duplicate_cutoff, metal_centers=metal_centers).get_duplicate_groups()
         post_isomers_duplicate_group_names = [set([isomer.isomer_name for isomer in isomer_group]) for isomer_group in post_isomers_duplicate_groups]
 
         # Join the pre- and post-isomers duplicate groups. If an isomer is a duplicate in either the pre- or post-isomers duplicate groups, it is considered a duplicate.
-        joined_isomers_duplicate_group_names = self._join_duplicate_groups_by_union(pre_isomers_duplicate_group_names, post_isomers_duplicate_group_names)
-        # Todo: I noticed this assert statement was triggered when certain swap groups were added
-        assert sorted(name for group in joined_isomers_duplicate_group_names for name in group) == sorted(
-            name for isomer in isomers for name in [isomer.isomer_name]), "Joined isomer groups do not contain all isomers."
-        # todo: Outcomment this line to go back to the previous behaviour where duplicates are only detected after the mono-axial optimization. If this line is commented, both the pre and post duplicate check is active and an isomer is considered a duplicate if it is a duplicate in either the pre- OR post-isomers duplicate groups.
-        joined_isomers_duplicate_group_names = post_isomers_duplicate_group_names  # todo debugging
+        joined_isomers_duplicate_group_names = join_duplicate_groups_by_union(pre_isomers_duplicate_group_names, post_isomers_duplicate_group_names, mode='post')
+        assert sorted(name for group in joined_isomers_duplicate_group_names for name in group) == sorted(name for isomer in isomers for name in [isomer.isomer_name]), "Joined isomer groups do not contain all isomers."
 
         # Sort the joint isomer names by the order of `isomers` and convert to lists, so that the output order of isomers is preserved. That is particularly important so that the duplicate filter always keeps the same, "first" isomer in the group.
         isomer_names_order = [isomer.isomer_name for isomer in isomers]
-        joined_isomers_duplicate_group_names = [sorted(list(group), key=lambda x: isomer_names_order.index(x)) for group in joined_isomers_duplicate_group_names]
+        joined_isomers_duplicate_group_names = [sorted(list(group), key=lambda x: isomer_names_order.index(x)) for group
+                                                in joined_isomers_duplicate_group_names]
+        return joined_isomers_duplicate_group_names
 
-        # Divide the isomers into successful and unsuccessful isomers. If an isomer has a 'clashing' warning, or if it is a duplicate, it is considered unsuccessful. For duplicates, we use the joint duplicate groups and let through only the first isomer in each group, marking the others as duplicates. It is important that this is done after the clash filter, so that clashing isomers are not considered duplicates.
-        self.successful_isomers = []
-        self.unsuccessful_isomers = []
+    def divide_into_successful_and_unsuccessful_isomers(self, isomers: list[Any], joined_isomers_duplicate_group_names: list[list[str]]) -> tuple[list[Any], list[Any]]:
+        """
+        Divide the isomers into successful and unsuccessful isomers. If an isomer has a 'clashing' warning, or if it is a duplicate, it is considered unsuccessful. For duplicates, we use the joint duplicate groups and let through only the first isomer in each group, marking the others as duplicates. It is important that this is done after the clash filter, so that clashing isomers are not considered duplicates.
+        :param isomers: List of isomer objects, each having an 'isomer_name' attribute and a 'warning' attribute.
+        :param joined_isomers_duplicate_group_names: List of lists of isomer names that are considered duplicates.
+        :return: A tuple containing two lists: (successful_isomers, unsuccessful_isomers).
+        """
+        successful_isomers = []
+        unsuccessful_isomers = []
         isomer_dict = {isomer.isomer_name: isomer for isomer in isomers}
         for isomer_group in joined_isomers_duplicate_group_names:
-            assert len(isomer_group) == len(set(isomer_group)) and len(isomer_group) > 0, f"Duplicate isomer group contains duplicates or is empty: {isomer_group}"
+            assert len(isomer_group) == len(set(isomer_group)) and len(
+                isomer_group) > 0, f"Duplicate isomer group contains duplicates or is empty: {isomer_group}"
             first_isomer_in_group_added = False
             for isomer_name in isomer_group:
                 if isomer_dict[isomer_name].warning == 'clashing':
                     # If the isomer is clashing, add it to the unsuccessful isomers.
-                    self.unsuccessful_isomers.append(isomer_dict[isomer_name])
+                    unsuccessful_isomers.append(isomer_dict[isomer_name])
                 elif isomer_dict[isomer_name].warning == '':
                     if not first_isomer_in_group_added:
                         # If the isomer is not clashing and is the first in the group, add it to the successful isomers.
-                        self.successful_isomers.append(isomer_dict[isomer_name])
+                        successful_isomers.append(isomer_dict[isomer_name])
                         first_isomer_in_group_added = True
                     else:
                         # If the isomer is not clashing and is not the first in the group, add it to the unsuccessful isomers and mark it as a duplicate.
                         duplicate_indices = ','.join(name.removeprefix(self.complex_name) for name in isomer_group)
                         isomer_dict[isomer_name].warning = f'duplicate({duplicate_indices})'
-                        self.unsuccessful_isomers.append(isomer_dict[isomer_name])
+                        unsuccessful_isomers.append(isomer_dict[isomer_name])
                 else:
-                    raise ValueError(f"Isomer {isomer_name} has an unexpected warning: {isomer_dict[isomer_name].warning}. Expected 'clashing' or ''.")
-        self.success = len(self.successful_isomers) > 0
-        self.isomers = isomers
+                    raise ValueError(
+                        f"Isomer {isomer_name} has an unexpected warning: {isomer_dict[isomer_name].warning}. Expected 'clashing' or ''.")
+        return successful_isomers, unsuccessful_isomers
 
-        return
 
     def to_dict(self):
         """
@@ -487,125 +488,7 @@ class AssembledComplex(object):
 
         }
 
-    @staticmethod
-    def _join_duplicate_groups_by_union_legacy(pre_isomers_duplicate_group_names: List[set[str]],
-                                               post_isomers_duplicate_group_names: List[set[str]]) -> List[set[str]]:
-        """
-        Join the pre- and post-isomers duplicate groups. If two isomers are duplicates in either the pre- or post-isomers duplicate groups, they are considered duplicates.
-        """
-        joined_isomers_duplicate_group_names: list[set[str]] = []
-        for pre_isomer_group in pre_isomers_duplicate_group_names:
-            joint_group = pre_isomer_group
-            for isomer_name in pre_isomer_group:
-                for post_isomer_group in post_isomers_duplicate_group_names:
-                    if isomer_name in post_isomer_group:
-                        # If the isomer is in the post-isomer group, join the groups.
-                        joint_group = joint_group.union(post_isomer_group)
-                        break
-            joint_group = sorted(joint_group)
-            if joint_group not in joined_isomers_duplicate_group_names:
-                joined_isomers_duplicate_group_names.append(joint_group)
-
-        return joined_isomers_duplicate_group_names
-
-    from typing import List, Iterable
-
-    @staticmethod
-    def _join_duplicate_groups_by_union(
-            pre_isomers_duplicate_group_names: Iterable[Iterable[str]],
-            post_isomers_duplicate_group_names: Iterable[Iterable[str]],
-            mode: str = "post",
-    ) -> List[List[str]]:
-        """
-        Join duplicate groups from the pre- and post-AxialOpt stages.
-
-        Modes
-        -----
-        - "or"   (default): final duplicates if pre OR post grouped them (transitive closure).
-                           → Most aggressive merge (your current behavior).
-        - "pre"            : final duplicates follow ONLY the pre groups (post ignored).
-                           → Precedent to pre stage (useful to preserve pre-stage distinctions).
-        - "post"           : final duplicates follow ONLY the post groups (pre ignored).
-                           → Treat AxialOpt as canonical; simplest final equivalence.
-
-        Returns
-        -------
-        List[List[str]] : Disjoint duplicate groups, each sorted by name.
-                          All names present in the chosen stage(s) appear exactly once.
-        """
-        # --- Normalize inputs: turn each incoming group into a set ---
-        pre = [set(g) for g in pre_isomers_duplicate_group_names]
-        post = [set(g) for g in post_isomers_duplicate_group_names]
-
-        # Choose which groups to use based on the mode
-        m = mode.strip().lower()
-        if m == "or":
-            source_groups = pre + post
-        elif m == "pre":
-            source_groups = pre
-        elif m == "post":
-            source_groups = post
-        else:
-            raise ValueError(f"_join_duplicate_groups_by_union: unknown mode '{mode}'. Use 'or' | 'pre' | 'post'.")
-
-        # Collect every distinct isomer name seen in the selected groups.
-        all_names = sorted({n for g in source_groups for n in g})
-
-        # Edge case: no names (e.g., empty inputs)
-        if not all_names:
-            return []
-
-        # --- Disjoint Set Union (Union-Find) setup ---
-        parent = {n: n for n in all_names}  # representative for each name
-        rank = {n: 0 for n in all_names}  # tree rank (for union by rank)
-
-        def find(x: str) -> str:
-            """Find the representative of x's set (path compression)."""
-            while parent[x] != x:
-                parent[x] = parent[parent[x]]
-                x = parent[x]
-            return x
-
-        def union(a: str, b: str) -> None:
-            """Union sets of a and b (union by rank)."""
-            ra, rb = find(a), find(b)
-            if ra == rb:
-                return
-            if rank[ra] < rank[rb]:
-                parent[ra] = rb
-            elif rank[ra] > rank[rb]:
-                parent[rb] = ra
-            else:
-                parent[rb] = ra
-                rank[ra] += 1
-
-        # --- Add edges: union all members within each selected group ---
-        # For each group, tie everyone to an anchor so they land in one component.
-        for g in source_groups:
-            if not g:
-                continue
-            it = iter(g)
-            anchor = next(it)
-            for n in it:
-                union(anchor, n)
-
-        # --- Collect connected components as final groups ---
-        comps: dict[str, List[str]] = {}
-        for n in all_names:
-            r = find(n)
-            comps.setdefault(r, []).append(n)
-
-        joined = [sorted(v) for v in comps.values()]
-
-        # Defensive sanity: ensure disjoint partition over all seen names
-        flat = [n for grp in joined for n in grp]
-        assert len(flat) == len(all_names) == len(set(flat)), (
-            "Joined groups must be a disjoint partition of all isomers seen in the chosen stage(s)."
-        )
-
-        return joined
-
-    def _get_complex_name(self, avoid_names: Optional[list[str]]) -> str:
+    def _get_complex_name(self, avoid_names: Optional[Iterable[str]]) -> str:
         return get_complex_name(seed=self.graph_hash, length=self.complex_name_length, suffix=self.complex_name_suffix, avoid_names=avoid_names)
 
     def _get_ligandinfo(self) -> Dict[str, Any]:
@@ -854,7 +737,7 @@ class AxialOptModifier:
         Robust to common axis shapes for ligand geometries:
           - (3,)   : standard single axis vector
           - (1,3)  : single axis wrapped in an extra list
-          - (2,3)  : 2-trans case (two anti-parallel donor vectors) → collapse to one
+          - (2,3)  : 2-trans case (two anti-parallel donor vectors) -> collapse to the first one
         """
         # Normalize vector shape and cast the list to a numpy array
         vector = np.asarray(vector, dtype=float)
@@ -863,8 +746,8 @@ class AxialOptModifier:
         if vector.ndim == 2:
             if vector.shape == (2, 3): # If 2-trans geometry we should have two near opposite donor atom vectors
                 # Check if donor atom vectors are opposite
-                if not np.allclose(vector[0], -vector[1], atol=1e-3):
-                    logging.warning("rotate(): 2_trans target vectors not perfectly opposite; using first vector.")
+                # if not np.allclose(vector[0], -vector[1], atol=1e-3):
+                #     logging.warning("rotate(): 2_trans target vectors not perfectly opposite; using first vector.")
                 vector = vector[0]  # warn if not opposite but still use the first vector
             elif vector.shape == (1, 3):
                 vector = vector[0]
@@ -888,6 +771,7 @@ class AxialOptModifier:
         rel = atoms.positions[idc_arr] - origin  # translate
         atoms.positions[idc_arr] = rotation.apply(rel) + origin  # rotate & translate back
         return atoms
+
     def visualize_structures(self):
         """
         Visualize input and output complexes interleaved using ASE's GUI.
@@ -923,7 +807,7 @@ class DuplicateIsomerFilter:
                  isomer_comparison_mode: str = "max_diff",
                  isomer_comparison_grouping_mode: str = "cutoff",  # 'cluster' or 'cutoff'
                  fingerprint_grouping_cutoff: float = 0.5,
-                 metal_centers: List[List[float]] = None,
+                 metal_centers: List[List[ase.Atom]] = None,
                  energy_heuristic_mode: str = "max",
                  ):
         """
@@ -935,6 +819,8 @@ class DuplicateIsomerFilter:
         :param: duplicate_distances_classifier: The mode for grouping fingerprints, either 'cluster' or 'cutoff'.
         :param: fingerprint_grouping_cutoff: The cutoff value for grouping fingerprints when using 'cutoff' mode.
         """
+        if metal_centers is None:
+            metal_centers = []
         self.isomers = isomers
         self.method = method.lower()
         self.grid_size = grid_size  # The number of grid points when scanning from 0 to 360 for exact alignment

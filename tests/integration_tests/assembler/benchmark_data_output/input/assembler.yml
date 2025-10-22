@@ -16,7 +16,7 @@ batches:
   name: batch_0
 - n_max_complexes: 10
   total_ligand_charges: -3
-  name: 2-2-1-1-monometalic
+  name: 2-2-1-1-monometallic
   random_seed: 5
   ligand_db_files:
   - ../data_input/ligands/JSONS/small_mono.json
@@ -45,7 +45,7 @@ batches:
   metal_centers: Ir
 - n_max_complexes: 10
   total_ligand_charges: -3
-  name: 2-2-1-1-bi-metalic
+  name: 2-2-1-1-bimetallic
   random_seed: 5
   ligand_db_files:
   - ../data_input/ligands/JSONS/small_mono.json
@@ -155,7 +155,7 @@ batches:
   metal_centers: La
 - n_max_complexes: 10
   total_ligand_charges: -3
-  name: 2-2-1-1-monometalic_with_swap_groups
+  name: 2-2-1-1-monometallic_with_swap_groups
   random_seed: 5
   ligand_db_files:
   - ../data_input/ligands/JSONS/small_mono.json
@@ -190,7 +190,7 @@ batches:
 - &id001
   n_max_complexes: 10
   total_ligand_charges: -3
-  name: 2-2-1-1-monometalic_with_swap_groups_with_extra_structure
+  name: 2-2-1-1-monometallic_with_swap_groups_with_extra_structure
   random_seed: 5
   ligand_db_files:
   - ../data_input/ligands/JSONS/small_mono.json
