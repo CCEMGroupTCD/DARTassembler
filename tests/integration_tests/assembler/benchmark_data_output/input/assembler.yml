@@ -14,7 +14,7 @@ batches:
   - 2-cis
   - 2-cis
   name: batch_0
-- n_max_complexes: 10
+- n_max_complexes: 5
   total_ligand_charges: -3
   name: 2-2-1-1-monometallic
   random_seed: 5
@@ -43,7 +43,7 @@ batches:
       - 0
       - -1
   metal_centers: Ir
-- n_max_complexes: 10
+- n_max_complexes: 5
   total_ligand_charges: -3
   name: 2-2-1-1-bimetallic
   random_seed: 5
@@ -96,20 +96,18 @@ batches:
       - - 2
         - 0
         - 0
-  swap_groups:
+  permutable_ligands:
   - 1
   - 1
   - 2
   - 2
-  check_duplicate: true
-  check_clashing: true
-  optimize_monoaxial: true
+  monoaxial_optimization: true
   force_all_isomers: false
-  clashing_buffer: -0.3
+  clashing_tolerance: -0.3
   clashing_metal: false
-  duplicate_cutoff: 0.5
+  duplicate_tolerance: null
 - complex_name_suffix: _haptic
-  n_max_complexes: 10
+  n_max_complexes: 5
   total_ligand_charges: -2
   name: 3-3-haptic_coordination
   random_seed: 1
@@ -153,7 +151,7 @@ batches:
       - 0
       - 0
   metal_centers: La
-- n_max_complexes: 10
+- n_max_complexes: 5
   total_ligand_charges: -3
   name: 2-2-1-1-monometallic_with_swap_groups
   random_seed: 5
@@ -182,13 +180,14 @@ batches:
       - 0
       - -1
   metal_centers: Ir
-  swap_groups:
+  permutable_ligands:
   - 1
   - 1
   - 2
   - 2
+  monoaxial_optimization: false
 - &id001
-  n_max_complexes: 10
+  n_max_complexes: 5
   total_ligand_charges: -3
   name: 2-2-1-1-monometallic_with_swap_groups_with_extra_structure
   random_seed: 5
@@ -217,15 +216,16 @@ batches:
       - 0
       - -1
   metal_centers: Ir
-  swap_groups:
+  permutable_ligands:
   - 1
   - 1
   - 2
   - 2
-  extra_structure_path: ../data_input/Cu_surface.xyz
-  translate_extra_structure:
+  background_file: ../data_input/Cu_surface.xyz
+  background_translation:
   - -6
   - -4
   - -14
+  monoaxial_optimization: false
 idx: 6
 batch: *id001

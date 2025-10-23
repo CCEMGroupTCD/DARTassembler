@@ -7203,7 +7203,7 @@
                     "H"
                 ]
             },
-            "warning": "duplicate(7,14)",
+            "warning": "",
             "target_vectors": [
                 [
                     [
@@ -9332,18 +9332,16 @@
         ]
     },
     "input": {
-        "check_duplicate": true,
-        "check_clashing": true,
-        "clashing_buffer": -0.3,
+        "clashing_tolerance": -0.3,
         "clashing_metal": false,
-        "duplicate_cutoff": 0.5,
-        "swap_groups": [
+        "duplicate_tolerance": null,
+        "permutable_ligands": [
             1,
             1,
             2,
             2
         ],
-        "optimize_monoaxial": true,
+        "monoaxial_optimization": true,
         "force_all_isomers": false,
         "complex_name_length": 8,
         "complex_name_suffix": ""

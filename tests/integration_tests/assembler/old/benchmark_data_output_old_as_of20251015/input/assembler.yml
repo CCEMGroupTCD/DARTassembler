@@ -101,8 +101,6 @@ batches:
   - 1
   - 2
   - 2
-  check_duplicate: true
-  check_clashing: true
   optimize_monoaxial: true
   force_all_isomers: false
   clashing_buffer: -0.3

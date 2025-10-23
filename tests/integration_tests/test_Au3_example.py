@@ -58,18 +58,18 @@ if __name__ == "__main__":
 
 
     # Remove the output directory if it exists to start fresh
-    # if outdir.exists():
-    #     rmtree(outdir)
-    # old_cwd = Path.cwd()    # Save the current working directory to return to it later
-    # try:
-    #     outdir.mkdir(parents=True, exist_ok=True)
-    #     os.chdir(outdir)
-    #     filter = LigandFilters(db='metalig', n=n_max)
-    #     Cl_ligandnames = filter.run(Cl_filters, outpath=Path('ligands')/'Cl.jsonlines', metal=True, dbinfo=False)
-    #     CN_ligandnames = filter.run(CN, outpath=Path('ligands')/'CN.jsonlines', metal=True, dbinfo=False)
-    # finally:
-    #     # Change back to the original working directory
-    #     os.chdir(old_cwd)
+    if outdir.exists():
+        rmtree(outdir)
+    old_cwd = Path.cwd()    # Save the current working directory to return to it later
+    try:
+        outdir.mkdir(parents=True, exist_ok=True)
+        os.chdir(outdir)
+        filter = LigandFilters(db='metalig', n=n_max)
+        Cl_ligandnames = filter.run(Cl_filters, outpath=Path('ligands')/'Cl.jsonlines', metal=True, dbinfo=False)
+        CN_ligandnames = filter.run(CN, outpath=Path('ligands')/'CN.jsonlines', metal=True, dbinfo=False)
+    finally:
+        # Change back to the original working directory
+        os.chdir(old_cwd)
 
     test_Au3()
 

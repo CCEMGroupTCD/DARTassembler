@@ -530,12 +530,12 @@ def get_correct_ligand_db_path_from_input(path) -> Path:
 
     else:
         try:
-            path = Path(path)
+            path = Path(path).resolve()
         except TypeError:
-            raise ValueError(f"Invalid ligand database path: '{path}' (absolute path: '{Path(path).resolve()}')")
+            raise ValueError(f"Invalid ligand database path: '{path}'")
 
     if not path.is_file():
-        raise FileNotFoundError(f"Ligand database filepath not found: '{path}' (absolute path: '{path.resolve()}')")
+        raise FileNotFoundError(f"Ligand database filepath not found: '{path}')")
 
     return Path(path)
 

@@ -13,7 +13,7 @@ batches:
     metal_centers: Fe
     ligand_archetypes: [2-cis, 2-cis]
 
-  - n_max_complexes: 10                               # Checked by Cian 15/10/2025 (EDUGOCET2 was not flagged as isomer due to difference in rotation)
+  - n_max_complexes: 5                               # Checked by Cian 15/10/2025 (EDUGOCET2 was not flagged as isomer due to difference in rotation)
     total_ligand_charges: -3
     name: "2-2-1-1-monometallic"
     random_seed: 5
@@ -29,7 +29,7 @@ batches:
       - [[1,0,0], [0,0,-1]]
     metal_centers: Ir
 
-  - n_max_complexes: 10                                # Checked by Cian 15/10/2025 any differences are solely due to slight differences in monodentate-rotation
+  - n_max_complexes: 5                                # Checked by Cian 15/10/2025 any differences are solely due to slight differences in monodentate-rotation
     total_ligand_charges: -3
     name: "2-2-1-1-bimetallic"
     random_seed: 5
@@ -48,17 +48,15 @@ batches:
     - [['Ir', [ -2, 0, 0 ]], ['Fe', [ 2, 0, 0 ]]]
     - [['Ir', [ -2, 0, 0 ]]]
     - [['Fe', [ 2, 0, 0 ]]]
-    swap_groups: [1, 1, 2, 2]
-    check_duplicate: True
-    check_clashing: True
-    optimize_monoaxial: True
+    permutable_ligands: [1, 1, 2, 2]
+    monoaxial_optimization: True
     force_all_isomers: False
-    clashing_buffer: -0.3
+    clashing_tolerance: -0.3
     clashing_metal: False
-    duplicate_cutoff: 0.5
+    duplicate_tolerance:
 
   - complex_name_suffix: "_haptic"
-    n_max_complexes: 10                                 # Checked by Cian 15/10/2025
+    n_max_complexes: 5                                 # Checked by Cian 15/10/2025
     total_ligand_charges: -2
     name: "3-3-haptic_coordination"
     random_seed: 1
@@ -86,7 +84,7 @@ batches:
       - [[ 1, 0, 0 ], [ -1, 0, 0 ]]
     metal_centers: La
 
-  - n_max_complexes: 10                             # Checked by Cian 15/10/2025
+  - n_max_complexes: 5                             # Checked by Cian 15/10/2025
     total_ligand_charges: -3
     name: "2-2-1-1-monometallic_with_swap_groups"
     random_seed: 5
@@ -101,9 +99,10 @@ batches:
       - [[-1,0,0], [0,-1,0]]
       - [[1,0,0], [0,0,-1]]
     metal_centers: Ir
-    swap_groups: [1, 1, 2, 2] # Checked by Cian 15/10/2025
+    permutable_ligands: [1, 1, 2, 2] # Checked by Cian 15/10/2025
+    monoaxial_optimization: False
 
-  - n_max_complexes: 10                             # Checked by Cian 15/10/2025
+  - n_max_complexes: 5                             # Checked by Cian 15/10/2025
     total_ligand_charges: -3
     name: "2-2-1-1-monometallic_with_swap_groups_with_extra_structure"
     random_seed: 5
@@ -118,7 +117,8 @@ batches:
       - [ [ -1,0,0 ], [ 0,-1,0 ] ]
       - [ [ 1,0,0 ], [ 0,0,-1 ] ]
     metal_centers: Ir
-    swap_groups: [ 1, 1, 2, 2 ] # Checked by Cian 15/10/2025
-    extra_structure_path: "../data_input/Cu_surface.xyz"
-    translate_extra_structure: [ -6, -4, -14 ]
+    permutable_ligands: [ 1, 1, 2, 2 ] # Checked by Cian 15/10/2025
+    background_file: "../data_input/Cu_surface.xyz"
+    background_translation: [ -6, -4, -14 ]
+    monoaxial_optimization: False
 

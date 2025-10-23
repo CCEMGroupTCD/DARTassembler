@@ -293,14 +293,12 @@ class AssembledComplex(object):
 
     # This is the method used in the DART workflow to generate isomers.
     def generate_isomers(self,
-                         check_duplicate: bool = True,
-                         check_clashing: bool = True,
-                         swap_groups: Optional[List[int]] = None,
-                         optimize_monoaxial: Optional[bool] = True,
+                         permutable_ligands: Optional[List[int]] = None,
+                         monoaxial_optimization: Optional[bool] = True,
                          force_all_isomers: bool = False,
-                         clashing_buffer: float = -0.3,
+                         clashing_tolerance: float = -0.3,
                          clashing_metal: bool = False,
-                         duplicate_cutoff: float = 0.5,
+                         duplicate_tolerance: float = 0.5,
                          complex_name_length: int = 8,
                          complex_name_suffix: str = '',
                          avoid_names: Optional[Iterable[str]] = None,
@@ -311,13 +309,11 @@ class AssembledComplex(object):
         """
         if avoid_names is None:
             avoid_names = set()
-        self.check_duplicate = check_duplicate
-        self.check_clashing = check_clashing
-        self.clashing_buffer = clashing_buffer
+        self.clashing_tolerance = clashing_tolerance
         self.clashing_metal = clashing_metal
-        self.duplicate_cutoff = duplicate_cutoff
-        self.swap_groups = swap_groups
-        self.optimize_monoaxial = optimize_monoaxial
+        self.duplicate_tolerance = duplicate_tolerance
+        self.permutable_ligands = permutable_ligands
+        self.monoaxial_optimization = monoaxial_optimization
         self.force_all_isomers = force_all_isomers
         self.complex_name_length = complex_name_length
         self.complex_name_suffix = complex_name_suffix
@@ -330,8 +326,8 @@ class AssembledComplex(object):
         self.complex_name = self._get_complex_name(avoid_names=avoid_names)
 
         # Generate all possible geometric isomers to be generated via exchanging ligands (or, as here implemented, exchanging the target vectors of the ligands).
-        target_vector_combs = get_list_with_all_possible_swappings(objects=self.target_vectors, swap_groups=self.swap_groups)
-        ligand_origin_combs = get_list_with_all_possible_swappings(objects=self.ligand_origins, swap_groups=self.swap_groups)
+        target_vector_combs = get_list_with_all_possible_swappings(objects=self.target_vectors, permutable_ligands=self.permutable_ligands)
+        ligand_origin_combs = get_list_with_all_possible_swappings(objects=self.ligand_origins, permutable_ligands=self.permutable_ligands)
 
         isomers = []
         same_length_target_vectors = []
@@ -371,22 +367,22 @@ class AssembledComplex(object):
                 same_length_target_vectors.append(target_vectors)
                 isomer_idx += 1
 
-        pre_isomers_duplicate_groups = DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=self.duplicate_cutoff, metal_centers=self.metal_centers).get_duplicate_groups()
+        pre_isomers_duplicate_groups = DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=self.duplicate_tolerance, metal_centers=self.metal_centers).get_duplicate_groups()
         pre_isomers_duplicate_group_names = [set([isomer.isomer_name for isomer in isomer_group]) for isomer_group in pre_isomers_duplicate_groups]
 
         # Do a mono-axial optimization of the isomers and afterward check for clashing ligands.
         for idx, isomer, target_vectors, ligand_origins in zip(range(len(isomers)), isomers, same_length_target_vectors, same_length_ligand_origins):
-            isomer = AxialOptModifier(isomers=[isomer], opt=self.optimize_monoaxial).modify(target_vectors_list=[target_vectors], ligand_origins_list=[ligand_origins])[0]
+            isomer = AxialOptModifier(isomers=[isomer], opt=self.monoaxial_optimization).modify(target_vectors_list=[target_vectors], ligand_origins_list=[ligand_origins])[0]
             isomers[idx] = isomer # important: copy changed object over to list
 
-            if isomer.warning == '' and self.check_clashing:
-                clashfilter = IsomerClashFilter(buffer=self.clashing_buffer, check_metal_clashes=self.clashing_metal)
+            if isomer.warning == '' and pd.notna(self.clashing_tolerance):
+                clashfilter = IsomerClashFilter(buffer=self.clashing_tolerance, check_metal_clashes=self.clashing_metal)
                 clashing = clashfilter.has_clashing_atoms(atoms=isomer.atoms, ligand_idc=isomer.ligand_idc, metal_idc=isomer.metal_idc)
                 if clashing:
                     isomer.warning = 'clashing'  # this now updates the optimized object
 
         # Check for duplicates again after the mono-axial optimization.
-        joined_isomers_duplicate_group_names = self.get_duplicate_isomers_group_names(isomers=isomers, pre_isomers_duplicate_group_names=pre_isomers_duplicate_group_names, duplicate_cutoff=self.duplicate_cutoff,  metal_centers=self.metal_centers)
+        joined_isomers_duplicate_group_names = self.get_duplicate_isomers_group_names(isomers=isomers, pre_isomers_duplicate_group_names=pre_isomers_duplicate_group_names, duplicate_tolerance=self.duplicate_tolerance,  metal_centers=self.metal_centers)
 
         self.successful_isomers, self.unsuccessful_isomers = self.divide_into_successful_and_unsuccessful_isomers(isomers, joined_isomers_duplicate_group_names)
         self.success = len(self.successful_isomers) > 0
@@ -395,16 +391,16 @@ class AssembledComplex(object):
         return
 
     @staticmethod
-    def get_duplicate_isomers_group_names(isomers: list[Any], pre_isomers_duplicate_group_names: list[set[str | None]], duplicate_cutoff: float, metal_centers: list[list[Atom]]) -> list[list[str]]:
+    def get_duplicate_isomers_group_names(isomers: list[Any], pre_isomers_duplicate_group_names: list[set[str | None]], duplicate_tolerance: float, metal_centers: list[list[Atom]]) -> list[list[str]]:
         """
         Get the joined duplicate isomer group names from pre- and post-monoaxial optimization duplicate groups. Sort the joined groups by the order of `isomers` to preserve the output order.
         :param isomers: List of isomer objects, each having an 'isomer_name' attribute.
         :param pre_isomers_duplicate_group_names: List of sets of isomer names that are considered duplicates before monoaxial optimization.
-        :param duplicate_cutoff: Cutoff for duplicate isomer filtering.
+        :param duplicate_tolerance: Cutoff for duplicate isomer filtering.
         :param metal_centers: List of metal center atoms.
         :return: List of lists of isomer names that are considered duplicates.
         """
-        post_isomers_duplicate_groups = DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=duplicate_cutoff, metal_centers=metal_centers).get_duplicate_groups()
+        post_isomers_duplicate_groups = DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=duplicate_tolerance, metal_centers=metal_centers).get_duplicate_groups()
         post_isomers_duplicate_group_names = [set([isomer.isomer_name for isomer in isomer_group]) for isomer_group in post_isomers_duplicate_groups]
 
         # Join the pre- and post-isomers duplicate groups. If an isomer is a duplicate in either the pre- or post-isomers duplicate groups, it is considered a duplicate.
@@ -474,13 +470,11 @@ class AssembledComplex(object):
             "ligand_idc": self.ligand_indices,
             "ligand_info": self._get_ligandinfo(),
             "input": {
-                "check_duplicate": self.check_duplicate,
-                "check_clashing": self.check_clashing,
-                "clashing_buffer": self.clashing_buffer,
+                "clashing_tolerance": self.clashing_tolerance,
                 "clashing_metal": self.clashing_metal,
-                "duplicate_cutoff": self.duplicate_cutoff,
-                "swap_groups": self.swap_groups,
-                "optimize_monoaxial": self.optimize_monoaxial,
+                "duplicate_tolerance": self.duplicate_tolerance,
+                "permutable_ligands": self.permutable_ligands,
+                "monoaxial_optimization": self.monoaxial_optimization,
                 "force_all_isomers": self.force_all_isomers,
                 "complex_name_length": self.complex_name_length,
                 "complex_name_suffix": self.complex_name_suffix,
@@ -827,6 +821,7 @@ class DuplicateIsomerFilter:
         self.isomer_comparison_mode = isomer_comparison_mode
         self.isomer_comparison_grouping_mode = isomer_comparison_grouping_mode
         self.fingerprint_grouping_cutoff = fingerprint_grouping_cutoff
+        self.check_duplicate = pd.notna(fingerprint_grouping_cutoff)
         self.metal_centres = metal_centers
         self.unique_metal_centers = list({(atom.symbol, tuple(atom.position)): atom for sublist in self.metal_centres for atom in sublist}.values())
         self.diff_matrix = None  # Placeholder for the fingerprint difference matrix
@@ -840,6 +835,9 @@ class DuplicateIsomerFilter:
         """
         if len(self.isomers) <= 1:
             return [self.isomers]
+        if not self.check_duplicate:
+            # If duplicate checking is disabled, return each isomer as its own group.
+            return [[isomer] for isomer in self.isomers]
 
         if self.method == "alignment":
             self.isomer_group = self._reduce_by_alignment()

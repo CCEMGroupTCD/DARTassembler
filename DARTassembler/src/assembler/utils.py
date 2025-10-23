@@ -43,27 +43,27 @@ def remove_haptic_dummy_atom(atoms: ase.Atoms, dummy_atom: str) -> ase.Atoms:
         atoms.pop(dummy_idx)
     return atoms
 
-def get_list_with_all_possible_swappings(objects: list, swap_groups: List[int]) -> list[list]:
+def get_list_with_all_possible_swappings(objects: list, permutable_ligands: List[int]) -> list[list]:
     """
-    Returns a list of all possible combinations of the objects in `object_list` based on the provided `swap_groups`. Each group in `swap_groups` indicates which objects can be swapped with each other.
+    Returns a list of all possible combinations of the objects in `object_list` based on the provided `permutable_ligands`. Each group in `permutable_ligands` indicates which objects can be swapped with each other.
     :param objects: A list of objects to be swapped.
-    :param swap_groups: A list of integers where each integer represents a group index. Objects with the same group index can be swapped with each other.
+    :param permutable_ligands: A list of integers where each integer represents a group index. Objects with the same group index can be swapped with each other.
     :return: A list of lists, where each inner list is a unique combination of the objects in `object_list` based on the swap groups.
     """
-    if swap_groups is None or len(set(swap_groups)) == 1:
+    if permutable_ligands is None or len(set(permutable_ligands)) == 1:
         return [objects]
 
     n = len(objects)
-    if len(swap_groups) != n:
-        raise ValueError("`swap_groups` must match the length of `objects`.")
+    if len(permutable_ligands) != n:
+        raise ValueError("`permutable_ligands` must match the length of `objects`.")
 
     # Group ligand indices by swap group
     group_to_indices = defaultdict(list)
-    for idx, grp in enumerate(swap_groups):
+    for idx, grp in enumerate(permutable_ligands):
         group_to_indices[grp].append(idx)
 
     # For each vector position, gather allowed ligand indices
-    allowed = [group_to_indices[grp] for grp in swap_groups]
+    allowed = [group_to_indices[grp] for grp in permutable_ligands]
 
     # Build all assignments, filtering out any that reuse the same ligand twice
     results = []

@@ -123,18 +123,16 @@ class Assembler(BaseModule):
                    ligand_archetypes: list[str] = None,
                    ligand_origins: list[tuple[float, float, float]] = None,
                    total_ligand_charges: int = None,
-                   optimize_monoaxial: bool = True,
-                   swap_groups: list[int] = None,
+                   monoaxial_optimization: bool = True,
+                   permutable_ligands: list[int] = None,
                    force_all_isomers: bool = False,
-                   check_duplicate: bool = True,
-                   duplicate_cutoff: float = 0.5,
-                   check_clashing: bool = True,
-                   clashing_buffer: float = -0.3,
+                   duplicate_tolerance: float = 0.5,
+                   clashing_tolerance: float = -0.3,
                    clashing_metal: bool = False,
                    complex_name_suffix: str = '',
                    random_seed: Optional[int] = None,
-                   extra_structure_path: str = None,
-                   translate_extra_structure: Optional[Tuple[float, float, float]] = None,
+                   background_file: str = None,
+                   background_translation: Optional[Tuple[float, float, float]] = None,
                    ) -> None:
         """
         Run the assembly for one batch.
@@ -170,19 +168,17 @@ class Assembler(BaseModule):
         self.ligand_origins = ligand_origins
         self.metal_centers = metal_centers
         self.complex_name_suffix = complex_name_suffix
-        self.swap_groups = swap_groups
-        self.check_duplicate = check_duplicate
-        self.check_clashing = check_clashing
-        self.clashing_buffer = clashing_buffer
+        self.permutable_ligands = permutable_ligands
+        self.clashing_tolerance = clashing_tolerance
         self.clashing_metal = clashing_metal
-        self.duplicate_cutoff = duplicate_cutoff
-        self.optimize_monoaxial = optimize_monoaxial
+        self.duplicate_tolerance = duplicate_tolerance
+        self.monoaxial_optimization = monoaxial_optimization
         self.ligand_archetypes = ligand_archetypes
         self.force_all_isomers = force_all_isomers
         self.batch_output_path = Path(self.gbl_outcontrol.batch_dir, self.batch_name)
         self.batch_outcontrol = BatchAssemblerOutput(self.batch_output_path)
-        self.extra_structure_path = extra_structure_path
-        self.translate_extra_structure = translate_extra_structure
+        self.background_file = background_file
+        self.background_translation = background_translation
 
         # Redirect tqdm to the logging module so that messages appear properly on two different lines
         with (logging_redirect_tqdm()):
@@ -218,13 +214,11 @@ class Assembler(BaseModule):
                     metal_centers=self.metal_centers,
                 )
                 complex.generate_isomers(
-                                            check_duplicate= self.check_duplicate,
-                                            check_clashing= self.check_clashing,
-                                            clashing_buffer= self.clashing_buffer,
+                                            clashing_tolerance= self.clashing_tolerance,
                                             clashing_metal= self.clashing_metal,
-                                            duplicate_cutoff= self.duplicate_cutoff,
-                                            swap_groups = self.swap_groups,
-                                            optimize_monoaxial = self.optimize_monoaxial,
+                                            duplicate_tolerance= self.duplicate_tolerance,
+                                            permutable_ligands = self.permutable_ligands,
+                                            monoaxial_optimization = self.monoaxial_optimization,
                                             force_all_isomers=self.force_all_isomers,
                                             complex_name_length=self.complex_name_length,
                                             complex_name_suffix=self.complex_name_suffix,
@@ -303,13 +297,13 @@ class Assembler(BaseModule):
                 with open(str(isomer_xyz_filepath), 'w') as xyz_file:
                     xyz_file.write(xyz_string)
                 self.successfully_assembled_isomer_names.append(isomer_name)
-                if self.extra_structure_path is not None:
+                if self.background_file is not None:
                     # Combine the DART generated xyz with the extra structure xyz into one new xyz file and save it in the same location
 
-                    extra_structure = ase.io.read(self.extra_structure_path, format="xyz")
+                    extra_structure = ase.io.read(self.background_file, format="xyz")
 
                     # Ensure we always use a NumPy array for the translation vector
-                    translation = np.array(self.translate_extra_structure or [0.0, 0.0, 0.0], dtype=float)
+                    translation = np.array(self.background_translation or [0.0, 0.0, 0.0], dtype=float)
                     extra_structure.positions += translation
 
                     # Combine structures (order doesn’t matter unless you care about atom order)

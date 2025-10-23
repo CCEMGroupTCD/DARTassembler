@@ -15,7 +15,7 @@ User-defined settings for batch_0:
     name                          batch_0
 ============================  2-2-1-1-monometallic  ============================
 User-defined settings for 2-2-1-1-monometallic:
-    n_max_complexes               10
+    n_max_complexes               5
     total_ligand_charges          -3
     name                          2-2-1-1-monometallic
     random_seed                   5
@@ -24,25 +24,23 @@ User-defined settings for 2-2-1-1-monometallic:
     metal_centers                 Ir
 =============================  2-2-1-1-bimetallic  =============================
 User-defined settings for 2-2-1-1-bimetallic:
-    n_max_complexes               10
+    n_max_complexes               5
     total_ligand_charges          -3
     name                          2-2-1-1-bimetallic
     random_seed                   5
     ligand_db_files               ['../data_input/ligands/JSONS/small_mono.jsonlines', '../data_input/ligands/JSONS/small_mono.jsonlines', '../data_input/ligands/JSONS/bidentate.jsonlines', '../data_input/ligands/JSONS/bidentate.jsonlines']
     target_vectors                [[[0, 0, 2]], [[0, 0, -2]], [[-3, -3, 0], [-3, 3, 0]], [[3, -3, 0], [3, 3, -1]]]
     metal_centers                 [[['Ir', [-2, 0, 0]], ['Fe', [2, 0, 0]]], [['Ir', [-2, 0, 0]], ['Fe', [2, 0, 0]]], [['Ir', [-2, 0, 0]]], [['Fe', [2, 0, 0]]]]
-    swap_groups                   [1, 1, 2, 2]
-    check_duplicate               True
-    check_clashing                True
-    optimize_monoaxial            True
+    permutable_ligands            [1, 1, 2, 2]
+    monoaxial_optimization        True
     force_all_isomers             False
-    clashing_buffer               -0.3
+    clashing_tolerance            -0.3
     clashing_metal                False
-    duplicate_cutoff              0.5
+    duplicate_tolerance           None
 ==========================  3-3-haptic_coordination  ===========================
 User-defined settings for 3-3-haptic_coordination:
     complex_name_suffix           _haptic
-    n_max_complexes               10
+    n_max_complexes               5
     total_ligand_charges          -2
     name                          3-3-haptic_coordination
     random_seed                   1
@@ -62,26 +60,28 @@ User-defined settings for 2-2-bi_trans_minimal_input:
     metal_centers                 La
 ===================  2-2-1-1-monometallic_with_swap_groups  ====================
 User-defined settings for 2-2-1-1-monometallic_with_swap_groups:
-    n_max_complexes               10
+    n_max_complexes               5
     total_ligand_charges          -3
     name                          2-2-1-1-monometallic_with_swap_groups
     random_seed                   5
     ligand_db_files               ['../data_input/ligands/JSONS/small_mono.jsonlines', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.jsonlines', '../data_input/ligands/JSONS/bidentate.jsonlines']
     target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
     metal_centers                 Ir
-    swap_groups                   [1, 1, 2, 2]
+    permutable_ligands            [1, 1, 2, 2]
+    monoaxial_optimization        False
 =========  2-2-1-1-monometallic_with_swap_groups_with_extra_structure  =========
 User-defined settings for 2-2-1-1-monometallic_with_swap_groups_with_extra_structure:
-    n_max_complexes               10
+    n_max_complexes               5
     total_ligand_charges          -3
     name                          2-2-1-1-monometallic_with_swap_groups_with_extra_structure
     random_seed                   5
     ligand_db_files               ['../data_input/ligands/JSONS/small_mono.jsonlines', 'same_as_previous', '../data_input/ligands/JSONS/bidentate.jsonlines', '../data_input/ligands/JSONS/bidentate.jsonlines']
     target_vectors                [[[0, 0, 1]], [[0, 1, 0]], [[-1, 0, 0], [0, -1, 0]], [[1, 0, 0], [0, 0, -1]]]
     metal_centers                 Ir
-    swap_groups                   [1, 1, 2, 2]
-    extra_structure_path          ../data_input/Cu_surface.xyz
-    translate_extra_structure     [-6, -4, -14]
+    permutable_ligands            [1, 1, 2, 2]
+    background_file               ../data_input/Cu_surface.xyz
+    background_translation        [-6, -4, -14]
+    monoaxial_optimization        False
 =============================  Summary per batch  ==============================
 batch_0:
   - 92 isomers tried, 27 isomers (from 20 complexes) successfully assembled.
@@ -89,34 +89,32 @@ batch_0:
     - duplicate: 51
     - clashing: 14
 2-2-1-1-monometallic:
-  - 48 isomers tried, 26 isomers (from 10 complexes) successfully assembled.
-  - 22 isomers failed because of filters:
-    - clashing: 20
+  - 24 isomers tried, 11 isomers (from 5 complexes) successfully assembled.
+  - 13 isomers failed because of filters:
+    - clashing: 11
     - duplicate: 2
 2-2-1-1-bimetallic:
-  - 160 isomers tried, 154 isomers (from 10 complexes) successfully assembled.
-  - 6 isomers failed because of filters:
-    - duplicate: 6
+  - 80 isomers tried, 80 isomers (from 5 complexes) successfully assembled.
 3-3-haptic_coordination:
-  - 10 isomers tried, 10 isomers (from 10 complexes) successfully assembled.
+  - 5 isomers tried, 5 isomers (from 5 complexes) successfully assembled.
 2-2-bi_trans_minimal_input:
   - 16 isomers tried, 3 isomers (from 3 complexes) successfully assembled.
   - 13 isomers failed because of filters:
     - duplicate: 9
     - clashing: 4
 2-2-1-1-monometallic_with_swap_groups:
-  - 192 isomers tried, 33 isomers (from 10 complexes) successfully assembled.
-  - 159 isomers failed because of filters:
-    - duplicate: 81
-    - clashing: 78
+  - 112 isomers tried, 13 isomers (from 5 complexes) successfully assembled.
+  - 99 isomers failed because of filters:
+    - clashing: 76
+    - duplicate: 23
 2-2-1-1-monometallic_with_swap_groups_with_extra_structure:
-  - 192 isomers tried, 33 isomers (from 10 complexes) successfully assembled.
-  - 159 isomers failed because of filters:
-    - duplicate: 81
-    - clashing: 78
+  - 112 isomers tried, 13 isomers (from 5 complexes) successfully assembled.
+  - 99 isomers failed because of filters:
+    - clashing: 76
+    - duplicate: 23
 ====================  Total summary of DART Assembler run  =====================
-  - 710 isomers tried, 286 isomers (from 73 complexes) successfully assembled.
-  - 424 isomers failed because of filters:
-    - duplicate: 230
-    - clashing: 194
+  - 441 isomers tried, 152 isomers (from 48 complexes) successfully assembled.
+  - 289 isomers failed because of filters:
+    - clashing: 181
+    - duplicate: 108
 DART Assembler output files saved to directory `data_output`.

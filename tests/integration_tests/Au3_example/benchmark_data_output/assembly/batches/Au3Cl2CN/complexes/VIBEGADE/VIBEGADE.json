@@ -1391,13 +1391,11 @@
         ]
     },
     "input": {
-        "check_duplicate": true,
-        "check_clashing": true,
-        "clashing_buffer": -0.3,
+        "clashing_tolerance": -0.3,
         "clashing_metal": false,
-        "duplicate_cutoff": 0.5,
-        "swap_groups": null,
-        "optimize_monoaxial": true,
+        "duplicate_tolerance": 0.5,
+        "permutable_ligands": null,
+        "monoaxial_optimization": true,
         "force_all_isomers": false,
         "complex_name_length": 8,
         "complex_name_suffix": ""
