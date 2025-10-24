@@ -1,0 +1,30 @@
+﻿property,type,filter,description,example
+`unique_name`,str,property,Unique ID for this ligand in the MetaLig,unq_CSD-OZIYON-02-b
+`stoichiometry`,str,composition,Chemical formula,C11H6F2N
+`donors`,str,composition,Donor atom elements,C-N
+`archetype`,str,property,"Coordination archetype of the ligand, e.g. 2-cis or 3-meridional",2-cis
+`charge`,int,property,Formal charge,-1
+`smiles`,str,smarts,SMILES string (without metal center),FC:1:C(:[C]:C:C(:C1)F)C:1:N:C:C:C:C1
+`smiles_with_metal`,str,smarts,SMILES string (with Hg pseudo metal center),FC:1:C:2C:3:[N]([Hg]C2:C:C(:C1)F):C:C:C:C3
+`n_donors`,int,property,Number of donor atoms (both haptic and dentic),2
+`n_eff_denticities`,int,property,Effective denticity count (haptic groups count as one effective donor each),2
+`n_denticities`,int,property,"Denticity (number of dentic donors, excluding haptic donors)",2
+`n_haptic_atoms`,int,property,Number of haptically coordinating atoms in the ligand,0
+`n_haptic_groups`,int,property,Number of distinct haptic donor groups in the ligand,0
+`n_atoms`,int,property,Number of atoms in the ligand,20
+`n_elements`,int,property,Number of distinct chemical elements,4
+`n_bonds`,int,property,Number of atomic bonds (without donor-metal bonds),21
+`n_electrons`,int,property,Number of electrons,98
+`n_protons`,int,property,Number of protons,97
+`n_beta_hydrogens`,int,property,Number of beta hydrogen atoms,2
+`molecular_weight`,float,property,Molecular weight in atomic mass units (amu),190.1728063
+`planarity`,float,property,"How planar the ligand atoms are (0.0: spherical, 1.0: perfectly planar)",0.721616381
+`donor_planarity`,float,property,"How planar the donor atoms are (0.0: spherical, 1.0: perfectly planar)",1
+`donor_metal_planarity`,float,property,"How planar the donor atoms + metal center are (0.0: spherical, 1.0: perfectly planar)",1
+`min_interatomic_distance`,float,property,Shortest interatomic distance within the ligand (Å),0.929167854
+`max_ligand_extension`,float,property,Maximum distance between any two ligand atoms (Å),9.172156942
+`is_2D_symmetrical`,bool,property,Whether the 2D molecular graph is symmetric,FALSE
+`has_all_bond_orders_valid`,bool,property,Whether all bond orders are provided and valid,TRUE
+`n_ligand_instances`,int,property,Number of occurrences/instances of this ligand in the ~107k CSD source complexes,478
+`csd_metal_count`,list,parents,Metal centers (and counts) with coordination precedence in the CSD,"Ir(428), Pt(44), Os(4), Au(1), Ru(1)"
+`csd_metal_os_count`,list,parents,Metal centers by oxidation state (and counts) with coordination precedence in the CSD,"Ir+3(161), Pt+2(23), Pt+4(11), Ir+2(4), Os+2(4)"

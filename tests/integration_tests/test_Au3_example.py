@@ -65,8 +65,8 @@ if __name__ == "__main__":
         outdir.mkdir(parents=True, exist_ok=True)
         os.chdir(outdir)
         filter = LigandFilters(db='metalig', n=n_max)
-        Cl_ligandnames = filter.run(Cl_filters, outpath=Path('ligands')/'Cl.jsonlines', metal=True, dbinfo=False)
-        CN_ligandnames = filter.run(CN, outpath=Path('ligands')/'CN.jsonlines', metal=True, dbinfo=False)
+        Cl_db = filter.run(Cl_filters, outpath=Path('ligands')/'Cl.jsonlines', metal=True, dbinfo=False)
+        CN_db = filter.run(CN, outpath=Path('ligands')/'CN.jsonlines', metal=True, dbinfo=False)
     finally:
         # Change back to the original working directory
         os.chdir(old_cwd)

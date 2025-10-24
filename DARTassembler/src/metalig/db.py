@@ -1,3 +1,121 @@
+"""
+The organo\ **Meta**\ llic **Lig**\ and database (MetaLig) contains 41,018 ligands extracted from the Cambridge Structural Database (CSD). It contains 3D coordinates, formal charge, molecular graph and a variety of physical properties. Each ligand also includes statistical data about its occurrences in the CSD, such as which metals it typically coordinates to.
+
+The MetaLig ligand database can be used in a variety of applications:
+
+   - **DART Assembler:** As a source of ligands for the DART Assembler module.
+   - **DART LigandFilters:** Filter ligands based on their properties to target specific chemical spaces in the Assembler module.
+   - **Ligand Analysis:** To analyze and explore ligands across the CSD.
+   - **Ligand Property Prediction:** As a dataset for training machine learning models.
+
+.. figure:: /_static/part2/metalig/metalig_fig.png
+   :width: 100%
+   :align: center
+
+   Ligands and ligand properties in the MetaLig database.
+
+
+.. _metalig_ligand_properties:
+
+Explore Ligand Structures and Properties
+------------------------------------------
+
+To explore the ligands in the MetaLig, use the terminal to run the command
+
+.. code-block:: bash
+
+    DARTassembler dbinfo --path metalig
+
+This will generate two files, an .xyz file and a .csv file:
+
+The .xyz file contains the 3D structures of all ligands. To view and browse through the ligands with ase, you can use the command ``ase gui concat_MetaLigDB_v1.0.0.xyz``. Each ligand is coordinated to a Cu metal center for visualization purposes. The Cu metal center is not part of the ligands in the MetaLig, it is only added to the .xyz file to display the coordination of each ligand.
+
+The .csv file displays a range of properties. Many of these are useful for filtering ligands in the DART :ref:`LigandFilters <ligandfilters>` module:
+
+.. _metalig_properties:
+
+.. csv-table:: Available ligand properties
+   :file: ../../../DARTassembler/data/docs/ligand_filter_properties.csv
+   :header-rows: 1
+   :widths: 15, 5, 5, 40, 35
+   :align: center
+
+Other properties are useful for inspection and analysis:
+
+.. csv-table:: Other ligand properties
+   :file: ../../../DARTassembler/data/docs/other_properties.csv
+   :header-rows: 1
+   :widths: 25, 5, 40, 30
+   :align: center
+
+.. _metalig_python_filtering:
+
+Explore and Filter the MetaLig in Python
+----------------------------------------------
+For many users, the DART Ligand Filters module will be enough to filter ligands with exactly defined properties. For complete freedom in filtering and exploring, the MetaLig database can be accessed via the DART Python API. As an example, let us extract ligands with denticity of 2, charge of -1 and a maximum of 50 atoms using Python.
+
+First, read in the MetaLig. To speed things up in this example, let's only load the first 1000 ligands (which is equivalent to specifying ``test_metalig`` as the path):
+
+.. code-block:: python
+
+    from DARTassembler.src.ligand_extraction.DataBase import LigandDB
+
+    # Load the first 1000 out of 41,018 ligands in the MetaLig database.
+    metalig = LigandDB.from_json(path='metalig', n_max=1000)
+
+Now, you can filter the MetaLig database based on your requirements. For example, let's filter the MetaLig so that we retain only ligands with a formal charge of -1, with denticity of 2 and with a maximum of 50 atoms:
+
+.. code-block:: python
+
+    # Set some criteria to filter ligands
+    keep_denticity = 2
+    keep_charge = -1
+    max_n_atoms = 50
+
+    ligands_to_keep = []
+    for ligand_name, ligand in metalig.db.items():
+        correct_denticity = ligand.denticity == keep_denticity
+        correct_charge = ligand.pred_charge == keep_charge
+        correct_n_atoms = ligand.n_atoms <= max_n_atoms
+        if correct_denticity and correct_charge and correct_n_atoms:
+            ligands_to_keep.append(ligand_name)
+
+    # Reduce MetaLig database to only keep ligands which adhere to the above criteria
+    filtered_metalig_dict = {ligand_name: ligand for ligand_name, ligand in metalig.db.items() if ligand_name in ligands_to_keep}
+    filtered_metalig = LigandDB(filtered_metalig_dict)
+
+Now, we can save the filtered MetaLig database to a .jsonlines file.
+
+.. code-block:: python
+
+    filtered_metalig.save_to_file('filtered_metalig.jsonlines')
+
+This .jsonlines file can be used in the DART Assembler module as source for ligands. Since we made a database of bidentate ligands with a formal charge of -1, we could use it for example to assemble neutral square-planar Ni(II) complexes with two bidentate ligands, i.e. a ``2-2`` geometry in DART.
+We can also save an overview table of the filtered ligand database as .csv file:
+
+.. code-block:: python
+
+    filtered_metalig.save_to_csv('filtered_metalig.csv')
+
+By opening the .csv file with a program like Excel, you will see that this table displays 136 bidentate ligands with a formal charge of -1 and a maximum of 50 atoms. In this way, you can use Python to filter the MetaLig database to your exact requirements and then save the filtered database to a .jsonlines file for use in the DART Assembler module.
+
+.. _metalig_ligand_statistics:
+
+Ligand Statistics
+-----------------
+
+.. figure:: /_static/part2/metalig/hist_donors.png
+   :width: 100%
+   :align: center
+
+   Bar chart of donor atoms in the MetaLig. For instance, there are nearly 8,000 N-N donor ligands present.
+
+.. figure:: /_static/part2/metalig/hist_metal_center.png
+   :width: 100%
+   :align: center
+
+   Bar chart showing the prevalence of ligands coordinating to specific metals, such as over 8,000 instances of ligands which were found in the CSD coordinating to Cu.
+"""
 import functools
 import json
 import sys
@@ -22,6 +140,7 @@ from DARTassembler.src.misc.io import save_to_xyz
 def update_old_ligand_db_to_new(path: str, csv=False) -> None:
     """
     Updates a ligand database in the old format before DARTassembler version 1.1.0 to the new format from version 1.1.0 on.
+
     :param path: Path to the ligand database
     :param csv: If True, saves new ligand database also as csv.
     :return: None
@@ -44,6 +163,7 @@ class BaseDB(object):
     def to_dict(self, desc: str= 'Convert DB to dict') -> dict:
         """
         Converts all molecules in the database to a dictionary format.
+
         :param desc: str: Description for the progress bar.
         :return: A dictionary where keys are molecule identifiers and values are dictionaries representing the molecules.
         """
@@ -55,6 +175,7 @@ class BaseDB(object):
     def _to_json(self, path, desc: str= 'Save DB to json', json_lines: bool=False) -> None:
         """
         Saves the database to a .json or .jsonlines file.
+
         :param path: Path to the output file where the database will be saved.
         :param desc: str: Description for the progress bar.
         :param json_lines: bool: If True, saves the database as jsonlines. If False, saves the database as a single json file.
@@ -77,6 +198,7 @@ class BaseDB(object):
     def save_to_file(self, path: Union[str, Path], desc: Union[str, None]=None, json_lines=True) -> None:
         """
         Saves the database to a .json or .jsonlines file.
+
         :param path: Path to the output file where the database will be saved.
         :param desc: Description for the progress bar. If None, no progress bar will be shown.
         :param json_lines: If True, saves the database as jsonlines. If False, saves the database as a single json file.
@@ -99,6 +221,7 @@ class LigandDB(BaseDB):
                   ) -> 'LigandDB':
         """
         Loads a ligand database from a .jsonlines file.
+
         :param path: Path to the .jsonlines file of the ligand database. Alternatively, the string 'metalig' can be used to load the default ligand database.
         :param n_max: Maximum number of ligands to load. If None, all ligands will be loaded.
         :param show_progress: If True, a progress bar will be shown.
@@ -109,6 +232,7 @@ class LigandDB(BaseDB):
     def get_df(self, max_entries: int=5) -> pd.DataFrame:
         """
         Returns a DataFrame with important ligand information for all ligands in the database, such as charge, stoichiometry, archetype, and more.
+
         :param max_entries: Maximum number of entries for long lists in the DataFrame, such as the list of CSD codes in which this ligand is present.
         :return: A DataFrame with ligand information, with the index being `unique_name`.
         """
@@ -122,6 +246,7 @@ class LigandDB(BaseDB):
     def save_to_csv(self, outpath: Union[str, Path], max_entries: int=5) -> pd.DataFrame:
         """
         Saves a csv file with important ligand information for all ligands in the database, such as charge, stoichiometry, archetype, and more.
+
         :param outpath: Path to the output csv file.
         :param max_entries: Maximum number of entries for long lists in the DataFrame, such as the list of CSD codes in which this ligand is present.
         :return: A DataFrame with ligand information.
@@ -134,6 +259,7 @@ class LigandDB(BaseDB):
     def save_to_concat_xyz(self, outpath: Union[str, Path], with_metal: bool=True, comment: str=None) -> str:
         """
         Save a concatenated xyz file with all ligands in the database.
+
         :param outpath: Path to the output xyz file.
         :param with_metal: If True, the output structure of each ligand will contain a metal center at the original position for better visualization. If False, only the ligand structure itself will be saved.
         :param comment: A comment to be added to each xyz structure. If None, a default comment will be used.
@@ -150,6 +276,7 @@ class LigandDB(BaseDB):
     def get_concat_xyz_string(self, with_metal: bool=True, comment: str=None) -> str:
         """
         Get a concatenated xyz string with all ligands in the database.
+
         :param with_metal: If True, the output structure of each ligand will contain a metal center at the original position for better visualization. If False, only the ligand structure itself will be saved.
         :param comment: A comment to be added to each xyz structure. If None, a default comment will be used.
         :return: A concatenated xyz string with all ligands in the database.
@@ -159,6 +286,7 @@ class LigandDB(BaseDB):
     def _get_ligand_archetypes(self, sort_by_rssd: bool=False) -> dict:
         """
         Assigns archetypes to all ligands in the database and returns a dictionary with archetypes as keys and a list of tuples as values.
+
         :param sort_by_rssd:  If True, sorts the ligands by the weight necessary for change (rssd) within each archetype. This is useful to have the ligands with the lowest rssd first.
         :return: A dictionary with archetypes as keys and a list of tuples as values. Each tuple contains the ligand name, rssd, weight necessary for change, second archetype, isomers and isomer_idc.
         """
@@ -183,6 +311,7 @@ class LigandDB(BaseDB):
                                                ) -> dict:
         """
         Assigns archetypes to all ligands in the database and saves the structures with all isomers for each archetype in a different concatenated xyz file.
+
         :param outdir: Path to the output directory where the xyz files will be saved.
         :param output_all_isomers: If True, all isomers will be saved in the xyz file. If False, only the first isomer will be saved.
         :param sort_by_rssd: If True, sorts the ligands by the weight necessary for change (rssd) within each archetype. This is useful to have the ligands with the lowest rssd first.
@@ -252,6 +381,7 @@ class LigandDB(BaseDB):
     def _filter_duplicates(self) -> dict:
         """
         Filters out duplicate ligands in the database based on their graph hashes.
+
         :return: A dictionary with unique ligands, where the keys are the unique ligand names and the values are the unique ligand objects.
         """
 
@@ -270,8 +400,9 @@ class LigandDB(BaseDB):
     def _calc_number_of_possible_complexes(self, metals: list[str] = None) -> pd.DataFrame:
         """
         Calculates the number of possible complexes for each metal in the list of metals.
-        :param metals: 
-        :return:
+
+        :param metals: List of metals to calculate the number of possible complexes for. If None, defaults to ['Cr', 'Mn', 'Fe', 'Ru', 'Co', 'Ni'].
+        :return : A DataFrame with the number of possible complexes for each metal, oxidation state, archetype and denticities.
         """
         if metals is None:
             metals = ['Cr', 'Mn', 'Fe', 'Ru', 'Co', 'Ni']
@@ -309,8 +440,10 @@ class LigandDB(BaseDB):
     def _calc_number_of_combinations_of_ligands_for_topology(self, target_charge: int, archetype: tuple) -> int:
         """
         Calculates the number of possible ligand combinations for a given target charge and archetype.
-        @target_charge: The targeted sum of charges of the ligands.
-        @archetype: The topology of the complex, e.g. (3, 2, 1) for a octahedral complex with 3 bidentate, 2 monodentate and 1 tridentate ligand.
+
+        :param target_charge: The target charge of the complex.
+        :param archetype: A tuple representing the archetype of the complex, e.g. (2, 2) for a square-planar complex with two bidentate ligands.
+        :return: The number of possible ligand combinations for the given target charge and archetype.
         """
         n_ligands = len(archetype)
         archetype = sorted(archetype)
@@ -338,3 +471,14 @@ class LigandDB(BaseDB):
                 count += comb_count
 
         return count
+
+    def get_sub_db(self, ligand_names: list[str]) -> 'LigandDB':
+        """
+        Returns a sub-database containing only the ligands with the specified names.
+
+        :param list[str] ligand_names: List of ligand names to include in the sub-database.
+        :return: A LigandDB object containing only the specified ligands.
+        :rtype: LigandDB
+        """
+        sub_db_dict = {name: self.db[name] for name in ligand_names}
+        return LigandDB(sub_db_dict)

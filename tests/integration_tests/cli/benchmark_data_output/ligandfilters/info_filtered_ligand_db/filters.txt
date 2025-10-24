@@ -2,7 +2,7 @@
 Filter 01: property: has_all_bond_orders_v...  name: has_all_bond_orders_valid, values: [True]
 Filter 02: property: n_atoms                   name: n_atoms, range: [1, 80]
 Filter 03: property: charge                    name: charge, values: [-2, -1, 0]
-Filter 04: parent_complexes: Pt+2, Pt+4, N...  metal_centers: ['Pt+2', 'Pt+4', 'Ni0', 'Pd', 'Mn', 'Cr', 'Ru', 'Co', 'Cu', 'Ir', 'Mo']
+Filter 04: parents: Pt+2, Pt+4, Ni0, Pd, M...  metal_centers: ['Pt+2', 'Pt+4', 'Ni0', 'Pd', 'Mn', 'Cr', 'Ru', 'Co', 'Cu', 'Ir', 'Mo']
 Filter 05: composition: O2                     elements: ['O', 'O'], instruction: must_exclude, only_donors: True
 Filter 06: property: molecular_weight          name: molecular_weight, range: [30.1, 300.2]
 Filter 07: property: planarity                 name: planarity, range: [0.2, 1.0]
@@ -15,7 +15,7 @@ Filter 11: property: n_beta_hydrogens          name: n_beta_hydrogens, range: [0
 Filter 01: property: has_all_bond_orders_v...        288             12       
 Filter 02: property: n_atoms                         269             19       
 Filter 03: property: charge                          259             10       
-Filter 04: parent_complexes: Pt+2, Pt+4, N...        223             36       
+Filter 04: parents: Pt+2, Pt+4, Ni0, Pd, M...        223             36       
 Filter 05: composition: O2                           178             45       
 Filter 06: property: molecular_weight                125             53       
 Filter 07: property: planarity                        87             38       

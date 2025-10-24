@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DARTassembler.src.metalig.ligandfilters &mdash; DARTassembler dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../_static/documentation_options.js?v=3ce10a4d"></script>
+        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            DARTassembler
+              <img src="../../../../_static/DART_pic.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                dev
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">How to Use DART</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/1_installation_guide.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/1_quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/1_Pd_Ni_Cross_Coupling.html">Advanced Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/1_understanding_the_dart_workflow.html">Understanding DART</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_module_overview.html">Module Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_metalig_database.html">MetaLig Ligand Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligand_filters.html">LigandFilters Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_assembler.html">Assembler Module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/3_troubleshooting_and_faqs.html">Troubleshooting and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/3_tips_and_tricks.html">DART Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/3_current_limitations.html">Limitations and Recommendations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/3_how_to_cite_dart.html">How to cite DART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/3_version_history.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">DARTassembler</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">DARTassembler.src.metalig.ligandfilters</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for DARTassembler.src.metalig.ligandfilters</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The LigandFilters Module enables users to obtain a set of ligands with well-defined properties from the entire :ref:`MetaLig Database &lt;metalig&gt;`. These filters are invaluable for assembling complexes targeted to a user-defined chemical space.</span>
+
+<span class="sd">Users can apply a large range of predefined filters. For those requiring precise control over the structures, the :confval:`smarts` filter allows for the application of powerful SMARTS patterns to filter ligands based on their 2D chemical structure. Alternatively, instead of using the LigandFilters Module with pre-defined filters, users can :ref:`explore the MetaLig and create custom filters using Python &lt;metalig_python_filtering&gt;`.</span>
+
+<span class="sd">The LigandFilters module is run in the terminal by providing a single configuration file:</span>
+
+<span class="sd">.. code-block:: bash</span>
+
+<span class="sd">    DARTassembler ligandfilters --path ligandfilters_input.yml</span>
+
+<span class="sd">There are four types of filters:</span>
+
+<span class="sd">- :confval:`property` : filter by a simple named property such as :filter:`charge` or :filter:`archetype`.</span>
+<span class="sd">- :confval:`composition` : filter by element composition or stoichiometry. Both the entire ligand and only the donor atoms can be considered.</span>
+<span class="sd">- :confval:`smarts` : filter by a SMARTS pattern to isolate ligands with specific substructures, e.g. ``C=O`` for carbonyl groups.</span>
+<span class="sd">- :confval:`parents` : filter by parent metal centers present in the ligand&#39;s source complexes, e.g. ``[Pt2+, Pd`]``.</span>
+
+<span class="sd">These filters can be applied to any of the :ref:`MetaLig properties &lt;metalig_properties&gt;`.</span>
+
+<span class="sd">Example usage:</span>
+<span class="sd">----------------</span>
+<span class="sd">The following filters will return cis-bidentate N-O donors with up to 50 atoms that do not contain any CH2 groups, only contain C, H, N, O atoms in total, and have been observed to coordinate to Pt+2, Pt+4, Pd, or Ni metal centers. We speed up the filtering by only loading 1000 ligands from the MetaLig database.</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    from DARTassembler.src.metalig.ligandfilters import LigandFilters</span>
+<span class="sd">    filters = LigandFilters(db=&#39;metalig&#39;, n=1000)</span>
+<span class="sd">    db = filters.run(</span>
+<span class="sd">            filters=[</span>
+<span class="sd">                {&#39;filter&#39;: &#39;property&#39;, &#39;name&#39;: &#39;n_atoms&#39;, &#39;range&#39;: [1, 50]},</span>
+<span class="sd">                {&#39;filter&#39;: &#39;property&#39;, &#39;name&#39;: &#39;archetype&#39;, &#39;values&#39;: [&#39;2-cis&#39;]},</span>
+<span class="sd">                {&#39;filter&#39;: &#39;smarts&#39;, &#39;smarts&#39;: &#39;[C&amp;H2]&#39;, &#39;should_contain&#39;: False, &#39;include_metal&#39;: True},</span>
+<span class="sd">                {&#39;filter&#39;: &#39;composition&#39;, &#39;elements&#39;: &#39;CHNO&#39;, &#39;instruction&#39;: &#39;must_at_least_contain&#39;, &#39;only_donors&#39;: False},</span>
+<span class="sd">                {&#39;filter&#39;: &#39;composition&#39;, &#39;elements&#39;: &#39;NO&#39;, &#39;instruction&#39;: &#39;must_contain_and_only_contain&#39;, &#39;only_donors&#39;: True},</span>
+<span class="sd">                {&#39;filter&#39;: &#39;parents&#39;, &#39;metal_centers&#39;: [&#39;Pt+2&#39;, &#39;Pt+4&#39;, &#39;Pd&#39;, &#39;Ni&#39;]}</span>
+<span class="sd">            ],</span>
+<span class="sd">            outpath=&#39;filtered_ligand_db.jsonlines&#39;,</span>
+<span class="sd">            dbinfo=True,</span>
+<span class="sd">            metal=True,</span>
+<span class="sd">    )</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Generator</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">DARTassembler.src.metalig.db</span> <span class="kn">import</span> <span class="n">LigandDB</span>
+<span class="kn">from</span> <span class="nn">DARTassembler.src.metalig.utils_molecule</span> <span class="kn">import</span> <span class="n">get_standardized_stoichiometry_from_atoms_list</span><span class="p">,</span> \
+    <span class="n">stoichiometry2atomslist</span>
+<span class="kn">from</span> <span class="nn">DARTassembler.src.misc.io</span> <span class="kn">import</span> <span class="n">get_correct_ligand_db_path_from_input</span><span class="p">,</span> <span class="n">read_yaml</span>
+<span class="kn">from</span> <span class="nn">DARTassembler.src.modules.modules</span> <span class="kn">import</span> <span class="n">BaseModule</span>
+<span class="kn">from</span> <span class="nn">DARTassembler.src.constants.paths</span> <span class="kn">import</span> <span class="n">default_ligandfilters_yml_path</span>
+
+<div class="viewcode-block" id="LigandFilters">
+<a class="viewcode-back" href="../../../../doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters">[docs]</a>
+<span class="k">class</span> <span class="nc">LigandFilters</span><span class="p">(</span><span class="n">BaseModule</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This module applies user-defined filters to a ligand database to obtain a subset of ligands with desired properties.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a LigandFilters instance and load the ligand database.</span>
+
+<span class="sd">        The constructor resolves the given database identifier or path, loads ligands</span>
+<span class="sd">        into a LigandDB object and optionally limits the number of ligands loaded.</span>
+
+<span class="sd">        :param db: Path, package name, or None to use default ligand database.</span>
+<span class="sd">        :type db: Union[str, Path, None]</span>
+<span class="sd">        :param n: Maximum number of ligands to load from the database. If None, load all ligands.</span>
+<span class="sd">        :type n: Union[int, None]</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_max_ligands</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_ligand_db_path</span> <span class="o">=</span> <span class="n">get_correct_ligand_db_path_from_input</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">LigandDB</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_ligand_db_path</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LigandFilters.apply_filters">
+<a class="viewcode-back" href="../../../../doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.apply_filters">[docs]</a>
+    <span class="k">def</span> <span class="nf">apply_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LigandDB</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply a sequence of filters to the loaded ligand database and return the filtered database.</span>
+
+<span class="sd">        Each filter in the list must be a dictionary with a key &#39;filter&#39; specifying the filter type. Supported filters:</span>
+
+<span class="sd">        - &#39;property&#39; : filter by a named global property (e.g. &#39;charge&#39;, &#39;archetype&#39;).</span>
+<span class="sd">        - &#39;composition&#39; : filter by element composition or stoichiometry (elements may be a string that is converted to an atom list).</span>
+<span class="sd">        - &#39;parents&#39; : filter by parent metal centers (e.g. [&#39;Fe&#39;, &#39;Co&#39;]).</span>
+<span class="sd">        - &#39;smarts&#39; : filter by a SMARTS pattern; note that a bond-order validity property filter is prepended automatically.</span>
+
+<span class="sd">        :param filters: Ordered list of filter specification dictionaries. Each dictionary must contain at least the key &#39;filter&#39; and other filter-specific keys.</span>
+<span class="sd">        :type filters: list[dict]</span>
+<span class="sd">        :raises ValueError: If a filter type specified in any filter dict is not recognized.</span>
+<span class="sd">        :return: LigandDB object containing only the ligands that passed all filters.</span>
+<span class="sd">        :rtype: LigandDB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filter_tracking</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+
+        <span class="c1"># Prepend a bond-order filter if a SMARTS filter is used to make sure the SMARTS filter can be applied.</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_filter_for_valid_bond_orders_if_smarts</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
+
+        <span class="n">unames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_ligands_before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unames</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ligand_df</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>    <span class="c1"># initialize column for filter tracking</span>
+
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="nb">filter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">filters</span><span class="p">):</span>
+            <span class="n">n_ligands_before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unames</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">filtername</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;filter&#39;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Filter does not have a &quot;filter&quot; key specifying the filter type: </span><span class="si">{</span><span class="nb">filter</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">filtername</span> <span class="o">==</span> <span class="s1">&#39;property&#39;</span><span class="p">:</span>
+                <span class="n">unames</span> <span class="o">=</span> <span class="p">[</span><span class="n">uname</span> <span class="k">for</span> <span class="n">uname</span> <span class="ow">in</span> <span class="n">unames</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="n">uname</span><span class="p">]</span><span class="o">.</span><span class="n">has_global_property_in_range</span><span class="p">(</span><span class="o">**</span><span class="nb">filter</span><span class="p">)]</span>
+                <span class="n">name_appendix</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">filtername</span> <span class="o">==</span> <span class="s1">&#39;composition&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stoichiometry2atomslist</span><span class="p">(</span><span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">])</span>
+                <span class="n">unames</span> <span class="o">=</span> <span class="p">[</span><span class="n">uname</span> <span class="k">for</span> <span class="n">uname</span> <span class="ow">in</span> <span class="n">unames</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="n">uname</span><span class="p">]</span><span class="o">.</span><span class="n">has_specified_stoichiometry</span><span class="p">(</span><span class="o">**</span><span class="nb">filter</span><span class="p">)]</span>
+                <span class="n">name_appendix</span> <span class="o">=</span> <span class="n">get_standardized_stoichiometry_from_atoms_list</span><span class="p">(</span><span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">filtername</span> <span class="o">==</span> <span class="s1">&#39;parents&#39;</span><span class="p">:</span>
+                <span class="n">unames</span> <span class="o">=</span> <span class="p">[</span><span class="n">uname</span> <span class="k">for</span> <span class="n">uname</span> <span class="ow">in</span> <span class="n">unames</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="n">uname</span><span class="p">]</span><span class="o">.</span><span class="n">has_specified_metal_centers</span><span class="p">(</span><span class="o">**</span><span class="nb">filter</span><span class="p">)]</span>
+                <span class="n">name_appendix</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;metal_centers&#39;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">filtername</span> <span class="o">==</span> <span class="s1">&#39;smarts&#39;</span><span class="p">:</span>
+                <span class="n">unames</span> <span class="o">=</span> <span class="p">[</span><span class="n">uname</span> <span class="k">for</span> <span class="n">uname</span> <span class="ow">in</span> <span class="n">unames</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="n">uname</span><span class="p">]</span><span class="o">.</span><span class="n">has_specified_smarts</span><span class="p">(</span><span class="o">**</span><span class="nb">filter</span><span class="p">)]</span>
+                <span class="n">name_appendix</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;smarts&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Filter specification &quot;</span><span class="si">{</span><span class="n">filtername</span><span class="si">}</span><span class="s1">&quot; not recognized! Supported filters are &quot;property&quot;, &quot;composition&quot;, &quot;parents&quot;, and &quot;smarts&quot;.&#39;</span><span class="p">)</span>
+
+            <span class="n">n_ligands_after</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unames</span><span class="p">)</span>
+            <span class="n">ligand_was_filtered</span> <span class="o">=</span> <span class="o">~</span><span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">unames</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span>
+            <span class="n">unique_filtername</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Filter </span><span class="si">{</span><span class="n">idx</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">:</span><span class="s2">02d</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">filtername</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">name_appendix</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ligand_was_filtered</span><span class="p">,</span> <span class="s1">&#39;filter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unique_filtername</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">filter_tracking</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="n">filtername</span><span class="p">,</span>
+                <span class="s2">&quot;unique_filtername&quot;</span><span class="p">:</span> <span class="n">unique_filtername</span><span class="p">,</span>
+                <span class="s2">&quot;n_ligands_before&quot;</span><span class="p">:</span> <span class="n">n_ligands_before</span><span class="p">,</span>
+                <span class="s2">&quot;n_ligands_after&quot;</span><span class="p">:</span> <span class="n">n_ligands_after</span><span class="p">,</span>
+                <span class="s2">&quot;n_ligands_removed&quot;</span><span class="p">:</span> <span class="n">n_ligands_before</span> <span class="o">-</span> <span class="n">n_ligands_after</span><span class="p">,</span>
+                <span class="s2">&quot;full_filter_options&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">option</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">filter</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_ligands_after</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">unames</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="o">.</span><span class="n">fillna</span><span class="p">({</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;Passed&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>      <span class="c1"># fill in &#39;Passed&#39; for ligands that were not filtered out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;unique_name&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>    <span class="c1"># set index to ligand ID, making sure that the column in the csv is named &#39;Ligand ID&#39;</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">col</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">col</span> <span class="o">!=</span> <span class="s1">&#39;filter&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>                <span class="c1"># move &#39;filter&#39; column to the front</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;filter&#39;</span><span class="p">)</span><span class="c1"># sort by filter name</span>
+
+        <span class="n">filtered_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">get_sub_db</span><span class="p">(</span><span class="n">ligand_names</span><span class="o">=</span><span class="n">unames</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">filtered_db</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_add_filter_for_valid_bond_orders_if_smarts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prepend a property filter requiring valid bond orders when any SMARTS filter is present.</span>
+
+<span class="sd">        SMARTS matching requires correct bond-order information. If any filter in the provided list</span>
+<span class="sd">        has &#39;filter&#39; == &#39;smarts&#39;, a property filter demanding ligands with valid bond orders is</span>
+<span class="sd">        inserted at the front of the filter list.</span>
+
+<span class="sd">        :param filters: List of filter specification dictionaries to inspect and possibly modify.</span>
+<span class="sd">        :type filters: list[dict]</span>
+<span class="sd">        :return: Updated list of filters with a bond-order property filter prepended when necessary.</span>
+<span class="sd">        :rtype: list[dict]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">uses_smarts_filter</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;smarts&#39;</span> <span class="k">for</span> <span class="nb">filter</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">uses_smarts_filter</span><span class="p">:</span>
+            <span class="n">bo_filter</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;property&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;has_all_bond_orders_valid&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="n">filters</span> <span class="o">=</span> <span class="p">[</span><span class="n">bo_filter</span><span class="p">]</span> <span class="o">+</span> <span class="n">filters</span>
+
+        <span class="k">return</span> <span class="n">filters</span>
+
+    <span class="k">def</span> <span class="nf">_get_filter_tracking_string</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produce a human-readable summary of filter actions and final statistics.</span>
+
+<span class="sd">        The returned string contains:</span>
+
+<span class="sd">        - a summary of filter options used,</span>
+<span class="sd">        - a compact table of ligands passed/removed per filter,</span>
+<span class="sd">        - overall counts before/after filtering,</span>
+<span class="sd">        - counts of passed archetypes and sample stoichiometries,</span>
+<span class="sd">        - filename hints for saved outputs.</span>
+
+<span class="sd">        :return: Multi-line formatted summary string intended for user-facing info files or stdout.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df_filters</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter_tracking</span><span class="p">)</span>
+        <span class="n">df_filters</span> <span class="o">=</span> <span class="n">df_filters</span><span class="p">[[</span><span class="s1">&#39;unique_filtername&#39;</span><span class="p">,</span> <span class="s1">&#39;n_ligands_removed&#39;</span><span class="p">,</span> <span class="s1">&#39;n_ligands_after&#39;</span><span class="p">,</span> <span class="s1">&#39;full_filter_options&#39;</span><span class="p">]]</span>
+        <span class="n">df_filters</span> <span class="o">=</span> <span class="n">df_filters</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_ligands_removed&#39;</span><span class="p">:</span> <span class="s1">&#39;Ligands removed&#39;</span><span class="p">,</span> <span class="s1">&#39;n_ligands_after&#39;</span><span class="p">:</span> <span class="s1">&#39;Ligands passed&#39;</span><span class="p">,</span> <span class="s1">&#39;unique_filtername&#39;</span><span class="p">:</span> <span class="s1">&#39;Filters&#39;</span><span class="p">,</span> <span class="s1">&#39;full_filter_options&#39;</span><span class="p">:</span> <span class="s1">&#39;Filter options&#39;</span><span class="p">})</span>
+        <span class="n">df_filters</span> <span class="o">=</span> <span class="n">df_filters</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;Filters&#39;</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;  Filter Options  &#39;</span><span class="si">:</span><span class="s2">=^80</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">max_colwidth</span> <span class="o">=</span> <span class="mi">45</span>
+        <span class="k">for</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">filter_options</span> <span class="ow">in</span> <span class="n">df_filters</span><span class="p">[</span><span class="s1">&#39;Filter options&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">filter</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_colwidth</span><span class="p">:</span>
+                <span class="nb">filter</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">[:</span><span class="n">max_colwidth</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;...&#39;</span>
+            <span class="n">filter_options</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">option</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">option</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">filter_options</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">filter</span><span class="si">:</span><span class="s2"> &lt;</span><span class="si">{</span><span class="n">max_colwidth</span><span class="o">+</span><span class="mi">2</span><span class="si">}}{</span><span class="n">filter_options</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;  Filter Results  &#39;</span><span class="si">:</span><span class="s2">=^80</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="n">df_filters</span><span class="p">[[</span><span class="s1">&#39;Ligands passed&#39;</span><span class="p">,</span> <span class="s1">&#39;Ligands removed&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">justify</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">index_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_colwidth</span><span class="o">=</span><span class="n">max_colwidth</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="c1"># Count denticities of all passed ligands</span>
+        <span class="n">archetype_count</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">lig</span><span class="o">.</span><span class="n">archetype</span> <span class="k">for</span> <span class="n">lig</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_ligands_left</span><span class="p">()])</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="n">archetype_output</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">geom</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s1">)&#39;</span> <span class="k">for</span> <span class="n">geom</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">archetype_count</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span>
+
+        <span class="n">n_ligands_before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="p">)</span>
+        <span class="n">n_ligands_after</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unames</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;  Total summary of DART Ligand Filters run  &#39;</span><span class="si">:</span><span class="s2">=^80</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Before filtering:           </span><span class="si">{</span><span class="n">n_ligands_before</span><span class="si">}</span><span class="s2"> ligands</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Filtered out:               </span><span class="si">{</span><span class="n">n_ligands_before</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">n_ligands_after</span><span class="si">}</span><span class="s2"> ligands</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Passed:                     </span><span class="si">{</span><span class="n">n_ligands_after</span><span class="si">}</span><span class="s2"> ligands</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Passed archetypes:          </span><span class="si">{</span><span class="n">archetype_output</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="c1"># Print the stoichiometries of the first five passed ligands.</span>
+        <span class="n">stoichiometries</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">lig</span><span class="o">.</span><span class="n">stoichiometry</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">lig</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_ligands_left</span><span class="p">())</span> <span class="k">if</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">])</span>
+        <span class="n">ellipsis</span> <span class="o">=</span> <span class="s1">&#39;, ...&#39;</span> <span class="k">if</span> <span class="n">n_ligands_after</span> <span class="o">&gt;</span> <span class="mi">5</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;Passed stoichiometries:     </span><span class="si">{</span><span class="n">stoichiometries</span><span class="si">}{</span><span class="n">ellipsis</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_ligand_db_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Filtered ligand database with </span><span class="si">{</span><span class="n">n_ligands_after</span><span class="si">}</span><span class="s2"> ligands was saved to `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_ligand_db_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">`.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_info</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Info on filtered ligands saved to directory `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">outdir</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">`.</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;Done! All ligands filtered. Exiting DART Ligand Filters Module.&quot;</span>
+
+        <span class="k">return</span> <span class="n">output</span>
+
+<div class="viewcode-block" id="LigandFilters.save_filtered_ligands_output">
+<a class="viewcode-back" href="../../../../doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.save_filtered_ligands_output">[docs]</a>
+    <span class="k">def</span> <span class="nf">save_filtered_ligands_output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write informational outputs for filtered ligands: a summary text, a CSV overview, and concatenated XYZ files.</span>
+
+<span class="sd">        The method creates an &#39;info&#39; directory next to the specified output ligand DB path and writes:</span>
+
+<span class="sd">        - filters.txt : human readable filter summary produced by _get_filter_tracking_string,</span>
+<span class="sd">        - ligands_overview.csv : table with ligand metadata and filter assignment,</span>
+<span class="sd">        - concat_*.xyz : concatenated xyz files for &#39;Passed&#39; ligands and for each filter-specific removal group.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create directory structure</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyz_outdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="s1">&#39;concat_xyz&#39;</span><span class="p">)</span>  <span class="c1"># directory for concatenated xyz files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xyz_outdir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Save stdout output of filtering to info directory</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;filters.txt&quot;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_filter_tracking_string</span><span class="p">())</span>
+
+        <span class="c1"># Save a csv with an overview of all ligands to info directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="s2">&quot;ligands_overview.csv&quot;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Save concatenated xyz files</span>
+        <span class="n">modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Passed&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="nb">filter</span><span class="p">[</span><span class="s1">&#39;unique_filtername&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="nb">filter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter_tracking</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">modes</span><span class="p">:</span>
+            <span class="c1"># Get ligand IDs that were filtered out with this filter or passed</span>
+            <span class="n">filtered_ligand_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df_all_ligands</span><span class="p">[</span><span class="s1">&#39;filter&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">mode</span><span class="p">]</span>
+
+            <span class="c1"># Remove spaces from mode name so that a file has never a space in its name. Also remove &quot;:&quot; because it is not allowed in filenames on Windows.</span>
+            <span class="n">xyz_filename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;concat_</span><span class="si">{</span><span class="n">mode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">.xyz&quot;</span>  <span class="c1">#</span>
+            <span class="n">xyz_filepath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xyz_outdir</span><span class="p">,</span> <span class="n">xyz_filename</span><span class="p">)</span>
+
+            <span class="c1"># Write concatenated xyz file</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">filtered_ligand_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">xyz_filepath</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">xyz_string</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="n">ligand_id</span><span class="p">]</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">(</span><span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_metal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_metal</span><span class="p">)</span> <span class="k">for</span> <span class="n">ligand_id</span> <span class="ow">in</span> <span class="n">filtered_ligand_ids</span><span class="p">])</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">xyz_string</span><span class="p">)</span>
+
+        <span class="k">return</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_all_ligands_left</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="nb">object</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Yield ligand objects that passed the filters.</span>
+
+<span class="sd">        Iterates over the list self.unames (unique ligand identifiers that remain after filtering)</span>
+<span class="sd">        and yields the corresponding ligand objects from the in-memory ligand database.</span>
+
+<span class="sd">        :return: An iterator over ligand objects (in the same order as self.unames).</span>
+<span class="sd">        :rtype: Iterator[object]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">uname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unames</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="n">uname</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_ligand_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct a pandas DataFrame with CSV-relevant metadata for the current ligand subset.</span>
+
+<span class="sd">        The method queries each ligand via get_csv_info(max_entries=5) and assembles a DataFrame</span>
+<span class="sd">        with ligand metadata suitable for writing to CSV or summary tables.</span>
+
+<span class="sd">        :return: DataFrame where each row corresponds to a ligand (index are unique names until set elsewhere).</span>
+<span class="sd">        :rtype: pd.DataFrame</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ligands</span> <span class="o">=</span> <span class="p">{</span><span class="n">uname</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="p">[</span><span class="n">uname</span><span class="p">]</span><span class="o">.</span><span class="n">get_csv_info</span><span class="p">(</span><span class="n">max_entries</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="k">for</span> <span class="n">uname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">ligands</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+    <span class="k">def</span> <span class="nf">_save_ligand_info_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save a CSV file named &#39;ligand_info.csv&#39; next to the output ligand database containing ligand metadata.</span>
+
+<span class="sd">        The CSV is written to the parent directory of self.output_ligand_db_path with filename &#39;ligand_info.csv&#39;.</span>
+<span class="sd">        The DataFrame includes the same columns produced by _get_ligand_df.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_ligand_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_ligand_df</span><span class="p">()</span>
+        <span class="n">outpath</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_ligand_db_path</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;ligand_info.csv&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df_ligand_info</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">outpath</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span>
+
+<div class="viewcode-block" id="LigandFilters.run_from_yaml">
+<a class="viewcode-back" href="../../../../doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_yaml">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">run_from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Path</span><span class="p">,</span><span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;LigandFilters&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create and run a LigandFilters instance from a YAML specification file.</span>
+
+<span class="sd">        If input is None, a default template ligandfilters.yml is used. The YAML file</span>
+<span class="sd">        must contain top-level keys &#39;db&#39; (optional), &#39;n&#39; (optional) and the filter list and options</span>
+<span class="sd">        required by the run(...) method.</span>
+
+<span class="sd">        :param input: Path to the filter input file (.yml) or None to use a default template.</span>
+<span class="sd">        :type input: Union[str, Path, None]</span>
+<span class="sd">        :return: A LigandFilters instance after executing the configured filters.</span>
+<span class="sd">        :rtype: LigandFilters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">input</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">input</span> <span class="o">=</span> <span class="n">default_ligandfilters_yml_path</span>
+
+        <span class="n">input_dict</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="n">input_db_file</span> <span class="o">=</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;db&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">input_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="nb">filter</span> <span class="o">=</span> <span class="n">LigandFilters</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">input_db_file</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+        <span class="nb">filter</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">input_dict</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">filter</span></div>
+
+
+<div class="viewcode-block" id="LigandFilters.run_from_cli">
+<a class="viewcode-back" href="../../../../doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_cli">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">run_from_cli</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;LigandFilters&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run ligand filtering using command-line style setup helpers and a YAML input.</span>
+
+<span class="sd">        This method wraps run_from_yaml with BaseModule CLI pre/post hooks to provide</span>
+<span class="sd">        standardized CLI logging and argument printing.</span>
+
+<span class="sd">        :param input: Path to the filter input file (.yml) or None to use the default template.</span>
+<span class="sd">        :type input: Union[str, Path, None]</span>
+<span class="sd">        :return: A LigandFilters instance after executing the configured filters.</span>
+<span class="sd">        :rtype: LigandFilters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_before_run_from_cli</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_print_cli_input</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">)</span>
+        <span class="n">ligandfilters</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">run_from_yaml</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_after_run_from_cli</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">ligandfilters</span></div>
+
+
+<div class="viewcode-block" id="LigandFilters.run">
+<a class="viewcode-back" href="../../../../doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.run">[docs]</a>
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">filters</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+            <span class="n">outpath</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;filtered_ligand_db.jsonlines&#39;</span><span class="p">,</span>
+            <span class="n">dbinfo</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">metal</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LigandDB</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply provided filters, save the filtered ligand database, and optionally save auxiliary info.</span>
+
+<span class="sd">        The method executes the filtering pipeline, writes the filtered LigandDB to outpath (if provided),</span>
+<span class="sd">        and optionally writes human-readable information (CSV, XYZ concatenations) controlled by dbinfo.</span>
+<span class="sd">        It returns the list of unique ligand identifiers that passed all filters.</span>
+
+<span class="sd">        :param list[dict] filters: List of filter specification dictionaries to apply in sequence.</span>
+<span class="sd">        :param [None|str] outpath: Path to the output ligand database file. If None, no ligand DB file is written.</span>
+<span class="sd">        :param bool dbinfo: If True, write additional info files (CSV, concatenated XYZ) to an info directory.</span>
+<span class="sd">        :param bool metal: If True, in the concatenated XYZ files, include a pseudo metal center in the ligand structure for visualization.</span>
+<span class="sd">        :return: LigandDB object containing only the ligands that passed all filters.</span>
+<span class="sd">        :rtype: LigandDB</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_info</span> <span class="o">=</span> <span class="n">dbinfo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_metal</span> <span class="o">=</span> <span class="n">metal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_ligand_db_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">outpath</span><span class="p">)</span>
+        <span class="n">outdirname</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;info_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_ligand_db_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outdir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_ligand_db_path</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">outdirname</span><span class="p">)</span>  <span class="c1"># directory for full output info</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Starting DART Ligand Filters Module.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Input ligand db file: `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">input_ligand_db_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">`&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Output ligand db file: `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_ligand_db_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">`&quot;</span><span class="p">)</span>
+        <span class="n">filtered_db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_filters</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="n">filters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">filtered_db</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="c1"># Make a directory for the output if specified</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_ligand_db_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">filtered_db</span><span class="o">.</span><span class="n">_to_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_ligand_db_path</span><span class="p">,</span> <span class="n">json_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                             <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Save ligand db to `</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">output_ligand_db_path</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">`&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dbinfo</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_filtered_ligands_output</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_filter_tracking_string</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">filtered_db</span></div>
+</div>
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">filters</span> <span class="o">=</span> <span class="n">LigandFilters</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s1">&#39;metalig&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="n">filters</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;property&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;n_atoms&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]},</span>
+            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;property&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;archetype&#39;</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2-cis&#39;</span><span class="p">]},</span>
+            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;smarts&#39;</span><span class="p">,</span> <span class="s1">&#39;smarts&#39;</span><span class="p">:</span> <span class="s1">&#39;[C&amp;H2]&#39;</span><span class="p">,</span> <span class="s1">&#39;should_contain&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;include_metal&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;composition&#39;</span><span class="p">,</span> <span class="s1">&#39;elements&#39;</span><span class="p">:</span> <span class="s1">&#39;CHNO&#39;</span><span class="p">,</span> <span class="s1">&#39;instruction&#39;</span><span class="p">:</span> <span class="s1">&#39;must_at_least_contain&#39;</span><span class="p">,</span> <span class="s1">&#39;only_donors&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;composition&#39;</span><span class="p">,</span> <span class="s1">&#39;elements&#39;</span><span class="p">:</span> <span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;instruction&#39;</span><span class="p">:</span> <span class="s1">&#39;must_contain_and_only_contain&#39;</span><span class="p">,</span> <span class="s1">&#39;only_donors&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;parents&#39;</span><span class="p">,</span> <span class="s1">&#39;metal_centers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Pt+2&#39;</span><span class="p">,</span> <span class="s1">&#39;Pt+4&#39;</span><span class="p">,</span> <span class="s1">&#39;Pd&#39;</span><span class="p">,</span> <span class="s1">&#39;Ni&#39;</span><span class="p">]}</span>
+        <span class="p">],</span>
+        <span class="n">outpath</span><span class="o">=</span><span class="s1">&#39;/Users/timosommer/Downloads/test_DART/test_modules/test2/filtered_ligand_db.jsonlines&#39;</span><span class="p">,</span>
+        <span class="n">dbinfo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">metal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, CCEM group.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

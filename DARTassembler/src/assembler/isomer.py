@@ -37,6 +37,37 @@ except ImportError:
 
 
 class AssembledIsomer(BaseMolecule):
+    """
+    Represent an assembled transition-metal complex isomer.
+
+    This class wraps the assembled ASE Atoms object together with connectivity graph,
+    ligand/metal indices and metadata for downstream filtering and output.
+
+    :param atomic_props: ASE Atoms object or dict of atomic properties describing the complex.
+    :type atomic_props: Union[ase.Atoms, dict[str, Any]]
+    :param graph: NetworkX graph representing atomic connectivity and node labels.
+    :type graph: nx.Graph
+    :param metal_idc: Indices of metal center atoms in the ASE Atoms object.
+    :type metal_idc: list[int]
+    :param donor_idc: Flattened indices of donor atoms in the merged graph.
+    :type donor_idc: list[list[int]]
+    :param ligand_idc: Indices of atoms belonging to each ligand in the merged graph.
+    :type ligand_idc: list[list[int]]
+    :param ligand_info: Dictionary containing ligand metadata required to reconstruct Ligand objects.
+    :type ligand_info: dict[str, Any] | None
+    :param global_props: Global properties for the molecule.
+    :type global_props: dict[str, Any] | None
+    :param validity_check: If True, run transition-metal-complex specific validity checks.
+    :type validity_check: bool
+    :param target_vectors: Target donor vectors used to assemble the isomer (one list per ligand).
+    :type target_vectors: list[list[list[float]]] | None
+    :param ligand_origins: Origin coordinates (shape (3,)) used to translate each ligand to its metal center.
+    :type ligand_origins: list[list[float]] | None
+    :param warning: Warning string (e.g., 'clashing' or 'duplicate(...)') to annotate the isomer.
+    :type warning: str
+    :param isomer_name: Unique name assigned to the isomer for identification.
+    :type isomer_name: str | None
+    """
 
     def __init__(self,
                  atomic_props: Union[ase.Atoms, Dict[str, Any]],
@@ -81,6 +112,18 @@ class AssembledIsomer(BaseMolecule):
             self._tmc_validity_checks()
 
     def _get_ligands(self, validity_check: bool = True) -> List[Ligand]:
+        """
+        Construct Ligand objects from stored ligand metadata and ASE Atoms slices.
+
+        The method builds Ligand() wrappers for each ligand using the ligand indices
+        and ligand_info provided during assembly. These Ligand objects are convenient
+        for downstream geometry operations and will not be persisted by default.
+
+        :param validity_check: Whether to run validity checks when instantiating Ligand objects.
+        :type validity_check: bool
+        :return: List of Ligand objects corresponding to each ligand in the isomer.
+        :rtype: list[ Ligand ]
+        """
         ligands = []
         for idx, (isomer_donor_idc, isomer_ligand_indices) in enumerate(zip(self.donor_idc, self.ligand_idc)):
             ligand = Ligand(
@@ -100,13 +143,24 @@ class AssembledIsomer(BaseMolecule):
 
     def get_metal_symbols(self) -> List[str]:
         """
-        Get the symbols of the metal centers in this isomer.
-        :return: List of metal symbols
+        Return the chemical symbols of the metal center atoms.
+
+        :return: Chemical symbols of metals in the same order as metal_idc.
+        :rtype: list[str]
         """
         return self.atoms[self.metal_idc].get_chemical_symbols()
 
     def _tmc_validity_checks(self) -> None:
-        """Some short checks specifically for transition metal complexes."""
+        """
+        Run transition-metal-complex specific validity checks.
+
+        Checks basic molecular validity via the BaseMolecule helper and warns if any
+        declared metal center is not classified as a metal element by the Element utility.
+
+        :raises AssertionError: If base molecule validity checks fail.
+        :return: None
+        :rtype: None
+        """
         self._check_if_molecule_valid()  # Checks basic molecular properties like atomic_props and graph
         # Doublecheck if all the metals are really metals. Don't raise an error in case it's intentional.
         all_metals = all(Element(metal).is_metal for metal in self.metals)
@@ -115,10 +169,15 @@ class AssembledIsomer(BaseMolecule):
 
         return
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         """
-        Converts the AssembledIsomer object to a dictionary.
-        :return: Dictionary representation of the AssembledIsomer object
+        Convert the AssembledIsomer to a serializable dictionary.
+
+        The returned dictionary includes atomic properties, connectivity graph (handled
+        by the base class), and assembly-specific metadata such as metal/donor/ligand indices.
+
+        :return: Dictionary representation suitable for JSON or other serialization.
+        :rtype: dict[str, Any]
         """
         d = super().to_dict()  # Base class takes care of atomic_props, global_props, and graph
         d.update({
@@ -132,8 +191,10 @@ class AssembledIsomer(BaseMolecule):
 
     def get_metal_center_atoms(self) -> ase.Atoms:
         """
-        Get the metal atoms of the complex.
-        :return: ASE Atoms object containing the metal atoms
+        Return an ASE Atoms object containing only the metal center atoms.
+
+        :return: ASE Atoms with the metal center atoms (order corresponds to metal_idc).
+        :rtype: ase.Atoms
         """
         atoms = ase.Atoms()
         for metal_idx in self.metal_idc:
@@ -164,6 +225,12 @@ class AssembledIsomer(BaseMolecule):
 
 
 class AssembledComplex(object):
+    """
+    Assemble transition-metal complex isomers from Ligand objects, target vectors and metal centers.
+
+    The class stores the input ligands, their target donor vectors and metal center definitions and
+    provides methods to generate assembled isomers, perform mono-axial optimization and filter duplicates.
+    """
 
     def __init__(
             self,
@@ -173,11 +240,27 @@ class AssembledComplex(object):
             ligand_origins: List[List[float]] = None,
     ):
         """
-        Generates isomers from a list of ligands, target vectors and metal centers. The orientation of the ligands relative to its metal center is determined by the target vectors. The ligand_origins can be used to shift the ligand with respect to the metal center. If `metal_centers` is a chemical element such as 'Ru', it is assumed to be a mono-metallic complex at the origin.
-        :param ligands: List of Ligand objects from the MetaLig database.
-        :param target_vectors: List of target vectors for each ligand.
-        :param metal_centers: List of tuple with element and position for each metal center. If a string is provided, it is assumed to be the chemical element of a mono-metallic complex at the origin.
-        :param ligand_origins: List of the origin for each ligand.
+        The assembler will align and translate each ligand such that its donor atoms point along the
+        provided target_vectors and place metal center atoms at the specified coordinates.
+        If metal_centers is a string (element symbol), a single metal center at the origin is assumed
+        for each ligand (mono-metallic complex).
+
+        :param ligands: Sequence of Ligand objects to assemble.
+        :type ligands: list[ Ligand ]
+        :param target_vectors: For each ligand, a list of donor target vectors (each vector length 3).
+        :type target_vectors: list[list[list[float]]]  # shape: (n_ligands, n_donors_per_ligand, 3)
+        :param metal_centers: Either a symbol string for a single metal at origin, or a list where each entry
+                              corresponds to the metal center(s) the ligand binds to. For the latter, each
+                              metal is a tuple [element_symbol, [x,y,z]].
+        :type metal_centers: Union[str, list[list[ Union[str, list[float]] ]]]
+        :param ligand_origins: Optional list of origin coordinates (3 floats) for each ligand; if None,
+                               defaults to the corresponding metal center positions (or the mean for bridging ligands).
+        :type ligand_origins: list[list[float]] | None
+
+
+        :param ligand_origins: Optional list of origin coordinates (3 floats) for each ligand; if None,
+                               defaults to the corresponding metal center positions (or the mean for bridging ligands).
+        :type ligand_origins: list[list[float]] | None
 
         Example usage for assembling a mono-metallic square-planar Pd complex with 2 cis bidentate ligands in the xy-plane:
             factory = AssembledComplex(
@@ -187,9 +270,6 @@ class AssembledComplex(object):
                                                     [[1, 0, 0], [0, 1, 0]],     # the donor atoms of the first bidentate ligand are oriented in (+x,+y) direction
                                                     [[-1, 0, 0], [0, -1, 0]],   # the donor atoms of the second bidentate ligand are oriented in (-x,-y) direction
                                                     ],
-                                    )
-            isomers = factory.generate_isomers()
-
         Example usage for assembling a bi-metallic complex with three monodentate ligands, one of them bridging:
             ligands = ... (list of three monodentate Ligand() objects, usually from the MetaLig database)
             ru = ['Ru', [1, 0, 0]]
@@ -219,6 +299,29 @@ class AssembledComplex(object):
         self.metal_centers = metal_centers
 
     def _check_input_and_handle_defaults(self, metal_centers, ligand_origins, ligands, target_vectors):
+        """
+        Validate inputs and set sensible defaults for metal_centers and ligand_origins.
+
+        This method:
+          - Expands a single-element metal_centers string into ASE Atoms at the origin for each ligand.
+          - Converts provided metal center specifications into ASE Atom objects.
+          - Sets default ligand_origins to the metal center(s) position (or mean position for bridging ligands).
+          - Validates dimensions and numeric types of target_vectors and matches them against ligand archetypes,
+            issuing warnings if the provided vectors do not match the ligand archetype.
+
+        :param metal_centers: Metal center specification (see __init__).
+        :type metal_centers: Union[str, list[list[ Union[str, list[float]] ]]]
+        :param ligand_origins: Optional ligand origins to use for translation.
+        :type ligand_origins: list[list[float]] | None  # shape: (n_ligands, 3)
+        :param ligands: List of Ligand objects.
+        :type ligands: list[ Ligand ]
+        :param target_vectors: Target donor vectors per ligand.
+        :type target_vectors: list[list[list[float]]]  # shape: (n_ligands, n_donors, 3)
+        :raises ValueError: If list lengths mismatch or target vector shapes are invalid.
+        :raises TypeError: If target_vectors has an invalid type structure.
+        :return: Normalized (metal_centers, ligand_origins, ligands, target_vectors)
+        :rtype: tuple[ list[list[ase.Atom]], list[list[float]], list[ Ligand ], list[list[list[float]]] ]
+        """
         if isinstance(metal_centers, str):
             # If the metal center is provided as a chemical element, it's a mono-metallic complex at the origin
             metal_centers = [[ase.Atom(symbol=metal_centers, position=[0, 0, 0])] for _ in ligands]
@@ -304,8 +407,33 @@ class AssembledComplex(object):
                          avoid_names: Optional[Iterable[str]] = None,
                          ):
         """
-        Generates all possible isomers from the ligands and metal centers provided.
-        :return: List of AssembledIsomer objects.
+        Generate assembled isomers from the provided ligands and metal centers.
+
+        The method constructs all geometric combinations by assigning rotated ligand instances
+        to metal centers, applies optional mono-axial optimization, filters clashing isomers,
+        and groups duplicates via fingerprint or alignment-based comparison.
+
+        :param permutable_ligands: Indices of ligands allowed to be permuted when generating isomers.
+        :type permutable_ligands: list[int] | None
+        :param monoaxial_optimization: Whether to perform mono-axial rotation optimization for mono-coordinating ligands.
+        :type monoaxial_optimization: bool
+        :param force_all_isomers: If True, generate all geometrical isomers for each ligand archetype.
+        :type force_all_isomers: bool
+        :param clashing_tolerance: Distance buffer below covalent radii sum allowed before flagging a clash (Å).
+        :type clashing_tolerance: float | None
+        :param clashing_metal: If True, also check ligand-metal and metal-metal clashes.
+        :type clashing_metal: bool
+        :param duplicate_tolerance: Cutoff used by duplicate grouping (fingerprint threshold).
+        :type duplicate_tolerance: float
+        :param complex_name_length: Length of the generated complex name seed.
+        :type complex_name_length: int
+        :param complex_name_suffix: Optional suffix appended to generated complex names.
+        :type complex_name_suffix: str
+        :param avoid_names: Iterable of names to avoid when generating unique complex names.
+        :type avoid_names: Iterable[str] | None
+        :return: None. Results are stored on the AssembledComplex instance as `isomers`,
+                 `successful_isomers`, `unsuccessful_isomers` and `success` boolean.
+        :rtype: None
         """
         if avoid_names is None:
             avoid_names = set()
@@ -393,12 +521,21 @@ class AssembledComplex(object):
     @staticmethod
     def get_duplicate_isomers_group_names(isomers: list[Any], pre_isomers_duplicate_group_names: list[set[str | None]], duplicate_tolerance: float, metal_centers: list[list[Atom]]) -> list[list[str]]:
         """
-        Get the joined duplicate isomer group names from pre- and post-monoaxial optimization duplicate groups. Sort the joined groups by the order of `isomers` to preserve the output order.
-        :param isomers: List of isomer objects, each having an 'isomer_name' attribute.
-        :param pre_isomers_duplicate_group_names: List of sets of isomer names that are considered duplicates before monoaxial optimization.
-        :param duplicate_tolerance: Cutoff for duplicate isomer filtering.
-        :param metal_centers: List of metal center atoms.
-        :return: List of lists of isomer names that are considered duplicates.
+        Join pre- and post-optimization duplicate groups and preserve isomer ordering.
+
+        Uses union of pre- and post-monoaxial-optimization duplicate sets and sorts each
+        joined group according to the original `isomers` order so the first element can be retained.
+
+        :param isomers: List of AssembledIsomer objects.
+        :type isomers: list[Any]
+        :param pre_isomers_duplicate_group_names: List of sets containing isomer names flagged as duplicates before optimization.
+        :type pre_isomers_duplicate_group_names: list[ set[str] ]
+        :param duplicate_tolerance: Cutoff used by duplicate grouping (fingerprint threshold).
+        :type duplicate_tolerance: float
+        :param metal_centers: Metal center atom definitions used for duplicate comparison.
+        :type metal_centers: list[list[ase.Atom]]
+        :return: Ordered list of duplicate groups where each group is a list of isomer names.
+        :rtype: list[list[str]]
         """
         post_isomers_duplicate_groups = DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=duplicate_tolerance, metal_centers=metal_centers).get_duplicate_groups()
         post_isomers_duplicate_group_names = [set([isomer.isomer_name for isomer in isomer_group]) for isomer_group in post_isomers_duplicate_groups]
@@ -415,10 +552,18 @@ class AssembledComplex(object):
 
     def divide_into_successful_and_unsuccessful_isomers(self, isomers: list[Any], joined_isomers_duplicate_group_names: list[list[str]]) -> tuple[list[Any], list[Any]]:
         """
-        Divide the isomers into successful and unsuccessful isomers. If an isomer has a 'clashing' warning, or if it is a duplicate, it is considered unsuccessful. For duplicates, we use the joint duplicate groups and let through only the first isomer in each group, marking the others as duplicates. It is important that this is done after the clash filter, so that clashing isomers are not considered duplicates.
-        :param isomers: List of isomer objects, each having an 'isomer_name' attribute and a 'warning' attribute.
-        :param joined_isomers_duplicate_group_names: List of lists of isomer names that are considered duplicates.
-        :return: A tuple containing two lists: (successful_isomers, unsuccessful_isomers).
+        Split isomers into successful and unsuccessful sets based on warnings and duplicate groups.
+
+        Successful isomers are the first non-clashing member of each duplicate group. Others are
+        marked unsuccessful and labelled with a suitable warning ('clashing' or 'duplicate(...)').
+
+        :param isomers: List of AssembledIsomer objects (each must have 'isomer_name' and 'warning' attributes).
+        :type isomers: list[Any]
+        :param joined_isomers_duplicate_group_names: Joined duplicate groups with isomer names (post optimization).
+        :type joined_isomers_duplicate_group_names: list[list[str]]
+        :return: Tuple (successful_isomers, unsuccessful_isomers).
+        :rtype: tuple[list[Any], list[Any]]
+        :raises AssertionError: If duplicate group contains duplicate names or is empty.
         """
         successful_isomers = []
         unsuccessful_isomers = []
@@ -449,8 +594,13 @@ class AssembledComplex(object):
 
     def to_dict(self):
         """
-        Converts the AssembledComplex object to a dictionary.
-        :return: Dictionary representation of the AssembledComplex object
+        Convert the AssembledComplex factory state to a dictionary.
+
+        The resulting dictionary contains the generated isomers (by name), the merged
+        connectivity graph, graph hash, index mappings and the input parameters used to assemble.
+
+        :return: Dictionary containing assembly metadata and serialized isomer entries.
+        :rtype: dict[str, Any]
         """
         isomer_data = {}
         for isomer in self.isomers:
@@ -483,9 +633,23 @@ class AssembledComplex(object):
         }
 
     def _get_complex_name(self, avoid_names: Optional[Iterable[str]]) -> str:
+        """
+        Generate a (pseudo-)random complex name based on the graph hash.
+
+        :param avoid_names: Iterable of names that should be avoided when generating a new name.
+        :type avoid_names: Iterable[str] | None
+        :return: Generated complex name string.
+        :rtype: str
+        """
         return get_complex_name(seed=self.graph_hash, length=self.complex_name_length, suffix=self.complex_name_suffix, avoid_names=avoid_names)
 
     def _get_ligandinfo(self) -> Dict[str, Any]:
+        """
+        Return ligand metadata required to reconstruct Ligand objects in AssembledIsomer.
+
+        :return: Dictionary with keys such as 'unique_names', 'archetypes', 'donor_idcs', etc.
+        :rtype: dict[str, Any]
+        """
         return {
             # Important info for making Ligands() objects in the AssembledIsomer().
             'unique_names': [lig.unique_name for lig in self.ligands],
@@ -501,8 +665,18 @@ class AssembledComplex(object):
 
     def _get_rotated_ligands(self, target_vectors, ligand_origins) -> list[list[Atoms]]:
         """
-        Rotates the ligands according to the target vectors and returns a list of rotated ligands.
-        :return: List of lists of ASE Atoms objects, where the outer list corresponds to each ligand and the inner lists correspond to the isomers of that ligand.
+        Produce rotated and translated ASE Atoms for each ligand according to target vectors.
+
+        Each ligand yields a list of ASE Atoms objects representing the possible geometric isomers
+        compatible with the supplied target_vectors. Returned structure is a list of lists:
+        outer list over ligands, inner list over isomer instances (ASE Atoms).
+
+        :param target_vectors: List of target vectors for each ligand.
+        :type target_vectors: list[list[list[float]]]  # shape: (n_ligands, n_donors, 3)
+        :param ligand_origins: List of origin coordinates used to translate each ligand instance.
+        :type ligand_origins: list[list[float]]  # shape: (n_ligands, 3)
+        :return: Rotated and translated ligand isomer instances.
+        :rtype: list[list[ ase.Atoms ]]
         """
         rotated_ligands = []
         for ligand, target_vector_list, origin in zip(self.ligands, target_vectors, ligand_origins):
@@ -533,8 +707,12 @@ class AssembledComplex(object):
 
     def _get_all_unique_metal_centers(self) -> List[ase.Atom]:
         """
-        Get a list of all unique metal centers.
-        :return: List of ase.Atom objects
+        Return a list of unique ASE Atom metal centers used across all ligand definitions.
+
+        The method deduplicates identical metal atoms (same element and position).
+
+        :return: List of unique ASE Atom objects for all metal centers.
+        :rtype: list[ ase.Atom ]
         """
         unique_metal_centers = [self.metal_centers[0][0]]  # initialize the list with the first metal center
         for metal_list in self.metal_centers:
@@ -547,8 +725,15 @@ class AssembledComplex(object):
 
     def _get_merged_graph_from_ligands_and_metal_centers(self) -> tuple[nx.Graph, list, list]:
         """
-        Merges the graphs from the ligands into one graph. The metal is added as a node with index 0 and connected to the donor atoms of the ligands.
-        :return: Tuple of the merged graph of the complex, the indices of the ligand atoms and the indices of the ligand donor atoms
+        Merge per-ligand connectivity graphs and connect donor atoms to metal nodes.
+
+        Returns a merged NetworkX Graph in which metal centers occupy the first node indices
+        followed by ligand atom nodes. Also returns ligand atom index lists (per ligand) and
+        flattened donor index list.
+
+        :return: Tuple (graph, ligand_indices, donor_idc)
+        :rtype: tuple[ nx.Graph, list[list[int]], list[int] ]
+        :raises AssertionError: If merged graph is not connected or node labels mismatch expected atom list.
         """
         ligand_graphs = [deepcopy(lig.graph) for lig in self.ligands]
         unique_metal_centers = self._get_all_unique_metal_centers()
@@ -620,10 +805,25 @@ class AssembledComplex(object):
 
 
 class AxialOptModifier:
+    """
+    Optimize mono-coordinating ligand rotations around their coordination axis.
+
+    Uses a global differential evolution optimizer to find per-ligand rotation angles
+    minimizing a distance-based penalty (short interatomic distances penalized).
+    """
+
     def __init__(self, isomers: List['AssembledIsomer'], opt: bool = True, distance_cutoff: Optional[float] = 4.0, use_cutoff: bool = False):
         """
-        This class will take a list of ASE Atoms objects and optimize mono-coordinating ligands around their coordination axis.
-        Optionally, a distance_cutoff (Å) can be supplied so the penalty is only evaluated for pairs closer than this threshold.
+        Initialize the mono-axial optimization modifier.
+
+        :param isomers: List of AssembledIsomer objects to optimize.
+        :type isomers: list[ AssembledIsomer ]
+        :param opt: Whether to perform optimization or return inputs unchanged.
+        :type opt: bool
+        :param distance_cutoff: Optional Å cutoff to restrict penalty to interatomic distances below this value.
+        :type distance_cutoff: float | None
+        :param use_cutoff: Whether to apply the provided distance_cutoff.
+        :type use_cutoff: bool
         """
         self.input_isomers = isomers
         self.opt_command = opt
@@ -634,7 +834,23 @@ class AxialOptModifier:
 
     def modify(self, target_vectors_list, ligand_origins_list, maxiter=1000, popsize=15) -> List['AssembledIsomer']:
         """
-        Optimize each isomer independently, with its own target_vectors and ligand_origins.
+        Optimize rotation angles for each provided isomer independently.
+
+        For each isomer, a separate differential evolution run is executed to find the set
+        of ligand rotation angles that minimize the interatomic distance penalty. Only ligands
+        with archetypes '1-mono' or '2-trans' are rotated.
+
+        :param target_vectors_list: List of target_vectors corresponding to each isomer in input_isomers.
+        :type target_vectors_list: list[list[list[list[float]]]]  # shape: (n_isomers, n_ligands, n_donors, 3)
+        :param ligand_origins_list: Corresponding ligand origins for each isomer.
+        :type ligand_origins_list: list[list[list[float]]]  # shape: (n_isomers, n_ligands, 3)
+        :param maxiter: Maximum iterations passed to differential_evolution.
+        :type maxiter: int
+        :param popsize: Population size passed to differential_evolution.
+        :type popsize: int
+        :return: List of AssembledIsomer objects with updated atom positions and atomic_props.
+        :rtype: list[ AssembledIsomer ]
+        :raises ValueError: If lengths of input_isomers, target_vectors_list, and ligand_origins_list differ.
         """
         if not self.opt_command:
             return self.input_isomers
@@ -692,12 +908,26 @@ class AxialOptModifier:
     def objective_function(self, x: np.ndarray, vectors_in: List[np.array], origins_in: List[np.array],
                            TMC_in: ase.Atoms, ligand_idc: list[list[int]], archetypes: List[str]) -> float:
         """
-        Objective function to optimize the position of the ligands in the TMC complex.
-        :param: x:  Array of angles to rotate each ligand around its respective vector.
-        :param: vectors_in: List of vectors for each ligand, where each vector is a dictionary with a single key-value pair.
-        :param: origins_in: List of origins for each ligand, where each origin is a list of three floats.
-        :param: TMC_in: ASE Atoms object representing the transition metal complex (TMC) to be optimized.
-        :return: float: The penalty score based on interatomic distances.
+        Compute the penalty for a given set of rotation angles.
+
+        The penalty is computed as the sum over 1.0 / d^2 for all atomic pairs (or pairs within the distance_cutoff),
+        where d is the interatomic distance after applying ligand rotations defined by x.
+        Rotations are only applied to ligands whose archetype is in ['1-mono', '2-trans'].
+
+        :param x: Array of rotation angles in degrees for each ligand.
+        :type x: np.ndarray  # shape: (n_rotations,)
+        :param vectors_in: List of rotation axes (unit or non-unit vectors) per ligand.
+        :type vectors_in: list[ np.ndarray ]  # each of shape (3,) or (2,3) for 2-trans
+        :param origins_in: Origins (3 floats) for each ligand rotation.
+        :type origins_in: list[list[float]]  # shape: (n_rotations, 3)
+        :param TMC_in: ASE Atoms object representing the assembled complex to act upon.
+        :type TMC_in: ase.Atoms
+        :param ligand_idc: List of lists containing atom indices for each ligand in the complex.
+        :type ligand_idc: list[list[int]]
+        :param archetypes: List of ligand archetypes in the same order as ligand_idc.
+        :type archetypes: list[str]
+        :return: Scalar penalty value to minimize.
+        :rtype: float
         """
         # Generate a copy of the input complex
         TMC_worker = TMC_in.copy()
@@ -727,11 +957,24 @@ class AxialOptModifier:
     @staticmethod
     def rotate(atoms: Atoms, vector: np.array, origin: np.array, idc: List[int], angle: int):
         """
-        Rotate selected atoms around the given vector by the specified angle.
-        Robust to common axis shapes for ligand archetypes:
-          - (3,)   : standard single axis vector
-          - (1,3)  : single axis wrapped in an extra list
-          - (2,3)  : 2-trans case (two anti-parallel donor vectors) -> collapse to the first one
+        Rotate selected atoms around a given axis by the specified angle (degrees).
+
+        Accepts axis definitions of shape (3,), (1,3) or (2,3). For (2,3) the first row is used (2-trans).
+        Rotation is performed in-place on the provided ASE Atoms object.
+
+        :param atoms: ASE Atoms object whose subset of atoms will be rotated in-place.
+        :type atoms: ase.Atoms
+        :param vector: Rotation axis vector (or matrix of axis vectors).
+        :type vector: np.ndarray  # shape: (3,) or (1,3) or (2,3)
+        :param origin: Rotation center coordinates.
+        :type origin: list[float]  # length 3
+        :param idc: Indices of atoms to rotate.
+        :type idc: list[int]
+        :param angle: Rotation angle in degrees.
+        :type angle: int | float
+        :return: The modified ASE Atoms object (same object passed in).
+        :rtype: ase.Atoms
+        :raises ValueError: If the axis has zero length or unexpected shape.
         """
         # Normalize vector shape and cast the list to a numpy array
         vector = np.asarray(vector, dtype=float)
@@ -768,8 +1011,13 @@ class AxialOptModifier:
 
     def visualize_structures(self):
         """
-        Visualize input and output complexes interleaved using ASE's GUI.
-        Each input is followed by its corresponding optimized output.
+        Visualize input and optimized output complexes interleaved using ASE's viewer.
+
+        The ASE viewer will show alternating frames: Input_0, Optimized_0, Input_1, Optimized_1, ...
+        If no optimization has been performed, the method prints a message and returns.
+
+        :return: None
+        :rtype: None
         """
         if not self.output_isomers:
             print("No output complexes found. Run opt_mono_rotation() first.")
@@ -792,7 +1040,11 @@ class AxialOptModifier:
 
 class DuplicateIsomerFilter:
     """
-    Class to reduce the number of isomers based on alignment or fingerprint similarity.
+    Reduce the number of assembled isomers by detecting duplicates via fingerprint or alignment.
+
+    The class supports two main deduplication strategies:
+      - 'distances' (fingerprint-based, fast)
+      - 'alignment' (rotational alignment and heuristic comparison)
     """
 
     def __init__(self, isomers: List['AssembledIsomer'],
@@ -805,13 +1057,24 @@ class DuplicateIsomerFilter:
                  energy_heuristic_mode: str = "max",
                  ):
         """
-        Initialize the isomer reduction class.
-        :param: isomers: The list of ASE Atoms objects representing isomers.
-        :param: method: The method to use for reduction, either 'alignment' or 'distances'.
-        :param: grid_size: The number of grid points when scanning from 0 to 360 for exact alignment.
-        :param: duplicate_distances_metric: The mode for comparing fingerprints, e.g., 'max_diff', etc.
-        :param: duplicate_distances_classifier: The mode for grouping fingerprints, either 'cluster' or 'cutoff'.
-        :param: fingerprint_grouping_cutoff: The cutoff value for grouping fingerprints when using 'cutoff' mode.
+        Initialize the duplicate isomer filter parameters.
+
+        :param isomers: List of AssembledIsomer objects to analyze.
+        :type isomers: list[ AssembledIsomer ]
+        :param method: Deduplication strategy: 'alignment' or 'distances'.
+        :type method: str
+        :param grid_size: Grid density used by brute-force alignment search (points per angle).
+        :type grid_size: int
+        :param isomer_comparison_mode: Mode for fingerprint comparison ('max_diff', 'sum_diff', 'mean_diff', 'rmsd').
+        :type isomer_comparison_mode: str
+        :param isomer_comparison_grouping_mode: Grouping approach: 'cluster' or 'cutoff'.
+        :type isomer_comparison_grouping_mode: str
+        :param fingerprint_grouping_cutoff: Numeric cutoff used in 'cutoff' grouping mode. Use NaN to disable.
+        :type fingerprint_grouping_cutoff: float
+        :param metal_centers: Metal center definitions used to determine rotation degrees of freedom.
+        :type metal_centers: list[list[ ase.Atom ]] | None
+        :param energy_heuristic_mode: Mode for energy heuristic in alignment ('max' or 'sum').
+        :type energy_heuristic_mode: str
         """
         if metal_centers is None:
             metal_centers = []
@@ -831,7 +1094,13 @@ class DuplicateIsomerFilter:
 
     def get_duplicate_groups(self) -> List[List['AssembledIsomer']]:
         """
-        Returns all input isomers as a list of lists, in which each sublist contains isomers that are considered duplicates.
+        Group input isomers into duplicate clusters.
+
+        If duplicate checking is disabled or only one isomer exists, returns trivial groups.
+        Otherwise, delegates to the configured reduction method.
+
+        :return: List of groups; each group is a list of AssembledIsomer objects considered duplicates.
+        :rtype: list[list[ AssembledIsomer ]]
         """
         if len(self.isomers) <= 1:
             return [self.isomers]
@@ -850,8 +1119,14 @@ class DuplicateIsomerFilter:
 
     def _reduce_by_alignment(self) -> List[List['AssembledIsomer']]:
         """
-        Reduce isomers by aligning them and calculating RMSD or another distance metric.
-        :return:
+        Reduce isomers by searching for an alignment that minimizes a distance heuristic.
+
+        Rotational alignment between pairs is performed using a brute-force grid over
+        allowed rotation axes and angles. The resulting pairwise scores are clustered
+        to form duplicate groups.
+
+        :return: Duplicate groups as lists of AssembledIsomer objects.
+        :rtype: list[list[ AssembledIsomer ]]
         """
         n = len(self.isomers)
         diff_matrix = np.zeros((n, n))
@@ -881,16 +1156,19 @@ class DuplicateIsomerFilter:
 
     def energy_heuristic(self, stat_atoms: ase.Atoms, rot_atoms: ase.Atoms):
         """
-        Heuristic to determine the energy of the isomer to be minimized.
+        Compute a heuristic 'energy' that quantifies similarity between two isomers.
 
-        For each element type, pair each atom in stat_atoms with an atom in rot_atoms
-        (both having the same number of atoms for that element) such that:
-          - If mode="sum": the sum of distances is minimized.
-          - If mode="max": the maximum paired distance is returned.
+        For each element type the method solves an optimal assignment between like atoms
+        (Hungarian algorithm) and either returns the sum of assigned distances ('sum' mode)
+        or the maximum assigned distance among element-types ('max' mode).
 
-        :param: stat_atoms: ase.Atoms object (stationary isomer)
-        :param: rot_atoms: ase.Atoms object (rotated isomer)
-        :return: The energy metric (either sum or max of paired distances).
+        :param stat_atoms: Stationary ASE Atoms object (reference).
+        :type stat_atoms: ase.Atoms
+        :param rot_atoms: Rotated ASE Atoms object (to be compared).
+        :type rot_atoms: ase.Atoms
+        :return: Energy heuristic: scalar representing sum or maximum of assigned distances.
+        :rtype: float
+        :raises ValueError: If elements mismatch or counts per element differ between isomers.
         """
         # Initialize the total energy and overall max distance.
         total_energy = 0.0
@@ -936,17 +1214,19 @@ class DuplicateIsomerFilter:
 
     def align_isomers(self, stationary_atoms: ase.Atoms, rotated_atoms: ase.Atoms) -> float:
         """
-        Using Scipy's global optimizer to find the optimal rotation that minimizes the distance
-        between like atoms in the two isomers. When the two isomers are optimally aligned,
-        the RMSD or another measure of inter-atomic distance can be calculated.
+        Align two isomers by searching for an alignment that minimizes a distance heuristic.
 
-        This method, with a large enough grid density, is considered to be the ground truth
-        for the optimal rotation of the two isomers. Other Scipy global optimizers can be
-        easily integrated here for testing purposes.
+        Depending on the number of unique metal centres, the function reduces the rotational
+        degrees of freedom (3D rotation for one metal, 1D rotation around metal-metal axis for two metals,
+        and direct heuristic for three or more metals).
 
-        :param stationary_atoms: ASE Atoms object to remain fixed.
-        :param rotated_atoms: ASE Atoms object to be rotated.
-        :return: float — alignment score (as defined by energy_heuristic or objective_function)
+        :param stationary_atoms: ASE Atoms kept fixed during alignment.
+        :type stationary_atoms: ase.Atoms
+        :param rotated_atoms: ASE Atoms that will be rotated to align with stationary_atoms.
+        :type rotated_atoms: ase.Atoms
+        :return: Alignment score computed by objective_function and energy_heuristic.
+        :rtype: float
+        :raises AssertionError: If metal_centers was not set prior to calling this method.
         """
         assert hasattr(self, "metal_centers"), ValueError("Fatal Error: metal_centers must be defined before calling align_isomers. ")
         logging.debug(f"Aligning isomers based on {len(self.unique_metal_centers)} metal centre(s).")
@@ -991,12 +1271,21 @@ class DuplicateIsomerFilter:
 
     def objective_function(self, x: np.ndarray, atoms1: ase.Atoms, atoms2: ase.Atoms, axes: np.array):
         """
-        Objective function to optimize the position of the ligands in the TMC complex.
-        :param x:
-        :param atoms1:
-        :param atoms2:
-        :param axes:
-        :return:
+        Objective used by the brute-force alignment routine.
+
+        Applies combined rotations described by x around axes and returns the energy heuristic
+        comparing atoms1 (reference) and the rotated version of atoms2.
+
+        :param x: Rotation angles in degrees.
+        :type x: np.ndarray
+        :param atoms1: Stationary reference ASE Atoms.
+        :type atoms1: ase.Atoms
+        :param atoms2: ASE Atoms to be rotated.
+        :type atoms2: ase.Atoms
+        :param axes: List/array of rotation axes.
+        :type axes: np.ndarray | list[np.ndarray]
+        :return: Scalar value from energy_heuristic to minimize.
+        :rtype: float
         """
         # Copy the input atoms to avoid modifying the original
         stationary_isomer = atoms1.copy()
@@ -1018,9 +1307,14 @@ class DuplicateIsomerFilter:
     @staticmethod
     def combined_rotation_matrix(angles, axes):
         """
-        Compute the combined rotation matrix from a list of angles and corresponding axes.
-        :param: angles: List of angles in degrees.
-        :param: axes: List of rotation axes.
+        Compute a combined 3x3 rotation matrix from sequences of angles and axes.
+
+        :param angles: Iterable of angles in degrees.
+        :type angles: Iterable[ float ]
+        :param axes: Corresponding iterable of 3D axis vectors.
+        :type axes: Iterable[ list[float] ] | np.ndarray
+        :return: Combined rotation matrix (3x3).
+        :rtype: np.ndarray
         """
         # Start with identity matrix.
         R_total = np.eye(3)
@@ -1034,10 +1328,18 @@ class DuplicateIsomerFilter:
     @staticmethod
     def apply_combined_rotation(atoms, R_total, center):
         """
-        Apply the combined rotation to the positions of an ASE Atoms object.
-        :param: atoms: ASE Atoms object to rotate.
-        :param: R_total: Combined rotation matrix.
-        :param: center: Center of rotation
+        Apply a combined rotation matrix to an ASE Atoms object about a center.
+
+        Positions are rotated in-place.
+
+        :param atoms: ASE Atoms to rotate.
+        :type atoms: ase.Atoms
+        :param R_total: 3x3 rotation matrix.
+        :type R_total: np.ndarray
+        :param center: Center of rotation (3 floats).
+        :type center: list[float] | np.ndarray
+        :return: None
+        :rtype: None
         """
         # Shift positions relative to center, apply rotation, then shift back.
         shifted = atoms.positions - center
@@ -1045,9 +1347,12 @@ class DuplicateIsomerFilter:
 
     def _reduce_by_fingerprint(self):
         """
-        Reduce isomers using fingerprint-based similarity clustering.
-        Select one representative per cluster labeled 'Close'.
-        :return: List of unique isomers after fingerprint-based reduction.
+        Reduce isomers using a sorted interatomic-distance fingerprint and clustering.
+
+        Computes a symmetric difference matrix and clusters pairs labelled 'Close' to form groups.
+
+        :return: List of duplicate groups (lists of AssembledIsomer objects).
+        :rtype: list[list[ AssembledIsomer ]]
         """
         self.diff_matrix = self._compute_fingerprint_matrix(self.isomers)
 
@@ -1061,10 +1366,18 @@ class DuplicateIsomerFilter:
     @staticmethod
     def _group_isomers(group_labels_matrix: np.ndarray, isomers: List['AssembledIsomer']) -> List[List['AssembledIsomer']]:
         """
-        Group isomers based on which ones are labeled 'Close' in the group_labels_matrix.
-        :param group_labels_matrix: 2D numpy array with labels 'Close' or 'Far'. It's possible that this list is not consistent, i.e. if isomers 1 and 2 are 'Close', and isomers 2 and 3 are 'Close', it is still possible that isomers 1 and 3 are 'Far', even though this is illogical. This will be handled here such that isomers 1 and 3 are grouped together as well in this case.
-        :param isomers: List of AssembledIsomer objects to be grouped.
-        :return: List of lists, where each sublist contains isomers that are considered duplicates.
+        Group isomers into connected components based on a pairwise label matrix.
+
+        The input matrix should contain labels 'Close'/'Far' for each pair; connected 'Close' entries
+        are grouped into duplicate clusters. The method ensures that groups preserve original ordering.
+
+        :param group_labels_matrix: Square 2D numpy array with values 'Close' or 'Far'.
+        :type group_labels_matrix: np.ndarray
+        :param isomers: List of AssembledIsomer objects to group.
+        :type isomers: list[ AssembledIsomer ]
+        :return: Grouped isomers as a list of lists preserving original order within groups.
+        :rtype: list[list[ AssembledIsomer ]]
+        :raises ValueError: If group_labels_matrix is not square or does not match number of isomers.
         """
         n = len(isomers)
         if group_labels_matrix.shape != (n, n):
@@ -1112,12 +1425,23 @@ class DuplicateIsomerFilter:
 
     def _analyze_similarity(self, matrix: np.ndarray, quantile: float = 0.2, method: str = "cluster", cutoff: Optional[float] = None) -> np.ndarray:
         """
-        Analyze pairwise similarity between isomers using either MeanShift clustering or a hard cutoff.
-        :param matrix: 2D numpy array representing the fingerprint difference matrix.
-        :param quantile: Quantile for estimating bandwidth in MeanShift mode.
-        :param method: 'meanshift' or 'cutoff' to define grouping method.
-        :param cutoff: Optional float threshold to use when method='cutoff'.
-        :return: 2D numpy array of group labels ('Close' or 'Far').
+        Convert a pairwise difference matrix to a matrix of labels ('Close'/'Far').
+
+        Two modes are supported:
+          - 'cluster': MeanShift clustering on upper-triangle values to identify the 'Close' cluster.
+          - 'cutoff': Hard cutoff thresholding of matrix values.
+
+        :param matrix: Square pairwise difference matrix.
+        :type matrix: np.ndarray
+        :param quantile: Quantile used to estimate bandwidth in clustering mode (unused default kept).
+        :type quantile: float
+        :param method: 'cluster' or 'cutoff' defining grouping strategy.
+        :type method: str
+        :param cutoff: Numeric cutoff required when method='cutoff'.
+        :type cutoff: float | None
+        :return: Square matrix with entries 'Close' or 'Far'.
+        :rtype: np.ndarray
+        :raises ValueError: If cutoff is None when method='cutoff'.
         """
         if method == "cluster":
             from sklearn.cluster import MeanShift, estimate_bandwidth
@@ -1160,8 +1484,12 @@ class DuplicateIsomerFilter:
 
     def _compute_fingerprint_matrix(self, isomers: list) -> np.ndarray:
         """
-        Efficiently compute the upper-triangle of the fingerprint difference matrix.
-        This result is then reflected to the lower triangle to create a full symmetric matrix.
+        Compute symmetric fingerprint difference matrix for a list of isomers.
+
+        :param isomers: List of AssembledIsomer objects.
+        :type isomers: list[ AssembledIsomer ]
+        :return: Symmetric numpy array (n,n) of pairwise fingerprint differences.
+        :rtype: np.ndarray
         """
         # Generate fingerprints for each isomer
         fingerprints = [self._compute_sorted_distance_fingerprint(isomer)[0] for isomer in isomers]
@@ -1182,14 +1510,16 @@ class DuplicateIsomerFilter:
     @staticmethod
     def _compute_sorted_distance_fingerprint(isomer) -> tuple[np.ndarray, list[tuple[str, str]]]:
         """
-        Compute an inter-atomic distance matrix for an isomer and sort the distances under to two conditions:
-        1. entries in the matrix (atom-atom distances) are sorted in ascending order.
-        2. the rows of the matrix are sorted in lexicographical order of the element symbols.
-            i.e. C-C, C-H, H-H, etc. This ensures like inter-atomic distances are compared between isomers.
-        The resulting 1D array acts as a fingerprint for the isomer which can be compared to other isomers.
+        Compute a sorted inter-atomic distance fingerprint for an isomer.
 
-        :param isomer: ASE Atoms object.
-        :return: sorted inter-atomic distance fingerprint as a 1D numpy array.
+        The fingerprint vector is the ordered list of pairwise distances between atoms,
+        sorted first by element-pair (lexicographically) and then by ascending distance.
+        Also returns the corresponding ordered element-pair labels.
+
+        :param isomer: AssembledIsomer object with an `.atoms` ASE Atoms attribute.
+        :type isomer: Any
+        :return: Tuple (sorted_distances, sorted_element_pairs).
+        :rtype: tuple[ np.ndarray, list[ tuple[str, str] ] ]
         """
         positions = isomer.atoms.get_positions()  # (N, 3)
         elements = np.asarray(isomer.atoms.get_chemical_symbols())
@@ -1216,11 +1546,23 @@ class DuplicateIsomerFilter:
     @staticmethod
     def _fingerprint_comparison(fp1: np.ndarray, fp2: np.ndarray, mode: str = "max_diff"):
         """
-        Compute the maximum absolute difference between two sorted fingerprint vectors.
-        :param fp1: 1D numpy array fingerprint for isomer 1.
-        :param fp2: 1D numpy array fingerprint for isomer 2.
-        :param mode: Comparison mode: 'max_diff', 'sum_diff', 'mean_diff', or 'rmsd'.
-        :return: Maximum absolute difference.
+        Compare two fingerprint vectors with various metrics.
+
+        Supported modes:
+          - 'max_diff': maximum absolute element-wise difference
+          - 'sum_diff': sum of absolute differences
+          - 'mean_diff': mean absolute difference
+          - 'rmsd': root mean square difference
+
+        :param fp1: Fingerprint array for isomer 1.
+        :type fp1: np.ndarray
+        :param fp2: Fingerprint array for isomer 2.
+        :type fp2: np.ndarray
+        :param mode: Comparison mode string.
+        :type mode: str
+        :return: Scalar score representing fingerprint difference according to mode.
+        :rtype: float
+        :raises ValueError: If an unsupported mode is supplied.
         """
         logging.debug(f"Comparing fingerprints with mode '{mode}'.")
         if mode == "max_diff":
@@ -1248,17 +1590,31 @@ class DuplicateIsomerFilter:
                                            cell_label_mode: str = "value",  # "value", "group", or "none"
                                            ) -> None:
         """
-        Visualizes the fingerprint difference matrix as a heatmap using Matplotlib and/or Plotly.
+        Visualize the fingerprint difference matrix as a heatmap (Matplotlib and optional Plotly).
 
-        :param: write_svg: If True, saves the Matplotlib figure as an SVG file.
-        :param: plot_plotly: If True, creates an interactive Plotly heatmap.
-        :param: colorscale_min: Minimum value for the color scale.
-        :param: colorscale_mid: Midpoint value for the color scale.
-        :param: color_scale_max: Maximum value for the color scale.
-        :param: min_color: Dictionary with RGB values for the minimum color.
-        :param: mid_color: Dictionary with RGB values for the midpoint color.
-        :param: max_color: Dictionary with RGB values for the maximum color.
-        :param: cell_label_mode: 'value' (float), 'group' (Close/Far), or 'none'.
+        Produces an SVG file and optionally launches an interactive Plotly Dash app. The
+        function will compute similarity grouping if not already available.
+
+        :param write_svg: Whether to save a Matplotlib SVG of the heatmap.
+        :type write_svg: bool
+        :param plot_plotly: Whether to launch an interactive Plotly/Dash visualization.
+        :type plot_plotly: bool
+        :param colorscale_min: Lower bound for custom colorscale interpolation.
+        :type colorscale_min: float
+        :param colorscale_mid: Midpoint for colorscale interpolation.
+        :type colorscale_mid: float
+        :param color_scale_max: Upper bound for colorscale interpolation.
+        :type color_scale_max: float
+        :param min_color: Dictionary with 'r','g','b' ints for minimum color.
+        :type min_color: dict | None
+        :param mid_color: Dictionary with 'r','g','b' ints for mid color.
+        :type mid_color: dict | None
+        :param max_color: Dictionary with 'r','g','b' ints for maximum color.
+        :type max_color: dict | None
+        :param cell_label_mode: 'value' to show numeric differences, 'group' to show Close/Far, or 'none'.
+        :type cell_label_mode: str
+        :return: None
+        :rtype: None
         """
         from matplotlib.colors import LinearSegmentedColormap
         import matplotlib.pyplot as plt
@@ -1339,7 +1695,20 @@ class DuplicateIsomerFilter:
     def launch_interactive_heatmap(self, df: pd.DataFrame, group_labels_matrix: np.ndarray,
                                    color_scale: list, cell_label_mode: str = "value"):
         """
-        Launch an interactive Dash app to render the heatmap and enable isomer alignment viewing.
+        Launch an interactive Dash application showing the difference matrix and histogram.
+
+        Clicking on a heatmap cell opens the ASE viewer with the corresponding isomer alignment.
+
+        :param df: Pandas DataFrame representing the difference matrix (square).
+        :type df: pd.DataFrame
+        :param group_labels_matrix: Square matrix of 'Close'/'Far' labels.
+        :type group_labels_matrix: np.ndarray
+        :param color_scale: Plotly-compatible color scale definition.
+        :type color_scale: list
+        :param cell_label_mode: Mode for cell labels ('value', 'group', 'none').
+        :type cell_label_mode: str
+        :return: None
+        :rtype: None
         """
         if "plotly" not in sys.modules:
             print("Plotly is not installed. Please install it to use the interactive heatmap feature.")
@@ -1441,14 +1810,20 @@ class DuplicateIsomerFilter:
 
     def view_isomer_alignment(self, index1: int, index2: int, grid_size=None) -> None:
         """
-        Visualize two isomers (by index) and their optimal alignment using ASE's viewer.
-        Frame 0: isomer1
-        Frame 1: isomer2
-        Frame 2: overlaid view after rotating isomer2 to align with isomer1.
+        Visualize two isomers and their optimal alignment using ASE viewer.
 
-        :param: grid_size: The number of grid points when scanning from 0 to 360 for exact alignment.
-        :param: index1: Index of the reference isomer in self.isomers
-        :param: index2: Index of the isomer to be aligned and overlaid
+        Displays three frames: reference isomer (index1), unaligned isomer (index2),
+        and overlaid result after aligning isomer2 to isomer1.
+
+        :param index1: Index of the reference isomer in self.isomers.
+        :type index1: int
+        :param index2: Index of the isomer to align and overlay.
+        :type index2: int
+        :param grid_size: Optional grid density for brute alignment; defaults to object's grid_size.
+        :type grid_size: int | None
+        :return: None
+        :rtype: None
+        :raises AssertionError: If indices are out of range.
         """
         assert 0 <= index1 < len(self.isomers), f"Index1 out of range: {index1}"
         assert 0 <= index2 < len(self.isomers), f"Index2 out of range: {index2}"
@@ -1504,13 +1879,19 @@ class DuplicateIsomerFilter:
 
     def debug_fingerprints(self, idx1, idx2):
         """
-        A tool that displays the fingerprints of two isomers side by side and highlights
-        which difference is used to generate the score
-        :param idx1: index of first isomer
-        :param idx2: index of second isomer
-        :return: None
-        """
+        Display and return a DataFrame comparing two isomer fingerprints for debugging.
 
+        The DataFrame contains distances, element pairs and absolute differences to help
+        interpret which entries contribute most to the fingerprint score.
+
+        :param idx1: Index of the first isomer to compare.
+        :type idx1: int
+        :param idx2: Index of the second isomer to compare.
+        :type idx2: int
+        :return: Pandas DataFrame summarizing distances, pairs and differences.
+        :rtype: pd.DataFrame
+        :raises ValueError: If fingerprints differ in length.
+        """
         # Get the fingerprints of the two isomers
         fp1, pairs1 = self._compute_sorted_distance_fingerprint(self.isomers[idx1])
         fp2, pairs2 = self._compute_sorted_distance_fingerprint(self.isomers[idx2])
@@ -1535,7 +1916,10 @@ class DuplicateIsomerFilter:
 
 class IsomerClashFilter:
     """
-    Filters out isomers that have clashes between atoms. Optionally considers ligand-metal and metal-metal clashes.
+    Filter assembled isomers for interatomic clashes based on covalent radii.
+
+    Clashes are determined by comparing pairwise distances to the sum of covalent radii plus a buffer.
+    Pairs within the same ligand are ignored. Metal-involving pairs can optionally be excluded from checks.
     """
 
     def __init__(
@@ -1544,9 +1928,12 @@ class IsomerClashFilter:
             check_metal_clashes: bool = False
     ):
         """
-        Check if there are any clashing atoms in the isomer.
-        :param buffer: Distance buffer below sum of covalent radii to allow (negative means atoms can be closer).
-        :param check_metal_clashes: Whether to check for clashes with metal atoms, i.e. metal-ligand or metal-metal clashes.
+        Initialize clash filter configuration.
+
+        :param buffer: Distance buffer (Å) added to sum of covalent radii. Negative allows closer approach.
+        :type buffer: float
+        :param check_metal_clashes: If False, pairs involving any metal atom are ignored.
+        :type check_metal_clashes: bool
         """
         self.buffer = buffer
         self.check_metal_clashes = check_metal_clashes
@@ -1558,11 +1945,20 @@ class IsomerClashFilter:
             metal_idc: list[int],
     ) -> bool:
         """
-        Check if there are any clashing atoms in the isomer.
-        :param atoms: ASE Atoms object of the isomer
-        :param ligand_idc: List of lists containing atom indices for each ligand
-        :param metal_idc: List of metal atom indices
-        :return: True if there are clashing atoms, False otherwise
+        Determine whether the provided ASE Atoms contains any clashing atom pairs.
+
+        Ignores intra-ligand pairs and optionally ignores any pair involving metal atoms.
+        Clashing is True if any remaining interatomic distance is smaller than the corresponding
+        sum of covalent radii plus the configured buffer.
+
+        :param atoms: ASE Atoms object representing the assembled isomer.
+        :type atoms: ase.Atoms
+        :param ligand_idc: List of lists of atom indices corresponding to each ligand.
+        :type ligand_idc: list[list[int]]
+        :param metal_idc: List of indices of metal center atoms within `atoms`.
+        :type metal_idc: list[int]
+        :return: True if any non-ignored pair is closer than allowed, otherwise False.
+        :rtype: bool
         """
         n = len(atoms)
         if n <= 1:  # nothing to clash

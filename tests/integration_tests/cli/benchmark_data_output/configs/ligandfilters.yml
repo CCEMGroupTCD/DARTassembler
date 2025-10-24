@@ -10,7 +10,7 @@ filters:
     name: 'charge'
     values: [-2, -1, 0]
 
-  - filter: 'parent_complexes'
+  - filter: 'parents'
     metal_centers: ['Pt+2', 'Pt+4', 'Ni0', 'Pd', 'Mn', 'Cr', 'Ru', 'Co', 'Cu', 'Ir', 'Mo']
 
   - filter: 'composition'

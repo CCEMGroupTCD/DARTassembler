@@ -59,7 +59,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/2_module_overview.html">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/2_metalig_database.html">MetaLig Ligand Database</a></li>
-<li class="toctree-l1"><a class="reference internal" href="doc_files/2_ligand_filters.html">Ligand Filters Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_ligand_filters.html">LigandFilters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/2_assembler.html">Assembler Module</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
@@ -109,23 +109,27 @@
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
- | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-atomic_neighbors">atomic_neighbors (configuration value)</a>
+      <li><a href="doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.apply_filters">apply_filters() (DARTassembler.src.metalig.ligandfilters.LigandFilters method)</a>
 </li>
   </ul></td>
 </tr></table>
 
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.BaseDB">BaseDB (class in DARTassembler.src.metalig.db)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="doc_files/2_assembler.html#confval-bidentate_rotator">bidentate_rotator (configuration value)</a>
 </li>
@@ -142,15 +146,13 @@
         <li><a href="doc_files/2_module_overview.html#cmdoption-arg-0">DARTassembler</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-1">[1]</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-2">[2]</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-3">[3]</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-4">[4]</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-5">[5]</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-DARTassembler">[6]</a>
 </li>
       </ul></li>
-      <li><a href="doc_files/2_assembler.html#confval-complex_name_appendix">complex_name_appendix (configuration value)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="doc_files/2_assembler.html#confval-complex_name_appendix">complex_name_appendix (configuration value)</a>
+</li>
       <li><a href="doc_files/2_assembler.html#confval-complex_name_length">complex_name_length (configuration value)</a>
 </li>
       <li><a href="doc_files/2_assembler.html#confval-concatenate_xyz">concatenate_xyz (configuration value)</a>
-</li>
-      <li><a href="doc_files/2_ligand_filters.html#confval-coordinating_atoms_composition">coordinating_atoms_composition (configuration value)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -165,9 +167,23 @@
         <li><a href="doc_files/2_module_overview.html#cmdoption-arg-0">command line option</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-1">[1]</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-2">[2]</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-3">[3]</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-4">[4]</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-5">[5]</a>, <a href="doc_files/2_module_overview.html#cmdoption-arg-DARTassembler">[6]</a>
 </li>
       </ul></li>
+      <li>
+    DARTassembler.src.metalig.db
+
+      <ul>
+        <li><a href="doc_files/2_metalig_database.html#module-DARTassembler.src.metalig.db">module</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-denticities">denticities (configuration value)</a>
+      <li>
+    DARTassembler.src.metalig.ligandfilters
+
+      <ul>
+        <li><a href="doc_files/2_ligand_filters.html#module-DARTassembler.src.metalig.ligandfilters">module</a>
+</li>
+      </ul></li>
+      <li><a href="doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.desc">desc (DARTassembler.src.metalig.ligandfilters.LigandFilters attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -181,6 +197,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="doc_files/2_assembler.html#confval-forcefield">forcefield (configuration value)</a>
 </li>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.from_json">from_json() (DARTassembler.src.metalig.db.LigandDB class method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -189,11 +207,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="doc_files/2_assembler.html#confval-geometry">geometry (configuration value)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="doc_files/2_assembler.html#confval-geometry_modifier_filepath">geometry_modifier_filepath (configuration value)</a>
 </li>
-      <li><a href="doc_files/2_ligand_filters.html#confval-graph_IDs">graph_IDs (configuration value)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.get_concat_xyz_string">get_concat_xyz_string() (DARTassembler.src.metalig.db.LigandDB method)</a>
+</li>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.get_df">get_df() (DARTassembler.src.metalig.db.LigandDB method)</a>
+</li>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.get_sub_db">get_sub_db() (DARTassembler.src.metalig.db.LigandDB method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -201,12 +223,6 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-input_db_file">input_db_file (configuration value)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-interatomic_distances">interatomic_distances (configuration value)</a>
-</li>
       <li><a href="doc_files/2_assembler.html#confval-isomers">isomers (configuration value)</a>
 </li>
   </ul></td>
@@ -215,13 +231,13 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-ligand_charges">ligand_charges (configuration value)</a>
+      <li><a href="doc_files/2_assembler.html#confval-ligand_db_file">ligand_db_file (configuration value)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-ligand_composition">ligand_composition (configuration value)</a>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB">LigandDB (class in DARTassembler.src.metalig.db)</a>
 </li>
-      <li><a href="doc_files/2_assembler.html#confval-ligand_db_file">ligand_db_file (configuration value)</a>
+      <li><a href="doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters">LigandFilters (class in DARTassembler.src.metalig.ligandfilters)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -233,13 +249,20 @@
 </li>
       <li><a href="doc_files/2_assembler.html#confval-metal_center">metal_center (configuration value)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-metal_ligand_binding_history">metal_ligand_binding_history (configuration value)</a>
-</li>
       <li><a href="doc_files/2_assembler.html#confval-metal_oxidation_state">metal_oxidation_state (configuration value)</a>
 </li>
-      <li><a href="doc_files/2_ligand_filters.html#confval-molecular_weight">molecular_weight (configuration value)</a>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    module
+
+      <ul>
+        <li><a href="doc_files/2_metalig_database.html#module-DARTassembler.src.metalig.db">DARTassembler.src.metalig.db</a>
+</li>
+        <li><a href="doc_files/2_ligand_filters.html#module-DARTassembler.src.metalig.ligandfilters">DARTassembler.src.metalig.ligandfilters</a>
+</li>
+      </ul></li>
+      <li><a href="doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.module_name">module_name (DARTassembler.src.metalig.ligandfilters.LigandFilters attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -250,32 +273,12 @@
       <li><a href="doc_files/2_assembler.html#confval-name">name (configuration value)</a>
 </li>
   </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-number_of_atoms">number_of_atoms (configuration value)</a>
-</li>
-  </ul></td>
 </tr></table>
 
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-occurrences">occurrences (configuration value)</a>
-</li>
-      <li><a href="doc_files/2_ligand_filters.html#confval-output_db_file">output_db_file (configuration value)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="doc_files/2_assembler.html#confval-output_directory">output_directory (configuration value)</a>
-</li>
-      <li><a href="doc_files/2_ligand_filters.html#confval-output_ligands_info">output_ligands_info (configuration value)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="P">P</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-planarity">planarity (configuration value)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -285,13 +288,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="doc_files/2_assembler.html#confval-random_seed">random_seed (configuration value)</a>
 </li>
-      <li><a href="doc_files/2_ligand_filters.html#confval-remove_ligands_with_adjacent_coordinating_atoms">remove_ligands_with_adjacent_coordinating_atoms (configuration value)</a>
+      <li><a href="doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.run">run() (DARTassembler.src.metalig.ligandfilters.LigandFilters method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-remove_ligands_with_beta_hydrogens">remove_ligands_with_beta_hydrogens (configuration value)</a>
+      <li><a href="doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_cli">run_from_cli() (DARTassembler.src.metalig.ligandfilters.LigandFilters class method)</a>
 </li>
-      <li><a href="doc_files/2_ligand_filters.html#confval-remove_ligands_with_missing_bond_orders">remove_ligands_with_missing_bond_orders (configuration value)</a>
+      <li><a href="doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_yaml">run_from_yaml() (DARTassembler.src.metalig.ligandfilters.LigandFilters class method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -301,9 +304,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="doc_files/2_assembler.html#confval-same_isomer_names">same_isomer_names (configuration value)</a>
 </li>
+      <li><a href="doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters.save_filtered_ligands_output">save_filtered_ligands_output() (DARTassembler.src.metalig.ligandfilters.LigandFilters method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="doc_files/2_ligand_filters.html#confval-smarts">smarts (configuration value)</a>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.save_to_concat_xyz">save_to_concat_xyz() (DARTassembler.src.metalig.db.LigandDB method)</a>
+</li>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.save_to_csv">save_to_csv() (DARTassembler.src.metalig.db.LigandDB method)</a>
+</li>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.BaseDB.save_to_file">save_to_file() (DARTassembler.src.metalig.db.BaseDB method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -311,7 +320,19 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.BaseDB.to_dict">to_dict() (DARTassembler.src.metalig.db.BaseDB method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="doc_files/2_assembler.html#confval-total_charge">total_charge (configuration value)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.update_old_ligand_db_to_new">update_old_ligand_db_to_new() (in module DARTassembler.src.metalig.db)</a>
 </li>
   </ul></td>
 </tr></table>
