@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DARTassembler.cli &mdash; DARTassembler dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=3ce10a4d"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            DARTassembler
+              <img src="../../_static/DART_pic.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">How to Use DART</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/1_installation_guide.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/1_quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/1_NaFe_example.html">Advanced Example: Na-Fe systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/1_understanding_the_dart_workflow.html">Understanding DART</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/2_module_overview.html">Module Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/2_metalig_database.html">MetaLig Ligand Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/2_ligand_filters.html">LigandFilters Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/2_assembler.html">Assembler Module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/2_ligands.html">Ligands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/2_isomers.html">Assembled Complexes &amp; Isomers</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/3_troubleshooting_and_faqs.html">Troubleshooting and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/3_tips_and_tricks.html">DART Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/3_current_limitations.html">Limitations and Recommendations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/3_how_to_cite_dart.html">How to cite DART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../doc_files/3_version_history.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DARTassembler</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">DARTassembler.cli</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for DARTassembler.cli</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">DART implements a list of commands for the terminal which you can use to interact with the package:</span>
+
+<span class="sd">.. argparse::</span>
+<span class="sd">   :module: DARTassembler.src.cli</span>
+<span class="sd">   :func: get_parser</span>
+<span class="sd">   :prog: DARTassembler</span>
+
+
+<span class="sd">.. option:: DARTassembler --help</span>
+
+<span class="sd">    Displays a list of available commands. Useful to check if DART is available.</span>
+
+<span class="sd">.. option::  DARTassembler assembler --input assembler_input.yml</span>
+
+<span class="sd">    Executes the :ref:`Assembler Module &lt;assembler&gt;` using the provided configuration file.</span>
+
+<span class="sd">.. option:: DARTassembler ligandfilters --input ligandfilters_input.yml</span>
+
+<span class="sd">    Executes the :ref:`Ligand Filters Module &lt;ligandfilters&gt;` using the provided configuration file.</span>
+
+<span class="sd">.. option:: DARTassembler dbinfo --db ligand_db.jsonlines --outdir . --n 1000 --metal false</span>
+
+<span class="sd">    Run this command to get more information on the ligands in the ligand database file ``ligand_db.jsonlines``. It will immediately save two files in the current directory, which here would be called ``ligand_db.csv`` and ``concat_ligand_db.xyz``. The .csv file contains information about each ligand in the database such as stoichiometry, donors or formal charge. The concatenated .xyz file contains the 3D structures of all ligands in the database. To browse through the structures, you can use the command ``ase gui concat_ligand_db.xyz``. The option ``--n 1000`` limits the number of ligands read in from the database to 1000 for testing purposes. If setting ``metal`` to ``false``, the metal atom will be excluded from the concatenated .xyz file (by default, the metal atom is included).</span>
+
+<span class="sd">    Instead of providing a path to a ligand database file, you can also use ``--input metalig`` to generate the overview for the entire :ref:`MetaLig database&lt;metalig&gt;`.</span>
+
+<span class="sd">.. option:: DARTassembler concat --dbs ligand_db1.jsonlines ligand_db2.jsonlines [ligand_db3.jsonlines ...] --outpath concat_ligand_db.jsonlines</span>
+
+<span class="sd">    Concatenates two or more ligand database files into one. The output will be saved to a file called ``concat_ligand_db.jsonlines``.</span>
+
+<span class="sd">.. option:: DARTassembler installtest --path testdir</span>
+
+<span class="sd">    Runs a quick test of the ``assembler``, ``ligandfilters`` and ``dbinfo`` module and saves the results in the directory ``testdir``. If no directory is specified, the results will not be saved.</span>
+
+<span class="sd">.. option:: DARTassembler configs --path .</span>
+
+<span class="sd">    Saves two files to the specified directory, ``assembler.yml`` and ``ligandfilters.yml``. These files are templates for the configuration files of the assembler and ligandfilters module. They are handy to get started with a new project.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">Assembler</span><span class="p">,</span> <span class="n">LigandFilters</span><span class="p">,</span> <span class="n">DBInfo</span><span class="p">,</span> <span class="n">Concat</span><span class="p">,</span> <span class="n">Configs</span>
+
+<span class="n">init_cli_output</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;================================================================================</span>
+<span class="s2">                            ____  ___    ____  ______</span>
+<span class="s2">                           / __ \/   |  / __ \/_  __/</span>
+<span class="s2">                          / / / / /| | / /_/ / / /   </span>
+<span class="s2">                         / /_/ / ___ |/ _, _/ / /    </span>
+<span class="s2">                        /_____/_/  |_/_/ |_| /_/     </span>
+<span class="s2">        </span>
+<span class="s2">          DART - Directed Assembly of Random Transition metal complexes</span>
+<span class="s2">              Developed by the CCEM group at Trinity College Dublin</span>
+<span class="s2">================================================================================&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="str2bool">
+<a class="viewcode-back" href="../../doc_files/2_module_overview.html#DARTassembler.cli.str2bool">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">str2bool</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">v</span>
+    <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;true&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">v</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;false&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span><span class="s2">&quot;Boolean value expected.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="none_or_str">
+<a class="viewcode-back" href="../../doc_files/2_module_overview.html#DARTassembler.cli.none_or_str">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">none_or_str</span><span class="p">(</span><span class="n">p</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">p</span></div>
+
+
+<div class="viewcode-block" id="get_parser">
+<a class="viewcode-back" href="../../doc_files/2_module_overview.html#DARTassembler.cli.get_parser">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_parser</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">prog</span><span class="o">=</span><span class="s2">&quot;DARTassembler&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;DART command-line interface for assembling novel transition metal complexes from a database of ligands.&#39;</span><span class="p">)</span>
+    <span class="n">subparsers</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="s2">&quot;module&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;DART modules&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Assembler</span>
+    <span class="n">parser_assembler</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;assembler&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Assemble complexes from ligands in a high-throughput fashion&quot;</span><span class="p">)</span>
+    <span class="n">parser_assembler</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--input&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to a yml file with assembler options&quot;</span><span class="p">)</span>
+    <span class="n">parser_assembler</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">Assembler</span><span class="o">.</span><span class="n">run_from_cli</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">))</span>
+
+    <span class="c1"># LigandFilters</span>
+    <span class="n">parser_ligandfilters</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;ligandfilters&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Filter ligands from a database&quot;</span><span class="p">)</span>
+    <span class="n">parser_ligandfilters</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--input&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to a yml file with ligand filter options&quot;</span><span class="p">)</span>
+    <span class="n">parser_ligandfilters</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">LigandFilters</span><span class="o">.</span><span class="n">run_from_cli</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">))</span>
+
+    <span class="c1"># DBInfo</span>
+    <span class="n">parser_dbinfo</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;dbinfo&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Get info files from a ligand database&quot;</span><span class="p">)</span>
+    <span class="n">parser_dbinfo</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--db&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;metalig&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to ligand database&quot;</span><span class="p">)</span>
+    <span class="n">parser_dbinfo</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--outdir&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">none_or_str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output directory for csv and xyz file&quot;</span><span class="p">)</span>
+    <span class="n">parser_dbinfo</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--n&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Maximum number of ligands to read in from the database&quot;</span><span class="p">)</span>
+    <span class="n">parser_dbinfo</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--metal&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">str2bool</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">const</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Include metal atoms in the output&quot;</span><span class="p">)</span>
+    <span class="n">parser_dbinfo</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">DBInfo</span><span class="o">.</span><span class="n">run_from_cli</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">db</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="n">metal</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">metal</span><span class="p">))</span>
+
+    <span class="c1"># Concat</span>
+    <span class="n">parser_concat</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;concat&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Concatenate multiple ligand databases&quot;</span><span class="p">)</span>
+    <span class="n">parser_concat</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--dbs&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Paths to ligand databases&quot;</span><span class="p">)</span>
+    <span class="n">parser_concat</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--outpath&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">none_or_str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;concat_ligand_db.jsonlines&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Output path for concatenated database&quot;</span><span class="p">)</span>
+    <span class="n">parser_concat</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--n&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Maximum number of ligands per database&quot;</span><span class="p">)</span>
+    <span class="n">parser_concat</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">Concat</span><span class="o">.</span><span class="n">run_from_cli</span><span class="p">(</span><span class="n">dbs</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">dbs</span><span class="p">,</span> <span class="n">outpath</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">outpath</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">n</span><span class="p">))</span>
+
+    <span class="c1"># Configs</span>
+    <span class="n">parser_configs</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;configs&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Retrieve default yaml configuration files&quot;</span><span class="p">)</span>
+    <span class="n">parser_configs</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;--outdir&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">none_or_str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Directory to save the configuration files&quot;</span><span class="p">)</span>
+    <span class="n">parser_configs</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="k">lambda</span> <span class="n">args</span><span class="p">:</span> <span class="n">Configs</span><span class="o">.</span><span class="n">run_from_cli</span><span class="p">(</span><span class="n">outdir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">outdir</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">parser</span></div>
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../doc_files/2_module_overview.html#DARTassembler.cli.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">init_cli_output</span><span class="p">)</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">get_parser</span><span class="p">()</span>
+
+    <span class="c1"># Install cli</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">args</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="k">return</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, CCEM group.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

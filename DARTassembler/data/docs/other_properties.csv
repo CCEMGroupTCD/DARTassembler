@@ -1,10 +1,10 @@
 ﻿property,type,description,example
-`archetype_rssd`,float,Root sum square distance from the ideal archetype geometry,0.114051734
-`archetype_confidence`,float,Confidence score for the archetype assignment (higher is better),10.40652244
-`has_confident_charge`,bool,Whether the assigned charge is considered confident (true for all ligands),TRUE
-`graph_hash`,str,Graph hash identifier of the ligand (inter-ligand only),e018fbba4037dd7fbcada96133e091df
-`graph_hash_with_metal`,str,Graph hash including pseudo metal center,2a93874ecbf095e56bd1ffb4f397fca5
-`heavy_atoms_graph_hash`,str,Graph hash computed using heavy atoms only,62196285009c06c5a0dbb8690a5bad97
-`heavy_atoms_graph_hash_with_metal`,str,Heavy-atom graph hash including pseudo metal center,1fd0bddc7139608dcf31f53d967593c7
-`bond_order_graph_hash`,str,Graph hash including bond order information,b24c25d7d7b989beb0143dea3590010e
-`csd_complex_ids`,list,CSD complex identifiers where ligand was observed (comma-separated if multiple),"OZIYON, OZIYON, PAQJAV, PAQJAV, PEDFOW, ... (473 more)"
+archetype_rssd,float,Root sum square distance from the ideal archetype geometry,0.114051734
+archetype_confidence,float,Confidence score for the archetype assignment (higher is better),10.40652244
+has_confident_charge,bool,Whether the assigned charge is considered confident (true for all ligands),TRUE
+graph_hash,str,Graph hash identifier of the ligand (inter-ligand only),e018fbba4037dd7fbcada96133e091df
+graph_hash_with_metal,str,Graph hash including pseudo metal center,2a93874ecbf095e56bd1ffb4f397fca5
+heavy_atoms_graph_hash,str,Graph hash computed using heavy atoms only,62196285009c06c5a0dbb8690a5bad97
+heavy_atoms_graph_hash_with_metal,str,Heavy-atom graph hash including pseudo metal center,1fd0bddc7139608dcf31f53d967593c7
+bond_order_graph_hash,str,Graph hash including bond order information,b24c25d7d7b989beb0143dea3590010e
+csd_complex_ids,list,CSD complex identifiers where ligand was observed (comma-separated if multiple),"OZIYON, OZIYON, PAQJAV, PAQJAV, PEDFOW, ... (473 more)"

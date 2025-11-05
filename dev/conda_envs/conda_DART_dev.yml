@@ -24,8 +24,12 @@ dependencies:
   - sphinx_rtd_theme>=0.5.1   # To avoid bullet-point bug
   - sphinx-toolbox
   - sphinx-copybutton
+  - sphinx-design
+  - sphinx-autobuild
+  - sphinx-argparse
   - setuptools<67.3           # Gives deprecation warning otherwise
   - twine                     # Needed for uploading to PyPI
+  - pyproject_hooks
   - pip:
       - pysmiles
       - moldoc                # For 3D rendering of molecules in documentation

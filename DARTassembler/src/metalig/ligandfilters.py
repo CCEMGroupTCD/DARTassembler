@@ -1,30 +1,11 @@
 """
-The LigandFilters Module enables users to obtain a set of ligands with well-defined properties from the entire :ref:`MetaLig Database <metalig>`. These filters are invaluable for assembling complexes targeted to a user-defined chemical space.
-
-Users can apply a large range of predefined filters. For those requiring precise control over the structures, the :confval:`smarts` filter allows for the application of powerful SMARTS patterns to filter ligands based on their 2D chemical structure. Alternatively, instead of using the LigandFilters Module with pre-defined filters, users can :ref:`explore the MetaLig and create custom filters using Python <metalig_python_filtering>`.
-
-The LigandFilters module is run in the terminal by providing a single configuration file:
-
-.. code-block:: bash
-
-    DARTassembler ligandfilters --path ligandfilters_input.yml
-
-There are four types of filters:
-
-- :confval:`property` : filter by a simple named property such as :filter:`charge`, :filter:`archetype` or :filter:`n_haptic_groups`.
-- :confval:`composition` : filter by element composition or stoichiometry. Both the entire ligand and only the donor atoms can be considered.
-- :confval:`smarts` : filter by a SMARTS pattern to isolate ligands with specific substructures, e.g. ``C=O`` for carbonyl groups.
-- :confval:`parents` : filter by parent metal centers present in the ligand's source complexes, e.g. ``[Pt2+, Pd`]``.
-
-These filters can be applied to any of the :ref:`MetaLig properties <metalig_properties>`.
-
-Example usage:
+Example Usage
 ----------------
-The following filters will return cis-bidentate N-O donors with up to 50 atoms that do not contain any CH2 groups, only contain C, H, N, O atoms in total, and have been observed to coordinate to Pt+2, Pt+4, Pd, or Ni metal centers. We speed up our example by only loading 1000 ligands from the MetaLig database.
+The following filters will return cis-bidentate N-O donors with up to 50 atoms that do not contain any CH2 groups, only contain C, H, N, O atoms in total, and have been observed to coordinate to Pt+2, Pt+4, Pd, or Ni metal centers. We speed up the filtering by only loading 1000 ligands from the MetaLig database.
 
 .. code-block:: python
 
-    from DARTassembler.src.metalig.ligandfilters import LigandFilters
+    from DARTassembler import LigandFilters
     filters = LigandFilters(db='metalig', n=1000)
     db = filters.run(
             filters=[
@@ -58,15 +39,12 @@ class LigandFilters(BaseModule):
 
     def __init__(self, db: Union[str, Path, None], n: Union[int, None] = None):
         """
-        Initialize a LigandFilters instance and load the ligand database.
+        Initialize the DART LigandFilters module. The options set here applied to all batches.
 
-        The constructor resolves the given database identifier or path, loads ligands
-        into a LigandDB object and optionally limits the number of ligands loaded.
+         .. tip:: All the parameters below are available as well via the ligandfilters .yml file as global options.
 
-        :param db: Path, package name, or None to use default ligand database.
-        :type db: Union[str, Path, None]
-        :param n: Maximum number of ligands to load from the database. If None, load all ligands.
-        :type n: Union[int, None]
+        :param str | None db: .jsonlines ligand db filepath or None to use the entire MetaLig database.
+        :param int | None n: Maximum number of ligands to load from the database. If None, load all ligands.
         :return: None
         :rtype: None
         """
@@ -110,18 +88,18 @@ class LigandFilters(BaseModule):
             except KeyError:
                 raise ValueError(f'Filter does not have a "filter" key specifying the filter type: {filter}')
             if filtername == 'property':
-                unames = [uname for uname in unames if self.db.db[uname].has_global_property_in_range(**filter)]
+                unames = [uname for uname in unames if self.db.db[uname].property_filter(**filter)]
                 name_appendix = filter['name']
             elif filtername == 'composition':
                 if isinstance(filter['elements'], str):
                     filter['elements'] = stoichiometry2atomslist(filter['elements'])
-                unames = [uname for uname in unames if self.db.db[uname].has_specified_stoichiometry(**filter)]
+                unames = [uname for uname in unames if self.db.db[uname].composition_filter(**filter)]
                 name_appendix = get_standardized_stoichiometry_from_atoms_list(filter['elements'])
             elif filtername == 'parents':
-                unames = [uname for uname in unames if self.db.db[uname].has_specified_metal_centers(**filter)]
+                unames = [uname for uname in unames if self.db.db[uname].parents_filter(**filter)]
                 name_appendix = ', '.join(filter['metal_centers'])
             elif filtername == 'smarts':
-                unames = [uname for uname in unames if self.db.db[uname].has_specified_smarts(**filter)]
+                unames = [uname for uname in unames if self.db.db[uname].smarts_filter(**filter)]
                 name_appendix = filter['smarts']
             else:
                 raise ValueError(f'Filter specification "{filtername}" not recognized! Supported filters are "property", "composition", "parents", and "smarts".')
@@ -371,6 +349,10 @@ class LigandFilters(BaseModule):
             ) -> LigandDB:
         """
         Apply provided filters, save the filtered ligand database, and optionally save auxiliary info.
+
+        .. tip::
+
+            All the parameters below are available as well via the assembler .yml file as batch options (i.e. indented in the ``batches:`` list).
 
         The method executes the filtering pipeline, writes the filtered LigandDB to outpath (if provided),
         and optionally writes human-readable information (CSV, XYZ concatenations) controlled by dbinfo.

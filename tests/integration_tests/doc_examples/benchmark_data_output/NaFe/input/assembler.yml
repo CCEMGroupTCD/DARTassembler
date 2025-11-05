@@ -1,0 +1,66 @@
+output_directory: NaFe
+verbosity: 2
+complex_name_length: 8
+n_max_ligands: null
+batches:
+- &id001
+  name: Na-Fe-amide
+  ligand_db_files:
+  - ligands/C6H6.jsonlines
+  - ligands/amide.jsonlines
+  - same_as_previous
+  - same_as_previous
+  target_vectors:
+  - - - -1
+      - 0
+      - 0
+  - - - 0
+      - 0
+      - 1
+  - - - 0
+      - 0
+      - -1
+  - - - 1
+      - 0
+      - 0
+  ligand_origins:
+  - - 0
+    - 0
+    - 0
+  - - 2
+    - 0
+    - 0
+  - - 2
+    - 0
+    - 0
+  - - 4
+    - 0
+    - 0
+  metal_centers:
+  - - - Na
+      - - 0
+        - 0
+        - 0
+  - - - Na
+      - - 0
+        - 0
+        - 0
+    - - Fe
+      - - 4
+        - 0
+        - 0
+  - - - Na
+      - - 0
+        - 0
+        - 0
+    - - Fe
+      - - 4
+        - 0
+        - 0
+  - - - Fe
+      - - 4
+        - 0
+        - 0
+  n_max_complexes: all
+idx: 0
+batch: *id001

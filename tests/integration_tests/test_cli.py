@@ -3,8 +3,8 @@ Integration test for the cli, running all the modules in the DARTassembler packa
 """
 import os
 from pathlib import Path
-from DARTassembler.src.constants.paths import project_path
-from DARTassembler import cli
+from DARTassembler.src.constants.paths import project_path, default_assembler_yml_path, default_ligandfilters_yml_path
+from DARTassembler.src.misc import cli
 import sys
 from shutil import rmtree
 
@@ -28,12 +28,15 @@ def test_cli():
         'concat': {
             'dbs': 'metalig',
             'n': 100,
+            'outpath': 'concat_ligand_db.jsonlines',
         },
         'configs': {
         },
         'ligandfilters': {
+            'input': default_ligandfilters_yml_path,
         },
         'assembler': {
+            'input': default_assembler_yml_path,
         },
     }
     old_cwd = Path.cwd()    # Save the current working directory to return to it later

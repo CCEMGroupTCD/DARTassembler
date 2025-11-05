@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,22 +7,20 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LigandFilters Module &mdash; DARTassembler dev documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -40,9 +40,6 @@
             DARTassembler
               <img src="../_static/DART_pic.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                dev
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -55,28 +52,28 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="1_installation_guide.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="1_Pd_Ni_Cross_Coupling.html">Advanced Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_NaFe_example.html">Advanced Example: Na-Fe systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_understanding_the_dart_workflow.html">Understanding DART</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="2_module_overview.html">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_metalig_database.html">MetaLig Ligand Database</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">LigandFilters Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#example-usage">Example usage:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters"><code class="docutils literal notranslate"><span class="pre">LigandFilters</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.apply_filters"><code class="docutils literal notranslate"><span class="pre">LigandFilters.apply_filters()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.save_filtered_ligands_output"><code class="docutils literal notranslate"><span class="pre">LigandFilters.save_filtered_ligands_output()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_yaml"><code class="docutils literal notranslate"><span class="pre">LigandFilters.run_from_yaml()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_cli"><code class="docutils literal notranslate"><span class="pre">LigandFilters.run_from_cli()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.run"><code class="docutils literal notranslate"><span class="pre">LigandFilters.run()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.desc"><code class="docutils literal notranslate"><span class="pre">LigandFilters.desc</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.module_name"><code class="docutils literal notranslate"><span class="pre">LigandFilters.module_name</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#ligandfilters-input">LigandFilters Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ligandfilters-output">LigandFilters Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ligandfilters-options">LigandFilters Options</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="2_assembler.html">Assembler Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_module_overview.html">Module Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_metalig_api.html">MetaLig API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_ligand_filters_api.html">LigandFilters API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_other_modules.html">Other DART Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
 <ul>
@@ -115,189 +112,289 @@
 <span id="ligandfilters"></span><h1>LigandFilters Module<a class="headerlink" href="#ligandfilters-module" title="Link to this heading"></a></h1>
 <nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#example-usage" id="id1">Example usage:</a></p></li>
+<li><p><a class="reference internal" href="#ligandfilters-input" id="id1">LigandFilters Input</a></p></li>
+<li><p><a class="reference internal" href="#ligandfilters-output" id="id2">LigandFilters Output</a></p></li>
+<li><p><a class="reference internal" href="#ligandfilters-options" id="id3">LigandFilters Options</a></p></li>
 </ul>
 </nav>
-<p id="module-DARTassembler.src.metalig.ligandfilters">The LigandFilters Module enables users to obtain a set of ligands with well-defined properties from the entire <a class="reference internal" href="2_metalig_database.html#metalig"><span class="std std-ref">MetaLig Database</span></a>. These filters are invaluable for assembling complexes targeted to a user-defined chemical space.</p>
-<p>Users can apply a large range of predefined filters. For those requiring precise control over the structures, the <code class="xref std std-confval docutils literal notranslate"><span class="pre">smarts</span></code> filter allows for the application of powerful SMARTS patterns to filter ligands based on their 2D chemical structure. Alternatively, instead of using the LigandFilters Module with pre-defined filters, users can <a class="reference internal" href="2_metalig_database.html#metalig-python-filtering"><span class="std std-ref">explore the MetaLig and create custom filters using Python</span></a>.</p>
+<section id="ligandfilters-input">
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">LigandFilters Input</a><a class="headerlink" href="#ligandfilters-input" title="Link to this heading"></a></h2>
+<p>The LigandFilters Module enables users to obtain a set of ligands with well-defined properties from the entire <a class="reference internal" href="2_metalig_database.html#metalig"><span class="std std-ref">MetaLig Database</span></a>. These filters are invaluable for assembling complexes targeted to a user-defined chemical space.</p>
+<p>There are four types of filters, which can be applied to any of the <a class="reference internal" href="2_metalig_database.html#metalig-properties"><span class="std std-ref">MetaLig ligand properties</span></a>:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#property-filter"><span class="std std-ref">property</span></a> : filter by a simple named property such as <code class="filter docutils literal notranslate"><span class="pre">charge</span></code>, <code class="filter docutils literal notranslate"><span class="pre">archetype</span></code> or <code class="filter docutils literal notranslate"><span class="pre">n_haptic_groups</span></code>.</p></li>
+<li><p><a class="reference internal" href="#composition-filter"><span class="std std-ref">composition</span></a> : filter by composition of donor atoms or the entire ligand.</p></li>
+<li><p><a class="reference internal" href="#smarts-filter"><span class="std std-ref">smarts</span></a> : filter by a SMARTS pattern to exclude/include ligands with specific substructures, e.g. <code class="docutils literal notranslate"><span class="pre">'[N]=[N]'</span></code> for azo groups.</p></li>
+<li><p><a class="reference internal" href="#parents-filter"><span class="std std-ref">parents</span></a> : filter by known parent metal centers of the ligand, e.g. <code class="docutils literal notranslate"><span class="pre">['Pt2+',</span> <span class="pre">'Pd']</span></code>.</p></li>
+</ul>
 <p>The LigandFilters module is run in the terminal by providing a single configuration file:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>DARTassembler<span class="w"> </span>ligandfilters<span class="w"> </span>--path<span class="w"> </span>ligandfilters_input.yml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>DARTassembler<span class="w"> </span>ligandfilters<span class="w"> </span>--input<span class="w"> </span>ligandfilters.yml
 </pre></div>
 </div>
-<p>There are four types of filters:</p>
-<ul class="simple">
-<li><p><code class="xref std std-confval docutils literal notranslate"><span class="pre">property</span></code> : filter by a simple named property such as <code class="filter docutils literal notranslate"><span class="pre">charge</span></code> or <code class="filter docutils literal notranslate"><span class="pre">archetype</span></code>.</p></li>
-<li><p><code class="xref std std-confval docutils literal notranslate"><span class="pre">composition</span></code> : filter by element composition or stoichiometry. Both the entire ligand and only the donor atoms can be considered.</p></li>
-<li><p><code class="xref std std-confval docutils literal notranslate"><span class="pre">smarts</span></code> : filter by a SMARTS pattern to isolate ligands with specific substructures, e.g. <code class="docutils literal notranslate"><span class="pre">C=O</span></code> for carbonyl groups.</p></li>
-<li><p><code class="xref std std-confval docutils literal notranslate"><span class="pre">parents</span></code> : filter by parent metal centers present in the ligand’s source complexes, e.g. <code class="docutils literal notranslate"><span class="pre">[Pt2+,</span> <span class="pre">Pd`]</span></code>.</p></li>
-</ul>
-<p>These filters can be applied to any of the <a class="reference internal" href="2_metalig_database.html#metalig-properties"><span class="std std-ref">MetaLig properties</span></a>.</p>
-<section id="example-usage">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">Example usage:</a><a class="headerlink" href="#example-usage" title="Link to this heading"></a></h2>
-<p>The following filters will return cis-bidentate N-O donors with up to 50 atoms that do not contain any CH2 groups, only contain C, H, N, O atoms in total, and have been observed to coordinate to Pt+2, Pt+4, Pd, or Ni metal centers. We speed up the filtering by only loading 1000 ligands from the MetaLig database.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">DARTassembler.src.metalig.ligandfilters</span> <span class="kn">import</span> <span class="n">LigandFilters</span>
-<span class="n">filters</span> <span class="o">=</span> <span class="n">LigandFilters</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="s1">&#39;metalig&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-<span class="n">db</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-        <span class="n">filters</span><span class="o">=</span><span class="p">[</span>
-            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;property&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;n_atoms&#39;</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]},</span>
-            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;property&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;archetype&#39;</span><span class="p">,</span> <span class="s1">&#39;values&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2-cis&#39;</span><span class="p">]},</span>
-            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;smarts&#39;</span><span class="p">,</span> <span class="s1">&#39;smarts&#39;</span><span class="p">:</span> <span class="s1">&#39;[C&amp;H2]&#39;</span><span class="p">,</span> <span class="s1">&#39;should_contain&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;include_metal&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
-            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;composition&#39;</span><span class="p">,</span> <span class="s1">&#39;elements&#39;</span><span class="p">:</span> <span class="s1">&#39;CHNO&#39;</span><span class="p">,</span> <span class="s1">&#39;instruction&#39;</span><span class="p">:</span> <span class="s1">&#39;must_at_least_contain&#39;</span><span class="p">,</span> <span class="s1">&#39;only_donors&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
-            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;composition&#39;</span><span class="p">,</span> <span class="s1">&#39;elements&#39;</span><span class="p">:</span> <span class="s1">&#39;NO&#39;</span><span class="p">,</span> <span class="s1">&#39;instruction&#39;</span><span class="p">:</span> <span class="s1">&#39;must_contain_and_only_contain&#39;</span><span class="p">,</span> <span class="s1">&#39;only_donors&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
-            <span class="p">{</span><span class="s1">&#39;filter&#39;</span><span class="p">:</span> <span class="s1">&#39;parents&#39;</span><span class="p">,</span> <span class="s1">&#39;metal_centers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Pt+2&#39;</span><span class="p">,</span> <span class="s1">&#39;Pt+4&#39;</span><span class="p">,</span> <span class="s1">&#39;Pd&#39;</span><span class="p">,</span> <span class="s1">&#39;Ni&#39;</span><span class="p">]}</span>
-        <span class="p">],</span>
-        <span class="n">outpath</span><span class="o">=</span><span class="s1">&#39;filtered_ligand_db.jsonlines&#39;</span><span class="p">,</span>
-        <span class="n">dbinfo</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">metal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span>
+<p><strong>Copy-Paste Template:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">################## Settings for the DART ligandfilters module ##################</span>
+<span class="linenos"> 2</span><span class="c1"># file: ligandfilters.yml</span>
+<span class="linenos"> 3</span><span class="c1"># Everything after &#39;#&#39; is a comment that is ignored by the program and only there for the user.</span>
+<span class="linenos"> 4</span><span class="c1"># See the &#39;LigandFilters Module&#39; section in the DART documentation for more information.</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="nt">outpath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">filtered_ligand_db.jsonlines</span><span class="w">   </span><span class="c1"># Output file</span>
+<span class="linenos"> 7</span><span class="nt">n</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w">                                 </span><span class="c1"># Speed up test runs by limiting the number of ligands loaded from the MetaLig. Default: None (load all ligands).</span>
+<span class="linenos"> 8</span><span class="nt">dbinfo</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">                            </span><span class="c1"># Output an info directory about the filtering (see dbinfo module docs).</span>
+<span class="linenos"> 9</span><span class="nt">metal</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">                             </span><span class="c1"># Include metal atoms in the concatenated .xyz files if dbinfo is True (see dbinfo module docs).</span>
+<span class="linenos">10</span><span class="nt">filters</span><span class="p">:</span>
+<span class="linenos">11</span><span class="w">  </span><span class="c1">#============ Simple property filters ============#</span>
+<span class="linenos">12</span><span class="w">  </span><span class="c1"># Keep only cis-bidentate ligands (and haptic ligands treated as 2-cis, see docs)</span>
+<span class="linenos">13</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;property&#39;</span>
+<span class="linenos">14</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;archetype&#39;</span>
+<span class="linenos">15</span><span class="w">    </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;1-mono&#39;</span><span class="p p-Indicator">]</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span><span class="w">  </span><span class="c1"># Keep only ligands with formal charge -2, -1 or 0</span>
+<span class="linenos">18</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;property&#39;</span>
+<span class="linenos">19</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;charge&#39;</span>
+<span class="linenos">20</span><span class="w">    </span><span class="nt">values</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">-1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">]</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span><span class="w">  </span><span class="c1"># Keep only ligands with molecular weight between 30.1 and 300.2 g/mol</span>
+<span class="linenos">23</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;property&#39;</span>
+<span class="linenos">24</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;molecular_weight&#39;</span>
+<span class="linenos">25</span><span class="w">    </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">30.1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">300.2</span><span class="p p-Indicator">]</span>
+<span class="linenos">26</span>
+<span class="linenos">27</span><span class="w">  </span><span class="c1"># Exclude ligands which appeared less than 5 times in the CSD source data</span>
+<span class="linenos">28</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;property&#39;</span>
+<span class="linenos">29</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;n_ligand_instances&#39;</span>
+<span class="linenos">30</span><span class="w">    </span><span class="nt">range</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">999999999</span><span class="p p-Indicator">]</span>
+<span class="linenos">31</span>
+<span class="linenos">32</span><span class="w">  </span><span class="c1">#============ Composition filters ============#</span>
+<span class="linenos">33</span><span class="w">  </span><span class="c1"># Keep only ligands containing C, H, N, O atoms (in any amount)</span>
+<span class="linenos">34</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;composition&#39;</span>
+<span class="linenos">35</span><span class="w">    </span><span class="nt">elements</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;CHNO&#39;</span>
+<span class="linenos">36</span><span class="w">    </span><span class="nt">instruction</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;must_only_contain_in_any_amount&#39;</span>
+<span class="linenos">37</span><span class="w">    </span><span class="nt">only_donors</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="linenos">38</span>
+<span class="linenos">39</span><span class="w">  </span><span class="c1"># Keep only ligands with exactly 1 N donor</span>
+<span class="linenos">40</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;composition&#39;</span>
+<span class="linenos">41</span><span class="w">    </span><span class="nt">elements</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;N&#39;</span>
+<span class="linenos">42</span><span class="w">    </span><span class="nt">instruction</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;must_contain_and_only_contain&#39;</span>
+<span class="linenos">43</span><span class="w">    </span><span class="nt">only_donors</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="linenos">44</span>
+<span class="linenos">45</span><span class="w">  </span><span class="c1">#============ SMARTS substructure filters ============#</span>
+<span class="linenos">46</span><span class="w">  </span><span class="c1"># Keep only amide ligands</span>
+<span class="linenos">47</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;smarts&#39;</span>
+<span class="linenos">48</span><span class="w">    </span><span class="nt">smarts</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[N&amp;D3X3!a](-[Hg])(-[C,Si])(-[C,Si])&#39;</span>
+<span class="linenos">49</span><span class="w">    </span><span class="nt">should_contain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="linenos">50</span><span class="w">    </span><span class="nt">include_metal</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="linenos">51</span>
+<span class="linenos">52</span><span class="w">  </span><span class="c1"># Exclude ligands containing methylene groups (CH2)</span>
+<span class="linenos">53</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;smarts&#39;</span>
+<span class="linenos">54</span><span class="w">    </span><span class="nt">smarts</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;[C&amp;H2]&#39;</span>
+<span class="linenos">55</span><span class="w">    </span><span class="nt">should_contain</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="linenos">56</span><span class="w">    </span><span class="nt">include_metal</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="linenos">57</span>
+<span class="linenos">58</span><span class="w">  </span><span class="c1">#============ Parent CSD complex filters ============#</span>
+<span class="linenos">59</span><span class="w">  </span><span class="c1"># Keep only ligands which have coordinated to Pt(II), Pt(IV), Pd or Ni in at least one of their parent CSD complexes.</span>
+<span class="linenos">60</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">filter</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;parents&#39;</span>
+<span class="linenos">61</span><span class="w">    </span><span class="nt">metal_centers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;Pt+2&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;Pt+4&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;Pd&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;Ni&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>Users can download this template into their current directory as <code class="docutils literal notranslate"><span class="pre">ligandfilters.yml</span></code> by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>DARTassembler<span class="w"> </span>configs<span class="w"> </span>--outdir<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
-<dl class="py class">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.ligandfilters.LigandFilters">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DARTassembler.src.metalig.ligandfilters.</span></span><span class="sig-name descname"><span class="pre">LigandFilters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/ligandfilters.html#LigandFilters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModule</span></code></p>
-<p>This module applies user-defined filters to a ligand database to obtain a subset of ligands with desired properties.</p>
-<p>Initialize a LigandFilters instance and load the ligand database.</p>
-<p>The constructor resolves the given database identifier or path, loads ligands
-into a LigandDB object and optionally limits the number of ligands loaded.</p>
+<section id="ligandfilters-output">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">LigandFilters Output</a><a class="headerlink" href="#ligandfilters-output" title="Link to this heading"></a></h2>
+<p>The output of the LigandFilters module is a file called e.g. <code class="docutils literal notranslate"><span class="pre">filtered_ligand_db.jsonlines</span></code>, which contains all ligands that passed the specified filters. These files can be used as input <code class="docutils literal notranslate"><span class="pre">ligand_db_files</span></code> for the <a class="reference internal" href="2_assembler.html#assembler"><span class="std std-ref">Assembler Module</span></a>. Thus, users can assemble complexes with ligands that have exactly the desired properties.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">dbinfo</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, an additional directory <code class="docutils literal notranslate"><span class="pre">info_filtered_ligand_db/</span></code> is created, which contains summary information about the filtered ligands, including:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ligands_overview.csv</span></code>: A summary table of the filters. The column <code class="docutils literal notranslate"><span class="pre">filter</span></code> indicates which filter each ligand failed. If a ligand passed all filters, this column contains <code class="docutils literal notranslate"><span class="pre">'Passed'</span></code>. The passed ligands are at the very end of the table.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filters.txt</span></code>: This is the main log file of the filtering process, recording all messages, warnings, and errors during filtering.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">concat_xyz/</span></code>: This folder contains concatenated .xyz files of all ligands that failed a certain filter. Each file is named according to the filter it corresponds to. All the ligands which passed all filters are stored in <code class="docutils literal notranslate"><span class="pre">concat_Passed.xyz</span></code>. These concatenated .xyz files can easily be browsed using the <code class="docutils literal notranslate"><span class="pre">ase</span> <span class="pre">gui</span></code> command from the ASE package:</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ase<span class="w"> </span>gui<span class="w"> </span>concat_Passed.xyz
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="ligandfilters-options">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">LigandFilters Options</a><a class="headerlink" href="#ligandfilters-options" title="Link to this heading"></a></h2>
+<p>The provided filters are applied in the order they are listed in the <code class="docutils literal notranslate"><span class="pre">filters</span></code> list. Each filter is a dictionary with a key <code class="docutils literal notranslate"><span class="pre">'filter'</span></code> specifying the filter type and other filter-specific keys. Each filter is then passed to the corresponding method of the <a class="reference internal" href="2_ligands.html#DARTassembler.src.metalig.mol.Ligand" title="DARTassembler.src.metalig.mol.Ligand"><code class="xref py py-class docutils literal notranslate"><span class="pre">DARTassembler.src.metalig.mol.Ligand</span></code></a> class. Please refer to the docstrings of these 4 methods for a detailed description of all available options. You will see that the options match perfectly with the options in the .yml configuration template above.</p>
+<dl class="py function" id="property-filter">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">DARTassembler.src.metalig.mol.Ligand.</span></span><span class="sig-name descname"><span class="pre">property_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Test whether a certain simple property falls within a numeric range or matches one of the provided values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>db</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>None</em><em>]</em>) – Path, package name, or None to use default ligand database.</p></li>
-<li><p><strong>n</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>None</em><em>]</em>) – Maximum number of ligands to load from the database. If None, load all ligands.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The property name of one of the <a class="reference internal" href="2_metalig_database.html#metalig-properties"><span class="std std-ref">MetaLig properties</span></a>.</p></li>
+<li><p><strong>range</strong> (<em>list</em><em>[ </em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>] </em><em>] </em><em>| </em><em>None</em>) – Single range tuple or list of (min, max) tuples specifying allowed numerical intervals.</p></li>
+<li><p><strong>values</strong> (<em>list</em><em> | </em><em>None</em>) – List of allowed exact values or None to skip value matching.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p>True if property value satisfies any provided test, otherwise False.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.ligandfilters.LigandFilters.apply_filters">
-<span class="sig-name descname"><span class="pre">apply_filters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/ligandfilters.html#LigandFilters.apply_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.apply_filters" title="Link to this definition"></a></dt>
-<dd><p>Apply a sequence of filters to the loaded ligand database and return the filtered database.</p>
-<p>Each filter in the list must be a dictionary with a key ‘filter’ specifying the filter type. Supported filters:</p>
-<ul class="simple">
-<li><p>‘property’ : filter by a named global property (e.g. ‘charge’, ‘archetype’).</p></li>
-<li><p>‘composition’ : filter by element composition or stoichiometry (elements may be a string that is converted to an atom list).</p></li>
-<li><p>‘parents’ : filter by parent metal centers (e.g. [‘Fe’, ‘Co’]).</p></li>
-<li><p>‘smarts’ : filter by a SMARTS pattern; note that a bond-order validity property filter is prepended automatically.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>filters</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – Ordered list of filter specification dictionaries. Each dictionary must contain at least the key ‘filter’ and other filter-specific keys.</p>
+<dd class="field-odd"><p>bool</p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If a filter type specified in any filter dict is not recognized.</p>
-</dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>LigandDB object containing only the ligands that passed all filters.</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><a class="reference internal" href="2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB" title="DARTassembler.src.metalig.db.LigandDB">LigandDB</a></p>
+<dd class="field-even"><p><strong>ValueError</strong> – If the requested property is not present or a non-numeric property is tested against numeric ranges.</p>
 </dd>
 </dl>
+<p><strong>Examples :</strong></p>
+<p>To test whether a ligand has a ‘2-cis’ archetype:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">property_filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;archetype&#39;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;2-cis&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>To test whether a ligand has between 1 and 5 haptic atoms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">property_filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_haptic_atoms&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>To test whether a ligand has between 10 and 20 atoms or between 30 and 40 atoms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">property_filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="p">[(</span><span class="mi">10</span><span class="p">,</span><span class="mi">20</span><span class="p">),(</span><span class="mi">30</span><span class="p">,</span><span class="mi">40</span><span class="p">)])</span>
+</pre></div>
+</div>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.ligandfilters.LigandFilters.save_filtered_ligands_output">
-<span class="sig-name descname"><span class="pre">save_filtered_ligands_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/ligandfilters.html#LigandFilters.save_filtered_ligands_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.save_filtered_ligands_output" title="Link to this definition"></a></dt>
-<dd><p>Write informational outputs for filtered ligands: a summary text, a CSV overview, and concatenated XYZ files.</p>
-<p>The method creates an ‘info’ directory next to the specified output ligand DB path and writes:</p>
-<ul class="simple">
-<li><p>filters.txt : human readable filter summary produced by _get_filter_tracking_string,</p></li>
-<li><p>ligands_overview.csv : table with ligand metadata and filter assignment,</p></li>
-<li><p>concat_*.xyz : concatenated xyz files for ‘Passed’ ligands and for each filter-specific removal group.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_yaml">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/ligandfilters.html#LigandFilters.run_from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_yaml" title="Link to this definition"></a></dt>
-<dd><p>Create and run a LigandFilters instance from a YAML specification file.</p>
-<p>If input is None, a default template ligandfilters.yml is used. The YAML file
-must contain top-level keys ‘db’ (optional), ‘n’ (optional) and the filter list and options
-required by the run(…) method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>None</em><em>]</em>) – Path to the filter input file (.yml) or None to use a default template.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A LigandFilters instance after executing the configured filters.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters" title="DARTassembler.src.metalig.ligandfilters.LigandFilters">LigandFilters</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_cli">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_from_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/ligandfilters.html#LigandFilters.run_from_cli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_cli" title="Link to this definition"></a></dt>
-<dd><p>Run ligand filtering using command-line style setup helpers and a YAML input.</p>
-<p>This method wraps run_from_yaml with BaseModule CLI pre/post hooks to provide
-standardized CLI logging and argument printing.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>None</em><em>]</em>) – Path to the filter input file (.yml) or None to use the default template.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A LigandFilters instance after executing the configured filters.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters" title="DARTassembler.src.metalig.ligandfilters.LigandFilters">LigandFilters</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.ligandfilters.LigandFilters.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outpath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'filtered_ligand_db.jsonlines'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbinfo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/ligandfilters.html#LigandFilters.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.run" title="Link to this definition"></a></dt>
-<dd><p>Apply provided filters, save the filtered ligand database, and optionally save auxiliary info.</p>
-<p>The method executes the filtering pipeline, writes the filtered LigandDB to outpath (if provided),
-and optionally writes human-readable information (CSV, XYZ concatenations) controlled by dbinfo.
-It returns the list of unique ligand identifiers that passed all filters.</p>
+<dl class="py function" id="composition-filter">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">DARTassembler.src.metalig.mol.Ligand.</span></span><span class="sig-name descname"><span class="pre">composition_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elements</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instruction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_donors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Test whether a ligand satisfies a specified chemical composition criterion.</p>
+<p>Depending on the value of <code class="filter docutils literal notranslate"><span class="pre">instruction</span></code>, this method applies one of several
+composition-based filters using the provided <code class="filter docutils literal notranslate"><span class="pre">elements</span></code>. If <code class="filter docutils literal notranslate"><span class="pre">only_donors</span></code>
+is <code class="docutils literal notranslate"><span class="pre">True</span></code>, only the donor atoms are considered; otherwise all atoms in the
+ligand are included.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>filters</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – List of filter specification dictionaries to apply in sequence.</p></li>
-<li><p><strong>outpath</strong> (<em>[</em><em>None</em><em>|</em><em>str</em><em>]</em>) – Path to the output ligand database file. If None, no ligand DB file is written.</p></li>
-<li><p><strong>dbinfo</strong> (<em>bool</em>) – If True, write additional info files (CSV, concatenated XYZ) to an info directory.</p></li>
-<li><p><strong>metal</strong> (<em>bool</em>) – If True, in the concatenated XYZ files, include a pseudo metal center in the ligand structure for visualization.</p></li>
+<li><p><strong>elements</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>]</em>) – Stoichiometry (e.g., <code class="docutils literal notranslate"><span class="pre">'H2O'</span></code>) or list of element symbols (e.g., <code class="docutils literal notranslate"><span class="pre">['H',</span> <span class="pre">'H',</span> <span class="pre">'O']</span></code>) used to define the expected atomic composition.</p></li>
+<li><p><strong>instruction</strong> (<em>str</em>) – <p>Specifies the composition rule to apply. Supported options are:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">must_contain_and_only_contain</span></code> – The ligand must consist of exactly these atoms in exactly this count.
+Use this to match an exact stoichiometry (e.g., <code class="docutils literal notranslate"><span class="pre">C6H6</span></code> for benzene).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">must_at_least_contain</span></code> – The ligand must contain all specified elements, but may also include others.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">must_exclude</span></code> – The ligand must not contain any of the specified elements.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">must_only_contain_in_any_amount</span></code> – The ligand may contain any count, including zero, of the specified elements, but must not contain any other elements.</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>On first glance, these instructions might seem too general to make a useful filter, but by combining the same filter multiple times with different instructions, users can achieve very specific filters.</p>
+</div>
+</p></li>
+<li><p><strong>only_donors</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, evaluate the composition using only donor atoms; otherwise all atoms in the ligand are considered.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>LigandDB object containing only the ligands that passed all filters.</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the ligand satisfies the specified composition criterion.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB" title="DARTassembler.src.metalig.db.LigandDB">LigandDB</a></p>
+<dd class="field-odd"><p>bool</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If an unrecognized instruction string is provided.</p>
 </dd>
 </dl>
+<p><strong>Examples :</strong></p>
+<p>To select tridentate ligands whose donors are exactly two N and one C:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">composition_filter</span><span class="p">(</span>
+        <span class="n">elements</span><span class="o">=</span><span class="s1">&#39;CN2&#39;</span><span class="p">,</span>
+        <span class="n">instruction</span><span class="o">=</span><span class="s1">&#39;must_contain_and_only_contain&#39;</span><span class="p">,</span>
+        <span class="n">only_donors</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>To select ligands whose donors may contain only C and N atoms (or zero of either):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">composition_filter</span><span class="p">(</span>
+        <span class="n">elements</span><span class="o">=</span><span class="s1">&#39;CN&#39;</span><span class="p">,</span>
+        <span class="n">instruction</span><span class="o">=</span><span class="s1">&#39;must_only_contain_in_any_amount&#39;</span><span class="p">,</span>
+        <span class="n">only_donors</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>To select ligands that contain zero or more C, N, and H atoms, but no other elements:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">composition_filter</span><span class="p">(</span>
+    <span class="n">elements</span><span class="o">=</span><span class="s1">&#39;CNH&#39;</span><span class="p">,</span>
+    <span class="n">instruction</span><span class="o">=</span><span class="s1">&#39;must_only_contain_in_any_amount&#39;</span><span class="p">,</span>
+    <span class="n">only_donors</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>To exclude ligands containing sulfur atoms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">composition_filter</span><span class="p">(</span>
+    <span class="n">elements</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span>
+    <span class="n">instruction</span><span class="o">=</span><span class="s1">&#39;must_exclude&#39;</span><span class="p">,</span>
+    <span class="n">only_donors</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>To select ligands that contain at least one O atom:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">composition_filter</span><span class="p">(</span>
+    <span class="n">elements</span><span class="o">=</span><span class="s1">&#39;O&#39;</span><span class="p">,</span>
+    <span class="n">instruction</span><span class="o">=</span><span class="s1">&#39;must_at_least_contain&#39;</span><span class="p">,</span>
+    <span class="n">only_donors</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.ligandfilters.LigandFilters.desc">
-<span class="sig-name descname"><span class="pre">desc</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'This</span> <span class="pre">module</span> <span class="pre">applies</span> <span class="pre">user-defined</span> <span class="pre">filters</span> <span class="pre">to</span> <span class="pre">a</span> <span class="pre">ligand</span> <span class="pre">database</span> <span class="pre">to</span> <span class="pre">obtain</span> <span class="pre">a</span> <span class="pre">subset</span> <span class="pre">of</span> <span class="pre">ligands</span> <span class="pre">with</span> <span class="pre">desired</span> <span class="pre">properties.'</span></em><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.desc" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.ligandfilters.LigandFilters.module_name">
-<span class="sig-name descname"><span class="pre">module_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ligandfilters'</span></em><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.module_name" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
+<dl class="py function" id="smarts-filter">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">DARTassembler.src.metalig.mol.Ligand.</span></span><span class="sig-name descname"><span class="pre">smarts_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smarts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">should_contain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_metal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Test whether the ligand matches (or not) a SMARTS substructure pattern.</p>
+<p>If <code class="filter docutils literal notranslate"><span class="pre">include_metal</span></code> is True, a pseudo metal center (Hg) is added to the ligand SMILES string before testing. The Hg atom is connected to all donor atoms via single bonds. This allows SMARTS patterns to target only donor atoms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>smarts</strong> (<em>str</em>) – SMARTS pattern string to search for.</p></li>
+<li><p><strong>should_contain</strong> (<em>bool</em>) – If True, ligand must contain the pattern; if False, ligand must not contain it.</p></li>
+<li><p><strong>include_metal</strong> (<em>bool</em><em> | </em><em>None</em>) – If True include a Hg metal center in SMILES generation (default).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the ligand satisfies the SMARTS pattern condition, otherwise False.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>SMARTS patterns are extremely powerful for defining chemical substructures and environments. However, the can also be quite complex to construct. We have made very good experience with AI assistants like ChatGPT to help generate SMARTS patterns. You can also verify the correctness of your SMARTS patterns using online tools such as the <a class="reference external" href="https://smarts.plus/">online SMARTS tester</a>.</p>
+</div>
+<p><strong>Examples :</strong></p>
+<p>To include only amide ligands where the N donor is coordinated to the metal and two C or Si atoms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">smarts_filter</span><span class="p">(</span><span class="n">smarts</span><span class="o">=</span><span class="s1">&#39;[N&amp;D3X3!a](-[Hg])(-[C,Si])(-[C,Si])&#39;</span><span class="p">,</span> <span class="n">should_contain</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_metal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To exclude ligands that contain at least one azo (N=N) group:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">smarts_filter</span><span class="p">(</span><span class="n">smarts</span><span class="o">=</span><span class="s1">&#39;[N]=[N]&#39;</span><span class="p">,</span> <span class="n">should_contain</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
+<dl class="py function" id="parents-filter">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">DARTassembler.src.metalig.mol.Ligand.</span></span><span class="sig-name descname"><span class="pre">parents_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metal_centers</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Test whether the ligand has been observed in the CSD source complexes with any of the specified parent metal centers.</p>
+<p>While this filter does not directly check for chemistry, it is useful for maximizing compatibility of the ligand with new metal centers by selecting only those ligands that have previously coordinated to similar metals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>metal_centers</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of metal center strings to check. Each string must be either a valid element symbol or an element symbol followed by an oxidation state.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if any provided metal_center string matches recorded parent metals or oxidation states.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p><strong>Examples :</strong></p>
+<p>To filter for ligands that have been observed coordinating to either Fe or Cu(II):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ligand</span><span class="o">.</span><span class="n">parents_filter</span><span class="p">(</span><span class="n">metal_centers</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Fe&#39;</span><span class="p">,</span> <span class="s1">&#39;Cu+2&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
 </section>
 
 

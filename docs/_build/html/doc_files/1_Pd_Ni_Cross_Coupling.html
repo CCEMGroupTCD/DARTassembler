@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,27 +7,23 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Advanced Example &mdash; DARTassembler dev documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Understanding DART" href="1_understanding_the_dart_workflow.html" />
-    <link rel="prev" title="Quickstart Guide" href="1_quickstart.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,9 +38,6 @@
             DARTassembler
               <img src="../_static/DART_pic.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                dev
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -52,16 +47,10 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">How to Use DART</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="1_installation_guide.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced Example</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#plan-the-workflow">Plan the Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#target-ligands-via-ligand-filters">Target Ligands via Ligand Filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#assemble-the-intermediates">Assemble the Intermediates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#optimize-the-output-geometry">Optimize the Output Geometry</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="1_NaFe_example.html">Advanced Example: Na-Fe systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_understanding_the_dart_workflow.html">Understanding DART</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
@@ -70,6 +59,13 @@
 <li class="toctree-l1"><a class="reference internal" href="2_metalig_database.html">MetaLig Ligand Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_ligand_filters.html">LigandFilters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_assembler.html">Assembler Module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_ligand_filters_api.html">LigandFilters API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_other_modules.html">Other DART Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
 <ul>
@@ -114,7 +110,9 @@
 <li><p><a class="reference internal" href="#optimize-the-output-geometry" id="id4">Optimize the Output Geometry</a></p></li>
 </ul>
 </nav>
-<p>In this example we will introduce some advanced features of DART with a case study of the Pd/Ni catalyzed C-C cross coupling reaction. You will be guided step-by-step through the generation of Pd(II) and Ni(II) square-planar complexes which represent the oxidative addition intermediate, a key step in transition metal catalyzed cross coupling. Users new to DART should first review the <a class="reference internal" href="1_quickstart.html#quickstart"><span class="std std-ref">Quickstart Guide</span></a>. The following capabilities will be highlighted:</p>
+<p>In this example we will introduce some advanced assembler features of DART, in particular the ability to generate multi-metallic complexes.</p>
+<p>We will</p>
+<p>with a case study of the Pd/Ni catalyzed C-C cross coupling reaction. You will be guided step-by-step through the generation of Pd(II) and Ni(II) square-planar complexes which represent the oxidative addition intermediate, a key step in transition metal catalyzed cross coupling. Users new to DART should first review the <a class="reference internal" href="1_quickstart.html#quickstart"><span class="std std-ref">Quickstart Guide</span></a>. The following capabilities will be highlighted:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Filter ligands for each binding site individually</p></li>
@@ -483,10 +481,7 @@ Done! All complexes assembled. Exiting DART Assembler.
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="1_quickstart.html" class="btn btn-neutral float-left" title="Quickstart Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="1_understanding_the_dart_workflow.html" class="btn btn-neutral float-right" title="Understanding DART" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

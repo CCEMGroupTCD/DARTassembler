@@ -1,0 +1,14 @@
+===============================  Filter Options  ===============================
+Filter 01: property: unique_name               name: unique_name, values: ['unq_CSD-PABYUO-06-a']
+===============================  Filter Results  ===============================
+                                  Ligands passed  Ligands removed
+Filter 01: property: unique_name         1              499      
+==================  Total summary of DART Ligand Filters run  ==================
+Before filtering:           500 ligands
+Filtered out:               499 ligands
+Passed:                     1 ligands
+Passed archetypes:          1-mono (1)
+Passed stoichiometries:     C6H6
+Filtered ligand database with 1 ligands was saved to `C6H6.jsonlines`.
+Info on filtered ligands saved to directory `info_C6H6`.
+Done! All ligands filtered. Exiting DART Ligand Filters Module.

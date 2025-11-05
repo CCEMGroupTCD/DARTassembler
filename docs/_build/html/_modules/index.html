@@ -1,25 +1,25 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Overview: module code &mdash; DARTassembler dev documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -37,9 +37,6 @@
             DARTassembler
               <img src="../_static/DART_pic.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                dev
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -52,15 +49,23 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../doc_files/1_installation_guide.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../doc_files/1_quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../doc_files/1_Pd_Ni_Cross_Coupling.html">Advanced Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc_files/1_NaFe_example.html">Advanced Example: Na-Fe systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../doc_files/1_understanding_the_dart_workflow.html">Understanding DART</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../doc_files/2_module_overview.html">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../doc_files/2_metalig_database.html">MetaLig Ligand Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../doc_files/2_ligand_filters.html">LigandFilters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../doc_files/2_assembler.html">Assembler Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc_files/2_module_overview.html">Module Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../doc_files/2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc_files/2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc_files/2_metalig_api.html">MetaLig API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc_files/2_ligand_filters_api.html">LigandFilters API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../doc_files/2_other_modules.html">Other DART Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
 <ul>
@@ -95,8 +100,12 @@
            <div itemprop="articleBody">
              
   <h1>All modules for which code is available</h1>
-<ul><li><a href="DARTassembler/src/metalig/db.html">DARTassembler.src.metalig.db</a></li>
+<ul><li><a href="DARTassembler/src/assembler/assembler.html">DARTassembler.src.assembler.assembler</a></li>
+<li><a href="DARTassembler/src/assembler/isomer.html">DARTassembler.src.assembler.isomer</a></li>
+<li><a href="DARTassembler/src/metalig/db.html">DARTassembler.src.metalig.db</a></li>
 <li><a href="DARTassembler/src/metalig/ligandfilters.html">DARTassembler.src.metalig.ligandfilters</a></li>
+<li><a href="DARTassembler/src/metalig/mol.html">DARTassembler.src.metalig.mol</a></li>
+<li><a href="DARTassembler/src/modules/modules.html">DARTassembler.src.modules.modules</a></li>
 </ul>
 
            </div>

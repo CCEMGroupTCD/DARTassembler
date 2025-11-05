@@ -1,0 +1,7 @@
+outpath: ligands/C6H6.jsonlines   # path or nothing
+n: 500
+
+filters:
+  - filter: 'property'
+    name: 'unique_name'
+    values: [ unq_CSD-PABYUO-06-a ]

@@ -18,3 +18,14 @@ help:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+# Live rebuild and reload docs in browser
+livehtml:
+	@echo "Starting live docs rebuild with sphinx-autobuild..."
+	sphinx-autobuild \
+	    --watch ../DARTassembler/src \
+	    --watch ../DARTassembler/data/docs \
+	    --watch ../DARTassembler/data/default \
+	    --ignore '**/.git/*' \
+        --ignore '**/__pycache__/*' \
+	    . _build/html -v

@@ -26,15 +26,27 @@ extensions = [
     'sphinx.ext.viewcode',  # <-- adds "View Source" links
     'sphinx_rtd_theme',
     'sphinx_toolbox.confval',
+    'sphinx_design',
+    'sphinxarg.ext',  # for documenting command-line interfaces
     "sphinx_copybutton",
     'moldoc',  # for rendering 3D interactive molecular structures in the documentation
+    # 'nbsphinx',  # for including Jupyter Notebooks in the documentation
 ]
 
 # Autodoc settings
 autodoc_typehints = "none"   # show type hints in the parameter list
 autodoc_member_order = 'bysource'   # preserves order of methods as in source code
 autosummary_generate = True         # enables automatic stub generation
-# autoclass_content = 'both'          # include both class docstring and __init__ docstring (outcomment to display only docstring of class, not __init__)
+autoclass_content = 'both'          # 'both', 'class' or 'init'
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': True,
+    'show-inheritance': True,
+}
+
+# nbsphinx settings
+nbsphinx_allow_errors = False  # fail if notebook execution errors
+nbsphinx_execute = 'auto'      # execute only if outdated
 
 # Set the default molecule configuration for moldoc
 moldoc_default_molecule_config = molecule.MoleculeConfig(
@@ -54,7 +66,12 @@ def filter_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
     node = nodes.literal(text, text, classes=["filter"])
     return [node], []
 
+def arg_role(name, rawtext, text, lineno, inliner, options={}, content=[]):
+    node = nodes.literal(text, text, classes=["filter"])
+    return [node], []
+
 roles.register_local_role('filter', filter_role)
+roles.register_local_role('arg', arg_role)
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

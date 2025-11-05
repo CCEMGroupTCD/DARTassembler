@@ -28,7 +28,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'DARTassembler=DARTassembler.cli:main',
+            'DARTassembler=DARTassembler.src.misc.cli:main',
         ],
     },
 )

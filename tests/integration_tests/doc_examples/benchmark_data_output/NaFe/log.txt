@@ -1,0 +1,26 @@
+Starting DART Assembler Module.
+Output directory: NaFe
+Running 1 batch...
+User-defined global settings:
+    output_directory              NaFe
+    verbosity                     2
+    complex_name_length           8
+    n_max_ligands                 None
+================================  Na-Fe-amide  =================================
+User-defined settings for Na-Fe-amide:
+    name                          Na-Fe-amide
+    ligand_db_files               ['ligands/C6H6.jsonlines', 'ligands/amide.jsonlines', 'same_as_previous', 'same_as_previous']
+    target_vectors                [[[-1, 0, 0]], [[0, 0, 1]], [[0, 0, -1]], [[1, 0, 0]]]
+    ligand_origins                [[0, 0, 0], [2, 0, 0], [2, 0, 0], [4, 0, 0]]
+    metal_centers                 [[['Na', [0, 0, 0]]], [['Na', [0, 0, 0]], ['Fe', [4, 0, 0]]], [['Na', [0, 0, 0]], ['Fe', [4, 0, 0]]], [['Fe', [4, 0, 0]]]]
+    n_max_complexes               all
+=============================  Summary per batch  ==============================
+Na-Fe-amide:
+  - 145 isomers tried, 125 isomers (from 125 complexes) successfully assembled.
+  - 20 isomers failed because of filters:
+    - clashing: 20
+====================  Total summary of DART Assembler run  =====================
+  - 145 isomers tried, 125 isomers (from 125 complexes) successfully assembled.
+  - 20 isomers failed because of filters:
+    - clashing: 20
+DART Assembler output files saved to directory `NaFe`.

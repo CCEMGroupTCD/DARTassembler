@@ -1,34 +1,32 @@
 ===============================  Filter Options  ===============================
 Filter 01: property: has_all_bond_orders_v...  name: has_all_bond_orders_valid, values: [True]
-Filter 02: property: n_atoms                   name: n_atoms, range: [1, 80]
+Filter 02: property: archetype                 name: archetype, values: ['1-mono']
 Filter 03: property: charge                    name: charge, values: [-2, -1, 0]
-Filter 04: parents: Pt+2, Pt+4, Ni0, Pd, M...  metal_centers: ['Pt+2', 'Pt+4', 'Ni0', 'Pd', 'Mn', 'Cr', 'Ru', 'Co', 'Cu', 'Ir', 'Mo']
-Filter 05: composition: O2                     elements: ['O', 'O'], instruction: must_exclude, only_donors: True
-Filter 06: property: molecular_weight          name: molecular_weight, range: [30.1, 300.2]
-Filter 07: property: planarity                 name: planarity, range: [0.2, 1.0]
-Filter 08: property: n_ligand_instances        name: n_ligand_instances, range: [5, 999999999]
-Filter 09: smarts: N=N                         smarts: N=N, should_contain: False, include_metal: True
-Filter 10: smarts: [C&H2]                      smarts: [C&H2], should_contain: False, include_metal: True
-Filter 11: property: n_beta_hydrogens          name: n_beta_hydrogens, range: [0, 0]
+Filter 04: property: molecular_weight          name: molecular_weight, range: [30.1, 300.2]
+Filter 05: property: n_ligand_instances        name: n_ligand_instances, range: [5, 999999999]
+Filter 06: composition: CHNO                   elements: ['C', 'H', 'N', 'O'], instruction: must_only_contain_in_any_amount, only_donors: False
+Filter 07: composition: N                      elements: ['N'], instruction: must_contain_and_only_contain, only_donors: True
+Filter 08: smarts: [N&D3X3!a](-[Hg])(-[C,S...  smarts: [N&D3X3!a](-[Hg])(-[C,Si])(-[C,Si]), should_contain: True, include_metal: True
+Filter 09: smarts: [C&H2]                      smarts: [C&H2], should_contain: False, include_metal: True
+Filter 10: parents: Pt+2, Pt+4, Pd, Ni         metal_centers: ['Pt+2', 'Pt+4', 'Pd', 'Ni']
 ===============================  Filter Results  ===============================
                                                Ligands passed  Ligands removed
-Filter 01: property: has_all_bond_orders_v...        288             12       
-Filter 02: property: n_atoms                         269             19       
-Filter 03: property: charge                          259             10       
-Filter 04: parents: Pt+2, Pt+4, Ni0, Pd, M...        223             36       
-Filter 05: composition: O2                           178             45       
-Filter 06: property: molecular_weight                125             53       
-Filter 07: property: planarity                        87             38       
-Filter 08: property: n_ligand_instances               70             17       
-Filter 09: smarts: N=N                                69              1       
-Filter 10: smarts: [C&H2]                             54             15       
-Filter 11: property: n_beta_hydrogens                 22             32       
+Filter 01: property: has_all_bond_orders_v...       4794             206      
+Filter 02: property: archetype                      1458            3336      
+Filter 03: property: charge                         1429              29      
+Filter 04: property: molecular_weight               1127             302      
+Filter 05: property: n_ligand_instances              731             396      
+Filter 06: composition: CHNO                         431             300      
+Filter 07: composition: N                            220             211      
+Filter 08: smarts: [N&D3X3!a](-[Hg])(-[C,S...         14             206      
+Filter 09: smarts: [C&H2]                              9               5      
+Filter 10: parents: Pt+2, Pt+4, Pd, Ni                 5               4      
 ==================  Total summary of DART Ligand Filters run  ==================
-Before filtering:           300 ligands
-Filtered out:               278 ligands
-Passed:                     22 ligands
-Passed archetypes:          1-mono (20), 2-cis (2)
-Passed stoichiometries:     Cl, I, C7H9N, C6H7N, C6H6N, ...
-Filtered ligand database with 22 ligands was saved to `filtered_ligand_db.jsonlines`.
+Before filtering:           5000 ligands
+Filtered out:               4995 ligands
+Passed:                     5 ligands
+Passed archetypes:          1-mono (5)
+Passed stoichiometries:     C15H11N2O2, C12H10N, C8H4NO2, C14H10N, C14H14N
+Filtered ligand database with 5 ligands was saved to `filtered_ligand_db.jsonlines`.
 Info on filtered ligands saved to directory `info_filtered_ligand_db`.
 Done! All ligands filtered. Exiting DART Ligand Filters Module.

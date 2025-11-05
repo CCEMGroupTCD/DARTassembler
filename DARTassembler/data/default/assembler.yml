@@ -1,47 +1,27 @@
-output_directory: DARTassembler
-verbosity: 2
-complex_name_length: 8
-n_max_ligands: 100
+################## Settings for the DART assembler module ##################
+# file: assembler.yml
+# This example input file generates square-planar Pd(II) complexes with two monodentate and one bidentate ligands.
+# Everything after '#' is a comment that is ignored by the program and only there for the user.
+# If a default parameter is specified, the parameter can also just be left out/commented out.
+# The lists `ligand_db_files`, `ligand_archetypes` and `target_vectors` must have the same length, corresponding to the number of ligand sites in the complex.
+# See the 'Assembler Module' section in the DART documentation for more information and more options.
+
+output_directory: 'DARTassembler'   # Path to a directory for the output files. Default: 'DARTassembler'.
+n_max_ligands: 5000                 # Speed up test runs by limiting the number of ligands loaded from each ligand database. Default: None (load all ligands).
 batches:
-  - name: First_batch
-    total_ligand_charges: -2
-    ligand_db_files:
-      - metalig
-      - metalig
-      - metalig
-    target_vectors:
-      - [[1, 0, 0], [0, 1, 0]]
-      - [[-1, 0, 0]]
-      - [[0, -1, 0]]
-    ligand_origins:
-      - [0, 0, 0]
-      - [0, 0, 0]
-      - [0, 0, 0]
-    metal_centers:
-        - [['Ru', [0, 0, 0]]]
-        - [['Ru', [0, 0, 0]]]
-        - [['Ru', [0, 0, 0]]]
-    n_max_complexes: 100
-    random_seed: 0
-    complex_name_suffix: '_Ru'
-  - name: Second_batch
-    total_ligand_charges: -1
-    ligand_db_files:
-      - metalig
-      - metalig
-      - metalig
-    target_vectors:
-      - [[1, 0, 0], [0, 1, 0]]
-      - [[-1, 0, 0]]
-      - [[0, -1, 0]]
-    ligand_origins:
-      - [0, 0, 0]
-      - [0, 0, 0]
-      - [0, 0, 0]
-    metal_centers:
-        - [['Fe', [0, 0, 0]]]
-        - [['Fe', [0, 0, 0]]]
-        - [['Fe', [0, 0, 0]]]
-    n_max_complexes: 100
-    random_seed: 1
-    complex_name_suffix: '_Fe'
+  - name: 'PdII'                    # Name of the batch. Default: 'batch_{batch_idx}'.
+    metal_centers: 'Pd'             # E.g. 'Pd' for single Pd atom at origin (0,0,0). See docs for multi-metal examples.
+    total_ligand_charges: -2        # Sum of ligand charges. E.g. -2 for neutral Pd(II) complexes. Default: None (no charge filtering).
+    n_max_complexes: 100            # Max number of distinct complexes to generate. Integer or `all`.
+    ligand_db_files:                # '.jsonlines' files or keywords 'metalig'/'same_as_previous'. Default: 'metalig'.
+        - 'metalig'                     # 1. ligand: monodentate from MetaLig
+        - 'metalig'                     # 2. ligand: other monodentate from MetaLig
+        - 'metalig'                     # 3. ligand: bidentate from MetaLig
+    ligand_archetypes:              # Ligand archetypes for each ligand.
+        - '1-mono'                      # 1. ligand: monodentate
+        - '1-mono'                      # 2. ligand: monodentate
+        - '2-cis'                       # 3. ligand: cis-bidentate
+    target_vectors:                 # List of donor atom orientations for each ligand (see docs).
+        - ['+x']                        # 1. ligand: 1-mono pointing along +X
+        - ['+y']                        # 2. ligand: 1-mono pointing along +Y
+        - ['-x', '-y']                  # 3. ligand: 2-cis pointing along -X and -Y

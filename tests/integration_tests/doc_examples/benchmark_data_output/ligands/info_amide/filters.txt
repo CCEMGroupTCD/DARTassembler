@@ -1,0 +1,20 @@
+===============================  Filter Options  ===============================
+Filter 01: property: has_all_bond_orders_v...  name: has_all_bond_orders_valid, values: [True]
+Filter 02: composition: N                      elements: ['N'], instruction: must_contain_and_only_contain, only_donors: True
+Filter 03: property: charge                    name: charge, values: [-1]
+Filter 04: smarts: [N&D3X3!a](-[Hg])(-[C,S...  smarts: [N&D3X3!a](-[Hg])(-[C,Si])(-[C,Si]), should_contain: True, include_metal: True
+===============================  Filter Results  ===============================
+                                               Ligands passed  Ligands removed
+Filter 01: property: has_all_bond_orders_v...       39186            1832     
+Filter 02: composition: N                            3344           35842     
+Filter 03: property: charge                           698            2646     
+Filter 04: smarts: [N&D3X3!a](-[Hg])(-[C,S...         145             553     
+==================  Total summary of DART Ligand Filters run  ==================
+Before filtering:           41018 ligands
+Filtered out:               40873 ligands
+Passed:                     145 ligands
+Passed archetypes:          1-mono (145)
+Passed stoichiometries:     C6H18NSi2, C13H20N, C15H26NSi, C4H14NSi2, C2H6N, ...
+Filtered ligand database with 145 ligands was saved to `amide.jsonlines`.
+Info on filtered ligands saved to directory `info_amide`.
+Done! All ligands filtered. Exiting DART Ligand Filters Module.

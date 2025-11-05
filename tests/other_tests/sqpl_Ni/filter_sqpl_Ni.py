@@ -41,7 +41,7 @@ def test_sqpl_Ni():
 
 
 if __name__ == "__main__":
-    n_max = None
+    n_max = 1000
     outdir = project_path().extend('tests', 'other_tests', 'sqpl_Ni', 'data_output')
 
     Br_filters = [

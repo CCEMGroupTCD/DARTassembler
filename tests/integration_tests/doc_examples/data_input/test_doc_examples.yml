@@ -1,0 +1,24 @@
+output_directory: NaFe
+batches:
+  - name: 'Na-Fe-amide'
+    ligand_db_files:
+     - ligands/C6H6.jsonlines     # benzene @ Na
+     - ligands/amide.jsonlines    # amide top bridging Na & Fe
+     - same_as_previous           # amide bottom bridging Na & Fe
+     - same_as_previous           # amide @ Fe
+    target_vectors:
+      - [ [-1, 0, 0] ] # benzene @ Na
+      - [ [0, 0, 1] ]  # amide top bridging Na & Fe
+      - [ [0, 0, -1] ] # amide bottom bridging Na & Fe
+      - [ [1, 0, 0] ]  # amide @ Fe
+    ligand_origins:
+      - [0, 0, 0]      # benzene @ Na
+      - [2, 0, 0]      # amide top bridging Na & Fe
+      - [2, 0, 0]      # amide bottom bridging Na & Fe
+      - [4, 0, 0]      # amide @ Fe
+    metal_centers:
+      - [ ['Na', [0, 0, 0]] ]                     # benzene @ Na
+      - [ ['Na', [0, 0, 0]], ['Fe', [4, 0, 0]] ]  # amide top bridging Na & Fe
+      - [ ['Na', [0, 0, 0]], ['Fe', [4, 0, 0]] ]  # amide bottom bridging Na & Fe
+      - [ ['Fe', [4, 0, 0]] ]                     # amide @ Fe
+    n_max_complexes: 'all'

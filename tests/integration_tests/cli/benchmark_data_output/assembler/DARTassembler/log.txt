@@ -1,47 +1,29 @@
 Starting DART Assembler Module.
 Output directory: DARTassembler
-Running 2 batches...
+Running 1 batch...
 User-defined global settings:
     output_directory              DARTassembler
     verbosity                     2
     complex_name_length           8
-    n_max_ligands                 100
-================================  First_batch  =================================
-User-defined settings for First_batch:
-    name                          First_batch
+    n_max_ligands                 5000
+====================================  PdII  ====================================
+User-defined settings for PdII:
+    name                          PdII
+    metal_centers                 Pd
     total_ligand_charges          -2
-    ligand_db_files               ['metalig', 'metalig', 'metalig']
-    target_vectors                [[[1, 0, 0], [0, 1, 0]], [[-1, 0, 0]], [[0, -1, 0]]]
-    ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-    metal_centers                 [[['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]], [['Ru', [0, 0, 0]]]]
     n_max_complexes               100
-    random_seed                   0
-    complex_name_suffix           _Ru
-================================  Second_batch  ================================
-User-defined settings for Second_batch:
-    name                          Second_batch
-    total_ligand_charges          -1
     ligand_db_files               ['metalig', 'metalig', 'metalig']
-    target_vectors                [[[1, 0, 0], [0, 1, 0]], [[-1, 0, 0]], [[0, -1, 0]]]
-    ligand_origins                [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-    metal_centers                 [[['Fe', [0, 0, 0]]], [['Fe', [0, 0, 0]]], [['Fe', [0, 0, 0]]]]
-    n_max_complexes               100
-    random_seed                   1
-    complex_name_suffix           _Fe
+    ligand_archetypes             ['1-mono', '1-mono', '2-cis']
+    target_vectors                [['+x'], ['+y'], ['-x', '-y']]
 =============================  Summary per batch  ==============================
-First_batch:
-  - 202 isomers tried, 157 isomers (from 100 complexes) successfully assembled.
-  - 45 isomers failed because of filters:
-    - duplicate: 41
-    - clashing: 4
-Second_batch:
-  - 202 isomers tried, 149 isomers (from 100 complexes) successfully assembled.
-  - 53 isomers failed because of filters:
-    - duplicate: 50
-    - clashing: 3
+PdII:
+  - 206 isomers tried, 183 isomers (from 100 complexes) successfully assembled.
+  - 23 isomers failed because of filters:
+    - clashing: 12
+    - duplicate: 11
 ====================  Total summary of DART Assembler run  =====================
-  - 404 isomers tried, 306 isomers (from 200 complexes) successfully assembled.
-  - 98 isomers failed because of filters:
-    - duplicate: 91
-    - clashing: 7
+  - 206 isomers tried, 183 isomers (from 100 complexes) successfully assembled.
+  - 23 isomers failed because of filters:
+    - clashing: 12
+    - duplicate: 11
 DART Assembler output files saved to directory `DARTassembler`.

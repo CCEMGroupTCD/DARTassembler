@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,27 +7,25 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MetaLig Ligand Database &mdash; DARTassembler dev documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="LigandFilters Module" href="2_ligand_filters.html" />
-    <link rel="prev" title="Module Overview" href="2_module_overview.html" /> 
+    <link rel="prev" title="Understanding DART" href="1_understanding_the_dart_workflow.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,9 +40,6 @@
             DARTassembler
               <img src="../_static/DART_pic.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                dev
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -55,35 +52,28 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="1_installation_guide.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="1_Pd_Ni_Cross_Coupling.html">Advanced Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_NaFe_example.html">Advanced Example: Na-Fe systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_understanding_the_dart_workflow.html">Understanding DART</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="2_module_overview.html">Module Overview</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">MetaLig Ligand Database</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#explore-ligand-structures-and-properties">Explore Ligand Structures and Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#explore-and-filter-the-metalig-in-python">Explore and Filter the MetaLig in Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#metalig-ligand-properties">MetaLig Ligand Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#filter-the-metalig-in-python">Filter the MetaLig in Python</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ligand-statistics">Ligand Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.metalig.db.update_old_ligand_db_to_new"><code class="docutils literal notranslate"><span class="pre">update_old_ligand_db_to_new()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.metalig.db.BaseDB"><code class="docutils literal notranslate"><span class="pre">BaseDB</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.db.BaseDB.to_dict"><code class="docutils literal notranslate"><span class="pre">BaseDB.to_dict()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.db.BaseDB.save_to_file"><code class="docutils literal notranslate"><span class="pre">BaseDB.save_to_file()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.metalig.db.LigandDB"><code class="docutils literal notranslate"><span class="pre">LigandDB</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.db.LigandDB.from_json"><code class="docutils literal notranslate"><span class="pre">LigandDB.from_json()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.db.LigandDB.get_df"><code class="docutils literal notranslate"><span class="pre">LigandDB.get_df()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.db.LigandDB.save_to_csv"><code class="docutils literal notranslate"><span class="pre">LigandDB.save_to_csv()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.db.LigandDB.save_to_concat_xyz"><code class="docutils literal notranslate"><span class="pre">LigandDB.save_to_concat_xyz()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.db.LigandDB.get_concat_xyz_string"><code class="docutils literal notranslate"><span class="pre">LigandDB.get_concat_xyz_string()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.metalig.db.LigandDB.get_sub_db"><code class="docutils literal notranslate"><span class="pre">LigandDB.get_sub_db()</span></code></a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="2_ligand_filters.html">LigandFilters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_assembler.html">Assembler Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_module_overview.html">Module Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_metalig_api.html">MetaLig API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_ligand_filters_api.html">LigandFilters API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_other_modules.html">Other DART Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
 <ul>
@@ -122,12 +112,12 @@
 <span id="metalig"></span><h1>MetaLig Ligand Database<a class="headerlink" href="#metalig-ligand-database" title="Link to this heading"></a></h1>
 <nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#explore-ligand-structures-and-properties" id="id6">Explore Ligand Structures and Properties</a></p></li>
-<li><p><a class="reference internal" href="#explore-and-filter-the-metalig-in-python" id="id7">Explore and Filter the MetaLig in Python</a></p></li>
-<li><p><a class="reference internal" href="#ligand-statistics" id="id8">Ligand Statistics</a></p></li>
+<li><p><a class="reference internal" href="#metalig-ligand-properties" id="id3">MetaLig Ligand Properties</a></p></li>
+<li><p><a class="reference internal" href="#filter-the-metalig-in-python" id="id4">Filter the MetaLig in Python</a></p></li>
+<li><p><a class="reference internal" href="#ligand-statistics" id="id5">Ligand Statistics</a></p></li>
 </ul>
 </nav>
-<p id="module-DARTassembler.src.metalig.db">The organo<strong>Meta</strong>llic <strong>Lig</strong>and database (MetaLig) contains 41,018 ligands extracted from the Cambridge Structural Database (CSD). It contains 3D coordinates, formal charge, molecular graph and a variety of physical properties. Each ligand also includes statistical data about its occurrences in the CSD, such as which metals it typically coordinates to.</p>
+<p>The organo<strong>Meta</strong>llic <strong>Lig</strong>and database (MetaLig) contains 41,018 ligands extracted from 107,185 complexes from the Cambridge Structural Database (CSD). It contains 3D coordinates, formal charge, molecular graph and a variety of physical properties. Each ligand also includes statistical data about its occurrences in the CSD, such as which metals it typically coordinates to.</p>
 <p>The MetaLig ligand database can be used in a variety of applications:</p>
 <blockquote>
 <div><ul class="simple">
@@ -137,23 +127,21 @@
 <li><p><strong>Ligand Property Prediction:</strong> As a dataset for training machine learning models.</p></li>
 </ul>
 </div></blockquote>
-<figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="../_images/metalig_fig.png"><img alt="../_images/metalig_fig.png" src="../_images/metalig_fig.png" style="width: 100%;" /></a>
-<figcaption>
-<p><span class="caption-text">Ligands and ligand properties in the MetaLig database.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
-</figcaption>
+<figure class="align-center">
+<a class="reference internal image-reference" href="../_images/metalig_fig.png"><img alt="../_images/metalig_fig.png" src="../_images/metalig_fig.png" style="width: 100%;" />
+</a>
 </figure>
-<section id="explore-ligand-structures-and-properties">
-<span id="metalig-ligand-properties"></span><h2><a class="toc-backref" href="#id6" role="doc-backlink">Explore Ligand Structures and Properties</a><a class="headerlink" href="#explore-ligand-structures-and-properties" title="Link to this heading"></a></h2>
 <p>To explore the ligands in the MetaLig, use the terminal to run the command</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>DARTassembler<span class="w"> </span>dbinfo<span class="w"> </span>--path<span class="w"> </span>metalig
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>DARTassembler<span class="w"> </span>dbinfo<span class="w"> </span>--db<span class="w"> </span>metalig
 </pre></div>
 </div>
 <p>This will generate two files, an .xyz file and a .csv file:</p>
-<p>The .xyz file contains the 3D structures of all ligands. To view and browse through the ligands with ase, you can use the command <code class="docutils literal notranslate"><span class="pre">ase</span> <span class="pre">gui</span> <span class="pre">concat_MetaLigDB_v1.0.0.xyz</span></code>. Each ligand is coordinated to a Cu metal center for visualization purposes. The Cu metal center is not part of the ligands in the MetaLig, it is only added to the .xyz file to display the coordination of each ligand.</p>
-<p>The .csv file displays a range of properties. Many of these are useful for filtering ligands in the DART <a class="reference internal" href="2_ligand_filters.html#ligandfilters"><span class="std std-ref">LigandFilters</span></a> module:</p>
-<span id="metalig-properties"></span><table class="docutils align-center" id="id2">
-<caption><span class="caption-text">Available ligand properties</span><a class="headerlink" href="#id2" title="Link to this table"></a></caption>
+<p>The .xyz file contains the 3D structures of all ligands. To view and browse through the ligands with ase, you can use the command <code class="docutils literal notranslate"><span class="pre">ase</span> <span class="pre">gui</span> <span class="pre">concat_MetaLigDB_v1.1.0.xyz</span></code>. Each ligand is coordinated to a Cu metal center for visualization purposes. The Cu metal center is not part of the ligands in the MetaLig, it is only added to the .xyz file to display the coordination of each ligand.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">MetaLigDB_v1.1.0.csv</span></code> file displays a tabular overview of all ligands and their properties (see below). You can open this file with a program like Excel to sort and filter the ligands based on their properties.</p>
+<section id="metalig-ligand-properties">
+<span id="metalig-properties"></span><h2><a class="toc-backref" href="#id3" role="doc-backlink">MetaLig Ligand Properties</a><a class="headerlink" href="#metalig-ligand-properties" title="Link to this heading"></a></h2>
+<p>The MetaLig contains a wide range of properties, such as the 3D geometry and the molecular graph of each ligand. You can find all properties under the <a class="reference internal" href="2_ligands.html#DARTassembler.src.metalig.mol.Ligand" title="DARTassembler.src.metalig.mol.Ligand"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ligand</span></code></a> class documentation. The MetaLig also contains 38 tabular properties for each ligand. 29 of these are useful for filtering ligands in the DART <a class="reference internal" href="2_ligand_filters.html#ligandfilters"><span class="std std-ref">LigandFilters</span></a> module:</p>
+<table class="docutils align-center">
 <colgroup>
 <col style="width: 15.0%" />
 <col style="width: 5.0%" />
@@ -170,175 +158,175 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><cite>unique_name</cite></p></td>
+<tr class="row-even"><td><p>unique_name</p></td>
 <td><p>str</p></td>
 <td><p>property</p></td>
 <td><p>Unique ID for this ligand in the MetaLig</p></td>
 <td><p>unq_CSD-OZIYON-02-b</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>stoichiometry</cite></p></td>
-<td><p>str</p></td>
-<td><p>composition</p></td>
-<td><p>Chemical formula</p></td>
-<td><p>C11H6F2N</p></td>
-</tr>
-<tr class="row-even"><td><p><cite>donors</cite></p></td>
-<td><p>str</p></td>
-<td><p>composition</p></td>
-<td><p>Donor atom elements</p></td>
-<td><p>C-N</p></td>
-</tr>
-<tr class="row-odd"><td><p><cite>archetype</cite></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="2_assembler.html#ligand-archetypes"><span class="std std-ref">archetype</span></a></p></td>
 <td><p>str</p></td>
 <td><p>property</p></td>
 <td><p>Coordination archetype of the ligand, e.g. 2-cis or 3-meridional</p></td>
 <td><p>2-cis</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>charge</cite></p></td>
+<tr class="row-even"><td><p>charge</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Formal charge</p></td>
 <td><p>-1</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>smiles</cite></p></td>
-<td><p>str</p></td>
-<td><p>smarts</p></td>
-<td><p>SMILES string (without metal center)</p></td>
-<td><p>FC:1:C(:[C]:C:C(:C1)F)C:1:N:C:C:C:C1</p></td>
-</tr>
-<tr class="row-even"><td><p><cite>smiles_with_metal</cite></p></td>
-<td><p>str</p></td>
-<td><p>smarts</p></td>
-<td><p>SMILES string (with Hg pseudo metal center)</p></td>
-<td><p>FC:1:C:2C:3:[N]([Hg]C2:C:C(:C1)F):C:C:C:C3</p></td>
-</tr>
-<tr class="row-odd"><td><p><cite>n_donors</cite></p></td>
+<tr class="row-odd"><td><p>n_donors</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Number of donor atoms (both haptic and dentic)</p></td>
 <td><p>2</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>n_eff_denticities</cite></p></td>
+<tr class="row-even"><td><p>n_eff_denticities</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Effective denticity count (haptic groups count as one effective donor each)</p></td>
 <td><p>2</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>n_denticities</cite></p></td>
+<tr class="row-odd"><td><p>n_denticities</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Denticity (number of dentic donors, excluding haptic donors)</p></td>
 <td><p>2</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>n_haptic_atoms</cite></p></td>
+<tr class="row-even"><td><p>n_haptic_atoms</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Number of haptically coordinating atoms in the ligand</p></td>
 <td><p>0</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>n_haptic_groups</cite></p></td>
+<tr class="row-odd"><td><p>n_haptic_groups</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Number of distinct haptic donor groups in the ligand</p></td>
 <td><p>0</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>n_atoms</cite></p></td>
+<tr class="row-even"><td><p>n_atoms</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Number of atoms in the ligand</p></td>
 <td><p>20</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>n_elements</cite></p></td>
+<tr class="row-odd"><td><p>n_elements</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Number of distinct chemical elements</p></td>
 <td><p>4</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>n_bonds</cite></p></td>
+<tr class="row-even"><td><p>n_bonds</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Number of atomic bonds (without donor-metal bonds)</p></td>
 <td><p>21</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>n_electrons</cite></p></td>
+<tr class="row-odd"><td><p>n_electrons</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Number of electrons</p></td>
 <td><p>98</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>n_protons</cite></p></td>
+<tr class="row-even"><td><p>n_protons</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Number of protons</p></td>
 <td><p>97</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>n_beta_hydrogens</cite></p></td>
+<tr class="row-odd"><td><p>n_beta_hydrogens</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Number of beta hydrogen atoms</p></td>
 <td><p>2</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>molecular_weight</cite></p></td>
+<tr class="row-even"><td><p>molecular_weight</p></td>
 <td><p>float</p></td>
 <td><p>property</p></td>
 <td><p>Molecular weight in atomic mass units (amu)</p></td>
 <td><p>190.1728063</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>planarity</cite></p></td>
+<tr class="row-odd"><td><p>planarity</p></td>
 <td><p>float</p></td>
 <td><p>property</p></td>
 <td><p>How planar the ligand atoms are (0.0: spherical, 1.0: perfectly planar)</p></td>
 <td><p>0.721616381</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>donor_planarity</cite></p></td>
+<tr class="row-even"><td><p>donor_planarity</p></td>
 <td><p>float</p></td>
 <td><p>property</p></td>
 <td><p>How planar the donor atoms are (0.0: spherical, 1.0: perfectly planar)</p></td>
 <td><p>1</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>donor_metal_planarity</cite></p></td>
+<tr class="row-odd"><td><p>donor_metal_planarity</p></td>
 <td><p>float</p></td>
 <td><p>property</p></td>
 <td><p>How planar the donor atoms + metal center are (0.0: spherical, 1.0: perfectly planar)</p></td>
 <td><p>1</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>min_interatomic_distance</cite></p></td>
+<tr class="row-even"><td><p>min_interatomic_distance</p></td>
 <td><p>float</p></td>
 <td><p>property</p></td>
 <td><p>Shortest interatomic distance within the ligand (Å)</p></td>
 <td><p>0.929167854</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>max_ligand_extension</cite></p></td>
+<tr class="row-odd"><td><p>max_ligand_extension</p></td>
 <td><p>float</p></td>
 <td><p>property</p></td>
 <td><p>Maximum distance between any two ligand atoms (Å)</p></td>
 <td><p>9.172156942</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>is_2D_symmetrical</cite></p></td>
+<tr class="row-even"><td><p>is_2D_symmetrical</p></td>
 <td><p>bool</p></td>
 <td><p>property</p></td>
 <td><p>Whether the 2D molecular graph is symmetric</p></td>
 <td><p>FALSE</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>has_all_bond_orders_valid</cite></p></td>
+<tr class="row-odd"><td><p>has_all_bond_orders_valid</p></td>
 <td><p>bool</p></td>
 <td><p>property</p></td>
 <td><p>Whether all bond orders are provided and valid</p></td>
 <td><p>TRUE</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>n_ligand_instances</cite></p></td>
+<tr class="row-even"><td><p>n_ligand_instances</p></td>
 <td><p>int</p></td>
 <td><p>property</p></td>
 <td><p>Number of occurrences/instances of this ligand in the ~107k CSD source complexes</p></td>
 <td><p>478</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>csd_metal_count</cite></p></td>
+<tr class="row-odd"><td><p>stoichiometry</p></td>
+<td><p>str</p></td>
+<td><p>composition</p></td>
+<td><p>Chemical formula</p></td>
+<td><p>C11H6F2N</p></td>
+</tr>
+<tr class="row-even"><td><p>donors</p></td>
+<td><p>str</p></td>
+<td><p>composition</p></td>
+<td><p>Donor atom elements</p></td>
+<td><p>C-N</p></td>
+</tr>
+<tr class="row-odd"><td><p>smiles</p></td>
+<td><p>str</p></td>
+<td><p>smarts</p></td>
+<td><p>SMILES string (without metal center)</p></td>
+<td><p>FC:1:C(:[C]:C:C(:C1)F)C:1:N:C:C:C:C1</p></td>
+</tr>
+<tr class="row-even"><td><p>smiles_with_metal</p></td>
+<td><p>str</p></td>
+<td><p>smarts</p></td>
+<td><p>SMILES string (with Hg pseudo metal center)</p></td>
+<td><p>FC:1:C:2C:3:[N]([Hg]C2:C:C(:C1)F):C:C:C:C3</p></td>
+</tr>
+<tr class="row-odd"><td><p>csd_metal_count</p></td>
 <td><p>list</p></td>
 <td><p>parents</p></td>
 <td><p>Metal centers (and counts) with coordination precedence in the CSD</p></td>
 <td><p>Ir(428), Pt(44), Os(4), Au(1), Ru(1)</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>csd_metal_os_count</cite></p></td>
+<tr class="row-even"><td><p>csd_metal_os_count</p></td>
 <td><p>list</p></td>
 <td><p>parents</p></td>
 <td><p>Metal centers by oxidation state (and counts) with coordination precedence in the CSD</p></td>
@@ -346,9 +334,8 @@
 </tr>
 </tbody>
 </table>
-<p>Other properties are useful for inspection and analysis:</p>
-<table class="docutils align-center" id="id3">
-<caption><span class="caption-text">Other ligand properties</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<p>Another 9 properties are mostly useful for inspection and analysis:</p>
+<table class="docutils align-center">
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 5.0%" />
@@ -363,47 +350,47 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><cite>archetype_rssd</cite></p></td>
+<tr class="row-even"><td><p>archetype_rssd</p></td>
 <td><p>float</p></td>
 <td><p>Root sum square distance from the ideal archetype geometry</p></td>
 <td><p>0.114051734</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>archetype_confidence</cite></p></td>
+<tr class="row-odd"><td><p>archetype_confidence</p></td>
 <td><p>float</p></td>
 <td><p>Confidence score for the archetype assignment (higher is better)</p></td>
 <td><p>10.40652244</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>has_confident_charge</cite></p></td>
+<tr class="row-even"><td><p>has_confident_charge</p></td>
 <td><p>bool</p></td>
 <td><p>Whether the assigned charge is considered confident (true for all ligands)</p></td>
 <td><p>TRUE</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>graph_hash</cite></p></td>
+<tr class="row-odd"><td><p>graph_hash</p></td>
 <td><p>str</p></td>
 <td><p>Graph hash identifier of the ligand (inter-ligand only)</p></td>
 <td><p>e018fbba4037dd7fbcada96133e091df</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>graph_hash_with_metal</cite></p></td>
+<tr class="row-even"><td><p>graph_hash_with_metal</p></td>
 <td><p>str</p></td>
 <td><p>Graph hash including pseudo metal center</p></td>
 <td><p>2a93874ecbf095e56bd1ffb4f397fca5</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>heavy_atoms_graph_hash</cite></p></td>
+<tr class="row-odd"><td><p>heavy_atoms_graph_hash</p></td>
 <td><p>str</p></td>
 <td><p>Graph hash computed using heavy atoms only</p></td>
 <td><p>62196285009c06c5a0dbb8690a5bad97</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>heavy_atoms_graph_hash_with_metal</cite></p></td>
+<tr class="row-even"><td><p>heavy_atoms_graph_hash_with_metal</p></td>
 <td><p>str</p></td>
 <td><p>Heavy-atom graph hash including pseudo metal center</p></td>
 <td><p>1fd0bddc7139608dcf31f53d967593c7</p></td>
 </tr>
-<tr class="row-odd"><td><p><cite>bond_order_graph_hash</cite></p></td>
+<tr class="row-odd"><td><p>bond_order_graph_hash</p></td>
 <td><p>str</p></td>
 <td><p>Graph hash including bond order information</p></td>
 <td><p>b24c25d7d7b989beb0143dea3590010e</p></td>
 </tr>
-<tr class="row-even"><td><p><cite>csd_complex_ids</cite></p></td>
+<tr class="row-even"><td><p>csd_complex_ids</p></td>
 <td><p>list</p></td>
 <td><p>CSD complex identifiers where ligand was observed (comma-separated if multiple)</p></td>
 <td><p>OZIYON, OZIYON, PAQJAV, PAQJAV, PEDFOW, … (473 more)</p></td>
@@ -411,230 +398,68 @@
 </tbody>
 </table>
 </section>
-<section id="explore-and-filter-the-metalig-in-python">
-<span id="metalig-python-filtering"></span><h2><a class="toc-backref" href="#id7" role="doc-backlink">Explore and Filter the MetaLig in Python</a><a class="headerlink" href="#explore-and-filter-the-metalig-in-python" title="Link to this heading"></a></h2>
-<p>For many users, the DART Ligand Filters module will be enough to filter ligands with exactly defined properties. For complete freedom in filtering and exploring, the MetaLig database can be accessed via the DART Python API. As an example, let us extract ligands with denticity of 2, charge of -1 and a maximum of 50 atoms using Python.</p>
-<p>First, read in the MetaLig. To speed things up in this example, let’s only load the first 1000 ligands (which is equivalent to specifying <code class="docutils literal notranslate"><span class="pre">test_metalig</span></code> as the path):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">DARTassembler.src.ligand_extraction.DataBase</span> <span class="kn">import</span> <span class="n">LigandDB</span>
+<section id="filter-the-metalig-in-python">
+<span id="metalig-python-filtering"></span><h2><a class="toc-backref" href="#id4" role="doc-backlink">Filter the MetaLig in Python</a><a class="headerlink" href="#filter-the-metalig-in-python" title="Link to this heading"></a></h2>
+<p>For many users, the DART Ligand Filters module will be enough to filter ligands with exactly defined properties. For complete freedom in filtering and exploring, the MetaLig database can be accessed via the DARTassembler Python API, specifically the <a class="reference internal" href="2_metalig_api.html#DARTassembler.src.metalig.db.LigandDB" title="DARTassembler.src.metalig.db.LigandDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">LigandDB</span></code></a> and <a class="reference internal" href="2_ligands.html#DARTassembler.src.metalig.mol.Ligand" title="DARTassembler.src.metalig.mol.Ligand"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ligand</span></code></a> classes. This allows you to write your own custom filtering scripts in Python to target ligands with exactly the properties you need.</p>
+<p>As an example, let us extract Cp-like ligands from the MetaLig database. First, read in the MetaLig. To speed things up in this example, let’s only load the first 1000 ligands.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">DARTassembler</span><span class="w"> </span><span class="kn">import</span> <span class="n">LigandDB</span>
 
 <span class="c1"># Load the first 1000 out of 41,018 ligands in the MetaLig database.</span>
-<span class="n">metalig</span> <span class="o">=</span> <span class="n">LigandDB</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;metalig&#39;</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">metalig</span> <span class="o">=</span> <span class="n">LigandDB</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;metalig&#39;</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now, you can filter the MetaLig database based on your requirements. For example, let’s filter the MetaLig so that we retain only ligands with a formal charge of -1, with denticity of 2 and with a maximum of 50 atoms:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set some criteria to filter ligands</span>
-<span class="n">keep_denticity</span> <span class="o">=</span> <span class="mi">2</span>
-<span class="n">keep_charge</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-<span class="n">max_n_atoms</span> <span class="o">=</span> <span class="mi">50</span>
+<p>Now, you can filter the MetaLig database based on your requirements. For example, let’s filter the MetaLig so that we retain only Cp-like ligands with an archetype of <code class="docutils literal notranslate"><span class="pre">1-mono</span></code>, a charge of -1 and 5 C donor atoms. For more information how to use the Ligand objects from the MetaLig see <a class="reference internal" href="2_ligands.html#ligands"><span class="std std-ref">its documentation</span></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set some criteria to filter Cp-like ligands</span>
+<span class="n">archetype</span> <span class="o">=</span> <span class="s1">&#39;1-mono&#39;</span>
+<span class="n">charge</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">donor_elements</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]</span>
 
+<span class="c1"># Filter ligands and keep only those which adhere to all the above criteria</span>
 <span class="n">ligands_to_keep</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">ligand_name</span><span class="p">,</span> <span class="n">ligand</span> <span class="ow">in</span> <span class="n">metalig</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">correct_denticity</span> <span class="o">=</span> <span class="n">ligand</span><span class="o">.</span><span class="n">denticity</span> <span class="o">==</span> <span class="n">keep_denticity</span>
-    <span class="n">correct_charge</span> <span class="o">=</span> <span class="n">ligand</span><span class="o">.</span><span class="n">pred_charge</span> <span class="o">==</span> <span class="n">keep_charge</span>
-    <span class="n">correct_n_atoms</span> <span class="o">=</span> <span class="n">ligand</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">&lt;=</span> <span class="n">max_n_atoms</span>
-    <span class="k">if</span> <span class="n">correct_denticity</span> <span class="ow">and</span> <span class="n">correct_charge</span> <span class="ow">and</span> <span class="n">correct_n_atoms</span><span class="p">:</span>
+    <span class="n">correct_denticity</span> <span class="o">=</span> <span class="n">ligand</span><span class="o">.</span><span class="n">archetype</span> <span class="o">==</span> <span class="n">archetype</span>
+    <span class="n">correct_charge</span> <span class="o">=</span> <span class="n">ligand</span><span class="o">.</span><span class="n">charge</span> <span class="o">==</span> <span class="n">charge</span>
+    <span class="n">correct_donor_elements</span> <span class="o">=</span> <span class="n">ligand</span><span class="o">.</span><span class="n">donor_elements</span> <span class="o">==</span> <span class="n">donor_elements</span>
+    <span class="k">if</span> <span class="n">correct_denticity</span> <span class="ow">and</span> <span class="n">correct_charge</span> <span class="ow">and</span> <span class="n">correct_donor_elements</span><span class="p">:</span>
         <span class="n">ligands_to_keep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ligand_name</span><span class="p">)</span>
 
 <span class="c1"># Reduce MetaLig database to only keep ligands which adhere to the above criteria</span>
-<span class="n">filtered_metalig_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">ligand_name</span><span class="p">:</span> <span class="n">ligand</span> <span class="k">for</span> <span class="n">ligand_name</span><span class="p">,</span> <span class="n">ligand</span> <span class="ow">in</span> <span class="n">metalig</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">ligand_name</span> <span class="ow">in</span> <span class="n">ligands_to_keep</span><span class="p">}</span>
-<span class="n">filtered_metalig</span> <span class="o">=</span> <span class="n">LigandDB</span><span class="p">(</span><span class="n">filtered_metalig_dict</span><span class="p">)</span>
+<span class="n">filtered_metalig</span> <span class="o">=</span> <span class="n">metalig</span><span class="o">.</span><span class="n">get_sub_db</span><span class="p">(</span><span class="n">ligand_names</span><span class="o">=</span><span class="n">ligands_to_keep</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of ligands after filtering: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_metalig</span><span class="o">.</span><span class="n">db</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Now, we can save the filtered MetaLig database to a .jsonlines file.</p>
+<p>Now, we can save the filtered MetaLig database to a .jsonlines file and a concatenated .xyz file.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">filtered_metalig</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s1">&#39;filtered_metalig.jsonlines&#39;</span><span class="p">)</span>
+<span class="n">filtered_metalig</span><span class="o">.</span><span class="n">save_to_concat_xyz</span><span class="p">(</span><span class="s1">&#39;filtered_metalig.xyz&#39;</span><span class="p">)</span>
+<span class="n">filtered_metalig</span><span class="o">.</span><span class="n">save_to_csv</span><span class="p">(</span><span class="s1">&#39;filtered_metalig.csv&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This .jsonlines file can be used in the DART Assembler module as source for ligands. Since we made a database of bidentate ligands with a formal charge of -1, we could use it for example to assemble neutral square-planar Ni(II) complexes with two bidentate ligands, i.e. a <code class="docutils literal notranslate"><span class="pre">2-2</span></code> geometry in DART.
-We can also save an overview table of the filtered ligand database as .csv file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">filtered_metalig</span><span class="o">.</span><span class="n">save_to_csv</span><span class="p">(</span><span class="s1">&#39;filtered_metalig.csv&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>By opening the .csv file with a program like Excel, you will see that this table displays 136 bidentate ligands with a formal charge of -1 and a maximum of 50 atoms. In this way, you can use Python to filter the MetaLig database to your exact requirements and then save the filtered database to a .jsonlines file for use in the DART Assembler module.</p>
+<p>This .jsonlines file can be used in the DART Assembler module as source for ligands. By opening the .csv file with a program like Excel, you will see that this table displays 7 ligands Cp-like ligand with a formal charge of -1. You can also inspect the ligand structures in the concatenated .xyz file using <code class="docutils literal notranslate"><span class="pre">ase</span> <span class="pre">gui</span> <span class="pre">filtered_metalig.xyz</span></code>. In this way, you can use Python to filter the MetaLig database to your exact requirements and then save the filtered database to a .jsonlines file for use in the DART Assembler module.</p>
 </section>
 <section id="ligand-statistics">
-<span id="metalig-ligand-statistics"></span><h2><a class="toc-backref" href="#id8" role="doc-backlink">Ligand Statistics</a><a class="headerlink" href="#ligand-statistics" title="Link to this heading"></a></h2>
-<figure class="align-center" id="id4">
-<a class="reference internal image-reference" href="../_images/hist_donors.png"><img alt="../_images/hist_donors.png" src="../_images/hist_donors.png" style="width: 100%;" /></a>
+<span id="metalig-ligand-statistics"></span><h2><a class="toc-backref" href="#id5" role="doc-backlink">Ligand Statistics</a><a class="headerlink" href="#ligand-statistics" title="Link to this heading"></a></h2>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/hist_donors.png"><img alt="../_images/hist_donors.png" src="../_images/hist_donors.png" style="width: 100%;" />
+</a>
 <figcaption>
-<p><span class="caption-text">Bar chart of donor atoms in the MetaLig. For instance, there are nearly 8,000 N-N donor ligands present.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+<p><span class="caption-text">Bar chart of donor atoms in the MetaLig. For instance, there are nearly 8,000 N-N donor ligands present.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<figure class="align-center" id="id5">
-<a class="reference internal image-reference" href="../_images/hist_metal_center.png"><img alt="../_images/hist_metal_center.png" src="../_images/hist_metal_center.png" style="width: 100%;" /></a>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/hist_metal_center.png"><img alt="../_images/hist_metal_center.png" src="../_images/hist_metal_center.png" style="width: 100%;" />
+</a>
 <figcaption>
-<p><span class="caption-text">Bar chart showing the prevalence of ligands coordinating to specific metals, such as over 8,000 instances of ligands which were found in the CSD coordinating to Cu.</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+<p><span class="caption-text">Bar chart showing the prevalence of ligands coordinating to specific metals, such as over 8,000 instances of ligands which were found in the CSD coordinating to Cu.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
-<dl class="py function">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.update_old_ligand_db_to_new">
-<span class="sig-prename descclassname"><span class="pre">DARTassembler.src.metalig.db.</span></span><span class="sig-name descname"><span class="pre">update_old_ligand_db_to_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#update_old_ligand_db_to_new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.update_old_ligand_db_to_new" title="Link to this definition"></a></dt>
-<dd><p>Updates a ligand database in the old format before DARTassembler version 1.1.0 to the new format from version 1.1.0 on.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – Path to the ligand database</p></li>
-<li><p><strong>csv</strong> – If True, saves new ligand database also as csv.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.BaseDB">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DARTassembler.src.metalig.db.</span></span><span class="sig-name descname"><span class="pre">BaseDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#BaseDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.BaseDB" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.BaseDB.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Convert</span> <span class="pre">DB</span> <span class="pre">to</span> <span class="pre">dict'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#BaseDB.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.BaseDB.to_dict" title="Link to this definition"></a></dt>
-<dd><p>Converts all molecules in the database to a dictionary format.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>desc</strong> – str: Description for the progress bar.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dictionary where keys are molecule identifiers and values are dictionaries representing the molecules.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.BaseDB.save_to_file">
-<span class="sig-name descname"><span class="pre">save_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_lines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#BaseDB.save_to_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.BaseDB.save_to_file" title="Link to this definition"></a></dt>
-<dd><p>Saves the database to a .json or .jsonlines file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – Path to the output file where the database will be saved.</p></li>
-<li><p><strong>desc</strong> – Description for the progress bar. If None, no progress bar will be shown.</p></li>
-<li><p><strong>json_lines</strong> – If True, saves the database as jsonlines. If False, saves the database as a single json file.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.LigandDB">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DARTassembler.src.metalig.db.</span></span><span class="sig-name descname"><span class="pre">LigandDB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#LigandDB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.LigandDB" title="Link to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#DARTassembler.src.metalig.db.BaseDB" title="DARTassembler.src.metalig.db.BaseDB"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseDB</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.LigandDB.from_json">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'metalig'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#LigandDB.from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.LigandDB.from_json" title="Link to this definition"></a></dt>
-<dd><p>Loads a ligand database from a .jsonlines file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> – Path to the .jsonlines file of the ligand database. Alternatively, the string ‘metalig’ can be used to load the default ligand database.</p></li>
-<li><p><strong>n_max</strong> – Maximum number of ligands to load. If None, all ligands will be loaded.</p></li>
-<li><p><strong>show_progress</strong> – If True, a progress bar will be shown.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A LigandDB object</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.LigandDB.get_df">
-<span class="sig-name descname"><span class="pre">get_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_entries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#LigandDB.get_df"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.LigandDB.get_df" title="Link to this definition"></a></dt>
-<dd><p>Returns a DataFrame with important ligand information for all ligands in the database, such as charge, stoichiometry, archetype, and more.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>max_entries</strong> – Maximum number of entries for long lists in the DataFrame, such as the list of CSD codes in which this ligand is present.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A DataFrame with ligand information, with the index being <cite>unique_name</cite>.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.LigandDB.save_to_csv">
-<span class="sig-name descname"><span class="pre">save_to_csv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_entries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#LigandDB.save_to_csv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.LigandDB.save_to_csv" title="Link to this definition"></a></dt>
-<dd><p>Saves a csv file with important ligand information for all ligands in the database, such as charge, stoichiometry, archetype, and more.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>outpath</strong> – Path to the output csv file.</p></li>
-<li><p><strong>max_entries</strong> – Maximum number of entries for long lists in the DataFrame, such as the list of CSD codes in which this ligand is present.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A DataFrame with ligand information.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.LigandDB.save_to_concat_xyz">
-<span class="sig-name descname"><span class="pre">save_to_concat_xyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_metal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#LigandDB.save_to_concat_xyz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.LigandDB.save_to_concat_xyz" title="Link to this definition"></a></dt>
-<dd><p>Save a concatenated xyz file with all ligands in the database.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>outpath</strong> – Path to the output xyz file.</p></li>
-<li><p><strong>with_metal</strong> – If True, the output structure of each ligand will contain a metal center at the original position for better visualization. If False, only the ligand structure itself will be saved.</p></li>
-<li><p><strong>comment</strong> – A comment to be added to each xyz structure. If None, a default comment will be used.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A concatenated xyz string with all ligands in the database.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.LigandDB.get_concat_xyz_string">
-<span class="sig-name descname"><span class="pre">get_concat_xyz_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">with_metal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#LigandDB.get_concat_xyz_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.LigandDB.get_concat_xyz_string" title="Link to this definition"></a></dt>
-<dd><p>Get a concatenated xyz string with all ligands in the database.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>with_metal</strong> – If True, the output structure of each ligand will contain a metal center at the original position for better visualization. If False, only the ligand structure itself will be saved.</p></li>
-<li><p><strong>comment</strong> – A comment to be added to each xyz structure. If None, a default comment will be used.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A concatenated xyz string with all ligands in the database.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="DARTassembler.src.metalig.db.LigandDB.get_sub_db">
-<span class="sig-name descname"><span class="pre">get_sub_db</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ligand_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/db.html#LigandDB.get_sub_db"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.db.LigandDB.get_sub_db" title="Link to this definition"></a></dt>
-<dd><p>Returns a sub-database containing only the ligands with the specified names.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ligand_names</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of ligand names to include in the sub-database.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A LigandDB object containing only the specified ligands.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#DARTassembler.src.metalig.db.LigandDB" title="DARTassembler.src.metalig.db.LigandDB">LigandDB</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="2_module_overview.html" class="btn btn-neutral float-left" title="Module Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="1_understanding_the_dart_workflow.html" class="btn btn-neutral float-left" title="Understanding DART" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="2_ligand_filters.html" class="btn btn-neutral float-right" title="LigandFilters Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

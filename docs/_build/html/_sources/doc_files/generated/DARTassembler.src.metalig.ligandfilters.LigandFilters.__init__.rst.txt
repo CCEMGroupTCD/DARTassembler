@@ -1,0 +1,6 @@
+﻿DARTassembler.src.metalig.ligandfilters.LigandFilters.\_\_init\_\_
+==================================================================
+
+.. currentmodule:: DARTassembler.src.metalig.ligandfilters
+
+.. automethod:: LigandFilters.__init__

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,22 +7,20 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DART: Directed Assembly of Random Transition Metal Complexes &mdash; DARTassembler dev documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=3ce10a4d"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=3ce10a4d"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -39,9 +39,6 @@
             DARTassembler
               <img src="_static/DART_pic.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                dev
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -54,15 +51,23 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/1_installation_guide.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/1_quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="doc_files/1_Pd_Ni_Cross_Coupling.html">Advanced Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/1_NaFe_example.html">Advanced Example: Na-Fe systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/1_understanding_the_dart_workflow.html">Understanding DART</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="doc_files/2_module_overview.html">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/2_metalig_database.html">MetaLig Ligand Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/2_ligand_filters.html">LigandFilters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/2_assembler.html">Assembler Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_module_overview.html">Module Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_metalig_api.html">MetaLig API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_ligand_filters_api.html">LigandFilters API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_other_modules.html">Other DART Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
 <ul>
@@ -103,24 +108,25 @@
 <p>DART integrates a collection of several modules:</p>
 <ul class="simple">
 <li><dl class="simple">
-<dt><a class="reference internal" href="doc_files/2_metalig_database.html#metalig"><span class="std std-ref">MetaLig</span></a> :</dt><dd><p>Explore the comprehensive MetaLig database with 41,018 ligands extracted from the Cambridge Structural Database, complete with high-quality formal charge assignments.</p>
+<dt><a class="reference internal" href="doc_files/2_metalig_database.html#metalig"><span class="std std-ref">MetaLig</span></a> :</dt><dd><p>Explore the comprehensive MetaLig database with 41,018 ligands extracted from the Cambridge Structural Database, complete with high-quality formal charge and ligand coordination archetype assignments.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><a class="reference internal" href="doc_files/2_assembler.html#assembler"><span class="std std-ref">Assembler</span></a> :</dt><dd><p>Assemble novel transition metal complexes in a matter of seconds, guided by a single configuration file for precise control over the resulting structures.</p>
+<dt><a class="reference internal" href="doc_files/2_assembler.html#assembler"><span class="std std-ref">Assembler</span></a> :</dt><dd><p>Assemble novel transition metal complexes in a matter of seconds by combining 22 different ligand coordination archetypes, supporting even haptic and multi-metallic systems.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><a class="reference internal" href="doc_files/2_ligand_filters.html#ligandfilters"><span class="std std-ref">Ligand Filters</span></a> :</dt><dd><p>Assemble complexes with exactly defined sub-structures by applying advanced ligand filters for each binding site.</p>
+<dt><a class="reference internal" href="doc_files/2_ligand_filters.html#ligandfilters"><span class="std std-ref">LigandFilters</span></a> :</dt><dd><p>Assemble complexes with exactly defined sub-structures by applying advanced ligand filters for each binding site.</p>
 </dd>
 </dl>
 </li>
 </ul>
 <p><strong>Your role:</strong> DART is designed for researchers in chemistry. While you have to think about the chemistry yourself, DART will allow you to explore the chemical space you want with the ligands you need.</p>
 <figure class="align-center" id="id1">
-<a class="reference internal image-reference" href="_images/homepage_picture.png"><img alt="_images/homepage_picture.png" src="_images/homepage_picture.png" style="width: 90%;" /></a>
+<a class="reference internal image-reference" href="_images/homepage_picture.png"><img alt="_images/homepage_picture.png" src="_images/homepage_picture.png" style="width: 90%;" />
+</a>
 <figcaption>
 <p><span class="caption-text">A DART user generates novel molecular complexes for their research on square planar Ni(II) complexes.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
@@ -147,21 +153,23 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">How to Use DART</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="doc_files/1_installation_guide.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/1_installation_guide.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/1_installation_guide.html#verify-the-installation">Verify the installation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/1_quickstart.html">Quickstart Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="doc_files/1_quickstart.html#confirm-dart-installation">Confirm DART Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/1_quickstart.html#make-a-working-directory-for-this-tutorial">Make a Working Directory for this Tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doc_files/1_quickstart.html#inspect-the-ligand-database">Inspect the Ligand Database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doc_files/1_quickstart.html#assemble-novel-complexes">Assemble Novel Complexes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doc_files/1_quickstart.html#target-chemical-space">Target Chemical Space</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doc_files/1_quickstart.html#understand-the-output-of-the-assembler-module">Understand the Output of the Assembler Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/1_quickstart.html#explore-your-complexes">Explore Your Complexes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/1_quickstart.html#use-dart-for-your-research">Use DART for Your Research</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="doc_files/1_Pd_Ni_Cross_Coupling.html">Advanced Example</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/1_Pd_Ni_Cross_Coupling.html#plan-the-workflow">Plan the Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/1_Pd_Ni_Cross_Coupling.html#target-ligands-via-ligand-filters">Target Ligands via Ligand Filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/1_Pd_Ni_Cross_Coupling.html#assemble-the-intermediates">Assemble the Intermediates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/1_Pd_Ni_Cross_Coupling.html#optimize-the-output-geometry">Optimize the Output Geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/1_NaFe_example.html">Advanced Example: Na-Fe systems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/1_NaFe_example.html#query-benzene-and-amide-ligands">Query Benzene and Amide Ligands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/1_NaFe_example.html#assemble-the-na-fe-complexes">Assemble the Na-Fe Complexes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/1_understanding_the_dart_workflow.html">Understanding DART</a><ul>
@@ -175,24 +183,60 @@
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="doc_files/2_module_overview.html">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/2_metalig_database.html">MetaLig Ligand Database</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/2_metalig_database.html#explore-ligand-structures-and-properties">Explore Ligand Structures and Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/2_metalig_database.html#explore-and-filter-the-metalig-in-python">Explore and Filter the MetaLig in Python</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_metalig_database.html#metalig-ligand-properties">MetaLig Ligand Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_metalig_database.html#filter-the-metalig-in-python">Filter the MetaLig in Python</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doc_files/2_metalig_database.html#ligand-statistics">Ligand Statistics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.update_old_ligand_db_to_new"><code class="docutils literal notranslate"><span class="pre">update_old_ligand_db_to_new()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.BaseDB"><code class="docutils literal notranslate"><span class="pre">BaseDB</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB"><code class="docutils literal notranslate"><span class="pre">LigandDB</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/2_ligand_filters.html">LigandFilters Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/2_ligand_filters.html#example-usage">Example usage:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc_files/2_ligand_filters.html#DARTassembler.src.metalig.ligandfilters.LigandFilters"><code class="docutils literal notranslate"><span class="pre">LigandFilters</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_ligand_filters.html#ligandfilters-input">LigandFilters Input</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_ligand_filters.html#ligandfilters-output">LigandFilters Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_ligand_filters.html#ligandfilters-options">LigandFilters Options</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="doc_files/2_assembler.html">Assembler Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="doc_files/2_assembler.html#assembler-input">Assembler Input</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doc_files/2_assembler.html#assembler-output">Assembler Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_assembler.html#assembler-options">Assembler Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_assembler.html#DARTassembler.src.assembler.assembler.Assembler"><code class="docutils literal notranslate"><span class="pre">Assembler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_module_overview.html">Module Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_module_overview.html#DARTassembler.src.misc.cli-get_parser-positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_module_overview.html#Sub-commands">Sub-commands</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_ligands.html">Ligands API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_ligands.html#DARTassembler.src.metalig.mol.BaseMolecule"><code class="docutils literal notranslate"><span class="pre">BaseMolecule</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_ligands.html#DARTassembler.src.metalig.mol.Ligand"><code class="docutils literal notranslate"><span class="pre">Ligand</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_isomers.html">Assembled Complexes &amp; Isomers API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_isomers.html#DARTassembler.src.assembler.isomer.AssembledIsomer"><code class="docutils literal notranslate"><span class="pre">AssembledIsomer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_isomers.html#DARTassembler.src.assembler.isomer.AssembledComplex"><code class="docutils literal notranslate"><span class="pre">AssembledComplex</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_metalig_api.html">MetaLig API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.BaseDB"><code class="docutils literal notranslate"><span class="pre">BaseDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.LigandDB"><code class="docutils literal notranslate"><span class="pre">LigandDB</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_ligand_filters_api.html">LigandFilters API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_ligand_filters_api.html#example-usage">Example Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_ligand_filters_api.html#DARTassembler.src.metalig.ligandfilters.LigandFilters"><code class="docutils literal notranslate"><span class="pre">LigandFilters</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc_files/2_other_modules.html">Other DART Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_other_modules.html#DARTassembler.src.modules.modules.BaseModule"><code class="docutils literal notranslate"><span class="pre">BaseModule</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_other_modules.html#DARTassembler.src.modules.modules.Concat"><code class="docutils literal notranslate"><span class="pre">Concat</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_other_modules.html#DARTassembler.src.modules.modules.DBInfo"><code class="docutils literal notranslate"><span class="pre">DBInfo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc_files/2_other_modules.html#DARTassembler.src.modules.modules.Configs"><code class="docutils literal notranslate"><span class="pre">Configs</span></code></a></li>
 </ul>
 </li>
 </ul>

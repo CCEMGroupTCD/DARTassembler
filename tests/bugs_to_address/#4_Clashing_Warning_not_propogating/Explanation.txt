@@ -7,7 +7,7 @@ Root Cause:
 Inside the loop:
 
 for idx, isomer in enumerate(isomers):
-    isomers[idx] = AxialOptModifier(...).modify(...)[0]
+    isomers[idx] = _AxialOptModifier(...).modify(...)[0]
 
 
 the isomer variable still referenced the old (pre-optimized) object.

@@ -1,9 +1,8 @@
 """
-This file contains the classes and methods that are used to process the input data and generate the assembled transition metal complex isomers.
 """
 import sys
 import warnings
-from typing import Dict, Any, List, Optional, Tuple, Union, Iterable
+from typing import Dict, Any, Optional, Union, Iterable
 from ase.visualize import view
 from ase import Atoms, Atom
 import numpy as np
@@ -19,7 +18,7 @@ from scipy.optimize import linear_sum_assignment, differential_evolution
 import pandas as pd
 from scipy.optimize import brute
 from DARTassembler.src.assembler.utils import are_atoms_equal, get_list_with_all_possible_swappings, \
-    remove_haptic_dummy_atom, get_complex_name, join_duplicate_groups_by_union
+    remove_haptic_dummy_atom, get_complex_name, join_duplicate_groups_by_union, get_target_vector
 from DARTassembler.src.metalig.archetype import try_all_geometrical_isomer_possibilities, all_archetypes, align_vectors, align_donor_atoms
 from DARTassembler.src.constants.chem import Element
 from DARTassembler.src.metalig.mol import BaseMolecule, Ligand
@@ -189,18 +188,6 @@ class AssembledIsomer(BaseMolecule):
 
         return d
 
-    def get_metal_center_atoms(self) -> ase.Atoms:
-        """
-        Return an ASE Atoms object containing only the metal center atoms.
-
-        :return: ASE Atoms with the metal center atoms (order corresponds to metal_idc).
-        :rtype: ase.Atoms
-        """
-        atoms = ase.Atoms()
-        for metal_idx in self.metal_idc:
-            atoms += self.atoms[metal_idx]
-        return atoms
-
     # todo: update these methods using the new output format of the AssembledComplex.to_dict() method.
     # @classmethod
     # def from_json(cls, filepath) -> 'AssembledIsomer':
@@ -263,33 +250,41 @@ class AssembledComplex(object):
         :type ligand_origins: list[list[float]] | None
 
         Example usage for assembling a mono-metallic square-planar Pd complex with 2 cis bidentate ligands in the xy-plane:
+
+        .. code-block:: python
+
             factory = AssembledComplex(
-                                    ligands=..., (list of two bidentate Ligand() objects, usually from the MetaLig database)
-                                    metal_centers='Pd',
-                                    target_vectors=[
-                                                    [[1, 0, 0], [0, 1, 0]],     # the donor atoms of the first bidentate ligand are oriented in (+x,+y) direction
-                                                    [[-1, 0, 0], [0, -1, 0]],   # the donor atoms of the second bidentate ligand are oriented in (-x,-y) direction
-                                                    ],
-        Example usage for assembling a bi-metallic complex with three monodentate ligands, one of them bridging:
-            ligands = ... (list of three monodentate Ligand() objects, usually from the MetaLig database)
-            ru = ['Ru', [1, 0, 0]]
-            fe = ['Fe', [-1, 0, 0]]
-            metal_centers = [
-                                [ru],       # metal center for the first ligand
-                                [ru, fe],   # metal centers for the second, bridging ligand
-                                [fe]        # metal center for the third ligand
-                            ]
-            target_vectors = [
-                                [[1, 0, 0]],
-                                [[0, 0, 1]],
-                                [[-1, 0, 0]],
-                             ]
-            factory = AssembledComplex(
-                                        ligands=ligands,
-                                        target_vectors=target_vectors,
-                                        metal_centers=metal_centers
-                                        )
-            isomers = factory.generate_isomers()
+                        ligands=... # (list of two 2-cis Ligand() objects from the MetaLig)
+                        metal_centers='Pd',
+                        target_vectors=[
+                                        [[1, 0, 0], [0, 1, 0]],     # the donor atoms of the first bidentate ligand are oriented in (+x,+y) direction
+                                        [[-1, 0, 0], [0, -1, 0]],   # the donor atoms of the second bidentate ligand are oriented in (-x,-y) direction
+                                        ],
+                        )
+
+        Example usage for assembling a bi-metallic complex with three monodentate ligands, each one at either end and the third one bridging:
+
+            .. code-block:: python
+
+                ligands = ... # (list of three 1-mono Ligand() objects from the MetaLig)
+                ru = ['Ru', [1, 0, 0]]
+                fe = ['Fe', [-1, 0, 0]]
+                metal_centers = [
+                                    [ru],       # metal center for the first ligand
+                                    [fe]        # metal center for the second ligand
+                                    [ru, fe],   # metal centers for the third, bridging ligand. By default, the ligand will be placed at the center between both metals.
+                                ]
+                target_vectors = [
+                                    [[1, 0, 0]],    # bound to Ru, pointing away from center
+                                    [[-1, 0, 0]],   # bound to Fe, pointing away from center
+                                    [[0, 0, 1]],    # bridging between Ru and Fe, pointing up
+                                 ]
+                factory = AssembledComplex(
+                                            ligands=ligands,
+                                            target_vectors=target_vectors,
+                                            metal_centers=metal_centers
+                                            )
+                isomers = factory.generate_isomers()
         """
         metal_centers, ligand_origins, ligands, target_vectors = self._check_input_and_handle_defaults(metal_centers, ligand_origins, ligands, target_vectors)
 
@@ -303,6 +298,7 @@ class AssembledComplex(object):
         Validate inputs and set sensible defaults for metal_centers and ligand_origins.
 
         This method:
+
           - Expands a single-element metal_centers string into ASE Atoms at the origin for each ligand.
           - Converts provided metal center specifications into ASE Atom objects.
           - Sets default ligand_origins to the metal center(s) position (or mean position for bridging ligands).
@@ -344,11 +340,8 @@ class AssembledComplex(object):
         if not all_same_length:
             raise ValueError(f'Input lists must all have the same length. Got lengths: {input_lengths}')
 
-        # Use abbreviations for target vectors
-        target_vector_abbreviations = {'x': [1, 0, 0], 'y': [0, 1, 0], 'z': [0, 0, 1], '-x': [-1, 0, 0],
-                                       '-y': [0, -1, 0], '-z': [0, 0, -1]}
         try:
-            target_vectors = [[target_vector_abbreviations.get(v, v) for v in target_vector_list] for target_vector_list in target_vectors]
+            target_vectors = [[get_target_vector(v) for v in target_vector_list] for target_vector_list in target_vectors]
         except:
             pass
         # Check target vectors format
@@ -495,31 +488,31 @@ class AssembledComplex(object):
                 same_length_target_vectors.append(target_vectors)
                 isomer_idx += 1
 
-        pre_isomers_duplicate_groups = DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=self.duplicate_tolerance, metal_centers=self.metal_centers).get_duplicate_groups()
+        pre_isomers_duplicate_groups = _DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=self.duplicate_tolerance, metal_centers=self.metal_centers).get_duplicate_groups()
         pre_isomers_duplicate_group_names = [set([isomer.isomer_name for isomer in isomer_group]) for isomer_group in pre_isomers_duplicate_groups]
 
         # Do a mono-axial optimization of the isomers and afterward check for clashing ligands.
         for idx, isomer, target_vectors, ligand_origins in zip(range(len(isomers)), isomers, same_length_target_vectors, same_length_ligand_origins):
-            isomer = AxialOptModifier(isomers=[isomer], opt=self.monoaxial_optimization).modify(target_vectors_list=[target_vectors], ligand_origins_list=[ligand_origins])[0]
+            isomer = _AxialOptModifier(isomers=[isomer], opt=self.monoaxial_optimization).modify(target_vectors_list=[target_vectors], ligand_origins_list=[ligand_origins])[0]
             isomers[idx] = isomer # important: copy changed object over to list
 
             if isomer.warning == '' and pd.notna(self.clashing_tolerance):
-                clashfilter = IsomerClashFilter(buffer=self.clashing_tolerance, check_metal_clashes=self.clashing_metal)
+                clashfilter = _IsomerClashFilter(buffer=self.clashing_tolerance, check_metal_clashes=self.clashing_metal)
                 clashing = clashfilter.has_clashing_atoms(atoms=isomer.atoms, ligand_idc=isomer.ligand_idc, metal_idc=isomer.metal_idc)
                 if clashing:
                     isomer.warning = 'clashing'  # this now updates the optimized object
 
         # Check for duplicates again after the mono-axial optimization.
-        joined_isomers_duplicate_group_names = self.get_duplicate_isomers_group_names(isomers=isomers, pre_isomers_duplicate_group_names=pre_isomers_duplicate_group_names, duplicate_tolerance=self.duplicate_tolerance,  metal_centers=self.metal_centers)
+        joined_isomers_duplicate_group_names = self._get_duplicate_isomers_group_names(isomers=isomers, pre_isomers_duplicate_group_names=pre_isomers_duplicate_group_names, duplicate_tolerance=self.duplicate_tolerance, metal_centers=self.metal_centers)
 
-        self.successful_isomers, self.unsuccessful_isomers = self.divide_into_successful_and_unsuccessful_isomers(isomers, joined_isomers_duplicate_group_names)
+        self.successful_isomers, self.unsuccessful_isomers = self._divide_into_successful_and_unsuccessful_isomers(isomers, joined_isomers_duplicate_group_names)
         self.success = len(self.successful_isomers) > 0
         self.isomers = isomers
 
         return
 
     @staticmethod
-    def get_duplicate_isomers_group_names(isomers: list[Any], pre_isomers_duplicate_group_names: list[set[str | None]], duplicate_tolerance: float, metal_centers: list[list[Atom]]) -> list[list[str]]:
+    def _get_duplicate_isomers_group_names(isomers: list[Any], pre_isomers_duplicate_group_names: list[set[str | None]], duplicate_tolerance: float, metal_centers: list[list[Atom]]) -> list[list[str]]:
         """
         Join pre- and post-optimization duplicate groups and preserve isomer ordering.
 
@@ -537,7 +530,7 @@ class AssembledComplex(object):
         :return: Ordered list of duplicate groups where each group is a list of isomer names.
         :rtype: list[list[str]]
         """
-        post_isomers_duplicate_groups = DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=duplicate_tolerance, metal_centers=metal_centers).get_duplicate_groups()
+        post_isomers_duplicate_groups = _DuplicateIsomerFilter(isomers=isomers, fingerprint_grouping_cutoff=duplicate_tolerance, metal_centers=metal_centers).get_duplicate_groups()
         post_isomers_duplicate_group_names = [set([isomer.isomer_name for isomer in isomer_group]) for isomer_group in post_isomers_duplicate_groups]
 
         # Join the pre- and post-isomers duplicate groups. If an isomer is a duplicate in either the pre- or post-isomers duplicate groups, it is considered a duplicate.
@@ -550,7 +543,7 @@ class AssembledComplex(object):
                                                 in joined_isomers_duplicate_group_names]
         return joined_isomers_duplicate_group_names
 
-    def divide_into_successful_and_unsuccessful_isomers(self, isomers: list[Any], joined_isomers_duplicate_group_names: list[list[str]]) -> tuple[list[Any], list[Any]]:
+    def _divide_into_successful_and_unsuccessful_isomers(self, isomers: list[Any], joined_isomers_duplicate_group_names: list[list[str]]) -> tuple[list[Any], list[Any]]:
         """
         Split isomers into successful and unsuccessful sets based on warnings and duplicate groups.
 
@@ -804,7 +797,7 @@ class AssembledComplex(object):
         return graph, ligand_indices, donor_idc
 
 
-class AxialOptModifier:
+class _AxialOptModifier:
     """
     Optimize mono-coordinating ligand rotations around their coordination axis.
 
@@ -1038,7 +1031,7 @@ class AxialOptModifier:
         view(structures_to_view)
 
 
-class DuplicateIsomerFilter:
+class _DuplicateIsomerFilter:
     """
     Reduce the number of assembled isomers by detecting duplicates via fingerprint or alignment.
 
@@ -1444,7 +1437,7 @@ class DuplicateIsomerFilter:
         :raises ValueError: If cutoff is None when method='cutoff'.
         """
         if method == "cluster":
-            from sklearn.cluster import MeanShift, estimate_bandwidth
+            from sklearn.cluster import MeanShift
             # Flatten the matrix values for clustering.
             # Upper triangle indices are used to avoid redundancy.
             triu_indices = np.triu_indices_from(matrix, k=1)
@@ -1914,7 +1907,7 @@ class DuplicateIsomerFilter:
         return df
 
 
-class IsomerClashFilter:
+class _IsomerClashFilter:
     """
     Filter assembled isomers for interatomic clashes based on covalent radii.
 

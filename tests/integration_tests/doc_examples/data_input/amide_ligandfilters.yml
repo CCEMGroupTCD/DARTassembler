@@ -1,0 +1,16 @@
+# file: amide_ligandfilters.yml
+outpath: ligands/amide.jsonlines   # path or nothing
+filters:
+  - filter: 'composition'
+    elements: N
+    instruction: 'must_contain_and_only_contain'
+    only_donors: True
+
+  - filter: 'property'
+    name: 'charge'
+    values: [ -1 ]
+
+  - filter: 'smarts'
+    smarts: '[N&D3X3!a](-[Hg])(-[C,Si])(-[C,Si])'
+    should_contain: True
+    include_metal: True

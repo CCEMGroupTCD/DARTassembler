@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,27 +7,25 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Module Overview &mdash; DARTassembler dev documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="MetaLig Ligand Database" href="2_metalig_database.html" />
-    <link rel="prev" title="Understanding DART" href="1_understanding_the_dart_workflow.html" /> 
+    <link rel="next" title="Ligands API" href="2_ligands.html" />
+    <link rel="prev" title="Assembler Module" href="2_assembler.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,9 +40,6 @@
             DARTassembler
               <img src="../_static/DART_pic.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                dev
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -55,15 +52,49 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="1_installation_guide.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="1_Pd_Ni_Cross_Coupling.html">Advanced Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_NaFe_example.html">Advanced Example: Na-Fe systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_understanding_the_dart_workflow.html">Understanding DART</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_metalig_database.html">MetaLig Ligand Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_ligand_filters.html">LigandFilters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_assembler.html">Assembler Module</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.misc.cli-get_parser-positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Sub-commands">Sub-commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#assembler">assembler</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ligandfilters">ligandfilters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments_repeat1">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#dbinfo">dbinfo</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments_repeat2">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#concat">concat</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments_repeat3">Named Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#configs">configs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#named-arguments_repeat4">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_metalig_api.html">MetaLig API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_ligand_filters_api.html">LigandFilters API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_other_modules.html">Other DART Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
 <ul>
@@ -100,58 +131,143 @@
              
   <section id="module-overview">
 <span id="id1"></span><h1>Module Overview<a class="headerlink" href="#module-overview" title="Link to this heading"></a></h1>
-<p>DART implements a list of commands for the terminal which you can use to interact with the package:</p>
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-arg-DARTassembler">
-<span class="sig-name descname"><span class="pre">DARTassembler</span></span><span class="sig-prename descclassname"> <span class="pre">--help</span></span><a class="headerlink" href="#cmdoption-arg-DARTassembler" title="Link to this definition"></a></dt>
-<dd><p>Displays a list of available commands. Useful to check if DART is available.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-arg-0">
-<span class="sig-name descname"><span class="pre">DARTassembler</span></span><span class="sig-prename descclassname"> <span class="pre">assembler</span> <span class="pre">--path</span> <span class="pre">assembler_input.yml</span></span><a class="headerlink" href="#cmdoption-arg-0" title="Link to this definition"></a></dt>
-<dd><p>Executes the <a class="reference internal" href="2_assembler.html#assembler"><span class="std std-ref">Assembler Module</span></a> using the provided configuration file.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-arg-1">
-<span class="sig-name descname"><span class="pre">DARTassembler</span></span><span class="sig-prename descclassname"> <span class="pre">ligandfilters</span> <span class="pre">--path</span> <span class="pre">ligandfilters_input.yml</span></span><a class="headerlink" href="#cmdoption-arg-1" title="Link to this definition"></a></dt>
-<dd><p>Executes the <a class="reference internal" href="2_ligand_filters.html#ligandfilters"><span class="std std-ref">Ligand Filters Module</span></a> using the provided configuration file.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-arg-2">
-<span class="sig-name descname"><span class="pre">DARTassembler</span></span><span class="sig-prename descclassname"> <span class="pre">dbinfo</span> <span class="pre">--path</span> <span class="pre">ligand_db.jsonlines</span></span><a class="headerlink" href="#cmdoption-arg-2" title="Link to this definition"></a></dt>
-<dd><p>Run this command to get more information on the ligands in the ligand database file <code class="docutils literal notranslate"><span class="pre">ligand_db.jsonlines</span></code>. It will immediately save two files in the current directory, which here would be called <code class="docutils literal notranslate"><span class="pre">ligand_db.csv</span></code> and <code class="docutils literal notranslate"><span class="pre">concat_ligand_db.xyz</span></code>. The .csv file contains information about each ligand in the database such as stoichiometry, donors or formal charge. The concatenated .xyz file contains the 3D structures of all ligands in the database, coordinated to a Cu metal center for visualization purposes. To browse through the structures, you can use the command <code class="docutils literal notranslate"><span class="pre">ase</span> <span class="pre">gui</span> <span class="pre">concat_ligand_db.xyz</span></code>.</p>
-<p>Instead of providing a path to a ligand database file, you can also use <code class="docutils literal notranslate"><span class="pre">--path</span> <span class="pre">metalig</span></code> to generate the overview for the entire <a class="reference internal" href="2_metalig_database.html#metalig"><span class="std std-ref">MetaLig</span></a> database or <code class="docutils literal notranslate"><span class="pre">--path</span> <span class="pre">test_metalig</span></code> to generate the overview for a test database including only the first 1000 ligands of the MetaLig database.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-arg-3">
-<span class="sig-name descname"><span class="pre">DARTassembler</span></span><span class="sig-prename descclassname"> <span class="pre">concat</span> <span class="pre">--path</span> <span class="pre">ligand_db1.jsonlines</span> <span class="pre">ligand_db2.jsonlines</span></span><a class="headerlink" href="#cmdoption-arg-3" title="Link to this definition"></a></dt>
-<dd><p>Concatenates two or more ligand database files into one. The output will be saved to a file called <code class="docutils literal notranslate"><span class="pre">concat_ligand_db.jsonlines</span></code>.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-arg-4">
-<span class="sig-name descname"><span class="pre">DARTassembler</span></span><span class="sig-prename descclassname"> <span class="pre">installtest</span> <span class="pre">--path</span> <span class="pre">testdir</span></span><a class="headerlink" href="#cmdoption-arg-4" title="Link to this definition"></a></dt>
-<dd><p>Runs a quick test of the <code class="docutils literal notranslate"><span class="pre">assembler</span></code>, <code class="docutils literal notranslate"><span class="pre">ligandfilters</span></code> and <code class="docutils literal notranslate"><span class="pre">dbinfo</span></code> module and saves the results in the directory <code class="docutils literal notranslate"><span class="pre">testdir</span></code>. If no directory is specified, the results will not be saved.</p>
-</dd></dl>
-
-<dl class="std option">
-<dt class="sig sig-object std" id="cmdoption-arg-5">
-<span class="sig-name descname"><span class="pre">DARTassembler</span></span><span class="sig-prename descclassname"> <span class="pre">configs</span> <span class="pre">--path</span> <span class="pre">.</span></span><a class="headerlink" href="#cmdoption-arg-5" title="Link to this definition"></a></dt>
-<dd><p>Saves two files to the specified directory, <code class="docutils literal notranslate"><span class="pre">assembler.yml</span></code> and <code class="docutils literal notranslate"><span class="pre">ligandfilters.yml</span></code>. These files are templates for the configuration files of the assembler and ligandfilters module. They are handy to get started with a new project.</p>
-</dd></dl>
-
+<nav class="contents local" id="contents">
+<ul class="simple">
+<li><p><a class="reference internal" href="#DARTassembler.src.misc.cli-get_parser-positional-arguments" id="id2">Positional Arguments</a></p></li>
+<li><p><a class="reference internal" href="#Sub-commands" id="id3">Sub-commands</a></p>
+<ul>
+<li><p><a class="reference internal" href="#assembler" id="id4">assembler</a></p></li>
+<li><p><a class="reference internal" href="#ligandfilters" id="id5">ligandfilters</a></p></li>
+<li><p><a class="reference internal" href="#dbinfo" id="id6">dbinfo</a></p></li>
+<li><p><a class="reference internal" href="#concat" id="id7">concat</a></p></li>
+<li><p><a class="reference internal" href="#configs" id="id8">configs</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p id="module-DARTassembler.src.misc.cli">DART implements a list of commands (or modules) for the terminal which you can use to interact with the package. For the <a class="reference internal" href="2_assembler.html#assembler"><span class="std std-ref">Assembler Module</span></a> and the <a class="reference internal" href="2_ligand_filters.html#ligandfilters"><span class="std std-ref">Ligand Filters Module</span></a>, you will typically want to provide a configuration file in YAML format that specifies the options for the module. You can generate template configuration files using the <code class="docutils literal notranslate"><span class="pre">configs</span></code> module. You can use the <code class="docutils literal notranslate"><span class="pre">dbinfo</span></code> to get more information on the ligands in a ligand database file or the <code class="docutils literal notranslate"><span class="pre">concat</span></code> to concatenate multiple ligand database files into one.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">usage</span><span class="p">:</span> <span class="n">DARTassembler</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">{</span><span class="n">assembler</span><span class="p">,</span><span class="n">ligandfilters</span><span class="p">,</span><span class="n">dbinfo</span><span class="p">,</span><span class="n">concat</span><span class="p">,</span><span class="n">configs</span><span class="p">}</span> <span class="o">...</span>
+</pre></div>
+</div>
+<section id="DARTassembler.src.misc.cli-get_parser-positional-arguments">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">Positional Arguments</a><a class="headerlink" href="#DARTassembler.src.misc.cli-get_parser-positional-arguments" title="Link to this heading"></a></h2>
+<dl class="option-list">
+<dt><kbd>module</kbd></dt>
+<dd><p>Possible choices: assembler, ligandfilters, dbinfo, concat, configs</p>
+<p>DART modules to choose from. See each module’s help for more information.</p>
+</dd>
+</dl>
+</section>
+<section id="Sub-commands">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">Sub-commands</a><a class="headerlink" href="#Sub-commands" title="Link to this heading"></a></h2>
+<section id="assembler">
+<h3><a class="toc-backref" href="#id4" role="doc-backlink">assembler</a><a class="headerlink" href="#assembler" title="Link to this heading"></a></h3>
+<p>Execute the assembler module using the provided configuration file.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">DARTassembler</span> <span class="pre">assembler</span> <span class="pre">--input</span> <span class="pre">assembler.yml</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DARTassembler</span> <span class="n">assembler</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="nb">input</span> <span class="n">INPUT</span>
+</pre></div>
+</div>
+<section id="named-arguments">
+<h4>Named Arguments<a class="headerlink" href="#named-arguments" title="Link to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input</kbd></dt>
+<dd><p>Path to a .yml file with assembler options.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="ligandfilters">
+<h3><a class="toc-backref" href="#id5" role="doc-backlink">ligandfilters</a><a class="headerlink" href="#ligandfilters" title="Link to this heading"></a></h3>
+<p>Execute the ligandfilters module using the provided configuration file.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">DARTassembler</span> <span class="pre">ligandfilters</span> <span class="pre">--input</span> <span class="pre">ligandfilters.yml</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DARTassembler</span> <span class="n">ligandfilters</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="nb">input</span> <span class="n">INPUT</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat1">
+<h4>Named Arguments<a class="headerlink" href="#named-arguments_repeat1" title="Link to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>--input</kbd></dt>
+<dd><p>Path to a .yml file with ligand filter options.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="dbinfo">
+<h3><a class="toc-backref" href="#id6" role="doc-backlink">dbinfo</a><a class="headerlink" href="#dbinfo" title="Link to this heading"></a></h3>
+<p>Get info files (.csv &amp; .xyz) from a .jsonlines ligand database. This can be used to browse the ligands in a database. The .csv file contains information about each ligand in the database such as stoichiometry, donors or formal charge. The concatenated .xyz file contains the 3D structures of all ligands in the database. To browse through the structures, you can use <code class="docutils literal notranslate"><span class="pre">ase</span> <span class="pre">gui</span> <span class="pre">concat_LIGAND_DB.xyz</span></code>.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">DARTassembler</span> <span class="pre">dbinfo</span> <span class="pre">--db</span> <span class="pre">ligand_db.jsonlines</span> <span class="pre">--outdir</span> <span class="pre">.</span> <span class="pre">--n</span> <span class="pre">1000</span> <span class="pre">--metal</span> <span class="pre">False</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DARTassembler</span> <span class="n">dbinfo</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">db</span> <span class="n">DB</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">n</span> <span class="n">N</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">metal</span> <span class="p">[</span><span class="n">METAL</span><span class="p">]]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat2">
+<h4>Named Arguments<a class="headerlink" href="#named-arguments_repeat2" title="Link to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>--db</kbd></dt>
+<dd><p>Path to a .jsonlines ligand database such as <code class="docutils literal notranslate"><span class="pre">ligand_db.jsonlines</span></code>. Use the string <code class="docutils literal notranslate"><span class="pre">'metalig'</span></code> instead for the entire MetaLig database (default).</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">'metalig'</span></code></p>
+</dd>
+<dt><kbd>--outdir</kbd></dt>
+<dd><p>Output directory for the .csv and .xyz files. By default, the current directory is used.</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">.</span></code></p>
+</dd>
+<dt><kbd>--n</kbd></dt>
+<dd><p>Maximum number of ligands to read in from the database. Useful for testing purposes. If None, all ligands are read in (default).</p>
+</dd>
+<dt><kbd>--metal</kbd></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> (default), a Hg pseudo metal center is included in the concatenated .xyz file. If <code class="docutils literal notranslate"><span class="pre">False</span></code>, only the ligand is included.</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="concat">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">concat</a><a class="headerlink" href="#concat" title="Link to this heading"></a></h3>
+<p>Concatenate multiple ligand databases into one.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">DARTassembler</span> <span class="pre">concat</span> <span class="pre">--dbs</span> <span class="pre">ligand_db1.jsonlines</span> <span class="pre">ligand_db2.jsonlines</span> <span class="pre">--outpath</span> <span class="pre">concat_ligand_db.jsonlines</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DARTassembler</span> <span class="n">concat</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="n">dbs</span> <span class="n">DBS</span> <span class="p">[</span><span class="n">DBS</span> <span class="o">...</span><span class="p">]</span> <span class="o">--</span><span class="n">outpath</span> <span class="n">OUTPATH</span> <span class="p">[</span><span class="o">--</span><span class="n">n</span> <span class="n">N</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat3">
+<h4>Named Arguments<a class="headerlink" href="#named-arguments_repeat3" title="Link to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>--dbs</kbd></dt>
+<dd><p>List of paths to .jsonlines ligand databases to concatenate.</p>
+</dd>
+<dt><kbd>--outpath</kbd></dt>
+<dd><p>Output filepath for the concatenated database .jsonlines file, e.g., <code class="docutils literal notranslate"><span class="pre">concat_ligand_db.jsonlines</span></code>.</p>
+</dd>
+<dt><kbd>--n</kbd></dt>
+<dd><p>Maximum number of ligands to read in from each input ligand database. Useful for testing purposes. If None, all ligands are read in (default).</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="configs">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">configs</a><a class="headerlink" href="#configs" title="Link to this heading"></a></h3>
+<p>Retrieve two .yml configuration files as useful templates for the assembler and ligandfilters module.</p>
+<p>Example: <code class="docutils literal notranslate"><span class="pre">DARTassembler</span> <span class="pre">configs</span> <span class="pre">--outdir</span> <span class="pre">.</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DARTassembler</span> <span class="n">configs</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">outdir</span> <span class="n">OUTDIR</span><span class="p">]</span>
+</pre></div>
+</div>
+<section id="named-arguments_repeat4">
+<h4>Named Arguments<a class="headerlink" href="#named-arguments_repeat4" title="Link to this heading"></a></h4>
+<dl class="option-list">
+<dt><kbd>--outdir</kbd></dt>
+<dd><p>Directory to save the configuration files to. By default, the current directory is used.</p>
+<p>Default: <code class="docutils literal notranslate"><span class="pre">.</span></code></p>
+</dd>
+</dl>
+</section>
+</section>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="1_understanding_the_dart_workflow.html" class="btn btn-neutral float-left" title="Understanding DART" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="2_metalig_database.html" class="btn btn-neutral float-right" title="MetaLig Ligand Database" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="2_assembler.html" class="btn btn-neutral float-left" title="Assembler Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="2_ligands.html" class="btn btn-neutral float-right" title="Ligands API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

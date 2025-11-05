@@ -120,6 +120,7 @@ all_archetypes = {
             '10-deca': (tuple([xy_angle(i*360/10) for i in range(10)]), 1)
         },
 }
+valid_archetypes = [archetype for denticity in all_archetypes.values() for archetype in denticity.keys()]
 
 def remove_mirrored_isomers_in_planar_ring_like_ligands(best_idc: list[list[int]]) -> list[list[int]]:
     """

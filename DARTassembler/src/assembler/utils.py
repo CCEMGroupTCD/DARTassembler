@@ -215,3 +215,38 @@ if __name__ == '__main__':
     n = range(10)
     standard = tuple(f'{generate_pronounceable_word(length=8, start_with_vowel=True)}' for _ in n)
     print(standard)
+
+
+def get_target_vector(v: str) -> list[float]:
+    """
+    If the target vector is provided as an abbreviation (e.g., 'x', '-y', 'z'), convert it to the corresponding vector. If the target vector is provided as 'xy(angle)', convert it to the corresponding vector in the xy-plane at the given angle (in degrees) from the y-axis.
+    :return: Target vector as a list of 3 floats.
+    :rtype: list[float]
+    """
+    target_vector_abbreviations = {
+                                    'x': [1, 0, 0],
+                                    'y': [0, 1, 0],
+                                    'z': [0, 0, 1],
+                                    '+x': [1, 0, 0],
+                                    '+y': [0, 1, 0],
+                                    '+z': [0, 0, 1],
+                                    '-x': [-1, 0, 0],
+                                    '-y': [0, -1, 0],
+                                    '-z': [0, 0, -1]
+                                    }
+    if v.startswith('xy(') and v.endswith(')'):  # e.g., 'xy(45)'
+        angle = float(v[3:-1])
+        rad = np.radians(angle)
+        v = [np.sin(rad), np.cos(rad), 0]
+    elif v in target_vector_abbreviations:
+        v = target_vector_abbreviations[v]
+
+    if not len(v) == 3:
+        raise ValueError(f'Target vector must be of length 3, got {len(v)} for input {v}.')
+
+    try:
+        v = np.array(v, dtype=float)
+    except:
+        raise ValueError(f'Target vector must be convertible to a list of 3 floats, got {v}.')
+
+    return v

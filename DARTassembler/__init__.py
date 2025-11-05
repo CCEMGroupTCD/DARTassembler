@@ -10,4 +10,5 @@ from .src.assembler.assembler import Assembler
 from .src.metalig.ligandfilters import LigandFilters
 from .src.modules.modules import DBInfo, Concat, Configs
 from .src.assembler.isomer import AssembledIsomer, AssembledComplex
+from .src.metalig.db import LigandDB
 from .src.metalig.mol import Ligand

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,26 +7,24 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Assembler Module &mdash; DARTassembler dev documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
-        <script src="../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Troubleshooting and FAQs" href="3_troubleshooting_and_faqs.html" />
+    <link rel="next" title="Module Overview" href="2_module_overview.html" />
     <link rel="prev" title="LigandFilters Module" href="2_ligand_filters.html" /> 
 </head>
 
@@ -40,9 +40,6 @@
             DARTassembler
               <img src="../_static/DART_pic.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                dev
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -55,18 +52,18 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="1_installation_guide.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="1_Pd_Ni_Cross_Coupling.html">Advanced Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_NaFe_example.html">Advanced Example: Na-Fe systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="1_understanding_the_dart_workflow.html">Understanding DART</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="2_module_overview.html">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_metalig_database.html">MetaLig Ligand Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="2_ligand_filters.html">LigandFilters Module</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Assembler Module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#assembler-input">Assembler Input</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#batch-options">Batch Options</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#global-options">Global Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ligand-archetypes-and-target-vectors">Ligand Archetypes and Target Vectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#haptically-coordinating-ligands">Haptically coordinating ligands</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#assembler-output">Assembler Output</a><ul>
@@ -74,8 +71,25 @@
 <li class="toctree-l3"><a class="reference internal" href="#output-files">Output Files</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#assembler-options">Assembler Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.assembler.assembler.Assembler"><code class="docutils literal notranslate"><span class="pre">Assembler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.assembler.assembler.Assembler.run_batch"><code class="docutils literal notranslate"><span class="pre">Assembler.run_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.assembler.assembler.Assembler.run"><code class="docutils literal notranslate"><span class="pre">Assembler.run()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.assembler.assembler.Assembler.run_from_yaml"><code class="docutils literal notranslate"><span class="pre">Assembler.run_from_yaml()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.assembler.assembler.Assembler.run_from_cli"><code class="docutils literal notranslate"><span class="pre">Assembler.run_from_cli()</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="2_module_overview.html">Module Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_metalig_api.html">MetaLig API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_ligand_filters_api.html">LigandFilters API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_other_modules.html">Other DART Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
 <ul>
@@ -114,453 +128,452 @@
 <span id="assembler"></span><h1>Assembler Module<a class="headerlink" href="#assembler-module" title="Link to this heading"></a></h1>
 <nav class="contents local" id="contents">
 <ul class="simple">
-<li><p><a class="reference internal" href="#assembler-input" id="id1">Assembler Input</a></p>
+<li><p><a class="reference internal" href="#assembler-input" id="id5">Assembler Input</a></p>
 <ul>
-<li><p><a class="reference internal" href="#batch-options" id="id2">Batch Options</a></p></li>
-<li><p><a class="reference internal" href="#global-options" id="id3">Global Options</a></p></li>
+<li><p><a class="reference internal" href="#ligand-archetypes-and-target-vectors" id="id6">Ligand Archetypes and Target Vectors</a></p></li>
+<li><p><a class="reference internal" href="#examples" id="id7">Examples</a></p></li>
+<li><p><a class="reference internal" href="#haptically-coordinating-ligands" id="id8">Haptically coordinating ligands</a></p></li>
 </ul>
 </li>
-<li><p><a class="reference internal" href="#assembler-output" id="id4">Assembler Output</a></p>
+<li><p><a class="reference internal" href="#assembler-output" id="id9">Assembler Output</a></p>
 <ul>
-<li><p><a class="reference internal" href="#folder-structure" id="id5">Folder Structure</a></p></li>
-<li><p><a class="reference internal" href="#output-files" id="id6">Output Files</a></p></li>
+<li><p><a class="reference internal" href="#folder-structure" id="id10">Folder Structure</a></p></li>
+<li><p><a class="reference internal" href="#output-files" id="id11">Output Files</a></p></li>
 </ul>
 </li>
+<li><p><a class="reference internal" href="#assembler-options" id="id12">Assembler Options</a></p></li>
 </ul>
 </nav>
 <section id="assembler-input">
-<h2><a class="toc-backref" href="#id1" role="doc-backlink">Assembler Input</a><a class="headerlink" href="#assembler-input" title="Link to this heading"></a></h2>
+<span id="module-DARTassembler.src.assembler.assembler"></span><h2><a class="toc-backref" href="#id5" role="doc-backlink">Assembler Input</a><a class="headerlink" href="#assembler-input" title="Link to this heading"></a></h2>
 <p>The DART Assembler Module generates 3D structures of novel transition metal complexes from a database of ligands, which can either be the full <a class="reference internal" href="2_metalig_database.html#metalig"><span class="std std-ref">MetaLig database</span></a> or a subset from a user-defined chemical space. While this page focuses on the input options for the assembler, you can read more about how the DART Assembler Module works <a class="reference internal" href="1_understanding_the_dart_workflow.html#how-assembler-works"><span class="std std-ref">here</span></a>.</p>
 <p>The assembler module is run from the command line by providing a single configuration file:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>DARTassembler<span class="w"> </span>assembler<span class="w"> </span>--path<span class="w"> </span>assembler_input.yml
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>DARTassembler<span class="w"> </span>assembler<span class="w"> </span>--input<span class="w"> </span>assembler.yml
 </pre></div>
 </div>
 <p><strong>Copy-Paste Template:</strong></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">################## Settings for the DART assembler module. ##################</span>
-<span class="c1"># Everything after &#39;#&#39; is ignored by the program and only there for the user.</span>
-
-<span class="nt">output_directory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DART</span><span class="w">                </span><span class="c1"># Path to a directory for the output files.</span>
-<span class="nt">batches</span><span class="p">:</span><span class="w">                              </span><span class="c1"># List of batches to generate.</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">First_batch</span><span class="w">                 </span><span class="c1"># Name of the batch.</span>
-<span class="w">    </span><span class="nt">metal_center</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Fe</span><span class="w">                  </span><span class="c1"># Chemical symbol of the desired metal center.</span>
-<span class="w">    </span><span class="nt">metal_oxidation_state</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w">          </span><span class="c1"># Oxidation state of the desired metal center.</span>
-<span class="w">    </span><span class="nt">total_charge</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w">                   </span><span class="c1"># Total charge of the complex.</span>
-<span class="w">    </span><span class="nt">geometry</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2-1-1</span><span class="w">                   </span><span class="c1"># Geometry of the complexes. Options: `2-1-1`, `2-2`, `mer-3-2-1`, `mer-4-1-1`, `5-1`</span>
-<span class="w">    </span><span class="nt">ligand_db_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">metalig</span><span class="w">           </span><span class="c1"># Path to the ligand db file. Options: `metalig`, `test_metalig`, filepath or list of paths/keywords (see documentation).</span>
-<span class="w">    </span><span class="nt">max_num_complexes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w">            </span><span class="c1"># Maximum number of complexes/isomers to generate. Integer or `all`.</span>
-<span class="w">    </span><span class="nt">isomers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">all</span><span class="w">                      </span><span class="c1"># Which isomers to save for each complex. Options: `lowest_energy`, `all`</span>
-<span class="w">    </span><span class="c1">#random_seed: 0                   # Optional. Random seed for reproducibility of results. Choose any integer.</span>
-<span class="w">    </span><span class="c1">#forcefield: false                # Optional. Whether to optimize the structures after generation with a UFF force field. Recommended: `false`.</span>
-<span class="w">    </span><span class="c1">#bidentate_rotator: auto          # Optional. How to rotate bidentate ligands in square-planar complexes. Options: `auto`, `horseshoe`, `slab`. Recommended: `auto`.</span>
-<span class="w">    </span><span class="c1">#geometry_modifier_filepath:      # Optional. Path to a geometry modifier file to shift atoms in complexes.</span>
-<span class="w">    </span><span class="c1">#complex_name_appendix:           # Optional. String to append to each randomly generated complex name for labeling purposes.</span>
-
-<span class="c1">#ffmovie: false                       # Optional. Whether to output a movie (concatenated xyz file) of the forcefield optimization process.</span>
-<span class="c1">#concatenate_xyz: true                # Optional. Whether to save concatenated xyz files with all passed/failed complexes respectively.</span>
-<span class="c1">#verbosity: 2                         # Optional. Output verbosity level (0-3), recommended: `2`.</span>
-<span class="c1">#same_isomer_names: true              # Optional. Whether to give the same name to isomers of the same complex and then to number them.</span>
-<span class="c1">#complex_name_length: 8               # Optional. Length for generated complex names, recommended: 8.</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">################## Settings for the DART assembler module ##################</span>
+<span class="linenos"> 2</span><span class="c1"># file: assembler.yml</span>
+<span class="linenos"> 3</span><span class="c1"># This example input file generates square-planar Pd(II) complexes with two monodentate and one bidentate ligands.</span>
+<span class="linenos"> 4</span><span class="c1"># Everything after &#39;#&#39; is a comment that is ignored by the program and only there for the user.</span>
+<span class="linenos"> 5</span><span class="c1"># If a default parameter is specified, the parameter can also just be left out/commented out.</span>
+<span class="linenos"> 6</span><span class="c1"># The lists `ligand_db_files`, `ligand_archetypes` and `target_vectors` must have the same length, corresponding to the number of ligand sites in the complex.</span>
+<span class="linenos"> 7</span><span class="c1"># See the &#39;Assembler Module&#39; section in the DART documentation for more information and more options.</span>
+<span class="linenos"> 8</span>
+<span class="linenos"> 9</span><span class="nt">output_directory</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;DARTassembler&#39;</span><span class="w">   </span><span class="c1"># Path to a directory for the output files. Default: &#39;DARTassembler&#39;.</span>
+<span class="linenos">10</span><span class="nt">n_max_ligands</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w">                 </span><span class="c1"># Speed up test runs by limiting the number of ligands loaded from each ligand database. Default: None (load all ligands).</span>
+<span class="linenos">11</span><span class="nt">batches</span><span class="p">:</span>
+<span class="linenos">12</span><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;PdII&#39;</span><span class="w">                    </span><span class="c1"># Name of the batch. Default: &#39;batch_{batch_idx}&#39;.</span>
+<span class="linenos">13</span><span class="w">    </span><span class="nt">metal_centers</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Pd&#39;</span><span class="w">             </span><span class="c1"># E.g. &#39;Pd&#39; for single Pd atom at origin (0,0,0). See docs for multi-metal examples.</span>
+<span class="linenos">14</span><span class="w">    </span><span class="nt">total_ligand_charges</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-2</span><span class="w">        </span><span class="c1"># Sum of ligand charges. E.g. -2 for neutral Pd(II) complexes. Default: None (no charge filtering).</span>
+<span class="linenos">15</span><span class="w">    </span><span class="nt">n_max_complexes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w">            </span><span class="c1"># Max number of distinct complexes to generate. Integer or `all`.</span>
+<span class="linenos">16</span><span class="w">    </span><span class="nt">ligand_db_files</span><span class="p">:</span><span class="w">                </span><span class="c1"># &#39;.jsonlines&#39; files or keywords &#39;metalig&#39;/&#39;same_as_previous&#39;. Default: &#39;metalig&#39;.</span>
+<span class="linenos">17</span><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;metalig&#39;</span><span class="w">                     </span><span class="c1"># 1. ligand: monodentate from MetaLig</span>
+<span class="linenos">18</span><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;metalig&#39;</span><span class="w">                     </span><span class="c1"># 2. ligand: other monodentate from MetaLig</span>
+<span class="linenos">19</span><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;metalig&#39;</span><span class="w">                     </span><span class="c1"># 3. ligand: bidentate from MetaLig</span>
+<span class="linenos">20</span><span class="w">    </span><span class="nt">ligand_archetypes</span><span class="p">:</span><span class="w">              </span><span class="c1"># Ligand archetypes for each ligand.</span>
+<span class="linenos">21</span><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1-mono&#39;</span><span class="w">                      </span><span class="c1"># 1. ligand: monodentate</span>
+<span class="linenos">22</span><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1-mono&#39;</span><span class="w">                      </span><span class="c1"># 2. ligand: monodentate</span>
+<span class="linenos">23</span><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;2-cis&#39;</span><span class="w">                       </span><span class="c1"># 3. ligand: cis-bidentate</span>
+<span class="linenos">24</span><span class="w">    </span><span class="nt">target_vectors</span><span class="p">:</span><span class="w">                 </span><span class="c1"># List of donor atom orientations for each ligand (see docs).</span>
+<span class="linenos">25</span><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;+x&#39;</span><span class="p p-Indicator">]</span><span class="w">                        </span><span class="c1"># 1. ligand: 1-mono pointing along +X</span>
+<span class="linenos">26</span><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;+y&#39;</span><span class="p p-Indicator">]</span><span class="w">                        </span><span class="c1"># 2. ligand: 1-mono pointing along +Y</span>
+<span class="linenos">27</span><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;-x&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;-y&#39;</span><span class="p p-Indicator">]</span><span class="w">                  </span><span class="c1"># 3. ligand: 2-cis pointing along -X and -Y</span>
 </pre></div>
 </div>
-<p>Users can download this template into their current directory by running:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>DARTassembler<span class="w"> </span>configs<span class="w"> </span>--path<span class="w"> </span>.
+<p>Users can download this template into their current directory as <code class="docutils literal notranslate"><span class="pre">assembler.yml</span></code> by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>DARTassembler<span class="w"> </span>configs<span class="w"> </span>--outdir<span class="w"> </span>.
 </pre></div>
 </div>
-<section id="batch-options">
-<h3><a class="toc-backref" href="#id2" role="doc-backlink">Batch Options</a><a class="headerlink" href="#batch-options" title="Link to this heading"></a></h3>
-<p>Batch settings are mostly mandatory and specify details concerning the metal center and the ligands. Multiple batches can be specified and will be assembled in sequence. For each batch, the first option must be preceded by a hyphen (‘-’) to denote the start of the list.</p>
-<p><strong>Mandatory batch settings:</strong></p>
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#confval-name" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>string</cite></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>true</p>
-</dd>
-</dl>
-<p>Unique name for the batch for easy identification. Each batch must have a different name.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-metal_center">
-<span class="sig-name descname"><span class="pre">metal_center</span></span><a class="headerlink" href="#confval-metal_center" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>chemical symbol</cite></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>true</p>
-</dd>
-</dl>
-<p>Chemical symbol of the desired metal center, e.g. <code class="docutils literal notranslate"><span class="pre">Pd</span></code> or <code class="docutils literal notranslate"><span class="pre">Fe</span></code>.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-metal_oxidation_state">
-<span class="sig-name descname"><span class="pre">metal_oxidation_state</span></span><a class="headerlink" href="#confval-metal_oxidation_state" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>integer &gt; 0</cite></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>true</p>
-</dd>
-</dl>
-<p>Oxidation state of the desired metal center, e.g. <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-total_charge">
-<span class="sig-name descname"><span class="pre">total_charge</span></span><a class="headerlink" href="#confval-total_charge" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>integer</cite></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>true</p>
-</dd>
-</dl>
-<p>Total charge of the complex. Can be positive, negative or zero.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-geometry">
-<span class="sig-name descname"><span class="pre">geometry</span></span><a class="headerlink" href="#confval-geometry" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">mer-3-2-1</span></code>, <code class="docutils literal notranslate"><span class="pre">mer-4-1-1</span></code>, <code class="docutils literal notranslate"><span class="pre">5-1</span></code>, <code class="docutils literal notranslate"><span class="pre">2-1-1</span></code>, <code class="docutils literal notranslate"><span class="pre">2-2</span></code></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>true</p>
-</dd>
-</dl>
-<p>The geometry specifies the denticities of the ligands around the complex. For example, <code class="docutils literal notranslate"><span class="pre">mer-3-2-1</span></code> would generate a complex with one <cite>mer</cite>-tridentate, one bidentate and one monodentate ligand. Currently, the following topologies are supported:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>Octahedral complexes:</strong> <code class="docutils literal notranslate"><span class="pre">mer-3-2-1</span></code>, <code class="docutils literal notranslate"><span class="pre">mer-4-1-1</span></code>, <code class="docutils literal notranslate"><span class="pre">5-1</span></code></p></li>
-<li><p><strong>Square planar complexes:</strong> <code class="docutils literal notranslate"><span class="pre">2-1-1</span></code>, <code class="docutils literal notranslate"><span class="pre">2-2</span></code></p></li>
-</ul>
-</div></blockquote>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-ligand_db_file">
-<span class="sig-name descname"><span class="pre">ligand_db_file</span></span><a class="headerlink" href="#confval-ligand_db_file" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">empty</span></code>/<code class="docutils literal notranslate"><span class="pre">metalig</span></code>, <code class="docutils literal notranslate"><span class="pre">test_metalig</span></code>, <cite>filepath</cite> OR list(<cite>filepath / keyword</cite> )</p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">metalig</span></code></p>
-</dd>
-</dl>
-<p>Specifies the source databases for ligands used in complex assembly. This option can be configured in two ways:</p>
+<section id="ligand-archetypes-and-target-vectors">
+<span id="id1"></span><h3><a class="toc-backref" href="#id6" role="doc-backlink">Ligand Archetypes and Target Vectors</a><a class="headerlink" href="#ligand-archetypes-and-target-vectors" title="Link to this heading"></a></h3>
+<p id="ligand-archetypes"><strong>Ligand Archetypes :</strong></p>
+<p>Each ligand in the MetaLig database is classified into one of 22 <code class="docutils literal notranslate"><span class="pre">archetypes</span></code> based on the orientation of its donor atoms around the metal center. For example, bidentate ligands are either <code class="docutils literal notranslate"><span class="pre">2-cis</span></code> or <code class="docutils literal notranslate"><span class="pre">2-trans</span></code>, and tridentate ligands either <code class="docutils literal notranslate"><span class="pre">3-facial</span></code>, <code class="docutils literal notranslate"><span class="pre">3-meridional</span></code> or <code class="docutils literal notranslate"><span class="pre">3-trigonal</span></code>. Ligands of denticity 2-6 can have one of multiple archetypes defined, while ligands of denticity 1 and 7-10 have simply all ligands collected in a single archetype. The full list of defined archetypes is shown in Figure 1.</p>
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/archetypes.png"><img alt="../_images/archetypes.png" src="../_images/archetypes.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Figure 1: Graphical overview of all 22 ligand archetypes defined in DART.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p id="target-vectors"><strong>Target Vectors :</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">target_vectors</span></code> option specifies the orientation of each ligand’s donor atoms relative to the metal center during complex assembly. For example, for a <code class="docutils literal notranslate"><span class="pre">1-mono</span></code> ligand one has to specify a single vector (e.g. <code class="docutils literal notranslate"><span class="pre">['z']</span></code>), meaning the metal-donor bond will point along the +Z axis, placing the monodentate on top of the metal center. For a <code class="docutils literal notranslate"><span class="pre">2-cis</span></code> ligand, two orthogonal vectors must be provided (e.g. <code class="docutils literal notranslate"><span class="pre">['x',</span> <span class="pre">'y']</span></code>), meaning the two donor atoms will point along the +X and +Y axes, placing the bidentate ligand in a cis arrangement in the x-y plane. For a <code class="docutils literal notranslate"><span class="pre">2-trans</span></code> ligand, two opposite vectors must be provided (e.g. <code class="docutils literal notranslate"><span class="pre">['x',</span> <span class="pre">'-x']</span></code>), meaning the ligand will coordinate to the metal center from opposite sides along the X axis. For a <code class="docutils literal notranslate"><span class="pre">3-trigonal</span></code> ligand, three vectors separated by 120° must be provided (e.g. <code class="docutils literal notranslate"><span class="pre">['xy(0)',</span> <span class="pre">'xy(120)',</span> <span class="pre">'xy(240)']</span></code>), meaning the three donor atoms will point in a trigonal planar arrangement around the metal center in the x-y plane.</p>
+<p>Target vectors can be specified in three formats:</p>
 <ul class="simple">
-<li><p><strong>List of Filepaths and/or Keywords:</strong>
-A list where each entry is either a path to a ligand database file or the keyword <code class="docutils literal notranslate"><span class="pre">same_ligand_as_previous</span></code>. The list should match the number of ligand sites as defined in the <a class="reference internal" href="#confval-geometry"><code class="xref std std-confval docutils literal notranslate"><span class="pre">geometry</span></code></a> option. For instance, in a <code class="docutils literal notranslate"><span class="pre">mer-3-2-1</span></code> geometry, the first database in the list supplies tridentate ligands, the second supplies bidentate, and the third supplies monodentate ligands. The <code class="docutils literal notranslate"><span class="pre">same_ligand_as_previous</span></code> keyword can be used in place of a path to indicate that the ligand for the current site should be identical to the one used in the previous site for each assembled complex. This feature is useful for creating complexes with symmetrical or repeating ligand structures.</p></li>
-<li><p><strong>Single Filepath or Empty:</strong>
-When a single path is provided, ligands for all sites will be drawn from this database. Identical to specifying a list with the same ligand db path for each ligand site. If empty or <code class="docutils literal notranslate"><span class="pre">metalig</span></code>, the entire <a class="reference internal" href="2_metalig_database.html#metalig"><span class="std std-ref">MetaLig database</span></a> will be used. If <code class="docutils literal notranslate"><span class="pre">test_metalig</span></code>, a small subset of the MetaLig database will be used to speed up testing.</p></li>
+<li><p>Symbolic axis indicators: <code class="docutils literal notranslate"><span class="pre">'+x'</span></code>, <code class="docutils literal notranslate"><span class="pre">'-x'</span></code>, <code class="docutils literal notranslate"><span class="pre">'+y'</span></code>, <code class="docutils literal notranslate"><span class="pre">'-y'</span></code>, <code class="docutils literal notranslate"><span class="pre">'+z'</span></code>, <code class="docutils literal notranslate"><span class="pre">'-z'</span></code> for the Cartesian axes. For example, <code class="docutils literal notranslate"><span class="pre">'+x'</span></code> means the vector <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">0,</span> <span class="pre">0]</span></code> and <code class="docutils literal notranslate"><span class="pre">'-z'</span></code> means the vector <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">-1]</span></code>. The specification <code class="docutils literal notranslate"><span class="pre">'x'</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">'+x'</span></code>.</p></li>
+<li><p>Angled vectors in the x-y plane from the y-axis: <code class="docutils literal notranslate"><span class="pre">'xy(angle_in_degrees)'</span></code>. For example, <code class="docutils literal notranslate"><span class="pre">'xy(120)'</span></code> means the vector <code class="docutils literal notranslate"><span class="pre">[sin(120°),</span> <span class="pre">cos(120°),</span> <span class="pre">0]</span></code>.</p></li>
+<li><p>Explicit Cartesian triplets: e.g. <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">1]</span></code>, <code class="docutils literal notranslate"><span class="pre">[-1,</span> <span class="pre">0,</span> <span class="pre">0]</span></code>, etc.</p></li>
 </ul>
-<p>Note: Ligands in the database with a denticity not matching the specified <a class="reference internal" href="#confval-geometry"><code class="xref std std-confval docutils literal notranslate"><span class="pre">geometry</span></code></a> will be ignored during the assembly process. This ensures that only compatible ligands are selected for complex formation.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-max_num_complexes">
-<span class="sig-name descname"><span class="pre">max_num_complexes</span></span><a class="headerlink" href="#confval-max_num_complexes" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>integer &gt; 0</cite> OR <code class="docutils literal notranslate"><span class="pre">all</span></code></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>true</p>
-</dd>
-</dl>
-<p>Maximum number of complexes to generate. If <a class="reference internal" href="#confval-max_num_complexes"><code class="xref std std-confval docutils literal notranslate"><span class="pre">max_num_complexes</span></code></a> is set to <code class="docutils literal notranslate"><span class="pre">all</span></code>, it will generate all combinatorically possible complexes.</p>
-<p>Note: If <a class="reference internal" href="#confval-isomers"><code class="xref std std-confval docutils literal notranslate"><span class="pre">isomers</span></code></a> is set to <code class="docutils literal notranslate"><span class="pre">all</span></code>, each isomer is counted as different complex. Note that the actual number of complexes generated can be a little higher in this case because for the last complex, all isomers are saved, even if this exceeds <a class="reference internal" href="#confval-max_num_complexes"><code class="xref std std-confval docutils literal notranslate"><span class="pre">max_num_complexes</span></code></a>.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-isomers">
-<span class="sig-name descname"><span class="pre">isomers</span></span><a class="headerlink" href="#confval-isomers" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">lowest_energy</span></code>, <code class="docutils literal notranslate"><span class="pre">all</span></code></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>true</p>
-</dd>
-</dl>
-<p>The assembler will always generate all possible geometric isomers. The option <a class="reference internal" href="#confval-isomers"><code class="xref std std-confval docutils literal notranslate"><span class="pre">isomers</span></code></a> determines which isomers are saved. If <code class="docutils literal notranslate"><span class="pre">lowest_energy</span></code>, only the lowest energy isomer is saved as determined by a UFF forcefield. If <code class="docutils literal notranslate"><span class="pre">all</span></code>, all isomers are saved.</p>
-</dd></dl>
-
-<p><strong>Optional batch settings:</strong></p>
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-random_seed">
-<span class="sig-name descname"><span class="pre">random_seed</span></span><a class="headerlink" href="#confval-random_seed" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>integer</cite></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Randomly chosen between 1000 and 9999</p>
-</dd>
-</dl>
-<p>Sets a seed for the random number generator to make the assembly of complexes exactly reproducible for each individual batch. If not set, a random seed between 1000 and 9999 is completely randomly chosen for each batch and recorded. That means the run is still reproducible by checking which random seed was chosen, but the seed is not known in advance.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-forcefield">
-<span class="sig-name descname"><span class="pre">forcefield</span></span><a class="headerlink" href="#confval-forcefield" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code>, <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>false</p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-</dd>
-</dl>
-<p>Whether to relax the generated structures with a Universal Force Field (UFF) as implemented in the <code class="docutils literal notranslate"><span class="pre">openbabel</span></code> software. Because force fields often struggle to describe metal atoms, the metal center and the donor atoms are kept fixed and only the rest of the ligand atoms is relaxed.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-bidentate_rotator">
-<span class="sig-name descname"><span class="pre">bidentate_rotator</span></span><a class="headerlink" href="#confval-bidentate_rotator" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">auto</span></code>, <code class="docutils literal notranslate"><span class="pre">horseshoe</span></code>, <code class="docutils literal notranslate"><span class="pre">slab</span></code></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>false</p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">auto</span></code></p>
-</dd>
-</dl>
-<p>This option specifies how to assemble bidentate ligands in square-planar complexes. It effects only the topologies <code class="docutils literal notranslate"><span class="pre">2-2</span></code> or <code class="docutils literal notranslate"><span class="pre">2-1-1</span></code>. <code class="docutils literal notranslate"><span class="pre">horseshoe</span></code> and <code class="docutils literal notranslate"><span class="pre">slab</span></code> are the shapes of the underlying potential energy surfaces. <code class="docutils literal notranslate"><span class="pre">horseshoe</span></code> works best for ligands with a planar metallacycle, while non-planar ligands often give better results with <code class="docutils literal notranslate"><span class="pre">slab</span></code>. <code class="docutils literal notranslate"><span class="pre">auto</span></code> will choose the shape automatically based on the ligand geometry.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>This option can strongly affect the quality of generated complexes and how many make it through the post-assembly filter. For serious applications we recommend to set <a class="reference internal" href="#confval-max_num_complexes"><code class="xref std std-confval docutils literal notranslate"><span class="pre">max_num_complexes</span></code></a> to <code class="docutils literal notranslate"><span class="pre">100</span></code>, try all three options and check how many complexes fail the post-assembly filter for each option (this info is displayed at the end of the assembly). Whichever option has the least number of complexes failing the post-assembly filter usually gives the highest quality geometries. This method takes only a few minutes and is demonstrated in the <a class="reference external" href="pd_ni_cross_coupling">advanced example</a>.</p>
+<p>Table 1 provides a full list of all defined ligand archetypes and an example set of target vectors for each archetype.</p>
+<table class="docutils align-center" id="id3">
+<caption><span class="caption-text">Table 1: Defined ligand archetypes and example target vectors</span><a class="headerlink" href="#id3" title="Link to this table"></a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>archetype</p></th>
+<th class="head"><p>example target vector</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1-mono</p></td>
+<td><p>+x</p></td>
+</tr>
+<tr class="row-odd"><td><p>2-cis</p></td>
+<td><p>+x, +y</p></td>
+</tr>
+<tr class="row-even"><td><p>2-trans</p></td>
+<td><p>+x, -x</p></td>
+</tr>
+<tr class="row-odd"><td><p>3-facial</p></td>
+<td><p>+x, +y, +z</p></td>
+</tr>
+<tr class="row-even"><td><p>3-meridional</p></td>
+<td><p>+y, +x, -y</p></td>
+</tr>
+<tr class="row-odd"><td><p>3-trigonal</p></td>
+<td><p>xy(0), xy(120), xy(240)</p></td>
+</tr>
+<tr class="row-even"><td><p>4-facial</p></td>
+<td><p>+x, +y, +z, -z</p></td>
+</tr>
+<tr class="row-odd"><td><p>4-tetragonal</p></td>
+<td><p>+x, +y, -x, -y</p></td>
+</tr>
+<tr class="row-even"><td><p>4-tetragonal-offset</p></td>
+<td><p>(1,0,–1), (0, 1,-1), (-1,0,-1), (0,-1,-1)</p></td>
+</tr>
+<tr class="row-odd"><td><p>4-tetrahedral</p></td>
+<td><p>(1,1,-1), (-1,1,1), (1,-1,1), (-1,-1,-1)</p></td>
+</tr>
+<tr class="row-even"><td><p>4-meridional</p></td>
+<td><p>xy(0), xy(60), xy(120), xy(180)</p></td>
+</tr>
+<tr class="row-odd"><td><p>4-trigonal-pyramidal</p></td>
+<td><p>xy(0), xy(120), xy(240), +z</p></td>
+</tr>
+<tr class="row-even"><td><p>5-pentagonal</p></td>
+<td><p>xy(0), xy(72), xy(144), xy(216), xy(288)</p></td>
+</tr>
+<tr class="row-odd"><td><p>5-square-pyramidal</p></td>
+<td><p>+x, +y, -x, -y, +z</p></td>
+</tr>
+<tr class="row-even"><td><p>6-hexagonal</p></td>
+<td><p>xy(0), xy(60), xy(120), xy(180), xy(240), xy(300)</p></td>
+</tr>
+<tr class="row-odd"><td><p>6-pentagonal-pyramidal</p></td>
+<td><p>+z, xy(0), xy(72), xy(144), xy(216), xy(288)</p></td>
+</tr>
+<tr class="row-even"><td><p>6-octahedral</p></td>
+<td><p>+x, +y, +z, -x, -y, -z</p></td>
+</tr>
+<tr class="row-odd"><td><p>6-trigonal-prismatic</p></td>
+<td><p>(0,1,-0.5), (0.87,-0.5,-0.5), (-0.87,-0.5,-0.5), (0,1,0.5), (0.87,-0.5,0.5), (-0.87,-0.5,0.5)</p></td>
+</tr>
+<tr class="row-even"><td><p>7-septa</p></td>
+<td><p>xy(0), xy(51.4), xy(102.9), xy(154.3), xy(205.7), xy(257.1), xy(308.6)</p></td>
+</tr>
+<tr class="row-odd"><td><p>8-octa</p></td>
+<td><p>xy(0), xy(45), xy(90), xy(135), xy(180), xy(225), xy(270), xy(315)</p></td>
+</tr>
+<tr class="row-even"><td><p>9-nona</p></td>
+<td><p>xy(0), xy(40), xy(80), xy(120), xy(160), xy(200), xy(240), xy(280), xy(320)</p></td>
+</tr>
+<tr class="row-odd"><td><p>10-deca</p></td>
+<td><p>xy(0), xy(36), xy(72), xy(108), xy(144), xy(180), xy(216), xy(252), xy(288), xy(324)</p></td>
+</tr>
+</tbody>
+</table>
+<p>In general, you can specify any set of target vectors you like, as long as they match the ligand archetype you want to use for the binding site.</p>
+<p>For example, if a user wants to assemble an octahedral structure with one monodentate on top, one mer-tridentate in the equatorial plane and one cis-bidentate occupying the remaining two faces, the target vectors would be specified as:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Octahedral Ru complex with 1-mono, 2-cis and 3-mer ligands</span>
+<span class="nt">metal_centers</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ru</span>
+<span class="nt">ligand_archetypes</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1-mono&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;2-cis&#39;</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;3-meridional&#39;</span>
+<span class="nt">target_vectors</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;+z&#39;</span><span class="p p-Indicator">]</span><span class="w">                </span><span class="c1"># monodentate pointing along +Z</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;+x&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;-z&#39;</span><span class="p p-Indicator">]</span><span class="w">          </span><span class="c1"># cis-bidentate pointing along +X and -Z</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;+y&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;-x&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;-y&#39;</span><span class="p p-Indicator">]</span><span class="w">    </span><span class="c1"># mer-tridentate pointing along +Y, -X and -Y</span>
+</pre></div>
 </div>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-geometry_modifier_filepath">
-<span class="sig-name descname"><span class="pre">geometry_modifier_filepath</span></span><a class="headerlink" href="#confval-geometry_modifier_filepath" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>empty</cite> OR <cite>filepath</cite></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>false</p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">empty</span></code></p>
-</dd>
-</dl>
-<p>Path to the geometry modifier file. If left empty, no geometry modification is performed.</p>
-<p>The geometry modifier file allows very advanced and fine-grained control over the geometry of the generated complexes. Usually it is not needed, since a forcefield optimization will often be a better option. However, there might be cases where it is desired to move atoms in an assembled ligand from one position to another position for all complexes with this ligand. This can be achieved with the geometry modifier file as shown in the Pd/Ni cross coupling example.</p>
-<p>For moving an atom to another position you need to supply the chemical symbol and the coordinates of the original atom and the coordinates the atom at it’s new coordinates. The geometry modifier file is an .xyz file with two sets of atoms: The first set is all atoms that should be moved, the second set is the new positions of these atoms. Both sets of atoms are provided as “molecule” in the .xyz format and concatenated. The order and the chemical elements of both sets of atoms have to match up. In the assembly, for each generated complex, the atoms with coordinates in the first set are moved to the coordinates in the second set.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-complex_name_appendix">
-<span class="sig-name descname"><span class="pre">complex_name_appendix</span></span><a class="headerlink" href="#confval-complex_name_appendix" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>empty</cite> or <cite>string</cite></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>false</p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>empty</cite></p>
-</dd>
-</dl>
-<p>Appends a custom string to the randomly generated name of each assembled complex. For example, if the appendix is set to <code class="docutils literal notranslate"><span class="pre">_charge1</span></code>, a generated complex will be named ‘ZUMUVAMI_charge1’ if otherwise it would have been named ‘ZUMUVAMI’. This can be helpful in organizing DART generated complexes and keeping track which complex belongs to which batch.</p>
-</dd></dl>
-
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/Ru_octahedral.png"><img alt="../_images/Ru_octahedral.png" src="../_images/Ru_octahedral.png" style="width: 50%;" />
+</a>
+<figcaption>
+<p><span class="caption-text">Figure 1: Octahedral complex geometry defined by the <code class="docutils literal notranslate"><span class="pre">target_vectors</span></code> above.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>Of course, this is not the only choice of target vectors. Many other combinations are possible and will result in the same complex, just rotated.</p>
+<p>The provision of target vectors allows the user fine-grained control over the geometry of the assembled complexes. Combined with the full list of 22 different ligand archetypes, the DART assembler can create an extensive variety of complex geometries.</p>
 </section>
-<section id="global-options">
-<h3><a class="toc-backref" href="#id3" role="doc-backlink">Global Options</a><a class="headerlink" href="#global-options" title="Link to this heading"></a></h3>
-<p>Global options are all optional and specify settings that apply to all batches.</p>
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-output_directory">
-<span class="sig-name descname"><span class="pre">output_directory</span></span><a class="headerlink" href="#confval-output_directory" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>dirpath</cite></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>false</p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">DART</span></code></p>
-</dd>
-</dl>
-<p>Path to directory in which the output will be saved.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-ffmovie">
-<span class="sig-name descname"><span class="pre">ffmovie</span></span><a class="headerlink" href="#confval-ffmovie" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code>, <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>false</p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-</dd>
-</dl>
-<p>Whether to output a movie (i.e. a concatenated .xyz file displaying multiple frames) of the forcefield optimization process. Useful for visualization e.g. with <code class="docutils literal notranslate"><span class="pre">ase</span> <span class="pre">gui</span> <span class="pre">FILE.xyz</span></code>.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-concatenate_xyz">
-<span class="sig-name descname"><span class="pre">concatenate_xyz</span></span><a class="headerlink" href="#confval-concatenate_xyz" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code>, <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>false</p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p>
-</dd>
-</dl>
-<p>Whether to save concatenated xyz files with all passed/failed complexes respectively. Useful for quick visualization and browsing of the generated complexes e.g. with <code class="docutils literal notranslate"><span class="pre">ase</span> <span class="pre">gui</span> <span class="pre">FILE.xyz</span></code>.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-verbosity">
-<span class="sig-name descname"><span class="pre">verbosity</span></span><a class="headerlink" href="#confval-verbosity" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">3</span></code></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>false</p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">2</span></code></p>
-</dd>
-</dl>
-<p>How much output to print (except the progress bars, which are always printed). <code class="docutils literal notranslate"><span class="pre">0</span></code> means only errors, <code class="docutils literal notranslate"><span class="pre">1</span></code> means also warnings, <code class="docutils literal notranslate"><span class="pre">2</span></code> means also normal info, <code class="docutils literal notranslate"><span class="pre">3</span></code> means also debug info.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-same_isomer_names">
-<span class="sig-name descname"><span class="pre">same_isomer_names</span></span><a class="headerlink" href="#confval-same_isomer_names" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code>, <code class="docutils literal notranslate"><span class="pre">false</span></code></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>false</p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">true</span></code></p>
-</dd>
-</dl>
-<p>If <code class="docutils literal notranslate"><span class="pre">true</span></code>, isomers of the same complex will get the same name but enumerated. Very handy to see quickly which complexes are isomers of each other. If set to <code class="docutils literal notranslate"><span class="pre">false</span></code>, each isomer will get a completely unique name.</p>
-</dd></dl>
-
-<dl class="std confval">
-<dt class="sig sig-object std" id="confval-complex_name_length">
-<span class="sig-name descname"><span class="pre">complex_name_length</span></span><a class="headerlink" href="#confval-complex_name_length" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Options<span class="colon">:</span></dt>
-<dd class="field-odd"><p><cite>integer &gt; 0</cite></p>
-</dd>
-<dt class="field-even">Required<span class="colon">:</span></dt>
-<dd class="field-even"><p>false</p>
-</dd>
-<dt class="field-odd">Default<span class="colon">:</span></dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">8</span></code></p>
-</dd>
-</dl>
-<p>Length of the randomly generated name for each generated complex (e.g. ‘ZUMUVAMI’).</p>
-</dd></dl>
-
+<section id="examples">
+<h3><a class="toc-backref" href="#id7" role="doc-backlink">Examples</a><a class="headerlink" href="#examples" title="Link to this heading"></a></h3>
+<p>Let’s try another example: a square-planar complex with two monodentates and one trans-bidentate. The ligand archetypes and target vectors could be specified as:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Square-planar complex with two 1-mono and one 2-trans ligands</span>
+<span class="nt">ligand_archetypes</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1-mono&#39;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1-mono&#39;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;2-trans&#39;</span>
+<span class="nt">target_vectors</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;+x&#39;</span><span class="p p-Indicator">]</span><span class="w">            </span><span class="c1"># 1. monodentate along +X</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;-x&#39;</span><span class="p p-Indicator">]</span><span class="w">            </span><span class="c1"># 2. monodentate along -X</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;+y&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;-y&#39;</span><span class="p p-Indicator">]</span><span class="w">      </span><span class="c1"># trans-bidentate along +Y and -Y</span>
+</pre></div>
+</div>
+<p>One more example for a trigonal-bipyramidal complex with one trigonal ligand and two monodentates:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Trigonal-bipyramidal complex with one 3-trigonal and two 1-mono ligands</span>
+<span class="nt">ligand_archetypes</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1-mono&#39;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1-mono&#39;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;3-trigonal&#39;</span>
+<span class="nt">target_vectors</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;+z&#39;</span><span class="p p-Indicator">]</span><span class="w">                            </span><span class="c1"># 1. monodentate along +Z</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;-z&#39;</span><span class="p p-Indicator">]</span><span class="w">                            </span><span class="c1"># 2. monodentate along -Z</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;xy(0)&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;xy(120)&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;xy(240)&#39;</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># trigonal ligand in x-y plane</span>
+</pre></div>
+</div>
+<p>Finally, a tetrahedral complex with four monodentates. For the tetrahedral geometry, the target vectors are a little more complicated, but they are actually given in Table 1 under the <code class="docutils literal notranslate"><span class="pre">4-tetrahedral</span></code> ligand archetype:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example: Tetrahedral complex with 1 cis-bidentate and two monodentates</span>
+<span class="nt">ligand_archetypes</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1-mono&#39;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1-mono&#39;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;2-cis&#39;</span>
+<span class="nt">target_vectors</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1.0</span><span class="p p-Indicator">,</span><span class="nv">1.0</span><span class="p p-Indicator">,</span><span class="nv">-1.0</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w">                    </span><span class="c1"># 1. monodentate</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-1.0</span><span class="p p-Indicator">,</span><span class="nv">1.0</span><span class="p p-Indicator">,</span><span class="nv">1.0</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w">                    </span><span class="c1"># 2. monodentate</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1.0</span><span class="p p-Indicator">,</span><span class="nv">-1.0</span><span class="p p-Indicator">,</span><span class="nv">1.0</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-1.0</span><span class="p p-Indicator">,</span><span class="nv">-1.0</span><span class="p p-Indicator">,</span><span class="nv">-1.0</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># cis-bidentate</span>
+</pre></div>
+</div>
+</section>
+<section id="haptically-coordinating-ligands">
+<h3><a class="toc-backref" href="#id8" role="doc-backlink">Haptically coordinating ligands</a><a class="headerlink" href="#haptically-coordinating-ligands" title="Link to this heading"></a></h3>
+<p>The <a class="reference internal" href="2_metalig_database.html#metalig"><span class="std std-ref">MetaLig database</span></a> also contains many haptically coordinating ligands. DART can assemble these haptically coordinating ligands just as well as non-haptic ones. In haptic ligands, each group of haptic donor atoms is treated as a single pseudo donor atom located at the centroid of the haptic group. For example, a Cp* ligand has a single group of 5 haptic donor atoms. Thus, it is treated as a <code class="docutils literal notranslate"><span class="pre">1-mono</span></code> ligand and can be assembled by providing a single target vector. For example, to assemble a Cp* ligand such that it coordinates from above the metal center, one would provide the target vector <code class="docutils literal notranslate"><span class="pre">['+z']</span></code> (see the <a class="reference internal" href="1_NaFe_example.html#advanced-example"><span class="std std-ref">advanced example</span></a>). One can query haptically coordinating ligands in the <a class="reference internal" href="2_ligand_filters.html#ligandfilters"><span class="std std-ref">LigandFilters</span></a> by targeting the properties <code class="docutils literal notranslate"><span class="pre">n_eff_denticities</span></code>, <code class="docutils literal notranslate"><span class="pre">n_denticies</span></code>, <code class="docutils literal notranslate"><span class="pre">n_haptic_groups</span></code>, and <code class="docutils literal notranslate"><span class="pre">n_haptic_atoms</span></code>.</p>
 </section>
 </section>
 <section id="assembler-output">
-<span id="assembly-output"></span><h2><a class="toc-backref" href="#id4" role="doc-backlink">Assembler Output</a><a class="headerlink" href="#assembler-output" title="Link to this heading"></a></h2>
-<p>The output of the DART assembler will be saved in a specific folder. This folder is determined by the <a class="reference internal" href="#confval-output_directory"><code class="xref std std-confval docutils literal notranslate"><span class="pre">output_directory</span></code></a> you set in your assembly input file. Within this folder, each generated metal complex has a unique name such as ‘IKOTENIC’, which is automatically generated based on its coordinates.</p>
+<span id="assembly-output"></span><h2><a class="toc-backref" href="#id9" role="doc-backlink">Assembler Output</a><a class="headerlink" href="#assembler-output" title="Link to this heading"></a></h2>
+<p>The output of the DART assembler will be saved in a specific folder. This folder is determined by the <code class="xref std std-confval docutils literal notranslate"><span class="pre">output_directory</span></code> you set in your assembly input file. Within this folder, each generated metal complex has a unique name such as <code class="docutils literal notranslate"><span class="pre">'ZUMUVAMI'</span></code>. This name is randomly generated by DART but you can control its length via the <code class="xref std std-confval docutils literal notranslate"><span class="pre">complex_name_length</span></code> option in the input file. If you want to append a custom string to each complex name for labeling purposes, you can do so via the <code class="xref std std-confval docutils literal notranslate"><span class="pre">complex_name_appendix</span></code> option.</p>
 <p>The assembler module creates not only the xyz files for each complex but also various other files that could be of interest. Below, you’ll find an overview of all files and folders generated by the DART assembler.</p>
 <section id="folder-structure">
-<h3><a class="toc-backref" href="#id5" role="doc-backlink">Folder Structure</a><a class="headerlink" href="#folder-structure" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id10" role="doc-backlink">Folder Structure</a><a class="headerlink" href="#folder-structure" title="Link to this heading"></a></h3>
 <p>Here’s what the output folder will look like:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>output_directory/
-├── info_table.csv                  (Summary Table)
-├── concat_passed_complexes.xyz     (Successful Complexes)
-├── ffmovie.xyz                     (Forcefield Trajectories)
+├── isomers.csv                     (Summary Table)
+├── input/                          (Copy of Input .yml)
+├── log.txt                         (Log File)
 └── batches/                        (Batch Folders)
     ├── batch_1/
     │   ├── concat_passed_complexes.xyz
     │   ├── concat_failed_complexes.xyz
-    │   ├── concat_passed_ffmovie.xyz
-    │   ├── concat_failed_ffmovie.xyz
+    │   ├── concat_all_complexes.xyz
     │   └── complexes/              (Individual Complex Folders)
-    │       ├── complex_1/
-    │       │   ├── complex_1_structure.xyz
-    │       │   ├── complex_1_ligandinfo.csv
-    │       │   ├── complex_1_ffmovie.xyz
-    │       │   └── complex_1_data.json
-    │       ├── complex_2/
-    │       └── ...
+    │       └── NAME/
+    │           ├── NAME.json       (Complex Data File)
+    │           ├── NAME1.xyz       (Isomer 1 Structure)
+    │           ├── NAME2.xyz       (Isomer 2 Structure)
+    │           └── ...
     └── batch_2/
         └── ...
 </pre></div>
 </div>
 </section>
 <section id="output-files">
-<h3><a class="toc-backref" href="#id6" role="doc-backlink">Output Files</a><a class="headerlink" href="#output-files" title="Link to this heading"></a></h3>
+<h3><a class="toc-backref" href="#id11" role="doc-backlink">Output Files</a><a class="headerlink" href="#output-files" title="Link to this heading"></a></h3>
 <dl>
 <dt>General Output Files:</dt><dd><p>These files provide a broad overview of the assembly process:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">batches/</span></code>: This is a folder that contains all the batches of assembled complexes.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">info_table.csv</span></code>: This is a summary table listing all generated complexes and their characteristics. It’s a good starting point for understanding the results.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">concat_passed_complexes.xyz</span></code>: This file contains the coordinates of all successfully generated complexes, bundled together. You can visualize these using software like ASE.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">ffmovie.xyz</span></code>: This contains forcefield optimization trajectories for the successfully generated complexes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">isomers.csv</span></code>: This is a summary table listing all isomers of all complexes generated across all batches. It includes details such as complex names, ligand combinations, archetypes, stoichiometries, and assembly status (successful or failed).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input/</span></code>: This folder contains a copy of the input .yml file used to run the assembler for record-keeping.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">log.txt</span></code>: This is the main log file that records all messages, warnings, and errors during the assembly process.</p></li>
 </ul>
 </dd>
 <dt>Batch-Specific Files:</dt><dd><p>Inside the <code class="docutils literal notranslate"><span class="pre">batches/</span></code> folder, you’ll find separate folders for each batch. These folders may contain:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">complexes/</span></code>: This is a folder that contains all the complexes for that batch.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">concat_passed_complexes.xyz</span></code>: Coordinates of successful complexes for that specific batch.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">concat_failed_complexes.xyz</span></code>: Coordinates of complexes that failed to assemble correctly.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">concat_passed_ffmovie.xyz</span></code>: Forcefield optimization trajectories for successful complexes.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">concat_failed_ffmovie.xyz</span></code>: Forcefield optimization trajectories for failed complexes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">concat_passed_isomers.xyz</span></code>: Concatenated .xyz file of all successfully assembled complexes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">concat_failed_isomers.xyz</span></code>: Concatenated .xyz file of all complexes that failed assembly.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">concat_all_isomers.xyz</span></code>: Concatenated .xyz file of all complexes, both successful and failed.</p></li>
 </ul>
-<p>If a file is missing, that means no complexes fall into that category for the batch (e.g., no failed complexes).</p>
+<p>If a file is missing, that means no complexes fall into that category for the batch (e.g., no failed complexes). Concatenated .xyz files can easily be browsed using the <code class="docutils literal notranslate"><span class="pre">ase</span> <span class="pre">gui</span></code> command from the ASE package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ase<span class="w"> </span>gui<span class="w"> </span>concat_passed_isomers.xyz
+</pre></div>
+</div>
 </dd>
-<dt>Complex-Specific Files:</dt><dd><p>Within each batch, each complex has its own folder under <code class="docutils literal notranslate"><span class="pre">complexes/</span></code>. These folders contain:</p>
+<dt>Complex-Specific Files:</dt><dd><p>Within each batch, each complex has its own folder under <code class="docutils literal notranslate"><span class="pre">complexes/NAME/</span></code>. These folders contain:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">NAME_structure.xyz</span></code>: The 3D coordinates of the complex.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">NAME_ligandinfo.csv</span></code>: Detailed information about the ligands in the complex.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">NAME_ffmovie.xyz</span></code>: Forcefield optimization trajectory for the complex, if activated.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">NAME_data.json</span></code>: This is a machine-readable data file, useful for further computational analysis.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NAME.json</span></code>: A machine-readable data file with detailed information about the complex and its isomers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NAME1.xyz</span></code>: 3D structure of the 1. isomer of the complex.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">NAME2.xyz</span></code>: 3D structure of the 2. isomer of the complex.</p></li>
+<li><p>…</p></li>
 </ul>
 </dd>
 </dl>
 </section>
 </section>
+<section id="assembler-options">
+<span id="assembler-parameters"></span><h2><a class="toc-backref" href="#id12" role="doc-backlink">Assembler Options</a><a class="headerlink" href="#assembler-options" title="Link to this heading"></a></h2>
+<p>The DART assembler module is usually run via a .yml configuration file. This .yml file will then be passed to the following class. Please refer to the docstrings of this class and its <code class="docutils literal notranslate"><span class="pre">run_batch()</span></code> method for a detailed description of all available options. You will see that the options match perfectly with the options in the .yml configuration template above.</p>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="DARTassembler.src.assembler.assembler.Assembler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DARTassembler.src.assembler.assembler.</span></span><span class="sig-name descname"><span class="pre">Assembler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'DARTassembler'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbosity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_name_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_max_ligands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/assembler/assembler.html#Assembler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.assembler.assembler.Assembler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="2_other_modules.html#DARTassembler.src.modules.modules.BaseModule" title="DARTassembler.src.modules.modules.BaseModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModule</span></code></a></p>
+<p>Assemble isomers of transition-metal complexes from ligand databases such as the MetaLig.</p>
+<p>Initialize the DART Assembler module. The options set here applied to all batches.</p>
+<blockquote>
+<div><div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>All the parameters below are available as well via the assembler .yml file as global options (i.e. without indentation).</p>
+</div>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_directory</strong> (<em>str</em><em> | </em><em>Path</em>) – Directory to save the DART assembler output files.</p></li>
+<li><p><strong>verbosity</strong> (<em>int</em>) – Logging verbosity (0=errors only, 1=warnings, 2=info, 3=debug).</p></li>
+<li><p><strong>complex_name_length</strong> (<em>int</em>) – Length of random complex names such as ‘ZUMUVAMI’. Increases automatically if otherwise a name clash would occur.</p></li>
+<li><p><strong>n_max_ligands</strong> (<em>int</em><em> | </em><em>None</em>) – Maximum number of ligands to load from each <code class="xref std std-confval docutils literal notranslate"><span class="pre">ligand_db_file</span></code>. If <code class="docutils literal notranslate"><span class="pre">None</span></code> or left unspecified, all ligands are loaded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.assembler.assembler.Assembler.run_batch">
+<span class="sig-name descname"><span class="pre">run_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_vectors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metal_centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_max_complexes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligand_db_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'metalig'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligand_archetypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ligand_origins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_ligand_charges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monoaxial_optimization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permutable_ligands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_all_isomers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duplicate_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clashing_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clashing_metal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_name_suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_translation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/assembler/assembler.html#Assembler.run_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.assembler.assembler.Assembler.run_batch" title="Link to this definition"></a></dt>
+<dd><p>Run the DART assembler for a single batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>batch_idx</strong> (<em>int</em>) – Index of the batch in the list of batches. This is the only option that is not available in the input .yml file because it is set automatically when running multiple batches.</p>
+</dd>
+</dl>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>All the parameters below are available as well via the assembler .yml file as batch options (i.e. indented in the <code class="docutils literal notranslate"><span class="pre">batches:</span></code> list).</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name of the batch. All batch names must be unique.</p></li>
+<li><p><strong>target_vectors</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>list</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em><em>]</em><em>]  </em><em># shape:</em><em> (</em><em>n_ligands</em><em>, </em><em>n_donors_per_ligand</em><em>, </em><em>3</em><em>)</em>) – List of target vectors for each ligand. Each entry is a list of donor vectors of length 3.</p></li>
+<li><p><strong>metal_centers</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>float</em><em>]</em><em>]</em><em>] </em><em>| </em><em>list</em><em>[</em><em>list</em><em>[</em><em>str</em><em>, </em><em>list</em><em>[</em><em>float</em><em>]</em><em>]</em><em>]</em>) – <p>Metal center specification. Either a single element symbol string (e.g. ‘Ru’) or a nested structure per ligand. Examples:</p>
+<ul>
+<li><p>Single Ru atom at origin (0,0,0): <code class="docutils literal notranslate"><span class="pre">Ru</span></code></p></li>
+<li><p>Single Ru atom at custom position: <code class="docutils literal notranslate"><span class="pre">['Ru',</span> <span class="pre">[1.5,</span> <span class="pre">0.0,</span> <span class="pre">-1.0]</span> <span class="pre">]</span></code></p></li>
+<li><p>Ru and Cu atoms 4 Å apart: <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">['Ru',</span> <span class="pre">[-2.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0]</span> <span class="pre">],</span> <span class="pre">['Cu',</span> <span class="pre">[2.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0]</span> <span class="pre">]</span> <span class="pre">]</span></code></p></li>
+</ul>
+</p></li>
+<li><p><strong>n_max_complexes</strong> (<em>int</em><em> | </em><em>str</em>) – <p>Maximum number of complexes (not isomers) to assemble or <code class="docutils literal notranslate"><span class="pre">'all'</span></code> to exhaust all possible combinations of ligands (respecting <code class="docutils literal notranslate"><span class="pre">total_ligand_charges</span></code>).</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Due to to the combinatorial explosion of possible complexes, setting this to <code class="docutils literal notranslate"><span class="pre">'all'</span></code> can lead to very very many complexes and long runtimes if used with multiple ligand databases with each many ligands. Use with caution.</p>
+</div>
+</p></li>
+<li><p><strong>ligand_db_files</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>str</em>) – If left unspecified or set to <code class="docutils literal notranslate"><span class="pre">'metalig'</span></code>, the entire MetaLig database is used. If a single path to a ligand .jsonlines file, that database is used for all ligand sites. If a list of strings, the list must have the same length as <code class="docutils literal notranslate"><span class="pre">target_vectors</span></code> and each entry is the ligand database that will be sampled to populate the respective ligand site. One exception: the keyword <code class="docutils literal notranslate"><span class="pre">'same_as_previous'</span></code> can be used instead of a filepath to indicate that the ligand for that site will always be populated with the same ligand as the one chosen from the previous ligand database.</p></li>
+<li><p><strong>ligand_archetypes</strong> (<em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – If specified, filters the ligand database at this index to only contain ligands of the specified archetype. The list must have the same length as <code class="docutils literal notranslate"><span class="pre">target_vectors</span></code>. If left unspecified, no filtering is applied and all ligands in the database with matching <code class="docutils literal notranslate"><span class="pre">n_eff_denticity</span></code> are considered.</p></li>
+<li><p><strong>ligand_origins</strong> (<em>list</em><em>[ </em><em>list</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>] </em><em>] </em><em>| </em><em>None</em>) – If specified, applies a shift to the position of the ligands. If not specified, the metal center position(s) are used for ligands coordinating to one metal and the midpoint between two (or more) metal centers for bridging ligands. Must have the same length as <code class="docutils literal notranslate"><span class="pre">target_vectors</span></code>.</p></li>
+<li><p><strong>total_ligand_charges</strong> (<em>int</em><em> | </em><em>None</em>) – If specified, only ligand combinations with this sum of ligand charges are considered. If left unspecified or None, no charge filtering is applied. This allows to control the overall charge and metal oxidation state of the assembled complex. For example, to generate neutral Pd(II) complexes the <code class="docutils literal notranslate"><span class="pre">total_ligand_charges</span></code> should be set to -2.</p></li>
+<li><p><strong>monoaxial_optimization</strong> (<em>bool</em>) – Whether to optimize the orientation of monoaxial ligands (<code class="docutils literal notranslate"><span class="pre">1-mono</span></code> and <code class="docutils literal notranslate"><span class="pre">2-trans</span></code> archetypes) around their single binding axis to minimize clashes and maximize distance to other ligands. In general recommended but significantly increases runtime. Can be turned off without problems for much faster assembly and when the orientation of monoaxial ligands relative to the other ligands is not critical, especially for small monodentate ligands.</p></li>
+<li><p><strong>permutable_ligands</strong> (<em>list</em><em>[</em><em>int</em><em>] </em><em>| </em><em>None</em>) – <p>Groups of ligands that should be permuted when generating isomers. Must have same length as <code class="docutils literal notranslate"><span class="pre">target_vectors</span></code>. Only ligands with the same archetype can be permuted. If None or left unspecified, no ligands are permuted. For example, if you generate octahedral complexes, the following will permute the two monodentate ligands but not permute the two bidentate ligands (think of each integer as a “color” assigned to each ligand; ligands with the same color are permuted among each other):</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">target_vectors</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">&#39;+z&#39;</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">&#39;+x&#39;</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">&#39;-x&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;-y&#39;</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="s">&#39;+y&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;-z&#39;</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<span class="nt">ligand_archetypes</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;1-mono&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;1-mono&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;2-cis&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;2-cis&#39;</span><span class="p p-Indicator">]</span>
+<span class="nt">permutable_ligands</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>force_all_isomers</strong> (<em>bool</em>) – <p>If False (default), DART does not generate the following types of isomers because they are considered symmetrically equivalent:</p>
+<ul>
+<li><p>For ring-like ligands with archetypes <code class="docutils literal notranslate"><span class="pre">3-trigonal</span></code>, <code class="docutils literal notranslate"><span class="pre">4-tetragonal</span></code>, <code class="docutils literal notranslate"><span class="pre">5-pentagonal</span></code>, and <code class="docutils literal notranslate"><span class="pre">6-hexagonal</span></code>, DART removes isomers which correspond to just rotating the ligand around it’s centering axis. E.g. for a trigonal ligand, rotating the ligand by 120° or 240° around the metal center is not considered a new isomer. Ligands with these archetypes will therefore return only two isomers, facing up and down the centering axis (mirror images of each other).</p></li>
+<li><p>Ring-like ligands with archetypes <code class="docutils literal notranslate"><span class="pre">4-trigonal-pyramidal</span></code>, <code class="docutils literal notranslate"><span class="pre">5-square-pyramidal</span></code>, and <code class="docutils literal notranslate"><span class="pre">6-pentagonal-pyramidal</span></code> can also be rotated around the z-axis. However, this time there is an additional atom on top of the ring, breaking the z mirror symmetry, therefore returning only a single isomer.</p></li>
+<li><p>For ligands with archetypes <code class="docutils literal notranslate"><span class="pre">4-tetrahedral</span></code>, <code class="docutils literal notranslate"><span class="pre">6-octahedral</span></code>, <code class="docutils literal notranslate"><span class="pre">6-trigonal-prismatic</span></code>, <code class="docutils literal notranslate"><span class="pre">7-septa</span></code>, <code class="docutils literal notranslate"><span class="pre">8-octa</span></code>, <code class="docutils literal notranslate"><span class="pre">9-nona</span></code>, and <code class="docutils literal notranslate"><span class="pre">10-deca</span></code>, the ligand is so bulky that it is assumed there are no other ligands around the complex and only one isomer is generated.</p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">force_all_isomers</span></code> is set to True, DART will generate these types of isomers as well. However, exact 3D duplicates of isomers will still be filtered out in the post-assembly checks if <code class="docutils literal notranslate"><span class="pre">duplicate_tolerance</span></code> is set.</p>
+</p></li>
+<li><p><strong>duplicate_tolerance</strong> (<em>float</em><em> | </em><em>None</em>) – Tolerance used to identify duplicate isomers in the post-assembly checks. Increase this value to make more isomers pass the duplicate filter. Decrease (up to 0.0) to make the filter more strict. If None, no duplicate filtering is applied.</p></li>
+<li><p><strong>clashing_tolerance</strong> (<em>float</em><em> | </em><em>None</em>) – Tolerance for detecting clashing ligands in the post-assembly checks. The tolerance will be added to the sum of the van der Waals radii of two atoms to determine whether they clash. Increase this value to make the clash filter more strict. If None, no clash filtering is applied.</p></li>
+<li><p><strong>clashing_metal</strong> (<em>bool</em>) – If True, include ligand-metal and metal-metal pairs in clash checks.</p></li>
+<li><p><strong>complex_name_suffix</strong> (<em>str</em>) – Optional suffix to append to each generated complex name, e.g. <code class="docutils literal notranslate"><span class="pre">'ZUMUVAMI_OOH'</span></code> if suffix is set to <code class="docutils literal notranslate"><span class="pre">'_OOH'</span></code>. Useful for tracking complexes in downstream analysis.</p></li>
+<li><p><strong>random_seed</strong> (<em>int</em><em> | </em><em>None</em>) – Random seed for reproducibility. Defaults to the batch index if None.</p></li>
+<li><p><strong>background_file</strong> (<em>str</em><em> | </em><em>None</em>) – EXPERIMENTAL OPTION: Optional path to an .xyz file to use as a “background” structure for each isomer. This background structure will be combined with each generated isomer and saved as an additional structure named <code class="docutils literal notranslate"><span class="pre">&lt;isomer_name&gt;_combined.xyz</span></code> in each complex directory. The background structure can contain e.g. solvent molecules or a surface. The background structure is an experimental option that is not considered during assembly, clash checks, or duplicate checks; and it is neither present in the concatenated .xyz files nor in the summary .csv file or the complex .json files. It is only saved as an additional single .xyz file per isomer for user convenience. If None, no background structure is used.</p></li>
+<li><p><strong>background_translation</strong> (<em>list</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – EXPERIMENTAL OPTION: Translation applied to the background structure. If e.g. <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">-1]</span></code>, the background structure is shifted by -1 Å in z-direction before combining with the isomer. If None, no translation is applied.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.assembler.assembler.Assembler.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batches</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/assembler/assembler.html#Assembler.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.assembler.assembler.Assembler.run" title="Link to this definition"></a></dt>
+<dd><p>Execute assembly for a sequence of user-defined batches.</p>
+<p>Each batch dictionary describes inputs for a single assembly run. This method
+validates batch names, logs run metadata, saves the input settings and iterates
+over batches calling the internal batch runner.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>batches</strong> (<em>list</em><em>[</em><em>dict</em><em>]</em>) – List of batch specification dictionaries as expected by _run_batch.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.assembler.assembler.Assembler.run_from_yaml">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/assembler/assembler.html#Assembler.run_from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.assembler.assembler.Assembler.run_from_yaml" title="Link to this definition"></a></dt>
+<dd><p>Instantiate and run an Assembler using a YAML configuration file.</p>
+<p>If input is None, the project’s default assembler YAML template is used.
+The YAML must contain top-level options accepted by Assembler.__init__ and a ‘batches’ list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>None</em><em>]</em>) – Path to YAML configuration file or None to use the default template.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Assembler instance after executing the specified batches.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#DARTassembler.src.assembler.assembler.Assembler" title="DARTassembler.src.assembler.assembler.Assembler">Assembler</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.assembler.assembler.Assembler.run_from_cli">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_from_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/assembler/assembler.html#Assembler.run_from_cli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.assembler.assembler.Assembler.run_from_cli" title="Link to this definition"></a></dt>
+<dd><p>Run the Assembler from a command-line context with pre/post hooks.</p>
+<p>Wraps run_from_yaml and integrates BaseModule CLI logging hooks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>None</em><em>]</em>) – Path to YAML configuration file or None to use the default template.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Assembler instance after run completion.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#DARTassembler.src.assembler.assembler.Assembler" title="DARTassembler.src.assembler.assembler.Assembler">Assembler</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -568,7 +581,7 @@ When a single path is provided, ligands for all sites will be drawn from this da
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="2_ligand_filters.html" class="btn btn-neutral float-left" title="LigandFilters Module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="3_troubleshooting_and_faqs.html" class="btn btn-neutral float-right" title="Troubleshooting and FAQs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="2_module_overview.html" class="btn btn-neutral float-right" title="Module Overview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

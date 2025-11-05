@@ -1,5 +1,5 @@
 """
-This file contains the base module class and several small modules for the DARTassembler package. The `assembler` and `ligandfilters` modules are not included here.
+This file contains the base module class and several small modules for the DARTassembler package. The :ref:`assembler <assembler>` and :ref:`ligandfilters <ligandfilters>` modules are not included here.
 """
 from pathlib import Path
 from shutil import copyfile
@@ -18,8 +18,8 @@ class BaseModule(object):
     def __init_subclass__(cls):
         super().__init_subclass__()
         # Set class attributes on each subclass immediately when it’s defined so you can access them without instantiating the class (as a cls object).
-        cls.module_name = cls.__name__.lower()
-        cls.desc        = (cls.__doc__ or "").strip()
+        cls._module_name = cls.__name__.lower()
+        cls._desc        = (cls.__doc__ or "").strip()
 
     def __init__(self):
         pass
@@ -27,13 +27,13 @@ class BaseModule(object):
     @classmethod
     def _before_run_from_cli(cls) -> None:
         """Base method for running the module."""
-        title = f'     {cls.module_name.upper()} MODULE    '
+        title = f'     {cls._module_name.upper()} MODULE    '
         cls._print(f'{title:=^80}')
-        cls._print(f'{cls.module_name}: {cls.desc}')
+        cls._print(f'{cls._module_name}: {cls._desc}')
 
     @classmethod
     def _after_run_from_cli(cls) -> None:
-        cls._print(f"Done! Exiting {cls.module_name} module.")
+        cls._print(f"Done! Exiting {cls._module_name} module.")
 
     @classmethod
     def _print_cli_input(cls, **kwargs) -> None:
@@ -43,7 +43,7 @@ class BaseModule(object):
         cls._print(f"Input parameters:")
         for key, value in kwargs.items():
             cls._print(f"  - {key}: {value}")
-        cls._print(f'Starting {cls.module_name} module with the above parameters...')
+        cls._print(f'Starting {cls._module_name} module with the above parameters...')
 
     @classmethod
     def run_from_cli(cls, **kwargs):

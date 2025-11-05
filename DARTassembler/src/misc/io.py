@@ -403,7 +403,7 @@ def write_yaml(path: Union[str, Path], data: dict) -> None:
 def read_yaml(path: Union[str, Path]) -> dict:
     path = Path(path)
     if not path.exists():
-        raise FileNotFoundError(f'Filepath does not exist: {path}.')
+        raise FileNotFoundError(f'Filepath does not exist: {path}')
 
     with open(path, 'r') as f:
         txt = f.read()

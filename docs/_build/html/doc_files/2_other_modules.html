@@ -1,0 +1,228 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Other DART Modules &mdash; DARTassembler dev documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3ce10a4d"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
+      <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Troubleshooting and FAQs" href="3_troubleshooting_and_faqs.html" />
+    <link rel="prev" title="LigandFilters API" href="2_ligand_filters_api.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DARTassembler
+              <img src="../_static/DART_pic.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">How to Use DART</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1_installation_guide.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_quickstart.html">Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_NaFe_example.html">Advanced Example: Na-Fe systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1_understanding_the_dart_workflow.html">Understanding DART</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="2_metalig_database.html">MetaLig Ligand Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_ligand_filters.html">LigandFilters Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_assembler.html">Assembler Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_module_overview.html">Module Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_metalig_api.html">MetaLig API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="2_ligand_filters_api.html">LigandFilters API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Other DART Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.modules.modules.BaseModule"><code class="docutils literal notranslate"><span class="pre">BaseModule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.modules.modules.BaseModule.run_from_cli"><code class="docutils literal notranslate"><span class="pre">BaseModule.run_from_cli()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.modules.modules.BaseModule.run"><code class="docutils literal notranslate"><span class="pre">BaseModule.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.modules.modules.Concat"><code class="docutils literal notranslate"><span class="pre">Concat</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.modules.modules.Concat.run"><code class="docutils literal notranslate"><span class="pre">Concat.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.modules.modules.DBInfo"><code class="docutils literal notranslate"><span class="pre">DBInfo</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.modules.modules.DBInfo.run"><code class="docutils literal notranslate"><span class="pre">DBInfo.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.modules.modules.Configs"><code class="docutils literal notranslate"><span class="pre">Configs</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.modules.modules.Configs.run"><code class="docutils literal notranslate"><span class="pre">Configs.run()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="3_troubleshooting_and_faqs.html">Troubleshooting and FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_tips_and_tricks.html">DART Tips and Tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_current_limitations.html">Limitations and Recommendations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_how_to_cite_dart.html">How to cite DART</a></li>
+<li class="toctree-l1"><a class="reference internal" href="3_version_history.html">Version History</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DARTassembler</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Other DART Modules</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/doc_files/2_other_modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="other-dart-modules">
+<span id="other-modules"></span><h1>Other DART Modules<a class="headerlink" href="#other-dart-modules" title="Link to this heading"></a></h1>
+<p id="module-DARTassembler.src.modules.modules">This file contains the base module class and several small modules for the DARTassembler package. The <a class="reference internal" href="2_assembler.html#assembler"><span class="std std-ref">assembler</span></a> and <a class="reference internal" href="2_ligand_filters.html#ligandfilters"><span class="std std-ref">ligandfilters</span></a> modules are not included here.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="DARTassembler.src.modules.modules.BaseModule">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DARTassembler.src.modules.modules.</span></span><span class="sig-name descname"><span class="pre">BaseModule</span></span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#BaseModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.BaseModule" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for all modules in the DARTassembler package. Implements the basic structure for running modules from the command line interface (CLI).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.modules.modules.BaseModule.run_from_cli">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_from_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#BaseModule.run_from_cli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.BaseModule.run_from_cli" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.modules.modules.BaseModule.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#BaseModule.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.BaseModule.run" title="Link to this definition"></a></dt>
+<dd><p>This method should be implemented in the subclass.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="DARTassembler.src.modules.modules.Concat">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DARTassembler.src.modules.modules.</span></span><span class="sig-name descname"><span class="pre">Concat</span></span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#Concat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.Concat" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#DARTassembler.src.modules.modules.BaseModule" title="DARTassembler.src.modules.modules.BaseModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModule</span></code></a></p>
+<p>This module concatenates multiple ligand databases into one.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.modules.modules.Concat.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outpath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#Concat.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.Concat.run" title="Link to this definition"></a></dt>
+<dd><p>Concatenate multiple ligand databases into one.
+:param dbs: Paths to the ligand databases.
+:param outpath: Path to the output ligand database. If None, no output file is saved.
+:param n: Maximum number of ligands to be read in from each ligand database. If None, all ligands are read in. This is useful for testing purposes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="DARTassembler.src.modules.modules.DBInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DARTassembler.src.modules.modules.</span></span><span class="sig-name descname"><span class="pre">DBInfo</span></span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#DBInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.DBInfo" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#DARTassembler.src.modules.modules.BaseModule" title="DARTassembler.src.modules.modules.BaseModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModule</span></code></a></p>
+<p>This module reads in a ligand database (.jsonlines) and saves a .csv file with an overview of the ligands and a concatenated .xyz file with the structures of the ligands.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.modules.modules.DBInfo.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'metalig'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#DBInfo.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.DBInfo.run" title="Link to this definition"></a></dt>
+<dd><p>Reads in the given ligand database and saves a .csv file and a concatenated .xyz file with an overview of the ligands.
+:param db: Path to the ligand database. The default path is ‘metalig’, which points to the full ligand database.
+:param outdir: Path to the output .csv file. If None, no output file is saved. If ‘.csv’, the output file is saved in the same directory as the input file with the same name but with the .csv extension.
+:param n: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.
+:param metal: If True, the metal atom is included in the concatenated .xyz file. If False, only the ligand is included.
+:return: Tuple of (LigandDB, DataFrame, concatenated xyz string) of the ligands.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="DARTassembler.src.modules.modules.Configs">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">DARTassembler.src.modules.modules.</span></span><span class="sig-name descname"><span class="pre">Configs</span></span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#Configs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.Configs" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#DARTassembler.src.modules.modules.BaseModule" title="DARTassembler.src.modules.modules.BaseModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseModule</span></code></a></p>
+<p>This module returns the default .yml configuration files for the assembler and the ligandfilters. Use these files as templates to adapt to your specific needs.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.modules.modules.Configs.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#Configs.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.Configs.run" title="Link to this definition"></a></dt>
+<dd><p>Get the default yaml configuration files for the assembler and the ligandfilters and optionally save them to the specified output path.
+:param outdir: Output directory where the configuration files will be saved. If None, the files are not saved and only the dictionaries are returned.
+:return: A tuple containing the assembler options and the ligandfilters options as dictionaries.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="2_ligand_filters_api.html" class="btn btn-neutral float-left" title="LigandFilters API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="3_troubleshooting_and_faqs.html" class="btn btn-neutral float-right" title="Troubleshooting and FAQs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, CCEM group.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

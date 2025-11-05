@@ -5,7 +5,11 @@ Advanced Example
 
 .. contents:: :local:
 
-In this example we will introduce some advanced features of DART with a case study of the Pd/Ni catalyzed C-C cross coupling reaction. You will be guided step-by-step through the generation of Pd(II) and Ni(II) square-planar complexes which represent the oxidative addition intermediate, a key step in transition metal catalyzed cross coupling. Users new to DART should first review the :ref:`quickstart`. The following capabilities will be highlighted:
+In this example we will introduce some advanced assembler features of DART, in particular the ability to generate multi-metallic complexes.
+
+We will
+
+with a case study of the Pd/Ni catalyzed C-C cross coupling reaction. You will be guided step-by-step through the generation of Pd(II) and Ni(II) square-planar complexes which represent the oxidative addition intermediate, a key step in transition metal catalyzed cross coupling. Users new to DART should first review the :ref:`quickstart`. The following capabilities will be highlighted:
 
   - Filter ligands for each binding site individually
   - Fix a certain ligand to always be present in each complex

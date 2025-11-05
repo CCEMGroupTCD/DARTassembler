@@ -1,45 +1,61 @@
-outpath: filtered_ligand_db.jsonlines   # path or nothing
-n: 300
+################## Settings for the DART ligandfilters module ##################
+# file: ligandfilters.yml
+# Everything after '#' is a comment that is ignored by the program and only there for the user.
+# See the 'LigandFilters Module' section in the DART documentation for more information.
 
+outpath: filtered_ligand_db.jsonlines   # Output file
+n: 5000                                 # Speed up test runs by limiting the number of ligands loaded from the MetaLig. Default: None (load all ligands).
+dbinfo: True                            # Output an info directory about the filtering (see dbinfo module docs).
+metal: True                             # Include metal atoms in the concatenated .xyz files if dbinfo is True (see dbinfo module docs).
 filters:
+  #============ Simple property filters ============#
+  # Keep only cis-bidentate ligands (and haptic ligands treated as 2-cis, see docs)
   - filter: 'property'
-    name: 'n_atoms'
-    range: [1,80]
+    name: 'archetype'
+    values: ['1-mono']
 
+  # Keep only ligands with formal charge -2, -1 or 0
   - filter: 'property'
     name: 'charge'
     values: [-2, -1, 0]
 
-  - filter: 'parents'
-    metal_centers: ['Pt+2', 'Pt+4', 'Ni0', 'Pd', 'Mn', 'Cr', 'Ru', 'Co', 'Cu', 'Ir', 'Mo']
-
-  - filter: 'composition'
-    elements: ['O', 'O']
-    instruction: 'must_exclude'
-    only_donors: True
-
+  # Keep only ligands with molecular weight between 30.1 and 300.2 g/mol
   - filter: 'property'
     name: 'molecular_weight'
     range: [30.1, 300.2]
 
-  - filter: 'property'
-    name: 'planarity'
-    range: [0.2, 1.0]
-
+  # Exclude ligands which appeared less than 5 times in the CSD source data
   - filter: 'property'
     name: 'n_ligand_instances'
     range: [5, 999999999]
 
+  #============ Composition filters ============#
+  # Keep only ligands containing C, H, N, O atoms (in any amount)
+  - filter: 'composition'
+    elements: 'CHNO'
+    instruction: 'must_only_contain_in_any_amount'
+    only_donors: False
+
+  # Keep only ligands with exactly 1 N donor
+  - filter: 'composition'
+    elements: 'N'
+    instruction: 'must_contain_and_only_contain'
+    only_donors: True
+
+  #============ SMARTS substructure filters ============#
+  # Keep only amide ligands
   - filter: 'smarts'
-    smarts: 'N=N'
-    should_contain: False
+    smarts: '[N&D3X3!a](-[Hg])(-[C,Si])(-[C,Si])'
+    should_contain: True
     include_metal: True
 
+  # Exclude ligands containing methylene groups (CH2)
   - filter: 'smarts'
     smarts: '[C&H2]'
     should_contain: False
     include_metal: True
 
-  - filter: 'property'
-    name: 'n_beta_hydrogens'
-    range: [0, 0]
+  #============ Parent CSD complex filters ============#
+  # Keep only ligands which have coordinated to Pt(II), Pt(IV), Pd or Ni in at least one of their parent CSD complexes.
+  - filter: 'parents'
+    metal_centers: ['Pt+2', 'Pt+4', 'Pd', 'Ni']

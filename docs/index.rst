@@ -7,12 +7,12 @@ Welcome to the DART platform, a cutting-edge suite of tools for the exploration 
 DART integrates a collection of several modules:
 
 - :ref:`MetaLig <metalig>` :
-    Explore the comprehensive MetaLig database with 41,018 ligands extracted from the Cambridge Structural Database, complete with high-quality formal charge assignments.
+    Explore the comprehensive MetaLig database with 41,018 ligands extracted from the Cambridge Structural Database, complete with high-quality formal charge and ligand coordination archetype assignments.
 
 - :ref:`Assembler <assembler>` :
-    Assemble novel transition metal complexes in a matter of seconds, guided by a single configuration file for precise control over the resulting structures.
+    Assemble novel transition metal complexes in a matter of seconds by combining 22 different ligand coordination archetypes, supporting even haptic and multi-metallic systems.
 
-- :ref:`Ligand Filters <ligandfilters>` :
+- :ref:`LigandFilters <ligandfilters>` :
     Assemble complexes with exactly defined sub-structures by applying advanced ligand filters for each binding site.
 
 **Your role:** DART is designed for researchers in chemistry. While you have to think about the chemistry yourself, DART will allow you to explore the chemical space you want with the ligands you need.
@@ -50,20 +50,27 @@ Are you ready to get started? :ref:`Install DART <installation_guide>`, explore 
 
    ./doc_files/1_installation_guide
    ./doc_files/1_quickstart
-   ./doc_files/1_Pd_Ni_Cross_Coupling
+   ./doc_files/1_NaFe_example
    ./doc_files/1_understanding_the_dart_workflow
 
 .. toctree::
    :maxdepth: 2
    :caption: DART Modules
 
-   ./doc_files/2_module_overview
    ./doc_files/2_metalig_database
    ./doc_files/2_ligand_filters
    ./doc_files/2_assembler
-.. todo: ./doc_files/2_TODO_api_documentation
+   ./doc_files/2_module_overview
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Advanced DART API
 
+   ./doc_files/2_ligands
+   ./doc_files/2_isomers
+   ./doc_files/2_metalig_api
+   ./doc_files/2_ligand_filters_api
+   ./doc_files/2_other_modules
 
 .. toctree::
    :maxdepth: 1

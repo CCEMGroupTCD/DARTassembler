@@ -1,25 +1,25 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DARTassembler.src.metalig.db &mdash; DARTassembler dev documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../_static/documentation_options.js?v=3ce10a4d"></script>
-        <script src="../../../../_static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
-        <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
-        <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=3ce10a4d"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+      <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -37,9 +37,6 @@
             DARTassembler
               <img src="../../../../_static/DART_pic.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                dev
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -52,15 +49,23 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/1_installation_guide.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/1_quickstart.html">Quickstart Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/1_Pd_Ni_Cross_Coupling.html">Advanced Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/1_NaFe_example.html">Advanced Example: Na-Fe systems</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/1_understanding_the_dart_workflow.html">Understanding DART</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_module_overview.html">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_metalig_database.html">MetaLig Ligand Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligand_filters.html">LigandFilters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_assembler.html">Assembler Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_module_overview.html">Module Overview</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_metalig_api.html">MetaLig API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligand_filters_api.html">LigandFilters API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_other_modules.html">Other DART Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
 <ul>
@@ -96,148 +101,28 @@
            <div itemprop="articleBody">
              
   <h1>Source code for DARTassembler.src.metalig.db</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">The organo\ **Meta**\ llic **Lig**\ and database (MetaLig) contains 41,018 ligands extracted from the Cambridge Structural Database (CSD). It contains 3D coordinates, formal charge, molecular graph and a variety of physical properties. Each ligand also includes statistical data about its occurrences in the CSD, such as which metals it typically coordinates to.</span>
-
-<span class="sd">The MetaLig ligand database can be used in a variety of applications:</span>
-
-<span class="sd">   - **DART Assembler:** As a source of ligands for the DART Assembler module.</span>
-<span class="sd">   - **DART LigandFilters:** Filter ligands based on their properties to target specific chemical spaces in the Assembler module.</span>
-<span class="sd">   - **Ligand Analysis:** To analyze and explore ligands across the CSD.</span>
-<span class="sd">   - **Ligand Property Prediction:** As a dataset for training machine learning models.</span>
-
-<span class="sd">.. figure:: /_static/part2/metalig/metalig_fig.png</span>
-<span class="sd">   :width: 100%</span>
-<span class="sd">   :align: center</span>
-
-<span class="sd">   Ligands and ligand properties in the MetaLig database.</span>
-
-
-<span class="sd">.. _metalig_ligand_properties:</span>
-
-<span class="sd">Explore Ligand Structures and Properties</span>
-<span class="sd">------------------------------------------</span>
-
-<span class="sd">To explore the ligands in the MetaLig, use the terminal to run the command</span>
-
-<span class="sd">.. code-block:: bash</span>
-
-<span class="sd">    DARTassembler dbinfo --path metalig</span>
-
-<span class="sd">This will generate two files, an .xyz file and a .csv file:</span>
-
-<span class="sd">The .xyz file contains the 3D structures of all ligands. To view and browse through the ligands with ase, you can use the command ``ase gui concat_MetaLigDB_v1.0.0.xyz``. Each ligand is coordinated to a Cu metal center for visualization purposes. The Cu metal center is not part of the ligands in the MetaLig, it is only added to the .xyz file to display the coordination of each ligand.</span>
-
-<span class="sd">The .csv file displays a range of properties. Many of these are useful for filtering ligands in the DART :ref:`LigandFilters &lt;ligandfilters&gt;` module:</span>
-
-<span class="sd">.. _metalig_properties:</span>
-
-<span class="sd">.. csv-table:: Available ligand properties</span>
-<span class="sd">   :file: ../../../DARTassembler/data/docs/ligand_filter_properties.csv</span>
-<span class="sd">   :header-rows: 1</span>
-<span class="sd">   :widths: 15, 5, 5, 40, 35</span>
-<span class="sd">   :align: center</span>
-
-<span class="sd">Other properties are useful for inspection and analysis:</span>
-
-<span class="sd">.. csv-table:: Other ligand properties</span>
-<span class="sd">   :file: ../../../DARTassembler/data/docs/other_properties.csv</span>
-<span class="sd">   :header-rows: 1</span>
-<span class="sd">   :widths: 25, 5, 40, 30</span>
-<span class="sd">   :align: center</span>
-
-<span class="sd">.. _metalig_python_filtering:</span>
-
-<span class="sd">Explore and Filter the MetaLig in Python</span>
-<span class="sd">----------------------------------------------</span>
-<span class="sd">For many users, the DART Ligand Filters module will be enough to filter ligands with exactly defined properties. For complete freedom in filtering and exploring, the MetaLig database can be accessed via the DART Python API. As an example, let us extract ligands with denticity of 2, charge of -1 and a maximum of 50 atoms using Python.</span>
-
-<span class="sd">First, read in the MetaLig. To speed things up in this example, let&#39;s only load the first 1000 ligands (which is equivalent to specifying ``test_metalig`` as the path):</span>
-
-<span class="sd">.. code-block:: python</span>
-
-<span class="sd">    from DARTassembler.src.ligand_extraction.DataBase import LigandDB</span>
-
-<span class="sd">    # Load the first 1000 out of 41,018 ligands in the MetaLig database.</span>
-<span class="sd">    metalig = LigandDB.from_json(path=&#39;metalig&#39;, n_max=1000)</span>
-
-<span class="sd">Now, you can filter the MetaLig database based on your requirements. For example, let&#39;s filter the MetaLig so that we retain only ligands with a formal charge of -1, with denticity of 2 and with a maximum of 50 atoms:</span>
-
-<span class="sd">.. code-block:: python</span>
-
-<span class="sd">    # Set some criteria to filter ligands</span>
-<span class="sd">    keep_denticity = 2</span>
-<span class="sd">    keep_charge = -1</span>
-<span class="sd">    max_n_atoms = 50</span>
-
-<span class="sd">    ligands_to_keep = []</span>
-<span class="sd">    for ligand_name, ligand in metalig.db.items():</span>
-<span class="sd">        correct_denticity = ligand.denticity == keep_denticity</span>
-<span class="sd">        correct_charge = ligand.pred_charge == keep_charge</span>
-<span class="sd">        correct_n_atoms = ligand.n_atoms &lt;= max_n_atoms</span>
-<span class="sd">        if correct_denticity and correct_charge and correct_n_atoms:</span>
-<span class="sd">            ligands_to_keep.append(ligand_name)</span>
-
-<span class="sd">    # Reduce MetaLig database to only keep ligands which adhere to the above criteria</span>
-<span class="sd">    filtered_metalig_dict = {ligand_name: ligand for ligand_name, ligand in metalig.db.items() if ligand_name in ligands_to_keep}</span>
-<span class="sd">    filtered_metalig = LigandDB(filtered_metalig_dict)</span>
-
-<span class="sd">Now, we can save the filtered MetaLig database to a .jsonlines file.</span>
-
-<span class="sd">.. code-block:: python</span>
-
-<span class="sd">    filtered_metalig.save_to_file(&#39;filtered_metalig.jsonlines&#39;)</span>
-
-<span class="sd">This .jsonlines file can be used in the DART Assembler module as source for ligands. Since we made a database of bidentate ligands with a formal charge of -1, we could use it for example to assemble neutral square-planar Ni(II) complexes with two bidentate ligands, i.e. a ``2-2`` geometry in DART.</span>
-<span class="sd">We can also save an overview table of the filtered ligand database as .csv file:</span>
-
-<span class="sd">.. code-block:: python</span>
-
-<span class="sd">    filtered_metalig.save_to_csv(&#39;filtered_metalig.csv&#39;)</span>
-
-<span class="sd">By opening the .csv file with a program like Excel, you will see that this table displays 136 bidentate ligands with a formal charge of -1 and a maximum of 50 atoms. In this way, you can use Python to filter the MetaLig database to your exact requirements and then save the filtered database to a .jsonlines file for use in the DART Assembler module.</span>
-
-<span class="sd">.. _metalig_ligand_statistics:</span>
-
-<span class="sd">Ligand Statistics</span>
-<span class="sd">-----------------</span>
-
-<span class="sd">.. figure:: /_static/part2/metalig/hist_donors.png</span>
-<span class="sd">   :width: 100%</span>
-<span class="sd">   :align: center</span>
-
-<span class="sd">   Bar chart of donor atoms in the MetaLig. For instance, there are nearly 8,000 N-N donor ligands present.</span>
-
-<span class="sd">.. figure:: /_static/part2/metalig/hist_metal_center.png</span>
-<span class="sd">   :width: 100%</span>
-<span class="sd">   :align: center</span>
-
-<span class="sd">   Bar chart showing the prevalence of ligands coordinating to specific metals, such as over 8,000 instances of ligands which were found in the CSD coordinating to Cu.</span>
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">comb</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">import</span> <span class="nn">jsonlines</span>
-<span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">import</span> <span class="nn">ase</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">DARTassembler.src.constants.chem</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">DARTassembler.src.metalig.utils_molecule</span> <span class="kn">import</span> <span class="n">get_all_ligands_by_graph_hashes</span>
-<span class="kn">from</span> <span class="nn">DARTassembler.src.misc.io</span> <span class="kn">import</span> <span class="n">save_json</span><span class="p">,</span> <span class="n">NumpyEncoder</span><span class="p">,</span> <span class="n">load_unique_ligand_db</span>
-<span class="kn">from</span> <span class="nn">DARTassembler.src.misc.io</span> <span class="kn">import</span> <span class="n">save_to_xyz</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.special</span><span class="w"> </span><span class="kn">import</span> <span class="n">comb</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jsonlines</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">DARTassembler.src.constants.chem</span><span class="w"> </span><span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">DARTassembler.src.metalig.utils_molecule</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_all_ligands_by_graph_hashes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">DARTassembler.src.misc.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_json</span><span class="p">,</span> <span class="n">NumpyEncoder</span><span class="p">,</span> <span class="n">load_unique_ligand_db</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">DARTassembler.src.misc.io</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_to_xyz</span>
 
 
-<div class="viewcode-block" id="update_old_ligand_db_to_new">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.update_old_ligand_db_to_new">[docs]</a>
-<span class="k">def</span> <span class="nf">update_old_ligand_db_to_new</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">csv</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_update_old_ligand_db_to_new</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">csv</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Updates a ligand database in the old format before DARTassembler version 1.1.0 to the new format from version 1.1.0 on.</span>
 
@@ -253,19 +138,18 @@
     <span class="k">if</span> <span class="n">csv</span><span class="p">:</span>
         <span class="n">db</span><span class="o">.</span><span class="n">save_to_csv</span><span class="p">(</span><span class="n">outpath</span><span class="o">=</span><span class="n">path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">))</span>
 
-    <span class="k">return</span></div>
-
+    <span class="k">return</span>
 
 <div class="viewcode-block" id="BaseDB">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.BaseDB">[docs]</a>
-<span class="k">class</span> <span class="nc">BaseDB</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../../doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.BaseDB">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BaseDB</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">db</span> <span class="o">=</span> <span class="n">db</span>
 
 <div class="viewcode-block" id="BaseDB.to_dict">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.BaseDB.to_dict">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span> <span class="s1">&#39;Convert DB to dict&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../../doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.BaseDB.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span> <span class="s1">&#39;Convert DB to dict&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts all molecules in the database to a dictionary format.</span>
 
@@ -278,7 +162,7 @@
         <span class="k">return</span> <span class="n">json_dict</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span> <span class="s1">&#39;Save DB to json&#39;</span><span class="p">,</span> <span class="n">json_lines</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">desc</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span> <span class="s1">&#39;Save DB to json&#39;</span><span class="p">,</span> <span class="n">json_lines</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves the database to a .json or .jsonlines file.</span>
 
@@ -302,8 +186,8 @@
         <span class="k">return</span>
 
 <div class="viewcode-block" id="BaseDB.save_to_file">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.BaseDB.save_to_file">[docs]</a>
-    <span class="k">def</span> <span class="nf">save_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">desc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">json_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../../doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.BaseDB.save_to_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">desc</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">json_lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves the database to a .json or .jsonlines file.</span>
 
@@ -319,16 +203,16 @@
 
 
 <div class="viewcode-block" id="LigandDB">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB">[docs]</a>
-<span class="k">class</span> <span class="nc">LigandDB</span><span class="p">(</span><span class="n">BaseDB</span><span class="p">):</span>
+<a class="viewcode-back" href="../../../../doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.LigandDB">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LigandDB</span><span class="p">(</span><span class="n">BaseDB</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">db</span><span class="o">=</span><span class="n">db</span><span class="p">)</span>
 
 <div class="viewcode-block" id="LigandDB.from_json">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.from_json">[docs]</a>
+<a class="viewcode-back" href="../../../../doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.LigandDB.from_json">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span>
                   <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;metalig&#39;</span><span class="p">,</span>
                   <span class="n">n_max</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                   <span class="n">show_progress</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
@@ -345,8 +229,8 @@
 
 
 <div class="viewcode-block" id="LigandDB.get_df">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.get_df">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_entries</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../../doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.LigandDB.get_df">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_df</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_entries</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a DataFrame with important ligand information for all ligands in the database, such as charge, stoichiometry, archetype, and more.</span>
 
@@ -362,8 +246,8 @@
 
 
 <div class="viewcode-block" id="LigandDB.save_to_csv">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.save_to_csv">[docs]</a>
-    <span class="k">def</span> <span class="nf">save_to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outpath</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">max_entries</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../../doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.LigandDB.save_to_csv">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_csv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outpath</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">max_entries</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves a csv file with important ligand information for all ligands in the database, such as charge, stoichiometry, archetype, and more.</span>
 
@@ -378,8 +262,8 @@
 
 
 <div class="viewcode-block" id="LigandDB.save_to_concat_xyz">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.save_to_concat_xyz">[docs]</a>
-    <span class="k">def</span> <span class="nf">save_to_concat_xyz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outpath</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">with_metal</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../../doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.LigandDB.save_to_concat_xyz">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_to_concat_xyz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outpath</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span> <span class="n">with_metal</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save a concatenated xyz file with all ligands in the database.</span>
 
@@ -398,8 +282,8 @@
 
 
 <div class="viewcode-block" id="LigandDB.get_concat_xyz_string">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.get_concat_xyz_string">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_concat_xyz_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_metal</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../../doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.LigandDB.get_concat_xyz_string">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_concat_xyz_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_metal</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">comment</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a concatenated xyz string with all ligands in the database.</span>
 
@@ -410,7 +294,7 @@
         <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">lig</span><span class="o">.</span><span class="n">get_xyz_string</span><span class="p">(</span><span class="n">comment</span><span class="o">=</span><span class="n">comment</span><span class="p">,</span> <span class="n">with_metal</span><span class="o">=</span><span class="n">with_metal</span><span class="p">)</span> <span class="k">for</span> <span class="n">lig</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_get_ligand_archetypes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort_by_rssd</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_ligand_archetypes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sort_by_rssd</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Assigns archetypes to all ligands in the database and returns a dictionary with archetypes as keys and a list of tuples as values.</span>
 
@@ -431,7 +315,7 @@
 
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">_save_ligand_archetype_concat_xyz_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save_ligand_archetype_concat_xyz_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                                <span class="n">outdir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">],</span>
                                                <span class="n">output_all_isomers</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                                <span class="n">sort_by_rssd</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span>
@@ -467,7 +351,7 @@
 
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">_get_lig_db_in_old_format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_lig_db_in_old_format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;A little helper function to get the ligand database in the old format, where ligands are grouped by their number of donors.&quot;&quot;&quot;</span>
         <span class="n">lig_dict_old_format</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">lig</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -479,7 +363,7 @@
         <span class="k">return</span> <span class="n">lig_dict_old_format</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_check_property_and_print_if_not_same_for_all_same_ligands</span><span class="p">(</span><span class="n">check_props</span><span class="p">,</span> <span class="n">unique_ligand</span><span class="p">,</span> <span class="n">ligand</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_property_and_print_if_not_same_for_all_same_ligands</span><span class="p">(</span><span class="n">check_props</span><span class="p">,</span> <span class="n">unique_ligand</span><span class="p">,</span> <span class="n">ligand</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">check_props</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">unique_ligand</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ligand</span><span class="p">,</span> <span class="n">prop</span><span class="p">):</span>
                 <span class="nb">print</span><span class="p">(</span>
@@ -487,7 +371,7 @@
 
         <span class="k">return</span>
 
-    <span class="k">def</span> <span class="nf">_get_unique_ligands_and_set_unique_ligand_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grouped_unique_ligands</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_unique_ligands_and_set_unique_ligand_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grouped_unique_ligands</span><span class="p">):</span>
         <span class="n">unique_ligands</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">same_ligands</span> <span class="ow">in</span> <span class="n">grouped_unique_ligands</span><span class="p">:</span>
 
@@ -505,7 +389,7 @@
 
         <span class="k">return</span> <span class="n">unique_ligands</span>
 
-    <span class="k">def</span> <span class="nf">_filter_duplicates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_filter_duplicates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Filters out duplicate ligands in the database based on their graph hashes.</span>
 
@@ -524,7 +408,7 @@
 
         <span class="k">return</span> <span class="n">unique_ligand_dict</span>
 
-    <span class="k">def</span> <span class="nf">_calc_number_of_possible_complexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metals</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calc_number_of_possible_complexes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metals</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the number of possible complexes for each metal in the list of metals.</span>
 
@@ -542,7 +426,7 @@
 
         <span class="k">return</span> <span class="n">df</span>
 
-    <span class="k">def</span> <span class="nf">_calc_number_of_possible_complexes_for_metal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metal</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">archetypes</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calc_number_of_possible_complexes_for_metal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metal</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">archetypes</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
         <span class="n">metal_oxi_states</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">metal</span><span class="p">)</span><span class="o">.</span><span class="n">common_oxidation_states</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -564,7 +448,7 @@
 
         <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_calc_number_of_combinations_of_ligands_for_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_charge</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">archetype</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calc_number_of_combinations_of_ligands_for_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_charge</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">archetype</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates the number of possible ligand combinations for a given target charge and archetype.</span>
 
@@ -600,8 +484,8 @@
         <span class="k">return</span> <span class="n">count</span>
 
 <div class="viewcode-block" id="LigandDB.get_sub_db">
-<a class="viewcode-back" href="../../../../doc_files/2_metalig_database.html#DARTassembler.src.metalig.db.LigandDB.get_sub_db">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_sub_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ligand_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;LigandDB&#39;</span><span class="p">:</span>
+<a class="viewcode-back" href="../../../../doc_files/2_metalig_api.html#DARTassembler.src.metalig.db.LigandDB.get_sub_db">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_sub_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ligand_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;LigandDB&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a sub-database containing only the ligands with the specified names.</span>
 
@@ -613,6 +497,38 @@
         <span class="k">return</span> <span class="n">LigandDB</span><span class="p">(</span><span class="n">sub_db_dict</span><span class="p">)</span></div>
 </div>
 
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">DARTassembler</span><span class="w"> </span><span class="kn">import</span> <span class="n">LigandDB</span>
+
+    <span class="c1"># Load the first 1000 out of 41,018 ligands in the MetaLig database.</span>
+    <span class="n">metalig</span> <span class="o">=</span> <span class="n">LigandDB</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;metalig&#39;</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+
+    <span class="c1"># Set some criteria to filter Cp-like ligands</span>
+    <span class="n">archetype</span> <span class="o">=</span> <span class="s1">&#39;1-mono&#39;</span>
+    <span class="n">charge</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">donor_elements</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Filter ligands and keep only those which adhere to all the above criteria</span>
+    <span class="n">ligands_to_keep</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ligand_name</span><span class="p">,</span> <span class="n">ligand</span> <span class="ow">in</span> <span class="n">metalig</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">correct_denticity</span> <span class="o">=</span> <span class="n">ligand</span><span class="o">.</span><span class="n">archetype</span> <span class="o">==</span> <span class="n">archetype</span>
+        <span class="n">correct_charge</span> <span class="o">=</span> <span class="n">ligand</span><span class="o">.</span><span class="n">charge</span> <span class="o">==</span> <span class="n">charge</span>
+        <span class="n">correct_donor_elements</span> <span class="o">=</span> <span class="n">ligand</span><span class="o">.</span><span class="n">donor_elements</span> <span class="o">==</span> <span class="n">donor_elements</span>
+        <span class="k">if</span> <span class="n">correct_denticity</span> <span class="ow">and</span> <span class="n">correct_charge</span> <span class="ow">and</span> <span class="n">correct_donor_elements</span><span class="p">:</span>
+            <span class="n">ligands_to_keep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ligand_name</span><span class="p">)</span>
+
+    <span class="c1"># Reduce MetaLig database to only keep ligands which adhere to the above criteria</span>
+    <span class="n">filtered_metalig</span> <span class="o">=</span> <span class="n">metalig</span><span class="o">.</span><span class="n">get_sub_db</span><span class="p">(</span><span class="n">ligand_names</span><span class="o">=</span><span class="n">ligands_to_keep</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Number of ligands after filtering: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">filtered_metalig</span><span class="o">.</span><span class="n">db</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">filtered_metalig</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="s1">&#39;filtered_metalig.jsonlines&#39;</span><span class="p">)</span>
+    <span class="n">filtered_metalig</span><span class="o">.</span><span class="n">save_to_concat_xyz</span><span class="p">(</span><span class="s1">&#39;concat_filtered_metalig.xyz&#39;</span><span class="p">)</span>
+
+    <span class="c1"># n_max = 1000</span>
+    <span class="c1">#</span>
+    <span class="c1"># metalig = LigandDB.from_json(path=&#39;metalig&#39;, n_max=1000)    # Load the first 1000 out of 41,018 ligands in the MetaLig database.</span>
+    <span class="c1"># metalig.save_to_csv()</span>
 </pre></div>
 
            </div>
