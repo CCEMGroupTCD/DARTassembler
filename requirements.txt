@@ -7,3 +7,4 @@ pysmiles
 pyyaml
 scipy
 tqdm
+rdkit

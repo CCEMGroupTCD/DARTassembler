@@ -1,0 +1,36 @@
+name: Run Pytests
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.12]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Micromamba is the simplest way to use conda envs on CI
+      - name: Set up micromamba with Python ${{ matrix.python-version }}
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-file: dev/conda_envs/conda_DART_dev_exact.yml
+          environment-name: DART_dev
+          init-shell: bash                  # ensure micromamba shell is initialized correctly
+          create-args: >-
+            python=${{ matrix.python-version }}
+          cache-environment: true
+          cache-downloads: true
+          channel-priority: strict  # optional: channel-priority can help with reproducibility
+          log-level: info  # optional but useful for debugging
+
+      - name: Run tests
+        shell: bash -l {0}
+        run: |
+          micromamba run -n DART_dev pytest tests/pytest/ -s --log-cli-level=INFO

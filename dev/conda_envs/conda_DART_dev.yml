@@ -27,6 +27,9 @@ dependencies:
   - sphinx-design
   - sphinx-autobuild
   - sphinx-argparse
+  - pytest
+  - pytest-xdist
+  - pytest-cov
   - setuptools<67.3           # Gives deprecation warning otherwise
   - twine                     # Needed for uploading to PyPI
   - pyproject_hooks

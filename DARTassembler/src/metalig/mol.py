@@ -439,22 +439,21 @@ class BaseMolecule(object):
 
         return unique_distances
 
-    def get_xyz_string(self, comment: str= '') -> str:
+    def get_xyz_string(self, comment: str = '') -> str:
         """
         Produce a string in XYZ file format for the molecule.
 
-        :param comment: Optional single-line comment to include in the XYZ header.
-        :type comment: str
+        :param str comment: Optional single-line comment to include in the XYZ header.
         :return: Multiline string conforming to the XYZ format.
         :rtype: str
         """
-        xyz = f"{len(self.atomic_props['x'])}\n"
-        xyz += comment + '\n'
-        for i, _ in enumerate(self.atomic_props['x']):
-            xyz += f"{self.atomic_props['atoms'][i]}  {self.atomic_props['x'][i]}  {self.atomic_props['y'][i]}  {self.atomic_props['z'][i]} \n"
+        from io import StringIO
+        from ase.io import write
 
-        # Remove trailing newline character
-        xyz = xyz.rstrip('\n')
+        atoms = get_ase_atoms_from_atomic_props(self.atomic_props)
+        buf = StringIO()
+        write(buf, atoms, format='xyz', comment=comment)
+        xyz = buf.getvalue().rstrip('\n')
 
         return xyz
 

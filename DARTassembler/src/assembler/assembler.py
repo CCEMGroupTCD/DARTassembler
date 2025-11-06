@@ -284,7 +284,7 @@ class Assembler(BaseModule):
         stream_handler = logging.StreamHandler(stream=sys.stdout)
         stream_handler.setLevel(verbosity2logging[self.verbosity])
         # Print to stdout
-        logging.basicConfig(level=verbosity2logging[self.verbosity], format='%(message)s', handlers=[logging.FileHandler(self.gbl_outcontrol.log_path, mode='w'), stream_handler])
+        logging.basicConfig(level=verbosity2logging[self.verbosity], format='%(message)s', handlers=[logging.FileHandler(self.gbl_outcontrol.log_path, mode='w'), stream_handler], force=True)
 
     def run_batch(self,
                   name: str,
@@ -613,6 +613,8 @@ class Assembler(BaseModule):
 
                     # Combine structures (order doesn’t matter unless you care about atom order)
                     combined_structure = extra_structure + isomer.atoms
+
+                    # combined_structure.set_positions(np.round(combined_structure.get_positions(), decimals=6))
 
                     # Write combined XYZ
                     combined_xyz_filepath = complex_dir / f"{isomer_name}_combined.xyz"

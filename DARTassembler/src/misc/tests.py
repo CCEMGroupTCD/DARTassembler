@@ -41,7 +41,23 @@ class IntegrationTest(object):
         self.files_only_in_new = [item for item in self.only_in_new if Path(self.new_dir, item).is_file()]
         self.dirs_only_in_old = [item for item in self.only_in_old if Path(self.old_dir, item).is_dir()]
         self.files_only_in_old = [item for item in self.only_in_old if Path(self.old_dir, item).is_file()]
+        self.successful = not self.only_in_new and not self.only_in_old and not self.changed
         self._print_results()
+
+        # # Raise an error if any concat_....xyz files have more than small changes.
+        diff_concat_xyz = []
+        for file in self.changed:
+            filename = Path(file).name
+            if filename.startswith('concat_') and filename.endswith('.xyz'):
+                if file in self.small_changes:
+                    message = self.small_changes[file]  # Example message: '-> Same: 27/27. Diff. el: 0/27. Diff. ...'
+                    n_same, n_total = message.split('Same: ')[1].split('.')[0].split('/')
+                    if n_same != n_total:
+                        diff_concat_xyz.append(filename)
+                else:
+                    diff_concat_xyz.append(filename)
+        if diff_concat_xyz:
+            raise AssertionError('Integration test failed: the following concat_....xyz files have significant differences: ' + ', '.join(diff_concat_xyz))
 
     def _check_for_only_small_changes(self):
         for file in self.changed:
@@ -110,7 +126,7 @@ class IntegrationTest(object):
         self._print_stats()
 
     def _print_stats(self):
-        if not self.only_in_new and not self.only_in_old and not self.changed:
+        if self.successful:
             print('Integration test successful: all good!')
             return
 

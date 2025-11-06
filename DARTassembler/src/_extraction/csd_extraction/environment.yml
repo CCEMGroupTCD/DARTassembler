@@ -1,0 +1,10 @@
+name: CSD_Extract
+channels:
+  - https://conda.ccdc.cam.ac.uk
+  - defaults
+dependencies:
+  - python=3.9
+  - csd-python-api
+  - tqdm
+  - mendeleev
+prefix: /Users/felixk/opt/anaconda3/envs/TestEnv2

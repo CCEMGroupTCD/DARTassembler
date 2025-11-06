@@ -187,6 +187,10 @@ If everything works:
    11. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
    12. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
 
+## CI Pytests
+
+
+
 ## Known issues
 - If the DART assembler is executed twice in the same directory at the same time, the concat.xyz files might get more molecules because they are appended from both processes.
 
@@ -198,16 +202,13 @@ If everything works:
 - Refactored the CLI and made a new general class BaseModule. This class is used by the Assembler, LigandFilters, Concat, Configs and DBInfo classes to provide a common interface for the CLI.
 - Renamed the old ligand MetaLig ligand database files in data/metalig by prepending OLD_ to the file name to avoid confusion with the new ligand database files. The old files are still there for reference, but they should not be used anymore.
 18.06.2025
-- The Isomer() class has an attribute `self.ligands` now which is a list of Ligand() objects. This is very handy for later code writing, but atm it's still slow. I will speed that up later though, the `self.ligands` can be fully used. 
+- The Isomer() class has an attribute `self.ligands` now which is a list of Ligand() objects. This is very handy for later code writing, but atm it's still slow. I will speed that up later though, the `self.ligands` can be fully used.
 
 ## Todo list
 ### Small renaming and shifting
 - Consistently name the `n_max_ligands`. Right now often it is `n` in all modules except the assembler.
-- Rename complex_name_appendix to complex_name_suffix in assembler.yml
 - Rename `validity_check` to `validate` in BaseMolecule() and inheriting classes.
 - Rename `target_vectors`?
-- Rename geometry strings everywhere, including the metalig.
-### Functionalities
-### Docs
-- Make a tutorial notebook for the DART workflow, explaining the very basics (mostly just the target vectors) by assembling Pd(II) square-planar complexes with 1 bidentate and 2 monodentate ligands.
-- Explain the target vectors in the docs and make a figure explaining them.
+### For next refactoring
+ - Remove all atomic_props and just use ase.Atoms objects everywhere. Remove the atomic_props dicts and atoms in the isomer.ligands, so that the entire Isomer() class has just one ase.Atoms object which specifies the entire 3D geometry. Otherwise, it's quite awful to have to update both the atomic_props and the atoms object all the time.
+ - Use ase database for MetaLig and output complexes

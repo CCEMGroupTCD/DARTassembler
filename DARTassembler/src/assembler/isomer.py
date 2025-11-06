@@ -110,6 +110,32 @@ class AssembledIsomer(BaseMolecule):
         if validity_check:
             self._tmc_validity_checks()
 
+    def update_positions(self, newatoms: ase.Atoms) -> None:
+        """
+        Update the atomic positions of the isomer and its ligands. Ensures atom symbols match. Should be used instead of manually updating atoms/atomic_props.
+        :param newatoms: ASE Atoms object with updated positions.
+        :return: None
+        :rtype: None
+        """
+        assert all(self.atoms.symbols == newatoms.symbols), "Cannot update positions: atom symbols do not match."
+        self.atoms = newatoms
+        self.atomic_props = get_atomic_props_from_ase_atoms(atoms=newatoms)
+
+        for ligand, idc in zip(self.ligands, self.ligand_idc):
+            ligand.atoms = deepcopy(newatoms[idc])
+            ligand.atomic_props = get_atomic_props_from_ase_atoms(ligand.atoms)
+
+    def round_positions(self, decimals: int = 6) -> None:
+        """
+        Round the atomic positions of the isomer to a specified number of decimal places. Useful to avoid tiny numerical differences in tests.
+        :param decimals: Number of decimal places to round to.
+        :return: None
+        :rtype: None
+        """
+        rounded_atoms = deepcopy(self.atoms)
+        rounded_atoms.set_positions(np.round(rounded_atoms.get_positions(), decimals=decimals))
+        self.update_positions(newatoms=rounded_atoms)
+
     def _get_ligands(self, validity_check: bool = True) -> List[Ligand]:
         """
         Construct Ligand objects from stored ligand metadata and ASE Atoms slices.
@@ -483,6 +509,9 @@ class AssembledComplex(object):
                     validity_check=True,
                     isomer_name=self.complex_name + str(isomer_idx)  # Assign a name based on the complex name and index
                 )
+                # Round coordinates to avoid numerical tiny differences in pytests when running with different OS/python/package versions. Makes many things much more stable.
+                isomer.round_positions()
+
                 isomers.append(isomer)
                 same_length_ligand_origins.append(ligand_origins)
                 same_length_target_vectors.append(target_vectors)
@@ -494,6 +523,10 @@ class AssembledComplex(object):
         # Do a mono-axial optimization of the isomers and afterward check for clashing ligands.
         for idx, isomer, target_vectors, ligand_origins in zip(range(len(isomers)), isomers, same_length_target_vectors, same_length_ligand_origins):
             isomer = _AxialOptModifier(isomers=[isomer], opt=self.monoaxial_optimization).modify(target_vectors_list=[target_vectors], ligand_origins_list=[ligand_origins])[0]
+
+            # Round coordinates to avoid numerical tiny differences in pytests when running with different OS/python/package versions. Makes many things much more stable.
+            isomer.round_positions()
+
             isomers[idx] = isomer # important: copy changed object over to list
 
             if isomer.warning == '' and pd.notna(self.clashing_tolerance):
@@ -508,6 +541,9 @@ class AssembledComplex(object):
         self.successful_isomers, self.unsuccessful_isomers = self._divide_into_successful_and_unsuccessful_isomers(isomers, joined_isomers_duplicate_group_names)
         self.success = len(self.successful_isomers) > 0
         self.isomers = isomers
+
+        # for isomer in self.isomers:
+        #     isomer.atoms.set_positions(np.round(isomer.atoms.get_positions(), decimals=0))
 
         return
 
@@ -597,6 +633,9 @@ class AssembledComplex(object):
         """
         isomer_data = {}
         for isomer in self.isomers:
+            # Assert atomic_props and ase.Atoms positions are equivalent.
+            all_atomic_props_coordinates = np.array([isomer.atomic_props[x] for x in ['x', 'y', 'z']]).T
+            assert np.allclose(all_atomic_props_coordinates, isomer.atoms.get_positions()), f"Mismatch between atomic_props and ase.Atoms positions in isomer {isomer.isomer_name}."
             isomer_data[isomer.isomer_name] = {
                 'atomic_props': isomer.atomic_props,
                 'warning': isomer.warning,
@@ -886,12 +925,7 @@ class _AxialOptModifier:
 
             # Copy isomer before modification to avoid unintended side effects
             new_isomer = deepcopy(isomer)
-            new_isomer.atoms = atoms
-            new_isomer.atomic_props = get_atomic_props_from_ase_atoms(atoms)
-
-            for ligand, idc in zip(new_isomer.ligands, new_isomer.ligand_idc):
-                ligand.atoms = deepcopy(atoms[idc])
-                ligand.atomic_props = get_atomic_props_from_ase_atoms(ligand.atoms)
+            new_isomer.update_positions(atoms)
 
             self.output_isomers.append(new_isomer)
 
