@@ -9,8 +9,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        python-version: [3.12]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [3.12, 3.9]
 
     steps:
       - name: Checkout repository
@@ -27,7 +27,6 @@ jobs:
             python=${{ matrix.python-version }}
           cache-environment: true
           cache-downloads: true
-          channel-priority: strict  # optional: channel-priority can help with reproducibility
           log-level: info  # optional but useful for debugging
 
       - name: Run tests
