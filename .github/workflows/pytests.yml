@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ macos-latest, ubuntu-latest, windows-latest ]
-        python-version: [3.9]
+        python-version: [3.9, 3.10, 3.11, 3.12]
 
     steps:
       - name: Checkout repository
@@ -28,4 +28,4 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest tests/pytest/ -q --bigchange-policy=warn
+          pytest tests/pytest/ --bigchange-policy=warn
