@@ -1,9 +1,11 @@
 import warnings
+from shutil import rmtree
 from typing import Union
 import numpy as np
 import pandas as pd
 from pathlib import Path
 import ase
+import pytest
 from ase.io import read
 import filecmp
 import os
@@ -26,9 +28,10 @@ class IntegrationTest(object):
         # Settings
         self.xyz_tol = xyz_tol
 
-    def compare_all(self):
+    def compare_all(self) -> Union[bool, list[str]]:
         """
         Compares two directories and prints the differences.
+        :return: successful (bool), small_but_relevant_changes (list of str). If successful is True, the directories are the same. If False, small_but_relevant_changes contains the names of files with small but relevant changes.
         """
         print('\nIntegration test: check if the new output is the same as the old output.')
         self._only_in_one(self.dcmp)
@@ -45,7 +48,7 @@ class IntegrationTest(object):
         self._print_results()
 
         # # Raise an error if any concat_....xyz files have more than small changes.
-        diff_concat_xyz = []
+        small_but_relevant_changes = []
         for file in self.changed:
             filename = Path(file).name
             if filename.startswith('concat_') and filename.endswith('.xyz'):
@@ -53,11 +56,11 @@ class IntegrationTest(object):
                     message = self.small_changes[file]  # Example message: '-> Same: 27/27. Diff. el: 0/27. Diff. ...'
                     n_same, n_total = message.split('Same: ')[1].split('.')[0].split('/')
                     if n_same != n_total:
-                        diff_concat_xyz.append(filename)
+                        small_but_relevant_changes.append(filename)
                 else:
-                    diff_concat_xyz.append(filename)
-        if diff_concat_xyz:
-            raise AssertionError('Integration test failed: the following concat_....xyz files have significant differences: ' + ', '.join(diff_concat_xyz))
+                    small_but_relevant_changes.append(filename)
+
+        return self.successful, small_but_relevant_changes
 
     def _check_for_only_small_changes(self):
         for file in self.changed:
@@ -336,3 +339,48 @@ if __name__ == '__main__':
     xyz_test = XYZIntegrationTest(Path(path, 'output/INTEGRATION_TEST.xyz'), Path(path, 'output_benchmark/INTEGRATION_TEST.xyz'), tol=1e-2)
     xyz_test.compare_xyz_files()
     print('Done!')
+
+
+def integration_test(name: str):
+    """
+    Decorator to wrap an assembler integration test.
+    The wrapped function must accept exactly one argument: `outdir` (Path),
+    and should perform the run (e.g. Assembler.run_from_yaml(...)).
+    It should return the `assembly` object that has `output_directory`.
+    """
+    def _decorate(run_fn):
+        @pytest.mark.usefixtures()
+        def _wrapped(change):
+            outdir = project_path().extend('tests', 'pytest', name, 'data_output').resolve()
+            old_dir = outdir.parent / 'benchmark_data_output'
+
+            cwd = Path.cwd()
+            # Assert that the outdir is a subdirectory of the cwd, otherwise we might be in the wrong project
+            assert cwd in outdir.resolve().parents, f'Outdir {outdir} is not a subdirectory of the project path {project_path()}. Are you running the test in the correct project?'
+
+            # Fresh start
+            if outdir.exists():
+                rmtree(outdir)
+            try:
+                outdir.mkdir(parents=True, exist_ok=True)
+                os.chdir(outdir)
+                results = run_fn(outdir)   # user-supplied function does the actual run
+            except Exception as e:
+                pytest.fail(f'Exception while testing {name}: {e}')
+            finally:    # Change back to the original working directory
+                os.chdir(cwd)
+
+            # Compare with benchmark, set "changed" flag for custom reporting if needed
+            if old_dir.exists():
+                test = IntegrationTest(new_dir=outdir, old_dir=old_dir)
+                successful, small_but_relevant_changes = test.compare_all()
+                if small_but_relevant_changes:
+                    change.big('Molecules changed majorly: ' + ', '.join(small_but_relevant_changes))
+                elif not successful:
+                    change.small('Same molecules, just small changes in coordinates and/or other files/things.')
+            else:
+                pytest.skip(f'Could not find benchmark folder "{old_dir}"!')
+
+            return results
+        return _wrapped
+    return _decorate

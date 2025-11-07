@@ -23,7 +23,7 @@ The following filters will return cis-bidentate N-O donors with up to 50 atoms t
 """
 from copy import deepcopy
 from pathlib import Path
-from typing import Union, Generator
+from typing import Union, Generator, Optional
 import pandas as pd
 from DARTassembler.src.metalig.db import LigandDB
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list, \
@@ -296,7 +296,7 @@ class LigandFilters(BaseModule):
         return
 
     @classmethod
-    def run_from_yaml(cls, input: Union[str,Path,None]) -> "LigandFilters":
+    def run_from_yaml(cls, input: Union[str,Path,None], n: Optional[int]=None) -> "LigandFilters":
         """
         Create and run a LigandFilters instance from a YAML specification file.
 
@@ -306,6 +306,8 @@ class LigandFilters(BaseModule):
 
         :param input: Path to the filter input file (.yml) or None to use a default template.
         :type input: Union[str, Path, None]
+        :param n: Number of ligand objects to include in the output. Takes precedence over the 'n' value in the YAML file if provided.
+        :type n: Union[int, None]
         :return: A LigandFilters instance after executing the configured filters.
         :rtype: LigandFilters
         """
@@ -314,7 +316,9 @@ class LigandFilters(BaseModule):
 
         input_dict = read_yaml(input)
         input_db_file = input_dict.pop('db', None)
-        n = input_dict.pop('n', None)
+        n_yaml = input_dict.pop('n', None)
+        if n is None:
+            n = n_yaml
 
         filter = LigandFilters(db=input_db_file, n=n)
         filter.run(**input_dict)
@@ -322,7 +326,7 @@ class LigandFilters(BaseModule):
         return filter
 
     @classmethod
-    def run_from_cli(cls, input: Union[str, Path, None] = None) -> "LigandFilters":
+    def run_from_cli(cls, input: Union[str, Path, None] = None, n: Optional[int] = None) -> "LigandFilters":
         """
         Run ligand filtering using command-line style setup helpers and a YAML input.
 
@@ -331,12 +335,14 @@ class LigandFilters(BaseModule):
 
         :param input: Path to the filter input file (.yml) or None to use the default template.
         :type input: Union[str, Path, None]
+        :param n: Number of ligand objects to include in the output. Takes precedence over the 'n' value in the YAML file if provided.
+        :type n: Union[int, None]
         :return: A LigandFilters instance after executing the configured filters.
         :rtype: LigandFilters
         """
         super()._before_run_from_cli()
         super()._print_cli_input(input=input)
-        ligandfilters = cls.run_from_yaml(input=input)
+        ligandfilters = cls.run_from_yaml(input=input, n=n)
         super()._after_run_from_cli()
 
         return ligandfilters

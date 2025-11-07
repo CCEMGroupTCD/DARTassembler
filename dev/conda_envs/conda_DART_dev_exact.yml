@@ -8,6 +8,9 @@ channels:
   - https://repo.anaconda.com/pkgs/main
   - https://repo.anaconda.com/pkgs/r
 dependencies:
+  - python>=3.9,<3.13   # Uncommented to be able to use matrix python-version in GitHub Actions
+#  - cpython=3.12.12
+#  - python_abi=3.12
   - _python_abi3_support=1.0
   - alabaster=1.0.0
   - anyio=4.11.0
@@ -48,8 +51,8 @@ dependencies:
   - commonmark=0.9.1
   - contourpy=1.3.3
   - coverage=7.11.0
-  - cpython=3.12.12
   - cssutils=2.11.1
+  - cython=3.2.0
   - cycler=0.12.1
   - cyrus-sasl=2.1.28
   - debugpy=1.8.17
@@ -144,7 +147,6 @@ dependencies:
   - libjpeg-turbo=3.1.0
   - liblapack=3.9.0
   - liblzma=5.8.1
-  - libntlm=1.8
   - libopenblas=0.3.30
   - libpng=1.6.50
   - libpq=18.0
@@ -176,7 +178,6 @@ dependencies:
   - nbconvert-pandoc=7.16.6
   - nbformat=5.10.4
   - nbsphinx=0.9.7
-  - ncurses=6.5
   - nest-asyncio=1.6.0
   - networkx=3.5
   - nh3=0.3.1
@@ -185,7 +186,6 @@ dependencies:
   - numpy=2.3.4
   - openbabel=3.1.1
   - openjpeg=2.5.4
-  - openldap=2.6.10
   - openssl=3.5.4
   - overrides=7.7.0
   - packaging=25.0
@@ -224,13 +224,11 @@ dependencies:
   - pytest=8.4.2
   - pytest-cov=7.0.0
   - pytest-xdist=3.8.0
-  - python=3.12.12
   - python-dateutil=2.9.0.post0
   - python-fastjsonschema=2.21.2
   - python-gil=3.12.12
   - python-json-logger=2.0.7
   - python-tzdata=2025.2
-  - python_abi=3.12
   - pytz=2025.2
   - pyyaml=6.0.3
   - pyzmq=27.1.0
@@ -323,3 +321,4 @@ dependencies:
       - moldoc==3.0.5
       - pysmiles==2.0.0
       - -e ../../.             # Install DART in editable mode without installing dependencies, these are handled by conda
+  - python=3.9

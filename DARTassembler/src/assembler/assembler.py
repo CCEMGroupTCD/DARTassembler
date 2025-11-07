@@ -670,7 +670,7 @@ class Assembler(BaseModule):
         return
 
     @classmethod
-    def run_from_yaml(cls, input: Union[str, Path, None]) -> 'Assembler':
+    def run_from_yaml(cls, input: Union[str, Path, None], n_max_ligands:Optional[int]=None) -> 'Assembler':
         """
         Instantiate and run an Assembler using a YAML configuration file.
 
@@ -679,6 +679,8 @@ class Assembler(BaseModule):
 
         :param input: Path to YAML configuration file or None to use the default template.
         :type input: Union[str, Path, None]
+        :param n_max_ligands: Optional override for the maximum number of ligands to load from each ligand database. Takes precedence over the value in the YAML file if specified.
+        :type n_max_ligands: int | None
         :return: Assembler instance after executing the specified batches.
         :rtype: Assembler
         """
@@ -686,6 +688,8 @@ class Assembler(BaseModule):
             input = default_assembler_yml_path
 
         options = read_yaml(input)
+        if n_max_ligands is not None:
+            options['n_max_ligands'] = n_max_ligands
         batches = options.pop('batches')
 
         assembler = Assembler(**options)
@@ -694,7 +698,7 @@ class Assembler(BaseModule):
         return assembler
 
     @classmethod
-    def run_from_cli(cls, input: Union[str, Path, None]) -> 'Assembler':
+    def run_from_cli(cls, input: Union[str, Path, None], n_max_ligands: Optional[int]=None) -> 'Assembler':
         """
         Run the Assembler from a command-line context with pre/post hooks.
 
@@ -702,12 +706,14 @@ class Assembler(BaseModule):
 
         :param input: Path to YAML configuration file or None to use the default template.
         :type input: Union[str, Path, None]
+        :param n_max_ligands: Optional override for the maximum number of ligands to load from each ligand database. Takes precedence over the value in the YAML file if specified.
+        :type n_max_ligands: int | None
         :return: Assembler instance after run completion.
         :rtype: Assembler
         """
         super()._before_run_from_cli()
         super()._print_cli_input(input=input)
-        assembler = cls.run_from_yaml(input=input)
+        assembler = cls.run_from_yaml(input=input, n_max_ligands=n_max_ligands)
         super()._after_run_from_cli()
 
         return assembler

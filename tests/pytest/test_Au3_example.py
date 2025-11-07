@@ -1,26 +1,21 @@
 """
 Integration test for the filtering and assembly of Au(III) complexes (case study for the DART paper).
 """
-import itertools
 import sys
 print('Python %s on %s' % (sys.version, sys.platform))
 sys.path.extend(['/Users/timosommer/PhD/projects/DARTassembler'])
-import os
 from pathlib import Path
-from DARTassembler.src.constants.paths import project_path
-from DARTassembler.src.assembler.assembler import Assembler
-from DARTassembler import LigandFilters
-from shutil import rmtree
+from DARTassembler import Assembler, LigandFilters
+from DARTassembler.src.misc.tests import integration_test
 
-def test_Au3():
-    n_max = 5000
-    outdir = project_path().extend('tests', 'pytest', 'Au3_example', 'data_output')
-
+@integration_test(name='Au3_example')
+def test_Au3_example(outdir: Path) -> Assembler:
+    n = 5000
     Cl_filters = [
         {'filter': 'composition', 'elements': 'Cl', 'instruction': 'must_contain_and_only_contain', 'only_donors': False},
         {'filter': 'property', 'name': 'archetype', 'values': ['1-mono']}
     ]
-    CN = [
+    CN_filters = [
         {'filter': 'property', 'name': 'n_denticities', 'values': [2]},
         {'filter': 'property', 'name': 'n_haptic_groups', 'values': [0]},
         {'filter': 'property', 'name': 'charge', 'values': [-1]},
@@ -28,47 +23,18 @@ def test_Au3():
         {'filter': 'composition', 'elements': 'CN', 'instruction': 'must_contain_and_only_contain', 'only_donors': True},
     ]
 
-    # Remove the output directory if it exists to start fresh
-    if outdir.exists():
-        rmtree(outdir)
-    old_cwd = Path.cwd()    # Save the current working directory to return to it later
-    try:
-        outdir.mkdir(parents=True, exist_ok=True)
-        os.chdir(outdir)
-        filter = LigandFilters(db='metalig', n=n_max)
-        Cl_db = filter.run(Cl_filters, outpath=Path('ligands')/'Cl.jsonlines', metal=True, dbinfo=False)
-        CN_db = filter.run(CN, outpath=Path('ligands')/'CN.jsonlines', metal=True, dbinfo=False)
-    finally:
-        # Change back to the original working directory
-        os.chdir(old_cwd)
+    # Run the filters and save filtered ligand databases to outdir
+    filter = LigandFilters(db='metalig', n=n)
+    filter.run(Cl_filters, outpath=Path('ligands')/'Cl.jsonlines', dbinfo=False)
+    filter.run(CN_filters, outpath=Path('ligands')/'CN.jsonlines', dbinfo=False)
 
-    outdir = project_path().extend('tests', 'pytest', 'Au3_example', 'data_output', 'assembly')
-    assembly_input = outdir.parent.parent / 'data_input' / 'Au3_assembly_input.yaml'
-    # Remove the output directory if it exists to start fresh
-    if outdir.exists():
-        rmtree(outdir)
-    old_cwd = Path.cwd()    # Save the current working directory to return to it later
-    try:
-        outdir.mkdir(parents=True, exist_ok=True)
-        os.chdir(outdir)
-        assembly = Assembler.run_from_yaml(assembly_input)
-    finally:
-        # Change back to the original working directory
-        os.chdir(old_cwd)
+    # Run the assembler and save output to new assembler
+    assembly_input = outdir.parent / 'data_input' / 'Au3_assembly_input.yaml'
+    assembler = Assembler.run_from_yaml(assembly_input)
 
-    #%% ==============    Doublecheck refactoring    ==================
-    from DARTassembler.src.misc.tests import IntegrationTest
-    old_dir = Path(outdir.parent.parent, 'benchmark_data_output').resolve()
-    if old_dir.exists():
-        test = IntegrationTest(new_dir=outdir.parent, old_dir=old_dir)
-        test.compare_all()
-        print('Test for assembly of complexes passed!')
-    else:
-        print(f'ATTENTION: could not find benchmark folder "{old_dir}"!')
-
-    return assembly
+    return assembler
 
 
 if __name__ == "__main__":
-    test_Au3()
+    assembler = test_Au3_example()
 

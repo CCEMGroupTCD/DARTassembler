@@ -5,7 +5,7 @@ User-defined global settings:
     output_directory              DARTassembler
     verbosity                     2
     complex_name_length           8
-    n_max_ligands                 5000
+    n_max_ligands                 1000
 ====================================  PdII  ====================================
 User-defined settings for PdII:
     name                          PdII
@@ -17,13 +17,13 @@ User-defined settings for PdII:
     target_vectors                [['+x'], ['+y'], ['-x', '-y']]
 =============================  Summary per batch  ==============================
 PdII:
-  - 206 isomers tried, 183 isomers (from 100 complexes) successfully assembled.
-  - 23 isomers failed because of filters:
-    - clashing: 12
-    - duplicate: 11
+  - 206 isomers tried, 191 isomers (from 100 complexes) successfully assembled.
+  - 15 isomers failed because of filters:
+    - clashing: 8
+    - duplicate: 7
 ====================  Total summary of DART Assembler run  =====================
-  - 206 isomers tried, 183 isomers (from 100 complexes) successfully assembled.
-  - 23 isomers failed because of filters:
-    - clashing: 12
-    - duplicate: 11
+  - 206 isomers tried, 191 isomers (from 100 complexes) successfully assembled.
+  - 15 isomers failed because of filters:
+    - clashing: 8
+    - duplicate: 7
 DART Assembler output files saved to directory `DARTassembler`.

@@ -548,7 +548,7 @@ class AssembledComplex(object):
         return
 
     @staticmethod
-    def _get_duplicate_isomers_group_names(isomers: list[Any], pre_isomers_duplicate_group_names: list[set[str | None]], duplicate_tolerance: float, metal_centers: list[list[Atom]]) -> list[list[str]]:
+    def _get_duplicate_isomers_group_names(isomers: list[Any], pre_isomers_duplicate_group_names: list[set[Union[str, None]]], duplicate_tolerance: float, metal_centers: list[list[Atom]]) -> list[list[str]]:
         """
         Join pre- and post-optimization duplicate groups and preserve isomer ordering.
 

@@ -1,7 +1,7 @@
 output_directory: DARTassembler
 verbosity: 2
 complex_name_length: 8
-n_max_ligands: 5000
+n_max_ligands: 1000
 batches:
 - &id001
   name: PdII

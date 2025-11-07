@@ -46,7 +46,8 @@ Execute the assembler module using the provided configuration file.
 Example: ``DARTassembler assembler --input assembler.yml``
 """)
     parser_assembler.add_argument("--input", type=str, required=True, help="Path to a .yml file with assembler options.")
-    parser_assembler.set_defaults(func=lambda args: Assembler.run_from_cli(input=args.input))
+    parser_assembler.add_argument("--n_max_ligands", type=int, default=None, help="Maximum number of ligands to read in from the ligand databases. Useful for testing purposes. If None, all ligands are read in (default). When specified here, this argument overrides the value in the .yml file.")
+    parser_assembler.set_defaults(func=lambda args: Assembler.run_from_cli(input=args.input, n_max_ligands=args.n_max_ligands))
 
     # LigandFilters
     parser_ligandfilters = subparsers.add_parser("ligandfilters", help="""
@@ -55,7 +56,8 @@ Execute the ligandfilters module using the provided configuration file.
 Example: ``DARTassembler ligandfilters --input ligandfilters.yml``
 """)
     parser_ligandfilters.add_argument("--input", type=str, required=True, help="Path to a .yml file with ligand filter options.")
-    parser_ligandfilters.set_defaults(func=lambda args: LigandFilters.run_from_cli(input=args.input))
+    parser_ligandfilters.add_argument("--n", type=int, default=None, help="Maximum number of ligands to read in from the database. Useful for testing purposes. If None, all ligands are read in (default). When specified here, this argument overrides the value in the .yml file.")
+    parser_ligandfilters.set_defaults(func=lambda args: LigandFilters.run_from_cli(input=args.input, n=args.n))
 
     # DBInfo
     parser_dbinfo = subparsers.add_parser("dbinfo", help="""

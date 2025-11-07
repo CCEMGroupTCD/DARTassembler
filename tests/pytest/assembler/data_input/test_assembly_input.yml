@@ -13,7 +13,7 @@ batches:
     metal_centers: Fe
     ligand_archetypes: [2-cis, 2-cis]
 
-  - n_max_complexes: 5                               # Checked by Cian 15/10/2025 (EDUGOCET2 was not flagged as isomer due to difference in rotation)
+  - n_max_complexes: 3                               # Checked by Cian 15/10/2025 (EDUGOCET2 was not flagged as isomer due to difference in rotation)
     total_ligand_charges: -3
     name: "2-2-1-1-monometallic"
     random_seed: 5

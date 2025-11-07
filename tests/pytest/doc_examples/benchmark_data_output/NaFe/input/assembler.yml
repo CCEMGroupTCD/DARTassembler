@@ -1,7 +1,7 @@
 output_directory: NaFe
 verbosity: 2
 complex_name_length: 8
-n_max_ligands: null
+n_max_ligands: 1000
 batches:
 - &id001
   name: Na-Fe-amide
