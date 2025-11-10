@@ -16,7 +16,7 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/CCEMGroupTCD/DARTassembler',
     python_requires=">=3.9",
-    author="Timo Sommer, Cian Clarke, Felix Kleuker",
+    author="Timo Sommer, Cian Clarke, Felix Kleuker, Max García-Melchor",
     packages=find_packages(),
     install_requires=requirements,
     package_data={
@@ -40,6 +40,7 @@ setup(
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: 3.14",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
 )

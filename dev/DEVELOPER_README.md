@@ -205,6 +205,8 @@ If everything works:
 - The Isomer() class has an attribute `self.ligands` now which is a list of Ligand() objects. This is very handy for later code writing, but atm it's still slow. I will speed that up later though, the `self.ligands` can be fully used.
 
 ## Todo list
+### Before publication of version 1.1
+- after pushing to master, update the README file to get rid of the timo_rca_ligand_refactor branch name in the badge links.
 ### Small renaming and shifting
 - Consistently name the `n_max_ligands`. Right now often it is `n` in all modules except the assembler.
 - Rename `validity_check` to `validate` in BaseMolecule() and inheriting classes.

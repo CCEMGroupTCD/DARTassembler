@@ -4,7 +4,7 @@
 [![Downloads](https://pepy.tech/badge/DARTassembler)](https://pepy.tech/project/DARTassembler)
 [![Monthly Downloads](https://pepy.tech/badge/DARTassembler/month)](https://pepy.tech/project/DARTassembler)
 [![docs](https://app.readthedocs.org/projects/dartassembler/badge/?version=latest)](https://dartassembler.readthedocs.io/en/latest/)
-[![License](https://img.shields.io/github/license/CCEMGroupTCD/DARTassembler.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![License](https://img.shields.io/github/license/CCEMGroupTCD/DARTassembler?branch=timo_rca_ligand_refactor)](https://opensource.org/license/MIT)
 [![ChemRxiv Preprint](https://img.shields.io/badge/preprint-ChemRxiv-brightgreen.svg)](https://chemrxiv.org/engage/chemrxiv/article-details/6717eb4e83f22e4214d2b98b)
 
 <!-- Supported Python versions (from PyPI metadata) TODO once published to pip (see setup.py) --> 
@@ -42,8 +42,7 @@ The documentation of DART under [https://dartassembler.readthedocs.io](https://d
 Please cite [our paper](https://chemrxiv.org/engage/chemrxiv/article-details/6717eb4e83f22e4214d2b98b).
 
 ## License
-DART is subject to the GPL-3.0-or-later license. See `LICENSE` for more information.
-<!-- TODO: change to another license, maybe MIT? -->
+DART is subject to the MIT license. See `LICENSE` for more information.
 
 ## Origin of data
 We are grateful to the providers of the [Cambridge Structural Database](https://www.ccdc.cam.ac.uk/structures/), which is the source of all ligands in the ligand database.
