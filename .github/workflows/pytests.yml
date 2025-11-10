@@ -31,9 +31,9 @@ jobs:
           pip install -e . pytest pytest-cov pytest-xdist
 
       - name: Run tests
+        shell: bash
         run: |
-          pytest tests/pytest/ --bigchange-policy=warn \
-                --cov=DARTassembler --cov-report=xml --cov-report=term-missing
+          pytest tests/pytest/ --bigchange-policy=warn --cov=DARTassembler --cov-report=xml --cov-report=term-missing
 
       - name: Upload to Codecov
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
