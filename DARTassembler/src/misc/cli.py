@@ -8,8 +8,10 @@ DART implements a list of commands (or modules) for the terminal which you can u
 """
 import argparse
 from DARTassembler import Assembler, LigandFilters, DBInfo, Concat, Configs
+from importlib.metadata import version
 
-init_cli_output = r"""================================================================================
+dart_version = version("DARTassembler")
+init_cli_output = rf"""================================================================================
                             ____  ___    ____  ______
                            / __ \/   |  / __ \/_  __/
                           / / / / /| | / /_/ / / /   
@@ -17,7 +19,8 @@ init_cli_output = r"""==========================================================
                         /_____/_/  |_/_/ |_| /_/     
         
           DART - Directed Assembly of Random Transition metal complexes
-              Developed by the CCEM group at Trinity College Dublin
+                              Version: {dart_version}
+    Developed by the CCEM group at Trinity College Dublin & CIC energiGUNE
 ================================================================================"""
 
 def str2bool(v):

@@ -26,7 +26,9 @@ class BaseModule(object):
 
     @classmethod
     def _before_run_from_cli(cls) -> None:
-        """Base method for running the module."""
+        """
+        Base method for running the module.
+        """
         title = f'     {cls._module_name.upper()} MODULE    '
         cls._print(f'{title:=^80}')
         cls._print(f'{cls._module_name}: {cls._desc}')
@@ -80,6 +82,7 @@ class Concat(BaseModule):
     def run(self, dbs: list[Union[str,Path]], outpath: Union[str,Path,None]=None, n: Union[int, None] = None) -> LigandDB:
         """
         Concatenate multiple ligand databases into one.
+
         :param dbs: Paths to the ligand databases.
         :param outpath: Path to the output ligand database. If None, no output file is saved.
         :param n: Maximum number of ligands to be read in from each ligand database. If None, all ligands are read in. This is useful for testing purposes.
@@ -120,6 +123,7 @@ class DBInfo(BaseModule):
     def run(self, db: Union[str, Path,None]='metalig', outdir: Union[str, Path, None] = None, n: Union[int, None] = None, metal: bool=True) -> tuple[LigandDB, pd.DataFrame, str]:
         """
         Reads in the given ligand database and saves a .csv file and a concatenated .xyz file with an overview of the ligands.
+
         :param db: Path to the ligand database. The default path is 'metalig', which points to the full ligand database.
         :param outdir: Path to the output .csv file. If None, no output file is saved. If '.csv', the output file is saved in the same directory as the input file with the same name but with the .csv extension.
         :param n: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.
@@ -163,6 +167,7 @@ class Configs(BaseModule):
     def run(self, outdir: Union[str, Path,None]=None) -> tuple[dict, dict]:
         """
         Get the default yaml configuration files for the assembler and the ligandfilters and optionally save them to the specified output path.
+
         :param outdir: Output directory where the configuration files will be saved. If None, the files are not saved and only the dictionaries are returned.
         :return: A tuple containing the assembler options and the ligandfilters options as dictionaries.
         """
