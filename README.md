@@ -1,18 +1,14 @@
-<!-- Build -->
 [![CI](https://github.com/CCEMGroupTCD/DARTassembler/actions/workflows/pytests.yml/badge.svg)](https://github.com/CCEMGroupTCD/DARTassembler/actions/workflows/pytests.yml)
-
-<!-- Coverage (Codecov) -->
 [![codecov](https://codecov.io/gh/CCEMGroupTCD/DARTassembler/branch/timo_rca_ligand_refactor/graph/badge.svg)](https://codecov.io/gh/CCEMGroupTCD/DARTassembler)
-
-<!-- PyPI version -->
 [![PyPI](https://img.shields.io/pypi/v/DARTassembler.svg)](https://pypi.org/project/DARTassembler/)
-
-<!-- Supported Python versions (from PyPI metadata) -->
-![Python Versions](https://img.shields.io/pypi/pyversions/DARTassembler.svg)
-
-<!-- License -->
+[![Downloads](https://pepy.tech/badge/DARTassembler)](https://pepy.tech/project/DARTassembler)
+[![Monthly Downloads](https://pepy.tech/badge/DARTassembler/month)](https://pepy.tech/project/DARTassembler)
+[![docs](https://app.readthedocs.org/projects/dartassembler/badge/?version=latest)](https://dartassembler.readthedocs.io/en/latest/)
 ![License](https://img.shields.io/github/license/CCEMGroupTCD/DARTassembler.svg)
+[![ChemRxiv Preprint](https://img.shields.io/badge/preprint-ChemRxiv-brightgreen.svg)](https://chemrxiv.org/engage/chemrxiv/article-details/6717eb4e83f22e4214d2b98b)
 
+<!-- Supported Python versions (from PyPI metadata) TODO once published to pip (see setup.py) --> 
+<!-- ![Python Versions](https://img.shields.io/pypi/pyversions/DARTassembler.svg) -->
 
 
 # DART - Directed Assembly of Random Transition metal complexes
