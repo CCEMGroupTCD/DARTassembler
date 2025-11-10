@@ -1,5 +1,9 @@
 name: Run Pytests
 
+permissions:
+  contents: read
+  id-token: write
+
 on: [push, pull_request]
 
 jobs:
@@ -32,9 +36,9 @@ jobs:
                 --cov=DARTassembler --cov-report=xml --cov-report=term-missing
 
       - name: Upload to Codecov
-        if: matrix.os == 'macos-latest' && matrix.python-version == '3.12'
-        uses: codecov/codecov-action@v4
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.12'
+        uses: codecov/codecov-action@v5
         with:
+          use_oidc: true
           files: ./coverage.xml
-          flags: unittests
           fail_ci_if_error: true
