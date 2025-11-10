@@ -43,6 +43,7 @@ Please cite [our paper](https://chemrxiv.org/engage/chemrxiv/article-details/671
 
 ## License
 DART is subject to the GPL-3.0-or-later license. See `LICENSE` for more information.
+<!-- TODO: change to another license, maybe MIT? -->
 
 ## Origin of data
 We are grateful to the providers of the [Cambridge Structural Database](https://www.ccdc.cam.ac.uk/structures/), which is the source of all ligands in the ligand database.
