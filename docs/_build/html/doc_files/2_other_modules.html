@@ -151,10 +151,16 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="DARTassembler.src.modules.modules.Concat.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outpath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#Concat.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.Concat.run" title="Link to this definition"></a></dt>
-<dd><p>Concatenate multiple ligand databases into one.
-:param dbs: Paths to the ligand databases.
-:param outpath: Path to the output ligand database. If None, no output file is saved.
-:param n: Maximum number of ligands to be read in from each ligand database. If None, all ligands are read in. This is useful for testing purposes.</p>
+<dd><p>Concatenate multiple ligand databases into one.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dbs</strong> – Paths to the ligand databases.</p></li>
+<li><p><strong>outpath</strong> – Path to the output ligand database. If None, no output file is saved.</p></li>
+<li><p><strong>n</strong> – Maximum number of ligands to be read in from each ligand database. If None, all ligands are read in. This is useful for testing purposes.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -167,12 +173,20 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="DARTassembler.src.modules.modules.DBInfo.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'metalig'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#DBInfo.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.DBInfo.run" title="Link to this definition"></a></dt>
-<dd><p>Reads in the given ligand database and saves a .csv file and a concatenated .xyz file with an overview of the ligands.
-:param db: Path to the ligand database. The default path is ‘metalig’, which points to the full ligand database.
-:param outdir: Path to the output .csv file. If None, no output file is saved. If ‘.csv’, the output file is saved in the same directory as the input file with the same name but with the .csv extension.
-:param n: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.
-:param metal: If True, the metal atom is included in the concatenated .xyz file. If False, only the ligand is included.
-:return: Tuple of (LigandDB, DataFrame, concatenated xyz string) of the ligands.</p>
+<dd><p>Reads in the given ligand database and saves a .csv file and a concatenated .xyz file with an overview of the ligands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>db</strong> – Path to the ligand database. The default path is ‘metalig’, which points to the full ligand database.</p></li>
+<li><p><strong>outdir</strong> – Path to the output .csv file. If None, no output file is saved. If ‘.csv’, the output file is saved in the same directory as the input file with the same name but with the .csv extension.</p></li>
+<li><p><strong>n</strong> – Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.</p></li>
+<li><p><strong>metal</strong> – If True, the metal atom is included in the concatenated .xyz file. If False, only the ligand is included.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tuple of (LigandDB, DataFrame, concatenated xyz string) of the ligands.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -185,9 +199,15 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="DARTassembler.src.modules.modules.Configs.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/modules/modules.html#Configs.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.modules.modules.Configs.run" title="Link to this definition"></a></dt>
-<dd><p>Get the default yaml configuration files for the assembler and the ligandfilters and optionally save them to the specified output path.
-:param outdir: Output directory where the configuration files will be saved. If None, the files are not saved and only the dictionaries are returned.
-:return: A tuple containing the assembler options and the ligandfilters options as dictionaries.</p>
+<dd><p>Get the default yaml configuration files for the assembler and the ligandfilters and optionally save them to the specified output path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>outdir</strong> – Output directory where the configuration files will be saved. If None, the files are not saved and only the dictionaries are returned.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the assembler options and the ligandfilters options as dictionaries.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

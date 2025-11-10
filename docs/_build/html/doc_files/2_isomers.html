@@ -67,6 +67,8 @@
 <li class="toctree-l1"><a class="reference internal" href="2_ligands.html">Ligands API</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Assembled Complexes &amp; Isomers API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#DARTassembler.src.assembler.isomer.AssembledIsomer"><code class="docutils literal notranslate"><span class="pre">AssembledIsomer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.assembler.isomer.AssembledIsomer.update_positions"><code class="docutils literal notranslate"><span class="pre">AssembledIsomer.update_positions()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.assembler.isomer.AssembledIsomer.round_positions"><code class="docutils literal notranslate"><span class="pre">AssembledIsomer.round_positions()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.assembler.isomer.AssembledIsomer.get_metal_symbols"><code class="docutils literal notranslate"><span class="pre">AssembledIsomer.get_metal_symbols()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#DARTassembler.src.assembler.isomer.AssembledIsomer.to_dict"><code class="docutils literal notranslate"><span class="pre">AssembledIsomer.to_dict()</span></code></a></li>
 </ul>
@@ -176,6 +178,24 @@ ligand/metal indices and metadata for downstream filtering and output.</p>
 <dd class="field-even"><p><strong>AssertionError</strong> – If graph and atomic_props are inconsistent when validity_check is True.</p>
 </dd>
 </dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.assembler.isomer.AssembledIsomer.update_positions">
+<span class="sig-name descname"><span class="pre">update_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newatoms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/assembler/isomer.html#AssembledIsomer.update_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.assembler.isomer.AssembledIsomer.update_positions" title="Link to this definition"></a></dt>
+<dd><p>Update the atomic positions of the isomer and its ligands. Ensures atom symbols match. Should be used instead of manually updating atoms/atomic_props.
+:param newatoms: ASE Atoms object with updated positions.
+:return: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="DARTassembler.src.assembler.isomer.AssembledIsomer.round_positions">
+<span class="sig-name descname"><span class="pre">round_positions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decimals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/assembler/isomer.html#AssembledIsomer.round_positions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.assembler.isomer.AssembledIsomer.round_positions" title="Link to this definition"></a></dt>
+<dd><p>Round the atomic positions of the isomer to a specified number of decimal places. Useful to avoid tiny numerical differences in tests.
+:param decimals: Number of decimal places to round to.
+:return: None
+:rtype: None</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="DARTassembler.src.assembler.isomer.AssembledIsomer.get_metal_symbols">
 <span class="sig-name descname"><span class="pre">get_metal_symbols</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/assembler/isomer.html#AssembledIsomer.get_metal_symbols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.assembler.isomer.AssembledIsomer.get_metal_symbols" title="Link to this definition"></a></dt>

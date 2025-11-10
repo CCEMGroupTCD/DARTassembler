@@ -2,7 +2,7 @@
 DART: Directed Assembly of Random Transition Metal Complexes
 =============================================================
 
-Welcome to the DART platform, a cutting-edge suite of tools for the exploration of coordination chemistry! Developed by the CCEM group at Trinity College Dublin, DART is designed as an accessible and simple-to-use software to generate mono-metallic transition metal complexes based on ligands from decades of crystallographic data.
+Welcome to the DART platform, a cutting-edge suite of tools for the exploration of coordination chemistry! Developed by the CCEM group at Trinity College Dublin in Ireland & CIC energiGUNE in Spain, DART is designed as an accessible and simple-to-use software to generate transition metal complexes based on ligands from decades of crystallographic data.
 
 DART integrates a collection of several modules:
 
@@ -10,7 +10,7 @@ DART integrates a collection of several modules:
     Explore the comprehensive MetaLig database with 41,018 ligands extracted from the Cambridge Structural Database, complete with high-quality formal charge and ligand coordination archetype assignments.
 
 - :ref:`Assembler <assembler>` :
-    Assemble novel transition metal complexes in a matter of seconds by combining 22 different ligand coordination archetypes, supporting even haptic and multi-metallic systems.
+    Assemble novel transition metal complexes in seconds from 22 different ligand coordination archetypes, supporting even haptic and multi-metallic systems.
 
 - :ref:`LigandFilters <ligandfilters>` :
     Assemble complexes with exactly defined sub-structures by applying advanced ligand filters for each binding site.
@@ -33,9 +33,9 @@ Who?
 Why?
 =============
 
-- **Advanced Complex Control**: DART supports the assembly of a wide range of octahedral and square-planar geometries. Want more? Leave us a `feature request! <https://github.com/CCEMGroupTCD/DART/issues>`_
+- **Advanced Complex Control**: DART supports a near-infinite variety of transition metal complexes, including geometrical isomers, haptic ligands, and multi-metallic systems.
 
-- **Intuitive Interface**: Users interact with DART via simple configuration files, no Python required.
+- **Intuitive Interface**: Users can interact with DART on the terminal via simple configuration files, no Python required.
 
 - **Open-Source**: DART is an open-source tool developed in Python, making it entirely free to use.
 

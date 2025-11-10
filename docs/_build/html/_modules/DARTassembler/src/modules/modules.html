@@ -54,16 +54,17 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_module_overview.html">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_metalig_database.html">MetaLig Ligand Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligand_filters.html">LigandFilters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_assembler.html">Assembler Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_module_overview.html">Module Overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligands.html">Ligands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_isomers.html">Assembled Complexes &amp; Isomers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligand_filters_api.html">LigandFilters Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_metalig_api.html">MetaLig API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligand_filters_api.html">LigandFilters API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_other_modules.html">Other DART Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
@@ -130,7 +131,9 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_before_run_from_cli</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Base method for running the module.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Base method for running the module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;     </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_module_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1"> MODULE    &#39;</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">title</span><span class="si">:</span><span class="s1">=^80</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="bp">cls</span><span class="o">.</span><span class="n">_print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_module_name</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="n">_desc</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -195,6 +198,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Path</span><span class="p">]],</span> <span class="n">outpath</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span><span class="n">Path</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LigandDB</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Concatenate multiple ligand databases into one.</span>
+
 <span class="sd">        :param dbs: Paths to the ligand databases.</span>
 <span class="sd">        :param outpath: Path to the output ligand database. If None, no output file is saved.</span>
 <span class="sd">        :param n: Maximum number of ligands to be read in from each ligand database. If None, all ligands are read in. This is useful for testing purposes.</span>
@@ -241,6 +245,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;metalig&#39;</span><span class="p">,</span> <span class="n">outdir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">metal</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">LigandDB</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reads in the given ligand database and saves a .csv file and a concatenated .xyz file with an overview of the ligands.</span>
+
 <span class="sd">        :param db: Path to the ligand database. The default path is &#39;metalig&#39;, which points to the full ligand database.</span>
 <span class="sd">        :param outdir: Path to the output .csv file. If None, no output file is saved. If &#39;.csv&#39;, the output file is saved in the same directory as the input file with the same name but with the .csv extension.</span>
 <span class="sd">        :param n: Maximum number of ligands to be read in from the initial full ligand database. If None, all ligands are read in. This is useful for testing purposes.</span>
@@ -290,6 +295,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outdir</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span><span class="kc">None</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the default yaml configuration files for the assembler and the ligandfilters and optionally save them to the specified output path.</span>
+
 <span class="sd">        :param outdir: Output directory where the configuration files will be saved. If None, the files are not saved and only the dictionaries are returned.</span>
 <span class="sd">        :return: A tuple containing the assembler options and the ligandfilters options as dictionaries.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

@@ -164,7 +164,7 @@
 <h3><a class="toc-backref" href="#id4" role="doc-backlink">assembler</a><a class="headerlink" href="#assembler" title="Link to this heading"></a></h3>
 <p>Execute the assembler module using the provided configuration file.</p>
 <p>Example: <code class="docutils literal notranslate"><span class="pre">DARTassembler</span> <span class="pre">assembler</span> <span class="pre">--input</span> <span class="pre">assembler.yml</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DARTassembler</span> <span class="n">assembler</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="nb">input</span> <span class="n">INPUT</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DARTassembler</span> <span class="n">assembler</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="nb">input</span> <span class="n">INPUT</span> <span class="p">[</span><span class="o">--</span><span class="n">n_max_ligands</span> <span class="n">N_MAX_LIGANDS</span><span class="p">]</span>
 </pre></div>
 </div>
 <section id="named-arguments">
@@ -173,6 +173,9 @@
 <dt><kbd>--input</kbd></dt>
 <dd><p>Path to a .yml file with assembler options.</p>
 </dd>
+<dt><kbd>--n_max_ligands</kbd></dt>
+<dd><p>Maximum number of ligands to read in from the ligand databases. Useful for testing purposes. If None, all ligands are read in (default). When specified here, this argument overrides the value in the .yml file.</p>
+</dd>
 </dl>
 </section>
 </section>
@@ -180,7 +183,7 @@
 <h3><a class="toc-backref" href="#id5" role="doc-backlink">ligandfilters</a><a class="headerlink" href="#ligandfilters" title="Link to this heading"></a></h3>
 <p>Execute the ligandfilters module using the provided configuration file.</p>
 <p>Example: <code class="docutils literal notranslate"><span class="pre">DARTassembler</span> <span class="pre">ligandfilters</span> <span class="pre">--input</span> <span class="pre">ligandfilters.yml</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DARTassembler</span> <span class="n">ligandfilters</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="nb">input</span> <span class="n">INPUT</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DARTassembler</span> <span class="n">ligandfilters</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="o">--</span><span class="nb">input</span> <span class="n">INPUT</span> <span class="p">[</span><span class="o">--</span><span class="n">n</span> <span class="n">N</span><span class="p">]</span>
 </pre></div>
 </div>
 <section id="named-arguments_repeat1">
@@ -188,6 +191,9 @@
 <dl class="option-list">
 <dt><kbd>--input</kbd></dt>
 <dd><p>Path to a .yml file with ligand filter options.</p>
+</dd>
+<dt><kbd>--n</kbd></dt>
+<dd><p>Maximum number of ligands to read in from the database. Useful for testing purposes. If None, all ligands are read in (default). When specified here, this argument overrides the value in the .yml file.</p>
 </dd>
 </dl>
 </section>

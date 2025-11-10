@@ -212,14 +212,17 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_yaml">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/ligandfilters.html#LigandFilters.run_from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_yaml" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_from_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/ligandfilters.html#LigandFilters.run_from_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_yaml" title="Link to this definition"></a></dt>
 <dd><p>Create and run a LigandFilters instance from a YAML specification file.</p>
 <p>If input is None, a default template ligandfilters.yml is used. The YAML file
 must contain top-level keys ‘db’ (optional), ‘n’ (optional) and the filter list and options
 required by the run(…) method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>None</em><em>]</em>) – Path to the filter input file (.yml) or None to use a default template.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>None</em><em>]</em>) – Path to the filter input file (.yml) or None to use a default template.</p></li>
+<li><p><strong>n</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>None</em><em>]</em>) – Number of ligand objects to include in the output. Takes precedence over the ‘n’ value in the YAML file if provided.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A LigandFilters instance after executing the configured filters.</p>
@@ -232,13 +235,16 @@ required by the run(…) method.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_cli">
-<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_from_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/ligandfilters.html#LigandFilters.run_from_cli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_cli" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run_from_cli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DARTassembler/src/metalig/ligandfilters.html#LigandFilters.run_from_cli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DARTassembler.src.metalig.ligandfilters.LigandFilters.run_from_cli" title="Link to this definition"></a></dt>
 <dd><p>Run ligand filtering using command-line style setup helpers and a YAML input.</p>
 <p>This method wraps run_from_yaml with BaseModule CLI pre/post hooks to provide
 standardized CLI logging and argument printing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>input</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>None</em><em>]</em>) – Path to the filter input file (.yml) or None to use the default template.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>, </em><em>None</em><em>]</em>) – Path to the filter input file (.yml) or None to use the default template.</p></li>
+<li><p><strong>n</strong> (<em>Union</em><em>[</em><em>int</em><em>, </em><em>None</em><em>]</em>) – Number of ligand objects to include in the output. Takes precedence over the ‘n’ value in the YAML file if provided.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A LigandFilters instance after executing the configured filters.</p>

@@ -54,15 +54,18 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">DART Modules</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_module_overview.html">Module Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_metalig_database.html">MetaLig Ligand Database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligand_filters.html">LigandFilters Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_assembler.html">Assembler Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_module_overview.html">Module Overview</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced DART API</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligands.html">Ligands</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_isomers.html">Assembled Complexes &amp; Isomers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligands.html">Ligands API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_metalig_api.html">MetaLig API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligand_filters_api.html">LigandFilters API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_other_modules.html">Other DART Modules</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Additional Resources</span></p>
 <ul>
@@ -211,6 +214,38 @@
 
         <span class="k">if</span> <span class="n">validity_check</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tmc_validity_checks</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AssembledIsomer.update_positions">
+<a class="viewcode-back" href="../../../../doc_files/2_isomers.html#DARTassembler.src.assembler.isomer.AssembledIsomer.update_positions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newatoms</span><span class="p">:</span> <span class="n">ase</span><span class="o">.</span><span class="n">Atoms</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the atomic positions of the isomer and its ligands. Ensures atom symbols match. Should be used instead of manually updating atoms/atomic_props.</span>
+<span class="sd">        :param newatoms: ASE Atoms object with updated positions.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">symbols</span> <span class="o">==</span> <span class="n">newatoms</span><span class="o">.</span><span class="n">symbols</span><span class="p">),</span> <span class="s2">&quot;Cannot update positions: atom symbols do not match.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">newatoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomic_props</span> <span class="o">=</span> <span class="n">get_atomic_props_from_ase_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="o">=</span><span class="n">newatoms</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ligand</span><span class="p">,</span> <span class="n">idc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ligands</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ligand_idc</span><span class="p">):</span>
+            <span class="n">ligand</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">newatoms</span><span class="p">[</span><span class="n">idc</span><span class="p">])</span>
+            <span class="n">ligand</span><span class="o">.</span><span class="n">atomic_props</span> <span class="o">=</span> <span class="n">get_atomic_props_from_ase_atoms</span><span class="p">(</span><span class="n">ligand</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AssembledIsomer.round_positions">
+<a class="viewcode-back" href="../../../../doc_files/2_isomers.html#DARTassembler.src.assembler.isomer.AssembledIsomer.round_positions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">round_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimals</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Round the atomic positions of the isomer to a specified number of decimal places. Useful to avoid tiny numerical differences in tests.</span>
+<span class="sd">        :param decimals: Number of decimal places to round to.</span>
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rounded_atoms</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="n">rounded_atoms</span><span class="o">.</span><span class="n">set_positions</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rounded_atoms</span><span class="o">.</span><span class="n">get_positions</span><span class="p">(),</span> <span class="n">decimals</span><span class="o">=</span><span class="n">decimals</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_positions</span><span class="p">(</span><span class="n">newatoms</span><span class="o">=</span><span class="n">rounded_atoms</span><span class="p">)</span></div>
+
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_ligands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">validity_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Ligand</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -596,6 +631,9 @@
                     <span class="n">validity_check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">isomer_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">complex_name</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">isomer_idx</span><span class="p">)</span>  <span class="c1"># Assign a name based on the complex name and index</span>
                 <span class="p">)</span>
+                <span class="c1"># Round coordinates to avoid numerical tiny differences in pytests when running with different OS/python/package versions. Makes many things much more stable.</span>
+                <span class="n">isomer</span><span class="o">.</span><span class="n">round_positions</span><span class="p">()</span>
+
                 <span class="n">isomers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">isomer</span><span class="p">)</span>
                 <span class="n">same_length_ligand_origins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ligand_origins</span><span class="p">)</span>
                 <span class="n">same_length_target_vectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target_vectors</span><span class="p">)</span>
@@ -607,6 +645,10 @@
         <span class="c1"># Do a mono-axial optimization of the isomers and afterward check for clashing ligands.</span>
         <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">isomer</span><span class="p">,</span> <span class="n">target_vectors</span><span class="p">,</span> <span class="n">ligand_origins</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">isomers</span><span class="p">)),</span> <span class="n">isomers</span><span class="p">,</span> <span class="n">same_length_target_vectors</span><span class="p">,</span> <span class="n">same_length_ligand_origins</span><span class="p">):</span>
             <span class="n">isomer</span> <span class="o">=</span> <span class="n">_AxialOptModifier</span><span class="p">(</span><span class="n">isomers</span><span class="o">=</span><span class="p">[</span><span class="n">isomer</span><span class="p">],</span> <span class="n">opt</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">monoaxial_optimization</span><span class="p">)</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="n">target_vectors_list</span><span class="o">=</span><span class="p">[</span><span class="n">target_vectors</span><span class="p">],</span> <span class="n">ligand_origins_list</span><span class="o">=</span><span class="p">[</span><span class="n">ligand_origins</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># Round coordinates to avoid numerical tiny differences in pytests when running with different OS/python/package versions. Makes many things much more stable.</span>
+            <span class="n">isomer</span><span class="o">.</span><span class="n">round_positions</span><span class="p">()</span>
+
             <span class="n">isomers</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">isomer</span> <span class="c1"># important: copy changed object over to list</span>
 
             <span class="k">if</span> <span class="n">isomer</span><span class="o">.</span><span class="n">warning</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">pd</span><span class="o">.</span><span class="n">notna</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clashing_tolerance</span><span class="p">):</span>
@@ -622,11 +664,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">successful_isomers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">isomers</span> <span class="o">=</span> <span class="n">isomers</span>
 
+        <span class="c1"># for isomer in self.isomers:</span>
+        <span class="c1">#     isomer.atoms.set_positions(np.round(isomer.atoms.get_positions(), decimals=0))</span>
+
         <span class="k">return</span></div>
 
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_duplicate_isomers_group_names</span><span class="p">(</span><span class="n">isomers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">pre_isomers_duplicate_group_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]],</span> <span class="n">duplicate_tolerance</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">metal_centers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Atom</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_duplicate_isomers_group_names</span><span class="p">(</span><span class="n">isomers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">pre_isomers_duplicate_group_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">set</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]],</span> <span class="n">duplicate_tolerance</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">metal_centers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Atom</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Join pre- and post-optimization duplicate groups and preserve isomer ordering.</span>
 
@@ -713,6 +758,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">isomer_data</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">isomer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">isomers</span><span class="p">:</span>
+            <span class="c1"># Assert atomic_props and ase.Atoms positions are equivalent.</span>
+            <span class="n">all_atomic_props_coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">isomer</span><span class="o">.</span><span class="n">atomic_props</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]])</span><span class="o">.</span><span class="n">T</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">all_atomic_props_coordinates</span><span class="p">,</span> <span class="n">isomer</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">get_positions</span><span class="p">()),</span> <span class="sa">f</span><span class="s2">&quot;Mismatch between atomic_props and ase.Atoms positions in isomer </span><span class="si">{</span><span class="n">isomer</span><span class="o">.</span><span class="n">isomer_name</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="n">isomer_data</span><span class="p">[</span><span class="n">isomer</span><span class="o">.</span><span class="n">isomer_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;atomic_props&#39;</span><span class="p">:</span> <span class="n">isomer</span><span class="o">.</span><span class="n">atomic_props</span><span class="p">,</span>
                 <span class="s1">&#39;warning&#39;</span><span class="p">:</span> <span class="n">isomer</span><span class="o">.</span><span class="n">warning</span><span class="p">,</span>
@@ -1004,12 +1052,7 @@
 
             <span class="c1"># Copy isomer before modification to avoid unintended side effects</span>
             <span class="n">new_isomer</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">isomer</span><span class="p">)</span>
-            <span class="n">new_isomer</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">atoms</span>
-            <span class="n">new_isomer</span><span class="o">.</span><span class="n">atomic_props</span> <span class="o">=</span> <span class="n">get_atomic_props_from_ase_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">ligand</span><span class="p">,</span> <span class="n">idc</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">new_isomer</span><span class="o">.</span><span class="n">ligands</span><span class="p">,</span> <span class="n">new_isomer</span><span class="o">.</span><span class="n">ligand_idc</span><span class="p">):</span>
-                <span class="n">ligand</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="n">idc</span><span class="p">])</span>
-                <span class="n">ligand</span><span class="o">.</span><span class="n">atomic_props</span> <span class="o">=</span> <span class="n">get_atomic_props_from_ase_atoms</span><span class="p">(</span><span class="n">ligand</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+            <span class="n">new_isomer</span><span class="o">.</span><span class="n">update_positions</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">output_isomers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_isomer</span><span class="p">)</span>
 

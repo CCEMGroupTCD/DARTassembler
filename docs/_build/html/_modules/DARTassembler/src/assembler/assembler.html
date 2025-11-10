@@ -63,6 +63,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligands.html">Ligands API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_isomers.html">Assembled Complexes &amp; Isomers API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_metalig_api.html">MetaLig API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_ligand_filters_api.html">LigandFilters API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../doc_files/2_other_modules.html">Other DART Modules</a></li>
 </ul>
@@ -388,7 +389,7 @@
         <span class="n">stream_handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
         <span class="n">stream_handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">verbosity2logging</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span><span class="p">])</span>
         <span class="c1"># Print to stdout</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">verbosity2logging</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gbl_outcontrol</span><span class="o">.</span><span class="n">log_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">),</span> <span class="n">stream_handler</span><span class="p">])</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">verbosity2logging</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">verbosity</span><span class="p">],</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gbl_outcontrol</span><span class="o">.</span><span class="n">log_path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">),</span> <span class="n">stream_handler</span><span class="p">],</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Assembler.run_batch">
 <a class="viewcode-back" href="../../../../doc_files/2_assembler.html#DARTassembler.src.assembler.assembler.Assembler.run_batch">[docs]</a>
@@ -724,6 +725,8 @@
                     <span class="c1"># Combine structures (order doesn’t matter unless you care about atom order)</span>
                     <span class="n">combined_structure</span> <span class="o">=</span> <span class="n">extra_structure</span> <span class="o">+</span> <span class="n">isomer</span><span class="o">.</span><span class="n">atoms</span>
 
+                    <span class="c1"># combined_structure.set_positions(np.round(combined_structure.get_positions(), decimals=6))</span>
+
                     <span class="c1"># Write combined XYZ</span>
                     <span class="n">combined_xyz_filepath</span> <span class="o">=</span> <span class="n">complex_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">isomer_name</span><span class="si">}</span><span class="s2">_combined.xyz&quot;</span>
                     <span class="n">ase</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">combined_xyz_filepath</span><span class="p">),</span> <span class="n">combined_structure</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
@@ -780,7 +783,7 @@
 <div class="viewcode-block" id="Assembler.run_from_yaml">
 <a class="viewcode-back" href="../../../../doc_files/2_assembler.html#DARTassembler.src.assembler.assembler.Assembler.run_from_yaml">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run_from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Assembler&#39;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_from_yaml</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">n_max_ligands</span><span class="p">:</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Assembler&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Instantiate and run an Assembler using a YAML configuration file.</span>
 
@@ -789,6 +792,8 @@
 
 <span class="sd">        :param input: Path to YAML configuration file or None to use the default template.</span>
 <span class="sd">        :type input: Union[str, Path, None]</span>
+<span class="sd">        :param n_max_ligands: Optional override for the maximum number of ligands to load from each ligand database. Takes precedence over the value in the YAML file if specified.</span>
+<span class="sd">        :type n_max_ligands: int | None</span>
 <span class="sd">        :return: Assembler instance after executing the specified batches.</span>
 <span class="sd">        :rtype: Assembler</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -796,6 +801,8 @@
             <span class="nb">input</span> <span class="o">=</span> <span class="n">default_assembler_yml_path</span>
 
         <span class="n">options</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_max_ligands</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">options</span><span class="p">[</span><span class="s1">&#39;n_max_ligands&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_max_ligands</span>
         <span class="n">batches</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;batches&#39;</span><span class="p">)</span>
 
         <span class="n">assembler</span> <span class="o">=</span> <span class="n">Assembler</span><span class="p">(</span><span class="o">**</span><span class="n">options</span><span class="p">)</span>
@@ -807,7 +814,7 @@
 <div class="viewcode-block" id="Assembler.run_from_cli">
 <a class="viewcode-back" href="../../../../doc_files/2_assembler.html#DARTassembler.src.assembler.assembler.Assembler.run_from_cli">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">run_from_cli</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s1">&#39;Assembler&#39;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">run_from_cli</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">n_max_ligands</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Assembler&#39;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run the Assembler from a command-line context with pre/post hooks.</span>
 
@@ -815,12 +822,14 @@
 
 <span class="sd">        :param input: Path to YAML configuration file or None to use the default template.</span>
 <span class="sd">        :type input: Union[str, Path, None]</span>
+<span class="sd">        :param n_max_ligands: Optional override for the maximum number of ligands to load from each ligand database. Takes precedence over the value in the YAML file if specified.</span>
+<span class="sd">        :type n_max_ligands: int | None</span>
 <span class="sd">        :return: Assembler instance after run completion.</span>
 <span class="sd">        :rtype: Assembler</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_before_run_from_cli</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_print_cli_input</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">)</span>
-        <span class="n">assembler</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">run_from_yaml</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">)</span>
+        <span class="n">assembler</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">run_from_yaml</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="nb">input</span><span class="p">,</span> <span class="n">n_max_ligands</span><span class="o">=</span><span class="n">n_max_ligands</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_after_run_from_cli</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">assembler</span></div>

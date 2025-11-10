@@ -24,6 +24,8 @@ After the installation is complete, please verify that DART was installed correc
 
    DARTassembler --help
 
-This command will display the help message of DART, confirming that the installation was successful. If this command displays any errors, please check the :ref:`FAQs <troubleshooting>` and if you don't find the answer, please `let us know so we can fix it. <https://github.com/CCEMGroupTCD/DART/issues>`_ Also, if you run DART for the very first time, it may be that there is a short delay of around 30s while ``pip`` sets up everything. That is normal and only happens once.
+This command will display the help message of DART, confirming that the installation was successful. Please check that the installed DART version is at least ``1.1.0``: this version introduced major new features such as multi-metallic complexes, haptic ligands, and support for arbitrary complex geometries from 22 different ligand coordination archetypes. We have also made DART significantly faster and removed several dependencies, so ``pip`` should usually have no problem installing the latest DART version.
+
+If this command displays any errors, please check the :ref:`FAQs <troubleshooting>` and if you don't find the answer, please `let us know so we can fix it. <https://github.com/CCEMGroupTCD/DART/issues>`_ Also, if you run DART for the very first time, it may be that there is a short delay of around 30s while ``pip`` sets up everything. That is normal and only happens once.
 
 Ready to go? Let's start off with the :ref:`quickstart` or check out the :ref:`DART modules <module_overview>`!
