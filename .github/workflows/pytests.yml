@@ -1,4 +1,4 @@
-name: Run Pytests
+name: pytests
 
 permissions:
   contents: read

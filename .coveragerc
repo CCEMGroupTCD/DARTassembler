@@ -1,0 +1,4 @@
+[run]
+omit =
+    tests/*
+    DARTassembler/src/_extraction/*
