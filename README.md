@@ -4,7 +4,7 @@
 [![Downloads](https://pepy.tech/badge/DARTassembler)](https://pepy.tech/project/DARTassembler)
 [![Monthly Downloads](https://pepy.tech/badge/DARTassembler/month)](https://pepy.tech/project/DARTassembler)
 [![docs](https://app.readthedocs.org/projects/dartassembler/badge/?version=latest)](https://dartassembler.readthedocs.io/en/latest/)
-[![License](https://img.shields.io/github/license/CCEMGroupTCD/DARTassembler?branch=timo_rca_ligand_refactor)](https://opensource.org/license/MIT)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/license/MIT)
 [![ChemRxiv Preprint](https://img.shields.io/badge/preprint-ChemRxiv-brightgreen.svg)](https://chemrxiv.org/engage/chemrxiv/article-details/6717eb4e83f22e4214d2b98b)
 
 <!-- Supported Python versions (from PyPI metadata) TODO once published to pip (see setup.py) --> 
