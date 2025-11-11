@@ -32,11 +32,11 @@ Using DART is simple. After download, just run the DART assembler and start gene
 ## Documentation and Examples
 The documentation of DART under [https://dartassembler.readthedocs.io](https://dartassembler.readthedocs.io) will show you how to install and use DART. It contains a quickstart guide and an advanced example, walking you through the main features of DART:
 
+ - Browse and search 41,018 ligands in the MetaLig ligand database.
  - Assemble arbitrary transition metal complexes from 22 different ligand coordination archetypes.
  - Use advanced ligand filters to select ligands with specific sub-structures at each binding site.
  - Generate multi-metallic complexes.
  - Assemble complexes with haptic ligands.
- - Browse and search 41,018 ligands in the MetaLig ligand database.
 
 ## How to cite DART
 Please cite [our paper](https://chemrxiv.org/engage/chemrxiv/article-details/6717eb4e83f22e4214d2b98b).
