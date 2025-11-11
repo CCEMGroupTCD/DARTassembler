@@ -1,6 +1,0 @@
-﻿DARTassembler.src.metalig.ligandfilters.LigandFilters.run
-=========================================================
-
-.. currentmodule:: DARTassembler.src.metalig.ligandfilters
-
-.. automethod:: LigandFilters.run

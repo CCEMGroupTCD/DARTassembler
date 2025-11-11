@@ -2,7 +2,9 @@
 DART: Directed Assembly of Random Transition Metal Complexes
 =============================================================
 
-Welcome to the DART platform, a cutting-edge suite of tools for the exploration of coordination chemistry! Developed by the CCEM group at Trinity College Dublin in Ireland & CIC energiGUNE in Spain, DART is designed as an accessible and simple-to-use software to generate transition metal complexes based on ligands from decades of crystallographic data.
+Welcome to the DART platform, a cutting-edge suite of tools for the exploration of coordination chemistry! Developed by the CCEM group at Trinity College Dublin in Ireland & CIC energiGUNE in Spain, DART is designed as an accessible and simple-to-use software to generate transition metal complexes based on ligands from decades of crystallographic data. If you use DART in your research, please cite the following paper:
+
+    Clarke, C., Sommer, T., Kleuker, F., García-Melchor, M. DART: Unlocking Coordination Chemistry Beyond the Cambridge Structural Database. Preprint at https://doi.org/10.26434/chemrxiv-2024-tljj9 (2024).
 
 DART integrates a collection of several modules:
 
@@ -16,6 +18,10 @@ DART integrates a collection of several modules:
     Assemble complexes with exactly defined sub-structures by applying advanced ligand filters for each binding site.
 
 **Your role:** DART is designed for researchers in chemistry. While you have to think about the chemistry yourself, DART will allow you to explore the chemical space you want with the ligands you need.
+
+If you use DART in your research, please cite the following paper:
+
+    Clarke, C., Sommer, T., Kleuker, F., García-Melchor, M. DART: Unlocking Coordination Chemistry Beyond the Cambridge Structural Database. Preprint at https://doi.org/10.26434/chemrxiv-2024-tljj9 (2024).
 
 .. figure:: /_static/homepage_picture.png
    :width: 90%
@@ -46,7 +52,7 @@ Are you ready to get started? :ref:`Install DART <installation_guide>`, explore 
 
 .. toctree::
    :maxdepth: 2
-   :caption: How to Use DART
+   :caption: Getting Started
 
    ./doc_files/1_installation_guide
    ./doc_files/1_quickstart
@@ -79,6 +85,5 @@ Are you ready to get started? :ref:`Install DART <installation_guide>`, explore 
    ./doc_files/3_troubleshooting_and_faqs
    ./doc_files/3_tips_and_tricks
    ./doc_files/3_current_limitations
-   ./doc_files/3_how_to_cite_dart
    ./doc_files/3_version_history
 

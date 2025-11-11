@@ -78,7 +78,7 @@ The input file is easy to read: we want to generate neutral Pd(II) complexes, so
 
    Figure 1: Square-planar complex geometry defined by the ``target_vectors`` above.
 
-For more information and examples see the documentation of the :ref:`ligand archetypes and target vectors <ligand_archetypes_and_target_vectors>`.
+This was an easy example, but DART supports the assembly of arbitrarily systems from 22 different ligand coordination archetypes. For more information on how to assemble more complex systems such as tetrahedral or octahedral complexes, please refer to the :ref:`assembler module documentation <assembler>`.
 
 Now execute the following command in your terminal:
 

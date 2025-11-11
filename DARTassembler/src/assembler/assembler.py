@@ -118,7 +118,25 @@ One more example for a trigonal-bipyramidal complex with one trigonal ligand and
         - ['-z']                            # 2. monodentate along -Z
         - ['xy(0)', 'xy(120)', 'xy(240)']   # trigonal ligand in x-y plane
 
-Finally, a tetrahedral complex with four monodentates. For the tetrahedral geometry, the target vectors are a little more complicated, but they are actually given in Table 1 under the ``4-tetrahedral`` ligand archetype:
+The same trigonal-bipyramidal complex, but this time with five monodentates:
+
+.. code-block:: yaml
+
+    # Example: Trigonal-bipyramidal complex with five 1-mono ligands
+    ligand_archetypes:
+        - '1-mono'
+        - '1-mono'
+        - '1-mono'
+        - '1-mono'
+        - '1-mono'
+    target_vectors:
+        - ['+z']            # 1. monodentate along +Z
+        - ['-z']            # 2. monodentate along -Z
+        - ['xy(0)']         # 3. monodentate in x-y plane at 0°
+        - ['xy(120)']       # 4. monodentate in x-y plane at 120°
+        - ['xy(240)']       # 5. monodentate in x-y plane at 240°
+
+Finally, a tetrahedral complex with four monodentates. For the tetrahedral geometry, the target vectors are a little more complicated, but they are actually given in Table 1 under the ``4-tetrahedral`` ligand archetype. Since DART has no abbreviation for tetrahedral vectors, we will provide the explicit Cartesian triplets, as one can always do:
 
 .. code-block:: yaml
 
@@ -222,7 +240,7 @@ import sys
 
 # DART specific imports
 from DARTassembler.src.assembler.isomer import AssembledIsomer, AssembledComplex
-from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, ComplexAssemblerOutput
+from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
 from DARTassembler.src.constants.paths import default_assembler_yml_path
 from DARTassembler.src.assembler.ligands import LigandChoice

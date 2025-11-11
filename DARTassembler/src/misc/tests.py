@@ -5,12 +5,14 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 import ase
-import pytest
 from ase.io import read
 import filecmp
 import os
 from DARTassembler.src.constants.paths import project_path
-
+try:
+    import pytest
+except ImportError:
+    pass
 
 class IntegrationTest(object):
     def __init__(self, new_dir, old_dir, xyz_tol=0):

@@ -5,6 +5,10 @@
 __MACOSX
 *.swp
 ~$*
+*.zip
+*.tar.gz
+*.egg-info
+*.egg
 
 /devtimo
 
@@ -20,6 +24,9 @@ __MACOSX
 /tmp/**
 /Bin_(Old)
 /data
+
+# Exclude build directories
+/docs/_build
 
 /figures
 /data_input/CSD/graphs
