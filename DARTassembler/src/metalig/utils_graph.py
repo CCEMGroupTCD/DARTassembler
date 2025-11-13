@@ -4,7 +4,7 @@ from copy import deepcopy
 import pysmiles
 import warnings
 from typing import Union
-from networkx import weisfeiler_lehman_graph_hash as graph_hash
+from networkx import weisfeiler_lehman_graph_hash
 from DARTassembler.src.constants.chem import Element
 
 bond_order_rdkit_to_pysmiles = {
@@ -79,7 +79,16 @@ def get_graph_hash(graph, node_attr='node_label', iterations=3, digest_size=16, 
     :param digest_size: digest size of the hash
     :return: Weisfeiler-Lehman graph hash of the given graph.
     """
-    return graph_hash(graph, node_attr=node_attr, edge_attr=edge_attr, iterations=iterations, digest_size=digest_size)
+    g = weisfeiler_lehman_graph_hash(graph, node_attr=node_attr, edge_attr=edge_attr, iterations=iterations, digest_size=digest_size)
+
+    # ase database doesn't accept strings that are valid floats, so replace last digit with an arbitrary letter 'g' if necessary. Here we could use all letters except 'e', since that one would make it a valid scientific float again.
+    try:
+        float(g)
+        g = g[:-1] + 'g'
+    except ValueError:
+        pass
+
+    return g
 
 def smiles2nx(smiles_str: str, explicit_H: bool = True) -> nx.Graph:
     """
@@ -140,7 +149,7 @@ def graphs_are_equal_hash_version(G1, G2):
     """
     In theory lower accuracy than "graphs_are_equal", but way lower computational costs as well
     """
-    return graph_hash(G1, node_attr='node_label', iterations=3, digest_size=16) == graph_hash(G2, node_attr='node_label', iterations=3, digest_size=16)
+    return weisfeiler_lehman_graph_hash(G1, node_attr='node_label', iterations=3, digest_size=16) == weisfeiler_lehman_graph_hash(G2, node_attr='node_label', iterations=3, digest_size=16)
 
 def find_node_in_graph_by_label(G: nx.Graph, label_to_find, expected_hits=None):
 

@@ -277,6 +277,17 @@ def get_atomic_props_from_ase_atoms(atoms: Atoms) -> dict:
     atomic_props['z'] = [atom.position[2] for atom in atoms]
     atomic_props['atoms'] = [atom.symbol for atom in atoms]
 
+    # Add custom arrays
+    custom_array_names = [key for key in atoms.arrays.keys() if key not in ('numbers', 'positions')]
+    for key in custom_array_names:
+        atomic_props[key] = atoms.get_array(key).tolist()
+
+    # Assert all lists have the same length
+    length = len(atomic_props['x'])
+    for key, value in atomic_props.items():
+        if len(value) != length:
+            raise ValueError(f'Atomic property "{key}" has length {len(value)}, but expected length {length}.')
+
     return atomic_props
 
 def get_ase_atoms_from_atomic_props(atomic_props: dict, remove_elements=None, add_atoms=None) -> Atoms:
