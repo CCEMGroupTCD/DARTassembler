@@ -7,49 +7,66 @@ Quickstart Guide
 
 Welcome to the quickstart guide for DART!
 
-As an introductory example, we will walk through the process of assembling 100 square-planar Pd(II) complexes with neutral formal charge. Each complex will feature one cis-bidentate ligand and two monodentate ligands, randomly selected from the MetaLig database. This tutorial assumes that you have already installed DART by following the instructions in the :ref:`installation guide<installation_guide>`.
+DART is a python package to generate approximate 3D structures of transition metal complexes from a large database of distinct 41,018 ligands, the :ref:`MetaLig ligand database <metalig>`. The ligands were curated from more than 100,000 transition metal complexes from the Cambridge Structural Database (CSD) and cover a wide chemical space with denticities ranging from monodentate to decadentate ligands, and even including haptically coordinating ligands. DART is like LEGO for transition metal complexes: the building blocks are atoms (for the metal centers) and ligands from the MetaLig. Users specify the chemical space (geometry, metal centers, type of ligand) they want to explore, and DART will automatically query the MetaLig database for all ligands that fit the criteria, assemble all possible combinations (or a random subset) of ligands, and save the generated complexes in easy-to-read .xyz and .json files. The generated structures are approximate, but they are a great starting point for further geometry optimizations with quantum chemistry methods such as DFT.
 
-DART is based around the :ref:`MetaLig database <metalig>`, featuring 41,018 ligands as source for the assembly of novel complexes. In this tutorial, we will first assemble complexes using a random subset of 5,000 ligands, without targeting any particular chemical space. Then, we will learn how to filter down the input ligands in order to generate complexes targeted to your own field of research and to generate those that are more likely to form stable complexes.
+As an introductory example, we will walk through the process of assembling 100 square-planar neutral Pd(II) complexes. Each complex will feature one cis-bidentate ligand and two monodentate ligands. We will first assemble complexes using randomly sampled ligands from the MetaLig, without targeting any particular chemical space. Then, we will learn how to filter down the input ligands in order to generate complexes targeted to a certain chemical space and to generate those that are more likely to form stable complexes.
 
 Confirm DART Installation
 ----------------------------
 
-Before starting, ensure DART is correctly installed and configured:
+This tutorial assumes that you have already installed DART by following the instructions in the :ref:`installation guide<installation_guide>`. Before starting, ensure DART is correctly installed and configured:
 
 1. Open your terminal.
 2. Type ``DARTassembler --help`` and press Enter.
 
 This command should display a help message listing all available DART modules. If you encounter any errors, please refer to the :ref:`troubleshooting` section for assistance.
 
+Code along and visualize the results with ase
+-------------------------------------------------------------
+
+We invite you to code along with this tutorial. Reading is good, but doing is better! DART is a command-line tool, so you will need to use your terminal to run the commands. Each section provides code snippets that you can copy-paste into your terminal.
+
+DART uses the excellent `ase <https://ase-lib.org>`_ (Atomic Simulation Environment) package, which should be installed automatically along DART. Additionally to its use in the python code, we will also use the versatile ``ase`` package in this tutorial to visualize 3D atomic structures saved as .xyz files, such as the ligands in the MetaLig database or the generated complexes. The syntax to visualize a .xyz file with ``ase`` is always
+
+.. code-block:: bash
+
+    ase gui FILENAME.xyz
+
+
 Make a Working Directory for this Tutorial
 --------------------------------------------
-Create a new directory for this tutorial and navigate into it:
+
+Let's start by creating a new directory for this tutorial and navigating into it:
 
 .. code-block:: bash
 
     mkdir DART_quickstart
     cd DART_quickstart
 
-Inspect the Ligand Database
+Explore the Ligand Database
 -------------------------------
 
-To inspect the :ref:`MetaLig ligand database <metalig>`, use the ``dbinfo`` module:
+To explore the :ref:`MetaLig ligand database <metalig>`, use the ``dbinfo`` module:
 
 .. code-block:: bash
 
     DARTassembler dbinfo --db metalig --n 5000
 
-This will immediately save two files, a concatenated .xyz file to inspect the structures and a .csv file to inspect the properties of the ligands. You can visualize and browse through the structures of the ligands by typing ``ase gui concat_MetaLigDB_v1.1.0.xyz`` in your terminal. By opening the ``MetaLigDB_v1.1.0.csv`` file with a program like Excel, you can inspect the properties of each ligand such as stoichiometry, denticity, donor atoms, and formal charge.
+You can read this command as follows: use the ``dbinfo`` module of ``DARTassembler``, and for this module specify the options ``--db metalig`` as a shortcut to the full MetaLig database, and ``--n 5000`` to only load the first 5,000 ligands from the database to speed up this example. You can of course load the entire database by omitting the ``--n`` option, but for this quickstart tutorial we want to keep things fast. Later, you can also read in custom ligand database files by providing the path to the file instead of ``metalig``, e.g. ``--db /path/to/your/ligand_db.jsonlines``.
+
+The above command will immediately save two files. The first file is a concatenated .xyz file with the 3D structures of all the ligands. You can visualize and browse through the structures of the ligands by typing ``ase gui concat_MetaLigDB_v1.1.0.xyz`` in your terminal. The gui will open with three tabs. The left one shows the 3D structure of the ligand, the middle tab you can ignore, and in the right tab you can scroll or play a slideshow to browse through the ligands. You can also drag each tab out of the main window to create a new window, so you can view the 3D structure and the option for scrolling at the same time. The structures will show you a wide variety of ligands. Each ligand is coordinated to a dummy Cu metal center for visualization purposes only; the actual ligand is without the Cu atom. The Cu atom is placed at the location of the original metal center from the CSD entry from which this ligand was extracted, which also coincides with how the new metal centers will be placed when assembling new complexes with DART in the assembler module.
+
+The other file saved is a .csv file called ``MetaLigDB_v1.1.0.csv``. You can open this file with any program that can read .csv files, such as Excel or LibreOffice Calc, and view the ligands properties such as stoichiometry, denticity, donor atoms, charge, etc. Feel free to explore the database and get a feel for the ligands available in MetaLig!
 
 Assemble Novel Complexes
 --------------------------------
 
-To use the :ref:`Assembler Module <assembler>`, we need to provide an input file which outlines all settings for the assembly. Please create a new file called ``assembler.yml`` and copy-paste the following settings:
+To use the :ref:`Assembler Module <assembler>`, we need to provide an input file which outlines all settings for the assembly. Please create a new file called ``assembler.yml`` and copy-paste the settings below. All the options are briefly explained as comments in the file:
 
 .. code-block:: yaml
 
     # file: assembler.yml
-    output_directory: DARTassembler
+    output_directory: DARTassembler     # Output directory for saving all results
     n_max_ligands: 5000           # Max number of ligands to load from the database
     batches:
       - name: 'PdII'              # User-defined name
@@ -66,19 +83,21 @@ To use the :ref:`Assembler Module <assembler>`, we need to provide an input file
             - ['-y']              # Monodentate ligand 2 along -Y axis
         n_max_complexes: 100      # Number of complexes to generate
 
-The input file is easy to read: we want to generate neutral Pd(II) complexes, so we set the ``metal_centers`` to ``Pd`` and the ``total_ligand_charges`` to ``-2``. The ``ligand_archetypes`` specify the type of ligand to assemble, here one cis-bidentate ligand (``2-cis``) and two monodentate ligands (``1-mono``, ``1-mono``). The ``target_vectors`` define the metal-donor orientation for each of the three ligands as shown in Figure 1:
+The options are as follows: we want to generate neutral Pd(II) complexes, so we set the ``metal_centers`` to ``Pd`` and the ``total_ligand_charges`` to ``-2``, such that the -2 charge from all ligands balances the +2 charge from the Pd(II) center to give neutral complexes. We want to use the entire MetaLig database, but only load the first 5,000 ligands to speed up this example, so we set ``ligand_db_files`` to ``metalig`` and ``n_max_ligands`` to ``5000``. We also set ``n_max_complexes`` to ``100`` to only generate 100 random complexes (but all isomers of each complex).
 
- - ``['+x', '+y']`` : the first ligand (the cis-bidentate) will be coordinated to the metal center along the +X, +Y axes
- - ``['-x']`` : the second ligand (monodentate) will be coordinated along the -X axis
- - ``['-y']`` : the third ligand (monodentate) will be coordinated along the -Y axis
+The ``ligand_archetypes`` and ``target_vectors`` have a 1:1 relationship: they specify options for each binding site, so they must have the same number of entries, and they are read in the same order. The ``ligand_archetypes`` specify the type of ligand to assemble, here one cis-bidentate ligand (``2-cis``) and two monodentate ligands (``1-mono``, ``1-mono``). The ``target_vectors`` define the metal-donor orientation for each of the three ligands as shown in Figure 1 (where e.g. ``'+x'`` is short for the the Cartesian vector ``(1, 0, 0)``):
+
+ - ``['+x', '+y']`` : the first ligand (the cis-bidentate) will be coordinated to the metal center along the +X, +Y axes. The list has two entries because the ``2-cis`` ligand has two donor atoms.
+ - ``['-x']`` : the second ligand (monodentate) will be coordinated along the -X axis. The list has one entry because the ``1-mono`` ligand has one donor atom.
+ - ``['-y']`` : the third ligand (monodentate) will be coordinated along the -Y axis. The list has one entry because the ``1-mono`` ligand has one donor atom.
 
 .. figure:: /_static/Pd_sqplanar.png
    :width: 50%
    :align: center
 
-   Figure 1: Square-planar complex geometry defined by the ``target_vectors`` above.
+   Figure 1: Square-planar complex geometry defined by the ``target_vectors`` above. The unconnected green and orange balls represent the two monodentate ligands, the connected blue balls represent the cis-bidentate ligand.
 
-This was an easy example, but DART supports the assembly of arbitrarily systems from 22 different ligand coordination archetypes. For more information on how to assemble more complex systems such as tetrahedral or octahedral complexes, please refer to the :ref:`assembler module documentation <assembler>`.
+This was a small example, but DART supports the assembly of arbitrarily systems from 22 different ligand coordination archetypes. For more information on how to assemble more complex systems such as tetrahedral or octahedral complexes, please refer to the :ref:`assembler module documentation <assembler>`.
 
 Now execute the following command in your terminal:
 
