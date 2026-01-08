@@ -55,6 +55,8 @@ LigandFilters Options
 
 The provided filters are applied in the order they are listed in the ``filters`` list. Each filter is a dictionary with a key ``'filter'`` specifying the filter type and other filter-specific keys. Each filter is then passed to the corresponding method of the :class:`DARTassembler.src.metalig.mol.Ligand` class. Please refer to the docstrings of these 4 methods for a detailed description of all available options. You will see that the options match perfectly with the options in the .yml configuration template above.
 
+**Usage:** To use these filters on a database, it is recommended to use the terminal command ``DARTassembler ligandfilters --input ligandfilters.yml`` and edit the provided configuration file as needed. The python API below is mainly to document the available options in a single place and for users who want to write their own filtering scripts in Python.
+
 .. _property_filter:
 .. autofunction:: DARTassembler.src.metalig.mol.Ligand.property_filter
    :no-index:

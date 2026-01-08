@@ -28,6 +28,9 @@ __MACOSX
 # Exclude build directories
 /docs/_build
 
+# For privacy reasons, don't upload feedback documents
+/docs/feedback
+
 /figures
 /data_input/CSD/graphs
 /data_input/Raw_CSD

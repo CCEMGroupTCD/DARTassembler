@@ -1,4 +1,4 @@
-.. _quickstart:
+git .. _quickstart:
 
 Quickstart Guide
 =================================
@@ -7,7 +7,9 @@ Quickstart Guide
 
 Welcome to the quickstart guide for DART!
 
-DART is a python package to generate approximate 3D structures of transition metal complexes from a large database of distinct 41,018 ligands, the :ref:`MetaLig ligand database <metalig>`. The ligands were curated from more than 100,000 transition metal complexes from the Cambridge Structural Database (CSD) and cover a wide chemical space with denticities ranging from monodentate to decadentate ligands, and even including haptically coordinating ligands. DART is like LEGO for transition metal complexes: the building blocks are atoms (for the metal centers) and ligands from the MetaLig. Users specify the chemical space (geometry, metal centers, type of ligand) they want to explore, and DART will automatically query the MetaLig database for all ligands that fit the criteria, assemble all possible combinations (or a random subset) of ligands, and save the generated complexes in easy-to-read .xyz and .json files. The generated structures are approximate, but they are a great starting point for further geometry optimizations with quantum chemistry methods such as DFT.
+DART is a python package to generate approximate 3D structures of transition metal complexes from a large database of 41,018 distinct ligands, the :ref:`MetaLig ligand database <metalig>`. The ligands were curated from more than 100,000 transition metal complexes from the Cambridge Structural Database (CSD) and cover a wide chemical space with denticities ranging from monodentate to decadentate ligands, and even including haptically coordinating ligands.
+
+DART is like LEGO for transition metal complexes: the building blocks are atoms (for the metal centers) and ligands from the MetaLig. Users specify the chemical space (geometry, metal centers, type of ligand) they want to explore, and DART will automatically query the MetaLig database for all ligands that fit the criteria, assemble all possible combinations of ligands (or a random subset), and save the generated complexes as .xyz and .json files. The generated structures are approximate, but they are a great starting point for further geometry optimizations with quantum chemistry methods such as DFT.
 
 As an introductory example, we will walk through the process of assembling 100 square-planar neutral Pd(II) complexes. Each complex will feature one cis-bidentate ligand and two monodentate ligands. We will first assemble complexes using randomly sampled ligands from the MetaLig, without targeting any particular chemical space. Then, we will learn how to filter down the input ligands in order to generate complexes targeted to a certain chemical space and to generate those that are more likely to form stable complexes.
 
@@ -26,12 +28,7 @@ Code along and visualize the results with ase
 
 We invite you to code along with this tutorial. Reading is good, but doing is better! DART is a command-line tool, so you will need to use your terminal to run the commands. Each section provides code snippets that you can copy-paste into your terminal.
 
-DART uses the excellent `ase <https://ase-lib.org>`_ (Atomic Simulation Environment) package, which should be installed automatically along DART. Additionally to its use in the python code, we will also use the versatile ``ase`` package in this tutorial to visualize 3D atomic structures saved as .xyz files, such as the ligands in the MetaLig database or the generated complexes. The syntax to visualize a .xyz file with ``ase`` is always
-
-.. code-block:: bash
-
-    ase gui FILENAME.xyz
-
+DART relies on the excellent `ase <https://ase-lib.org>`_ (Atomic Simulation Environment) package, which is installed automatically along DART. Additionally to its use in the python code, we will also use the ``ase gui`` terminal command in this tutorial to visualize 3D atomic structures saved as .xyz files, such as the ligands in the MetaLig database or the generated complexes. The syntax to visualize a .xyz file with ``ase`` is always ``ase gui FILENAME.xyz``.
 
 Make a Working Directory for this Tutorial
 --------------------------------------------
@@ -52,7 +49,7 @@ To explore the :ref:`MetaLig ligand database <metalig>`, use the ``dbinfo`` modu
 
     DARTassembler dbinfo --db metalig --n 5000
 
-You can read this command as follows: use the ``dbinfo`` module of ``DARTassembler``, and for this module specify the options ``--db metalig`` as a shortcut to the full MetaLig database, and ``--n 5000`` to only load the first 5,000 ligands from the database to speed up this example. You can of course load the entire database by omitting the ``--n`` option, but for this quickstart tutorial we want to keep things fast. Later, you can also read in custom ligand database files by providing the path to the file instead of ``metalig``, e.g. ``--db /path/to/your/ligand_db.jsonlines``.
+You can read this command as follows: use the ``dbinfo`` module of ``DARTassembler``, and for this module specify the options ``--db metalig`` as a shortcut to the full MetaLig database, and ``--n 5000`` to only load the first 5,000 ligands from the database to speed up this example. You can of course load the entire database by omitting the ``--n`` option, but for this quickstart tutorial we want to keep things fast. Later, you can also read in custom ligand database files by providing the path to the file instead of ``--db metalig``, e.g. ``--db /path/to/your/ligand_db.jsonlines``.
 
 The above command will immediately save two files. The first file is a concatenated .xyz file with the 3D structures of all the ligands. You can visualize and browse through the structures of the ligands by typing ``ase gui concat_MetaLigDB_v1.1.0.xyz`` in your terminal. The gui will open with three tabs. The left one shows the 3D structure of the ligand, the middle tab you can ignore, and in the right tab you can scroll or play a slideshow to browse through the ligands. You can also drag each tab out of the main window to create a new window, so you can view the 3D structure and the option for scrolling at the same time. The structures will show you a wide variety of ligands. Each ligand is coordinated to a dummy Cu metal center for visualization purposes only; the actual ligand is without the Cu atom. The Cu atom is placed at the location of the original metal center from the CSD entry from which this ligand was extracted, which also coincides with how the new metal centers will be placed when assembling new complexes with DART in the assembler module.
 
@@ -85,11 +82,11 @@ To use the :ref:`Assembler Module <assembler>`, we need to provide an input file
 
 The options are as follows: we want to generate neutral Pd(II) complexes, so we set the ``metal_centers`` to ``Pd`` and the ``total_ligand_charges`` to ``-2``, such that the -2 charge from all ligands balances the +2 charge from the Pd(II) center to give neutral complexes. We want to use the entire MetaLig database, but only load the first 5,000 ligands to speed up this example, so we set ``ligand_db_files`` to ``metalig`` and ``n_max_ligands`` to ``5000``. We also set ``n_max_complexes`` to ``100`` to only generate 100 random complexes (but all isomers of each complex).
 
-The ``ligand_archetypes`` and ``target_vectors`` have a 1:1 relationship: they specify options for each binding site, so they must have the same number of entries, and they are read in the same order. The ``ligand_archetypes`` specify the type of ligand to assemble, here one cis-bidentate ligand (``2-cis``) and two monodentate ligands (``1-mono``, ``1-mono``). The ``target_vectors`` define the metal-donor orientation for each of the three ligands as shown in Figure 1 (where e.g. ``'+x'`` is short for the the Cartesian vector ``(1, 0, 0)``):
+The ``ligand_archetypes`` and ``target_vectors`` have a 1:1 relationship: they specify options for each binding site, so they must have the same number of entries, and they are read in the same order. The ``ligand_archetypes`` specify the type of ligand to assemble, here one cis-bidentate ligand (``2-cis``) and two monodentate ligands (``1-mono``, ``1-mono``). The ligands are then arranged around the metal center according to the ``target_vectors``, where the metal center per default occupies the origin of the Cartesian coordinate system ``(0, 0, 0)``, and the location of each ligand is defined by a vector in Cartesian coordinates. For example, ``'+x'`` is short for the the Cartesian vector ``(1, 0, 0)``. The ``target_vectors`` in the above file thus define a square-planar geometry for the Pd(II) complexes, as shown in Figure 1 below:
 
- - ``['+x', '+y']`` : the first ligand (the cis-bidentate) will be coordinated to the metal center along the +X, +Y axes. The list has two entries because the ``2-cis`` ligand has two donor atoms.
- - ``['-x']`` : the second ligand (monodentate) will be coordinated along the -X axis. The list has one entry because the ``1-mono`` ligand has one donor atom.
- - ``['-y']`` : the third ligand (monodentate) will be coordinated along the -Y axis. The list has one entry because the ``1-mono`` ligand has one donor atom.
+ - ``['+x', '+y']`` : the first ligand (the cis-bidentate) will be coordinated to the metal center along the +X, +Y axes. The list has two entries because the ``2-cis`` ligand has two donor atoms. Instead of the abbreviation ``['+x', '+y']``, you would get identical results by providing the full Cartesian vectors ``[[1, 0, 0], [0, 1, 0]]``.
+ - ``['-x']`` : the second ligand (monodentate) will be coordinated along the -X axis. The list has one entry because the ``1-mono`` ligand has one donor atom. Instead of the abbreviation ``['-x']``, you would get identical results by providing the full Cartesian vector ``[[-1, 0, 0]]``.
+ - ``['-y']`` : the third ligand (monodentate) will be coordinated along the -Y axis. The list has one entry because the ``1-mono`` ligand has one donor atom. Instead of the abbreviation ``['-y']``, you would get identical results by providing the full Cartesian vector ``[[0, -1, 0]]``.
 
 .. figure:: /_static/Pd_sqplanar.png
    :width: 50%
@@ -105,7 +102,7 @@ Now execute the following command in your terminal:
 
     DARTassembler assembler --input assembler.yml
 
-You can see that the assembler module prints the progress to the terminal and saves the output files in the ``DARTassembler`` folder. You can get an overview of the assembled complexes by opening the file ``isomers.csv`` with a program such as Excel. This file displays information on all isomers of all complexes DART tried to assemble. DART automatically generates all possible geometric isomers, which is why most of our Pd(II) complexes in the csv file have 2 successful entries. However, you will notice that some complexes have only one or even zero successful isomers, which indicates they were filtered out due to steric clashes or duplicates (e.g. if the chosen cis-bidentate ligand is symmetrical). In total, we see 186 isomers of 100 complexes were successfully assembled, meaning most complexes have two valid isomers generated.
+The assembler module prints the progress to the terminal and saves the output files in the ``DARTassembler`` folder. You can get an overview of the assembled complexes by opening the file ``isomers.csv`` with a program such as Excel. This file displays information on all isomers of all complexes DART tried to assemble. DART automatically generates all possible geometric isomers, which is why most of our Pd(II) complexes in the csv file have 2 successful entries. However, you will notice that some complexes have only one or even zero successful isomers, which indicates they were filtered out due to steric clashes or duplicates (e.g. if the chosen cis-bidentate ligand is symmetrical). In total, we see 186 isomers of 100 complexes were successfully assembled, meaning most complexes have two valid isomers generated.
 
 Now, we can also browse through all successfully assembled structures by opening the concatenated .xyz file with the ase gui:
 
@@ -113,9 +110,11 @@ Now, we can also browse through all successfully assembled structures by opening
 
     ase gui DARTassembler/batches/PdII/concat_passed_isomers.xyz
 
-Browsing through the assembled structures, you will see that using the entire MetaLig database without any filters results in a very diverse chemical space. In the following section, we will learn how to filter the ligands to generate complexes with more chemically uniform structures.
+Browsing through the assembled structures, you will notice that using the entire MetaLig database without any filters results in a very diverse chemical space. In the following section, we will learn how to filter the ligands to generate complexes with more chemically uniform structures.
 
 Feel free now to play with the target vectors and see what happens when you provide other sets of target vectors. Can you swap the cis/trans orientation of the two monodentates relative to the bidentate? For more information on these settings, and especially the target vectors, please refer to the :ref:`assembler module documentation <assembler>`.
+
+Please close the ase gui window now before proceeding to the next section.
 
 Target Chemical Space
 ------------------------
@@ -186,13 +185,15 @@ Now, run the LigandFilters module:
     DARTassembler ligandfilters --input haptic.yml
     DARTassembler ligandfilters --input N-N.yml
 
-You can see that the Br filter of course returns just 1 ligand, the haptic C-donor filter returns 42 ligands and the N-N cis-bidentate filter returns 24 ligands, making 1,008 possible complexes. If we would have used the entire MetaLig database instead of the small test set of 5,000 ligands, the numbers would be much higher: 294 haptic C-donors and 215 N-N cis-bidentate ligands, enabling the generation of 63,210 distinct complexes or 126,420 isomers!
+The Br filter returns just 1 ligand, the haptic C-donor filter returns 42 ligands and the N-N cis-bidentate filter returns 24 ligands, making 1,008 possible complexes. If we would have used the entire MetaLig database instead of the small test set of 5,000 ligands, the numbers would be much higher: 294 haptic C-donors and 215 N-N cis-bidentate ligands, enabling the generation of 63,210 distinct complexes or 126,420 isomers!
 
 Each filter process creates a new ligand database file (e.g. ``N-N.jsonlines``) containing only the ligands that passed the filter criteria. Additionally, a new directory called ``info_N-N`` is created, containing detailed information about the filtering process. You can use this information to verify that the filters worked as intended. For example, let's check that all the N-N bidentate ligands contain at least one carbonyl group by visualizing all ligands that passed the filter:
 
 .. code-block:: bash
 
     ase gui info_N-N/concat_xyz/concat_Passed.xyz
+
+After inspection, please close the ase gui window before proceeding to the next section.
 
 **Assembling Complexes with Targeted Chemical Space:**
 
@@ -251,7 +252,9 @@ The assembler will now draw all its ligands from the specified ligand .jsonlines
 
     ase gui DARTassembler/batches/PdII_targeted/concat_passed_isomers.xyz
 
-You can see that the resulting complexes have a more uniform chemistry, adhering strictly to the defined parameters, while still covering a wide chemical space. This method is excellent for generating a diverse set of complexes with well defined chemical properties for your research.
+The resulting complexes have a more uniform chemistry, adhering strictly to the defined parameters, while still covering a wide chemical space. This method is excellent for generating a diverse set of complexes with well defined chemical properties for your research.
+
+Please close the ase gui window again before proceeding to the next section.
 
 Understand the Output of the Assembler Module
 ------------------------------------------------
@@ -260,17 +263,21 @@ Now, let's check the output files generated by the assembler module for the targ
 
 .. code-block:: bash
 
-    cd DARTassembler/batches/PdII_targeted/complexes/IBEKOWAV
+    cd DARTassembler/batches/PdII_targeted/complexes/ABAPAKOP
 
-This directory belongs to a complex named ``IBEKOWAV``. DART automatically generates these random names for each complex. The directory contains three files:
+.. note ::
 
-**IBEKOWAV1.xyz :**
+    DART automatically generates random 8-letter names for each complex, such as ``ABAPAKOP``. If the randomly generated names differ on your system, just navigate to any of the complex directories within ``DARTassembler/batches/PdII_targeted/complexes/``.
+
+This directory belongs to a complex named ``ABAPAKOP``. The directory contains three files:
+
+**ABAPAKOP1.xyz :**
     The structure of the first isomer of the complex.
 
-**IBEKOWAV2.xyz :**
+**ABAPAKOP2.xyz :**
     The structure of the second isomer of the complex.
 
-**IBEKOWAV.json :**
+**ABAPAKOP.json :**
     A comprehensive file containing detailed information about the complex, including ligand properties, all geometric isomers, and the molecular graph of the complex.
 
 For more information on the output files and their contents, please refer to the :ref:`assembler output documentation <assembly_output>`.

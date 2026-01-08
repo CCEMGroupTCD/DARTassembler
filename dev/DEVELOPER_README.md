@@ -173,7 +173,8 @@ Then follow these steps to release a new version of DART on PyPI (pip):
 On your test branch, test on TestPyPI first:
    1. Append .1 to the end of the version number in ``setup.py`` and ``__init__.py`` (i.e. a 'debug' version ``D``) in case we need to upload multiple test versions while debugging.
    2. Build package locally: ``python3 -m build --sdist; python3 -m build --wheel``
-   3. Upload to TestPyPI: ``twine upload -r testpypi dist/DARTassembler-X.Y.Z.D*``
+        - If this doesn't work, it's most likely because the "build" package is not installed in your conda environment. Install it with ``pip install build``, not with conda. If you get some shadowing errors, it's just because you also have a folder called "build" in your project directory. After installing the build package, it should work because it takes precedence.
+   3. Upload to TestPyPI: ``twine upload -r testpypi dist/dartassembler-X.Y.Z.D*``
    4. Make new conda environment to test the new version: ``conda create --name test_DARTassemblerX.Y.Z.D python=3.10 pip``. 
    5. Activate the new environment, then install and test from TestPyPI: ``pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple DARTassembler==X.Y.Z.D``
    6. If everything works, continue with the next steps. If not, fix the issue, increment the 'debug' version number and try again.
@@ -187,8 +188,20 @@ If everything works:
    11. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
    12. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
 
-## CI Pytests
+## Getting feedback from other people
+Text message to send, include the docs.zip attachment and adjust the version number as needed:
 
+```
+Hey Pablo,
+I have pushed the DART package to the test PyPI instance, so you can install it as with pip. Ideally, first make a new conda environment for testing, e.g.:
+conda create --name test_DART1 python=3.10 pip
+
+Then, activate the new environment and install DART from the test PyPI:
+pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple DARTassembler==1.0.4.1
+
+For the documentation, please unzip the attached file "docs.zip" and open the file "docs/_build/html/index.html". That should land you on the first page of the DART documentation.
+Thanks for testing our package! Let me know if you have any issues or questions.
+```
 
 
 ## Known issues

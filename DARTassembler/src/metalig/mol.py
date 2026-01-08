@@ -1358,7 +1358,7 @@ class Ligand(BaseMolecule):
 
         .. tip::
 
-            SMARTS patterns are extremely powerful for defining chemical substructures and environments. However, the can also be quite complex to construct. We have made very good experience with AI assistants like ChatGPT to help generate SMARTS patterns. You can also verify the correctness of your SMARTS patterns using online tools such as the `online SMARTS tester <https://smarts.plus/>`_.
+            While SMARTS patterns are very useful to define chemical substructures, they can be difficult to create. However, AI assistants can help you, and you can verify the correctness of your SMARTS patterns using tools such as the `online SMARTS tester <https://smarts.plus/>`_.
 
         **Examples :**
 

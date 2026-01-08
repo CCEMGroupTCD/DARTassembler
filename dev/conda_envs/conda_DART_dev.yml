@@ -36,4 +36,5 @@ dependencies:
   - pip:
       - pysmiles
       - moldoc                # For 3D rendering of molecules in documentation
+      - build                 # For building distributions
       - -e ../../.            # Install DART in editable mode without installing dependencies, these are handled by conda

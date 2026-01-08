@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = "1.0.4"
+version = "1.0.4.1"
 
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
@@ -40,7 +40,6 @@ setup(
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: 3.14",
-        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
 )

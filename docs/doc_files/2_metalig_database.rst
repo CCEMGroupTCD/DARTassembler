@@ -58,7 +58,7 @@ Filter the MetaLig in Python
 ----------------------------------------------
 For many users, the DART Ligand Filters module will be enough to filter ligands with exactly defined properties. For complete freedom in filtering and exploring, the MetaLig database can be accessed via the DARTassembler Python API, specifically the :class:`LigandDB <DARTassembler.src.metalig.db.LigandDB>` and :class:`Ligand <DARTassembler.src.metalig.mol.Ligand>` classes. This allows you to write your own custom filtering scripts in Python to target ligands with exactly the properties you need.
 
-As an example, let us extract Cp-like ligands from the MetaLig database. First, read in the MetaLig. To speed things up in this example, let's only load the first 1000 ligands.
+As an example, let us extract Cp-like ligands from the MetaLig database. First, read in the MetaLig. To speed things up in this example, let's only load the first 5000 ligands.
 
 .. code-block:: python
 
