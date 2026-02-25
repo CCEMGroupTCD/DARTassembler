@@ -67,8 +67,8 @@ class IntegrationTest(object):
     def _check_for_only_small_changes(self):
         for file in self.changed:
             change = ''
-            if file.endswith('.csv'):
-                change = self._compare_csv_files(Path(self.new_dir, file), Path(self.old_dir, file))
+            if file.endswith('.csv') or file.endswith('.parquet'):
+                change = self._compare_csv_parquet_files(Path(self.new_dir, file), Path(self.old_dir, file))
             elif file.endswith('.xyz'):
                 change = self._compare_xyz_files(Path(self.new_dir, file), Path(self.old_dir, file))
 
@@ -84,32 +84,55 @@ class IntegrationTest(object):
         xyz_test = XYZIntegrationTest(new_xyz=new_file, old_xzy=old_file, tol=self.xyz_tol)
         return xyz_test.compare_and_return_result_string()
 
-    def _compare_csv_files(self, new_file, old_file) -> Union[str,None]:
+    def _compare_csv_parquet_files(self, new_file, old_file) -> Union[str,None]:
         """
-        Compares two csv files and prints the differences.
+        Compares two csv or parquet files and prints the differences.
+        :return str describing the differences, or None if there are no differences. Example return string: 'Same: 27/27. Diff. el: 0/27. Diff. ...'
         """
+        read_fns = {'.csv': pd.read_csv, '.parquet': pd.read_parquet}
+        read_fn = read_fns[new_file.suffix]
+
         try:
-            df_new = pd.read_csv(new_file)
+            df_new = read_fn(new_file)
         except pd.errors.EmptyDataError:
             df_new = pd.DataFrame()
         try:
-            df_old = pd.read_csv(old_file)
+            df_old = read_fn(old_file)
         except pd.errors.EmptyDataError:
             df_old = pd.DataFrame()
+
+        if df_new.shape != df_old.shape:
+            return f'diff shape: new: {df_new.shape}, old: {df_old.shape}'
+        unique_columns = set(df_new.columns).symmetric_difference(set(df_old.columns))
+        if unique_columns:
+            return f'diff columns: {unique_columns}'
 
         change = None
         try:
             pd.testing.assert_frame_equal(df_new, df_old)
             change = 'numerical'
         except AssertionError:
+            # Ignore order of rows and columns
+            df_new2 = df_new.sort_values(by=list(df_new.columns), axis=0).reset_index(drop=True)
+            df_old2 = df_old.sort_values(by=list(df_old.columns), axis=0).reset_index(drop=True)
             try:
-                # Ignore order of rows and columns
-                df_new2 = df_new.sort_values(by=list(df_new.columns), axis=0).reset_index(drop=True)
-                df_old2 = df_old.sort_values(by=list(df_old.columns), axis=0).reset_index(drop=True)
                 pd.testing.assert_frame_equal(df_new2, df_old2, check_like=True)
-                change = 'change in order of rows/columns'
+                change = 'diff order of rows/columns'
             except AssertionError:
-                change = 'other'
+                try:
+                    pd.testing.assert_frame_equal(df_new2, df_old2, check_like=True, check_dtype=False)
+                    diff_dtypes = {col: (df_new[col].dtype.name, df_old[col].dtype.name) for col in df_new.columns if df_new[col].dtype != df_old[col].dtype}
+                    change = f'diff dtypes (new/old): {diff_dtypes}'
+                except AssertionError:
+                    try:
+                        pd.testing.assert_frame_equal(df_new2, df_old2, check_like=True, check_categorical=False)
+                        diff_n_cats = {col: (df_new[col].dtype.categories.size, df_old[col].dtype.categories.size) for col in df_new.columns if hasattr(df_new[col].dtype, 'categories') and hasattr(df_old[col].dtype, 'categories') and df_new[col].dtype.categories.size != df_old[col].dtype.categories.size}
+                        if diff_n_cats:
+                            change = f'diff n cats (new/old): {diff_n_cats}'
+                        else:
+                            change = 'diff cat dtype'
+                    except AssertionError:
+                            change = 'other'
 
         return change
 
