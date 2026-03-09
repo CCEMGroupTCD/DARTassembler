@@ -1,0 +1,18 @@
+n: 1000
+filters:
+
+  - filter: composition
+    elements: "NO"
+    instruction: must_only_contain_in_any_amount
+    only_donors: True
+
+  - filter: composition
+    elements: CHNOPS
+    instruction: must_only_contain_in_any_amount
+
+  - filter: parents
+    metal_centers: [Fe]
+
+  - filter: property
+    name: n_denticities
+    values: [2,3,4]

@@ -1,0 +1,20 @@
+===============================  Filter Options  ===============================
+Filter 01: composition: NO                     elements: ['N', 'O'], instruction: must_only_contain_in_any_amount, only_donors: True
+Filter 02: composition: CHNOPS                 elements: ['C', 'H', 'N', 'O', 'P', 'S'], instruction: must_only_contain_in_any_amount
+Filter 03: parents: Fe                         metal_centers: ['Fe']
+Filter 04: property: n_denticities             name: n_denticities, values: [2, 3, 4]
+===============================  Filter Results  ===============================
+                                    Ligands passed  Ligands removed
+Filter 01: composition: NO                573             427      
+Filter 02: composition: CHNOPS            492              81      
+Filter 03: parents: Fe                    184             308      
+Filter 04: property: n_denticities        105              79      
+==================  Total summary of DART Ligand Filters run  ==================
+Before filtering:           1000 ligands
+Filtered out:               895 ligands
+Passed:                     105 ligands
+Passed archetypes:          2-cis (50), 3-facial (4), 3-meridional (25), 4-facial (5), 4-meridional (1), 4-tetragonal (17), 4-tetragonal-offset (2), 4-trigonal-pyramidal (1)
+Passed stoichiometries:     C6H16N2, NO3, C26H22N4, C2H8N2, C9H16NO2, ...
+Filtered ligand database with 105 ligands was saved to `filtered_ligand_db.jsonlines`.
+Info on filtered ligands saved to directory `info_filtered_ligand_db`.
+Done! All ligands filtered. Exiting DART Ligand Filters Module.

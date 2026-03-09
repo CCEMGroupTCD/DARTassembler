@@ -3,6 +3,7 @@ The MetaLig contains ligands, which are represented by the :class:`Ligand` class
 """
 
 import warnings
+from difflib import get_close_matches
 from functools import cached_property
 
 import ase
@@ -1184,8 +1185,14 @@ class Ligand(BaseMolecule):
         """
         try:
             value = self.global_props[name]
-        except KeyError:
-            raise ValueError(f'Property {name} is not in `global_props`. Available properties are: {list(self.global_props.keys())}.')
+        except KeyError as e:
+            suggestions = get_close_matches(word=name, possibilities=list(self.global_props.keys()), n=3)
+            suggestions = [f'"{s}"' for s in suggestions]
+            if suggestions:
+                suggest_string = f'Did you mean {" or ".join(suggestions)}?'
+            else:
+                suggest_string = f'Supported properties are: {list(self.global_props.keys())}.'
+            raise ValueError(f"Property '{name}' does not exist in MetaLig. {suggest_string}") from e
 
         # If the value is specified in the list return always True. Also respect None in the list.
         value_in_list = values is not None and any([check_equal(value, val) for val in values])

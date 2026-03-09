@@ -102,7 +102,7 @@ class LigandFilters(BaseModule):
                 unames = [uname for uname in unames if self.db.db[uname].smarts_filter(**filter)]
                 name_appendix = filter['smarts']
             else:
-                raise ValueError(f'Filter specification "{filtername}" not recognized! Supported filters are "property", "composition", "parents", and "smarts".')
+                raise ValueError(f'Filtername "{filtername}" is not valid! Supported filter names are "property", "composition", "parents", and "smarts".')
 
             n_ligands_after = len(unames)
             ligand_was_filtered = ~self.df_all_ligands.index.isin(unames) & (self.df_all_ligands['filter'].isna())

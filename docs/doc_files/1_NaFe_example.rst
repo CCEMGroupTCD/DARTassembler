@@ -45,12 +45,12 @@ This will create two files, ``concat_ligand_metalig.xyz`` and ``ligand_metalig_i
 .. code-block:: yaml
 
     # file: C6H6_ligandfilters.yml
-    outpath: ligands/C6H6.jsonlines
+    outpath: 'ligands/C6H6.jsonlines'
     n: 500
     filters:
       - filter: 'property'
         name: 'unique_name'
-        values: [ unq_CSD-PABYUO-06-a ]
+        values: [ 'unq_CSD-PABYUO-06-a' ]
 
 We can set ``n: 500`` to speed up the reading of the MetaLig database since we know that there is only one ligand that will pass the filter, and we know it's common enough to probably be within the first 500 ligands.
 
@@ -59,10 +59,10 @@ Now, we can search the MetaLig database for HMDS and other amide ligands. Please
 .. code-block:: yaml
 
     # file: amide_ligandfilters.yml
-    outpath: ligands/amide.jsonlines   # path or nothing
+    outpath: 'ligands/amide.jsonlines'   # path or nothing
     filters:
       - filter: 'composition'
-        elements: N
+        elements: 'N'
         instruction: 'must_contain_and_only_contain'
         only_donors: True
 
@@ -94,14 +94,14 @@ Now, we want to generate the bimetallic Na-Fe complexes with these two ligands s
 .. code-block:: yaml
 
     # file: NaFe_assembler.yml
-    output_directory: NaFe
+    output_directory: 'NaFe'
     batches:
       - name: 'Na-Fe-amide'
         ligand_db_files:
-         - ligands/C6H6.jsonlines     # benzene @ Na
-         - ligands/amide.jsonlines    # amide top bridging Na & Fe
-         - same_as_previous           # amide bottom bridging Na & Fe
-         - same_as_previous           # amide @ Fe
+         - 'ligands/C6H6.jsonlines'     # benzene @ Na
+         - 'ligands/amide.jsonlines'    # amide top bridging Na & Fe
+         - 'same_as_previous'           # amide bottom bridging Na & Fe
+         - 'same_as_previous'           # amide @ Fe
         target_vectors:
           - [ [-1, 0, 0] ] # benzene @ Na
           - [ [0, 0, 1] ]  # amide top bridging Na & Fe
@@ -132,8 +132,8 @@ The ``ligand_origins`` specify the position of each ligands original CSD metal c
 
 We have also specified two metal centers by writing element + 3D coordinates for each metal center:
 
-- [ Na, [0, 0, 0] ]
-- [ Fe, [4, 0, 0] ]
+- [ 'Na', [0, 0, 0] ]
+- [ 'Fe', [4, 0, 0] ]
 
 This means that Na will be placed at the origin of the coordinate system, and Fe will be placed 4 Å away from Na in the x-direction. The distance of 4 Å between Na and Fe was chosen as an arbitrary guess here, often it will be based on experimental or theoretical values. The ``metal_centers`` option is a list with with one entry for each ligand. For each ligand, it states the metal center(s) to which the ligand coordinates. The metal centers have to be repeated whenever a ligand coordinates to this metal.
 

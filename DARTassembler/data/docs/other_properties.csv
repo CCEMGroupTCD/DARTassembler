@@ -1,7 +1,7 @@
 ﻿property,type,description,example
 archetype_rssd,float,Root sum square distance from the ideal archetype geometry,0.114051734
 archetype_confidence,float,Confidence score for the archetype assignment (higher is better),10.40652244
-has_confident_charge,bool,Whether the assigned charge is considered confident (true for all ligands),TRUE
+has_confident_charge,bool,This property once was important but is now not required anymore because all ligands in the MetaLig have confident charge assignments now; so this property is TRUE for all ligands. You can ignore it in the ligandfilters.,TRUE
 graph_hash,str,Graph hash identifier of the ligand (inter-ligand only),e018fbba4037dd7fbcada96133e091df
 graph_hash_with_metal,str,Graph hash including pseudo metal center,2a93874ecbf095e56bd1ffb4f397fca5
 heavy_atoms_graph_hash,str,Graph hash computed using heavy atoms only,62196285009c06c5a0dbb8690a5bad97

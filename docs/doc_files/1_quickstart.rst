@@ -63,13 +63,13 @@ To use the :ref:`Assembler Module <assembler>`, we need to provide an input file
 .. code-block:: yaml
 
     # file: assembler.yml
-    output_directory: DARTassembler     # Output directory for saving all results
+    output_directory: 'DARTassembler'     # Output directory for saving all results
     n_max_ligands: 5000           # Max number of ligands to load from the database
     batches:
       - name: 'PdII'              # User-defined name
         metal_centers: 'Pd'       # Metal center
         total_ligand_charges: -2  # Total charge from all ligands, to define neutral Pd(II) complexes
-        ligand_db_files: metalig  # Path to ligand database file or `metalig` for full MetaLig
+        ligand_db_files: 'metalig'  # Path to ligand database file or `metalig` for full MetaLig
         ligand_archetypes:
             - '2-cis'             # Bidentate ligand
             - '1-mono'            # Monodentate ligand 1
@@ -132,7 +132,7 @@ We will now use the :ref:`LigandFilters Module <ligandfilters>` to filter the Me
 .. code-block:: yaml
 
     # file: Br.yml
-    outpath: Br.jsonlines
+    outpath: 'Br.jsonlines'
     n: 5000
     filters:
       - filter: 'composition'
@@ -143,7 +143,7 @@ We will now use the :ref:`LigandFilters Module <ligandfilters>` to filter the Me
 .. code-block:: yaml
 
     # file: haptic.yml
-    outpath: haptic.jsonlines
+    outpath: 'haptic.jsonlines'
     n: 5000
     filters:
       - filter: 'property'
@@ -158,7 +158,7 @@ We will now use the :ref:`LigandFilters Module <ligandfilters>` to filter the Me
 .. code-block:: yaml
 
     # file: N-N.yml
-    outpath: N-N.jsonlines
+    outpath: 'N-N.jsonlines'
     n: 5000
     filters:
       - filter: 'property'
@@ -202,14 +202,14 @@ Now, we will redo the assembly process with the refined ligand database. First, 
 .. code-block:: yaml
 
         # file: assembler.yml
-        output_directory: DARTassembler
+        output_directory: 'DARTassembler'
         n_max_ligands: 5000           # Max number of ligands to load from the database
         batches:
           # First batch remains unchanged:
           - name: 'PdII'
             metal_centers: 'Pd'
             total_ligand_charges: -2
-            ligand_db_files: metalig
+            ligand_db_files: 'metalig'
             ligand_archetypes:
                 - '2-cis'
                 - '1-mono'

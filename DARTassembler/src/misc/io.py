@@ -261,15 +261,59 @@ def iterate_over_jsonlines(path: Union[str, Path], n_max: int=None, show_progres
 
 def get_n_entries_of_json_db(path: Union[str, Path]) -> int:
     """
-    Get the number of entries in a JSON or JSON Lines file.
-    :param path: Path to the JSON or JSON Lines file
-    :return: Number of entries in the file
-    """
-    n_entries = 0
-    for _ in iterate_over_json(path):
-        n_entries += 1
+    Get the number of entries in a JSON or JSON Lines file efficiently.
 
-    return n_entries
+    Assumptions:
+    - .jsonlines / .jsonl / .bz2 files contain one JSON object per line
+    - .json files contain a top-level dict or list
+    """
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"Could not find file {path}")
+
+    name = path.name.lower()
+
+    # JSON Lines, possibly compressed
+    if name.endswith((".jsonlines", ".jsonl", ".jsonlines.bz2", ".jsonl.bz2")):
+        if path.suffix == ".bz2":
+            with bz2.open(path, "rb") as f:
+                return _count_lines_binary(f)
+        else:
+            with open(path, "rb") as f:
+                return _count_lines_binary(f)
+
+    # Regular JSON
+    elif path.suffix == ".json":
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, (dict, list)):
+            return len(data)
+        else:
+            raise ValueError(f"Expected top-level JSON object or list in file {path}, but got {type(data)}")
+
+    else:
+        raise ValueError(f"Unsupported file format for counting entries: {path}")
+
+
+def _count_lines_binary(file_obj, chunk_size: int = 1024 * 1024) -> int:
+    """
+    Count lines in a binary file object efficiently by reading chunks.
+    """
+    n = 0
+    last_byte = b""
+
+    while True:
+        chunk = file_obj.read(chunk_size)
+        if not chunk:
+            break
+        n += chunk.count(b"\n")
+        last_byte = chunk[-1:]
+
+    # Count final line if file does not end with newline
+    if last_byte not in (b"", b"\n"):
+        n += 1
+
+    return n
 
 def save_json(db: dict, path: Union[str, Path], mkdir: bool=True, **kwargs):
     if mkdir:
@@ -339,7 +383,9 @@ def iterate_unique_ligand_db(path: Union[str, Path], molecule: str= 'dict', n_ma
     db_path = get_correct_ligand_db_path_from_input(path)
 
     filename = Path(db_path).name
-    for name, mol_dict in tqdm(iterate_over_json(db_path, n_max=n_max, show_progress=False), disable=not show_progress, desc=f'Load ligand db `{filename}`', file=sys.stdout, unit=' ligands'):
+    total = get_n_entries_of_json_db(db_path)
+    total = min(total, n_max) if n_max is not None else total
+    for name, mol_dict in tqdm(iterate_over_json(db_path, n_max=n_max, show_progress=False), disable=not show_progress, desc=f'Load ligand db `{filename}`', file=sys.stdout, unit=' ligands', total=total):
         if molecule == 'class':
             mol = Ligand.from_dict(mol_dict)
         else:
