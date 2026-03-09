@@ -3,7 +3,8 @@
 # Everything after '#' is a comment that is ignored by the program and only there for the user.
 # See the 'LigandFilters Module' section in the DART documentation for more information.
 
-outpath: 'filtered_ligand_db.jsonlines'   # Output file
+db: 'metalig'                            # Input ligand database. Either path to a .jsonlines file or 'metalig' to load the full MetaLig database (see docs). Leaving this empty is equivalent to 'metalig'.
+outpath: 'filtered_ligand_db.jsonlines'   # Output file path for the filtered ligand database. Should end with .jsonlines.
 n: 5000                                   # Speed up test runs by limiting the number of ligands loaded from the MetaLig. Default: None (load all ligands).
 dbinfo: True                              # Output an info directory about the filtering (see dbinfo module docs).
 metal: True                               # Include metal atoms in the concatenated .xyz files if dbinfo is True (see dbinfo module docs).

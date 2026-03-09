@@ -1,13 +1,14 @@
+db: 'metalig'
 n: 1000
 filters:
 
   - filter: composition
-    elements: "NO"
+    elements: 'NO'
     instruction: must_only_contain_in_any_amount
     only_donors: True
 
   - filter: composition
-    elements: CHNOPS
+    elements: 'CHNOPS'
     instruction: must_only_contain_in_any_amount
 
   - filter: parents
