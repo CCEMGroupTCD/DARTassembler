@@ -1,0 +1,31 @@
+Starting DART Assembler Module.
+Output directory: assembly
+Running 1 batch...
+User-defined global settings:
+    output_directory              assembly
+    verbosity                     2
+    complex_name_length           8
+    n_max_ligands                 200
+===================================  Fe_6.3  ===================================
+User-defined settings for Fe_6.3:
+    name                          Fe_6.3
+    metal_centers                 Fe
+    total_ligand_charges          None
+    n_max_complexes               100
+    ligand_db_files               ['metalig', 'metalig']
+    ligand_archetypes             ['3-facial', '3-facial']
+    target_vectors                [['+x', '+y', '+z'], ['-x', '-y', '-z']]
+DART ASSEMBLER WARNING: The user-provided target vectors `[[-1.0, 0.0, 0.0], [0.0, -1.0, 0.0], [0.0, 0.0, -1.0]]` do not perfectly match the ideal target vectors of the ligand archetype `3-facial`. A typical choice of `3-facial` ligands would be the target vectors `[[1, 0, 0], [0, 1, 0], [0, 0, 1]]` (or any 3D rotated equivalent). The DART assembler will continue and try to align the ligand's donor vectors with the target vectors you provided, but the assembled complexes may not have the geometry you intended. If this is intended, you can ignore this warning. Most likely, you provided the target vectors in the wrong order (see documentation), because if we change the order to e.g. `[[-1.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, -1.0, 0.0]]`, they fit perfectly.
+DART info: This batch was interrupted early because all possible complexes have already been made.
+=============================  Summary per batch  ==============================
+Fe_6.3:
+  - 90 isomers tried, 10 isomers (from 6 complexes) successfully assembled.
+  - 80 isomers failed because of filters:
+    - clashing: 42
+    - duplicate: 38
+====================  Total summary of DART Assembler run  =====================
+  - 90 isomers tried, 10 isomers (from 6 complexes) successfully assembled.
+  - 80 isomers failed because of filters:
+    - clashing: 42
+    - duplicate: 38
+DART Assembler output files saved to directory `assembly`.

@@ -240,7 +240,7 @@ import sys
 
 # DART specific imports
 from DARTassembler.src.assembler.isomer import AssembledIsomer, AssembledComplex
-from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput
+from DARTassembler.src.assembler.output import AssemblerOutput, BatchAssemblerOutput, setup_DART_logging
 from DARTassembler.src.metalig.utils_molecule import get_standardized_stoichiometry_from_atoms_list
 from DARTassembler.src.constants.paths import default_assembler_yml_path
 from DARTassembler.src.assembler.ligands import LigandChoice
@@ -297,12 +297,7 @@ class Assembler(BaseModule):
         # Set up the output directories
         self.gbl_outcontrol = AssemblerOutput(outdir=self.output_directory)
 
-        # Set up logging
-        verbosity2logging = {0: logging.ERROR, 1: logging.WARNING, 2: logging.INFO, 3: logging.DEBUG}
-        stream_handler = logging.StreamHandler(stream=sys.stdout)
-        stream_handler.setLevel(verbosity2logging[self.verbosity])
-        # Print to stdout
-        logging.basicConfig(level=verbosity2logging[self.verbosity], format='%(message)s', handlers=[logging.FileHandler(self.gbl_outcontrol.log_path, mode='w'), stream_handler], force=True)
+        setup_DART_logging(verbosity=self.verbosity, log_path=self.gbl_outcontrol.log_path)
 
     def run_batch(self,
                   name: str,

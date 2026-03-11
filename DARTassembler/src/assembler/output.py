@@ -6,6 +6,8 @@ import pandas as pd
 import numpy as np
 from DARTassembler.src.misc.io import write_yaml
 from DARTassembler.src.assembler.isomer import AssembledIsomer
+import logging
+import sys
 
 _gbl_optimization_movie = 'ffmovie.xyz'
 _gbl_concatenated_xyz = 'concat_passed_isomers.xyz'
@@ -36,6 +38,42 @@ _complex_warnings = 'warnings.txt'
 _complex_ff_movie = 'ffmovie.xyz'
 _complex_ligand_info = 'ligandinfo.csv'
 
+
+class UniqueMessageFilter(logging.Filter):
+    """
+    A logging filter that only allows unique messages to be logged. Only applies to messages that contain 'WARNING' to avoid filtering out important error messages.
+    """
+    def __init__(self):
+        super().__init__()
+        self.seen = set()
+
+    def filter(self, record):
+        msg = record.getMessage()
+        if not 'WARNING' in msg:
+            return True
+        if msg in self.seen:
+            return False
+        self.seen.add(msg)
+        return True
+
+
+# Set up logging
+def setup_DART_logging(verbosity: int, log_path: Path):
+    verbosity2logging = {0: logging.ERROR, 1: logging.WARNING, 2: logging.INFO, 3: logging.DEBUG}
+    stream_handler = logging.StreamHandler(stream=sys.stdout)
+    stream_handler.setLevel(verbosity2logging[verbosity])
+    file_handler = logging.FileHandler(log_path, mode='w')
+    unique_filter = UniqueMessageFilter()
+    stream_handler.addFilter(unique_filter)
+    file_handler.addFilter(unique_filter)
+    logging.basicConfig(
+        level=verbosity2logging[verbosity],
+        format='%(message)s',
+        handlers=[file_handler, stream_handler],
+        force=True
+    )
+    root_logger = logging.getLogger()
+    root_logger.addFilter(UniqueMessageFilter())
 
 def ensure_directory_empty(dir) -> None:
     """

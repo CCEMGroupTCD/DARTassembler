@@ -1,0 +1,16 @@
+output_directory: assembly            # Path to a directory for the output files.
+n_max_ligands: 200
+batches:
+- name: 'Fe_6.3'
+  metal_centers: 'Fe'
+  total_ligand_charges:     # Sum of ligand charges. E.g. -2 for neutral Pd(II) complexes. Default: None (no charge filtering).
+  n_max_complexes: 100            # Max number of distinct complexes to generate. Integer or `all`.
+  ligand_db_files:                # '.jsonlines' files or keywords 'metalig'/'same_as_previous'. Default: 'metalig'.
+      - 'metalig'
+      - 'metalig'
+  ligand_archetypes:              # Ligand archetypes for each ligand.
+      - '3-facial'
+      - '3-facial'
+  target_vectors:                 # List of donor atom orientations for each ligand (see docs).
+      - ['+x','+y','+z']
+      - ['-x','-y','-z']          # Intentionally wrong order of '-x' and '-y' to test if the code correctly warns about this.

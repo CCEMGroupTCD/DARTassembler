@@ -1,0 +1,25 @@
+output_directory: assembly
+verbosity: 2
+complex_name_length: 8
+n_max_ligands: 200
+batches:
+- &id001
+  name: Fe_6.3
+  metal_centers: Fe
+  total_ligand_charges: null
+  n_max_complexes: 100
+  ligand_db_files:
+  - metalig
+  - metalig
+  ligand_archetypes:
+  - 3-facial
+  - 3-facial
+  target_vectors:
+  - - +x
+    - +y
+    - +z
+  - - -x
+    - -y
+    - -z
+idx: 0
+batch: *id001

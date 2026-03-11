@@ -376,17 +376,13 @@ class AssembledComplex(object):
                 try:
                     array = np.array(target_vector_list)
                 except ValueError as e:
-                    raise ValueError(
-                        f"Target vector is not a list of lists of floats: {target_vector_list}. Error: {e}")
+                    raise ValueError(f"Target vector is not a list of lists of floats: {target_vector_list}. Error: {e}")
                 if array.ndim != 2:
-                    raise ValueError(
-                        f"Target vector must have 2 dimensions (list of list), got {array.shape}: {target_vector_list}")
+                    raise ValueError(f"Target vector must have 2 dimensions (list of list), got {array.shape}: {target_vector_list}")
                 elif array.shape[1] != 3:
-                    raise ValueError(
-                        f"Target vector must have 3 elements (list of list of floats), got {array.shape[1]}: {target_vector_list}")
+                    raise ValueError(f"Target vector must have 3 elements (list of list of floats), got {array.shape[1]}: {target_vector_list}")
                 elif not np.issubdtype(array.dtype, np.floating) and not np.issubdtype(array.dtype, np.integer):
-                    raise ValueError(
-                        f"Target vector must be a list of lists of floats, got {array.dtype}: {target_vector_list}")
+                    raise ValueError(f"Target vector must be a list of lists of floats, got {array.dtype}: {target_vector_list}")
         except TypeError as e:
             raise TypeError(f"Target vectors must be a list of lists of lists of floats. Error: {e}")
 
@@ -396,8 +392,7 @@ class AssembledComplex(object):
             _, rssd = align_vectors(target_vectors=target_vector_list, donor_vectors=ligand_arch_vector)
             if not np.isclose(rssd, 0.0):
                 # Check if any combination of the target vectors matches the archetype of the ligand.
-                n = len(target_vectors)
-                target_vector_list_permutations = list(itertools.permutations(target_vector_list, n))
+                target_vector_list_permutations = list(itertools.permutations(target_vector_list))
                 any_other_order_matches = False
                 for target_vector_list_test in target_vector_list_permutations:
                     _, rssd = align_vectors(target_vectors=target_vector_list_test, donor_vectors=ligand_arch_vector)
@@ -405,11 +400,13 @@ class AssembledComplex(object):
                         any_other_order_matches = True
                         break
                 if any_other_order_matches:
-                    warn_string = f'Most likely, this is due to a wrong order of the provided target vectors for each donor (see documentation), because if we change the order, they fit perfectly. '
+                    print_target_vector_list_test = np.array(target_vector_list_test).tolist()
+                    warn_string = f'Most likely, you provided the target vectors in the wrong order (see documentation), because if we change the order to e.g. `{print_target_vector_list_test}`, they fit perfectly.'
                 else:
-                    warn_string = f'Most likely, this is due to erroneously provided ligands/target vectors, or simply because the provided target vectors are intended to be different from the ideal archetype of the ligand. '
+                    warn_string = f'Most likely, you simply provided erroneous ligands/target vectors.'
+                print_target_vector_list = np.array(target_vector_list).tolist()
                 logging.warning(
-                    f"WARNING: Provided target vectors `{target_vector_list}` do not perfectly match the ligand archetype `{ligand.archetype}`, which has ideal target vectors of {ligand_arch_vector.tolist()}. The assembler will continue with the input you provided, but the assembled complexes may not have the intended archetype. {warn_string}If this is intended, you can ignore this warning.")
+                    f"DART ASSEMBLER WARNING: The user-provided target vectors `{print_target_vector_list}` do not perfectly match the ideal target vectors of the ligand archetype `{ligand.archetype}`. A typical choice of `{ligand.archetype}` ligands would be the target vectors `{ligand_arch_vector.tolist()}` (or any 3D rotated equivalent). The DART assembler will continue and try to align the ligand's donor vectors with the target vectors you provided, but the assembled complexes may not have the geometry you intended. If this is intended, you can ignore this warning. {warn_string}")
 
         return metal_centers, ligand_origins, ligands, target_vectors
 
