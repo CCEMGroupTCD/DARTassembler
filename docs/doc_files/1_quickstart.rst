@@ -1,4 +1,4 @@
-git .. _quickstart:
+.. _quickstart:
 
 Quickstart Guide
 =================================

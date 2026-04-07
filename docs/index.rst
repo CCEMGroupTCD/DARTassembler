@@ -17,11 +17,7 @@ DART integrates a collection of several modules:
 - :ref:`LigandFilters <ligandfilters>` :
     Assemble complexes with exactly defined sub-structures by applying advanced ligand filters for each binding site.
 
-**Your role:** DART is designed for researchers in chemistry. While you have to think about the chemistry yourself, DART will allow you to explore the chemical space you want with the ligands you need.
-
-If you use DART in your research, please cite the following paper:
-
-    Clarke, C., Sommer, T., Kleuker, F., García-Melchor, M. DART: Unlocking Coordination Chemistry Beyond the Cambridge Structural Database. Preprint at https://doi.org/10.26434/chemrxiv-2024-tljj9 (2024).
+**Your role:** DART is designed for researchers. While you have to think about the chemistry yourself, DART will allow you to explore the chemical space you want with the ligands you need.
 
 .. figure:: /_static/homepage_picture.png
    :width: 90%
