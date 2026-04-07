@@ -1,4 +1,4 @@
-__version__ = '1.0.4.1'
+__version__ = '1.0.4.2'
 # Ignore warnings
 import warnings
 warnings.filterwarnings("ignore")

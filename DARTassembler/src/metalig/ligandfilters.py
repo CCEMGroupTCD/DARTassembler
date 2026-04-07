@@ -399,17 +399,25 @@ class LigandFilters(BaseModule):
 
 
 if __name__ == '__main__':
-    filters = LigandFilters(db='metalig', n=1000)
+    filters = LigandFilters(db='metalig')
+    #%% Filters from FeRedox
     db = filters.run(
         filters=[
-            {'filter': 'property', 'name': 'n_atoms', 'range': [1, 50]},
-            {'filter': 'property', 'name': 'archetype', 'values': ['2-cis']},
-            {'filter': 'smarts', 'smarts': '[C&H2]', 'should_contain': False, 'include_metal': True},
-            {'filter': 'composition', 'elements': 'CHNO', 'instruction': 'must_at_least_contain', 'only_donors': False},
-            {'filter': 'composition', 'elements': 'NO', 'instruction': 'must_contain_and_only_contain', 'only_donors': True},
-            {'filter': 'parents', 'metal_centers': ['Pt+2', 'Pt+4', 'Pd', 'Ni']}
+            {'filter': 'property', 'name': 'n_denticities', 'values': [2, 3, 4]},
+            {'filter': 'composition', 'elements': 'NO', 'instruction': 'must_only_contain_in_any_amount', 'only_donors': True},
+            {'filter': 'composition', 'elements': 'CHNOPS', 'instruction': 'must_only_contain_in_any_amount', 'only_donors': False},
+            # {'filter': 'smarts', 'smarts': 'S(~O)(~O)~O', 'should_contain': True, 'include_metal': False},
+            # {'filter': 'smarts', 'smarts': 'S(=O)(=O)O', 'should_contain': True, 'include_metal': False},
+            # {'filter': 'smarts', 'smarts': 'P(~O)(~O)~O', 'should_contain': True, 'include_metal': False},
+            # {'filter': 'smarts', 'smarts': 'P(=O)(O)O', 'should_contain': True, 'include_metal': False},
+            {'filter': 'smarts', 'smarts': '[C;D3](~[O;D1;H0,H1])(~[O;D1;H0,H1])~[!#1]', 'should_contain': True, 'include_metal': False},
+            {'filter': 'property', 'name': 'n_haptic_groups', 'values': [0]},
+            {'filter': 'parents', 'metal_centers': ['Fe']},
+            {'filter': 'smarts', 'smarts': '[$([CX3H1](=[OX1])[OX2H1,O-]),$([CX3]([#6])(=[OX1])[OX2H1,O-])]',
+             'should_contain': True, 'include_metal': False},
+            {'filter': 'smarts', 'smarts': '[$([CX3H1](=[OX1])[OX2H1,O-]),$([CX3]([#6])(=[OX1])[OX2H1,O-])]',
+             'should_contain': True, 'include_metal': True},
+
         ],
-        outpath='/Users/timosommer/Downloads/test_DART/test_modules/test2/filtered_ligand_db.jsonlines',
-        dbinfo=True,
-        metal=True,
+        outpath='/Users/timosommer/Downloads/test_DART/test_modules/test2/feredox_ligands.jsonlines',
     )

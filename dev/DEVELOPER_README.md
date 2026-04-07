@@ -186,7 +186,7 @@ If everything works:
    9. Build package locally again: ``python3 -m build --sdist; python3 -m build --wheel``
    10. Upload to PyPI Production: ``twine upload dist/DARTassembler-X.Y.Z*``
    11. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
-   12. Re-build the documentation on ReadTheDocs: https://readthedocs.org/projects/dartassembler/builds/
+   12. On ReadTheDocs, create a new version of the documentation by searching for ``vX.Y.Z``: https://app.readthedocs.org/dashboard/dartassembler/version/create/
 
 ## Getting feedback from other people
 Text message to send, include the docs.zip attachment and adjust the version number as needed:
