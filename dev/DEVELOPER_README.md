@@ -189,8 +189,7 @@ If everything works:
    12. Upload to PyPI Production: ``twine upload dist/dartassembler-X.Y.Z*``
    13. Push master to GitHub: ``git push``
    14. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
-   15. On ReadTheDocs, create a new version of the documentation by searching for ``vX.Y.Z``: https://app.readthedocs.org/dashboard/dartassembler/version/create/
-
+   15. On ReadTheDocs, create a new version of the documentation by searching for ``vX.Y.Z`` and using this name as the slug: https://app.readthedocs.org/dashboard/dartassembler/version/create/
 
 
 ## Getting feedback from other people

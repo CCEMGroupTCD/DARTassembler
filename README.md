@@ -3,13 +3,10 @@
 [![PyPI](https://img.shields.io/pypi/v/DARTassembler.svg)](https://pypi.org/project/DARTassembler/)
 [![Downloads](https://pepy.tech/badge/DARTassembler)](https://pepy.tech/project/DARTassembler)
 [![Monthly Downloads](https://pepy.tech/badge/DARTassembler/month)](https://pepy.tech/project/DARTassembler)
-[![docs](https://app.readthedocs.org/projects/dartassembler/badge/?version=latest)](https://dartassembler.readthedocs.io/en/latest/)
+[![docs](https://app.readthedocs.org/projects/dartassembler/badge/?version=stable)](https://dartassembler.readthedocs.io/en/stable/)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/license/MIT)
 [![ChemRxiv Preprint](https://img.shields.io/badge/preprint-ChemRxiv-brightgreen.svg)](https://chemrxiv.org/engage/chemrxiv/article-details/6717eb4e83f22e4214d2b98b)
-
-<!-- Supported Python versions (from PyPI metadata) TODO once published to pip (see setup.py) --> 
-<!-- ![Python Versions](https://img.shields.io/pypi/pyversions/DARTassembler.svg) -->
-
+[![Python Versions](https://img.shields.io/pypi/pyversions/DARTassembler.svg)](https://pypi.org/project/DARTassembler/)
 
 # DART - Directed Assembly of Random Transition metal complexes
 Welcome to the DART platform, a cutting-edge suite of tools for the exploration of coordination chemistry! Developed by the CCEM group at Trinity College Dublin in Ireland & CIC energiGUNE in Spain, DART is designed as an accessible and simple-to-use software to generate transition metal complexes based on ligands from decades of crystallographic data.
