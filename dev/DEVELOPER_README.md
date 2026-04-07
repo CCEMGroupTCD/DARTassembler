@@ -177,18 +177,20 @@ On your test branch, test on TestPyPI first:
    3. Upload to TestPyPI: ``twine upload -r testpypi dist/dartassembler-X.Y.Z.D*``
    4. Make new conda environment to test the new version: ``conda create --name test_DARTassemblerX.Y.Z.D python=3.10 pip``. 
    5. Activate the new environment, then install and test from TestPyPI: ``pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple DARTassembler==X.Y.Z.D``
-   6. If everything works, continue with the next steps. If not, fix the issue, increment the 'debug' version number and try again.
+   6. Test ReadtheDocs documentation workflow: ``pip install -r docs/requirements.txt`` and then run ``sphinx-build -b html docs docs/_build``
+   7. If everything works, continue with the next steps. If not, fix the issue, increment the 'debug' version number and try again.
 If everything works:
-   7. Increment version number, this time properly:
+   8. Increment version number, this time properly:
       1. Set ``version=X.Y.Z`` in ``setup.py``
       2. Set ``__version__=X.Y.Z`` in package ``__init__.py``
-   8. Add and commit the changes to git: ``git add .`` and ``git commit -m "Bump to version X.Y.Z."``
-   9. Merge to master: ``git checkout master`` and ``git merge YOURTESTBRANCH``
-   10. Build package locally again: ``python3 -m build --sdist; python3 -m build --wheel``
-   11. Upload to PyPI Production: ``twine upload dist/dartassembler-X.Y.Z*``
-   12. Push master to GitHub: ``git push``
-   13. On ReadTheDocs, create a new version of the documentation by searching for ``master`` and giving it the slug``vX.Y.Z``: https://app.readthedocs.org/dashboard/dartassembler/version/create/
+   9. Add and commit the changes to git: ``git add .`` and ``git commit -m "Bump to version X.Y.Z."``
+   10. Merge to master: ``git checkout master`` and ``git merge YOURTESTBRANCH``
+   11. Build package locally again: ``python3 -m build --sdist; python3 -m build --wheel``
+   12. Upload to PyPI Production: ``twine upload dist/dartassembler-X.Y.Z*``
+   13. Push master to GitHub: ``git push``
    14. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
+   15. On ReadTheDocs, create a new version of the documentation by searching for ``vX.Y.Z``: https://app.readthedocs.org/dashboard/dartassembler/version/create/
+
 
 
 ## Getting feedback from other people
