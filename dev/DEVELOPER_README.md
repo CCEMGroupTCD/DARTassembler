@@ -185,9 +185,9 @@ If everything works:
    8. Add and commit the changes to git: ``git add .`` and ``git commit -m "Bump to version X.Y.Z."``
    9. Merge to master: ``git checkout master`` and ``git merge YOURTESTBRANCH``
    10. Build package locally again: ``python3 -m build --sdist; python3 -m build --wheel``
-   11. Upload to PyPI Production: ``twine upload dist/DARTassembler-X.Y.Z*``
+   11. Upload to PyPI Production: ``twine upload dist/dartassembler-X.Y.Z*``
    12. On GitHub, create a new release with the tag ``vX.Y.Z`` and add a description of the changes.
-   13. On ReadTheDocs, create a new version of the documentation by searching for ``vX.Y.Z``: https://app.readthedocs.org/dashboard/dartassembler/version/create/
+   13. On ReadTheDocs, create a new version of the documentation by searching for ``master`` and giving it the slug``vX.Y.Z``: https://app.readthedocs.org/dashboard/dartassembler/version/create/
 
 ## Getting feedback from other people
 Text message to send, include the docs.zip attachment and adjust the version number as needed:
