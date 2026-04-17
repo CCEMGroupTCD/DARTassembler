@@ -10,7 +10,7 @@ dbinfo: True                              # Output an info directory about the f
 metal: True                               # Include metal atoms in the concatenated .xyz files if dbinfo is True (see dbinfo module docs).
 filters:
   #============ Simple property filters ============#
-  # Keep only cis-bidentate ligands (and haptic ligands treated as 2-cis, see docs)
+  # Keep only monodentate ligands (and haptic ligands treated as 1-mono, see docs)
   - filter: 'property'
     name: 'archetype'
     values: ['1-mono']
