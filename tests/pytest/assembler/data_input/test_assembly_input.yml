@@ -121,4 +121,19 @@ batches:
     background_file: "../data_input/Cu_surface.xyz"
     background_translation: [ -6, -4, -14 ]
     monoaxial_optimization: False
+  - name: 'BiAu'
+    ligand_db_files:
+      - 'metalig'
+      - 'same_as_previous'
+    total_ligand_charges: 0
+    ligand_archetypes:
+      - '1-mono'
+      - '1-mono'
+    target_vectors:
+      - [ [ 0, -1, 0 ] ]
+      - [ [ 0, 1, 0 ] ]
+    metal_centers:
+      - [ [ 'Au', [ 0, 0, 0 ] ] ]
+      - [ [ 'Au', [ 0, 2.58, 0 ] ] ]
+    n_max_complexes: 20
 

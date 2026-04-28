@@ -1,6 +1,6 @@
 Starting DART Assembler Module.
 Output directory: data_output
-Running 7 batches...
+Running 8 batches...
 User-defined global settings:
     output_directory              .
     verbosity                     2
@@ -82,6 +82,15 @@ User-defined settings for 2-2-1-1-monometallic_with_swap_groups_with_extra_struc
     background_file               ../data_input/Cu_surface.xyz
     background_translation        [-6, -4, -14]
     monoaxial_optimization        False
+====================================  BiAu  ====================================
+User-defined settings for BiAu:
+    name                          BiAu
+    ligand_db_files               ['metalig', 'same_as_previous']
+    total_ligand_charges          0
+    ligand_archetypes             ['1-mono', '1-mono']
+    target_vectors                [[[0, -1, 0]], [[0, 1, 0]]]
+    metal_centers                 [[['Au', [0, 0, 0]]], [['Au', [0, 2.58, 0]]]]
+    n_max_complexes               20
 =============================  Summary per batch  ==============================
 batch_0:
   - 92 isomers tried, 27 isomers (from 20 complexes) successfully assembled.
@@ -112,8 +121,10 @@ batch_0:
   - 99 isomers failed because of filters:
     - clashing: 76
     - duplicate: 23
+BiAu:
+  - 20 isomers tried, 20 isomers (from 20 complexes) successfully assembled.
 ====================  Total summary of DART Assembler run  =====================
-  - 441 isomers tried, 152 isomers (from 48 complexes) successfully assembled.
+  - 461 isomers tried, 172 isomers (from 68 complexes) successfully assembled.
   - 289 isomers failed because of filters:
     - clashing: 181
     - duplicate: 108

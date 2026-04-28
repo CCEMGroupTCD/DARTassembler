@@ -767,10 +767,14 @@ class AssembledComplex(object):
         ligand_graphs = [deepcopy(lig.graph) for lig in self.ligands]
         unique_metal_centers = self._get_all_unique_metal_centers()
 
-        # Create the new graph by merging everything
+        # Add metal centers to graph and connect all metal centers with each other
         graph = nx.Graph()
         for i, unique_metal_center in enumerate(unique_metal_centers):
             graph.add_nodes_from([(i, {"node_label": unique_metal_center.symbol})])
+            # Connect all metal centers with each other without duplicating edges
+            for j in range(i):
+                graph.add_edge(i, j)
+
 
         # Relabel the nodes of the old graphs so that they are unique for the next step
         i = len(unique_metal_centers)  # start after the metals
@@ -783,8 +787,8 @@ class AssembledComplex(object):
 
         # Copy the ligand graphs
         for ligand_graph in ligand_graphs:
-            graph.add_nodes_from(ligand_graph.nodes(data=True))  # add ligand nodes
-            graph.add_edges_from(ligand_graph.edges())  # add ligand edges
+            graph.add_nodes_from(ligand_graph.nodes(data=True))     # add ligand nodes
+            graph.add_edges_from(ligand_graph.edges())              # add ligand edges
 
         # Connect the metal centers to the ligands
         ligand_donor_indices = [[] for _ in self.ligands]

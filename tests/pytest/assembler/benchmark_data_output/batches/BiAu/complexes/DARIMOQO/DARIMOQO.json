@@ -1,0 +1,219 @@
+{
+    "complex_name": "DARIMOQO",
+    "isomers": {
+        "DARIMOQO1": {
+            "atomic_props": {
+                "x": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    0.565421,
+                    -0.632792,
+                    0.0,
+                    0.559693,
+                    -0.630037
+                ],
+                "y": [
+                    0.0,
+                    2.58,
+                    -2.015285,
+                    -2.442475,
+                    -2.462023,
+                    4.595285,
+                    5.022475,
+                    5.042023
+                ],
+                "z": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    -0.373322,
+                    0.176747,
+                    0.0,
+                    0.381856,
+                    -0.186327
+                ],
+                "atoms": [
+                    "Au",
+                    "Au",
+                    "O",
+                    "H",
+                    "H",
+                    "O",
+                    "H",
+                    "H"
+                ]
+            },
+            "warning": "",
+            "target_vectors": [
+                [
+                    [
+                        0,
+                        -1,
+                        0
+                    ]
+                ],
+                [
+                    [
+                        0,
+                        1,
+                        0
+                    ]
+                ]
+            ],
+            "ligand_origins": [
+                [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                [
+                    0.0,
+                    2.58,
+                    0.0
+                ]
+            ]
+        }
+    },
+    "graph": {
+        "graph": {
+            "0": {
+                "1": {},
+                "2": {}
+            },
+            "1": {
+                "0": {},
+                "5": {}
+            },
+            "2": {
+                "0": {},
+                "3": {},
+                "4": {}
+            },
+            "3": {
+                "2": {}
+            },
+            "4": {
+                "2": {}
+            },
+            "5": {
+                "1": {},
+                "6": {},
+                "7": {}
+            },
+            "6": {
+                "5": {}
+            },
+            "7": {
+                "5": {}
+            }
+        },
+        "node_attributes": {
+            "0": {
+                "node_label": "Au"
+            },
+            "1": {
+                "node_label": "Au"
+            },
+            "2": {
+                "node_label": "O"
+            },
+            "3": {
+                "node_label": "H"
+            },
+            "4": {
+                "node_label": "H"
+            },
+            "5": {
+                "node_label": "O"
+            },
+            "6": {
+                "node_label": "H"
+            },
+            "7": {
+                "node_label": "H"
+            }
+        }
+    },
+    "graph_hash": "665e4fd34355245ee9fc6d1fd895bafa",
+    "metal_idc": [
+        0,
+        1
+    ],
+    "donor_idc": [
+        2,
+        5
+    ],
+    "ligand_idc": [
+        [
+            2,
+            3,
+            4
+        ],
+        [
+            5,
+            6,
+            7
+        ]
+    ],
+    "ligand_info": {
+        "unique_names": [
+            "unq_CSD-OZONIB-01-a",
+            "unq_CSD-OZONIB-01-a"
+        ],
+        "archetypes": [
+            "1-mono",
+            "1-mono"
+        ],
+        "donor_idcs": [
+            [
+                0
+            ],
+            [
+                0
+            ]
+        ],
+        "charges": [
+            0,
+            0
+        ],
+        "stoichiometries": [
+            "H2O",
+            "H2O"
+        ],
+        "hapdent_idcs": [
+            [
+                0
+            ],
+            [
+                0
+            ]
+        ],
+        "geometric_isomers_hapdent_idcs": [
+            [
+                [
+                    0
+                ]
+            ],
+            [
+                [
+                    0
+                ]
+            ]
+        ],
+        "donors": [
+            "O",
+            "O"
+        ]
+    },
+    "input": {
+        "clashing_tolerance": -0.3,
+        "clashing_metal": false,
+        "duplicate_tolerance": 0.5,
+        "permutable_ligands": null,
+        "monoaxial_optimization": true,
+        "force_all_isomers": false,
+        "complex_name_length": 8,
+        "complex_name_suffix": ""
+    }
+}
